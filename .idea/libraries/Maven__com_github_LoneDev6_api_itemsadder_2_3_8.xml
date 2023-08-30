@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: com.github.LoneDev6:api-itemsadder:2.3.8">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/com/github/LoneDev6/api-itemsadder/2.3.8/api-itemsadder-2.3.8.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/com/github/LoneDev6/api-itemsadder/2.3.8/api-itemsadder-2.3.8-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/com/github/LoneDev6/api-itemsadder/2.3.8/api-itemsadder-2.3.8-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
