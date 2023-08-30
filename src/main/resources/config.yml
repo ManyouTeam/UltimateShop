@@ -1,0 +1,77 @@
+debug: true
+
+menu:
+  auto-open:
+    enabled: true
+    shop: main
+  click-event:
+    buy: 'LEFT'
+    sell: 'RIGHT'
+    #buy-more: 'COMING'
+    #sell-more: 'COMING'
+
+use-times:
+  enabled: true
+  default-reset-mode: 'NEVER'
+  default-reset-time: '00:00:00'
+
+# TODO
+dynamic-prices:
+  enabled: false
+
+check-math: false
+
+display-item:
+  auto-set-first-product: true
+  add-lore:
+    top:
+      - '&7Purchase: {buy-price}'
+      - '&7Sell: {sell-price}'
+      - ''
+    buy-limit:
+      - '&7Buy Stock: {buy-times}/{buy-limit}'
+    sell-limit:
+      - '&7Buy Stock: {sell-times}/{sell-limit}'
+    buy-refresh:
+      - ''
+      - '&cSold Out!'
+      - '&8Refresh Time: {buy-refresh}'
+    sell-refresh:
+      - ''
+      - '&cCan not sell more!'
+      - '&8Refresh Time: {sell-refresh}'
+    buy-click:
+      - '{buy-click}'
+    sell-click:
+      - '{sell-click}'
+
+placeholder:
+  refresh:
+    format: "yyyy-MM-dd HH:mm:ss"
+    never: "Never"
+  price:
+    split-symbol: ', '
+    unknown: "Unknown"
+  click:
+    enabled: true
+    buy: '&eLeft-click tp buy!'
+    sell: '&eRight-click to sell!'
+    buy-max-limit: '&cSold out!'
+    sell-max-limit: '&cCan not sell more!'
+    buy-price-not-enough: '&cDo not have enough money!'
+    sell-price-not-enough: '&cDo not have enough item!'
+    error: '&cError!'
+
+database:
+  enabled: false
+  jdbc-url: "jdbc:mysql://localhost:3306/economylimit?useSSL=false&autoReconnect=true"
+  jdbc-class: "com.mysql.cj.jdbc.Driver"
+  properties:
+    user: root
+    password: 123456
+
+prices:
+  example:
+    economy-plugin: Vault
+    amount: 200
+    placeholder: '200 Coins'

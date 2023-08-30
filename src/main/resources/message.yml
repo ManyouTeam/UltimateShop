@@ -1,0 +1,20 @@
+error:
+  product-not-found: "&#98FB98[UltimateShop] &cCan not found product {product}!"
+  shop-not-found: "&#98FB98[UltimateShop] &cCan not found shop {shop}!"
+  player-not-found: "&#98FB98[UltimateShop] &cWe can't find player {player}!"
+  args: "&#98FB98[UltimateShop] &cWrong command usage, if you need help, use /spintowin help!"
+  in-game: "&#98FB98[UltimateShop] &cYou have to use this command in game!"
+  miss-permission: "&#98FB98[UltimateShop] &cYou don't have permission to use this command!"
+  shop-menu-not-found: "&#98FB98[UltimateShop] &cWe can't find shop {shop}'s menu: {menu}!"
+  shop-does-not-have-menu: "&#98FB98[UltimateShop] &cShop {shop} does not have valid menu!"
+
+plugin:
+  reloaded: "&#98FB98[UltimateShop] &fPlugin reloaded!"
+  item-dropped: "&#98FB98[UltimateShop] &fYour shop item {item} has dropped on ground!"
+
+success-buy: "&#98FB98[UltimateShop] &fSuccessfully purchased {item}, cost {price}!"
+success-sell: "&#98FB98[UltimateShop] &fSuccessfully sell {item}, gain {price}!"
+limit-reached-buy: "&#98FB98[UltimateShop] &cYou can no longer purchase item {item}, you purchase this item {times} today, and its daily stock is {limit} for you, next refresh time: %refresh%."
+limit-reached-sell: "&#98FB98[UltimateShop] &cYou can no longer sell item {item}, you purchase this item {times} today, and its daily stock is {limit} for you, next refresh time: %refresh%."
+buy-price-not-enough: "&#98FB98[UltimateShop] &cYou do not have enough money to purchase {item}. Required price: {price}."
+sell-products-not-enough: "&#98FB98[UltimateShop] &cYou do not have enough {item} to sell."

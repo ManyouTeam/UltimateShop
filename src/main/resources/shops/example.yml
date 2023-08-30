@@ -1,0 +1,47 @@
+settings:
+  menu: 'example-shop-menu'
+
+items:
+  A:
+    display-item:
+      material: APPLE
+    give-item: true
+    price-mode: ANY
+    product-mode: ALL
+    products:
+      1:
+        material: APPLE
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: 200
+        placeholder: '200 Coins'
+        start-apply: 0
+      2:
+        economy-plugin: PlayerPoints
+        amount: 10
+        placeholder: '10 Points'
+        start-apply: 5
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: 50
+        placeholder: '50 Coins'
+      2:
+        economy-plugin: PlayerPoints
+        amount: 1
+        start-apply: 5
+        placeholder: '5 Points'
+    buy-actions:
+      - 'player_command: say %player% purchased an Apple!'
+      - 'announcement: &7%player% purchased an Apple!'
+    limits:
+      global: 100
+      default: 10
+      test-condition: 20
+    limits-conditions:
+      test-condition:
+        - 'permission: test.permission'
+    limits-reset-mode: 'TIMED'
+    limits-reset-time: '00:00:00'

@@ -1,0 +1,20 @@
+title: Example Shop
+size: 54
+
+layout:
+  - '000000000'
+  - '000000000'
+  - '0000A0000'
+  - '000000000'
+  - '000000000'
+  - '0000B0000'
+
+buttons:
+  B:
+    display-item:
+      material: arrow
+      name: '&cBack'
+      lore:
+        - '&7Click to return main menu!'
+    actions:
+      - 'message: No main menu found!'
