@@ -19,11 +19,6 @@ import org.bukkit.inventory.ItemStack;
 public class ItemsHook {
 
     public static ItemStack getHookItem(String pluginName, String itemID) {
-        if (UltimateShop.freeVersion) {
-            ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: You are using free version, " +
-                    "hook item can not be used in this version!");
-            return null;
-        }
         if (!UltimateShop.instance.getServer().getPluginManager().isPluginEnabled(pluginName)) {
             ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Your server don't have " + pluginName +
                     " plugin, but your UI config try use its hook!");

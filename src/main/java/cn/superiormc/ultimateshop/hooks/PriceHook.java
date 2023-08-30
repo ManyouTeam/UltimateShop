@@ -159,11 +159,6 @@ public class PriceHook {
 
     @Deprecated
     public static boolean getPrice(String pluginName, Player player, String item, int value, boolean take) {
-        if (UltimateShop.freeVersion) {
-            ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: You are using free version, " +
-                    "hook item price can not be used in this version!");
-            return false;
-        }
         if (value < 0) {
             return false;
         }

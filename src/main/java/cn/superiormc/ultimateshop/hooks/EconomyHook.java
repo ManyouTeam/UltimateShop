@@ -21,11 +21,6 @@ import java.math.BigDecimal;
 public class EconomyHook {
 
     public static void giveEconomy(String pluginName, String currencyName, Player player, double value) {
-        if (UltimateShop.freeVersion) {
-            ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: You are using free version, " +
-                    "economy plugin price can not be used in this version!");
-            return;
-        }
         if (!UltimateShop.instance.getServer().getPluginManager().isPluginEnabled(pluginName)) {
             ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Your server don't have " + pluginName +
                     " plugin, but your shop config try use its hook!");
