@@ -1,0 +1,4 @@
+name: UltimateShop
+version: '${project.version}'
+main: cn.superiormc.ultimateshop.UltimateShop
+api-version: 1.13
