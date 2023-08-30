@@ -1,17 +1,41 @@
 package cn.superiormc.ultimateshop;
 
+import cn.superiormc.ultimateshop.database.SQLDatabase;
+import cn.superiormc.ultimateshop.managers.*;
+import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import java.io.File;
 
 public final class UltimateShop extends JavaPlugin {
 
+    public static JavaPlugin instance;
+
     @Override
     public void onEnable() {
-        // Plugin startup logic
-
+        instance = this;
+        new ErrorManager();
+        File file = new File(getDataFolder(), "config.yml");
+        if (!file.exists()) {
+            this.saveDefaultConfig();
+            new InitManager(true);
+        } else {
+            new InitManager(false);
+        }
+        new ConfigManager();
+        new LanguageManager();
+        new CacheManager();
+        new CommandManager();
+        new ListenerManager();
+        Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §fPlugin is loaded. Author: PQguanfang.");
     }
 
     @Override
     public void onDisable() {
-        // Plugin shutdown logic
+        if (SQLDatabase.sqlManager != null) {
+            SQLDatabase.closeSQL();
+        }
+        Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §fPlugin is disabled. Author: PQguanfang.");
     }
+
 }
