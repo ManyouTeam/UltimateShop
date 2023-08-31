@@ -27,20 +27,25 @@ public abstract class AbstractThings {
         return mode;
     }
 
-    public void giveThing(Player player, int times) {
-        giveThing(player, times, 1);
-    }
+    public abstract void giveThing(Player player, int times);
 
     public void giveThing(Player player, int times, int multi) {
-        return;
+        for (int i = 0 ; i < multi ; i ++) {
+            giveThing(player, times + i);
+        }
     }
 
-    public boolean takeThing(Player player, boolean take, int times) {
-        return takeThing(player, take, times, 1);
-    }
+    public abstract boolean takeThing(Player player, boolean take, int times);
 
     public boolean takeThing(Player player, boolean take, int times, int multi) {
-        return false;
+        for (int i = 0 ; i < multi ; i ++) {
+            if (!takeThing(player, take, times + i)) {
+                if (!take) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     private void initThingMode(String mode) {

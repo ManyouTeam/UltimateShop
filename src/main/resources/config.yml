@@ -7,8 +7,6 @@ menu:
   click-event:
     buy: 'LEFT'
     sell: 'RIGHT'
-    #buy-more: 'COMING'
-    #sell-more: 'COMING'
 
 use-times:
   enabled: true

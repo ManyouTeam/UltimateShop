@@ -1,19 +1,65 @@
-title: 'Shop'
+title: 'Select Amount'
 
 layout:
   - '000000000'
+  - '012304560'
+  - '0000B0000'
   - '000000000'
   - '0000A0000'
   - '000000000'
-  - '000000000'
-  - '000000000'
+
+amount-item:
+  1:
+    display-item:
+      material: GREEN_WOOL
+      name: '&a+1'
+      lore:
+        - '&7Click to add 1 amount.'
+    add-amount: 1
+  2:
+    display-item:
+      material: GREEN_WOOL
+      name: '&a+10'
+      lore:
+        - '&7Click to add 10 amount.'
+    add-amount: 10
+  3:
+    display-item:
+      material: GREEN_WOOL
+      name: '&a+32'
+      lore:
+        - '&7Click to add 32 amount.'
+    add-amount: 32
+  4:
+    display-item:
+      material: RED_WOOL
+      name: '&c-1'
+      lore:
+        - '&7Click to remove 1 amount.'
+    add-amount: 1
+  5:
+    display-item:
+      material: RED_WOOL
+      name: '&c-10'
+      lore:
+        - '&7Click to remove 10 amount.'
+    add-amount: 10
+  6:
+    display-item:
+      material: RED_WOOL
+      name: '&c-32'
+      lore:
+        - '&7Click to remove 32 amount.'
+    add-amount: 32
+
+display-item: B
 
 buttons:
   A:
     display-item:
       material: BREAD
-      name: '&dFoods'
+      name: '&cBack'
       lore:
-        - '&7Click to open food shop!'
+        - '&7Click to back food shop!'
     actions:
       - 'shop_menu: example'

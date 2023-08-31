@@ -51,9 +51,7 @@ public abstract class AbstractSingleThing {
         }
     }
 
-    public boolean playerHasEnough(Player player, boolean take, int times) {
-        return false;
-    }
+    public abstract boolean playerHasEnough(Player player, boolean take, int times);
 
     public void playerGive(Player player, int times) {
         if (singleSection == null) {

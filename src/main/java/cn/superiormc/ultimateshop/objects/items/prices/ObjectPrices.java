@@ -98,14 +98,6 @@ public class ObjectPrices extends AbstractThings {
         }
     }
 
-    @Override
-    public void giveThing(Player player, int times, int multi) {
-        for (int i = 0 ; i < multi ; i ++) {
-            giveThing(player, times + i);
-        }
-    }
-
-
     // 作为价格时候使用
     @Override
     public boolean takeThing(Player player, boolean take, int times) {
@@ -135,17 +127,6 @@ public class ObjectPrices extends AbstractThings {
                 ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Can not get price-mode section in your shop config!!");
                 return false;
         }
-    }
-
-    public boolean takeThing(Player player, boolean take, int times, int multi) {
-        for (int i = 0 ; i < multi ; i ++) {
-            if (!takeThing(player, take, times + i)) {
-                if (!take) {
-                    return false;
-                }
-            }
-        }
-        return true;
     }
 
     public List<String> getDisplayName(int times, int multi) {
