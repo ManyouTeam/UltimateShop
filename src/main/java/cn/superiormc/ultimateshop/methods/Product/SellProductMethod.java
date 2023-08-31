@@ -1,13 +1,16 @@
-package cn.superiormc.ultimateshop.methods;
+package cn.superiormc.ultimateshop.methods.Product;
 
 import cn.superiormc.ultimateshop.cache.PlayerCache;
+import cn.superiormc.ultimateshop.cache.ServerCache;
 import cn.superiormc.ultimateshop.managers.CacheManager;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.LanguageManager;
+import cn.superiormc.ultimateshop.methods.ProductMethodStatus;
 import cn.superiormc.ultimateshop.objects.ObjectItem;
 import cn.superiormc.ultimateshop.objects.ObjectShop;
-import cn.superiormc.ultimateshop.objects.caches.ObjectPlayerUseTimesCache;
+import cn.superiormc.ultimateshop.objects.caches.ObjectUseTimesCache;
 import cn.superiormc.ultimateshop.objects.items.products.ObjectProducts;
+import org.bukkit.Server;
 import org.bukkit.entity.Player;
 
 import java.time.LocalDateTime;
@@ -50,36 +53,63 @@ public class SellProductMethod {
         }
          */
         // limit
-        int useTimes = 0;
-        ObjectPlayerUseTimesCache tempVal9 = tempVal3.getPlayerUseTimesCache().get(tempVal2);
+        int playerUseTimes = 0;
+        int serverUseTimes = 0;
+        ObjectUseTimesCache tempVal9 = tempVal3.getUseTimesCache().get(tempVal2);
+        ObjectUseTimesCache tempVal8 = ServerCache.serverCache.getUseTimesCache().get(tempVal2);
         if (tempVal9 != null) {
             if (quick) {
                 // 重置
                 if (tempVal9.getSellRefreshTime().isAfter(LocalDateTime.now())) {
-                    tempVal3.getPlayerUseTimesCache().get(tempVal2).setSellUseTimes(0);
+                    tempVal3.getUseTimesCache().get(tempVal2).setSellUseTimes(0);
                 }
             }
-            useTimes = tempVal3.getPlayerUseTimesCache().get(tempVal2).getSellUseTimes();
-            if (tempVal2.getSellLimit(player) != -1 && useTimes > tempVal2.getSellLimit(player)) {
+            playerUseTimes = tempVal3.getUseTimesCache().get(tempVal2).getSellUseTimes();
+            if (tempVal2.getPlayerSellLimit(player) != -1 && playerUseTimes > tempVal2.getPlayerSellLimit(player)) {
                 if (quick) {
                     LanguageManager.languageManager.sendStringText(player,
-                            "limit-reached-sell",
+                            "limit-reached-sell-player",
                             "item",
                             tempVal2.getDisplayName(),
                             "times",
-                            String.valueOf(useTimes),
+                            String.valueOf(playerUseTimes),
                             "limit",
-                            String.valueOf(tempVal2.getSellLimit(player)),
+                            String.valueOf(tempVal2.getPlayerSellLimit(player)),
                             "refresh",
                             tempVal9.getSellRefreshTimeDisplayName());
 
                 }
-                return ProductMethodStatus.MAX;
+                return ProductMethodStatus.PLAYER_MAX;
+            }
+        }
+        if (tempVal8 != null) {
+            if (quick) {
+                // 重置
+                if (tempVal8.getBuyRefreshTime().isAfter(LocalDateTime.now())) {
+                    ServerCache.serverCache.getUseTimesCache().get(tempVal2).setSellUseTimes(0);
+                }
+            }
+            serverUseTimes = ServerCache.serverCache.getUseTimesCache().get(tempVal2).getSellUseTimes();
+            if (tempVal2.getServerBuyLimit(player) != -1 && serverUseTimes > tempVal2.getServerSellLimit(player)) {
+                if (quick) {
+                    LanguageManager.languageManager.sendStringText(player,
+                            "limit-reached-sell-server",
+                            "item",
+                            tempVal2.getDisplayName(),
+                            "times",
+                            String.valueOf(playerUseTimes),
+                            "limit",
+                            String.valueOf(tempVal2.getServerSellLimit(player)),
+                            "refresh",
+                            tempVal8.getBuyRefreshTimeDisplayName());
+
+                }
+                return ProductMethodStatus.SERVER_MAX;
             }
         }
         // price
         ObjectProducts tempVal5 = tempVal2.getReward();
-        if (!tempVal5.takeThing(player, false, useTimes)) {
+        if (!tempVal5.takeThing(player, false, playerUseTimes)) {
             if (quick) {
                 LanguageManager.languageManager.sendStringText(player,
                         "sell-products-not-enough",
@@ -93,16 +123,16 @@ public class SellProductMethod {
         }
         // 尝试给物品
         // 回收的价格就是给的
-        tempVal2.getSellPrice().giveThing(player, useTimes);
+        tempVal2.getSellPrice().giveThing(player, playerUseTimes);
         // 扣物品
         // 扣的是奖励中的东西
-        tempVal5.takeThing(player, true, useTimes);
+        tempVal5.takeThing(player, true, playerUseTimes);
         // 执行动作
         tempVal2.getSellAction().doAction(player);
         // limit+1
         if (ConfigManager.configManager.getBoolean("database.enabled") && tempVal9 != null) {
             tempVal9.setSellUseTimes(tempVal9.getSellUseTimes() + 1);
-            tempVal3.getPlayerUseTimesCache().put(tempVal2, tempVal9);
+            tempVal3.getUseTimesCache().put(tempVal2, tempVal9);
         }
         LanguageManager.languageManager.sendStringText(player,
                 "success-sell",
@@ -110,7 +140,7 @@ public class SellProductMethod {
                 tempVal2.getDisplayName(),
                 "price",
                 tempVal2.getSellPrice().getDisplayNameWithOneLine(
-                        useTimes,
+                        playerUseTimes,
                         ConfigManager.configManager.getString("placeholder.price.split-symbol")));
         return ProductMethodStatus.DONE;
     }

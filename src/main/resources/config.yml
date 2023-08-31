@@ -3,7 +3,7 @@ debug: true
 menu:
   auto-open:
     enabled: true
-    shop: main
+    menu: main
   click-event:
     buy: 'LEFT'
     sell: 'RIGHT'

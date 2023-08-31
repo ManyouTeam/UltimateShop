@@ -159,6 +159,13 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
+            <groupId>io.lumine</groupId>
+            <artifactId>MythicLib</artifactId>
+            <version>1.6.1</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/MythicLib-1.6.1.jar</systemPath>
+        </dependency>
+        <dependency>
             <groupId>com.github.MilkBowl</groupId>
             <artifactId>VaultAPI</artifactId>
             <version>1.7</version>

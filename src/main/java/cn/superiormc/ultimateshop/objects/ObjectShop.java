@@ -1,8 +1,6 @@
 package cn.superiormc.ultimateshop.objects;
 
 import cn.superiormc.ultimateshop.managers.ErrorManager;
-import cn.superiormc.ultimateshop.managers.MenuManager;
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.util.ArrayList;
@@ -19,7 +17,7 @@ public class ObjectShop {
     private String shopName;
 
     public ObjectShop(String fileName, YamlConfiguration config) {
-        this.shopName = fileName.replace(".yml", "");
+        this.shopName = fileName;
         this.config = config;
         initProducts();
         if (config.getString("settings.menu") != null) {
@@ -38,7 +36,7 @@ public class ObjectShop {
     }
 
     private void initMenus() {
-        new MenuManager(getShopMenu(), this);
+        new ObjectMenu(getShopMenu(), this);
     }
 
     public YamlConfiguration getShopConfig() {

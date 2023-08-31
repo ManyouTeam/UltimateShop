@@ -1,7 +1,7 @@
 package cn.superiormc.ultimateshop.managers;
 
 import cn.superiormc.ultimateshop.UltimateShop;
-import cn.superiormc.ultimateshop.objects.ObjectItem;
+import cn.superiormc.ultimateshop.objects.ObjectMenu;
 import cn.superiormc.ultimateshop.objects.ObjectShop;
 import cn.superiormc.ultimateshop.utils.TextUtil;
 import org.bukkit.Bukkit;
@@ -26,6 +26,7 @@ public class ConfigManager {
         UltimateShop.instance.saveDefaultConfig();
         this.config = UltimateShop.instance.getConfig();
         initShopConfigs();
+        initMenuConfigs();
     }
 
     private void initShopConfigs() {
@@ -41,10 +42,32 @@ public class ConfigManager {
         for (File file : files) {
             String fileName = file.getName();
             if (fileName.endsWith(".yml")) {
-                shopConfigs.put(fileName.substring(0, fileName.length() - 4),
-                        new ObjectShop(fileName, YamlConfiguration.loadConfiguration(file)));
+                String substring = fileName.substring(0, fileName.length() - 4);
+                shopConfigs.put(substring,
+                        new ObjectShop(substring, YamlConfiguration.loadConfiguration(file)));
                 Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §fLoaded shop: " +
                         fileName + "!");
+            }
+        }
+    }
+
+    private void initMenuConfigs() {
+        File dir = new File(UltimateShop.instance.getDataFolder(), "menus");
+        if (!dir.exists()) {
+            dir.mkdir();
+        }
+        File[] files = dir.listFiles();
+        if (!Objects.nonNull(files) && files.length != 0) {
+            return;
+        }
+        for (File file : files) {
+            String fileName = file.getName();
+            if (fileName.endsWith(".yml")) {
+                String substring = fileName.substring(0, fileName.length() - 4);
+                if (ObjectMenu.shopMenuNames.contains(substring)) {
+                    continue;
+                }
+                new ObjectMenu(substring);
             }
         }
     }

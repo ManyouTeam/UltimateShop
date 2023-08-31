@@ -1,7 +1,6 @@
 package cn.superiormc.ultimateshop.objects.items;
 
 import cn.superiormc.ultimateshop.managers.ConfigManager;
-import cn.superiormc.ultimateshop.objects.items.ObjectCondition;
 import cn.superiormc.ultimateshop.utils.TextUtil;
 import cn.superiormc.ultimateshop.utils.MathUtil;
 import org.bukkit.configuration.ConfigurationSection;
@@ -24,7 +23,7 @@ public class ObjectLimit {
         this.conditionsSection = conditionsSection;
     }
 
-    public int getLimits(Player player) {
+    public int getPlayerLimits(Player player) {
         if (!ConfigManager.configManager.getBoolean("use-times.enabled")) {
             return -1;
         }
@@ -47,7 +46,11 @@ public class ObjectLimit {
         if (result.size() == 0) {
             result.add(-1);
         }
-        int tempVal1 = Collections.max(result);
+        return Collections.max(result);
+    }
+
+    public int getServerLimits(Player player) {
+        int tempVal1 = getPlayerLimits(player);
         int tempVal2 = tempVal1;
         if (conditionsSection.getDouble("global", -1) != -1) {
             tempVal2 = (MathUtil.doCalculate(

@@ -1,23 +1,26 @@
-package cn.superiormc.ultimateshop.managers;
+package cn.superiormc.ultimateshop.objects;
 
 import cn.superiormc.ultimateshop.UltimateShop;
-import cn.superiormc.ultimateshop.objects.ObjectShop;
 import cn.superiormc.ultimateshop.objects.ui.AbstractButton;
 import cn.superiormc.ultimateshop.objects.ui.ObjectButton;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-public class MenuManager {
+public class ObjectMenu {
 
-    public static Map<String, MenuManager> menuManagers = new HashMap<>();
+    public static Map<String, ObjectMenu> commonMenus = new HashMap<>();
+
+    public static Map<ObjectShop, ObjectMenu> shopMenus = new HashMap<>();
+
+    public static List<String> shopMenuNames = new ArrayList<>();
 
     private String fileName = null;
 
@@ -29,7 +32,7 @@ public class MenuManager {
 
     private Map<String, AbstractButton> buttonItems = new HashMap<>();
 
-    public MenuManager(String fileName, ObjectShop shop) {
+    public ObjectMenu(String fileName, ObjectShop shop) {
         this.fileName = fileName;
         this.shop = shop;
         initMenu();
@@ -37,14 +40,20 @@ public class MenuManager {
         initButtonItems();
     }
 
-    public MenuManager(String fileName) {
-        initMenu();
+    public ObjectMenu(String fileName) {
         this.fileName = fileName;
+        initMenu();
         initButtonItems();
     }
 
     private void initMenu() {
-        menuManagers.put(fileName, this);
+        if (shop == null) {
+            commonMenus.put(fileName, this);
+        }
+        else {
+            shopMenus.put(shop, this);
+            shopMenuNames.add(fileName);
+        }
         File file = new File(UltimateShop.instance.getDataFolder() + "/menus/" + fileName + ".yml");
         if (!file.exists()){
             Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §cWe can not found your menu file: " +

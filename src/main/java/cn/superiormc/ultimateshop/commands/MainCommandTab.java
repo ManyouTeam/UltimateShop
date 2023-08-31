@@ -2,6 +2,7 @@ package cn.superiormc.ultimateshop.commands;
 
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.objects.ObjectItem;
+import cn.superiormc.ultimateshop.objects.ObjectMenu;
 import cn.superiormc.ultimateshop.objects.ObjectShop;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -41,6 +42,12 @@ public class MainCommandTab implements TabCompleter {
                             if (sender.hasPermission("ultimateshop.menu.*") ||
                             sender.hasPermission("ultimateshop.menu." + tempVal2.getShopName())) {
                                 tempVal1.add(tempVal2.getShopName());
+                            }
+                        }
+                        for (String tempVal4 : ObjectMenu.commonMenus.keySet()) {
+                            if (sender.hasPermission("ultimateshop.menu.*") ||
+                                    sender.hasPermission("ultimateshop.menu." + tempVal4)) {
+                                tempVal1.add(tempVal4);
                             }
                         }
                         break;

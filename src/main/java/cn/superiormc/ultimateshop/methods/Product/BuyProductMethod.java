@@ -1,10 +1,12 @@
-package cn.superiormc.ultimateshop.methods;
+package cn.superiormc.ultimateshop.methods.Product;
 
 import cn.superiormc.ultimateshop.cache.PlayerCache;
+import cn.superiormc.ultimateshop.cache.ServerCache;
 import cn.superiormc.ultimateshop.managers.CacheManager;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.LanguageManager;
-import cn.superiormc.ultimateshop.objects.caches.ObjectPlayerUseTimesCache;
+import cn.superiormc.ultimateshop.methods.ProductMethodStatus;
+import cn.superiormc.ultimateshop.objects.caches.ObjectUseTimesCache;
 import cn.superiormc.ultimateshop.objects.items.prices.ObjectPrices;
 import cn.superiormc.ultimateshop.objects.ObjectShop;
 import cn.superiormc.ultimateshop.objects.ObjectItem;
@@ -44,36 +46,63 @@ public class BuyProductMethod {
             return ProductMethodStatus.ERROR;
         }
         // limit
-        int useTimes = 0;
-        ObjectPlayerUseTimesCache tempVal9 = tempVal3.getPlayerUseTimesCache().get(tempVal2);
+        int playerUseTimes = 0;
+        int serverUseTimes = 0;
+        ObjectUseTimesCache tempVal9 = tempVal3.getUseTimesCache().get(tempVal2);
+        ObjectUseTimesCache tempVal8 = ServerCache.serverCache.getUseTimesCache().get(tempVal2);
         if (tempVal9 != null) {
             if (quick) {
                 // 重置
                 if (tempVal9.getBuyRefreshTime().isAfter(LocalDateTime.now())) {
-                    tempVal3.getPlayerUseTimesCache().get(tempVal2).setBuyUseTimes(0);
+                    tempVal3.getUseTimesCache().get(tempVal2).setBuyUseTimes(0);
                 }
             }
-            useTimes = tempVal3.getPlayerUseTimesCache().get(tempVal2).getBuyUseTimes();
-            if (tempVal2.getBuyLimit(player) != -1 && useTimes > tempVal2.getBuyLimit(player)) {
+            playerUseTimes = tempVal3.getUseTimesCache().get(tempVal2).getBuyUseTimes();
+            if (tempVal2.getPlayerBuyLimit(player) != -1 && serverUseTimes > tempVal2.getPlayerBuyLimit(player)) {
                 if (quick) {
                     LanguageManager.languageManager.sendStringText(player,
-                            "limit-reached-buy",
+                            "limit-reached-buy-player",
                             "item",
                             tempVal2.getDisplayName(),
                             "times",
-                            String.valueOf(useTimes),
+                            String.valueOf(playerUseTimes),
                             "limit",
-                            String.valueOf(tempVal2.getBuyLimit(player)),
+                            String.valueOf(tempVal2.getPlayerBuyLimit(player)),
                             "refresh",
                             tempVal9.getBuyRefreshTimeDisplayName());
 
                 }
-                return ProductMethodStatus.MAX;
+                return ProductMethodStatus.PLAYER_MAX;
+            }
+        }
+        if (tempVal8 != null) {
+            if (quick) {
+                // 重置
+                if (tempVal8.getBuyRefreshTime().isAfter(LocalDateTime.now())) {
+                    ServerCache.serverCache.getUseTimesCache().get(tempVal2).setBuyUseTimes(0);
+                }
+            }
+            serverUseTimes = ServerCache.serverCache.getUseTimesCache().get(tempVal2).getBuyUseTimes();
+            if (tempVal2.getServerBuyLimit(player) != -1 && playerUseTimes > tempVal2.getServerBuyLimit(player)) {
+                if (quick) {
+                    LanguageManager.languageManager.sendStringText(player,
+                            "limit-reached-buy-server",
+                            "item",
+                            tempVal2.getDisplayName(),
+                            "times",
+                            String.valueOf(playerUseTimes),
+                            "limit",
+                            String.valueOf(tempVal2.getServerBuyLimit(player)),
+                            "refresh",
+                            tempVal8.getBuyRefreshTimeDisplayName());
+
+                }
+                return ProductMethodStatus.SERVER_MAX;
             }
         }
         // price
         ObjectPrices tempVal5 = tempVal2.getBuyPrice();
-        if (!tempVal5.takeThing(player, false, useTimes)) {
+        if (!tempVal5.takeThing(player, false, playerUseTimes)) {
             if (quick) {
                 LanguageManager.languageManager.sendStringText(player,
                         "buy-price-not-enough",
@@ -81,7 +110,7 @@ public class BuyProductMethod {
                         tempVal2.getDisplayName(),
                         "price",
                         tempVal5.getDisplayNameWithOneLine(
-                                useTimes,
+                                playerUseTimes,
                                 ConfigManager.configManager.getString("placeholder.price.split-symbol")));
             }
             return ProductMethodStatus.NOT_ENOUGH;
@@ -90,15 +119,15 @@ public class BuyProductMethod {
             return ProductMethodStatus.DONE;
         }
         // 尝试给物品
-        tempVal2.getReward().giveThing(player, useTimes);
+        tempVal2.getReward().giveThing(player, playerUseTimes);
         // 扣钱
-        tempVal5.takeThing(player, true, useTimes);
+        tempVal5.takeThing(player, true, playerUseTimes);
         // 执行动作
         tempVal2.getBuyAction().doAction(player);
         // limit+1
         if (ConfigManager.configManager.getBoolean("database.enabled") && tempVal9 != null) {
             tempVal9.setBuyUseTimes(tempVal9.getBuyUseTimes() + 1);
-            tempVal3.getPlayerUseTimesCache().put(tempVal2, tempVal9);
+            tempVal3.getUseTimesCache().put(tempVal2, tempVal9);
         }
         LanguageManager.languageManager.sendStringText(player,
                 "success-buy",
@@ -106,7 +135,7 @@ public class BuyProductMethod {
                 tempVal2.getDisplayName(),
                 "price",
                 tempVal5.getDisplayNameWithOneLine(
-                        useTimes,
+                        playerUseTimes,
                         ConfigManager.configManager.getString("placeholder.price.split-symbol")));
         return ProductMethodStatus.DONE;
     }

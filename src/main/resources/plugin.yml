@@ -1,4 +1,13 @@
 name: UltimateShop
 version: '${project.version}'
 main: cn.superiormc.ultimateshop.UltimateShop
-api-version: 1.13
+api-version: 1.17
+author:
+  - PQguanfang
+  - rzt1020
+commands:
+  ultimateshop:
+    aliases:
+      - "shop"
+    usage: "/ultimateshop"
+    description: "UltimateShop Main Command."

@@ -2,8 +2,8 @@ package cn.superiormc.ultimateshop.objects;
 
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.ErrorManager;
-import cn.superiormc.ultimateshop.methods.BuyProductMethod;
-import cn.superiormc.ultimateshop.methods.SellProductMethod;
+import cn.superiormc.ultimateshop.methods.Product.BuyProductMethod;
+import cn.superiormc.ultimateshop.methods.Product.SellProductMethod;
 import cn.superiormc.ultimateshop.objects.items.ObjectAction;
 import cn.superiormc.ultimateshop.objects.items.ObjectLimit;
 import cn.superiormc.ultimateshop.objects.items.prices.ObjectPrices;
@@ -194,14 +194,36 @@ public class ObjectItem extends AbstractButton {
     }
 
 
-    public int getBuyLimit(Player player) {
+    public int getPlayerBuyLimit(Player player) {
         ObjectLimit tempVal1 = buyLimit;
-        return tempVal1.getLimits(player);
+        if (buyLimit == null) {
+            return -1;
+        }
+        return tempVal1.getPlayerLimits(player);
     }
 
-    public int getSellLimit(Player player) {
+    public int getPlayerSellLimit(Player player) {
         ObjectLimit tempVal1 = sellLimit;
-        return tempVal1.getLimits(player);
+        if (sellLimit == null) {
+            return -1;
+        }
+        return tempVal1.getPlayerLimits(player);
+    }
+
+    public int getServerBuyLimit(Player player) {
+        ObjectLimit tempVal1 = buyLimit;
+        if (buyLimit == null) {
+            return -1;
+        }
+        return tempVal1.getServerLimits(player);
+    }
+
+    public int getServerSellLimit(Player player) {
+        ObjectLimit tempVal1 = sellLimit;
+        if (sellLimit == null) {
+            return -1;
+        }
+        return tempVal1.getServerLimits(player);
     }
 
     public ConfigurationSection getItemConfig() {

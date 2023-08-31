@@ -1,16 +1,23 @@
 package cn.superiormc.ultimateshop.gui;
 
+import cn.superiormc.ultimateshop.objects.ui.AbstractButton;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
 public abstract class InvGUI extends AbstractGUI {
 
     protected Inventory inv;
+
+    public Map<Integer, AbstractButton> menuButtons = new HashMap<>();
+
+    public Map<Integer, ItemStack> menuItems = new HashMap<>();
 
     public InvGUI(Player owner) {
         super(owner);

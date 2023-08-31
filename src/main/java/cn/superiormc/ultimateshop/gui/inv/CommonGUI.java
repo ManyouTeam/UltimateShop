@@ -3,7 +3,6 @@ package cn.superiormc.ultimateshop.gui.inv;
 import cn.superiormc.ultimateshop.gui.InvGUI;
 import cn.superiormc.ultimateshop.managers.LanguageManager;
 import cn.superiormc.ultimateshop.objects.ObjectMenu;
-import cn.superiormc.ultimateshop.objects.ObjectShop;
 import cn.superiormc.ultimateshop.objects.ui.AbstractButton;
 import cn.superiormc.ultimateshop.utils.TextUtil;
 import org.bukkit.Bukkit;
@@ -16,15 +15,15 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
-public class ShopGUI extends InvGUI {
+public class CommonGUI extends InvGUI {
 
-    private ObjectShop shop;
+    private ObjectMenu commonMenu = null;
 
-    private ObjectMenu shopMenu = null;
+    private String fileName;
 
-    public ShopGUI(Player owner, ObjectShop shop) {
+    public CommonGUI(Player owner, String fileName) {
         super(owner);
-        this.shop = shop;
+        this.fileName = fileName;
         constructGUI();
     }
 
@@ -38,28 +37,19 @@ public class ShopGUI extends InvGUI {
 
     @Override
     protected void constructGUI() {
-        if (shop.getShopMenu() == null) {
-            LanguageManager.languageManager.sendStringText(owner.getPlayer(),
-                    "error.shop-does-not-have-menu",
-                    "shop",
-                    shop.getShopName());
-            return;
-        }
-        shopMenu = ObjectMenu.shopMenus.get(shop);
-        if (shopMenu == null) {
-            LanguageManager.languageManager.sendStringText(owner.getPlayer(),
-                    "error.shop-menu-not-found",
-                    "shop",
-                    shop.getShopName(),
+        commonMenu = ObjectMenu.commonMenus.get(fileName);
+        if (commonMenu == null) {
+            LanguageManager.languageManager.sendStringText(owner,
+                    "error.menu-not-found",
                     "menu",
-                    shop.getShopMenu());
+                    fileName);
             return;
         }
-        menuButtons = shopMenu.getMenu();
+        menuButtons = commonMenu.getMenu();
         menuItems = getMenuItems(owner.getPlayer());
         if (Objects.isNull(inv)) {
-            inv = Bukkit.createInventory(owner, shopMenu.getInt("size", 54),
-                    TextUtil.parse(shopMenu.getString("title", "Shop Editor")));
+            inv = Bukkit.createInventory(owner, commonMenu.getInt("size", 54),
+                    TextUtil.parse(commonMenu.getString("title", "Shop")));
         }
         for (int slot : menuButtons.keySet()) {
             inv.setItem(slot, menuItems.get(slot));
@@ -92,6 +82,5 @@ public class ShopGUI extends InvGUI {
         }
         return resultItems;
     }
-
 
 }

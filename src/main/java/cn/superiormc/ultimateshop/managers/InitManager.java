@@ -19,6 +19,7 @@ public class InitManager {
     public void init() {
         resourceOutputFix(new File("message.yml"));
         resourceOutput(new File("shops/example.yml"));
+        resourceOutput(new File("menus/main.yml"));
         resourceOutput(new File("menus/example-shop-menu.yml"));
     }
     private void resourceOutput(File file) {

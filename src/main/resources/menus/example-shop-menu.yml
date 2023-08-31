@@ -1,20 +1,20 @@
-title: Example Shop
+title: Food Shop
 size: 54
 
 layout:
   - '000000000'
-  - '000000000'
-  - '0000A0000'
-  - '000000000'
-  - '000000000'
-  - '0000B0000'
+  - '0ABCDEFG0'
+  - '0HIJKLMN0'
+  - '0OPQRSTU0'
+  - '0VWXYZ120'
+  - '000030000'
 
 buttons:
-  B:
+  3:
     display-item:
       material: arrow
       name: '&cBack'
       lore:
         - '&7Click to return main menu!'
     actions:
-      - 'message: No main menu found!'
+      - 'open_menu: main'

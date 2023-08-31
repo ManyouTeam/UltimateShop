@@ -5,10 +5,12 @@ import cc.carm.lib.easysql.api.SQLManager;
 import cc.carm.lib.easysql.api.action.query.QueryAction;
 import cc.carm.lib.easysql.hikari.HikariConfig;
 import cn.superiormc.ultimateshop.cache.PlayerCache;
+import cn.superiormc.ultimateshop.cache.ServerCache;
 import cn.superiormc.ultimateshop.managers.CacheManager;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
+import cn.superiormc.ultimateshop.managers.ErrorManager;
 import cn.superiormc.ultimateshop.objects.ObjectItem;
-import cn.superiormc.ultimateshop.objects.caches.ObjectPlayerUseTimesCache;
+import cn.superiormc.ultimateshop.objects.caches.ObjectUseTimesCache;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -61,19 +63,38 @@ public class SQLDatabase {
     }
 
     public static void checkData(Player player) {
-        QueryAction queryAction = sqlManager.createQuery()
-                .inTable("ultimateshop_useTimes")
-                .selectColumns("playerUUID", "shop", "product", "buyUseTimes",  "sellUseTimes", "lastPurchaseTime")
-                .addCondition("uuid = '" + player.getUniqueId().toString() + "'")
-                .build();
+        QueryAction queryAction = null;
+        if (player == null) {
+            queryAction = sqlManager.createQuery()
+                    .inTable("ultimateshop_useTimes")
+                    .selectColumns("playerUUID", "shop", "product", "buyUseTimes", "sellUseTimes", "lastPurchaseTime")
+                    .addCondition("uuid = '" + player.getUniqueId().toString() + "'")
+                    .build();
+        }
+        else {
+            queryAction = sqlManager.createQuery()
+                    .inTable("ultimateshop_useTimes")
+                    .selectColumns("playerUUID", "shop", "product", "buyUseTimes",  "sellUseTimes", "lastPurchaseTime")
+                    .addCondition("uuid = 'Global-Server'")
+                    .build();
+        }
         queryAction.executeAsync((result) ->
         {
-            PlayerCache cache = null;
-            if (CacheManager.cacheManager.playerCacheMap.containsKey(player)) {
-                cache = CacheManager.cacheManager.playerCacheMap.get(player);
+            ServerCache cache = null;
+            if (player == null) {
+                cache = ServerCache.serverCache;
+                if (cache == null) {
+                    ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cCan not found server cache object," +
+                            " there maybe some issues...");
+                    return;
+                }
             }
             else {
-                cache = new PlayerCache(player);
+                if (CacheManager.cacheManager.playerCacheMap.containsKey(player)) {
+                    cache = CacheManager.cacheManager.playerCacheMap.get(player);
+                } else {
+                    cache = new PlayerCache(player);
+                }
             }
             while (result.getResultSet().next()) {
                 String shop = result.getResultSet().getString("shop");
@@ -82,14 +103,25 @@ public class SQLDatabase {
                 int sellUseTimes = result.getResultSet().getInt("sellUseTimes");
                 String lastPurchaseTime = result.getResultSet().getString("lastBuyTime");
                 String lastSellTime = result.getResultSet().getString("lastSellTime");
-                cache.setPlayerUseTimesCache(shop, product, buyUseTimes, sellUseTimes, lastPurchaseTime,  lastSellTime);
+                cache.setUseTimesCache(shop, product, buyUseTimes, sellUseTimes, lastPurchaseTime,  lastSellTime);
             }
         });
     }
 
     public static void updateData(Player player) {
-        PlayerCache cache = CacheManager.cacheManager.playerCacheMap.get(player);
-        Map<ObjectItem, ObjectPlayerUseTimesCache> tempVal1 = cache.getPlayerUseTimesCache();
+        ServerCache cache = null;
+        if (player == null) {
+            cache = ServerCache.serverCache;
+            if (cache == null) {
+                ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cCan not found server cache object," +
+                        " there maybe some issues...");
+                return;
+            }
+        }
+        else {
+            cache = CacheManager.cacheManager.playerCacheMap.get(player);
+        }
+        Map<ObjectItem, ObjectUseTimesCache> tempVal1 = cache.getUseTimesCache();
         for (ObjectItem tempVal2 : tempVal1.keySet()) {
             sqlManager.createReplace("ultimateshop_useTimes")
                     .setColumnNames("playerUUID", "shop", "product", "buyUseTimes", "sellUseTimes", "lastBuyTime", "lastSellTime")

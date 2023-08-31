@@ -3,10 +3,10 @@ package cn.superiormc.ultimateshop.objects.ui;
 import cn.superiormc.ultimateshop.hooks.ItemsHook;
 import cn.superiormc.ultimateshop.managers.CacheManager;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
-import cn.superiormc.ultimateshop.methods.BuyProductMethod;
-import cn.superiormc.ultimateshop.methods.SellProductMethod;
+import cn.superiormc.ultimateshop.methods.Product.BuyProductMethod;
+import cn.superiormc.ultimateshop.methods.Product.SellProductMethod;
 import cn.superiormc.ultimateshop.objects.ObjectItem;
-import cn.superiormc.ultimateshop.objects.caches.ObjectPlayerUseTimesCache;
+import cn.superiormc.ultimateshop.objects.caches.ObjectUseTimesCache;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
 import cn.superiormc.ultimateshop.utils.ItemUtil;
 import org.bukkit.configuration.ConfigurationSection;
@@ -49,12 +49,12 @@ public class ObjectDisplayItem{
     public ItemStack getDisplayItem(Player player) {
         int buyTimes = 0;
         int sellTimes = 0;
-        ObjectPlayerUseTimesCache tempVal9 = CacheManager.cacheManager.playerCacheMap.get(player).getPlayerUseTimesCache().get(item);
+        ObjectUseTimesCache tempVal9 = CacheManager.cacheManager.playerCacheMap.get(player).getUseTimesCache().get(item);
         if (tempVal9 != null) {
             buyTimes = CacheManager.cacheManager.playerCacheMap.get(player).
-                    getPlayerUseTimesCache().get(item).getBuyUseTimes();
+                    getUseTimesCache().get(item).getBuyUseTimes();
             sellTimes = CacheManager.cacheManager.playerCacheMap.get(player).
-                    getPlayerUseTimesCache().get(item).getSellUseTimes();
+                    getUseTimesCache().get(item).getSellUseTimes();
         }
         ItemStack addLoreDisplayItem = null;
         if (section == null || ConfigManager.configManager.getBoolean("display-item.auto-set-first-product")) {
@@ -71,18 +71,18 @@ public class ObjectDisplayItem{
         List<String> addLore = new ArrayList<>();
         addLore.addAll(ConfigManager.configManager.getListWithColor("display-item.add-lore.top"));
         if (tempVal9 != null) {
-            if (item.getBuyLimit(player) != -1) {
+            if (item.getPlayerBuyLimit(player) != -1) {
             addLore.addAll(ConfigManager.configManager.getListWithColor("display-item.add-lore.buy-limit"));
             }
-            if (item.getSellLimit(player) != -1) {
+            if (item.getPlayerSellLimit(player) != -1) {
             addLore.addAll(ConfigManager.configManager.getListWithColor("display-item.add-lore.sell-limit"));
             }
             if (tempVal9.getBuyUseTimes()
-                    == item.getBuyLimit(player)) {
+                    == item.getPlayerBuyLimit(player)) {
                 addLore.addAll(ConfigManager.configManager.getListWithColor("display-item.add-lore.buy-refresh"));
             }
             if (tempVal9.getSellUseTimes()
-                    == item.getSellLimit(player)) {
+                    == item.getPlayerSellLimit(player)) {
                 addLore.addAll(ConfigManager.configManager.getListWithColor("display-item.add-lore.sell-refresh"));
             }
         }
@@ -103,9 +103,9 @@ public class ObjectDisplayItem{
                             sellTimes,
                             ConfigManager.configManager.getString("placeholder.price.split-symbol")),
                     "buy-limit",
-                    String.valueOf(item.getBuyLimit(player)),
+                    String.valueOf(item.getPlayerBuyLimit(player)),
                     "sell-limit",
-                    String.valueOf(item.getSellLimit(player)),
+                    String.valueOf(item.getPlayerSellLimit(player)),
                     "buy-times",
                     String.valueOf(tempVal9 == null ? "" : tempVal9.getBuyUseTimes()),
                     "sell-times",
@@ -133,7 +133,7 @@ public class ObjectDisplayItem{
             case ERROR:
                 s = ConfigManager.configManager.getString("placeholder.click.error");
                 break;
-            case MAX :
+            case PLAYER_MAX:
                 s = ConfigManager.configManager.getString("placeholder.click.buy-max-limit");
                 break;
             case NOT_ENOUGH :
@@ -155,7 +155,7 @@ public class ObjectDisplayItem{
             case ERROR :
                 s = ConfigManager.configManager.getString("placeholder.click.error");
                 break;
-            case MAX :
+            case PLAYER_MAX:
                 s = ConfigManager.configManager.getString("placeholder.click.sell-max-limit");
                 break;
             case NOT_ENOUGH :

@@ -1,7 +1,9 @@
 package cn.superiormc.ultimateshop.objects.items;
 
 import cn.superiormc.ultimateshop.UltimateShop;
+import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.ErrorManager;
+import cn.superiormc.ultimateshop.methods.GUI.OpenGUI;
 import cn.superiormc.ultimateshop.utils.TextUtil;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
 import me.clip.placeholderapi.PlaceholderAPI;
@@ -37,6 +39,10 @@ public class ObjectAction {
                 return;
             } else if (singleAction.startsWith("message: ") && player != null) {
                 player.sendMessage(replacePlaceholder(TextUtil.parse(singleAction.substring(9), player), player));
+            } else if (singleAction.startsWith("open_menu: ") && player != null) {
+                OpenGUI.openCommonGUI(player, singleAction.substring(11));
+            } else if (singleAction.startsWith("shop_menu: ") && player != null) {
+                OpenGUI.openShopGUI(player, ConfigManager.configManager.getShop(singleAction.substring(11)));
             } else if (singleAction.startsWith("announcement: ")) {
                 Collection<? extends Player> players = Bukkit.getOnlinePlayers();
                 for (Player p : players) {

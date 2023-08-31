@@ -1,28 +1,30 @@
 package cn.superiormc.ultimateshop.commands;
 
-import cn.superiormc.ultimateshop.UltimateShop;
-import cn.superiormc.ultimateshop.gui.inv.ShopGUI;
-import cn.superiormc.ultimateshop.listeners.GUIListener;
-import cn.superiormc.ultimateshop.managers.CacheManager;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.LanguageManager;
-import cn.superiormc.ultimateshop.methods.BuyProductMethod;
-import cn.superiormc.ultimateshop.methods.SellProductMethod;
+import cn.superiormc.ultimateshop.methods.GUI.OpenGUI;
+import cn.superiormc.ultimateshop.methods.Product.BuyProductMethod;
+import cn.superiormc.ultimateshop.methods.Product.SellProductMethod;
+import cn.superiormc.ultimateshop.objects.ObjectMenu;
 import cn.superiormc.ultimateshop.objects.ObjectShop;
-import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Listener;
 
 public class MainCommand implements CommandExecutor {
 
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         switch (args.length) {
+            case 0:
+                noCommand(sender);
+                return true;
             case 1:
                 if (args[0].equals("reload")) {
                     reloadCommand(sender);
+                }
+                else if (args[0].equals("help")) {
+                    helpCommand(sender);
                 }
                 else {
                     LanguageManager.languageManager.sendStringText(sender, "error.args");
@@ -46,6 +48,46 @@ public class MainCommand implements CommandExecutor {
         return true;
     }
 
+    private void noCommand(CommandSender sender) {
+        if (sender instanceof Player) {
+            if (ConfigManager.configManager.getBoolean("menu.auto-open.enabled")) {
+                String tempVal1 = ConfigManager.configManager.getString("menu.auto-open.menu");
+                ObjectMenu menu = ObjectMenu.commonMenus.get(tempVal1);
+                if (menu == null) {
+                    ObjectShop shop = ConfigManager.configManager.getShop(tempVal1);
+                    if (shop == null) {
+                        LanguageManager.languageManager.sendStringText(sender, "error.args");
+                    }
+                    else {
+                        OpenGUI.openShopGUI((Player) sender, shop);
+                    }
+                }
+                else {
+                    OpenGUI.openCommonGUI((Player) sender, tempVal1);
+                }
+            }
+            else {
+                LanguageManager.languageManager.sendStringText(sender, "error.args");
+            }
+        }
+        else {
+            LanguageManager.languageManager.sendStringText(sender, "error.args");
+        }
+    }
+
+    private void helpCommand(CommandSender sender) {
+        if (sender instanceof Player) {
+            if (sender.hasPermission("spintowin.admin.help")) {
+                LanguageManager.languageManager.sendStringText((Player) sender, "help.main-admin");
+                return;
+            }
+            LanguageManager.languageManager.sendStringText((Player) sender, "help.main");
+        }
+        else {
+            LanguageManager.languageManager.sendStringText((Player) sender, "help.main-console");
+        }
+    }
+
     private void reloadCommand(CommandSender sender) {
         if (sender.hasPermission("ultimateshop.reload")) {
             new ConfigManager();
@@ -59,25 +101,19 @@ public class MainCommand implements CommandExecutor {
 
     private void menuCommand(CommandSender sender, String[] args) {
         if (sender instanceof Player) {
-            if (sender.hasPermission("ultimateshop.menu")) {
+            if (sender.hasPermission("ultimateshop.menu") &&
+                    (sender.hasPermission("ultimateshop.menu.*") ||
+                            sender.hasPermission("ultimateshop.menu." + args[1]))) {
                 ObjectShop tempVal1 = ConfigManager.configManager.getShop(args[1]);
                 if (tempVal1 == null) {
-                    LanguageManager.languageManager.sendStringText((Player) sender,
-                            "error.shop-not-found",
-                            "shop",
-                             args[1]);
-                    return;
-                }
-                if (sender.hasPermission("ultimateshop.menu.*") ||
-                sender.hasPermission("ultimateshop.menu." + args[1])) {
-                    ShopGUI gui = new ShopGUI((Player) sender, tempVal1);
-                    Listener guiListener = new GUIListener(gui);
-                    Bukkit.getPluginManager().registerEvents(guiListener, UltimateShop.instance);
-                    gui.openGUI();
+                    OpenGUI.openCommonGUI((Player) sender, args[1]);
                 }
                 else {
-                    LanguageManager.languageManager.sendStringText((Player) sender, "error.miss-permission");
+                    OpenGUI.openShopGUI((Player) sender, tempVal1);
                 }
+            }
+            else {
+                LanguageManager.languageManager.sendStringText((Player) sender, "error.miss-permission");
             }
         }
     }

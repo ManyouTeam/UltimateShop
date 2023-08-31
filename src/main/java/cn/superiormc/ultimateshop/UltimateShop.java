@@ -1,5 +1,6 @@
 package cn.superiormc.ultimateshop;
 
+import cn.superiormc.ultimateshop.cache.ServerCache;
 import cn.superiormc.ultimateshop.database.SQLDatabase;
 import cn.superiormc.ultimateshop.managers.*;
 import org.bukkit.Bukkit;
@@ -34,6 +35,9 @@ public final class UltimateShop extends JavaPlugin {
     public void onDisable() {
         if (SQLDatabase.sqlManager != null) {
             SQLDatabase.closeSQL();
+        }
+        if (ServerCache.serverCache != null) {
+            ServerCache.serverCache.shutServerCache();
         }
         Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §fPlugin is disabled. Author: PQguanfang.");
     }

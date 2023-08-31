@@ -8,7 +8,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-public class ObjectPlayerUseTimesCache {
+public class ObjectUseTimesCache {
 
     private int buyUseTimes;
 
@@ -21,11 +21,11 @@ public class ObjectPlayerUseTimesCache {
     private ObjectItem product;
 
 
-    public ObjectPlayerUseTimesCache(int buyUseTimes,
-                                     int sellUseTimes,
-                                     String lastBuyTime,
-                                     String lastSellTime,
-                                     ObjectItem product) {
+    public ObjectUseTimesCache(int buyUseTimes,
+                               int sellUseTimes,
+                               String lastBuyTime,
+                               String lastSellTime,
+                               ObjectItem product) {
         this.buyUseTimes = buyUseTimes;
         this.lastBuyTime = CommonUtil.stringToTime(lastBuyTime);
         this.sellUseTimes = sellUseTimes;
