@@ -1,4 +1,4 @@
-package cn.superiormc.ultimateshop.objects.ui;
+package cn.superiormc.ultimateshop.objects.buttons;
 
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
@@ -8,6 +8,8 @@ import org.bukkit.inventory.ItemStack;
 public abstract class AbstractButton {
 
     public ConfigurationSection config;
+
+    public ButtonType type;
 
     public AbstractButton(ConfigurationSection config){
         this.config = config;
@@ -27,5 +29,9 @@ public abstract class AbstractButton {
 
     public ConfigurationSection getButtonConfig() {
         return config;
+    }
+
+    public ButtonType getType() {
+        return type;
     }
 }

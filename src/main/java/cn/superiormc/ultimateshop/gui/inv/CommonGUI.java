@@ -2,8 +2,8 @@ package cn.superiormc.ultimateshop.gui.inv;
 
 import cn.superiormc.ultimateshop.gui.InvGUI;
 import cn.superiormc.ultimateshop.managers.LanguageManager;
-import cn.superiormc.ultimateshop.objects.ObjectMenu;
-import cn.superiormc.ultimateshop.objects.ui.AbstractButton;
+import cn.superiormc.ultimateshop.objects.menus.ObjectMenu;
+import cn.superiormc.ultimateshop.objects.buttons.AbstractButton;
 import cn.superiormc.ultimateshop.utils.TextUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -72,15 +72,6 @@ public class CommonGUI extends InvGUI {
     @Override
     public boolean dragEventHandle(Set<Integer> slots) {
         return true;
-    }
-
-    private Map<Integer, ItemStack> getMenuItems(Player player) {
-        Map<Integer, AbstractButton> tempVal1 = menuButtons;
-        Map<Integer, ItemStack> resultItems = new HashMap<>();
-        for (int i : tempVal1.keySet()) {
-            resultItems.put(i, tempVal1.get(i).getDisplayItem(player));
-        }
-        return resultItems;
     }
 
 }

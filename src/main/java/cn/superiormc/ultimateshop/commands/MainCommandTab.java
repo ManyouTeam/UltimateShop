@@ -1,8 +1,8 @@
 package cn.superiormc.ultimateshop.commands;
 
 import cn.superiormc.ultimateshop.managers.ConfigManager;
-import cn.superiormc.ultimateshop.objects.ObjectItem;
-import cn.superiormc.ultimateshop.objects.ObjectMenu;
+import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
+import cn.superiormc.ultimateshop.objects.menus.ObjectMenu;
 import cn.superiormc.ultimateshop.objects.ObjectShop;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;

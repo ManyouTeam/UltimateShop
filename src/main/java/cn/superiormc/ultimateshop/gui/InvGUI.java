@@ -1,6 +1,6 @@
 package cn.superiormc.ultimateshop.gui;
 
-import cn.superiormc.ultimateshop.objects.ui.AbstractButton;
+import cn.superiormc.ultimateshop.objects.buttons.AbstractButton;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.Inventory;
@@ -46,5 +46,14 @@ public abstract class InvGUI extends AbstractGUI {
                 }
             }
         }
+    }
+
+    public Map<Integer, ItemStack> getMenuItems(Player player) {
+        Map<Integer, AbstractButton> tempVal1 = menuButtons;
+        Map<Integer, ItemStack> resultItems = new HashMap<>();
+        for (int i : tempVal1.keySet()) {
+            resultItems.put(i, tempVal1.get(i).getDisplayItem(player));
+        }
+        return resultItems;
     }
 }

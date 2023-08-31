@@ -1,7 +1,8 @@
-package cn.superiormc.ultimateshop.objects.ui;
+package cn.superiormc.ultimateshop.objects.buttons;
 
 import cn.superiormc.ultimateshop.objects.items.ObjectAction;
 import cn.superiormc.ultimateshop.utils.ItemUtil;
+import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
@@ -11,6 +12,7 @@ public class ObjectButton extends AbstractButton {
 
     public ObjectButton(ConfigurationSection config) {
         super(config);
+        this.type = ButtonType.COMMON;
     }
 
     @Override
@@ -22,6 +24,9 @@ public class ObjectButton extends AbstractButton {
     @Override
     public ItemStack getDisplayItem(Player player) {
         ConfigurationSection tempVal1 = config.getConfigurationSection("display-item");
+        if (tempVal1 == null) {
+            return new ItemStack(Material.BEDROCK);
+        }
         return ItemUtil.buildItemStack(tempVal1);
     }
 }

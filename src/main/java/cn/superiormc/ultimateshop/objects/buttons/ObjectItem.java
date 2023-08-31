@@ -1,16 +1,15 @@
-package cn.superiormc.ultimateshop.objects;
+package cn.superiormc.ultimateshop.objects.buttons;
 
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.ErrorManager;
 import cn.superiormc.ultimateshop.methods.Product.BuyProductMethod;
 import cn.superiormc.ultimateshop.methods.Product.SellProductMethod;
+import cn.superiormc.ultimateshop.objects.buttons.subobjects.ObjectDisplayItem;
 import cn.superiormc.ultimateshop.objects.items.ObjectAction;
 import cn.superiormc.ultimateshop.objects.items.ObjectLimit;
 import cn.superiormc.ultimateshop.objects.items.ThingMode;
 import cn.superiormc.ultimateshop.objects.items.prices.ObjectPrices;
 import cn.superiormc.ultimateshop.objects.items.products.ObjectProducts;
-import cn.superiormc.ultimateshop.objects.ui.AbstractButton;
-import cn.superiormc.ultimateshop.objects.ui.ObjectDisplayItem;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
@@ -40,6 +39,7 @@ public class ObjectItem extends AbstractButton {
     public ObjectItem(String shop, ConfigurationSection config) {
         super(config);
         this.shop = shop;
+        this.type = ButtonType.COMMON;
         initDisplayItem();
         initReward();
         initBuyPrice();

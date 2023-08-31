@@ -1,11 +1,13 @@
 package cn.superiormc.ultimateshop.gui.inv;
 
 import cn.superiormc.ultimateshop.gui.InvGUI;
+import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.LanguageManager;
-import cn.superiormc.ultimateshop.objects.ObjectItem;
-import cn.superiormc.ultimateshop.objects.ObjectMenu;
-import cn.superiormc.ultimateshop.objects.ObjectShop;
-import cn.superiormc.ultimateshop.objects.ui.AbstractButton;
+import cn.superiormc.ultimateshop.methods.Product.BuyProductMethod;
+import cn.superiormc.ultimateshop.methods.Product.SellProductMethod;
+import cn.superiormc.ultimateshop.objects.menus.ObjectMoreMenu;
+import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
+import cn.superiormc.ultimateshop.objects.buttons.AbstractButton;
 import cn.superiormc.ultimateshop.utils.TextUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -21,9 +23,17 @@ public class BuyMoreGUI extends InvGUI {
 
     private ObjectItem item;
 
-    public BuyMoreGUI(Player owner, ObjectItem item) {
+    private ObjectMoreMenu menu;
+
+    private String fileName;
+
+    private int nowingAmount;
+
+    public BuyMoreGUI(Player owner, ObjectItem item, String fileName) {
         super(owner);
         this.item = item;
+        this.fileName = fileName;
+        this.nowingAmount = 1;
         constructGUI();
     }
 
@@ -37,19 +47,21 @@ public class BuyMoreGUI extends InvGUI {
 
     @Override
     protected void constructGUI() {
-        commonMenu = ObjectMenu.commonMenus.get(fileName);
-        if (commonMenu == null) {
-            LanguageManager.languageManager.sendStringText(owner,
-                    "error.menu-not-found",
-                    "menu",
-                    fileName);
+        menu = ObjectMoreMenu.moreMenus.get(fileName);
+        if (menu == null) {
             return;
         }
-        menuButtons = commonMenu.getMenu();
+        // display item
+        int displaySlot = menu.getDisplayItemSlot();
+        ItemStack tempVal1 = menuItems.get(displaySlot);
+        tempVal1.setAmount(nowingAmount);
+        inv.setItem(displaySlot, tempVal1);
+        // 其他物品
+        menuButtons = menu.getMenu();
         menuItems = getMenuItems(owner.getPlayer());
         if (Objects.isNull(inv)) {
-            inv = Bukkit.createInventory(owner, commonMenu.getInt("size", 54),
-                    TextUtil.parse(commonMenu.getString("title", "Shop")));
+            inv = Bukkit.createInventory(owner, menu.getInt("size", 54),
+                    TextUtil.parse(menu.getString("title", "Shop")));
         }
         for (int slot : menuButtons.keySet()) {
             inv.setItem(slot, menuItems.get(slot));
@@ -59,7 +71,58 @@ public class BuyMoreGUI extends InvGUI {
 
     @Override
     public boolean clickEventHandle(ClickType type, int slot) {
-        menuButtons.get(slot).clickEvent(type, owner.getPlayer());
+        AbstractButton button = menuButtons.get(slot);
+        if (button == null) {
+            return true;
+        }
+        switch (button.type) {
+            case SELECT_AMOUNT:
+                if (button.config.getInt("add-amount", -1) == -1) {
+                    if (button.config.getInt("set-amount", -1) == -1) {
+                        LanguageManager.languageManager.sendStringText(getOwner().getPlayer(),
+                                "§x§9§8§F§B§9§8[UltimateShop] §cError: Can not find add-amount section " +
+                                        "in select amount button.");
+                        return true;
+                    }
+                    else {
+                        nowingAmount = button.config.getInt("set-amount");
+                    }
+                }
+                else {
+                    nowingAmount = nowingAmount + button.config.getInt("add-amount");
+                }
+                if (nowingAmount < 1) {
+                    nowingAmount = 1;
+                }
+                break;
+            case DISPLAY:
+                break;
+            case CONFIRM:
+                boolean b = ConfigManager.configManager.getBoolean("placeholder.click.enabled");
+                switch (ConfigManager.configManager.getClickAction(type)){
+                    case "buy" :
+                        BuyProductMethod.startBuy(item.getShop(),
+                                item.getProduct(),
+                                owner.getPlayer(),
+                                false,
+                                !b,
+                                nowingAmount);
+                    case "sell" :
+                        SellProductMethod.startSell(item.getShop(),
+                                item.getProduct(),
+                                owner.getPlayer(),
+                                false,
+                                !b,
+                                nowingAmount);
+                    default:
+                        LanguageManager.languageManager.sendStringText("§x§9§8§F§B§9§8[UltimateShop] §cUnknown click action: "
+                                + ConfigManager.configManager.getClickAction(type));
+                }
+                break;
+            default:
+                menuButtons.get(slot).clickEvent(type, owner.getPlayer());
+                break;
+        }
         constructGUI();
         return true;
     }
@@ -72,15 +135,6 @@ public class BuyMoreGUI extends InvGUI {
     @Override
     public boolean dragEventHandle(Set<Integer> slots) {
         return true;
-    }
-
-    private Map<Integer, ItemStack> getMenuItems(Player player) {
-        Map<Integer, AbstractButton> tempVal1 = menuButtons;
-        Map<Integer, ItemStack> resultItems = new HashMap<>();
-        for (int i : tempVal1.keySet()) {
-            resultItems.put(i, tempVal1.get(i).getDisplayItem(player));
-        }
-        return resultItems;
     }
 
 }

@@ -1,6 +1,8 @@
 package cn.superiormc.ultimateshop.objects;
 
 import cn.superiormc.ultimateshop.managers.ErrorManager;
+import cn.superiormc.ultimateshop.objects.menus.ObjectMenu;
+import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.util.ArrayList;

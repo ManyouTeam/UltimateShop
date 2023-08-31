@@ -1,8 +1,9 @@
-package cn.superiormc.ultimateshop.objects;
+package cn.superiormc.ultimateshop.objects.menus;
 
 import cn.superiormc.ultimateshop.UltimateShop;
-import cn.superiormc.ultimateshop.objects.ui.AbstractButton;
-import cn.superiormc.ultimateshop.objects.ui.ObjectButton;
+import cn.superiormc.ultimateshop.objects.ObjectShop;
+import cn.superiormc.ultimateshop.objects.buttons.AbstractButton;
+import cn.superiormc.ultimateshop.objects.buttons.ObjectButton;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.ConfigurationSection;
@@ -16,25 +17,28 @@ import java.util.Map;
 
 public class ObjectMenu {
 
+    public MenuType type;
+
     public static Map<String, ObjectMenu> commonMenus = new HashMap<>();
 
     public static Map<ObjectShop, ObjectMenu> shopMenus = new HashMap<>();
 
     public static List<String> shopMenuNames = new ArrayList<>();
 
-    private String fileName = null;
+    public String fileName = null;
 
     private ObjectShop shop = null;
 
-    private Configuration menuConfigs;
+    public Configuration menuConfigs;
 
-    private Map<Integer, AbstractButton> menuItems = new HashMap<>();
+    public Map<Integer, AbstractButton> menuItems = new HashMap<>();
 
-    private Map<String, AbstractButton> buttonItems = new HashMap<>();
+    public Map<String, AbstractButton> buttonItems = new HashMap<>();
 
     public ObjectMenu(String fileName, ObjectShop shop) {
         this.fileName = fileName;
         this.shop = shop;
+        this.type = MenuType.Shop;
         initMenu();
         initShopItems();
         initButtonItems();
@@ -42,12 +46,17 @@ public class ObjectMenu {
 
     public ObjectMenu(String fileName) {
         this.fileName = fileName;
+        this.type = MenuType.Common;
         initMenu();
         initButtonItems();
     }
 
-    private void initMenu() {
-        if (shop == null) {
+    public MenuType getType() {
+        return type;
+    }
+
+    public void initMenu() {
+        if (type == MenuType.Common) {
             commonMenus.put(fileName, this);
         }
         else {

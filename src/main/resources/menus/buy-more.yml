@@ -5,10 +5,10 @@ layout:
   - '012304560'
   - '0000B0000'
   - '000000000'
-  - '0000A0000'
-  - '000000000'
+  - '0000D0000'
+  - '00000000A'
 
-amount-item:
+amount-items:
   1:
     display-item:
       material: GREEN_WOOL
@@ -53,6 +53,14 @@ amount-item:
     add-amount: 32
 
 display-item: B
+
+confirm-items:
+  D:
+    display-item:
+      material: PAPER
+      name: '&aConfirm'
+      lore:
+        - '&7Click to finish the trade!'
 
 buttons:
   A:
