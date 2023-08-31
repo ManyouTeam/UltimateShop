@@ -114,6 +114,9 @@ public class MainCommand implements CommandExecutor {
                             sender.hasPermission("ultimateshop.menu." + args[1]))) {
                 ObjectShop tempVal1 = ConfigManager.configManager.getShop(args[1]);
                 if (tempVal1 == null) {
+                    if (args[1].equals(ConfigManager.configManager.getString("menu.select-more.menu"))) {
+                        return;
+                    }
                     OpenGUI.openCommonGUI((Player) sender, args[1]);
                 }
                 else {

@@ -47,6 +47,9 @@ public class MainCommandTab implements TabCompleter {
                         for (String tempVal4 : ObjectMenu.commonMenus.keySet()) {
                             if (sender.hasPermission("ultimateshop.menu.*") ||
                                     sender.hasPermission("ultimateshop.menu." + tempVal4)) {
+                                if (tempVal4.equals(ConfigManager.configManager.getString("menu.select-more.menu"))) {
+                                    continue;
+                                }
                                 tempVal1.add(tempVal4);
                             }
                         }

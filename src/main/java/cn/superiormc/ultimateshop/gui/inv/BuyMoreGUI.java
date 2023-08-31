@@ -14,8 +14,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
@@ -101,15 +99,15 @@ public class BuyMoreGUI extends InvGUI {
                         BuyProductMethod.startBuy(item.getShop(),
                                 item.getProduct(),
                                 owner.getPlayer(),
-                                false,
                                 !b,
+                                false,
                                 nowingAmount);
                     case "sell" :
                         SellProductMethod.startSell(item.getShop(),
                                 item.getProduct(),
                                 owner.getPlayer(),
-                                false,
                                 !b,
+                                false,
                                 nowingAmount);
                     default:
                         LanguageManager.languageManager.sendStringText("§x§9§8§F§B§9§8[UltimateShop] §cUnknown click action: "

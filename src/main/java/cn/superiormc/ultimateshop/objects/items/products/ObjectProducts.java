@@ -45,12 +45,15 @@ public class ObjectProducts extends AbstractThings {
             case ANY:
                 ObjectSingleProduct tempVal1 = RandomUtil.getRandomElement(singleProducts);
                 tempVal1.playerGive(player, times);
+                return;
             case ALL:
                 for (ObjectSingleProduct tempVal2 : singleProducts) {
                 tempVal2.playerGive(player, times);
                 }
+                return;
             default:
                 ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Can not get price-mode section in your shop config!!");
+                return;
         }
     }
 

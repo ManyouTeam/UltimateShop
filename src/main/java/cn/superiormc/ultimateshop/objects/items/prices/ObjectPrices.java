@@ -89,12 +89,15 @@ public class ObjectPrices extends AbstractThings {
                 return;
             case ANY:
                 getAnyTargetPrice(player, times, true, false);
+                return;
             case ALL:
                 for (ObjectSinglePrice tempVal2 : getPrices(times)) {
                     tempVal2.playerGive(player, times);
                 }
+                return;
             default:
                 ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Can not get price-mode section in your shop config!!");
+                return;
         }
     }
 

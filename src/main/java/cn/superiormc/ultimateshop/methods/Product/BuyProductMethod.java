@@ -20,7 +20,7 @@ public class BuyProductMethod {
         return startBuy(shop, product, player, quick, false);
     }
     public static ProductMethodStatus startBuy(String shop, String product, Player player, boolean quick, boolean test) {
-        return startBuy(shop, product, player, quick, false, 1);
+        return startBuy(shop, product, player, quick, test, 1);
     }
 
     public static ProductMethodStatus startBuy(String shop,

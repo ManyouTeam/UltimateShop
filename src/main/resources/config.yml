@@ -9,7 +9,7 @@ menu:
   click-event:
     buy: 'LEFT'
     sell: 'RIGHT'
-    select-amount: 'SHIFT-RIGHT'
+    select-amount: 'SHIFT_RIGHT'
 
 use-times:
   enabled: true

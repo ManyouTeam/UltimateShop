@@ -41,7 +41,7 @@ public class ObjectItem extends AbstractButton {
     public ObjectItem(String shop, ConfigurationSection config) {
         super(config);
         this.shop = shop;
-        this.type = ButtonType.COMMON;
+        this.type = ButtonType.SHOP;
         initDisplayItem();
         initReward();
         initBuyPrice();
@@ -249,6 +249,7 @@ public class ObjectItem extends AbstractButton {
 
     @Override
     public void clickEvent(ClickType type, Player player) {
+        Bukkit.getConsoleSender().sendMessage(type.name() + ConfigManager.configManager.getClickAction(type));
         boolean b = ConfigManager.configManager.getBoolean("placeholder.click.enabled");
         switch (ConfigManager.configManager.getClickAction(type)){
             case "buy" :
@@ -259,9 +260,11 @@ public class ObjectItem extends AbstractButton {
                 break;
             case "select-amount" :
                 OpenGUI.openMoreGUI(player, this);
+                break;
             default:
                 Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §cUnknown click action: "
                 + ConfigManager.configManager.getClickAction(type));
+                break;
         }
     }
 

@@ -136,16 +136,7 @@ public class ConfigManager {
             return "none";
         }
         for (String s : tempVal1.getKeys(false)) {
-            if (type.isLeftClick() && tempVal1.getString(s).equals("LEFT")) {
-                return s;
-            }
-            if (type.isRightClick() && tempVal1.getString(s).equals("RIGHT")) {
-                return s;
-            }
-            if (type.isShiftClick() && type.isLeftClick() && tempVal1.getString(s).equals("SHIFT-LEFT")) {
-                return s;
-            }
-            if (type.isShiftClick() && type.isRightClick() && tempVal1.getString(s).equals("SHIFT-RIGHT")) {
+            if (tempVal1.getString(s).equals(type.name())) {
                 return s;
             }
         }
