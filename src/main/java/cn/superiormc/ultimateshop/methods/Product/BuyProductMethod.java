@@ -19,8 +19,16 @@ public class BuyProductMethod {
     public static ProductMethodStatus startBuy(String shop, String product, Player player, boolean quick) {
         return startBuy(shop, product, player, quick, false);
     }
-
     public static ProductMethodStatus startBuy(String shop, String product, Player player, boolean quick, boolean test) {
+        return startBuy(shop, product, player, quick, false, 1);
+    }
+
+    public static ProductMethodStatus startBuy(String shop,
+                                               String product,
+                                               Player player,
+                                               boolean quick,
+                                               boolean test,
+                                               int multi) {
         ObjectShop tempVal1 = ConfigManager.configManager.getShop(shop);
         if (tempVal1 == null) {
             LanguageManager.languageManager.sendStringText(player,
@@ -58,7 +66,8 @@ public class BuyProductMethod {
                 }
             }
             playerUseTimes = tempVal3.getUseTimesCache().get(tempVal2).getBuyUseTimes();
-            if (tempVal2.getPlayerBuyLimit(player) != -1 && serverUseTimes > tempVal2.getPlayerBuyLimit(player)) {
+            if (tempVal2.getPlayerBuyLimit(player) != -1 &&
+                    playerUseTimes + multi - 1  > tempVal2.getPlayerBuyLimit(player)) {
                 if (quick) {
                     LanguageManager.languageManager.sendStringText(player,
                             "limit-reached-buy-player",
@@ -83,7 +92,8 @@ public class BuyProductMethod {
                 }
             }
             serverUseTimes = ServerCache.serverCache.getUseTimesCache().get(tempVal2).getBuyUseTimes();
-            if (tempVal2.getServerBuyLimit(player) != -1 && playerUseTimes > tempVal2.getServerBuyLimit(player)) {
+            if (tempVal2.getServerBuyLimit(player) != -1 &&
+                    serverUseTimes + multi - 1 > tempVal2.getServerBuyLimit(player)) {
                 if (quick) {
                     LanguageManager.languageManager.sendStringText(player,
                             "limit-reached-buy-server",
@@ -102,7 +112,7 @@ public class BuyProductMethod {
         }
         // price
         ObjectPrices tempVal5 = tempVal2.getBuyPrice();
-        if (!tempVal5.takeThing(player, false, playerUseTimes)) {
+        if (!tempVal5.takeThing(player, false, playerUseTimes, multi)) {
             if (quick) {
                 LanguageManager.languageManager.sendStringText(player,
                         "buy-price-not-enough",
@@ -119,14 +129,14 @@ public class BuyProductMethod {
             return ProductMethodStatus.DONE;
         }
         // 尝试给物品
-        tempVal2.getReward().giveThing(player, playerUseTimes);
+        tempVal2.getReward().giveThing(player, playerUseTimes, multi);
         // 扣钱
-        tempVal5.takeThing(player, true, playerUseTimes);
+        tempVal5.takeThing(player, true, playerUseTimes, multi);
         // 执行动作
-        tempVal2.getBuyAction().doAction(player);
+        tempVal2.getBuyAction().doAction(player, multi);
         // limit+1
         if (ConfigManager.configManager.getBoolean("database.enabled") && tempVal9 != null) {
-            tempVal9.setBuyUseTimes(tempVal9.getBuyUseTimes() + 1);
+            tempVal9.setBuyUseTimes(tempVal9.getBuyUseTimes() + multi);
             tempVal3.getUseTimesCache().put(tempVal2, tempVal9);
         }
         LanguageManager.languageManager.sendStringText(player,

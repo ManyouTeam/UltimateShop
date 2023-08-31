@@ -13,6 +13,10 @@ public abstract class AbstractButton {
         this.config = config;
     }
 
+    public AbstractButton(){
+        // Empty...
+    }
+
     public ItemStack getDisplayItem(Player player) {
         return null;
     }

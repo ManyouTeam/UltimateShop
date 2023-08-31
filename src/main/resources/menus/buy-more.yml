@@ -1,0 +1,19 @@
+title: 'Shop'
+
+layout:
+  - '000000000'
+  - '000000000'
+  - '0000A0000'
+  - '000000000'
+  - '000000000'
+  - '000000000'
+
+buttons:
+  A:
+    display-item:
+      material: BREAD
+      name: '&dFoods'
+      lore:
+        - '&7Click to open food shop!'
+    actions:
+      - 'shop_menu: example'

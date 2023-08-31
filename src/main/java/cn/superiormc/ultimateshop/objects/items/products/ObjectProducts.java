@@ -2,7 +2,6 @@ package cn.superiormc.ultimateshop.objects.items.products;
 
 import cn.superiormc.ultimateshop.managers.ErrorManager;
 import cn.superiormc.ultimateshop.objects.items.AbstractThings;
-import cn.superiormc.ultimateshop.objects.items.prices.ObjectSinglePrice;
 import cn.superiormc.ultimateshop.utils.RandomUtil;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
@@ -40,31 +39,34 @@ public class ObjectProducts extends AbstractThings {
         if (section == null || singleProducts.isEmpty()) {
             return;
         }
-        if (mode.equals("ANY")) {
-            ObjectSingleProduct tempVal1 = RandomUtil.getRandomElement(singleProducts);
-            tempVal1.playerGive(player, times);
-        } else if (mode.equals("ALL")) {
-            for (ObjectSingleProduct tempVal2 : singleProducts) {
+        switch (mode) {
+            case UNKNOWN:
+                return;
+            case ANY:
+                ObjectSingleProduct tempVal1 = RandomUtil.getRandomElement(singleProducts);
+                tempVal1.playerGive(player, times);
+            case ALL:
+                for (ObjectSingleProduct tempVal2 : singleProducts) {
                 tempVal2.playerGive(player, times);
-            }
-        } else {
-            ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Can not get price-mode section in your shop config!!");
+                }
+            default:
+                ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Can not get price-mode section in your shop config!!");
         }
     }
 
     @Override
     public boolean takeThing(Player player, boolean take, int times) {
         switch (mode) {
-            case "UNKNOWN":
+            case UNKNOWN:
                 return false;
-            case "ANY":
+            case ANY:
                 for (ObjectSingleProduct tempVal1 : singleProducts) {
                     if (tempVal1.checkHasEnough(player, take, times)) {
                         return true;
                     }
                 }
                 return false;
-            case "ALL":
+            case ALL:
                 for (ObjectSingleProduct tempVal1 : singleProducts) {
                     if (!tempVal1.checkHasEnough(player, take, times)) {
                         return false;

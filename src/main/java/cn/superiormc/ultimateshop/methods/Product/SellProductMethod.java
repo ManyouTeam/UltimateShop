@@ -22,6 +22,15 @@ public class SellProductMethod {
     }
 
     public static ProductMethodStatus startSell(String shop, String product, Player player, boolean quick, boolean test) {
+        return startSell(shop, product, player, quick, test, 1);
+    }
+
+    public static ProductMethodStatus startSell(String shop,
+                                                String product,
+                                                Player player,
+                                                boolean quick,
+                                                boolean test,
+                                                int multi) {
         ObjectShop tempVal1 = ConfigManager.configManager.getShop(shop);
         if (tempVal1 == null) {
             LanguageManager.languageManager.sendStringText(player,
@@ -65,7 +74,8 @@ public class SellProductMethod {
                 }
             }
             playerUseTimes = tempVal3.getUseTimesCache().get(tempVal2).getSellUseTimes();
-            if (tempVal2.getPlayerSellLimit(player) != -1 && playerUseTimes > tempVal2.getPlayerSellLimit(player)) {
+            if (tempVal2.getPlayerSellLimit(player) != -1 &&
+                    playerUseTimes + multi - 1 > tempVal2.getPlayerSellLimit(player)) {
                 if (quick) {
                     LanguageManager.languageManager.sendStringText(player,
                             "limit-reached-sell-player",
@@ -90,7 +100,8 @@ public class SellProductMethod {
                 }
             }
             serverUseTimes = ServerCache.serverCache.getUseTimesCache().get(tempVal2).getSellUseTimes();
-            if (tempVal2.getServerSellLimit(player) != -1 && serverUseTimes > tempVal2.getServerSellLimit(player)) {
+            if (tempVal2.getServerSellLimit(player) != -1 &&
+                    serverUseTimes + multi - 1 > tempVal2.getServerSellLimit(player)) {
                 if (quick) {
                     LanguageManager.languageManager.sendStringText(player,
                             "limit-reached-sell-server",
@@ -109,7 +120,7 @@ public class SellProductMethod {
         }
         // price
         ObjectProducts tempVal5 = tempVal2.getReward();
-        if (!tempVal5.takeThing(player, false, playerUseTimes)) {
+        if (!tempVal5.takeThing(player, false, playerUseTimes, multi)) {
             if (quick) {
                 LanguageManager.languageManager.sendStringText(player,
                         "sell-products-not-enough",
@@ -123,15 +134,15 @@ public class SellProductMethod {
         }
         // 尝试给物品
         // 回收的价格就是给的
-        tempVal2.getSellPrice().giveThing(player, playerUseTimes);
+        tempVal2.getSellPrice().giveThing(player, playerUseTimes, multi);
         // 扣物品
         // 扣的是奖励中的东西
-        tempVal5.takeThing(player, true, playerUseTimes);
+        tempVal5.takeThing(player, true, playerUseTimes, multi);
         // 执行动作
-        tempVal2.getSellAction().doAction(player);
+        tempVal2.getSellAction().doAction(player, multi);
         // limit+1
         if (ConfigManager.configManager.getBoolean("database.enabled") && tempVal9 != null) {
-            tempVal9.setSellUseTimes(tempVal9.getSellUseTimes() + 1);
+            tempVal9.setSellUseTimes(tempVal9.getSellUseTimes() + multi);
             tempVal3.getUseTimesCache().put(tempVal2, tempVal9);
         }
         LanguageManager.languageManager.sendStringText(player,

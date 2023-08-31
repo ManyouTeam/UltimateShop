@@ -4,11 +4,24 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="5408d61d-1b79-4aac-a73e-7cb790e636f7" name="变更" comment="reload command, common menu feature, server limit support.">
+    <list default="true" id="5408d61d-1b79-4aac-a73e-7cb790e636f7" name="变更" comment="fix">
+      <change afterPath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/gui/inv/BuyMoreGUI.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/objects/items/ThingMode.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/objects/menus/ObjectMoreMenu.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/objects/ui/ObjectMoreButton.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/menus/buy-more.yml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/methods/Product/BuyProductMethod.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/methods/Product/BuyProductMethod.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/methods/Product/SellProductMethod.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/methods/Product/SellProductMethod.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/objects/ui/ObjectDisplayItem.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/objects/ui/ObjectDisplayItem.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/config.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/config.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/objects/ObjectItem.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/objects/ui/ObjectItem.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/objects/ObjectMenu.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/objects/menus/ObjectMenu.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/objects/items/AbstractThings.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/objects/items/AbstractThings.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/objects/items/ObjectAction.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/objects/items/ObjectAction.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/objects/items/prices/ObjectPrices.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/objects/items/prices/ObjectPrices.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/objects/items/prices/ObjectSinglePrice.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/objects/items/prices/ObjectSinglePrice.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/objects/items/products/ObjectProducts.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/objects/items/products/ObjectProducts.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/objects/ui/AbstractButton.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/objects/ui/AbstractButton.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/objects/ui/ObjectButton.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/objects/ui/ObjectButton.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -50,6 +63,7 @@
 }</component>
   <component name="RecentsManager">
     <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="cn.superiormc.ultimateshop.objects.items.prices" />
       <recent name="cn.superiormc.ultimateshop.gui.inv" />
     </key>
   </component>
@@ -111,7 +125,14 @@
       <option name="project" value="LOCAL" />
       <updated>1693455203204</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="fix">
+      <created>1693456064932</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1693456064932</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -129,6 +150,7 @@
     <MESSAGE value="1" />
     <MESSAGE value="improve hook plugin price check" />
     <MESSAGE value="reload command, common menu feature, server limit support." />
-    <option name="LAST_COMMIT_MESSAGE" value="reload command, common menu feature, server limit support." />
+    <MESSAGE value="fix" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix" />
   </component>
 </project>

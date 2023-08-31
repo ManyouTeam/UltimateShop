@@ -16,7 +16,7 @@ public class ObjectButton extends AbstractButton {
     @Override
     public void clickEvent(ClickType type, Player player) {
         ObjectAction tempVal1 = new ObjectAction(config.getStringList("actions"));
-        tempVal1.doAction(player);
+        tempVal1.doAction(player, 1);
     }
 
     @Override

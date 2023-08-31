@@ -87,7 +87,7 @@ public class ObjectSinglePrice extends AbstractSingleThing {
         return cost;
     }
 
-    public String getDisplayName(int times) {
+    public String getDisplayName(double amount) {
         if (singleSection == null) {
             return ConfigManager.configManager.getString("placeholder.price.unknown");
         }
@@ -96,12 +96,12 @@ public class ObjectSinglePrice extends AbstractSingleThing {
                 return CommonUtil.modifyString(singleSection.getString("placeholder",
                                 ConfigManager.configManager.getString("placeholder.price.unknown")),
                         "amount",
-                        String.valueOf(getAmount(times)));
+                        String.valueOf(amount));
             case "custom" :
                 return CommonUtil.modifyString(ConfigManager.configManager.getString("prices." +
                                 singleSection.getString("type") + ".placeholder"),
                         "amount",
-                        String.valueOf(getAmount(times)));
+                        String.valueOf(amount));
         }
     }
 

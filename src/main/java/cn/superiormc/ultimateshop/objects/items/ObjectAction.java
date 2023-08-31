@@ -20,21 +20,38 @@ import java.util.List;
 
 public class ObjectAction {
 
-    private final List<String> action;
+    private List<String> everyAction = new ArrayList<>();
+
+    private List<String> onceAction = new ArrayList<>();
 
     public ObjectAction() {
-        this.action = new ArrayList<>();
+        // Empty...
     }
 
     public ObjectAction(List<String> action) {
-        this.action = action;
+        for (String s : action) {
+            if (s.endsWith("-o")) {
+                s = s.substring(0, s.length() - 3);
+                onceAction.add(s);
+            }
+            else {
+                everyAction.add(s);
+            }
+        }
     }
 
-    public void doAction(Player player){
-        if (action.isEmpty()) {
+    public void doAction(Player player, int multi){
+        if (everyAction.isEmpty() && onceAction.isEmpty()) {
             return;
         }
-        for(String singleAction : action) {
+        checkAction(player, onceAction);
+        for (int i = 0 ; i < multi ; i ++) {
+            checkAction(player, everyAction);
+        }
+    }
+
+    private void checkAction(Player player, List<String> actions) {
+        for(String singleAction : actions) {
             if (singleAction.startsWith("none")) {
                 return;
             } else if (singleAction.startsWith("message: ") && player != null) {
@@ -111,7 +128,7 @@ public class ObjectAction {
                                     Double.parseDouble(singleAction.substring(18).split(";;")[2]),
                                     Double.parseDouble(singleAction.substring(18).split(";;")[3]),
                                     Double.parseDouble(singleAction.substring(18).split(";;")[4])
-                                    );
+                            );
                             CommonUtil.summonMythicMobs(location,
                                     singleAction.substring(18).split(";;")[0],
                                     1);

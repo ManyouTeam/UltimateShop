@@ -1,12 +1,15 @@
 package cn.superiormc.ultimateshop.objects.items.prices;
 
+import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.ErrorManager;
 import cn.superiormc.ultimateshop.objects.items.AbstractThings;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ObjectPrices extends AbstractThings {
 
@@ -81,14 +84,24 @@ public class ObjectPrices extends AbstractThings {
         if (section == null || singlePrices.isEmpty()) {
             return;
         }
-        if (mode.equals("ANY")) {
-            getAnyTargetPrice(player, times, true, false);
-        } else if (mode.equals("ALL")) {
-            for (ObjectSinglePrice tempVal2 : getPrices(times)) {
-                tempVal2.playerGive(player, times);
-            }
-        } else {
-            ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Can not get price-mode section in your shop config!!");
+        switch (mode) {
+            case UNKNOWN:
+                return;
+            case ANY:
+                getAnyTargetPrice(player, times, true, false);
+            case ALL:
+                for (ObjectSinglePrice tempVal2 : getPrices(times)) {
+                    tempVal2.playerGive(player, times);
+                }
+            default:
+                ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Can not get price-mode section in your shop config!!");
+        }
+    }
+
+    @Override
+    public void giveThing(Player player, int times, int multi) {
+        for (int i = 0 ; i < multi ; i ++) {
+            giveThing(player, times + i);
         }
     }
 
@@ -97,9 +110,9 @@ public class ObjectPrices extends AbstractThings {
     @Override
     public boolean takeThing(Player player, boolean take, int times) {
         switch (mode) {
-            case "UNKNOWN":
+            case UNKNOWN:
                 return false;
-            case "ANY":
+            case ANY:
                 if (section == null) {
                     return true;
                 }
@@ -111,7 +124,7 @@ public class ObjectPrices extends AbstractThings {
                     return true;
                 }
                 return false;
-            case "ALL":
+            case ALL:
                 for (ObjectSinglePrice tempVal1 : getPrices(times)) {
                     if (!tempVal1.checkHasEnough(player, take, times)) {
                         return false;
@@ -124,24 +137,53 @@ public class ObjectPrices extends AbstractThings {
         }
     }
 
-    public List<String> getDisplayName(int times) {
-        List<ObjectSinglePrice> prices = getPrices(times);
+    public boolean takeThing(Player player, boolean take, int times, int multi) {
+        for (int i = 0 ; i < multi ; i ++) {
+            if (!takeThing(player, take, times + i)) {
+                if (!take) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    public List<String> getDisplayName(int times, int multi) {
+        Map<ObjectSinglePrice, Double> priceMaps = new HashMap<>();
+        for (int i = 0 ; i < multi ; i ++) {
+            for (ObjectSinglePrice tempVal3 : getPrices(times + multi)) {
+                if (priceMaps.containsKey(tempVal3)) {
+                    priceMaps.put(tempVal3,
+                            priceMaps.get(tempVal3) +
+                                    tempVal3.getAmount(times + multi));
+                }
+                else {
+                    priceMaps.put(tempVal3, tempVal3.getAmount(times + multi));
+                }
+            }
+        }
         List<String> tempVal1 = new ArrayList<>();
-        for (ObjectSinglePrice tempVal2 : prices) {
-            tempVal1.add(tempVal2.getDisplayName(times));
+        for (ObjectSinglePrice tempVal2 : priceMaps.keySet()) {
+            tempVal1.add(tempVal2.getDisplayName(priceMaps.get(tempVal2)));
         }
         return tempVal1;
     }
 
-    public String getDisplayNameWithOneLine(int times, String spliteSign) {
-        List<String> tempVal1 = getDisplayName(times);
+    public String getDisplayNameWithOneLine(int times, String splitSign) {
+        return getDisplayNameWithOneLine(times, 1);
+    }
+
+    public String getDisplayNameWithOneLine(int times, int multi) {
+        List<String> tempVal1 = getDisplayName(times, multi);
         StringBuilder tempVal2 = null;
         for (String tempVal3 : tempVal1) {
             if (tempVal2 == null) {
                 tempVal2 = new StringBuilder(tempVal3);
             }
             else {
-                tempVal2 = new StringBuilder(tempVal2 + spliteSign + tempVal3);
+                tempVal2 = new StringBuilder(tempVal2 +
+                        ConfigManager.configManager.getString("placeholder.price.split-symbol") +
+                        tempVal3);
             }
         }
         return tempVal2.toString();

@@ -6,6 +6,7 @@ import cn.superiormc.ultimateshop.methods.Product.BuyProductMethod;
 import cn.superiormc.ultimateshop.methods.Product.SellProductMethod;
 import cn.superiormc.ultimateshop.objects.items.ObjectAction;
 import cn.superiormc.ultimateshop.objects.items.ObjectLimit;
+import cn.superiormc.ultimateshop.objects.items.ThingMode;
 import cn.superiormc.ultimateshop.objects.items.prices.ObjectPrices;
 import cn.superiormc.ultimateshop.objects.items.products.ObjectProducts;
 import cn.superiormc.ultimateshop.objects.ui.AbstractButton;
@@ -94,7 +95,7 @@ public class ObjectItem extends AbstractButton {
 
     private void initSellPrice() {
         if (config.getConfigurationSection("sell-prices") == null) {
-            if (buyPrice.getMode().equals("UNKNOWN")) {
+            if (buyPrice.getMode() == ThingMode.UNKNOWN) {
                 sellPrice = buyPrice;
                 return;
             }
