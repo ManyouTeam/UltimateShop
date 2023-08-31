@@ -71,24 +71,20 @@ public class ItemsHook {
                     return null;
                 }
                 ArmorSet armorSet = ArmorSets.getByID(itemID);
-                ItemStack itemStack = null;
-                switch (itemID.split(";;")[1].toUpperCase()) {
-                    case "BOOTS":
-                        itemStack = armorSet.getItemStack(ArmorSlot.BOOTS);
-                        break;
-                    case "CHESTPLATE":
-                        itemStack = armorSet.getItemStack(ArmorSlot.CHESTPLATE);
-                        break;
-                    case "ELYTRA":
-                        itemStack = armorSet.getItemStack(ArmorSlot.ELYTRA);
-                        break;
-                    case "HELMET":
-                        itemStack = armorSet.getItemStack(ArmorSlot.HELMET);
-                        break;
-                    case "LEGGINGS":
-                        itemStack = armorSet.getItemStack(ArmorSlot.LEGGINGS);
-                        break;
+                if (armorSet == null) {
+                    ErrorManager.errorManager.sendErrorMessage
+                            ("§x§9§8§F§B§9§8[UltimateShop] §cError: Can not get "
+                                    + pluginName + " item: " + itemID + "!");
+                    return null;
                 }
+                ArmorSlot armorSlot = ArmorSlot.getSlot(itemID.split(";;")[1].toUpperCase());
+                if (armorSlot == null) {
+                    ErrorManager.errorManager.sendErrorMessage
+                            ("§x§9§8§F§B§9§8[UltimateShop] §cError: Can not get "
+                                    + pluginName + " item: " + itemID + "!");
+                    return null;
+                }
+                ItemStack itemStack = armorSet.getItemStack(armorSlot);
                 if (itemStack == null) {
                     ErrorManager.errorManager.sendErrorMessage
                             ("§x§9§8§F§B§9§8[UltimateShop] §cError: Can not get "

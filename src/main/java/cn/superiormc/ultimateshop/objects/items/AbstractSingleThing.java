@@ -104,7 +104,6 @@ public abstract class AbstractSingleThing {
     }
 
     public boolean checkHasEnough(ConfigurationSection singleSection, Player player, boolean take, int times) {
-        ItemStack itemStack;
         double cost = getAmount(times);
         if (cost == -1) {
             return false;
@@ -118,12 +117,12 @@ public abstract class AbstractSingleThing {
                 } else if (pluginName.equals("EcoArmor") && !itemID.contains(";;")) {
                     itemID = itemID + ";;" + singleSection.getString("hook-item-type");
                 }
-                itemStack = ItemsHook.getHookItem(pluginName, itemID);
-                return PriceHook.getPrice(player,
-                        itemStack,
+                return PriceHook.getPrice(pluginName,
+                        itemID,
+                        player,
                         (int) cost, take);
             case "vanilla":
-                itemStack = ItemUtil.buildItemStack(singleSection);
+                ItemStack itemStack = ItemUtil.buildItemStack(singleSection);
                 if (itemStack == null) {
                     return false;
                 }

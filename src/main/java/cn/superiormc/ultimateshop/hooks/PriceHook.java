@@ -95,7 +95,7 @@ public class PriceHook {
                     ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cCan not hook into UltraEconomy plugin!");
                     return false;
                 }
-                if (UltraEconomy.getAPI().getCurrencies().name(currencyName) == null) {
+                if (!UltraEconomy.getAPI().getCurrencies().name(currencyName).isPresent()) {
                     ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cCan not find currency " +
                             currencyName + " in UltraEconomy plugin!");
                     return false;
@@ -157,103 +157,44 @@ public class PriceHook {
         return false;
     }
 
-    @Deprecated
-    public static boolean getPrice(String pluginName, Player player, String item, int value, boolean take) {
+    public static boolean getPrice(String pluginName, String item, Player player, int value, boolean take) {
         if (value < 0) {
             return false;
         }
-        pluginName = pluginName.toLowerCase();
-        if (!UltimateShop.instance.getServer().getPluginManager().isPluginEnabled(pluginName)) {
-            ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: You set hook plugin to "
-                    + pluginName + " in UI config, however for now UltimateShop does not support it!");
-            return false;
-        }
-        else if (pluginName.equals("itemsadder")) {
-            if (ItemsHook.getHookItem("ItemsAdder", item) == null) {
-                ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Can not get "
-                        + pluginName + " item: " + item + "!");
-                return false;
-            }
-            else {
-                return getPrice(player, ItemsHook.getHookItem("ItemsAdder", item), value, take);
-            }
-        }
-        else if (pluginName.equals("oraxen")) {
-            if (ItemsHook.getHookItem("Oraxen", item) == null) {
-                ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Can not get "
-                        + pluginName + " item: " + item + "!");
-                return false;
-            }
-            else {
-                return getPrice(player, ItemsHook.getHookItem("Oraxen", item), value, take);
-            }
-        }
-        else if (pluginName.equals("mmoitems")) {
-            if (ItemsHook.getHookItem("MMOItems", item) == null) {
-                ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Can not get "
-                        + pluginName + " item: " + item + "!");
-                return false;
-            }
-            else {
-                return getPrice(player, ItemsHook.getHookItem("MMOItems", item), value, take);
-            }
-        }
-        else if (pluginName.equals("ecoitems")) {
-            if (ItemsHook.getHookItem("EcoItems", item) == null) {
-                ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Can not get "
-                        + pluginName + " item: " + item + "!");
-                return false;
-            }
-            else {
-                return getPrice(player, ItemsHook.getHookItem("EcoItems", item), value, take);
-            }
-        }
-        else if (pluginName.equals("ecoarmor")) {
-            if (ItemsHook.getHookItem("EcoArmor", item) == null) {
-                ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Can not get "
-                        + pluginName + " item: " + item + "!");
-                return false;
-            }
-            else {
-                return getPrice(player, ItemsHook.getHookItem("EcoArmor", item), value, take);
-            }
-        }
-        else if (pluginName.equals("mythicmobs")) {
-            if (ItemsHook.getHookItem("MythicMobs", item) == null) {
-                ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Can not get "
-                        + pluginName + " item: " + item + "!");
-                return false;
-            }
-            else {
-                return getPrice(player, ItemsHook.getHookItem("MythicMobs", item), value, take);
-            }
-        }
-        else {
-            ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: You set hook plugin to "
-                    + pluginName + " in UI config, however for now UltimateShop is not support it!");
-            return false;
-        }
-    }
-
-    public static boolean getPrice(Player player, ItemStack item1, int value, boolean take) {
         ItemStack[] storage = player.getInventory().getStorageContents();
-        if (item1 == null) {
+        if (item == null) {
             return false;
         }
         int amount = 0;
-        for (ItemStack item : storage) {
-            if (item == null || item.getType().isAir()) {
+        for (ItemStack tempVal1 : storage) {
+            if (tempVal1 == null || tempVal1.getType().isAir()) {
                 continue;
             }
-            ItemStack temItem = item.clone();
+            ItemStack temItem = tempVal1.clone();
             temItem.setAmount(1);
-            if (temItem.equals(item1)) {
-                amount += item.getAmount();
+            if (CheckValidHook.checkValid(pluginName, item, temItem).equals(item)) {
+                amount += tempVal1.getAmount();
             }
         }
         if (amount >= value) {
             if (take) {
-                takeItemPrice(player, item1, value);
+                for (int i = 0 ; i < storage.length ; i++) {
+                    if (storage[i] == null || storage[i].getType().isAir()) {
+                        continue;
+                    }
+                    ItemStack temItem = storage[i].clone();
+                    temItem.setAmount(1);
+                    if (temItem.equals(item)) {
+                        if (storage[i].getAmount() >= value) {
+                            storage[i].setAmount(storage[i].getAmount() - value);
+                            break;
+                        } else {
+                            value -= storage[i].getAmount();
+                            storage[i].setAmount(0);
+                        }
+                    }
+                }
+                player.getInventory().setStorageContents(storage);
             }
             return true;
         }
@@ -262,27 +203,50 @@ public class PriceHook {
         }
     }
 
-    private static void takeItemPrice(Player player, ItemStack item, int value) {
+    public static boolean getPrice(Player player, ItemStack item, int value, boolean take) {
+        if (value < 0) {
+            return false;
+        }
         ItemStack[] storage = player.getInventory().getStorageContents();
         if (item == null) {
-            return;
+            return false;
         }
-        for (int i = 0; i < storage.length ; i++) {
-            if (storage[i] == null || storage[i].getType().isAir()) {
+        int amount = 0;
+        for (ItemStack tempVal1 : storage) {
+            if (tempVal1 == null || tempVal1.getType().isAir()) {
                 continue;
             }
-            ItemStack temItem = storage[i].clone();
+            ItemStack temItem = tempVal1.clone();
             temItem.setAmount(1);
             if (temItem.equals(item)) {
-                if (storage[i].getAmount() >= value) {
-                    storage[i].setAmount(storage[i].getAmount() - value);
-                    break;
-                } else {
-                    value -= storage[i].getAmount();
-                    storage[i].setAmount(0);
-                }
+                amount += tempVal1.getAmount();
             }
         }
-        player.getInventory().setStorageContents(storage);
+        if (amount >= value) {
+            if (take) {
+                for (int i = 0 ; i < storage.length ; i++) {
+                    if (storage[i] == null || storage[i].getType().isAir()) {
+                        continue;
+                    }
+                    ItemStack temItem = storage[i].clone();
+                    temItem.setAmount(1);
+                    if (temItem.equals(item)) {
+                        if (storage[i].getAmount() >= value) {
+                            storage[i].setAmount(storage[i].getAmount() - value);
+                            break;
+                        } else {
+                            value -= storage[i].getAmount();
+                            storage[i].setAmount(0);
+                        }
+                    }
+                }
+                player.getInventory().setStorageContents(storage);
+            }
+            return true;
+        }
+        else {
+            return false;
+        }
     }
+
 }
