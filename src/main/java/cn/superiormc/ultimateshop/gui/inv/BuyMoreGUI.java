@@ -25,14 +25,11 @@ public class BuyMoreGUI extends InvGUI {
 
     private ObjectMoreMenu menu;
 
-    private String fileName;
-
     private int nowingAmount;
 
-    public BuyMoreGUI(Player owner, ObjectItem item, String fileName) {
+    public BuyMoreGUI(Player owner, ObjectItem item) {
         super(owner);
         this.item = item;
-        this.fileName = fileName;
         this.nowingAmount = 1;
         constructGUI();
     }
@@ -47,7 +44,7 @@ public class BuyMoreGUI extends InvGUI {
 
     @Override
     protected void constructGUI() {
-        menu = ObjectMoreMenu.moreMenus.get(fileName);
+        menu = ObjectMoreMenu.moreMenus.get(item);
         if (menu == null) {
             return;
         }

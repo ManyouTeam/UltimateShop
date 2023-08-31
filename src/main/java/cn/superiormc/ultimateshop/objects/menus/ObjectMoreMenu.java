@@ -14,7 +14,7 @@ import java.util.Map;
 
 public class ObjectMoreMenu extends ObjectMenu {
 
-    public static Map<String, ObjectMoreMenu> moreMenus = new HashMap<>();
+    public static Map<ObjectItem, ObjectMoreMenu> moreMenus = new HashMap<>();
 
     private ObjectItem item;
 
@@ -25,6 +25,7 @@ public class ObjectMoreMenu extends ObjectMenu {
         super(fileName);
         this.item = item;
         this.type = MenuType.More;
+        moreMenus.put(item, this);
         initDisplayItem();
         initConfirmItem();
         initSelectAmountItem();

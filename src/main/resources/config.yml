@@ -1,12 +1,15 @@
 debug: true
 
 menu:
+  select-more:
+    menu: buy-more
   auto-open:
     enabled: true
     menu: main
   click-event:
     buy: 'LEFT'
     sell: 'RIGHT'
+    select-amount: 'SHIFT-RIGHT'
 
 use-times:
   enabled: true

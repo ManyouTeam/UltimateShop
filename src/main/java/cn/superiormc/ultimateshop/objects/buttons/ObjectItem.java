@@ -2,6 +2,7 @@ package cn.superiormc.ultimateshop.objects.buttons;
 
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.ErrorManager;
+import cn.superiormc.ultimateshop.methods.GUI.OpenGUI;
 import cn.superiormc.ultimateshop.methods.Product.BuyProductMethod;
 import cn.superiormc.ultimateshop.methods.Product.SellProductMethod;
 import cn.superiormc.ultimateshop.objects.buttons.subobjects.ObjectDisplayItem;
@@ -10,6 +11,7 @@ import cn.superiormc.ultimateshop.objects.items.ObjectLimit;
 import cn.superiormc.ultimateshop.objects.items.ThingMode;
 import cn.superiormc.ultimateshop.objects.items.prices.ObjectPrices;
 import cn.superiormc.ultimateshop.objects.items.products.ObjectProducts;
+import cn.superiormc.ultimateshop.objects.menus.ObjectMoreMenu;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
@@ -48,6 +50,7 @@ public class ObjectItem extends AbstractButton {
         initSellAction();
         initBuyLimit();
         initSellLimit();
+        initBuyMoreMenu();
     }
 
     private void initDisplayItem() {
@@ -153,6 +156,11 @@ public class ObjectItem extends AbstractButton {
         sellLimit = buyLimit;
     }
 
+    private void initBuyMoreMenu() {
+        new ObjectMoreMenu(ConfigManager.configManager.getString("menu.select-more.menu"),
+                this);
+    }
+
     public String getDisplayName() {
         return displayItem.getDisplayItem().getItemMeta().hasDisplayName() ?
                 displayItem.getDisplayItem().getItemMeta().getDisplayName() :
@@ -244,25 +252,13 @@ public class ObjectItem extends AbstractButton {
         boolean b = ConfigManager.configManager.getBoolean("placeholder.click.enabled");
         switch (ConfigManager.configManager.getClickAction(type)){
             case "buy" :
-                if (b) {
-                    BuyProductMethod.startBuy(getShop(), getProduct(), player, false);
-                }
-                else {
-                    BuyProductMethod.startBuy(getShop(), getProduct(), player, true);
-                }
+                BuyProductMethod.startBuy(getShop(), getProduct(), player, !b);
                 break;
             case "sell" :
-                if (b) {
-                    SellProductMethod.startSell(getShop(), getProduct(), player, false);
-                }
-                else {
-                    SellProductMethod.startSell(getShop(), getProduct(), player, true);
-                }
+                SellProductMethod.startSell(getShop(), getProduct(), player, !b);
                 break;
-            /*case "buy-more" :
-
-              case "sell-more" :
-             */
+            case "select-amount" :
+                OpenGUI.openMoreGUI(player, this);
             default:
                 Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §cUnknown click action: "
                 + ConfigManager.configManager.getClickAction(type));
