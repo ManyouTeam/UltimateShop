@@ -90,7 +90,7 @@ public class SellProductMethod {
                 }
             }
             serverUseTimes = ServerCache.serverCache.getUseTimesCache().get(tempVal2).getSellUseTimes();
-            if (tempVal2.getServerBuyLimit(player) != -1 && serverUseTimes > tempVal2.getServerSellLimit(player)) {
+            if (tempVal2.getServerSellLimit(player) != -1 && serverUseTimes > tempVal2.getServerSellLimit(player)) {
                 if (quick) {
                     LanguageManager.languageManager.sendStringText(player,
                             "limit-reached-sell-server",

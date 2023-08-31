@@ -18,6 +18,8 @@ use-times:
 # TODO
 dynamic-prices:
   enabled: false
+  default-add-amount: 5
+  default-remove-amount: 4
 
 check-math: false
 
@@ -29,9 +31,11 @@ display-item:
       - '&7Sell: {sell-price}'
       - ''
     buy-limit:
-      - '&7Buy Stock: {buy-times}/{buy-limit}'
+      - '&7Player Buy Stock: {buy-times-player}/{buy-limit-player}'
+      - '&7Server Buy Stock: {buy-times-server}/{buy-limit-server}'
     sell-limit:
-      - '&7Buy Stock: {sell-times}/{sell-limit}'
+      - '&7Player Sell Limit: {sell-times-player}/{sell-limit-player}'
+      - '&7Server Sell Limit: {sell-times-server}/{sell-limit-server}'
     buy-refresh:
       - ''
       - '&cSold Out!'
@@ -56,10 +60,12 @@ placeholder:
     enabled: true
     buy: '&eLeft-click tp buy!'
     sell: '&eRight-click to sell!'
-    buy-max-limit: '&cSold out!'
-    sell-max-limit: '&cCan not sell more!'
-    buy-price-not-enough: '&cDo not have enough money!'
-    sell-price-not-enough: '&cDo not have enough item!'
+    buy-max-limit-player: '&cYou can not buy more!'
+    buy-max-limit-server: '&cSOLD OUT!'
+    sell-max-limit-player: '&cCan not sell more!'
+    sell-max-limit-server: '&cTHIS ITEM CAN NOT BE SELLED!'
+    buy-price-not-enough: '&cDo not have enough money to buy!'
+    sell-price-not-enough: '&cDo not have enough item to sell!'
     error: '&cError!'
 
 database:

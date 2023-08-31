@@ -66,7 +66,6 @@ public class ObjectDisplayItem{
         else {
             addLoreDisplayItem = displayItem.clone();
         }
-        addLoreDisplayItem = displayItem.clone();
         ItemMeta tempVal2 = addLoreDisplayItem.getItemMeta();
         List<String> addLore = new ArrayList<>();
         addLore.addAll(ConfigManager.configManager.getListWithColor("display-item.add-lore.top"));
@@ -102,10 +101,14 @@ public class ObjectDisplayItem{
                     item.getSellPrice().getDisplayNameWithOneLine(
                             sellTimes,
                             ConfigManager.configManager.getString("placeholder.price.split-symbol")),
-                    "buy-limit",
+                    "buy-limit-player",
                     String.valueOf(item.getPlayerBuyLimit(player)),
-                    "sell-limit",
+                    "sell-limit-player",
                     String.valueOf(item.getPlayerSellLimit(player)),
+                    "buy-limit-server",
+                    String.valueOf(item.getServerSellLimit(player)),
+                    "sell-limit-server",
+                    String.valueOf(item.getServerBuyLimit(player)),
                     "buy-times",
                     String.valueOf(tempVal9 == null ? "" : tempVal9.getBuyUseTimes()),
                     "sell-times",
@@ -134,7 +137,10 @@ public class ObjectDisplayItem{
                 s = ConfigManager.configManager.getString("placeholder.click.error");
                 break;
             case PLAYER_MAX:
-                s = ConfigManager.configManager.getString("placeholder.click.buy-max-limit");
+                s = ConfigManager.configManager.getString("placeholder.click.buy-max-limit-player");
+                break;
+            case SERVER_MAX:
+                s = ConfigManager.configManager.getString("placeholder.click.buy-max-limit-server");
                 break;
             case NOT_ENOUGH :
                 s = ConfigManager.configManager.getString("placeholder.click.buy-price-not-enough");
@@ -156,7 +162,10 @@ public class ObjectDisplayItem{
                 s = ConfigManager.configManager.getString("placeholder.click.error");
                 break;
             case PLAYER_MAX:
-                s = ConfigManager.configManager.getString("placeholder.click.sell-max-limit");
+                s = ConfigManager.configManager.getString("placeholder.click.sell-max-limit-player");
+                break;
+            case SERVER_MAX:
+                s = ConfigManager.configManager.getString("placeholder.click.sell-max-limit-server");
                 break;
             case NOT_ENOUGH :
                 s = ConfigManager.configManager.getString("placeholder.click.sell-price-not-enough");
