@@ -12,6 +12,8 @@ import cn.superiormc.ultimateshop.objects.items.ThingMode;
 import cn.superiormc.ultimateshop.objects.items.prices.ObjectPrices;
 import cn.superiormc.ultimateshop.objects.items.products.ObjectProducts;
 import cn.superiormc.ultimateshop.objects.menus.ObjectMoreMenu;
+import com.cryptomorin.xseries.XMaterial;
+import com.cryptomorin.xseries.XTag;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
@@ -164,7 +166,10 @@ public class ObjectItem extends AbstractButton {
     public String getDisplayName() {
         return displayItem.getDisplayItem().getItemMeta().hasDisplayName() ?
                 displayItem.getDisplayItem().getItemMeta().getDisplayName() :
-                displayItem.getDisplayItem().getType().name();
+                displayItem.getDisplayItem().getItemMeta().hasLocalizedName() ?
+                        displayItem.getDisplayItem().getItemMeta().getLocalizedName() :
+                        displayItem.getDisplayItem().getType().name();
+
     }
 
     public ObjectPrices getBuyPrice() {
@@ -270,5 +275,9 @@ public class ObjectItem extends AbstractButton {
     @Override
     public ItemStack getDisplayItem(Player player, int multi) {
         return displayItem.getDisplayItem(player, multi);
+    }
+
+    public ItemStack getDisplayItem() {
+        return displayItem.getDisplayItem();
     }
 }

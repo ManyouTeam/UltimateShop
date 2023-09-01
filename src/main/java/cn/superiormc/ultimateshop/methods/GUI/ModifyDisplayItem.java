@@ -7,12 +7,15 @@ import cn.superiormc.ultimateshop.methods.Product.SellProductMethod;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import cn.superiormc.ultimateshop.objects.caches.ObjectUseTimesCache;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
+import cn.superiormc.ultimateshop.utils.TextUtil;
+import io.lumine.mythic.bukkit.utils.lib.http.util.TextUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class ModifyDisplayItem {
 
@@ -20,6 +23,15 @@ public class ModifyDisplayItem {
                                         int multi,
                                         ItemStack addLoreDisplayItem,
                                         ObjectItem item) {
+        if (multi > 1) {
+            // 修改物品名称
+            String itemName = item.getDisplayName();
+            itemName = TextUtil.parse("&f" + itemName + ConfigManager.configManager.getString("display-item.add-displayname").
+                    replace("{amount}", String.valueOf(multi)));
+            ItemMeta meta = addLoreDisplayItem.getItemMeta();
+            meta.setDisplayName(itemName);
+            addLoreDisplayItem.setItemMeta(meta);
+        }
         int buyTimes = 0;
         int sellTimes = 0;
         ObjectUseTimesCache tempVal9 = CacheManager.cacheManager.playerCacheMap.get(player).getUseTimesCache().get(item);
@@ -37,11 +49,12 @@ public class ModifyDisplayItem {
                     0,
                     null,
                     null);
+            tempVal9 = CacheManager.cacheManager.playerCacheMap.get(player).getUseTimesCache().get(item);
         }
         ItemMeta tempVal2 = addLoreDisplayItem.getItemMeta();
         List<String> addLore = new ArrayList<>();
         addLore.addAll(ConfigManager.configManager.getListWithColor("display-item.add-lore.top"));
-        if (tempVal9 != null) {
+
             if (item.getPlayerBuyLimit(player) != -1) {
                 addLore.addAll(ConfigManager.configManager.getListWithColor("display-item.add-lore.buy-limit"));
             }
@@ -64,16 +77,14 @@ public class ModifyDisplayItem {
                     == item.getServerBuyLimit(player)) {
                 addLore.addAll(ConfigManager.configManager.getListWithColor("display-item.add-lore.sell-refresh-server"));
             }
-        }
+
         if (multi == 1 && !item.getBuyPrice().empty) {
             addLore.addAll(ConfigManager.configManager.getListWithColor("display-item.add-lore.buy-click"));
         }
         if (multi == 1 && !item.getSellPrice().empty) {
             addLore.addAll(ConfigManager.configManager.getListWithColor("display-item.add-lore.sell-click"));
         }
-        if (multi == 1) {
-            addLore.addAll(ConfigManager.configManager.getListWithColor("display-item.add-lore.below"));
-        }
+        addLore.addAll(ConfigManager.configManager.getListWithColor("display-item.add-lore.below"));
         if (!addLore.isEmpty()) {
             tempVal2.setLore(CommonUtil.modifyList(addLore,
                     "buy-price",

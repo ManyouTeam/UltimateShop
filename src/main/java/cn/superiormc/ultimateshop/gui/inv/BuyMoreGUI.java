@@ -6,11 +6,8 @@ import cn.superiormc.ultimateshop.managers.ErrorManager;
 import cn.superiormc.ultimateshop.managers.LanguageManager;
 import cn.superiormc.ultimateshop.methods.Product.BuyProductMethod;
 import cn.superiormc.ultimateshop.methods.Product.SellProductMethod;
-import cn.superiormc.ultimateshop.objects.buttons.ButtonType;
-import cn.superiormc.ultimateshop.objects.buttons.ObjectMoreDisplayButton;
+import cn.superiormc.ultimateshop.objects.buttons.*;
 import cn.superiormc.ultimateshop.objects.menus.ObjectMoreMenu;
-import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
-import cn.superiormc.ultimateshop.objects.buttons.AbstractButton;
 import cn.superiormc.ultimateshop.utils.TextUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -75,7 +72,6 @@ public class BuyMoreGUI extends InvGUI {
         if (button == null) {
             return true;
         }
-        Bukkit.getConsoleSender().sendMessage(button.type.name());
         switch (button.type) {
             case SELECT_AMOUNT:
                 if (button.config.getInt("add-amount", 0) == 0) {
@@ -146,11 +142,15 @@ public class BuyMoreGUI extends InvGUI {
         Map<Integer, ItemStack> resultItems = new HashMap<>();
         for (int i : tempVal1.keySet()) {
             AbstractButton tempVal2 = tempVal1.get(i);
-            ObjectMoreDisplayButton tempVal3 = null;
-            if (tempVal2.type == ButtonType.DISPLAY ||
-            tempVal2.type == ButtonType.CONFIRM) {
+            if (tempVal2.type == ButtonType.DISPLAY) {
+                ObjectMoreDisplayButton tempVal3 = null;
                 tempVal3 = (ObjectMoreDisplayButton) tempVal2;
                 resultItems.put(i, tempVal3.getDisplayItem(player, nowingAmount));
+            }
+            else if (tempVal2.type == ButtonType.CONFIRM) {
+                ObjectMoreBuyButton tempVal4 = null;
+                tempVal4 = (ObjectMoreBuyButton) tempVal2;
+                resultItems.put(i, tempVal4.getDisplayItem(player, nowingAmount));
             }
             else {
                 resultItems.put(i, tempVal2.getDisplayItem(player, 1));

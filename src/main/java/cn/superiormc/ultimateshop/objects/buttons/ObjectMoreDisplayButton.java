@@ -17,10 +17,11 @@ public class ObjectMoreDisplayButton extends AbstractButton {
 
     @Override
     public ItemStack getDisplayItem(Player player, int multi) {
-        ItemStack tempVal1 = item.getDisplayItem(player, multi);
+        ItemStack tempVal1 = item.getDisplayItem();
         if (tempVal1 == null) {
             return new ItemStack(Material.BEDROCK);
         }
+        tempVal1.setAmount(multi);
         return tempVal1;
     }
 }

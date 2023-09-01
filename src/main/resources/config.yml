@@ -25,6 +25,7 @@ check-math: false
 
 display-item:
   auto-set-first-product: true
+  add-displayname: ' x{amount}'
   add-lore:
     top:
       - '&7Purchase: {buy-price}'

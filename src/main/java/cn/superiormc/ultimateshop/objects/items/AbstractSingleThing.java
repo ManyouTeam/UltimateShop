@@ -5,6 +5,7 @@ import cn.superiormc.ultimateshop.hooks.ItemsHook;
 import cn.superiormc.ultimateshop.hooks.PriceHook;
 import cn.superiormc.ultimateshop.managers.LanguageManager;
 import cn.superiormc.ultimateshop.utils.ItemUtil;
+import com.cryptomorin.xseries.XItemStack;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
@@ -155,15 +156,7 @@ public abstract class AbstractSingleThing {
                 itemStack = ItemUtil.buildItemStack(singleSection);
                 itemStack.setAmount((int) cost);
                 if (give) {
-                    if (player.getInventory().addItem(itemStack).size() != 0) {
-                        player.getWorld().dropItem(player.getLocation(), itemStack);
-                        LanguageManager.languageManager.sendStringText(player,
-                                "plugin.item-dropped",
-                                "item",
-                                itemStack.getItemMeta().hasDisplayName() ?
-                                        itemStack.getItemMeta().getDisplayName() :
-                                        itemStack.getType().name());
-                    }
+                    XItemStack.giveOrDrop(player, itemStack);
                 }
                 return itemStack;
 
@@ -182,10 +175,7 @@ public abstract class AbstractSingleThing {
                 }
                 itemStack.setAmount((int) cost);
                 if (give) {
-                    if (player.getInventory().addItem(itemStack).size() != 0) {
-                        player.getWorld().dropItem(player.getLocation(), itemStack);
-                        LanguageManager.languageManager.sendStringText(player, "plugin.item-dropped");
-                    }
+                    XItemStack.giveOrDrop(player, itemStack);
                 }
                 return itemStack;
         }
