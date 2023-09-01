@@ -12,7 +12,6 @@ menu:
     select-amount: 'SHIFT_RIGHT'
 
 use-times:
-  enabled: true
   default-reset-mode: 'NEVER'
   default-reset-time: '00:00:00'
 
@@ -37,18 +36,28 @@ display-item:
     sell-limit:
       - '&7Player Sell Limit: {sell-times-player}/{sell-limit-player}'
       - '&7Server Sell Limit: {sell-times-server}/{sell-limit-server}'
-    buy-refresh:
+    buy-refresh-player:
+      - ''
+      - '&cCan not buy more!'
+      - '&8Refresh Time: {buy-refresh-player}'
+    buy-refresh-server:
       - ''
       - '&cSold Out!'
-      - '&8Refresh Time: {buy-refresh}'
-    sell-refresh:
+      - '&8Refresh Time: {buy-refresh-server}'
+    sell-refresh-player:
       - ''
       - '&cCan not sell more!'
-      - '&8Refresh Time: {sell-refresh}'
+      - '&8Refresh Time: {sell-refresh-player}'
+    sell-refresh-server:
+      - ''
+      - '&cCan not sell more!'
+      - '&8Refresh Time: {sell-refresh-server}'
     buy-click:
       - '{buy-click}'
     sell-click:
       - '{sell-click}'
+    below:
+      - '&eRight-Shift click to pick amount!'
 
 placeholder:
   refresh:
@@ -59,7 +68,7 @@ placeholder:
     unknown: "Unknown"
   click:
     enabled: true
-    buy: '&eLeft-click tp buy!'
+    buy: '&eLeft-click to buy!'
     sell: '&eRight-click to sell!'
     buy-max-limit-player: '&cYou can not buy more!'
     buy-max-limit-server: '&cSOLD OUT!'

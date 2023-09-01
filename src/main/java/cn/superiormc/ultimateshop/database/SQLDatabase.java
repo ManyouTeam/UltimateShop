@@ -92,8 +92,6 @@ public class SQLDatabase {
             else {
                 if (CacheManager.cacheManager.playerCacheMap.containsKey(player)) {
                     cache = CacheManager.cacheManager.playerCacheMap.get(player);
-                } else {
-                    cache = new PlayerCache(player);
                 }
             }
             while (result.getResultSet().next()) {
@@ -124,11 +122,18 @@ public class SQLDatabase {
         Map<ObjectItem, ObjectUseTimesCache> tempVal1 = cache.getUseTimesCache();
         for (ObjectItem tempVal2 : tempVal1.keySet()) {
             sqlManager.createReplace("ultimateshop_useTimes")
-                    .setColumnNames("playerUUID", "shop", "product", "buyUseTimes", "sellUseTimes", "lastBuyTime", "lastSellTime")
+                    .setColumnNames("playerUUID",
+                            "shop",
+                            "product",
+                            "buyUseTimes",
+                            "sellUseTimes",
+                            "lastBuyTime",
+                            "lastSellTime")
                     .setParams(player.getUniqueId().toString(),
                             tempVal2.getShop(),
                             tempVal2.getProduct(),
                             tempVal1.get(tempVal2).getBuyUseTimes(),
+                            tempVal1.get(tempVal2).getSellUseTimes(),
                             tempVal1.get(tempVal2).getLastBuyTime(),
                             tempVal1.get(tempVal2).getLastSellTime())
                     .executeAsync();

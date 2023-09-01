@@ -19,6 +19,7 @@ public class CacheManager {
     public CacheManager() {
         cacheManager = this;
         serverCache = new ServerCache();
+        serverCache.initServerCache();
         if (ConfigManager.configManager.getBoolean("database.enabled")) {
             SQLDatabase.initSQL();
         }
@@ -26,6 +27,7 @@ public class CacheManager {
 
     public void addPlayerCache(Player player) {
         playerCacheMap.put(player, new PlayerCache(player));
+        playerCacheMap.get(player).initPlayerCache();
     }
 
     public void savePlayerCache(Player player) {

@@ -1,6 +1,7 @@
 package cn.superiormc.ultimateshop.cache;
 
 import cn.superiormc.ultimateshop.database.SQLDatabase;
+import cn.superiormc.ultimateshop.database.YamlDatabase;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.LanguageManager;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
@@ -22,7 +23,6 @@ public class ServerCache {
     public Player player;
 
     public ServerCache() {
-        initServerCache();
         this.server = true;
         serverCache = this;
     }
@@ -36,11 +36,17 @@ public class ServerCache {
         if (ConfigManager.configManager.getBoolean("database.enabled")) {
             SQLDatabase.checkData(null);
         }
+        else {
+            YamlDatabase.checkData(null);
+        }
     }
 
     public void shutServerCache() {
         if (ConfigManager.configManager.getBoolean("database.enabled")) {
             SQLDatabase.updateData(null);
+        }
+        else {
+            YamlDatabase.updateData(null);
         }
     }
 

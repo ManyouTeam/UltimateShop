@@ -27,9 +27,13 @@ public class ObjectUseTimesCache {
                                String lastSellTime,
                                ObjectItem product) {
         this.buyUseTimes = buyUseTimes;
-        this.lastBuyTime = CommonUtil.stringToTime(lastBuyTime);
+        if (lastBuyTime != null) {
+            this.lastBuyTime = CommonUtil.stringToTime(lastBuyTime);
+        }
         this.sellUseTimes = sellUseTimes;
-        this.lastSellTime = CommonUtil.stringToTime(lastSellTime);
+        if (lastSellTime != null) {
+            this.lastSellTime = CommonUtil.stringToTime(lastSellTime);
+        }
         this.product = product;
     }
 
@@ -47,6 +51,14 @@ public class ObjectUseTimesCache {
 
     public void setSellUseTimes(int i) {
         sellUseTimes = i;
+    }
+
+    public void setLastBuyTime(LocalDateTime time) {
+        lastBuyTime = time;
+    }
+
+    public void setLastSellTime(LocalDateTime time) {
+        lastSellTime = time;
     }
 
     public String getLastBuyTime() {
@@ -80,8 +92,10 @@ public class ObjectUseTimesCache {
     }
 
     public LocalDateTime getSellRefreshTime() {
-        String mode = product.getItemConfig().getString("limits-reset-time-mode", "NEVER");
-        String tempVal1 = product.getItemConfig().getString("limits-reset-time", "00:00:00");
+        String mode = product.getItemConfig().getString("limits-reset-time-mode",
+                ConfigManager.configManager.getString("use-times.default-reset-mode"));
+        String tempVal1 = product.getItemConfig().getString("limits-reset-time",
+                ConfigManager.configManager.getString("use-times.default-reset-time"));
         if (mode.equals("TIMED")) {
             return getTimedSellRefreshTime(tempVal1);
         }
@@ -95,7 +109,7 @@ public class ObjectUseTimesCache {
 
     public String getBuyRefreshTimeDisplayName() {
         LocalDateTime tempVal1 = getBuyRefreshTime();
-        if (tempVal1.getYear() == 1999) {
+        if (tempVal1 == null || tempVal1.getYear() == 1999) {
             return ConfigManager.configManager.getString("placeholder.refresh.never");
         }
         return CommonUtil.timeToString(tempVal1, ConfigManager.configManager.getString("placeholder.refresh.format"));
@@ -114,7 +128,7 @@ public class ObjectUseTimesCache {
         tempVal1 = tempVal1 + " " + time;
         LocalDateTime refreshResult = CommonUtil.stringToTime(tempVal1);
         if (lastBuyTime.isAfter(refreshResult)) {
-            refreshResult.plusDays(1L);
+            refreshResult = refreshResult.plusDays(1L);
         }
         return refreshResult;
     }
@@ -124,24 +138,24 @@ public class ObjectUseTimesCache {
         tempVal1 = tempVal1 + " " + time;
         LocalDateTime refreshResult = CommonUtil.stringToTime(tempVal1);
         if (lastSellTime.isAfter(refreshResult)) {
-            refreshResult.plusDays(1L);
+            refreshResult = refreshResult.plusDays(1L);
         }
         return refreshResult;
     }
 
     private LocalDateTime getTimerBuyRefreshTime(String time) {
         LocalDateTime refreshResult = lastBuyTime;
-        refreshResult.plusHours(Long.parseLong(time.split(":")[0]));
-        refreshResult.plusMinutes(Long.parseLong(time.split(":")[1]));
-        refreshResult.plusSeconds(Long.parseLong(time.split(":")[2]));
+        refreshResult = refreshResult.plusHours(Long.parseLong(time.split(":")[0]));
+        refreshResult = refreshResult.plusMinutes(Long.parseLong(time.split(":")[1]));
+        refreshResult = refreshResult.plusSeconds(Long.parseLong(time.split(":")[2]));
         return refreshResult;
     }
 
     private LocalDateTime getTimerSellRefreshTime(String time) {
         LocalDateTime refreshResult = lastSellTime;
-        refreshResult.plusHours(Long.parseLong(time.split(":")[0]));
-        refreshResult.plusMinutes(Long.parseLong(time.split(":")[1]));
-        refreshResult.plusSeconds(Long.parseLong(time.split(":")[2]));
+        refreshResult = refreshResult.plusHours(Long.parseLong(time.split(":")[0]));
+        refreshResult = refreshResult.plusMinutes(Long.parseLong(time.split(":")[1]));
+        refreshResult = refreshResult.plusSeconds(Long.parseLong(time.split(":")[2]));
         return refreshResult;
     }
 }

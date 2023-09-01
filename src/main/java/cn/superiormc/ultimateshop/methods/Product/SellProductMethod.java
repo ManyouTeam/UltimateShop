@@ -10,6 +10,7 @@ import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import cn.superiormc.ultimateshop.objects.ObjectShop;
 import cn.superiormc.ultimateshop.objects.caches.ObjectUseTimesCache;
 import cn.superiormc.ultimateshop.objects.items.products.ObjectProducts;
+import cn.superiormc.ultimateshop.utils.CommonUtil;
 import org.bukkit.entity.Player;
 
 import java.time.LocalDateTime;
@@ -47,6 +48,7 @@ public class SellProductMethod {
             return ProductMethodStatus.ERROR;
         }
         PlayerCache tempVal3 = CacheManager.cacheManager.playerCacheMap.get(player);
+        ServerCache tempVal11 = ServerCache.serverCache;
         if (tempVal3 == null) {
             LanguageManager.languageManager.sendStringText(player,
                     "error.player-not-found",
@@ -64,15 +66,15 @@ public class SellProductMethod {
         int playerUseTimes = 0;
         int serverUseTimes = 0;
         ObjectUseTimesCache tempVal9 = tempVal3.getUseTimesCache().get(tempVal2);
-        ObjectUseTimesCache tempVal8 = ServerCache.serverCache.getUseTimesCache().get(tempVal2);
+        ObjectUseTimesCache tempVal8 = tempVal11.getUseTimesCache().get(tempVal2);
         if (tempVal9 != null) {
             if (quick) {
                 // 重置
-                if (tempVal9.getSellRefreshTime().isAfter(LocalDateTime.now())) {
+                if (tempVal9.getSellRefreshTime() != null && tempVal9.getSellRefreshTime().isAfter(LocalDateTime.now())) {
                     tempVal3.getUseTimesCache().get(tempVal2).setSellUseTimes(0);
                 }
             }
-            playerUseTimes = tempVal3.getUseTimesCache().get(tempVal2).getSellUseTimes();
+            playerUseTimes = tempVal9.getSellUseTimes();
             if (tempVal2.getPlayerSellLimit(player) != -1 &&
                     playerUseTimes + multi - 1 > tempVal2.getPlayerSellLimit(player)) {
                 if (quick) {
@@ -92,18 +94,23 @@ public class SellProductMethod {
             }
         }
         else {
-            multi = 1;
+            tempVal3.setUseTimesCache(shop,
+                    product,
+                    0,
+                    0,
+                    null,
+                    null);
         }
         if (tempVal8 != null) {
             if (quick) {
                 // 重置
-                if (tempVal8.getBuyRefreshTime().isAfter(LocalDateTime.now())) {
+                if (tempVal8.getSellRefreshTime() != null && tempVal8.getSellRefreshTime().isAfter(LocalDateTime.now())) {
                     ServerCache.serverCache.getUseTimesCache().get(tempVal2).setSellUseTimes(0);
                 }
             }
             serverUseTimes = ServerCache.serverCache.getUseTimesCache().get(tempVal2).getSellUseTimes();
             if (tempVal2.getServerSellLimit(player) != -1 &&
-                    serverUseTimes + multi - 1 > tempVal2.getServerSellLimit(player)) {
+                    serverUseTimes + multi - 1 >= tempVal2.getServerSellLimit(player)) {
                 if (quick) {
                     LanguageManager.languageManager.sendStringText(player,
                             "limit-reached-sell-server",
@@ -114,11 +121,19 @@ public class SellProductMethod {
                             "limit",
                             String.valueOf(tempVal2.getServerSellLimit(player)),
                             "refresh",
-                            tempVal8.getBuyRefreshTimeDisplayName());
+                            tempVal8.getSellRefreshTimeDisplayName());
 
                 }
                 return ProductMethodStatus.SERVER_MAX;
             }
+        }
+        else {
+            tempVal11.setUseTimesCache(shop,
+                    product,
+                    0,
+                    0,
+                    null,
+                    null);
         }
         // price
         ObjectProducts tempVal5 = tempVal2.getReward();
@@ -143,9 +158,15 @@ public class SellProductMethod {
         // 执行动作
         tempVal2.getSellAction().doAction(player, multi);
         // limit+1
-        if (ConfigManager.configManager.getBoolean("database.enabled") && tempVal9 != null) {
+        if (tempVal9 != null) {
             tempVal9.setSellUseTimes(tempVal9.getSellUseTimes() + multi);
+            tempVal9.setLastSellTime(LocalDateTime.now());
             tempVal3.getUseTimesCache().put(tempVal2, tempVal9);
+        }
+        if (tempVal8 != null) {
+            tempVal8.setSellUseTimes(tempVal8.getSellUseTimes() + multi);
+            tempVal8.setLastSellTime(LocalDateTime.now());
+            tempVal11.getUseTimesCache().put(tempVal2, tempVal8);
         }
         LanguageManager.languageManager.sendStringText(player,
                 "success-sell",

@@ -24,9 +24,6 @@ public class ObjectLimit {
     }
 
     public int getPlayerLimits(Player player) {
-        if (!ConfigManager.configManager.getBoolean("use-times.enabled")) {
-            return -1;
-        }
         if (limitSection == null) {
             return -1;
         }
@@ -37,21 +34,21 @@ public class ObjectLimit {
                         TextUtil.withPAPI(limitSection.getString(conditionName, "0"), player)).intValue());
             }
             else {
-                if (conditionsSection.getDouble("default", -1) != -1) {
+                if (limitSection.getDouble("default", -1) != -1) {
                     result.add(MathUtil.doCalculate(
                             TextUtil.withPAPI(limitSection.getString("default", "0"), player)).intValue());
                 }
             }
         }
         if (result.size() == 0) {
-            result.add(-1);
+            result.add(0);
         }
         return Collections.max(result);
     }
 
     public int getServerLimits(Player player) {
         int tempVal2 = getPlayerLimits(player);
-        if (conditionsSection.getDouble("global", -1) != -1) {
+        if (limitSection.getDouble("global", -1) != -1) {
             tempVal2 = (MathUtil.doCalculate(
                     TextUtil.withPAPI(limitSection.getString("global", "0"), player)).intValue());
         }

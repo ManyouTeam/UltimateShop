@@ -144,7 +144,6 @@ public class ObjectPrices extends AbstractThings {
         for (int i = 0 ; i < multi ; i ++) {
             for (ObjectSinglePrice tempVal3 : getPrices(times + i)) {
                 if (priceMaps.containsKey(tempVal3)) {
-                    Bukkit.getConsoleSender().sendMessage("开始相加！");
                     priceMaps.put(tempVal3,
                             priceMaps.get(tempVal3) +
                                     tempVal3.getAmount(times + i));

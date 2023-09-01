@@ -10,6 +10,7 @@ import cn.superiormc.ultimateshop.objects.caches.ObjectUseTimesCache;
 import cn.superiormc.ultimateshop.objects.items.prices.ObjectPrices;
 import cn.superiormc.ultimateshop.objects.ObjectShop;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
+import cn.superiormc.ultimateshop.utils.CommonUtil;
 import org.bukkit.entity.Player;
 
 import java.time.LocalDateTime;
@@ -46,6 +47,7 @@ public class BuyProductMethod {
             return ProductMethodStatus.ERROR;
         }
         PlayerCache tempVal3 = CacheManager.cacheManager.playerCacheMap.get(player);
+        ServerCache tempVal11 = ServerCache.serverCache;
         if (tempVal3 == null) {
             LanguageManager.languageManager.sendStringText(player,
                     "error.player-not-found",
@@ -57,17 +59,17 @@ public class BuyProductMethod {
         int playerUseTimes = 0;
         int serverUseTimes = 0;
         ObjectUseTimesCache tempVal9 = tempVal3.getUseTimesCache().get(tempVal2);
-        ObjectUseTimesCache tempVal8 = ServerCache.serverCache.getUseTimesCache().get(tempVal2);
+        ObjectUseTimesCache tempVal8 = tempVal11.getUseTimesCache().get(tempVal2);
         if (tempVal9 != null) {
             if (quick) {
                 // 重置
-                if (tempVal9.getBuyRefreshTime().isAfter(LocalDateTime.now())) {
+                if (tempVal9.getBuyRefreshTime() != null && tempVal9.getBuyRefreshTime().isAfter(LocalDateTime.now())) {
                     tempVal3.getUseTimesCache().get(tempVal2).setBuyUseTimes(0);
                 }
             }
-            playerUseTimes = tempVal3.getUseTimesCache().get(tempVal2).getBuyUseTimes();
+            playerUseTimes = tempVal9.getBuyUseTimes();
             if (tempVal2.getPlayerBuyLimit(player) != -1 &&
-                    playerUseTimes + multi - 1  > tempVal2.getPlayerBuyLimit(player)) {
+                    playerUseTimes + multi - 1  >= tempVal2.getPlayerBuyLimit(player)) {
                 if (quick) {
                     LanguageManager.languageManager.sendStringText(player,
                             "limit-reached-buy-player",
@@ -85,12 +87,17 @@ public class BuyProductMethod {
             }
         }
         else {
-            multi = 1;
+            tempVal3.setUseTimesCache(shop,
+                    product,
+                    0,
+                    0,
+                    null,
+                    null);
         }
         if (tempVal8 != null) {
             if (quick) {
                 // 重置
-                if (tempVal8.getBuyRefreshTime().isAfter(LocalDateTime.now())) {
+                if (tempVal8.getBuyRefreshTime() != null && tempVal8.getBuyRefreshTime().isAfter(LocalDateTime.now())) {
                     ServerCache.serverCache.getUseTimesCache().get(tempVal2).setBuyUseTimes(0);
                 }
             }
@@ -112,6 +119,14 @@ public class BuyProductMethod {
                 }
                 return ProductMethodStatus.SERVER_MAX;
             }
+        }
+        else {
+            tempVal11.setUseTimesCache(shop,
+                    product,
+                    0,
+                    0,
+                    null,
+                    null);
         }
         // price
         ObjectPrices tempVal5 = tempVal2.getBuyPrice();
@@ -138,9 +153,15 @@ public class BuyProductMethod {
         // 执行动作
         tempVal2.getBuyAction().doAction(player, multi);
         // limit+1
-        if (ConfigManager.configManager.getBoolean("database.enabled") && tempVal9 != null) {
+        if (tempVal9 != null) {
             tempVal9.setBuyUseTimes(tempVal9.getBuyUseTimes() + multi);
+            tempVal9.setLastBuyTime(LocalDateTime.now());
             tempVal3.getUseTimesCache().put(tempVal2, tempVal9);
+        }
+        if (tempVal8 != null) {
+            tempVal8.setBuyUseTimes(tempVal8.getBuyUseTimes() + multi);
+            tempVal8.setLastBuyTime(LocalDateTime.now());
+            tempVal11.getUseTimesCache().put(tempVal2, tempVal8);
         }
         LanguageManager.languageManager.sendStringText(player,
                 "success-buy",

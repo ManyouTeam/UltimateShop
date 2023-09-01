@@ -103,7 +103,6 @@ public class ObjectMoreMenu extends ObjectMenu {
     }
 
     public int getDisplayItemSlot() {
-        Bukkit.getConsoleSender().sendMessage(displayItemSlot + "");
         return displayItemSlot;
     }
 }

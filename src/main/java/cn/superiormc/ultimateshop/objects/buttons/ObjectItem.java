@@ -42,7 +42,6 @@ public class ObjectItem extends AbstractButton {
         super(config);
         this.shop = shop;
         this.type = ButtonType.SHOP;
-        initDisplayItem();
         initReward();
         initBuyPrice();
         initSellPrice();
@@ -51,6 +50,7 @@ public class ObjectItem extends AbstractButton {
         initBuyLimit();
         initSellLimit();
         initBuyMoreMenu();
+        initDisplayItem();
     }
 
     private void initDisplayItem() {
