@@ -135,12 +135,15 @@ public class MainCommand implements CommandExecutor {
                 switch (args.length) {
                     case 3:
                         BuyProductMethod.startBuy(args[1], args[2], ((Player) sender).getPlayer(), true);
+                        break;
                     case 4:
                         BuyProductMethod.startBuy(args[1],
                                 args[2],
                                 ((Player) sender).getPlayer(),
                                 true,
-                                false);
+                                false,
+                                Integer.parseInt(args[3]));
+                        break;
                 }
             }
             else {
@@ -158,12 +161,15 @@ public class MainCommand implements CommandExecutor {
                 switch (args.length) {
                     case 3:
                         SellProductMethod.startSell(args[1], args[2], ((Player) sender).getPlayer(), true);
+                        break;
                     case 4:
                         SellProductMethod.startSell(args[1],
                                 args[2],
                                 ((Player) sender).getPlayer(),
                                 true,
-                                false);
+                                false,
+                                Integer.parseInt(args[3]));
+                        break;
                 }
             }
             else {

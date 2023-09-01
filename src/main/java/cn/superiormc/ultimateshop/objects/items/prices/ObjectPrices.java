@@ -3,6 +3,7 @@ package cn.superiormc.ultimateshop.objects.items.prices;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.ErrorManager;
 import cn.superiormc.ultimateshop.objects.items.AbstractThings;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
@@ -38,11 +39,11 @@ public class ObjectPrices extends AbstractThings {
         }
     }
 
-    public ObjectSinglePrice getAnyTargetPrice(Player player, int times, boolean takeOrGive, boolean buyOrSell) {
+    public ObjectSinglePrice getAnyTargetPrice(Player player, int times, boolean buyOrSell) {
         List<ObjectSinglePrice> maybeResult = new ArrayList<>();
         for (ObjectSinglePrice tempVal1 : getPrices(times)) {
             if (tempVal1.getCondition(player)) {
-                if (buyOrSell && tempVal1.checkHasEnough(player, takeOrGive, times)) {
+                if (buyOrSell && tempVal1.checkHasEnough(player, false, times)) {
                     return tempVal1;
                 }
                 else if (!buyOrSell) {
@@ -88,7 +89,7 @@ public class ObjectPrices extends AbstractThings {
             case UNKNOWN:
                 return;
             case ANY:
-                getAnyTargetPrice(player, times, true, false);
+                getAnyTargetPrice(player, times, false);
                 return;
             case ALL:
                 for (ObjectSinglePrice tempVal2 : getPrices(times)) {
@@ -111,10 +112,11 @@ public class ObjectPrices extends AbstractThings {
                 if (section == null) {
                     return true;
                 }
-                if (getAnyTargetPrice(player, times, false, true)
+                if (getAnyTargetPrice(player, times, true)
                         .checkHasEnough(player, take, times)) {
                     if (take) {
-                        getAnyTargetPrice(player, times, true, true);
+                        getAnyTargetPrice(player, times, true)
+                                .checkHasEnough(player, true, times);
                     }
                     return true;
                 }

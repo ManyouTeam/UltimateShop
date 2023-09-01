@@ -47,6 +47,10 @@ public class ObjectDisplayItem{
     }
 
     public ItemStack getDisplayItem(Player player) {
+        return getDisplayItem(player, 1);
+    }
+
+    public ItemStack getDisplayItem(Player player, int multi) {
         int buyTimes = 0;
         int sellTimes = 0;
         ObjectUseTimesCache tempVal9 = CacheManager.cacheManager.playerCacheMap.get(player).getUseTimesCache().get(item);
@@ -96,11 +100,11 @@ public class ObjectDisplayItem{
                     "buy-price",
                     item.getBuyPrice().getDisplayNameWithOneLine(
                             buyTimes,
-                            ConfigManager.configManager.getString("placeholder.price.split-symbol")),
+                            multi),
                     "sell-price",
                     item.getSellPrice().getDisplayNameWithOneLine(
                             sellTimes,
-                            ConfigManager.configManager.getString("placeholder.price.split-symbol")),
+                            multi),
                     "buy-limit-player",
                     String.valueOf(item.getPlayerBuyLimit(player)),
                     "sell-limit-player",
@@ -118,21 +122,23 @@ public class ObjectDisplayItem{
                     "sell-refresh",
                     String.valueOf(tempVal9 == null ? "" : tempVal9.getSellRefreshTimeDisplayName()),
                     "buy-click",
-                    getBuyClickPlaceholder(player),
+                    getBuyClickPlaceholder(player, multi),
                     "sell-click",
-                    getSellClickPlaceholder(player)
+                    getSellClickPlaceholder(player, multi),
+                    "amount",
+                    String.valueOf(multi)
             ));
             addLoreDisplayItem.setItemMeta(tempVal2);
         }
         return addLoreDisplayItem;
     }
 
-    private String getBuyClickPlaceholder(Player player) {
+    private String getBuyClickPlaceholder(Player player, int multi) {
         if (!ConfigManager.configManager.getBoolean("placeholder.click.enabled")) {
             return "";
         }
         String s = "";
-        switch(BuyProductMethod.startBuy(item.getShop(), item.getProduct(), player, false, true)) {
+        switch(BuyProductMethod.startBuy(item.getShop(), item.getProduct(), player, false, true, multi)) {
             case ERROR:
                 s = ConfigManager.configManager.getString("placeholder.click.error");
                 break;
@@ -152,12 +158,12 @@ public class ObjectDisplayItem{
         return s;
     }
 
-    private String getSellClickPlaceholder(Player player) {
+    private String getSellClickPlaceholder(Player player, int multi) {
         if (!ConfigManager.configManager.getBoolean("placeholder.click.enabled")) {
             return "";
         }
         String s = "";
-        switch(SellProductMethod.startSell(item.getShop(), item.getProduct(), player, false, true)) {
+        switch(SellProductMethod.startSell(item.getShop(), item.getProduct(), player, false, true, multi)) {
             case ERROR :
                 s = ConfigManager.configManager.getString("placeholder.click.error");
                 break;

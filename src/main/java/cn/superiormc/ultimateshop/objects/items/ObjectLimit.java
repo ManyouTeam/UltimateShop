@@ -50,13 +50,12 @@ public class ObjectLimit {
     }
 
     public int getServerLimits(Player player) {
-        int tempVal1 = getPlayerLimits(player);
-        int tempVal2 = tempVal1;
+        int tempVal2 = getPlayerLimits(player);
         if (conditionsSection.getDouble("global", -1) != -1) {
             tempVal2 = (MathUtil.doCalculate(
                     TextUtil.withPAPI(limitSection.getString("global", "0"), player)).intValue());
         }
-        return Math.min(tempVal1, tempVal2);
+        return tempVal2;
     }
 
     private boolean checkLimitsCondition(String conditionName, Player player){

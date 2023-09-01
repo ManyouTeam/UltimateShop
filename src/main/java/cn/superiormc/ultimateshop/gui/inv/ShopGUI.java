@@ -84,4 +84,13 @@ public class ShopGUI extends InvGUI {
         return true;
     }
 
+    public Map<Integer, ItemStack> getMenuItems(Player player) {
+        Map<Integer, AbstractButton> tempVal1 = menuButtons;
+        Map<Integer, ItemStack> resultItems = new HashMap<>();
+        for (int i : tempVal1.keySet()) {
+            resultItems.put(i, tempVal1.get(i).getDisplayItem(player));
+        }
+        return resultItems;
+    }
+
 }

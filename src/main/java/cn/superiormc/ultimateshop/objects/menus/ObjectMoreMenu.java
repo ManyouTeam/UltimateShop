@@ -1,8 +1,10 @@
 package cn.superiormc.ultimateshop.objects.menus;
 
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
+import cn.superiormc.ultimateshop.objects.buttons.ObjectMoreButton;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectMoreBuyButton;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectMoreDisplayButton;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.HashMap;
@@ -39,7 +41,7 @@ public class ObjectMoreMenu extends ObjectMenu {
                 int slot = i;
                 i ++;
                 if (displayItem.equals(String.valueOf(itemChar))) {
-                    displayItemSlot = i;
+                    displayItemSlot = slot;
                     menuItems.put(slot, new ObjectMoreDisplayButton(
                             menuConfigs.getConfigurationSection("display-item"),
                             item)
@@ -84,8 +86,7 @@ public class ObjectMoreMenu extends ObjectMenu {
             return;
         }
         for (String button : tempVal1.getKeys(false)) {
-            buttonItems.put(button, new ObjectMoreBuyButton(tempVal1.getConfigurationSection(button),
-                    item));
+            buttonItems.put(button, new ObjectMoreButton(tempVal1.getConfigurationSection(button)));
         }
         int i = 0;
         for (String singleLine : menuConfigs.getStringList("layout")) {
@@ -102,6 +103,7 @@ public class ObjectMoreMenu extends ObjectMenu {
     }
 
     public int getDisplayItemSlot() {
+        Bukkit.getConsoleSender().sendMessage(displayItemSlot + "");
         return displayItemSlot;
     }
 }

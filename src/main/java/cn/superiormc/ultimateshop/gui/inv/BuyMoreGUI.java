@@ -2,9 +2,12 @@ package cn.superiormc.ultimateshop.gui.inv;
 
 import cn.superiormc.ultimateshop.gui.InvGUI;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
+import cn.superiormc.ultimateshop.managers.ErrorManager;
 import cn.superiormc.ultimateshop.managers.LanguageManager;
 import cn.superiormc.ultimateshop.methods.Product.BuyProductMethod;
 import cn.superiormc.ultimateshop.methods.Product.SellProductMethod;
+import cn.superiormc.ultimateshop.objects.buttons.ButtonType;
+import cn.superiormc.ultimateshop.objects.buttons.ObjectMoreDisplayButton;
 import cn.superiormc.ultimateshop.objects.menus.ObjectMoreMenu;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import cn.superiormc.ultimateshop.objects.buttons.AbstractButton;
@@ -14,6 +17,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
@@ -47,17 +52,17 @@ public class BuyMoreGUI extends InvGUI {
             return;
         }
         // display item
+        menuButtons = menu.getMenu();
+        menuItems = getMenuItems(owner.getPlayer());
         int displaySlot = menu.getDisplayItemSlot();
         ItemStack tempVal1 = menuItems.get(displaySlot);
         tempVal1.setAmount(nowingAmount);
-        inv.setItem(displaySlot, tempVal1);
-        // 其他物品
-        menuButtons = menu.getMenu();
-        menuItems = getMenuItems(owner.getPlayer());
         if (Objects.isNull(inv)) {
             inv = Bukkit.createInventory(owner, menu.getInt("size", 54),
                     TextUtil.parse(menu.getString("title", "Shop")));
         }
+        inv.setItem(displaySlot, tempVal1);
+        // 其他物品
         for (int slot : menuButtons.keySet()) {
             inv.setItem(slot, menuItems.get(slot));
         }
@@ -70,6 +75,7 @@ public class BuyMoreGUI extends InvGUI {
         if (button == null) {
             return true;
         }
+        Bukkit.getConsoleSender().sendMessage(button.type.name());
         switch (button.type) {
             case SELECT_AMOUNT:
                 if (button.config.getInt("add-amount", -1) == -1) {
@@ -102,6 +108,7 @@ public class BuyMoreGUI extends InvGUI {
                                 !b,
                                 false,
                                 nowingAmount);
+                        break;
                     case "sell" :
                         SellProductMethod.startSell(item.getShop(),
                                 item.getProduct(),
@@ -109,9 +116,11 @@ public class BuyMoreGUI extends InvGUI {
                                 !b,
                                 false,
                                 nowingAmount);
+                        break;
                     default:
-                        LanguageManager.languageManager.sendStringText("§x§9§8§F§B§9§8[UltimateShop] §cUnknown click action: "
+                        ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cUnknown click action: "
                                 + ConfigManager.configManager.getClickAction(type));
+                        break;
                 }
                 break;
             default:
@@ -130,6 +139,20 @@ public class BuyMoreGUI extends InvGUI {
     @Override
     public boolean dragEventHandle(Set<Integer> slots) {
         return true;
+    }
+
+    public Map<Integer, ItemStack> getMenuItems(Player player) {
+        Map<Integer, AbstractButton> tempVal1 = menuButtons;
+        Map<Integer, ItemStack> resultItems = new HashMap<>();
+        for (int i : tempVal1.keySet()) {
+            AbstractButton tempVal2 = tempVal1.get(i);
+            ObjectMoreDisplayButton tempVal3 = null;
+            if (tempVal2 instanceof ObjectMoreDisplayButton) {
+                tempVal3 = (ObjectMoreDisplayButton)tempVal2;
+            }
+            resultItems.put(i, tempVal3.getDisplayItem(player, nowingAmount));
+        }
+        return resultItems;
     }
 
 }
