@@ -113,7 +113,7 @@ public class ObjectPrices extends AbstractThings {
                     return true;
                 }
                 if (getAnyTargetPrice(player, times, true)
-                        .checkHasEnough(player, take, times)) {
+                        .checkHasEnough(player, false, times)) {
                     if (take) {
                         getAnyTargetPrice(player, times, true)
                                 .checkHasEnough(player, true, times);
@@ -123,8 +123,13 @@ public class ObjectPrices extends AbstractThings {
                 return false;
             case ALL:
                 for (ObjectSinglePrice tempVal1 : getPrices(times)) {
-                    if (!tempVal1.checkHasEnough(player, take, times)) {
+                    if (!tempVal1.checkHasEnough(player, false, times)) {
                         return false;
+                    }
+                }
+                if (take) {
+                    for (ObjectSinglePrice tempVal1 : getPrices(times)) {
+                        tempVal1.checkHasEnough(player, true, times);
                     }
                 }
                 return true;
@@ -137,14 +142,15 @@ public class ObjectPrices extends AbstractThings {
     public List<String> getDisplayName(int times, int multi) {
         Map<ObjectSinglePrice, Double> priceMaps = new HashMap<>();
         for (int i = 0 ; i < multi ; i ++) {
-            for (ObjectSinglePrice tempVal3 : getPrices(times + multi)) {
+            for (ObjectSinglePrice tempVal3 : getPrices(times + i)) {
                 if (priceMaps.containsKey(tempVal3)) {
+                    Bukkit.getConsoleSender().sendMessage("开始相加！");
                     priceMaps.put(tempVal3,
                             priceMaps.get(tempVal3) +
-                                    tempVal3.getAmount(times + multi));
+                                    tempVal3.getAmount(times + i));
                 }
                 else {
-                    priceMaps.put(tempVal3, tempVal3.getAmount(times + multi));
+                    priceMaps.put(tempVal3, tempVal3.getAmount(times + i));
                 }
             }
         }

@@ -78,11 +78,11 @@ public class BuyMoreGUI extends InvGUI {
         Bukkit.getConsoleSender().sendMessage(button.type.name());
         switch (button.type) {
             case SELECT_AMOUNT:
-                if (button.config.getInt("add-amount", -1) == -1) {
+                if (button.config.getInt("add-amount", 0) == 0) {
                     if (button.config.getInt("set-amount", -1) == -1) {
-                        LanguageManager.languageManager.sendStringText(getOwner().getPlayer(),
+                        ErrorManager.errorManager.sendErrorMessage(
                                 "§x§9§8§F§B§9§8[UltimateShop] §cError: Can not find add-amount section " +
-                                        "in select amount button.");
+                                        "in select amount button, or you are setting add-amount to 0?");
                         return true;
                     }
                     else {
@@ -147,10 +147,13 @@ public class BuyMoreGUI extends InvGUI {
         for (int i : tempVal1.keySet()) {
             AbstractButton tempVal2 = tempVal1.get(i);
             ObjectMoreDisplayButton tempVal3 = null;
-            if (tempVal2 instanceof ObjectMoreDisplayButton) {
-                tempVal3 = (ObjectMoreDisplayButton)tempVal2;
+            if (tempVal2.type == ButtonType.DISPLAY) {
+                tempVal3 = (ObjectMoreDisplayButton) tempVal2;
+                resultItems.put(i, tempVal3.getDisplayItem(player, nowingAmount));
             }
-            resultItems.put(i, tempVal3.getDisplayItem(player, nowingAmount));
+            else {
+                resultItems.put(i, tempVal2.getDisplayItem(player));
+            }
         }
         return resultItems;
     }

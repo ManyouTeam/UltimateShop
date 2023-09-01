@@ -273,6 +273,6 @@ public class ObjectItem extends AbstractButton {
     }
 
     public ItemStack getDisplayItem(Player player, int multi) {
-        return displayItem.getDisplayItem(player);
+        return displayItem.getDisplayItem(player, multi);
     }
 }

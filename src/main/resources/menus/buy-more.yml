@@ -36,21 +36,21 @@ amount-items:
       name: '&c-1'
       lore:
         - '&7Click to remove 1 amount.'
-    add-amount: 1
+    add-amount: -1
   5:
     display-item:
       material: RED_WOOL
       name: '&c-10'
       lore:
         - '&7Click to remove 10 amount.'
-    add-amount: 10
+    add-amount: -10
   6:
     display-item:
       material: RED_WOOL
       name: '&c-32'
       lore:
         - '&7Click to remove 32 amount.'
-    add-amount: 32
+    add-amount: -32
 
 display-item: B
 

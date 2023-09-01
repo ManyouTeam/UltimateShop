@@ -84,6 +84,9 @@ public class BuyProductMethod {
                 return ProductMethodStatus.PLAYER_MAX;
             }
         }
+        else {
+            multi = 1;
+        }
         if (tempVal8 != null) {
             if (quick) {
                 // 重置
@@ -100,7 +103,7 @@ public class BuyProductMethod {
                             "item",
                             tempVal2.getDisplayName(),
                             "times",
-                            String.valueOf(playerUseTimes),
+                            String.valueOf(serverUseTimes),
                             "limit",
                             String.valueOf(tempVal2.getServerBuyLimit(player)),
                             "refresh",

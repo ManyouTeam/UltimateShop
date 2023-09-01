@@ -16,23 +16,23 @@ items:
       1:
         economy-plugin: Vault
         amount: 200
-        placeholder: '200 Coins'
+        placeholder: '{amount} Coins'
         start-apply: 0
       2:
         economy-plugin: PlayerPoints
         amount: 10
-        placeholder: '10 Points'
+        placeholder: '{amount} Points'
         start-apply: 5
     sell-prices:
       1:
         economy-plugin: Vault
         amount: 50
-        placeholder: '50 Coins'
+        placeholder: '{amount} Coins'
       2:
         economy-plugin: PlayerPoints
         amount: 1
         start-apply: 5
-        placeholder: '5 Points'
+        placeholder: '{amount} Points'
     buy-actions:
       - 'player_command: say %player% purchased an Apple!'
       - 'announcement: &7%player% purchased an Apple!'
