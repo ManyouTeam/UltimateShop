@@ -14,7 +14,7 @@ public class ObjectMoreButton extends AbstractButton {
     }
 
     @Override
-    public ItemStack getDisplayItem(Player player) {
+    public ItemStack getDisplayItem(Player player, int unUsed) {
         ConfigurationSection tempVal1 = config.getConfigurationSection("display-item");
         if (tempVal1 == null) {
             return new ItemStack(Material.BEDROCK);

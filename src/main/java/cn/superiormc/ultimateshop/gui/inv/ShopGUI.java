@@ -1,6 +1,8 @@
 package cn.superiormc.ultimateshop.gui.inv;
 
 import cn.superiormc.ultimateshop.gui.InvGUI;
+import cn.superiormc.ultimateshop.managers.CacheManager;
+import cn.superiormc.ultimateshop.managers.ErrorManager;
 import cn.superiormc.ultimateshop.managers.LanguageManager;
 import cn.superiormc.ultimateshop.objects.menus.ObjectMenu;
 import cn.superiormc.ultimateshop.objects.ObjectShop;
@@ -21,6 +23,8 @@ public class ShopGUI extends InvGUI {
     private ObjectShop shop;
 
     private ObjectMenu shopMenu = null;
+
+    private boolean reload = false;
 
     public ShopGUI(Player owner, ObjectShop shop) {
         super(owner);
@@ -88,7 +92,7 @@ public class ShopGUI extends InvGUI {
         Map<Integer, AbstractButton> tempVal1 = menuButtons;
         Map<Integer, ItemStack> resultItems = new HashMap<>();
         for (int i : tempVal1.keySet()) {
-            resultItems.put(i, tempVal1.get(i).getDisplayItem(player));
+            resultItems.put(i, tempVal1.get(i).getDisplayItem(player, 1));
         }
         return resultItems;
     }

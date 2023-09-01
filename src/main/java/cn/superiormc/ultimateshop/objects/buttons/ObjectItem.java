@@ -268,10 +268,6 @@ public class ObjectItem extends AbstractButton {
     }
 
     @Override
-    public ItemStack getDisplayItem(Player player) {
-        return displayItem.getDisplayItem(player);
-    }
-
     public ItemStack getDisplayItem(Player player, int multi) {
         return displayItem.getDisplayItem(player, multi);
     }

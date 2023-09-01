@@ -75,17 +75,13 @@ public class YamlDatabase {
         if (useTimeSection != null) {
             for (String shopID : useTimeSection.getKeys(false)) {
                 ConfigurationSection tempVal3 = useTimeSection.getConfigurationSection(shopID);
-                for (String productID : useTimeSection.getKeys(false)) {
+                for (String productID : tempVal3.getKeys(false)) {
                     ConfigurationSection tempVal4 = tempVal3.getConfigurationSection(productID);
-                    String shop = useTimeSection.getString("shop");
-                    String product = useTimeSection.getString("product");
-                    int buyUseTimes = useTimeSection.getInt("buyUseTimes");
-                    int sellUseTimes = useTimeSection.getInt("sellUseTimes");
-                    if (useTimeSection.getString("lastBuyTime") != null) {
-                        String lastPurchaseTime = useTimeSection.getString("lastBuyTime");
-                        String lastSellTime = useTimeSection.getString("lastSellTime");
-                        cache.setUseTimesCache(shop, product, buyUseTimes, sellUseTimes, lastPurchaseTime, lastSellTime);
-                    }
+                    int buyUseTimes = tempVal4.getInt("buyUseTimes");
+                    int sellUseTimes = tempVal4.getInt("sellUseTimes");
+                    String lastPurchaseTime = tempVal4.getString("lastBuyTime");
+                    String lastSellTime = tempVal4.getString("lastSellTime");
+                    cache.setUseTimesCache(shopID, productID, buyUseTimes, sellUseTimes, lastPurchaseTime, lastSellTime);
                 }
             }
             // 动态价格储存系统
@@ -94,6 +90,7 @@ public class YamlDatabase {
     }
 
     public static void updateData(Player player) {
+        boolean needDelete = false;
         ServerCache cache = null;
         File dir = new File(UltimateShop.instance.getDataFolder()+"/datas");
         File file = null;
@@ -111,7 +108,7 @@ public class YamlDatabase {
             }
             file = new File(dir, "global.yml");
             if (file.exists()){
-                file.delete();
+                needDelete = true;
             }
         }
         else {
@@ -135,7 +132,7 @@ public class YamlDatabase {
             if (tempVal6 == null) {
                 tempVal6 = tempVal5.createSection(tempVal4.getProduct());
             }
-            data.put("buyUseTime", tempVal1.get(tempVal4).getBuyUseTimes());
+            data.put("buyUseTimes", tempVal1.get(tempVal4).getBuyUseTimes());
             data.put("sellUseTimes", tempVal1.get(tempVal4).getSellUseTimes());
             if (tempVal1.get(tempVal4).getBuyRefreshTime() != null) {
                 data.put("lastBuyTime", tempVal1.get(tempVal4).getLastBuyTime());
@@ -147,6 +144,9 @@ public class YamlDatabase {
                 tempVal6.set(key, data.get(key));
             }
             try {
+                if (needDelete) {
+                    file.delete();
+                }
                 config.save(file);
             } catch (IOException e) {
                 ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: " +

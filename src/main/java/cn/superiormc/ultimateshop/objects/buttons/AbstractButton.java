@@ -19,7 +19,7 @@ public abstract class AbstractButton {
         // Empty...
     }
 
-    public ItemStack getDisplayItem(Player player) {
+    public ItemStack getDisplayItem(Player player, int multi) {
         return null;
     }
 

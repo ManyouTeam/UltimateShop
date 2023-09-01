@@ -147,12 +147,13 @@ public class BuyMoreGUI extends InvGUI {
         for (int i : tempVal1.keySet()) {
             AbstractButton tempVal2 = tempVal1.get(i);
             ObjectMoreDisplayButton tempVal3 = null;
-            if (tempVal2.type == ButtonType.DISPLAY) {
+            if (tempVal2.type == ButtonType.DISPLAY ||
+            tempVal2.type == ButtonType.CONFIRM) {
                 tempVal3 = (ObjectMoreDisplayButton) tempVal2;
                 resultItems.put(i, tempVal3.getDisplayItem(player, nowingAmount));
             }
             else {
-                resultItems.put(i, tempVal2.getDisplayItem(player));
+                resultItems.put(i, tempVal2.getDisplayItem(player, 1));
             }
         }
         return resultItems;

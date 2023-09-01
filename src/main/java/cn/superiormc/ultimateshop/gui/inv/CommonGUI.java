@@ -78,7 +78,7 @@ public class CommonGUI extends InvGUI {
         Map<Integer, AbstractButton> tempVal1 = menuButtons;
         Map<Integer, ItemStack> resultItems = new HashMap<>();
         for (int i : tempVal1.keySet()) {
-            resultItems.put(i, tempVal1.get(i).getDisplayItem(player));
+            resultItems.put(i, tempVal1.get(i).getDisplayItem(player, 1));
         }
         return resultItems;
     }

@@ -1,6 +1,7 @@
 package cn.superiormc.ultimateshop.objects.buttons;
 
 import cn.superiormc.ultimateshop.managers.ConfigManager;
+import cn.superiormc.ultimateshop.methods.GUI.ModifyDisplayItem;
 import cn.superiormc.ultimateshop.methods.Product.BuyProductMethod;
 import cn.superiormc.ultimateshop.methods.Product.SellProductMethod;
 import cn.superiormc.ultimateshop.utils.ItemUtil;
@@ -23,11 +24,12 @@ public class ObjectMoreBuyButton extends AbstractButton {
     }
 
     @Override
-    public ItemStack getDisplayItem(Player player) {
+    public ItemStack getDisplayItem(Player player, int multi) {
         ConfigurationSection tempVal1 = config.getConfigurationSection("display-item");
         if (tempVal1 == null) {
             return new ItemStack(Material.BEDROCK);
         }
-        return ItemUtil.buildItemStack(tempVal1);
+        ItemStack addLoreDisplayItem = ItemUtil.buildItemStack(tempVal1);
+        return ModifyDisplayItem.modifyItem(player, multi, addLoreDisplayItem, item);
     }
 }

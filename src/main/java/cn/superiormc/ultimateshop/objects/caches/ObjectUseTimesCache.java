@@ -76,6 +76,9 @@ public class ObjectUseTimesCache {
     }
 
     public LocalDateTime getBuyRefreshTime() {
+        if (lastBuyTime == null) {
+            return LocalDateTime.now().withYear(1999);
+        }
         String mode = product.getItemConfig().getString("limits-reset-mode",
                 ConfigManager.configManager.getString("use-times.default-reset-mode"));
         String tempVal1 = product.getItemConfig().getString("limits-reset-time",
@@ -92,6 +95,9 @@ public class ObjectUseTimesCache {
     }
 
     public LocalDateTime getSellRefreshTime() {
+        if (lastSellTime == null) {
+            return LocalDateTime.now().withYear(1999);
+        }
         String mode = product.getItemConfig().getString("limits-reset-time-mode",
                 ConfigManager.configManager.getString("use-times.default-reset-mode"));
         String tempVal1 = product.getItemConfig().getString("limits-reset-time",
