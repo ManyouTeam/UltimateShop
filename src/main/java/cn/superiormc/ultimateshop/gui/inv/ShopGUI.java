@@ -63,7 +63,8 @@ public class ShopGUI extends InvGUI {
         menuItems = getMenuItems(owner.getPlayer());
         if (Objects.isNull(inv)) {
             inv = Bukkit.createInventory(owner, shopMenu.getInt("size", 54),
-                    TextUtil.parse(shopMenu.getString("title", "Shop Editor")));
+                    TextUtil.parse(shopMenu.getString("title", shop.getShopDisplayName())
+                            .replace("{shop-name}", shop.getShopDisplayName())));
         }
         for (int slot : menuButtons.keySet()) {
             inv.setItem(slot, menuItems.get(slot));
@@ -73,6 +74,9 @@ public class ShopGUI extends InvGUI {
 
     @Override
     public boolean clickEventHandle(ClickType type, int slot) {
+        if (menuButtons.get(slot) == null) {
+            return true;
+        }
         menuButtons.get(slot).clickEvent(type, owner.getPlayer());
         constructGUI();
         return true;

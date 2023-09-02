@@ -10,6 +10,7 @@ import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 import java.io.File;
 import java.time.LocalDateTime;
@@ -112,5 +113,13 @@ public class CommonUtil {
             mkDir(new File(parentPath));
             dir.mkdir();
         }
+    }
+
+    public static String getItemName(ItemStack displayItem) {
+        return displayItem.getItemMeta().hasDisplayName() ?
+        displayItem.getItemMeta().getDisplayName() :
+        displayItem.getItemMeta().hasLocalizedName() ?
+        displayItem.getItemMeta().getLocalizedName() :
+        displayItem.getType().name();
     }
 }

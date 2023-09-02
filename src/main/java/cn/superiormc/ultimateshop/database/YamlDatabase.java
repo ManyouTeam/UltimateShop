@@ -21,10 +21,10 @@ public class YamlDatabase {
     public static void checkData(Player player) {
         ServerCache cache = null;
         File dir = new File(UltimateShop.instance.getDataFolder() + "/datas");
-        File file = null;
         if (!dir.exists()) {
             dir.mkdir();
         }
+        File file = null;
         if (player != null) {
             file = new File(dir, player.getUniqueId() + ".yml");
             if (!file.exists()) {
@@ -93,10 +93,10 @@ public class YamlDatabase {
         boolean needDelete = false;
         ServerCache cache = null;
         File dir = new File(UltimateShop.instance.getDataFolder()+"/datas");
-        File file = null;
         if (!dir.exists()) {
             dir.mkdir();
         }
+        File file = null;
         Map<String, Object> data = new HashMap<>();
         if (player == null) {
             data.put("playerName", "global");

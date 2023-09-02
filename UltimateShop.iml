@@ -138,6 +138,7 @@
     </orderEntry>
     <orderEntry type="library" scope="PROVIDED" name="Maven: me.clip:placeholderapi:2.11.2" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: org.jetbrains:annotations:19.0.0" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: me.soknight:peconomy:2.7.3" level="project" />
     <orderEntry type="module-library">
       <library name="Maven: com.github.oraxen:oraxen:1.152.2">
         <CLASSES>

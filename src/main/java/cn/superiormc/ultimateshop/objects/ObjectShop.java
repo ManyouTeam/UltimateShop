@@ -65,4 +65,8 @@ public class ObjectShop {
         return config.getString("settings.menu", "default");
     }
 
+    public String getShopDisplayName() {
+        return config.getString("settings.shop-name", getShopName());
+    }
+
 }

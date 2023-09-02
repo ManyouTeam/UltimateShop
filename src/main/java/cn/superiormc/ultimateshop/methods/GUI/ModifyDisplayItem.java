@@ -54,30 +54,30 @@ public class ModifyDisplayItem {
         ItemMeta tempVal2 = addLoreDisplayItem.getItemMeta();
         List<String> addLore = new ArrayList<>();
         addLore.addAll(ConfigManager.configManager.getListWithColor("display-item.add-lore.top"));
-
-            if (item.getPlayerBuyLimit(player) != -1) {
-                addLore.addAll(ConfigManager.configManager.getListWithColor("display-item.add-lore.buy-limit"));
-            }
-            if (item.getPlayerSellLimit(player) != -1) {
-                addLore.addAll(ConfigManager.configManager.getListWithColor("display-item.add-lore.sell-limit"));
-            }
-            if (tempVal9.getBuyUseTimes()
-                    == item.getPlayerBuyLimit(player)) {
-                addLore.addAll(ConfigManager.configManager.getListWithColor("display-item.add-lore.buy-refresh-player"));
-            }
-            if (tempVal9.getSellUseTimes()
-                    == item.getPlayerSellLimit(player)) {
-                addLore.addAll(ConfigManager.configManager.getListWithColor("display-item.add-lore.sell-refresh-player"));
-            }
-            if (tempVal10.getBuyUseTimes()
-                    == item.getServerBuyLimit(player)) {
-                addLore.addAll(ConfigManager.configManager.getListWithColor("display-item.add-lore.buy-refresh-server"));
-            }
-            if (tempVal10.getSellUseTimes()
-                    == item.getServerBuyLimit(player)) {
-                addLore.addAll(ConfigManager.configManager.getListWithColor("display-item.add-lore.sell-refresh-server"));
-            }
-
+        if (!item.getBuyPrice().empty) {
+            addLore.addAll(ConfigManager.configManager.getListWithColor("display-item.add-lore.buy-price"));
+        }
+        if (!item.getSellPrice().empty) {
+            addLore.addAll(ConfigManager.configManager.getListWithColor("display-item.add-lore.sell-price"));
+        }
+        if (item.getPlayerBuyLimit(player) != -1) {
+            addLore.addAll(ConfigManager.configManager.getListWithColor("display-item.add-lore.buy-limit"));
+        }
+        if (item.getPlayerSellLimit(player) != -1) {
+            addLore.addAll(ConfigManager.configManager.getListWithColor("display-item.add-lore.sell-limit"));
+        }
+        if (tempVal9 != null && tempVal9.getBuyRefreshTime().getYear() != 1999) {
+            addLore.addAll(ConfigManager.configManager.getListWithColor("display-item.add-lore.buy-refresh-player"));
+        }
+        if (tempVal9 != null && tempVal9.getSellRefreshTime().getYear() != 1999) {
+            addLore.addAll(ConfigManager.configManager.getListWithColor("display-item.add-lore.sell-refresh-player"));
+        }
+        if (tempVal10 != null && tempVal10.getBuyRefreshTime().getYear() != 1999) {
+            addLore.addAll(ConfigManager.configManager.getListWithColor("display-item.add-lore.buy-refresh-server"));
+        }
+        if (tempVal10 != null && tempVal10.getSellRefreshTime().getYear() != 1999) {
+            addLore.addAll(ConfigManager.configManager.getListWithColor("display-item.add-lore.sell-refresh-server"));
+        }
         if (multi == 1 && !item.getBuyPrice().empty) {
             addLore.addAll(ConfigManager.configManager.getListWithColor("display-item.add-lore.buy-click"));
         }

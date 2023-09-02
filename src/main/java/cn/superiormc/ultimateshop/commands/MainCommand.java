@@ -2,6 +2,7 @@ package cn.superiormc.ultimateshop.commands;
 
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.LanguageManager;
+import cn.superiormc.ultimateshop.methods.Create.CreateProduct;
 import cn.superiormc.ultimateshop.methods.GUI.OpenGUI;
 import cn.superiormc.ultimateshop.methods.Product.BuyProductMethod;
 import cn.superiormc.ultimateshop.methods.Product.SellProductMethod;
@@ -15,10 +16,39 @@ import org.bukkit.entity.Player;
 public class MainCommand implements CommandExecutor {
 
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+        if (args.length == 0) {
+            noCommand(sender);
+            return true;
+        }
+        else if (args[0].equals("createshop") ||
+                args[0].equals("createproduct")) {
+            if (sender instanceof Player) {
+                if (sender.hasPermission("ultimateshop.admin")) {
+                    String[] newArray = new String[args.length - 1];
+                    System.arraycopy(args, 1, newArray, 0, args.length - 1);
+                    switch (args[0]) {
+                        case "createshop" :
+                            CreateProduct.createShop((Player) sender, newArray);
+                            break;
+                        case "createproduct" :
+                            CreateProduct.createProduct((Player) sender, newArray);
+                            break;
+                        case "setproductbuyprice" :
+                            CreateProduct.setProductPrice((Player) sender, true, newArray);
+                            break;
+                        case "setproductsellprice" :
+                            CreateProduct.setProductPrice((Player) sender, false, newArray);
+                            break;
+                    }
+                } else {
+                    LanguageManager.languageManager.sendStringText(sender, "error.miss-permission");
+                }
+            } else {
+                LanguageManager.languageManager.sendStringText("error.in-game");
+            }
+            return true;
+        }
         switch (args.length) {
-            case 0:
-                noCommand(sender);
-                return true;
             case 1:
                 if (args[0].equals("reload")) {
                     reloadCommand(sender);
@@ -36,13 +66,6 @@ public class MainCommand implements CommandExecutor {
                 }
                 return true;
             case 3:
-                if (args[0].equals("quickbuy")) {
-                    quickBuyCommand(sender, args);
-                }
-                else if (args[0].equals("quicksell")) {
-                    quickSellCommand(sender, args);
-                }
-                return true;
             case 4:
                 if (args[0].equals("quickbuy")) {
                     quickBuyCommand(sender, args);
@@ -126,6 +149,9 @@ public class MainCommand implements CommandExecutor {
             else {
                 LanguageManager.languageManager.sendStringText((Player) sender, "error.miss-permission");
             }
+        }
+        else {
+            LanguageManager.languageManager.sendStringText("error.in-game");
         }
     }
 

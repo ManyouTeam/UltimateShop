@@ -3,7 +3,7 @@ package cn.superiormc.ultimateshop.objects.items.prices;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.ErrorManager;
 import cn.superiormc.ultimateshop.objects.items.AbstractThings;
-import org.bukkit.Bukkit;
+import cn.superiormc.ultimateshop.objects.items.ThingMode;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
@@ -39,11 +39,14 @@ public class ObjectPrices extends AbstractThings {
         }
     }
 
-    public ObjectSinglePrice getAnyTargetPrice(Player player, int times, boolean buyOrSell) {
+    public ObjectSinglePrice getAnyTargetPrice(Player player,
+                                               int times,
+                                               boolean buyOrSell,
+                                               int amount) {
         List<ObjectSinglePrice> maybeResult = new ArrayList<>();
         for (ObjectSinglePrice tempVal1 : getPrices(times)) {
             if (tempVal1.getCondition(player)) {
-                if (buyOrSell && tempVal1.checkHasEnough(player, false, times)) {
+                if (buyOrSell && tempVal1.checkHasEnough(player, false, times, amount)) {
                     return tempVal1;
                 }
                 else if (!buyOrSell) {
@@ -81,7 +84,7 @@ public class ObjectPrices extends AbstractThings {
     }
 
     @Override
-    public void giveThing(Player player, int times) {
+    public void giveSingleThing(Player player, int times, int amount) {
         if (section == null || singlePrices.isEmpty()) {
             return;
         }
@@ -89,11 +92,21 @@ public class ObjectPrices extends AbstractThings {
             case UNKNOWN:
                 return;
             case ANY:
-                getAnyTargetPrice(player, times, false);
+                ObjectSinglePrice tempVal5 = getAnyTargetPrice(player, times, false, 1);
+                tempVal5.playerGive(player, times, 1);
                 return;
             case ALL:
                 for (ObjectSinglePrice tempVal2 : getPrices(times)) {
-                    tempVal2.playerGive(player, times);
+                    tempVal2.playerGive(player, times, 1);
+                }
+                return;
+            case CLASSIC_ANY:
+                ObjectSinglePrice tempVal6 = getAnyTargetPrice(player, times, false, amount);
+                tempVal6.playerGive(player, times, amount);
+                return;
+            case CLASSIC_ALL:
+                for (ObjectSinglePrice tempVal2 : getPrices(times)) {
+                    tempVal2.playerGive(player, times, amount);
                 }
                 return;
             default:
@@ -104,7 +117,7 @@ public class ObjectPrices extends AbstractThings {
 
     // 作为价格时候使用
     @Override
-    public boolean takeThing(Player player, boolean take, int times) {
+    public boolean takeSingleThing(Player player, boolean take, int times, int amount) {
         switch (mode) {
             case UNKNOWN:
                 return false;
@@ -112,24 +125,49 @@ public class ObjectPrices extends AbstractThings {
                 if (section == null) {
                     return true;
                 }
-                if (getAnyTargetPrice(player, times, true)
-                        .checkHasEnough(player, false, times)) {
+                if (getAnyTargetPrice(player, times, true, 1)
+                        .checkHasEnough(player, false, times, 1)) {
                     if (take) {
-                        getAnyTargetPrice(player, times, true)
-                                .checkHasEnough(player, true, times);
+                        getAnyTargetPrice(player, times, true, 1)
+                                .checkHasEnough(player, true, times, 1);
                     }
                     return true;
                 }
                 return false;
             case ALL:
                 for (ObjectSinglePrice tempVal1 : getPrices(times)) {
-                    if (!tempVal1.checkHasEnough(player, false, times)) {
+                    if (!tempVal1.checkHasEnough(player, false, times, 1)) {
                         return false;
                     }
                 }
                 if (take) {
                     for (ObjectSinglePrice tempVal1 : getPrices(times)) {
-                        tempVal1.checkHasEnough(player, true, times);
+                        tempVal1.checkHasEnough(player, true, times, 1);
+                    }
+                }
+                return true;
+            case CLASSIC_ANY:
+                if (section == null) {
+                    return true;
+                }
+                if (getAnyTargetPrice(player, times, true, amount)
+                        .checkHasEnough(player, false, times, amount)) {
+                    if (take) {
+                        getAnyTargetPrice(player, times, true, amount)
+                                .checkHasEnough(player, true, times, amount);
+                    }
+                    return true;
+                }
+                return false;
+            case CLASSIC_ALL:
+                for (ObjectSinglePrice tempVal1 : getPrices(times)) {
+                    if (!tempVal1.checkHasEnough(player, false, times, amount)) {
+                        return false;
+                    }
+                }
+                if (take) {
+                    for (ObjectSinglePrice tempVal1 : getPrices(times)) {
+                        tempVal1.checkHasEnough(player, true, times, amount);
                     }
                 }
                 return true;
@@ -160,10 +198,6 @@ public class ObjectPrices extends AbstractThings {
         return tempVal1;
     }
 
-    public String getDisplayNameWithOneLine(int times, String splitSign) {
-        return getDisplayNameWithOneLine(times, 1);
-    }
-
     public String getDisplayNameWithOneLine(int times, int multi) {
         List<String> tempVal1 = getDisplayName(times, multi);
         StringBuilder tempVal2 = null;
@@ -171,10 +205,23 @@ public class ObjectPrices extends AbstractThings {
             if (tempVal2 == null) {
                 tempVal2 = new StringBuilder(tempVal3);
             }
-            else {
-                tempVal2 = new StringBuilder(tempVal2 +
-                        ConfigManager.configManager.getString("placeholder.price.split-symbol") +
+            switch (mode) {
+                case ANY:
+                case CLASSIC_ANY:
+                    tempVal2 = new StringBuilder(tempVal2 +
+                        ConfigManager.configManager.getString("placeholder.price.split-symbol-any") +
                         tempVal3);
+                    break;
+                case ALL:
+                case CLASSIC_ALL:
+                    tempVal2 = new StringBuilder(tempVal2 +
+                            ConfigManager.configManager.getString("placeholder.price.split-symbol-all") +
+                            tempVal3);
+                    break;
+                default:
+                    tempVal2 = new StringBuilder("Unknown Price Mode");
+                    break;
+
             }
         }
         return tempVal2.toString();

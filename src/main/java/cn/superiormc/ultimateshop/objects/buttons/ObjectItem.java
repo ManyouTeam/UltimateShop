@@ -12,6 +12,7 @@ import cn.superiormc.ultimateshop.objects.items.ThingMode;
 import cn.superiormc.ultimateshop.objects.items.prices.ObjectPrices;
 import cn.superiormc.ultimateshop.objects.items.products.ObjectProducts;
 import cn.superiormc.ultimateshop.objects.menus.ObjectMoreMenu;
+import cn.superiormc.ultimateshop.utils.CommonUtil;
 import com.cryptomorin.xseries.XMaterial;
 import com.cryptomorin.xseries.XTag;
 import org.bukkit.Bukkit;
@@ -71,6 +72,7 @@ public class ObjectItem extends AbstractButton {
                 }
                 displayItem = new ObjectDisplayItem(config.getConfigurationSection("products." +
                         tempVal1), this);
+                return;
             }
         }
         displayItem = new ObjectDisplayItem(config.getConfigurationSection("display-item"), this);
@@ -164,11 +166,7 @@ public class ObjectItem extends AbstractButton {
     }
 
     public String getDisplayName() {
-        return displayItem.getDisplayItem().getItemMeta().hasDisplayName() ?
-                displayItem.getDisplayItem().getItemMeta().getDisplayName() :
-                displayItem.getDisplayItem().getItemMeta().hasLocalizedName() ?
-                        displayItem.getDisplayItem().getItemMeta().getLocalizedName() :
-                        displayItem.getDisplayItem().getType().name();
+        return CommonUtil.getItemName(displayItem.getDisplayItem());
 
     }
 
@@ -257,17 +255,21 @@ public class ObjectItem extends AbstractButton {
         boolean b = ConfigManager.configManager.getBoolean("placeholder.click.enabled");
         switch (ConfigManager.configManager.getClickAction(type)){
             case "buy" :
-                BuyProductMethod.startBuy(getShop(), getProduct(), player, !b);
+                if (!buyPrice.empty) {
+                    BuyProductMethod.startBuy(getShop(), getProduct(), player, !b);
+                }
                 break;
             case "sell" :
-                SellProductMethod.startSell(getShop(), getProduct(), player, !b);
+                if (!sellPrice.empty) {
+                    SellProductMethod.startSell(getShop(), getProduct(), player, !b);
+                }
                 break;
             case "select-amount" :
-                OpenGUI.openMoreGUI(player, this);
+                if (config.getBoolean("settings.buy-more")) {
+                    OpenGUI.openMoreGUI(player, this);
+                }
                 break;
             default:
-                ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cUnknown click action: "
-                + ConfigManager.configManager.getClickAction(type));
                 break;
         }
     }

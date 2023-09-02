@@ -60,18 +60,19 @@ public class ObjectSinglePrice extends AbstractSingleThing {
     }
 
     @Override
-    public boolean playerHasEnough(Player player, boolean take, int times) {
+    public boolean playerHasEnough(Player player, boolean take, int times, int amount) {
         if (singleSection == null) {
             return false;
         }
         switch (type) {
             default:
-                return checkHasEnough(player, take, times);
+                return checkHasEnough(player, take, times, amount);
             case "custom":
                 return checkHasEnough(ConfigManager.configManager.getPrice(singleSection.getString("type")),
                         player,
                         take,
-                        times);
+                        times,
+                        amount);
         }
     }
 

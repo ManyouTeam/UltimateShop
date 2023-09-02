@@ -18,11 +18,11 @@ public class ObjectSingleProduct extends AbstractSingleThing {
     }
 
     @Override
-    public boolean playerHasEnough(Player player, boolean take, int times) {
+    public boolean playerHasEnough(Player player, boolean take, int times, int amount) {
         if (singleSection == null) {
             return false;
         }
-        return checkHasEnough(player, take, times);
+        return checkHasEnough(player, take, times, amount);
     }
 
     public ItemStack getDisplayItem() {
@@ -38,9 +38,6 @@ public class ObjectSingleProduct extends AbstractSingleThing {
                 return ItemsHook.getHookItem(pluginName, itemID);
             case "vanilla":
                 ItemStack itemStack = ItemUtil.buildItemStack(singleSection);
-                if (itemStack == null) {
-                    return null;
-                }
                 return itemStack;
             default :
                 return null;

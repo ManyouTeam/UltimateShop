@@ -10,7 +10,6 @@ import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import cn.superiormc.ultimateshop.objects.ObjectShop;
 import cn.superiormc.ultimateshop.objects.caches.ObjectUseTimesCache;
 import cn.superiormc.ultimateshop.objects.items.products.ObjectProducts;
-import cn.superiormc.ultimateshop.utils.CommonUtil;
 import org.bukkit.entity.Player;
 
 import java.time.LocalDateTime;
@@ -175,7 +174,7 @@ public class SellProductMethod {
                 "price",
                 tempVal2.getSellPrice().getDisplayNameWithOneLine(
                         playerUseTimes,
-                        ConfigManager.configManager.getString("placeholder.price.split-symbol")));
+                        multi));
         return ProductMethodStatus.DONE;
     }
 }

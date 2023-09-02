@@ -4,5 +4,7 @@ public enum ThingMode {
 
     UNKNOWN,
     ALL,
-    ANY
+    CLASSIC_ALL,
+    ANY,
+    CLASSIC_ANY
 }

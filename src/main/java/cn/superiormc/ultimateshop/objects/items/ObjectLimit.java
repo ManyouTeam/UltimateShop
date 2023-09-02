@@ -47,6 +47,9 @@ public class ObjectLimit {
     }
 
     public int getServerLimits(Player player) {
+        if (limitSection == null) {
+            return -1;
+        }
         int tempVal2 = getPlayerLimits(player);
         if (limitSection.getDouble("global", -1) != -1) {
             tempVal2 = (MathUtil.doCalculate(

@@ -1,16 +1,50 @@
 settings:
   menu: 'example-shop-menu'
+  buy-more: true
+  shop-name: 'Food Shop'
 
 items:
   A:
-    display-item:
-      material: APPLE
     give-item: true
     price-mode: ANY
     product-mode: ALL
     products:
       1:
         material: APPLE
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: 200
+        placeholder: '{amount} Coins'
+        start-apply: 0
+      2:
+        economy-plugin: PlayerPoints
+        amount: 10
+        placeholder: '{amount} Points'
+        start-apply: 5
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: 50
+        placeholder: '{amount} Coins'
+      2:
+        economy-plugin: PlayerPoints
+        amount: 1
+        start-apply: 5
+        placeholder: '{amount} Points'
+    buy-actions:
+      - 'player_command: say %player% purchased an Apple!'
+      - 'announcement: &7%player% purchased an Apple!'
+  B:
+    display-item:
+      material: BREAD
+    give-item: true
+    price-mode: ANY
+    product-mode: ALL
+    products:
+      1:
+        material: BREAD
         amount: 1
     buy-prices:
       1:

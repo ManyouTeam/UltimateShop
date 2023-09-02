@@ -78,4 +78,11 @@ public class LanguageManager {
         }
     }
 
+    public String getStringText(String path) {
+        if (this.messageFile.getString(path) == null) {
+            return "§cCan not found language key: " + path + "!";
+        }
+        return this.messageFile.getString(path);
+    }
+
 }

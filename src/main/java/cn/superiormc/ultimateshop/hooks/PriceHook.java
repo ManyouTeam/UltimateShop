@@ -12,6 +12,8 @@ import org.black_ixx.playerpoints.PlayerPoints;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.RegisteredServiceProvider;
+import ru.soknight.peconomy.api.PEconomyAPI;
+import ru.soknight.peconomy.database.model.WalletModel;
 import su.nightexpress.coinsengine.api.CoinsEngineAPI;
 import su.nightexpress.coinsengine.api.currency.Currency;
 import su.nightexpress.gamepoints.api.GamePointsAPI;
@@ -122,6 +124,23 @@ public class PriceHook {
                 } else {
                     return false;
                 }
+            case "peconomy":
+                PEconomyAPI peAPI = PEconomyAPI.get();
+                if (peAPI == null) {
+                    ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cCan not hook into PEconomy plugin!");
+                    return false;
+                }
+                if (peAPI.hasAmount(player.getName(), currencyName, (int) value)) {
+                    if (take) {
+                        WalletModel wallet = peAPI.getWallet(player.getName());
+                        wallet.takeAmount(currencyName, (int) value);
+                        peAPI.updateWallet(wallet);
+                    }
+                    return true;
+                }
+                else {
+                    return false;
+                }
         }
         ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: You set hook plugin to "
                 + pluginName + " in UI config, however for now UltimateShop does not support it!");
@@ -153,7 +172,7 @@ public class PriceHook {
             }
         }
         ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: You set economy type to "
-                + vanillaType + " in UI config, however for now UltimateShop does not support it!");
+                + vanillaType + " in shop config, however for now UltimateShop does not support it!");
         return false;
     }
 

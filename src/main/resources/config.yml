@@ -28,9 +28,11 @@ display-item:
   add-displayname: ' x{amount}'
   add-lore:
     top:
-      - '&7Purchase: {buy-price}'
-      - '&7Sell: {sell-price}'
       - ''
+    buy-price:
+      - '&7Purchase: {buy-price}'
+    sell-price:
+      - '&7Sell: {sell-price}'
     buy-limit:
       - '&7Player Buy Stock: {buy-times-player}/{buy-limit-player}'
       - '&7Server Buy Stock: {buy-times-server}/{buy-limit-server}'
@@ -65,7 +67,8 @@ placeholder:
     format: "yyyy-MM-dd HH:mm:ss"
     never: "Never"
   price:
-    split-symbol: ', '
+    split-symbol-any: 'or '
+    split-symbol-all: ', '
     unknown: "Unknown"
   click:
     enabled: true

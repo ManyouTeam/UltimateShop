@@ -1,6 +1,5 @@
 package cn.superiormc.ultimateshop.objects.items;
 
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
@@ -28,25 +27,50 @@ public abstract class AbstractThings {
         return mode;
     }
 
-    public abstract void giveThing(Player player, int times);
+    public abstract void giveSingleThing(Player player, int times, int amount);
 
     public void giveThing(Player player, int times, int multi) {
-        for (int i = 0 ; i < multi ; i ++) {
-            giveThing(player, times + i);
+        switch (mode) {
+            case ALL:
+            case ANY:
+                for (int i = 0; i < multi; i++) {
+                    giveSingleThing(player, times + i, 1);
+                }
+                break;
+            case CLASSIC_ALL:
+            case CLASSIC_ANY:
+                giveSingleThing(player, times, multi);
+                break;
         }
     }
 
-    public abstract boolean takeThing(Player player, boolean take, int times);
+    public abstract boolean takeSingleThing(Player player, boolean take, int times, int amount);
+
 
     public boolean takeThing(Player player, boolean take, int times, int multi) {
-        for (int i = 0 ; i < multi ; i ++) {
-            if (!takeThing(player, take, times + i)) {
-                if (!take) {
-                    return false;
+        switch (mode) {
+            case ALL:
+            case ANY:
+                for (int i = 0 ; i < multi ; i ++) {
+                    if (!takeSingleThing(player, take, times + i, 1)) {
+                        if (!take) {
+                            return false;
+                        }
+                    }
                 }
-            }
+                return true;
+            case CLASSIC_ALL:
+            case CLASSIC_ANY:
+                if (!takeSingleThing(player, take, times, multi)) {
+                    if (!take) {
+                        return false;
+                    }
+                }
+                return true;
+            default:
+                return false;
         }
-        return true;
+
     }
 
     private void initThingMode(String mode) {

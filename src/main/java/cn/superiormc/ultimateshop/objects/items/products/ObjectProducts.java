@@ -35,7 +35,7 @@ public class ObjectProducts extends AbstractThings {
     }
 
     @Override
-    public void giveThing(Player player, int times) {
+    public void giveSingleThing(Player player, int times, int amount) {
         if (section == null || singleProducts.isEmpty()) {
             return;
         }
@@ -44,11 +44,20 @@ public class ObjectProducts extends AbstractThings {
                 return;
             case ANY:
                 ObjectSingleProduct tempVal1 = RandomUtil.getRandomElement(singleProducts);
-                tempVal1.playerGive(player, times);
+                tempVal1.playerGive(player, times, 1);
                 return;
             case ALL:
                 for (ObjectSingleProduct tempVal2 : singleProducts) {
-                tempVal2.playerGive(player, times);
+                tempVal2.playerGive(player, times, 1);
+                }
+                return;
+            case CLASSIC_ANY:
+                ObjectSingleProduct tempVal3 = RandomUtil.getRandomElement(singleProducts);
+                tempVal3.playerGive(player, times, amount);
+                return;
+            case CLASSIC_ALL:
+                for (ObjectSingleProduct tempVal4 : singleProducts) {
+                    tempVal4.playerGive(player, times, amount);
                 }
                 return;
             default:
@@ -58,20 +67,34 @@ public class ObjectProducts extends AbstractThings {
     }
 
     @Override
-    public boolean takeThing(Player player, boolean take, int times) {
+    public boolean takeSingleThing(Player player, boolean take, int times, int amount) {
         switch (mode) {
             case UNKNOWN:
                 return false;
             case ANY:
                 for (ObjectSingleProduct tempVal1 : singleProducts) {
-                    if (tempVal1.checkHasEnough(player, take, times)) {
+                    if (tempVal1.checkHasEnough(player, take, times, 1)) {
                         return true;
                     }
                 }
                 return false;
             case ALL:
                 for (ObjectSingleProduct tempVal1 : singleProducts) {
-                    if (!tempVal1.checkHasEnough(player, take, times)) {
+                    if (!tempVal1.checkHasEnough(player, take, times, 1)) {
+                        return false;
+                    }
+                }
+                return true;
+            case CLASSIC_ANY:
+                for (ObjectSingleProduct tempVal1 : singleProducts) {
+                    if (tempVal1.checkHasEnough(player, take, times, amount)) {
+                        return true;
+                    }
+                }
+                return false;
+            case CLASSIC_ALL:
+                for (ObjectSingleProduct tempVal1 : singleProducts) {
+                    if (!tempVal1.checkHasEnough(player, take, times, amount)) {
                         return false;
                     }
                 }

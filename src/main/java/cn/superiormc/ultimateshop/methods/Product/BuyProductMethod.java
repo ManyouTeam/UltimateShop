@@ -10,7 +10,6 @@ import cn.superiormc.ultimateshop.objects.caches.ObjectUseTimesCache;
 import cn.superiormc.ultimateshop.objects.items.prices.ObjectPrices;
 import cn.superiormc.ultimateshop.objects.ObjectShop;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
-import cn.superiormc.ultimateshop.utils.CommonUtil;
 import org.bukkit.entity.Player;
 
 import java.time.LocalDateTime;
@@ -138,8 +137,7 @@ public class BuyProductMethod {
                         tempVal2.getDisplayName(),
                         "price",
                         tempVal5.getDisplayNameWithOneLine(
-                                playerUseTimes,
-                                ConfigManager.configManager.getString("placeholder.price.split-symbol")));
+                                playerUseTimes, multi));
             }
             return ProductMethodStatus.NOT_ENOUGH;
         }
@@ -170,7 +168,7 @@ public class BuyProductMethod {
                 "price",
                 tempVal5.getDisplayNameWithOneLine(
                         playerUseTimes,
-                        ConfigManager.configManager.getString("placeholder.price.split-symbol")));
+                        multi));
         return ProductMethodStatus.DONE;
     }
 }

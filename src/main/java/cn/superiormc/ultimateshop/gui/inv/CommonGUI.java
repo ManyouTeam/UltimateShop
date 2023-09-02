@@ -59,6 +59,9 @@ public class CommonGUI extends InvGUI {
 
     @Override
     public boolean clickEventHandle(ClickType type, int slot) {
+        if (menuButtons.get(slot) == null) {
+            return true;
+        }
         menuButtons.get(slot).clickEvent(type, owner.getPlayer());
         constructGUI();
         return true;
