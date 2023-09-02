@@ -194,6 +194,9 @@ public class PriceHook {
             if (CheckValidHook.checkValid(pluginName, item, temItem).equals(item)) {
                 amount += tempVal1.getAmount();
             }
+            else if (temItem == ItemsHook.getHookItem(pluginName, item)) {
+                amount += tempVal1.getAmount();
+            }
         }
         if (amount >= value) {
             if (take) {
