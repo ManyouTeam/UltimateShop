@@ -191,6 +191,7 @@ public class ObjectPrices extends AbstractThings {
                         }
                     }
                 }
+                break;
             case CLASSIC_ALL:
             case CLASSIC_ANY:
                 for (ObjectSinglePrice tempVal3 : getPrices(times)) {
@@ -203,6 +204,7 @@ public class ObjectPrices extends AbstractThings {
                         priceMaps.put(tempVal3, tempVal3.getAmount(player, times) * multi);
                     }
                 }
+                break;
         }
         List<String> tempVal1 = new ArrayList<>();
         for (ObjectSinglePrice tempVal2 : priceMaps.keySet()) {

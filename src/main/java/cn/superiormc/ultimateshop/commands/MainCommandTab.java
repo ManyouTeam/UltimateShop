@@ -107,6 +107,7 @@ public class MainCommandTab implements TabCompleter {
                         tempVal1.add("exp");
                         tempVal1.add(LanguageManager.languageManager.getStringText("command-tab.enter-economy-plugin"));
                         tempVal1.add(LanguageManager.languageManager.getStringText("command-tab.enter-hook-plugin"));
+                        break;
                 }
             case 5:
                 switch (args[0]) {

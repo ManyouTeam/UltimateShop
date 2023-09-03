@@ -86,10 +86,10 @@ public class ModifyDisplayItem {
                 tempVal10.getSellUseTimes() >= item.getServerSellLimit(player)) {
             addLore.addAll(ConfigManager.configManager.getListWithColor("display-item.add-lore.sell-refresh-server"));
         }
-        if (multi == 1 && !item.getBuyPrice().empty) {
+        if (!item.getBuyPrice().empty) {
             addLore.addAll(ConfigManager.configManager.getListWithColor("display-item.add-lore.buy-click"));
         }
-        if (multi == 1 && !item.getSellPrice().empty) {
+        if (!item.getSellPrice().empty) {
             addLore.addAll(ConfigManager.configManager.getListWithColor("display-item.add-lore.sell-click"));
         }
         addLore.addAll(ConfigManager.configManager.getListWithColor("display-item.add-lore.below"));

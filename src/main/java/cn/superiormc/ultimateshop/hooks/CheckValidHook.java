@@ -47,7 +47,7 @@ public class CheckValidHook {
                 return null;
             }
             else {
-                return tempVal1 + ";;" + tempVal2;
+                return tempVal2 + ";;" + tempVal1;
             }
         }
         else if (pluginName.equals("ecoitems")) {
@@ -67,8 +67,10 @@ public class CheckValidHook {
             else {
                 String tempVal2 = tempVal1.getId();
                 ArmorSlot tempVal3 = ArmorSlot.getSlot(itemStack);
-                tempVal3.toString();
-                return tempVal3 + ";;" + tempVal2;
+                if (tempVal3 == null) {
+                    return null;
+                }
+                return tempVal2 + ";;" + tempVal3.toString();
             }
         }
         else if (pluginName.equals("mythicmobs")) {

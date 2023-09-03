@@ -9,6 +9,7 @@ import me.TechsCode.UltraEconomy.UltraEconomy;
 import me.TechsCode.UltraEconomy.UltraEconomyAPI;
 import net.milkbowl.vault.economy.Economy;
 import org.black_ixx.playerpoints.PlayerPoints;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.RegisteredServiceProvider;
@@ -191,7 +192,8 @@ public class PriceHook {
             }
             ItemStack temItem = tempVal1.clone();
             temItem.setAmount(1);
-            if (CheckValidHook.checkValid(pluginName, item, temItem).equals(item)) {
+            String tempVal10 = CheckValidHook.checkValid(pluginName, item, temItem);
+            if (tempVal10 != null && tempVal10.equals(item)) {
                 amount += tempVal1.getAmount();
             }
             else if (temItem == ItemsHook.getHookItem(pluginName, item)) {
@@ -206,7 +208,8 @@ public class PriceHook {
                     }
                     ItemStack temItem = storage[i].clone();
                     temItem.setAmount(1);
-                    if (temItem.equals(item)) {
+                    String tempVal10 = CheckValidHook.checkValid(pluginName, item, temItem);
+                    if (tempVal10 != null && tempVal10.equals(item)) {
                         if (storage[i].getAmount() >= value) {
                             storage[i].setAmount(storage[i].getAmount() - value);
                             break;

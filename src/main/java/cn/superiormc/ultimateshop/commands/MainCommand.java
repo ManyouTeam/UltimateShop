@@ -9,6 +9,7 @@ import cn.superiormc.ultimateshop.methods.Create.CreateProduct;
 import cn.superiormc.ultimateshop.methods.GUI.OpenGUI;
 import cn.superiormc.ultimateshop.methods.Product.BuyProductMethod;
 import cn.superiormc.ultimateshop.methods.Product.SellProductMethod;
+import cn.superiormc.ultimateshop.methods.ReloadPlugin;
 import cn.superiormc.ultimateshop.objects.menus.ObjectMenu;
 import cn.superiormc.ultimateshop.objects.ObjectShop;
 import org.bukkit.Bukkit;
@@ -125,20 +126,7 @@ public class MainCommand implements CommandExecutor {
 
     private void reloadCommand(CommandSender sender) {
         if (sender.hasPermission("ultimateshop.reload")) {
-            if (ServerCache.serverCache != null) {
-                ServerCache.serverCache.shutServerCache();
-            }
-            for (Player player : Bukkit.getOnlinePlayers()) {
-                CacheManager.cacheManager.playerCacheMap.get(player).shutPlayerCache();
-            }
-            new ConfigManager();
-            new LanguageManager();
-            new CacheManager();
-            for (Player player : Bukkit.getOnlinePlayers()) {
-                CacheManager.cacheManager.playerCacheMap.put(player, new PlayerCache(player));
-                CacheManager.cacheManager.playerCacheMap.get(player).initPlayerCache();
-            }
-            LanguageManager.languageManager.sendStringText(sender, "plugin.reloaded");
+            ReloadPlugin.reload(sender);
         }
         else {
             LanguageManager.languageManager.sendStringText(sender, "error.miss-permission");

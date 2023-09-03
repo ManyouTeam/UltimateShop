@@ -6,6 +6,7 @@ import cn.superiormc.ultimateshop.hooks.PriceHook;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.LanguageManager;
 import cn.superiormc.ultimateshop.methods.ProductMethodStatus;
+import cn.superiormc.ultimateshop.methods.ReloadPlugin;
 import cn.superiormc.ultimateshop.objects.ObjectShop;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import cn.superiormc.ultimateshop.objects.menus.ObjectMenu;
@@ -174,6 +175,7 @@ public class CreateProduct {
             file.delete();
             try {
                 config.save(file);
+                ReloadPlugin.reload(player);
                 LanguageManager.languageManager.sendStringText(player,
                         "editor.product-created",
                         "product",
@@ -304,6 +306,7 @@ public class CreateProduct {
             file.delete();
             try {
                 config.save(file);
+                ReloadPlugin.reload(player);
                 LanguageManager.languageManager.sendStringText(player,
                         "editor.product-created",
                         "product",
