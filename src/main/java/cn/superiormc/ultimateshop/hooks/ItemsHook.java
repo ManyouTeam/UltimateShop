@@ -1,7 +1,7 @@
 package cn.superiormc.ultimateshop.hooks;
 
-import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.managers.ErrorManager;
+import cn.superiormc.ultimateshop.utils.CommonUtil;
 import com.willfp.eco.core.items.Items;
 import com.willfp.ecoarmor.sets.ArmorSet;
 import com.willfp.ecoarmor.sets.ArmorSets;
@@ -19,7 +19,7 @@ import org.bukkit.inventory.ItemStack;
 public class ItemsHook {
 
     public static ItemStack getHookItem(String pluginName, String itemID) {
-        if (!UltimateShop.instance.getServer().getPluginManager().isPluginEnabled(pluginName)) {
+        if (!CommonUtil.checkPluginLoad(pluginName)) {
             ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Your server don't have " + pluginName +
                     " plugin, but your UI config try use its hook!");
             return null;

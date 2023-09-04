@@ -1,6 +1,5 @@
 package cn.superiormc.ultimateshop.managers;
 
-import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.commands.MainCommand;
 import cn.superiormc.ultimateshop.commands.MainCommandTab;
 import org.bukkit.Bukkit;

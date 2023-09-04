@@ -1,6 +1,5 @@
 package cn.superiormc.ultimateshop.objects.items;
 
-import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.utils.TextUtil;
 import cn.superiormc.ultimateshop.utils.MathUtil;
 import org.bukkit.configuration.ConfigurationSection;

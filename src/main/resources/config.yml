@@ -18,7 +18,7 @@ use-times:
 
 # TODO
 dynamic-prices:
-  enabled: false
+  default-enabled: false
   default-add-amount: 5
   default-remove-amount: 4
 
@@ -85,7 +85,7 @@ placeholder:
 
 database:
   enabled: false
-  jdbc-url: "jdbc:mysql://localhost:3306/economylimit?useSSL=false&autoReconnect=true"
+  jdbc-url: "jdbc:mysql://localhost:3306/ultimateshop?useSSL=false&autoReconnect=true"
   jdbc-class: "com.mysql.cj.jdbc.Driver"
   properties:
     user: root

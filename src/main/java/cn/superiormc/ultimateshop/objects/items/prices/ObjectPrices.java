@@ -3,7 +3,6 @@ package cn.superiormc.ultimateshop.objects.items.prices;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.ErrorManager;
 import cn.superiormc.ultimateshop.objects.items.AbstractThings;
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
@@ -138,7 +137,6 @@ public class ObjectPrices extends AbstractThings {
                     if (!tempVal1.checkHasEnough(player, false, times, 1)) {
                         return false;
                     }
-                    Bukkit.getConsoleSender().sendMessage(tempVal1.getDisplayName(amount) + "已扣除！");
                 }
                 if (take) {
                     for (ObjectSinglePrice tempVal1 : getPrices(times)) {

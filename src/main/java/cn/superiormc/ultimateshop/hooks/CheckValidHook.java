@@ -1,7 +1,7 @@
 package cn.superiormc.ultimateshop.hooks;
 
-import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.managers.ErrorManager;
+import cn.superiormc.ultimateshop.utils.CommonUtil;
 import com.willfp.ecoarmor.sets.ArmorSet;
 import com.willfp.ecoarmor.sets.ArmorSlot;
 import com.willfp.ecoarmor.sets.ArmorUtils;
@@ -17,9 +17,9 @@ public class CheckValidHook {
 
     public static String checkValid(String pluginName, String itemID, ItemStack itemStack) {
         pluginName = pluginName.toLowerCase();
-        if (!UltimateShop.instance.getServer().getPluginManager().isPluginEnabled(pluginName)) {
-            ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: You set hook plugin to "
-                    + pluginName + " in shop config, however for now UltimateShop does not support it!");
+        if (!CommonUtil.checkPluginLoad(pluginName)) {
+            ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Your server don't have " + pluginName +
+                    " plugin, but your shop config try use its hook!");
             return null;
         }
         else if (pluginName.equals("itemsadder")) {

@@ -2,6 +2,7 @@ package cn.superiormc.ultimateshop.hooks;
 
 import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.managers.ErrorManager;
+import cn.superiormc.ultimateshop.utils.CommonUtil;
 import com.willfp.ecobits.currencies.Currencies;
 import com.willfp.ecobits.currencies.CurrencyUtils;
 import me.TechsCode.UltraEconomy.UltraEconomy;
@@ -9,7 +10,6 @@ import me.TechsCode.UltraEconomy.UltraEconomyAPI;
 import net.milkbowl.vault.economy.Economy;
 import org.black_ixx.playerpoints.PlayerPoints;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import su.nightexpress.coinsengine.api.CoinsEngineAPI;
 import su.nightexpress.coinsengine.api.currency.Currency;
@@ -21,7 +21,7 @@ import java.math.BigDecimal;
 public class EconomyHook {
 
     public static void giveEconomy(String pluginName, String currencyName, Player player, double value) {
-        if (!UltimateShop.instance.getServer().getPluginManager().isPluginEnabled(pluginName)) {
+        if (!CommonUtil.checkPluginLoad(pluginName)) {
             ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Your server don't have " + pluginName +
                     " plugin, but your shop config try use its hook!");
             return;
