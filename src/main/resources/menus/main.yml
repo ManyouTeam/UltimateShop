@@ -1,3 +1,9 @@
+# DO NOT USE THIS FILE AS YOUR REAL MENU CONFIGS! COPY NEW ONE PLEASE!!
+# OTHERWISE IT WILL MAKE BUGS!!!
+# For example, if you delete buttons section here, plugin will try read their
+# default value in main.yml that saved in jar file, so do not use this file as real
+# menu configs!
+
 title: 'Shop'
 
 layout:

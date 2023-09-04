@@ -109,7 +109,7 @@ public class MainCommand implements CommandExecutor {
 
     private void helpCommand(CommandSender sender) {
         if (sender instanceof Player) {
-            if (sender.hasPermission("spintowin.admin.help")) {
+            if (sender.hasPermission("ultimateshop.admin")) {
                 LanguageManager.languageManager.sendStringText((Player) sender, "help.main-admin");
                 return;
             }

@@ -1,3 +1,9 @@
+# DO NOT USE THIS FILE AS YOUR REAL SHOP CONFIGS! COPY NEW ONE PLEASE!!
+# OTHERWISE IT WILL MAKE BUGS!!!
+# For example, if you delete buy-prices section here, plugin will try read their
+# default value in example.yml that saved in jar file, so do not use this file as real
+# shop configs!
+
 settings:
   menu: 'example-shop-menu'
   buy-more: true
