@@ -30,6 +30,10 @@ plugin:
   reloaded: "&#98FB98[UltimateShop] &fPlugin reloaded!"
   item-dropped: "&#98FB98[UltimateShop] &fYour shop item {item} has dropped on ground!"
 
+placeholderapi:
+  unknown-shop: "Unknown Shop"
+  unknown-product: "Unknown Product"
+
 editor:
   shop-already-exists: "&#98FB98[UltimateShop] &cAlready exists a shop called {shop}!"
   product-already-exists: "&#98FB98[UltimateShop] &cAlready exists a product called {product}!"

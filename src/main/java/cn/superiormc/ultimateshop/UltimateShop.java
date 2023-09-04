@@ -3,6 +3,8 @@ package cn.superiormc.ultimateshop;
 import cn.superiormc.ultimateshop.cache.ServerCache;
 import cn.superiormc.ultimateshop.database.SQLDatabase;
 import cn.superiormc.ultimateshop.managers.*;
+import cn.superiormc.ultimateshop.papi.PlaceholderAPIExpansion;
+import cn.superiormc.ultimateshop.utils.CommonUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -29,6 +31,13 @@ public final class UltimateShop extends JavaPlugin {
         new CacheManager();
         new CommandManager();
         new ListenerManager();
+        if (CommonUtil.checkPluginLoad("PlaceholderAPI")) {
+            PlaceholderAPIExpansion.papi = new PlaceholderAPIExpansion(this);
+            Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §fHooking into PlaceholderAPI...");
+            if (PlaceholderAPIExpansion.papi.register()){
+                Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §fFinished hook!");
+            }
+        }
         Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §fPlugin is loaded. Author: PQguanfang.");
     }
 

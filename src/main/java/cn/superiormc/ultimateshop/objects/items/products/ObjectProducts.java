@@ -39,11 +39,20 @@ public class ObjectProducts extends AbstractThings {
         if (section == null || singleProducts.isEmpty()) {
             return;
         }
+        List<ObjectSingleProduct> tempVal6 = new ArrayList<>();
         switch (mode) {
             case UNKNOWN:
                 return;
             case ANY:
-                ObjectSingleProduct tempVal1 = RandomUtil.getRandomElement(singleProducts);
+                for (ObjectSingleProduct tempVal5 : singleProducts) {
+                    if (tempVal5.getCondition(player)) {
+                        tempVal6.add(tempVal5);
+                    }
+                }
+                if (tempVal6.isEmpty()) {
+                    return;
+                }
+                ObjectSingleProduct tempVal1 = RandomUtil.getRandomElement(tempVal6);
                 tempVal1.playerGive(player, times, 1);
                 return;
             case ALL:
@@ -52,7 +61,15 @@ public class ObjectProducts extends AbstractThings {
                 }
                 return;
             case CLASSIC_ANY:
-                ObjectSingleProduct tempVal3 = RandomUtil.getRandomElement(singleProducts);
+                for (ObjectSingleProduct tempVal5 : singleProducts) {
+                    if (tempVal5.getCondition(player)) {
+                        tempVal6.add(tempVal5);
+                    }
+                }
+                if (tempVal6.isEmpty()) {
+                    return;
+                }
+                ObjectSingleProduct tempVal3 = RandomUtil.getRandomElement(tempVal6);
                 tempVal3.playerGive(player, times, amount);
                 return;
             case CLASSIC_ALL:

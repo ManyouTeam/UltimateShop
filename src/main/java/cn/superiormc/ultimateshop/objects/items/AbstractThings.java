@@ -87,6 +87,7 @@ public abstract class AbstractThings {
                 break;
             case ("CLASSIC_ANY"):
                 this.mode = ThingMode.CLASSIC_ANY;
+                break;
             default:
                 this.mode = ThingMode.UNKNOWN;
                 break;
