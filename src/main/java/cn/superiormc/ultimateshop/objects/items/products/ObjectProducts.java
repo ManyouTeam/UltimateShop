@@ -122,10 +122,16 @@ public class ObjectProducts extends AbstractThings {
         }
     }
 
-    public ItemStack getDisplayItem() {
+    public ItemStack getDisplayItem(ConfigurationSection section,
+                                    Player player,
+                                    boolean give,
+                                    int unUsed,
+                                    int classic_multi) {
         for (ObjectSingleProduct tempVal1 : singleProducts) {
-            if (tempVal1.getDisplayItem() != null) {
-                return tempVal1.getDisplayItem();
+            // 商品的 times 是没用的，因为商品没有 apply 选项
+            ItemStack tempVal2 = tempVal1.getItemThing(section, player, give, unUsed, classic_multi);
+            if (tempVal2 != null) {
+                return tempVal2;
             }
         }
         return null;

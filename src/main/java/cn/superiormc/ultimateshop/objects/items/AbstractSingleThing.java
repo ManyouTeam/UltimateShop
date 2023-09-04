@@ -76,7 +76,7 @@ public abstract class AbstractSingleThing {
                 return;
             case "economy" :
                 EconomyHook.giveEconomy(singleSection.getString("economy-plugin"),
-                        singleSection.getString("economy-type", "Unkown"),
+                        singleSection.getString("economy-type", "Unknown"),
                         player,
                         cost);
 
@@ -137,7 +137,7 @@ public abstract class AbstractSingleThing {
                         player,
                         (int) cost, take);
             case "vanilla":
-                ItemStack itemStack = ItemUtil.buildItemStack(singleSection);
+                ItemStack itemStack = getItemThing(singleSection, player, false, times, classic_multi);
                 if (itemStack == null) {
                     return false;
                 }
@@ -170,35 +170,14 @@ public abstract class AbstractSingleThing {
         }
         double cost = getAmount(player, times) * classic_multi;
         ItemStack itemStack;
-        switch (type) {
-            case "vanilla":
-                itemStack = ItemUtil.buildItemStack(singleSection);
-                itemStack.setAmount((int) cost);
-                if (give) {
-                    XItemStack.giveOrDrop(player, itemStack);
-                }
-                return itemStack;
-
-            case "hook":
-                String pluginName = singleSection.getString("hook-plugin");
-                String itemID = singleSection.getString("hook-item");
-                if (pluginName.equals("MMOItems") && !itemID.contains(";;")) {
-                    itemID = singleSection.getString("hook-item-type") + ";;" + itemID;
-                } else if (pluginName.equals("EcoArmor") && !itemID.contains(";;")) {
-                    itemID = itemID + ";;" + singleSection.getString("hook-item-type");
-                }
-                itemStack = ItemsHook.getHookItem(pluginName,
-                        itemID);
-                if (itemStack == null) {
-                    return null;
-                }
-                itemStack.setAmount((int) cost);
-                if (give) {
-                    XItemStack.giveOrDrop(player, itemStack);
-                }
-                return itemStack;
+        itemStack = ItemUtil.buildItemStack(singleSection, (int) cost);
+        if (itemStack == null) {
+            return null;
         }
-        return null;
+        if (give) {
+            XItemStack.giveOrDrop(player, itemStack);
+        }
+        return itemStack;
     }
 
 }

@@ -25,23 +25,4 @@ public class ObjectSingleProduct extends AbstractSingleThing {
         return checkHasEnough(player, take, times, amount);
     }
 
-    public ItemStack getDisplayItem() {
-        switch (type) {
-            case "hook":
-                String pluginName = singleSection.getString("hook-plugin", "");
-                String itemID = singleSection.getString("hook-item", "");
-                if (pluginName.equals("MMOItems") && !itemID.contains(";;")) {
-                    itemID = singleSection.getString("hook-item-type") + ";;" + itemID;
-                } else if (pluginName.equals("EcoArmor") && !itemID.contains(";;")) {
-                    itemID = itemID + ";;" + singleSection.getString("hook-item-type");
-                }
-                return ItemsHook.getHookItem(pluginName, itemID);
-            case "vanilla":
-                ItemStack itemStack = ItemUtil.buildItemStack(singleSection);
-                return itemStack;
-            default :
-                return null;
-        }
-    }
-
 }

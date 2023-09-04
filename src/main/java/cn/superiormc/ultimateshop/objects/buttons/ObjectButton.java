@@ -27,6 +27,6 @@ public class ObjectButton extends AbstractButton {
         if (tempVal1 == null) {
             return new ItemStack(Material.BEDROCK);
         }
-        return ItemUtil.buildItemStack(tempVal1);
+        return ItemUtil.buildItemStack(tempVal1, tempVal1.getInt("amount", 1));
     }
 }

@@ -28,7 +28,6 @@ command-tab:
 
 plugin:
   reloaded: "&#98FB98[UltimateShop] &fPlugin reloaded!"
-  item-dropped: "&#98FB98[UltimateShop] &fYour shop item {item} has dropped on ground!"
 
 placeholderapi:
   unknown-shop: "Unknown Shop"

@@ -5,6 +5,7 @@ import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.methods.GUI.ModifyDisplayItem;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import cn.superiormc.ultimateshop.utils.ItemUtil;
+import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -25,13 +26,7 @@ public class ObjectDisplayItem{
 
     private void initDisplayItem() {
         // 显示物品
-        if (section.contains("hook-item")) {
-            displayItem = ItemsHook.getHookItem(section.getString("hook-plugin"),
-                    section.getString("hook-item"));
-        }
-        else {
-            displayItem = ItemUtil.buildItemStack(section);
-        }
+        displayItem = ItemUtil.buildItemStack(section, section.getInt("amount", 1));
     }
 
     public ItemStack getDisplayItem() {
@@ -45,9 +40,9 @@ public class ObjectDisplayItem{
     public ItemStack getDisplayItem(Player player, int multi) {
         ItemStack addLoreDisplayItem = null;
         if (section == null || ConfigManager.configManager.getBoolean("display-item.auto-set-first-product")) {
-            addLoreDisplayItem = item.getReward().getDisplayItem();
+            addLoreDisplayItem = item.getReward().getDisplayItem(section, player, false, 0, 1);
             if (addLoreDisplayItem == null) {
-                addLoreDisplayItem = item.getReward().getDisplayItem();
+                addLoreDisplayItem = new ItemStack(Material.STONE);
             }
         }
         else {

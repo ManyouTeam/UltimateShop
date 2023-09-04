@@ -11,14 +11,27 @@ import java.util.List;
 
 public class ItemUtil {
     
-    public static ItemStack buildItemStack(ConfigurationSection section) {
+    public static ItemStack buildItemStack(ConfigurationSection section, int amount) {
         ItemStack resultItem;
+        section.set("amount", amount);
         if (section.contains("hook-item")) {
-            resultItem = ItemsHook.getHookItem(section.getString("hook-plugin"), section.getString("hook-item"));
+            String pluginName = section.getString("hook-plugin");
+            String itemID = section.getString("hook-item");
+            if (pluginName == null || itemID == null) {
+                return new ItemStack(Material.STONE);
+            }
+            if (pluginName.equals("MMOItems") && !itemID.contains(";;")) {
+                itemID = section.getString("hook-item-type") + ";;" + itemID;
+            } else if (pluginName.equals("EcoArmor") && !itemID.contains(";;")) {
+                itemID = itemID + ";;" + section.getString("hook-item-type");
+            }
+            resultItem = ItemsHook.getHookItem(pluginName,
+                    itemID);
             if (resultItem == null) {
-                return new ItemStack(Material.BEDROCK);
+                return new ItemStack(Material.STONE);
             }
             else {
+                resultItem.setAmount(amount);
                 return resultItem;
             }
         }
@@ -40,6 +53,7 @@ public class ItemUtil {
                 section.set("lore", loreList);
             }
             resultItem = XItemStack.deserialize(section);
+            resultItem.setAmount(amount);
             return resultItem;
         }
     }
