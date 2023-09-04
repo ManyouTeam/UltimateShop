@@ -129,10 +129,6 @@ public class ConfigManager {
         return s.replace("{plugin_folder}", String.valueOf(UltimateShop.instance.getDataFolder()));
     }
 
-    public ConfigurationSection getPrice(String priceName) {
-        return config.getConfigurationSection("prices." + priceName);
-    }
-
     public String getClickAction(ClickType type) {
         ConfigurationSection tempVal1 = config.getConfigurationSection("menu.click-event");
         if (tempVal1 == null) {

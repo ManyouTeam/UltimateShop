@@ -13,9 +13,7 @@ items:
         amount: 1
     buy-prices:
       1:
-        economy-plugin: Vault
-        amount: 200
-        placeholder: '{amount} Coins'
+        custom-type: example
         start-apply: 0
       2:
         economy-plugin: PlayerPoints

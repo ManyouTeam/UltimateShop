@@ -3,6 +3,8 @@ package cn.superiormc.ultimateshop.objects.items;
 import cn.superiormc.ultimateshop.hooks.EconomyHook;
 import cn.superiormc.ultimateshop.hooks.ItemsHook;
 import cn.superiormc.ultimateshop.hooks.PriceHook;
+import cn.superiormc.ultimateshop.managers.ConfigManager;
+import cn.superiormc.ultimateshop.managers.ErrorManager;
 import cn.superiormc.ultimateshop.utils.ItemUtil;
 import cn.superiormc.ultimateshop.utils.TextUtil;
 import com.cryptomorin.xseries.XItemStack;
@@ -24,38 +26,37 @@ public abstract class AbstractSingleThing {
     public boolean empty;
 
     public AbstractSingleThing() {
-        initType();
+        initType(null);
         this.empty = true;
     }
 
     public AbstractSingleThing(ConfigurationSection singleSection) {
         this.singleSection = singleSection;
-        initType();
+        if (singleSection.contains("custom-type")) {
+            initType(ConfigManager.configManager.config.getConfigurationSection("prices." +
+                    singleSection.getString("custom-type")));
+        }
+        else {
+            initType(singleSection);
+        }
         this.empty = false;
     }
 
-    private void initType() {
-        if (singleSection == null) {
-            type = "free";
-        } else if (singleSection.contains("hook-plugin") && singleSection.contains("hook-item")) {
+    private void initType(ConfigurationSection section) {
+        if (section == null) {
+            type = "unknown";
+        } else if (section.contains("hook-plugin") && section.contains("hook-item")) {
             type = "hook";
-        } else if (singleSection.contains("material")) {
+        } else if (section.contains("material")) {
             type = "vanilla";
-        } else if (singleSection.contains("economy-plugin")) {
+        } else if (section.contains("economy-plugin")) {
             type = "economy";
-        } else if (singleSection.contains("economy-type") && !singleSection.contains("economy-plugin")) {
+        } else if (section.contains("economy-type") && !section.contains("economy-plugin")) {
             type = "exp";
-        } else if (singleSection.contains("type")) {
-            type = "custom";
         } else {
             type = "free";
         }
     }
-
-    public abstract boolean playerHasEnough(Player player,
-                                            boolean take,
-                                            int times,
-                                            int classic_multi);
 
     public void playerGive(Player player,
                            int times,
@@ -90,7 +91,8 @@ public abstract class AbstractSingleThing {
     }
 
     public double getAmount(Player player, int times) {
-        return Double.parseDouble(TextUtil.withPAPI(singleSection.getString("amount", "1"), player));
+        String tempVal1 = singleSection.getString("amount", "1");
+        return Double.parseDouble(TextUtil.withPAPI(tempVal1, player));
     }
 
     public boolean getCondition(Player player) {
@@ -114,42 +116,45 @@ public abstract class AbstractSingleThing {
         return checkHasEnough(singleSection, player, take, times, classic_multi);
     }
 
-    public boolean checkHasEnough(ConfigurationSection singleSection,
+    public boolean checkHasEnough(ConfigurationSection section,
                                   Player player,
                                   boolean take,
                                   int times,
                                   int classic_multi) {
+        if (section == null) {
+            return false;
+        }
         double cost = getAmount(player, times) * classic_multi;
-        if (cost == -1) {
+        if (cost < 0) {
             return false;
         }
         switch (type) {
             case "hook":
-                String pluginName = singleSection.getString("hook-plugin", "");
-                String itemID = singleSection.getString("hook-item", "");
+                String pluginName = section.getString("hook-plugin", "");
+                String itemID = section.getString("hook-item", "");
                 if (pluginName.equals("MMOItems") && !itemID.contains(";;")) {
-                    itemID = singleSection.getString("hook-item-type") + ";;" + itemID;
+                    itemID = section.getString("hook-item-type") + ";;" + itemID;
                 } else if (pluginName.equals("EcoArmor") && !itemID.contains(";;")) {
-                    itemID = itemID + ";;" + singleSection.getString("hook-item-type");
+                    itemID = itemID + ";;" + section.getString("hook-item-type");
                 }
                 return PriceHook.getPrice(pluginName,
                         itemID,
                         player,
                         (int) cost, take);
             case "vanilla":
-                ItemStack itemStack = getItemThing(singleSection, player, false, times, classic_multi);
+                ItemStack itemStack = getItemThing(section, player, false, times, classic_multi);
                 if (itemStack == null) {
                     return false;
                 }
                 itemStack.setAmount(1);
                 return PriceHook.getPrice(player, itemStack, (int) cost, take);
             case "economy":
-                return PriceHook.getPrice(singleSection.getString("economy-plugin"),
-                        singleSection.getString("economy-type", "default"),
+                return PriceHook.getPrice(section.getString("economy-plugin"),
+                        section.getString("economy-type", "default"),
                         player,
                         cost, take);
             case "exp":
-                return PriceHook.getPrice(singleSection.getString("economy-type"),
+                return PriceHook.getPrice(section.getString("economy-type"),
                         player,
                         (int) cost, take);
             case "unknwon":

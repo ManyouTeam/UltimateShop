@@ -3,6 +3,7 @@ package cn.superiormc.ultimateshop.objects.items.prices;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.ErrorManager;
 import cn.superiormc.ultimateshop.objects.items.AbstractThings;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
@@ -231,7 +232,8 @@ public class ObjectPrices extends AbstractThings {
                     tempVal2.append(tempVal1.get(i));
                 }
                 break;
-            default: tempVal2 = new StringBuilder("Unknown Price Mode");
+            default:
+                tempVal2 = new StringBuilder("Unknown Price Mode");
                 break;
         }
         return tempVal2.toString();

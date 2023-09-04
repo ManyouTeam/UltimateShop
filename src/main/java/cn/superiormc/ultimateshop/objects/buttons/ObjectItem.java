@@ -103,9 +103,8 @@ public class ObjectItem extends AbstractButton {
                 sellPrice = buyPrice;
                 return;
             }
-            else {
-                sellPrice = buyPrice;
-            }
+            sellPrice = new ObjectPrices();
+            return;
         }
         sellPrice = new ObjectPrices(config.getConfigurationSection("sell-prices"), config.getString("price-mode", "ANY"));
     }

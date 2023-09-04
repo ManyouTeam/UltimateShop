@@ -3,6 +3,9 @@ package cn.superiormc.ultimateshop.objects.items.prices;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.objects.items.AbstractSingleThing;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
+import cn.superiormc.ultimateshop.utils.TextUtil;
+import io.lumine.mythic.bukkit.utils.lib.http.util.TextUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
@@ -12,6 +15,8 @@ public class ObjectSinglePrice extends AbstractSingleThing {
 
     private Map<Integer, Double> applyCostMap = new HashMap<>();
 
+    private boolean priceMode;
+
 
     public ObjectSinglePrice() {
         super();
@@ -19,7 +24,17 @@ public class ObjectSinglePrice extends AbstractSingleThing {
 
     public ObjectSinglePrice(ConfigurationSection singleSection) {
         super(singleSection);
+        initCustomMode();
         initApplyCostMap();
+    }
+
+    private void initCustomMode() {
+        if (!singleSection.getString("custom-type", "none").equals("none")) {
+            priceMode = true;
+        }
+        else {
+            priceMode = false;
+        }
     }
 
     private void initApplyCostMap() {
@@ -56,20 +71,19 @@ public class ObjectSinglePrice extends AbstractSingleThing {
     }
 
     @Override
-    public boolean playerHasEnough(Player player, boolean take, int times, int amount) {
+    public boolean checkHasEnough(Player player, boolean take, int times, int amount) {
         if (singleSection == null) {
             return false;
         }
-        switch (type) {
-            default:
-                return checkHasEnough(player, take, times, amount);
-            case "custom":
-                return checkHasEnough(ConfigManager.configManager.getPrice(singleSection.getString("type")),
-                        player,
-                        take,
-                        times,
-                        amount);
+        if (priceMode) {
+            return super.checkHasEnough(ConfigManager.configManager.config.
+                            getConfigurationSection("prices." + singleSection.getString("custom-type")),
+                    player,
+                    take,
+                    times,
+                    amount);
         }
+        return super.checkHasEnough(player, take, times, amount);
     }
 
     @Override
@@ -77,7 +91,12 @@ public class ObjectSinglePrice extends AbstractSingleThing {
         if (singleSection == null) {
             return -1;
         }
-        double cost = singleSection.getDouble("amount", 1);
+        String tempVal1 = singleSection.getString("amount", "1");
+        String tempVal2 = ConfigManager.configManager.getString("prices." + singleSection.getString("custom-type") + ".amount", "1");
+        if (singleSection.getString("custom-type") != null && tempVal2 != null) {
+            tempVal1 = tempVal2;
+        }
+        double cost = Double.parseDouble(TextUtil.withPAPI(tempVal1, player));
         if (applyCostMap != null && applyCostMap.containsKey(times)) {
             cost = applyCostMap.get(times);
         }
@@ -88,18 +107,17 @@ public class ObjectSinglePrice extends AbstractSingleThing {
         if (singleSection == null) {
             return ConfigManager.configManager.getString("placeholder.price.unknown");
         }
-        switch (type) {
-            default:
-                return CommonUtil.modifyString(singleSection.getString("placeholder",
-                                ConfigManager.configManager.getString("placeholder.price.unknown")),
-                        "amount",
-                        String.valueOf(amount));
-            case "custom" :
-                return CommonUtil.modifyString(ConfigManager.configManager.getString("prices." +
-                                singleSection.getString("type") + ".placeholder"),
-                        "amount",
-                        String.valueOf(amount));
+        String tempVal1 = singleSection.getString("placeholder",
+                ConfigManager.configManager.getString("placeholder.price.unknown"));
+        if (priceMode) {
+            return CommonUtil.modifyString(ConfigManager.configManager.getString("prices." +
+                            singleSection.getString("custom-type") + ".placeholder", tempVal1),
+                    "amount",
+                    String.valueOf(amount));
         }
+        return CommonUtil.modifyString(tempVal1,
+                        "amount",
+                        String.valueOf(amount));
     }
 
     public int getStartApply() {

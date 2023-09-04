@@ -17,12 +17,4 @@ public class ObjectSingleProduct extends AbstractSingleThing {
         super(singleSection);
     }
 
-    @Override
-    public boolean playerHasEnough(Player player, boolean take, int times, int amount) {
-        if (singleSection == null) {
-            return false;
-        }
-        return checkHasEnough(player, take, times, amount);
-    }
-
 }
