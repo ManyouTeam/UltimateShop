@@ -4,7 +4,6 @@
 # default value in example-shop-menu.yml that saved in jar file, so do not use this file as real
 # shop menu configs!
 
-
 title: '{shop-name}'
 size: 54
 

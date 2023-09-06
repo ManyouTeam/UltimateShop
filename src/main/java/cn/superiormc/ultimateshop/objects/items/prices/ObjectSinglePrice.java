@@ -71,7 +71,9 @@ public class ObjectSinglePrice extends AbstractSingleThing {
     }
 
     @Override
-    public boolean checkHasEnough(Player player, boolean take, int times, int amount) {
+    public boolean checkHasEnough(Player player,
+                                  boolean take,
+                                  double cost) {
         if (singleSection == null) {
             return false;
         }
@@ -80,10 +82,9 @@ public class ObjectSinglePrice extends AbstractSingleThing {
                             getConfigurationSection("prices." + singleSection.getString("custom-type")),
                     player,
                     take,
-                    times,
-                    amount);
+                    cost);
         }
-        return super.checkHasEnough(player, take, times, amount);
+        return super.checkHasEnough(singleSection, player, take, cost);
     }
 
     @Override

@@ -46,6 +46,9 @@ public class SellProductMethod {
                     product);
             return ProductMethodStatus.ERROR;
         }
+        if (tempVal2.getSellPrice().empty) {
+            return ProductMethodStatus.ERROR;
+        }
         PlayerCache tempVal3 = CacheManager.cacheManager.playerCacheMap.get(player);
         ServerCache tempVal11 = ServerCache.serverCache;
         if (tempVal3 == null) {

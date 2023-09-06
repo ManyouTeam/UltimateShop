@@ -59,19 +59,16 @@ public abstract class AbstractSingleThing {
     }
 
     public void playerGive(Player player,
-                           int times,
-                           int classic_multi) {
+                           double cost) {
         if (singleSection == null) {
             return;
         }
-        double cost = getAmount(player, times);
         switch (type) {
             case "vanilla":  case "hook":
                 if (getItemThing(singleSection,
                         player,
                         true,
-                        times,
-                        classic_multi) == null) {
+                        cost) == null) {
                     return;
                 }
                 return;
@@ -111,20 +108,21 @@ public abstract class AbstractSingleThing {
 
     public boolean checkHasEnough(Player player,
                                   boolean take,
-                                  int times,
-                                  int classic_multi) {
-        return checkHasEnough(singleSection, player, take, times, classic_multi);
+                                  double cost) {
+        return checkHasEnough(singleSection,
+                player,
+                take,
+                cost);
     }
 
     public boolean checkHasEnough(ConfigurationSection section,
                                   Player player,
                                   boolean take,
-                                  int times,
-                                  int classic_multi) {
+                                  double cost) {
         if (section == null) {
             return false;
         }
-        double cost = getAmount(player, times) * classic_multi;
+
         if (cost < 0) {
             return false;
         }
@@ -142,7 +140,7 @@ public abstract class AbstractSingleThing {
                         player,
                         (int) cost, take);
             case "vanilla":
-                ItemStack itemStack = getItemThing(section, player, false, times, classic_multi);
+                ItemStack itemStack = getItemThing(section, player, false, cost);
                 if (itemStack == null) {
                     return false;
                 }
@@ -168,12 +166,10 @@ public abstract class AbstractSingleThing {
     public ItemStack getItemThing(ConfigurationSection section,
                                   Player player,
                                   boolean give,
-                                  int times,
-                                  int classic_multi) {
+                                  double cost) {
         if (singleSection == null) {
             return null;
         }
-        double cost = getAmount(player, times) * classic_multi;
         ItemStack itemStack;
         itemStack = ItemUtil.buildItemStack(singleSection, (int) cost);
         if (itemStack == null) {
@@ -184,5 +180,7 @@ public abstract class AbstractSingleThing {
         }
         return itemStack;
     }
+
+    public abstract String getDisplayName(double amount);
 
 }

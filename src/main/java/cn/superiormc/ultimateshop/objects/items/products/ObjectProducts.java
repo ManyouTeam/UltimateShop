@@ -1,6 +1,7 @@
 package cn.superiormc.ultimateshop.objects.items.products;
 
 import cn.superiormc.ultimateshop.managers.ErrorManager;
+import cn.superiormc.ultimateshop.objects.items.AbstractSingleThing;
 import cn.superiormc.ultimateshop.objects.items.AbstractThings;
 import cn.superiormc.ultimateshop.utils.RandomUtil;
 import org.bukkit.configuration.ConfigurationSection;
@@ -8,7 +9,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ObjectProducts extends AbstractThings {
     public List<ObjectSingleProduct> singleProducts = new ArrayList<>();
@@ -40,26 +43,11 @@ public class ObjectProducts extends AbstractThings {
             return;
         }
         List<ObjectSingleProduct> tempVal6 = new ArrayList<>();
+        double cost;
         switch (mode) {
             case UNKNOWN:
                 return;
             case ANY:
-                for (ObjectSingleProduct tempVal5 : singleProducts) {
-                    if (tempVal5.getCondition(player)) {
-                        tempVal6.add(tempVal5);
-                    }
-                }
-                if (tempVal6.isEmpty()) {
-                    return;
-                }
-                ObjectSingleProduct tempVal1 = RandomUtil.getRandomElement(tempVal6);
-                tempVal1.playerGive(player, times, 1);
-                return;
-            case ALL:
-                for (ObjectSingleProduct tempVal2 : singleProducts) {
-                tempVal2.playerGive(player, times, 1);
-                }
-                return;
             case CLASSIC_ANY:
                 for (ObjectSingleProduct tempVal5 : singleProducts) {
                     if (tempVal5.getCondition(player)) {
@@ -69,12 +57,15 @@ public class ObjectProducts extends AbstractThings {
                 if (tempVal6.isEmpty()) {
                     return;
                 }
-                ObjectSingleProduct tempVal3 = RandomUtil.getRandomElement(tempVal6);
-                tempVal3.playerGive(player, times, amount);
+                ObjectSingleProduct tempVal1 = RandomUtil.getRandomElement(tempVal6);
+                cost = getAmount(player, times, amount).get(tempVal1);
+                tempVal1.playerGive(player, cost);
                 return;
+            case ALL:
             case CLASSIC_ALL:
-                for (ObjectSingleProduct tempVal4 : singleProducts) {
-                    tempVal4.playerGive(player, times, amount);
+                for (ObjectSingleProduct tempVal2 : singleProducts) {
+                    cost = getAmount(player, times, amount).get(tempVal2);
+                    tempVal2.playerGive(player, cost);
                 }
                 return;
             default:
@@ -85,33 +76,24 @@ public class ObjectProducts extends AbstractThings {
 
     @Override
     public boolean takeSingleThing(Player player, boolean take, int times, int amount) {
+        double cost;
         switch (mode) {
             case UNKNOWN:
                 return false;
             case ANY:
+            case CLASSIC_ANY:
                 for (ObjectSingleProduct tempVal1 : singleProducts) {
-                    if (tempVal1.checkHasEnough(player, take, times, 1)) {
+                    cost = getAmount(player, times, amount).get(tempVal1);
+                    if (tempVal1.checkHasEnough(player, take, cost)) {
                         return true;
                     }
                 }
                 return false;
             case ALL:
-                for (ObjectSingleProduct tempVal1 : singleProducts) {
-                    if (!tempVal1.checkHasEnough(player, take, times, 1)) {
-                        return false;
-                    }
-                }
-                return true;
-            case CLASSIC_ANY:
-                for (ObjectSingleProduct tempVal1 : singleProducts) {
-                    if (tempVal1.checkHasEnough(player, take, times, amount)) {
-                        return true;
-                    }
-                }
-                return false;
             case CLASSIC_ALL:
                 for (ObjectSingleProduct tempVal1 : singleProducts) {
-                    if (!tempVal1.checkHasEnough(player, take, times, amount)) {
+                    cost = getAmount(player, times, amount).get(tempVal1);
+                    if (!tempVal1.checkHasEnough(player, take, cost)) {
                         return false;
                     }
                 }
@@ -122,14 +104,51 @@ public class ObjectProducts extends AbstractThings {
         }
     }
 
+    @Override
+    public Map<AbstractSingleThing, Double> getAmount(Player player, int times, int multi) {
+        Map<AbstractSingleThing, Double> productMaps = new HashMap<>();
+        switch (mode) {
+            case ALL:
+            case ANY:
+                for (int i = 0 ; i < multi ; i ++) {
+                    for (ObjectSingleProduct tempVal3 : singleProducts) {
+                        if (productMaps.containsKey(tempVal3)) {
+                            productMaps.put(tempVal3,
+                                    productMaps.get(tempVal3) +
+                                            tempVal3.getAmount(player, times + i));
+                        }
+                        else {
+                            productMaps.put(tempVal3, tempVal3.getAmount(player, times + i));
+                        }
+                    }
+                }
+                break;
+            case CLASSIC_ALL:
+            case CLASSIC_ANY:
+                for (ObjectSingleProduct tempVal3 : singleProducts) {
+                    if (productMaps.containsKey(tempVal3)) {
+                        productMaps.put(tempVal3,
+                                productMaps.get(tempVal3) +
+                                        tempVal3.getAmount(player, times) * multi);
+                    }
+                    else {
+                        productMaps.put(tempVal3, tempVal3.getAmount(player, times) * multi);
+                    }
+                }
+                break;
+        }
+        return productMaps;
+    }
+
     public ItemStack getDisplayItem(ConfigurationSection section,
                                     Player player,
                                     boolean give,
-                                    int unUsed,
+                                    int times,
                                     int classic_multi) {
         for (ObjectSingleProduct tempVal1 : singleProducts) {
             // 商品的 times 是没用的，因为商品没有 apply 选项
-            ItemStack tempVal2 = tempVal1.getItemThing(section, player, give, unUsed, classic_multi);
+            double cost = getAmount(player, times, classic_multi).get(tempVal1);
+            ItemStack tempVal2 = tempVal1.getItemThing(section, player, give, cost);
             if (tempVal2 != null) {
                 return tempVal2;
             }

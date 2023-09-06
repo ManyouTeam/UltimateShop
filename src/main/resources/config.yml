@@ -71,6 +71,7 @@ placeholder:
     split-symbol-any: ' or '
     split-symbol-all: ', '
     unknown: "Unknown"
+    unknown-price-type: "Unknown Price Type"
   click:
     enabled: true
     buy: '&eLeft-click to buy!'

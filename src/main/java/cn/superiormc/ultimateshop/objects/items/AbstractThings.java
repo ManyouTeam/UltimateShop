@@ -3,6 +3,8 @@ package cn.superiormc.ultimateshop.objects.items;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
+import java.util.Map;
+
 
 public abstract class AbstractThings {
 
@@ -27,6 +29,10 @@ public abstract class AbstractThings {
         return mode;
     }
 
+    public abstract Map<AbstractSingleThing, Double> getAmount(Player player,
+                                                               int times,
+                                                               int amount);
+
     public abstract void giveSingleThing(Player player, int times, int amount);
 
     public void giveThing(Player player, int times, int multi) {
@@ -48,29 +54,12 @@ public abstract class AbstractThings {
 
 
     public boolean takeThing(Player player, boolean take, int times, int multi) {
-        switch (mode) {
-            case ALL:
-            case ANY:
-                for (int i = 0 ; i < multi ; i ++) {
-                    if (!takeSingleThing(player, take, times + i, 1)) {
-                        if (!take) {
-                            return false;
-                        }
-                    }
-                }
-                return true;
-            case CLASSIC_ALL:
-            case CLASSIC_ANY:
-                if (!takeSingleThing(player, take, times, multi)) {
-                    if (!take) {
-                        return false;
-                    }
-                }
-                return true;
-            default:
-                return false;
+        if (!takeSingleThing(player, take, times, multi)) {
+            if (!take) {
+              return false;
+            }
         }
-
+        return true;
     }
 
     private void initThingMode(String mode) {

@@ -2,6 +2,7 @@ package cn.superiormc.ultimateshop.objects.items.prices;
 
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.ErrorManager;
+import cn.superiormc.ultimateshop.objects.items.AbstractSingleThing;
 import cn.superiormc.ultimateshop.objects.items.AbstractThings;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
@@ -45,8 +46,9 @@ public class ObjectPrices extends AbstractThings {
                                                int amount) {
         List<ObjectSinglePrice> maybeResult = new ArrayList<>();
         for (ObjectSinglePrice tempVal1 : getPrices(times)) {
+            double cost = getAmount(player, times, amount).get(tempVal1);
             if (tempVal1.getCondition(player)) {
-                if (buyOrSell && tempVal1.checkHasEnough(player, false, times, amount)) {
+                if (buyOrSell && tempVal1.checkHasEnough(player, false, cost)) {
                     return tempVal1;
                 }
                 else if (!buyOrSell) {
@@ -87,25 +89,21 @@ public class ObjectPrices extends AbstractThings {
         if (section == null || singlePrices.isEmpty()) {
             return;
         }
+        double cost;
         switch (mode) {
             case UNKNOWN:
                 return;
             case ANY:
-                ObjectSinglePrice tempVal5 = getAnyTargetPrice(player, times, false, 1);
-                tempVal5.playerGive(player, times, 1);
+            case CLASSIC_ANY:
+                AbstractSingleThing tempVal5 = getAnyTargetPrice(player, times, false, 1);
+                cost = getAmount(player, times, amount).get(tempVal5);
+                tempVal5.playerGive(player, cost);
                 return;
             case ALL:
-                for (ObjectSinglePrice tempVal2 : getPrices(times)) {
-                    tempVal2.playerGive(player, times, 1);
-                }
-                return;
-            case CLASSIC_ANY:
-                ObjectSinglePrice tempVal6 = getAnyTargetPrice(player, times, false, amount);
-                tempVal6.playerGive(player, times, amount);
-                return;
             case CLASSIC_ALL:
-                for (ObjectSinglePrice tempVal2 : getPrices(times)) {
-                    tempVal2.playerGive(player, times, amount);
+                for (AbstractSingleThing tempVal2 : getPrices(times)) {
+                    cost = getAmount(player, times, amount).get(tempVal2);
+                    tempVal2.playerGive(player, cost);
                 }
                 return;
             default:
@@ -120,61 +118,33 @@ public class ObjectPrices extends AbstractThings {
         if (section == null) {
             return false;
         }
+        double cost = 0;
         switch (mode) {
             case UNKNOWN:
                 return false;
-            case ANY:
-                if (getAnyTargetPrice(player, times, true, 1)
-                        .checkHasEnough(player, false, times, 1)) {
-                    if (take) {
-                        getAnyTargetPrice(player, times, true, 1)
-                                .checkHasEnough(player, true, times, 1);
-                    }
-                    return true;
-                }
-                return false;
             case ALL:
-                for (ObjectSinglePrice tempVal1 : getPrices(times)) {
-                    if (!tempVal1.checkHasEnough(player, false, times, 1)) {
-                        return false;
-                    }
-                }
-                if (take) {
-                    for (ObjectSinglePrice tempVal1 : getPrices(times)) {
-                        tempVal1.checkHasEnough(player, true, times, 1);
-                    }
-                }
-                return true;
-            case CLASSIC_ANY:
-                if (getAnyTargetPrice(player, times, true, amount)
-                        .checkHasEnough(player, false, times, amount)) {
-                    if (take) {
-                        getAnyTargetPrice(player, times, true, amount)
-                                .checkHasEnough(player, true, times, amount);
-                    }
-                    return true;
-                }
-                return false;
             case CLASSIC_ALL:
                 for (ObjectSinglePrice tempVal1 : getPrices(times)) {
-                    if (!tempVal1.checkHasEnough(player, false, times, amount)) {
+                    cost = getAmount(player, times, amount).get(tempVal1);
+                    if (!tempVal1.checkHasEnough(player, take, cost)) {
                         return false;
                     }
                 }
-                if (take) {
-                    for (ObjectSinglePrice tempVal1 : getPrices(times)) {
-                        tempVal1.checkHasEnough(player, true, times, amount);
-                    }
-                }
                 return true;
+            case ANY:
+            case CLASSIC_ANY:
+                ObjectSinglePrice tempVal11 = getAnyTargetPrice(player, times, true, amount);
+                cost = getAmount(player, times, amount).get(tempVal11);
+                return tempVal11.checkHasEnough(player, take, cost);
             default:
                 ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Can not get price-mode section in your shop config!!");
                 return false;
         }
     }
 
-    public List<String> getDisplayName(Player player, int times, int multi) {
-        Map<ObjectSinglePrice, Double> priceMaps = new HashMap<>();
+    @Override
+    public Map<AbstractSingleThing, Double> getAmount(Player player, int times, int multi) {
+        Map<AbstractSingleThing, Double> priceMaps = new HashMap<>();
         switch (mode) {
             case ALL:
             case ANY:
@@ -205,8 +175,13 @@ public class ObjectPrices extends AbstractThings {
                 }
                 break;
         }
+        return priceMaps;
+    }
+
+    public List<String> getDisplayName(Player player, int times, int multi) {
+        Map<AbstractSingleThing, Double> priceMaps= getAmount(player, times, multi);
         List<String> tempVal1 = new ArrayList<>();
-        for (ObjectSinglePrice tempVal2 : priceMaps.keySet()) {
+        for (AbstractSingleThing tempVal2 : priceMaps.keySet()) {
             tempVal1.add(tempVal2.getDisplayName(priceMaps.get(tempVal2)));
         }
         return tempVal1;
@@ -233,7 +208,7 @@ public class ObjectPrices extends AbstractThings {
                 }
                 break;
             default:
-                tempVal2 = new StringBuilder("Unknown Price Mode");
+                tempVal2 = new StringBuilder(ConfigManager.configManager.getString("placeholder.price.unknown-price-type"));
                 break;
         }
         return tempVal2.toString();
