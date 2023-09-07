@@ -80,7 +80,9 @@ public class SellProductMethod {
             playerUseTimes = tempVal9.getSellUseTimes();
             if (tempVal2.getPlayerSellLimit(player) != -1 &&
                     playerUseTimes + multi - 1 >= tempVal2.getPlayerSellLimit(player)) {
-                if (quick) {
+                if (!test && (quick ||
+                        ConfigManager.configManager.config.
+                                getBoolean("send-messages-after-buy", true))) {
                     LanguageManager.languageManager.sendStringText(player,
                             "limit-reached-sell-player",
                             "item",
@@ -114,7 +116,9 @@ public class SellProductMethod {
             serverUseTimes = ServerCache.serverCache.getUseTimesCache().get(tempVal2).getSellUseTimes();
             if (tempVal2.getServerSellLimit(player) != -1 &&
                     serverUseTimes + multi - 1 >= tempVal2.getServerSellLimit(player)) {
-                if (quick) {
+                if (!test && (quick ||
+                        ConfigManager.configManager.config.
+                                getBoolean("send-messages-after-buy", true))) {
                     LanguageManager.languageManager.sendStringText(player,
                             "limit-reached-sell-server",
                             "item",
@@ -141,7 +145,9 @@ public class SellProductMethod {
         // price
         ObjectProducts tempVal5 = tempVal2.getReward();
         if (!tempVal5.takeThing(player, false, playerUseTimes, multi)) {
-            if (quick) {
+            if (!test && (quick ||
+                    ConfigManager.configManager.config.
+                            getBoolean("send-messages-after-buy", true))) {
                 LanguageManager.languageManager.sendStringText(player,
                         "sell-products-not-enough",
                         "item",
@@ -171,14 +177,20 @@ public class SellProductMethod {
             tempVal8.setLastSellTime(LocalDateTime.now());
             tempVal11.getUseTimesCache().put(tempVal2, tempVal8);
         }
-        LanguageManager.languageManager.sendStringText(player,
-                "success-sell",
-                "item",
-                tempVal2.getDisplayName(),
-                "price",
-                tempVal2.getSellPrice().getDisplayNameWithOneLine(player,
-                        playerUseTimes,
-                        multi));
+        if (quick ||
+        ConfigManager.configManager.config.
+                getBoolean("send-messages-after-buy", true)) {
+            LanguageManager.languageManager.sendStringText(player,
+                    "success-sell",
+                    "item",
+                    tempVal2.getDisplayName(),
+                    "price",
+                    tempVal2.getSellPrice().getDisplayNameWithOneLine(player,
+                            playerUseTimes,
+                            multi),
+                    "amount",
+                    String.valueOf(multi));
+        }
         return ProductMethodStatus.DONE;
     }
 }

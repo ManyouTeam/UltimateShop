@@ -72,7 +72,9 @@ public class BuyProductMethod {
             playerUseTimes = tempVal9.getBuyUseTimes();
             if (tempVal2.getPlayerBuyLimit(player) != -1 &&
                     playerUseTimes + multi - 1  >= tempVal2.getPlayerBuyLimit(player)) {
-                if (quick) {
+                if (!test && (quick ||
+                        ConfigManager.configManager.config.
+                                getBoolean("send-messages-after-buy", true))) {
                     LanguageManager.languageManager.sendStringText(player,
                             "limit-reached-buy-player",
                             "item",
@@ -107,7 +109,9 @@ public class BuyProductMethod {
             serverUseTimes = ServerCache.serverCache.getUseTimesCache().get(tempVal2).getBuyUseTimes();
             if (tempVal2.getServerBuyLimit(player) != -1 &&
                     serverUseTimes + multi - 1 > tempVal2.getServerBuyLimit(player)) {
-                if (quick) {
+                if (!test && (quick ||
+                        ConfigManager.configManager.config.
+                                getBoolean("send-messages-after-buy", true))) {
                     LanguageManager.languageManager.sendStringText(player,
                             "limit-reached-buy-server",
                             "item",
@@ -134,7 +138,9 @@ public class BuyProductMethod {
         // price
         ObjectPrices tempVal5 = tempVal2.getBuyPrice();
         if (!tempVal5.takeThing(player, false, playerUseTimes, multi)) {
-            if (quick) {
+            if (!test && (quick ||
+                    ConfigManager.configManager.config.
+                            getBoolean("send-messages-after-buy", true))) {
                 LanguageManager.languageManager.sendStringText(player,
                         "buy-price-not-enough",
                         "item",
@@ -165,14 +171,20 @@ public class BuyProductMethod {
             tempVal8.setLastBuyTime(LocalDateTime.now());
             tempVal11.getUseTimesCache().put(tempVal2, tempVal8);
         }
-        LanguageManager.languageManager.sendStringText(player,
-                "success-buy",
-                "item",
-                tempVal2.getDisplayName(),
-                "price",
-                tempVal5.getDisplayNameWithOneLine(player,
-                        playerUseTimes,
-                        multi));
+        if (quick ||
+                ConfigManager.configManager.config.
+                        getBoolean("send-messages-after-buy", true)) {
+            LanguageManager.languageManager.sendStringText(player,
+                    "success-buy",
+                    "item",
+                    tempVal2.getDisplayName(),
+                    "price",
+                    tempVal5.getDisplayNameWithOneLine(player,
+                            playerUseTimes,
+                            multi),
+                    "amount",
+                    String.valueOf(multi));
+        }
         return ProductMethodStatus.DONE;
     }
 }

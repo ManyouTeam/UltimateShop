@@ -44,18 +44,18 @@ public class ObjectAction {
         if (everyAction.isEmpty() && onceAction.isEmpty()) {
             return;
         }
-        checkAction(player, onceAction);
+        checkAction(player, onceAction, multi);
         for (int i = 0 ; i < multi ; i ++) {
-            checkAction(player, everyAction);
+            checkAction(player, everyAction, multi);
         }
     }
 
-    private void checkAction(Player player, List<String> actions) {
+    private void checkAction(Player player, List<String> actions, int multi) {
         for(String singleAction : actions) {
             if (singleAction.startsWith("none")) {
                 return;
             } else if (singleAction.startsWith("message: ") && player != null) {
-                player.sendMessage(replacePlaceholder(TextUtil.parse(singleAction.substring(9), player), player));
+                player.sendMessage(replacePlaceholder(TextUtil.parse(singleAction.substring(9), player), player, multi));
             } else if (singleAction.startsWith("open_menu: ") && player != null) {
                 OpenGUI.openCommonGUI(player, singleAction.substring(11));
             } else if (singleAction.startsWith("shop_menu: ") && player != null) {
@@ -154,23 +154,28 @@ public class ObjectAction {
                 });
             } else if (singleAction.startsWith("console_command: ")) {
                 Bukkit.getScheduler().runTask(UltimateShop.instance, () -> {
-                    CommonUtil.dispatchCommand(replacePlaceholder(singleAction.substring(17), player));
+                    CommonUtil.dispatchCommand(replacePlaceholder(singleAction.substring(17), player, multi));
                 });
             } else if (singleAction.startsWith("player_command: ") && player != null) {
                 Bukkit.getScheduler().runTask(UltimateShop.instance, () -> {
-                    CommonUtil.dispatchCommand(player, replacePlaceholder(singleAction.substring(16), player));
+                    CommonUtil.dispatchCommand(player, replacePlaceholder(singleAction.substring(16), player, multi));
                 });
+            } else if (singleAction.equals("close") && player != null) {
+                Bukkit.getScheduler().runTaskLater(UltimateShop.instance, () -> {
+                    player.closeInventory();
+                }, 5L);
             }
         }
     }
-    private String replacePlaceholder(String str, Player player){
-        str = str.replace("%world%", player.getWorld().getName())
-                .replace("%player_x%", String.valueOf(player.getLocation().getX()))
-                .replace("%player_y%", String.valueOf(player.getLocation().getY()))
-                .replace("%player_z%", String.valueOf(player.getLocation().getZ()))
-                .replace("%player_pitch%", String.valueOf(player.getLocation().getPitch()))
-                .replace("%player_yaw%", String.valueOf(player.getLocation().getYaw()))
-                .replace("%player%", player.getName());
+    private String replacePlaceholder(String str, Player player, int multi){
+        str = str.replace("{world}", player.getWorld().getName())
+                .replace("{amount}", String.valueOf(multi))
+                .replace("{player_x}", String.valueOf(player.getLocation().getX()))
+                .replace("{player_y}", String.valueOf(player.getLocation().getY()))
+                .replace("{player_z}", String.valueOf(player.getLocation().getZ()))
+                .replace("{player_pitch}", String.valueOf(player.getLocation().getPitch()))
+                .replace("{player_yaw}", String.valueOf(player.getLocation().getYaw()))
+                .replace("{player}", player.getName());
         if (CommonUtil.checkPluginLoad("PlaceholderAPI")) {
             str = PlaceholderAPI.setPlaceholders(player, str);
         }
