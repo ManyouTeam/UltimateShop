@@ -150,7 +150,7 @@ public class PriceHook {
     public static boolean getPrice(String vanillaType, Player player, int value, boolean take) {
         vanillaType = vanillaType.toLowerCase();
         if (vanillaType.equals("exp")) {
-            if (player.getExp() >= value) {
+            if (player.getTotalExperience() >= value) {
                 if (take) {
                     player.giveExp(-value);
                 }
