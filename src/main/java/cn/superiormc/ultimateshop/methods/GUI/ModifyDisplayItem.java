@@ -50,7 +50,10 @@ public class ModifyDisplayItem {
             tempVal9 = CacheManager.cacheManager.playerCacheMap.get(player).getUseTimesCache().get(item);
         }
         ItemMeta tempVal2 = addLoreDisplayItem.getItemMeta();
-        List<String> addLore = tempVal2.getLore();
+        List<String> addLore = new ArrayList<>();
+        if (tempVal2.hasLore()) {
+            addLore.addAll(tempVal2.getLore());
+        }
         addLore.addAll(ConfigManager.configManager.getListWithColor("display-item.add-lore.top"));
         if (!item.getBuyPrice().empty) {
             addLore.addAll(ConfigManager.configManager.getListWithColor("display-item.add-lore.buy-price"));
