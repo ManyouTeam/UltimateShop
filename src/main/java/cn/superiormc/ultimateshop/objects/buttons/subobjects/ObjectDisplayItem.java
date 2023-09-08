@@ -48,7 +48,10 @@ public class ObjectDisplayItem{
         else {
             addLoreDisplayItem = displayItem.clone();
         }
-        return ModifyDisplayItem.modifyItem(player, multi, addLoreDisplayItem, item);
+        if (section.getBoolean("modify-lore", true)) {
+            return ModifyDisplayItem.modifyItem(player, multi, addLoreDisplayItem, item);
+        }
+        return addLoreDisplayItem;
     }
 
 
