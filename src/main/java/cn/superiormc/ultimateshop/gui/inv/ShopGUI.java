@@ -1,9 +1,13 @@
 package cn.superiormc.ultimateshop.gui.inv;
 
+import cn.superiormc.ultimateshop.cache.PlayerCache;
+import cn.superiormc.ultimateshop.cache.ServerCache;
 import cn.superiormc.ultimateshop.gui.InvGUI;
 import cn.superiormc.ultimateshop.managers.CacheManager;
 import cn.superiormc.ultimateshop.managers.ErrorManager;
 import cn.superiormc.ultimateshop.managers.LanguageManager;
+import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
+import cn.superiormc.ultimateshop.objects.caches.ObjectUseTimesCache;
 import cn.superiormc.ultimateshop.objects.menus.ObjectMenu;
 import cn.superiormc.ultimateshop.objects.ObjectShop;
 import cn.superiormc.ultimateshop.objects.buttons.AbstractButton;
@@ -13,6 +17,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -42,6 +47,15 @@ public class ShopGUI extends InvGUI {
 
     @Override
     protected void constructGUI() {
+        PlayerCache tempVal1 = CacheManager.cacheManager.playerCacheMap.get(owner.getPlayer());
+        ServerCache tempVal2 = ServerCache.serverCache;
+        if (tempVal1 == null) {
+            LanguageManager.languageManager.sendStringText(owner.getPlayer(),
+                    "error.player-not-found",
+                    "player",
+                    owner.getPlayer().getName());
+            return;
+        }
         if (shop.getShopMenu() == null) {
             LanguageManager.languageManager.sendStringText(owner.getPlayer(),
                     "error.shop-does-not-have-menu",
@@ -58,6 +72,26 @@ public class ShopGUI extends InvGUI {
                     "menu",
                     shop.getShopMenu());
             return;
+        }
+        for (ObjectItem tempVal5 : shop.getProductList()) {
+            ObjectUseTimesCache tempVal3 = tempVal1.getUseTimesCache().get(tempVal5);
+            if (tempVal3 != null && tempVal3.getBuyRefreshTime() != null && tempVal3.getBuyRefreshTime().isBefore(LocalDateTime.now())) {
+                tempVal1.getUseTimesCache().get(tempVal5).setBuyUseTimes(0);
+                tempVal1.getUseTimesCache().get(tempVal5).setLastBuyTime(null);
+            }
+            if (tempVal3 != null && tempVal3.getSellRefreshTime() != null && tempVal3.getSellRefreshTime().isBefore(LocalDateTime.now())) {
+                tempVal1.getUseTimesCache().get(tempVal5).setSellUseTimes(0);
+                tempVal1.getUseTimesCache().get(tempVal5).setLastSellTime(null);
+            }
+            ObjectUseTimesCache tempVal4 = tempVal2.getUseTimesCache().get(tempVal5);
+            if (tempVal4 != null && tempVal4.getBuyRefreshTime() != null && tempVal4.getBuyRefreshTime().isBefore(LocalDateTime.now())) {
+                tempVal2.getUseTimesCache().get(tempVal5).setBuyUseTimes(0);
+                tempVal2.getUseTimesCache().get(tempVal5).setLastBuyTime(null);
+            }
+            if (tempVal4 != null && tempVal4.getSellRefreshTime() != null && tempVal4.getSellRefreshTime().isBefore(LocalDateTime.now())) {
+                tempVal2.getUseTimesCache().get(tempVal5).setSellUseTimes(0);
+                tempVal2.getUseTimesCache().get(tempVal5).setLastSellTime(null);
+            }
         }
         menuButtons = shopMenu.getMenu();
         menuItems = getMenuItems(owner.getPlayer());

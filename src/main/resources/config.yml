@@ -53,7 +53,7 @@ display-item:
       - '&8Refresh Time: {sell-refresh-player}'
     sell-refresh-server:
       - ''
-      - '&cCan not sell more!'
+      - '&cCan not sell more for server!'
       - '&8Refresh Time: {sell-refresh-server}'
     buy-click:
       - '{buy-click}'
@@ -67,7 +67,7 @@ placeholder:
     format: "yyyy-MM-dd HH:mm:ss"
     never: "Never"
   price:
-    split-symbol-any: 'or '
+    split-symbol-any: ' or '
     split-symbol-all: ', '
     unknown: "Unknown"
   click:

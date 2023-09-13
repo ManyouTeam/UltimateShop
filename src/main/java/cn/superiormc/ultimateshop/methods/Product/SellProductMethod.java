@@ -69,13 +69,14 @@ public class SellProductMethod {
         if (tempVal9 != null) {
             if (quick) {
                 // 重置
-                if (tempVal9.getSellRefreshTime() != null && tempVal9.getSellRefreshTime().isAfter(LocalDateTime.now())) {
+                if (tempVal9.getSellRefreshTime() != null && tempVal9.getSellRefreshTime().isBefore(LocalDateTime.now())) {
                     tempVal3.getUseTimesCache().get(tempVal2).setSellUseTimes(0);
+                    tempVal3.getUseTimesCache().get(tempVal2).setLastSellTime(null);
                 }
             }
             playerUseTimes = tempVal9.getSellUseTimes();
             if (tempVal2.getPlayerSellLimit(player) != -1 &&
-                    playerUseTimes + multi - 1 > tempVal2.getPlayerSellLimit(player)) {
+                    playerUseTimes + multi - 1 >= tempVal2.getPlayerSellLimit(player)) {
                 if (quick) {
                     LanguageManager.languageManager.sendStringText(player,
                             "limit-reached-sell-player",

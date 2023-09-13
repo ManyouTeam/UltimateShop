@@ -35,9 +35,6 @@ public class ObjectSinglePrice extends AbstractSingleThing {
         }
         apply = integers;
         List<Double> cost = new ArrayList<>();
-        if (Objects.isNull(singleSection) || singleSection.getInt("start-apply", -1) != -1) {
-            return;
-        }
         List<Double> doubles = singleSection.getDoubleList("cost");
         if (doubles.size() == 0) {
             doubles = new ArrayList<>();

@@ -66,16 +66,24 @@ public class ModifyDisplayItem {
         if (item.getPlayerSellLimit(player) != -1) {
             addLore.addAll(ConfigManager.configManager.getListWithColor("display-item.add-lore.sell-limit"));
         }
-        if (tempVal9 != null && tempVal9.getBuyRefreshTime().getYear() != 1999) {
+        if (tempVal9 != null &&
+                item.getPlayerBuyLimit(player) > 0 &&
+                tempVal9.getBuyUseTimes() >= item.getPlayerBuyLimit(player)) {
             addLore.addAll(ConfigManager.configManager.getListWithColor("display-item.add-lore.buy-refresh-player"));
         }
-        if (tempVal9 != null && tempVal9.getSellRefreshTime().getYear() != 1999) {
+        if (tempVal9 != null &&
+                item.getPlayerSellLimit(player) > 0 &&
+                tempVal9.getSellUseTimes() >= item.getPlayerSellLimit(player)) {
             addLore.addAll(ConfigManager.configManager.getListWithColor("display-item.add-lore.sell-refresh-player"));
         }
-        if (tempVal10 != null && tempVal10.getBuyRefreshTime().getYear() != 1999) {
+        if (tempVal10 != null &&
+                item.getServerBuyLimit(player) > 0 &&
+                tempVal10.getBuyUseTimes() >= item.getServerBuyLimit(player)) {
             addLore.addAll(ConfigManager.configManager.getListWithColor("display-item.add-lore.buy-refresh-server"));
         }
-        if (tempVal10 != null && tempVal10.getSellRefreshTime().getYear() != 1999) {
+        if (tempVal10 != null &&
+                item.getServerSellLimit(player) > 0 &&
+                tempVal10.getSellUseTimes() >= item.getServerSellLimit(player)) {
             addLore.addAll(ConfigManager.configManager.getListWithColor("display-item.add-lore.sell-refresh-server"));
         }
         if (multi == 1 && !item.getBuyPrice().empty) {
@@ -104,17 +112,17 @@ public class ModifyDisplayItem {
                     "sell-limit-server",
                     String.valueOf(item.getServerBuyLimit(player)),
                     "buy-times-player",
-                    String.valueOf(tempVal9 == null ? "" : tempVal9.getBuyUseTimes()),
+                    String.valueOf(tempVal9 == null ? "0" : tempVal9.getBuyUseTimes()),
                     "sell-times-player",
-                    String.valueOf(tempVal9 == null ? "" : tempVal9.getSellUseTimes()),
+                    String.valueOf(tempVal9 == null ? "0" : tempVal9.getSellUseTimes()),
                     "buy-refresh-player",
                     String.valueOf(tempVal9 == null ? "" : tempVal9.getBuyRefreshTimeDisplayName()),
                     "sell-refresh-player",
                     String.valueOf(tempVal9 == null ? "" : tempVal9.getSellRefreshTimeDisplayName()),
                     "buy-times-server",
-                    String.valueOf(tempVal10 == null ? "" : tempVal10.getBuyUseTimes()),
+                    String.valueOf(tempVal10 == null ? "0" : tempVal10.getBuyUseTimes()),
                     "sell-times-server",
-                    String.valueOf(tempVal10 == null ? "" : tempVal10.getSellUseTimes()),
+                    String.valueOf(tempVal10 == null ? "0" : tempVal10.getSellUseTimes()),
                     "buy-refresh-server",
                     String.valueOf(tempVal10 == null ? "" : tempVal10.getBuyRefreshTimeDisplayName()),
                     "sell-refresh-server",

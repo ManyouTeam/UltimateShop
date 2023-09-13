@@ -265,7 +265,8 @@ public class ObjectItem extends AbstractButton {
                 }
                 break;
             case "select-amount" :
-                if (config.getBoolean("settings.buy-more")) {
+                if (config.getBoolean("buy-more",
+                        ConfigManager.configManager.getShop(getShop()).getShopConfig().getBoolean("settings.buy-more", true))) {
                     OpenGUI.openMoreGUI(player, this);
                 }
                 break;

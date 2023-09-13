@@ -81,6 +81,12 @@ public abstract class AbstractThings {
             case ("ALL") :
                 this.mode = ThingMode.ALL;
                 break;
+            case ("CLASSIC") :
+            case ("CLASSIC_ALL"):
+                this.mode = ThingMode.CLASSIC_ALL;
+                break;
+            case ("CLASSIC_ANY"):
+                this.mode = ThingMode.CLASSIC_ANY;
             default:
                 this.mode = ThingMode.UNKNOWN;
                 break;

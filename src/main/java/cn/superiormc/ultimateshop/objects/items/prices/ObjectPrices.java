@@ -4,6 +4,7 @@ import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.ErrorManager;
 import cn.superiormc.ultimateshop.objects.items.AbstractThings;
 import cn.superiormc.ultimateshop.objects.items.ThingMode;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
@@ -79,7 +80,6 @@ public class ObjectPrices extends AbstractThings {
         if (applyThings.isEmpty()) {
             applyThings.add(new ObjectSinglePrice());
         }
-
         return applyThings;
     }
 
@@ -118,13 +118,13 @@ public class ObjectPrices extends AbstractThings {
     // 作为价格时候使用
     @Override
     public boolean takeSingleThing(Player player, boolean take, int times, int amount) {
+        if (section == null) {
+            return false;
+        }
         switch (mode) {
             case UNKNOWN:
                 return false;
             case ANY:
-                if (section == null) {
-                    return true;
-                }
                 if (getAnyTargetPrice(player, times, true, 1)
                         .checkHasEnough(player, false, times, 1)) {
                     if (take) {
@@ -139,6 +139,7 @@ public class ObjectPrices extends AbstractThings {
                     if (!tempVal1.checkHasEnough(player, false, times, 1)) {
                         return false;
                     }
+                    Bukkit.getConsoleSender().sendMessage(tempVal1.getDisplayName(amount) + "已扣除！");
                 }
                 if (take) {
                     for (ObjectSinglePrice tempVal1 : getPrices(times)) {
@@ -147,9 +148,6 @@ public class ObjectPrices extends AbstractThings {
                 }
                 return true;
             case CLASSIC_ANY:
-                if (section == null) {
-                    return true;
-                }
                 if (getAnyTargetPrice(player, times, true, amount)
                         .checkHasEnough(player, false, times, amount)) {
                     if (take) {
@@ -208,15 +206,21 @@ public class ObjectPrices extends AbstractThings {
             switch (mode) {
                 case ANY:
                 case CLASSIC_ANY:
-                    tempVal2 = new StringBuilder(tempVal2 +
-                        ConfigManager.configManager.getString("placeholder.price.split-symbol-any") +
-                        tempVal3);
+                    for (int i = 0; i < tempVal1.size(); i++) {
+                        if (i > 0) {
+                            tempVal2.append(ConfigManager.configManager.getString("placeholder.price.split-symbol-any"));
+                        }
+                        tempVal2.append(tempVal1.get(i));
+                    }
                     break;
                 case ALL:
                 case CLASSIC_ALL:
-                    tempVal2 = new StringBuilder(tempVal2 +
-                            ConfigManager.configManager.getString("placeholder.price.split-symbol-all") +
-                            tempVal3);
+                    for (int i = 0; i < tempVal1.size(); i++) {
+                        if (i > 0) {
+                            tempVal2.append(ConfigManager.configManager.getString("placeholder.price.split-symbol-all"));
+                        }
+                        tempVal2.append(tempVal1.get(i));
+                    }
                     break;
                 default:
                     tempVal2 = new StringBuilder("Unknown Price Mode");

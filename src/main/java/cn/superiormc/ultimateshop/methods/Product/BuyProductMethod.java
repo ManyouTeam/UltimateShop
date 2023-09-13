@@ -96,8 +96,9 @@ public class BuyProductMethod {
         if (tempVal8 != null) {
             if (quick) {
                 // 重置
-                if (tempVal8.getBuyRefreshTime() != null && tempVal8.getBuyRefreshTime().isAfter(LocalDateTime.now())) {
+                if (tempVal8.getBuyRefreshTime() != null && tempVal8.getBuyRefreshTime().isBefore(LocalDateTime.now())) {
                     ServerCache.serverCache.getUseTimesCache().get(tempVal2).setBuyUseTimes(0);
+                    ServerCache.serverCache.getUseTimesCache().get(tempVal2).setLastBuyTime(null);
                 }
             }
             serverUseTimes = ServerCache.serverCache.getUseTimesCache().get(tempVal2).getBuyUseTimes();

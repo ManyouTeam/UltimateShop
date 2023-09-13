@@ -1,5 +1,8 @@
 package cn.superiormc.ultimateshop.commands;
 
+import cn.superiormc.ultimateshop.cache.PlayerCache;
+import cn.superiormc.ultimateshop.cache.ServerCache;
+import cn.superiormc.ultimateshop.managers.CacheManager;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.LanguageManager;
 import cn.superiormc.ultimateshop.methods.Create.CreateProduct;
@@ -8,6 +11,7 @@ import cn.superiormc.ultimateshop.methods.Product.BuyProductMethod;
 import cn.superiormc.ultimateshop.methods.Product.SellProductMethod;
 import cn.superiormc.ultimateshop.objects.menus.ObjectMenu;
 import cn.superiormc.ultimateshop.objects.ObjectShop;
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -121,8 +125,19 @@ public class MainCommand implements CommandExecutor {
 
     private void reloadCommand(CommandSender sender) {
         if (sender.hasPermission("ultimateshop.reload")) {
+            if (ServerCache.serverCache != null) {
+                ServerCache.serverCache.shutServerCache();
+            }
+            for (Player player : Bukkit.getOnlinePlayers()) {
+                CacheManager.cacheManager.playerCacheMap.get(player).shutPlayerCache();
+            }
             new ConfigManager();
             new LanguageManager();
+            new CacheManager();
+            for (Player player : Bukkit.getOnlinePlayers()) {
+                CacheManager.cacheManager.playerCacheMap.put(player, new PlayerCache(player));
+                CacheManager.cacheManager.playerCacheMap.get(player).initPlayerCache();
+            }
             LanguageManager.languageManager.sendStringText(sender, "plugin.reloaded");
         }
         else {
