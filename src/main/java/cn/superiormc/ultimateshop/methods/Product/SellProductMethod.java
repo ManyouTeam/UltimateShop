@@ -173,7 +173,7 @@ public class SellProductMethod {
                 "item",
                 tempVal2.getDisplayName(),
                 "price",
-                tempVal2.getSellPrice().getDisplayNameWithOneLine(
+                tempVal2.getSellPrice().getDisplayNameWithOneLine(player,
                         playerUseTimes,
                         multi));
         return ProductMethodStatus.DONE;

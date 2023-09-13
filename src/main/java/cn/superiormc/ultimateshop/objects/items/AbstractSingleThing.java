@@ -3,8 +3,8 @@ package cn.superiormc.ultimateshop.objects.items;
 import cn.superiormc.ultimateshop.hooks.EconomyHook;
 import cn.superiormc.ultimateshop.hooks.ItemsHook;
 import cn.superiormc.ultimateshop.hooks.PriceHook;
-import cn.superiormc.ultimateshop.managers.LanguageManager;
 import cn.superiormc.ultimateshop.utils.ItemUtil;
+import cn.superiormc.ultimateshop.utils.TextUtil;
 import com.cryptomorin.xseries.XItemStack;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
@@ -63,7 +63,7 @@ public abstract class AbstractSingleThing {
         if (singleSection == null) {
             return;
         }
-        double cost = getAmount(times);
+        double cost = getAmount(player, times);
         switch (type) {
             case "vanilla":  case "hook":
                 if (getItemThing(singleSection,
@@ -89,8 +89,8 @@ public abstract class AbstractSingleThing {
         }
     }
 
-    public double getAmount(int times) {
-        return singleSection.getDouble("amount", 1);
+    public double getAmount(Player player, int times) {
+        return Double.parseDouble(TextUtil.withPAPI(singleSection.getString("amount", "1"), player));
     }
 
     public boolean getCondition(Player player) {
@@ -119,7 +119,7 @@ public abstract class AbstractSingleThing {
                                   boolean take,
                                   int times,
                                   int classic_multi) {
-        double cost = getAmount(times) * classic_multi;
+        double cost = getAmount(player, times) * classic_multi;
         if (cost == -1) {
             return false;
         }
@@ -168,7 +168,7 @@ public abstract class AbstractSingleThing {
         if (singleSection == null) {
             return null;
         }
-        double cost = getAmount(times) * classic_multi;
+        double cost = getAmount(player, times) * classic_multi;
         ItemStack itemStack;
         switch (type) {
             case "vanilla":

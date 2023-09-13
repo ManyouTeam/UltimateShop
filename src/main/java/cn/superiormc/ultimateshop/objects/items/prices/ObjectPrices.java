@@ -3,7 +3,6 @@ package cn.superiormc.ultimateshop.objects.items.prices;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.ErrorManager;
 import cn.superiormc.ultimateshop.objects.items.AbstractThings;
-import cn.superiormc.ultimateshop.objects.items.ThingMode;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
@@ -175,7 +174,7 @@ public class ObjectPrices extends AbstractThings {
         }
     }
 
-    public List<String> getDisplayName(int times, int multi) {
+    public List<String> getDisplayName(Player player, int times, int multi) {
         Map<ObjectSinglePrice, Double> priceMaps = new HashMap<>();
         switch (mode) {
             case ALL:
@@ -185,10 +184,10 @@ public class ObjectPrices extends AbstractThings {
                         if (priceMaps.containsKey(tempVal3)) {
                             priceMaps.put(tempVal3,
                                     priceMaps.get(tempVal3) +
-                                            tempVal3.getAmount(times + i));
+                                            tempVal3.getAmount(player, times + i));
                         }
                         else {
-                            priceMaps.put(tempVal3, tempVal3.getAmount(times + i));
+                            priceMaps.put(tempVal3, tempVal3.getAmount(player, times + i));
                         }
                     }
                 }
@@ -198,10 +197,10 @@ public class ObjectPrices extends AbstractThings {
                     if (priceMaps.containsKey(tempVal3)) {
                         priceMaps.put(tempVal3,
                                 priceMaps.get(tempVal3) +
-                                        tempVal3.getAmount(times) * multi);
+                                        tempVal3.getAmount(player, times) * multi);
                     }
                     else {
-                        priceMaps.put(tempVal3, tempVal3.getAmount(times) * multi);
+                        priceMaps.put(tempVal3, tempVal3.getAmount(player, times) * multi);
                     }
                 }
         }
@@ -212,8 +211,8 @@ public class ObjectPrices extends AbstractThings {
         return tempVal1;
     }
 
-    public String getDisplayNameWithOneLine(int times, int multi) {
-        List<String> tempVal1 = getDisplayName(times, multi);
+    public String getDisplayNameWithOneLine(Player player, int times, int multi) {
+        List<String> tempVal1 = getDisplayName(player, times, multi);
         StringBuilder tempVal2 = new StringBuilder();
         switch (mode) {
             case ANY: case CLASSIC_ANY:

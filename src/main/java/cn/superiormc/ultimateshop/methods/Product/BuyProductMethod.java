@@ -137,7 +137,7 @@ public class BuyProductMethod {
                         "item",
                         tempVal2.getDisplayName(),
                         "price",
-                        tempVal5.getDisplayNameWithOneLine(
+                        tempVal5.getDisplayNameWithOneLine(player,
                                 playerUseTimes, multi));
             }
             return ProductMethodStatus.NOT_ENOUGH;
@@ -167,7 +167,7 @@ public class BuyProductMethod {
                 "item",
                 tempVal2.getDisplayName(),
                 "price",
-                tempVal5.getDisplayNameWithOneLine(
+                tempVal5.getDisplayNameWithOneLine(player,
                         playerUseTimes,
                         multi));
         return ProductMethodStatus.DONE;

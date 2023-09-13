@@ -74,7 +74,7 @@ public class ObjectSinglePrice extends AbstractSingleThing {
     }
 
     @Override
-    public double getAmount(int times) {
+    public double getAmount(Player player, int times) {
         if (singleSection == null) {
             return -1;
         }
