@@ -177,17 +177,33 @@ public class ObjectPrices extends AbstractThings {
 
     public List<String> getDisplayName(int times, int multi) {
         Map<ObjectSinglePrice, Double> priceMaps = new HashMap<>();
-        for (int i = 0 ; i < multi ; i ++) {
-            for (ObjectSinglePrice tempVal3 : getPrices(times + i)) {
-                if (priceMaps.containsKey(tempVal3)) {
-                    priceMaps.put(tempVal3,
-                            priceMaps.get(tempVal3) +
-                                    tempVal3.getAmount(times + i));
+        switch (mode) {
+            case ALL:
+            case ANY:
+                for (int i = 0 ; i < multi ; i ++) {
+                    for (ObjectSinglePrice tempVal3 : getPrices(times + i)) {
+                        if (priceMaps.containsKey(tempVal3)) {
+                            priceMaps.put(tempVal3,
+                                    priceMaps.get(tempVal3) +
+                                            tempVal3.getAmount(times + i));
+                        }
+                        else {
+                            priceMaps.put(tempVal3, tempVal3.getAmount(times + i));
+                        }
+                    }
                 }
-                else {
-                    priceMaps.put(tempVal3, tempVal3.getAmount(times + i));
+            case CLASSIC_ALL:
+            case CLASSIC_ANY:
+                for (ObjectSinglePrice tempVal3 : getPrices(times)) {
+                    if (priceMaps.containsKey(tempVal3)) {
+                        priceMaps.put(tempVal3,
+                                priceMaps.get(tempVal3) +
+                                        tempVal3.getAmount(times) * multi);
+                    }
+                    else {
+                        priceMaps.put(tempVal3, tempVal3.getAmount(times) * multi);
+                    }
                 }
-            }
         }
         List<String> tempVal1 = new ArrayList<>();
         for (ObjectSinglePrice tempVal2 : priceMaps.keySet()) {
@@ -198,35 +214,26 @@ public class ObjectPrices extends AbstractThings {
 
     public String getDisplayNameWithOneLine(int times, int multi) {
         List<String> tempVal1 = getDisplayName(times, multi);
-        StringBuilder tempVal2 = null;
-        for (String tempVal3 : tempVal1) {
-            if (tempVal2 == null) {
-                tempVal2 = new StringBuilder(tempVal3);
-            }
-            switch (mode) {
-                case ANY:
-                case CLASSIC_ANY:
-                    for (int i = 0; i < tempVal1.size(); i++) {
-                        if (i > 0) {
-                            tempVal2.append(ConfigManager.configManager.getString("placeholder.price.split-symbol-any"));
-                        }
-                        tempVal2.append(tempVal1.get(i));
+        StringBuilder tempVal2 = new StringBuilder();
+        switch (mode) {
+            case ANY: case CLASSIC_ANY:
+                for (int i = 0; i < tempVal1.size(); i++) {
+                    if (i > 0) {
+                        tempVal2.append(ConfigManager.configManager.getString("placeholder.price.split-symbol-any"));
                     }
-                    break;
-                case ALL:
-                case CLASSIC_ALL:
+                    tempVal2.append(tempVal1.get(i));
+                }
+                break;
+            case ALL: case CLASSIC_ALL:
                     for (int i = 0; i < tempVal1.size(); i++) {
-                        if (i > 0) {
-                            tempVal2.append(ConfigManager.configManager.getString("placeholder.price.split-symbol-all"));
-                        }
-                        tempVal2.append(tempVal1.get(i));
+                    if (i > 0) {
+                        tempVal2.append(ConfigManager.configManager.getString("placeholder.price.split-symbol-all"));
                     }
-                    break;
-                default:
-                    tempVal2 = new StringBuilder("Unknown Price Mode");
-                    break;
-
-            }
+                    tempVal2.append(tempVal1.get(i));
+                }
+                break;
+            default: tempVal2 = new StringBuilder("Unknown Price Mode");
+                break;
         }
         return tempVal2.toString();
     }

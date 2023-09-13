@@ -109,6 +109,10 @@ public class ConfigManager {
         return config.getBoolean(path, false);
     }
 
+    public int getInt(String path, int defaultValue) {
+        return config.getInt(path, defaultValue);
+    }
+
     public String getString(String path, String... args) {
         String s = config.getString(path);
         if (s == null) {

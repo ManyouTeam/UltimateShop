@@ -3,13 +3,11 @@ package cn.superiormc.ultimateshop.gui.inv;
 import cn.superiormc.ultimateshop.gui.InvGUI;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.ErrorManager;
-import cn.superiormc.ultimateshop.managers.LanguageManager;
 import cn.superiormc.ultimateshop.methods.Product.BuyProductMethod;
 import cn.superiormc.ultimateshop.methods.Product.SellProductMethod;
 import cn.superiormc.ultimateshop.objects.buttons.*;
 import cn.superiormc.ultimateshop.objects.menus.ObjectMoreMenu;
 import cn.superiormc.ultimateshop.utils.TextUtil;
-import com.cryptomorin.xseries.XItemStack;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
@@ -91,6 +89,9 @@ public class BuyMoreGUI extends InvGUI {
                 }
                 if (nowingAmount < 1) {
                     nowingAmount = 1;
+                }
+                if (nowingAmount >= ConfigManager.configManager.getInt("max-amount", 64)) {
+                    nowingAmount = ConfigManager.configManager.getInt("max-amount", 64);
                 }
                 break;
             case DISPLAY:

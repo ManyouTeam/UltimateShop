@@ -3,6 +3,7 @@ debug: true
 menu:
   select-more:
     menu: buy-more
+    max-amount: 64
   auto-open:
     enabled: true
     menu: main
