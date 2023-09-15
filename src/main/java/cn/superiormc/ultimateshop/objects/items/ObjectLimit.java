@@ -2,6 +2,7 @@ package cn.superiormc.ultimateshop.objects.items;
 
 import cn.superiormc.ultimateshop.utils.TextUtil;
 import cn.superiormc.ultimateshop.utils.MathUtil;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 

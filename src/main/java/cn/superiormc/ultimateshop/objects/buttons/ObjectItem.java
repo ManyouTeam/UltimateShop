@@ -144,11 +144,11 @@ public class ObjectItem extends AbstractButton {
     private void initSellLimit() {
         if (config.getConfigurationSection("limits") == null) {
             if (config.getConfigurationSection("sell-limits") == null) {
-                sellLimit = buyLimit;
+                sellLimit = new ObjectLimit();
                 return;
             }
             else {
-                buyLimit = new ObjectLimit(config.getConfigurationSection("sell-limits"),
+                sellLimit = new ObjectLimit(config.getConfigurationSection("sell-limits"),
                         config.getConfigurationSection("sell-limits-conditions"));
                 return;
             }

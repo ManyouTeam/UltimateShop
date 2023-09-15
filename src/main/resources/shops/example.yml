@@ -67,8 +67,8 @@ items:
         start-apply: 5
         placeholder: '{amount} Points'
     buy-actions:
-      - 'player_command: say %player% purchased an Apple!'
-      - 'announcement: &7%player% purchased an Apple!'
+      - 'player_command: say {player} purchased an Apple!'
+      - 'announcement: &7{player} purchased an Apple!'
     limits:
       global: 100
       default: 10
