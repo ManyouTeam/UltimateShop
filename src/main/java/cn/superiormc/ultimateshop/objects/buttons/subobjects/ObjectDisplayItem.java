@@ -39,7 +39,7 @@ public class ObjectDisplayItem{
 
     public ItemStack getDisplayItem(Player player, int multi) {
         ItemStack addLoreDisplayItem = null;
-        if (section == null || ConfigManager.configManager.getBoolean("display-item.auto-set-first-product")) {
+        if (section == null && ConfigManager.configManager.getBoolean("display-item.auto-set-first-product")) {
             addLoreDisplayItem = item.getReward().getDisplayItem(section, player, false, 0, 1);
             if (addLoreDisplayItem == null) {
                 addLoreDisplayItem = new ItemStack(Material.STONE);
