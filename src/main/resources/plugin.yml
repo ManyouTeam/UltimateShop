@@ -5,6 +5,19 @@ api-version: 1.13
 author:
   - PQguanfang
   - rzt1020
+softdepend:
+  - MMOItems
+  - MythicLib
+  - ItemsAdder
+  - Vault
+  - PlayerPoints
+  - GamePoints
+  - Oraxen
+  - EcoItems
+  - EcoArmor
+  - PlaceholderAPI
+  - UltraEconomy
+  - CoinsEngine
 commands:
   ultimateshop:
     aliases:
