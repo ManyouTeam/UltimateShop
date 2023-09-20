@@ -18,6 +18,8 @@ softdepend:
   - PlaceholderAPI
   - UltraEconomy
   - CoinsEngine
+  - RedisEconomy
+  - EcoBits
 commands:
   ultimateshop:
     aliases:
