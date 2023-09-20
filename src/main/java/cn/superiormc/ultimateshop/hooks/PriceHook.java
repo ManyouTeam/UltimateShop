@@ -5,6 +5,7 @@ import cn.superiormc.ultimateshop.managers.ErrorManager;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
 import com.willfp.ecobits.currencies.Currencies;
 import com.willfp.ecobits.currencies.CurrencyUtils;
+import dev.unnm3d.rediseconomy.api.RedisEconomyAPI;
 import me.TechsCode.UltraEconomy.UltraEconomy;
 import me.TechsCode.UltraEconomy.UltraEconomyAPI;
 import net.milkbowl.vault.economy.Economy;
@@ -141,9 +142,27 @@ public class PriceHook {
                 else {
                     return false;
                 }
+            case "rediseconomy":
+                RedisEconomyAPI api = RedisEconomyAPI.getAPI();
+                if (api == null) {
+                    ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cCan not hook into RedisEconomy plugin!");
+                    return false;
+                }
+                dev.unnm3d.rediseconomy.currency.Currency redisCurrency = api.getCurrencyByName("vault");
+                if (redisCurrency == null) {
+                    ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cCan not find currency " +
+                            currencyName + " in RedisEconomy plugin!");
+                    return false;
+                }
+                if (redisCurrency.getBalance(player) >= value) {
+                    if (take) {
+                        redisCurrency.withdrawPlayer(player, value);
+                    }
+                    return true;
+                }
         }
         ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: You set hook plugin to "
-                + pluginName + " in UI config, however for now UltimateShop does not support it!");
+                + pluginName + " in shop config, however for now UltimateShop does not support it!");
         return false;
     }
 

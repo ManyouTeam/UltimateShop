@@ -158,6 +158,15 @@
       </library>
     </orderEntry>
     <orderEntry type="module-library">
+      <library name="Maven: dev.unnm3d:RedisEconomy:4.3.7c">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/RedisEconomy-4.3.7c-SNAPSHOT.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
       <library name="Maven: me.TechsCode:UltraEconomy:2.4.0">
         <CLASSES>
           <root url="jar://$MODULE_DIR$/lib/UltraEconomy.jar!/" />

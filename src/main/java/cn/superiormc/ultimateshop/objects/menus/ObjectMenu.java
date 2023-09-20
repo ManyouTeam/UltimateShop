@@ -4,6 +4,7 @@ import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.objects.ObjectShop;
 import cn.superiormc.ultimateshop.objects.buttons.AbstractButton;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectButton;
+import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.ConfigurationSection;
@@ -25,7 +26,7 @@ public class ObjectMenu {
 
     public static List<String> shopMenuNames = new ArrayList<>();
 
-    public String fileName = null;
+    public String fileName;
 
     private ObjectShop shop = null;
 
@@ -41,6 +42,13 @@ public class ObjectMenu {
         this.type = MenuType.Shop;
         initMenu();
         initShopItems();
+        initButtonItems();
+    }
+
+    public ObjectMenu(String fileName, ObjectItem item) {
+        this.fileName = fileName;
+        this.type = MenuType.More;
+        initMenu();
         initButtonItems();
     }
 
@@ -69,13 +77,15 @@ public class ObjectMenu {
                     fileName + ".yml!");
         }
         else {
-            Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §fLoaded menu: " +
-                    fileName + ".yml!");
+            if (type == MenuType.Common) {
+                Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §fLoaded menu: " +
+                        fileName + ".yml!");
+            }
             this.menuConfigs = YamlConfiguration.loadConfiguration(file);
         }
     }
 
-    private void initShopItems() {
+    public void initShopItems() {
         int i = 0;
         if (menuConfigs == null) {
             return;
@@ -94,7 +104,7 @@ public class ObjectMenu {
         }
     }
 
-    private void initButtonItems() {
+    public void initButtonItems() {
         if (menuConfigs == null) {
             return;
         }

@@ -19,7 +19,7 @@ public class ObjectMoreMenu extends ObjectMenu {
 
 
     public ObjectMoreMenu(String fileName, ObjectItem item) {
-        super(fileName);
+        super(fileName, item);
         this.item = item;
         this.type = MenuType.More;
         moreMenus.put(item, this);
