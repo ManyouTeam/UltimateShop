@@ -9,16 +9,12 @@ import org.bukkit.entity.Player;
 
 public class ObjectSingleProduct extends AbstractSingleThing {
 
-    private String amount;
-
     public ObjectSingleProduct() {
         super();
-        amount = "0";
     }
 
     public ObjectSingleProduct(ConfigurationSection singleSection) {
         super(singleSection);
-        amount = singleSection.getString("amount", "1");
     }
 
     public String getDisplayName(double amount) {
@@ -33,7 +29,7 @@ public class ObjectSingleProduct extends AbstractSingleThing {
     }
 
     public double getAmount(Player player, int times) {
-        return Double.parseDouble(TextUtil.withPAPI(amount, player));
+        return Double.parseDouble(TextUtil.withPAPI(singleSection.getString("amount", "1"), player));
     }
 
 }

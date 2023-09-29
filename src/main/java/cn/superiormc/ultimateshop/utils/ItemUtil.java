@@ -2,6 +2,7 @@ package cn.superiormc.ultimateshop.utils;
 
 import cn.superiormc.ultimateshop.hooks.ItemsHook;
 import com.cryptomorin.xseries.XItemStack;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
@@ -13,7 +14,6 @@ public class ItemUtil {
     
     public static ItemStack buildItemStack(ConfigurationSection section, int amount) {
         ItemStack resultItem;
-        section.set("amount", amount);
         if (section.contains("hook-item")) {
             String pluginName = section.getString("hook-plugin");
             String itemID = section.getString("hook-item");
