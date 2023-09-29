@@ -149,7 +149,7 @@ public class ObjectPrices extends AbstractThings {
             case ALL:
             case ANY:
                 for (int i = 0 ; i < multi ; i ++) {
-                    for (ObjectSinglePrice tempVal3 : getPrices(times + i)) {
+                    for (AbstractSingleThing tempVal3 : getPrices(times + i)) {
                         if (priceMaps.containsKey(tempVal3)) {
                             priceMaps.put(tempVal3,
                                     priceMaps.get(tempVal3) +
@@ -163,7 +163,7 @@ public class ObjectPrices extends AbstractThings {
                 break;
             case CLASSIC_ALL:
             case CLASSIC_ANY:
-                for (ObjectSinglePrice tempVal3 : getPrices(times)) {
+                for (AbstractSingleThing tempVal3 : getPrices(times)) {
                     if (priceMaps.containsKey(tempVal3)) {
                         priceMaps.put(tempVal3,
                                 priceMaps.get(tempVal3) +

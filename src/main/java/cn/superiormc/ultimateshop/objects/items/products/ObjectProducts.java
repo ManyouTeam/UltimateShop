@@ -111,7 +111,7 @@ public class ObjectProducts extends AbstractThings {
             case ALL:
             case ANY:
                 for (int i = 0 ; i < multi ; i ++) {
-                    for (ObjectSingleProduct tempVal3 : singleProducts) {
+                    for (AbstractSingleThing tempVal3 : singleProducts) {
                         if (productMaps.containsKey(tempVal3)) {
                             productMaps.put(tempVal3,
                                     productMaps.get(tempVal3) +
@@ -125,7 +125,7 @@ public class ObjectProducts extends AbstractThings {
                 break;
             case CLASSIC_ALL:
             case CLASSIC_ANY:
-                for (ObjectSingleProduct tempVal3 : singleProducts) {
+                for (AbstractSingleThing tempVal3 : singleProducts) {
                     if (productMaps.containsKey(tempVal3)) {
                         productMaps.put(tempVal3,
                                 productMaps.get(tempVal3) +

@@ -87,10 +87,7 @@ public abstract class AbstractSingleThing {
         }
     }
 
-    public double getAmount(Player player, int times) {
-        String tempVal1 = singleSection.getString("amount", "1");
-        return Double.parseDouble(TextUtil.withPAPI(tempVal1, player));
-    }
+    public abstract double getAmount(Player player, int times);
 
     public boolean getCondition(Player player) {
         List<String> conditions = singleSection.getStringList("conditions");

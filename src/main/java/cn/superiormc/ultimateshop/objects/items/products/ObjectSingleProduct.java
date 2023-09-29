@@ -1,22 +1,24 @@
 package cn.superiormc.ultimateshop.objects.items.products;
 
-import cn.superiormc.ultimateshop.hooks.ItemsHook;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.objects.items.AbstractSingleThing;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
-import cn.superiormc.ultimateshop.utils.ItemUtil;
+import cn.superiormc.ultimateshop.utils.TextUtil;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 
 public class ObjectSingleProduct extends AbstractSingleThing {
 
+    private String amount;
+
     public ObjectSingleProduct() {
         super();
+        amount = "0";
     }
 
     public ObjectSingleProduct(ConfigurationSection singleSection) {
         super(singleSection);
+        amount = singleSection.getString("amount", "1");
     }
 
     public String getDisplayName(double amount) {
@@ -28,6 +30,10 @@ public class ObjectSingleProduct extends AbstractSingleThing {
         return CommonUtil.modifyString(tempVal1,
                 "amount",
                 String.valueOf(amount));
+    }
+
+    public double getAmount(Player player, int times) {
+        return Double.parseDouble(TextUtil.withPAPI(amount, player));
     }
 
 }

@@ -20,6 +20,7 @@ softdepend:
   - CoinsEngine
   - RedisEconomy
   - EcoBits
+  - MythicMobs
 commands:
   ultimateshop:
     aliases:
