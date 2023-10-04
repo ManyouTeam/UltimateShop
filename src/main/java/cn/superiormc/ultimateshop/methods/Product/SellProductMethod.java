@@ -86,7 +86,7 @@ public class SellProductMethod {
                     LanguageManager.languageManager.sendStringText(player,
                             "limit-reached-sell-player",
                             "item",
-                            tempVal2.getDisplayName(),
+                            tempVal2.getDisplayName(player),
                             "times",
                             String.valueOf(playerUseTimes),
                             "limit",
@@ -122,7 +122,7 @@ public class SellProductMethod {
                     LanguageManager.languageManager.sendStringText(player,
                             "limit-reached-sell-server",
                             "item",
-                            tempVal2.getDisplayName(),
+                            tempVal2.getDisplayName(player),
                             "times",
                             String.valueOf(serverUseTimes),
                             "limit",
@@ -151,7 +151,7 @@ public class SellProductMethod {
                 LanguageManager.languageManager.sendStringText(player,
                         "sell-products-not-enough",
                         "item",
-                        tempVal2.getDisplayName());
+                        tempVal2.getDisplayName(player));
             }
             return ProductMethodStatus.NOT_ENOUGH;
         }
@@ -183,7 +183,7 @@ public class SellProductMethod {
             LanguageManager.languageManager.sendStringText(player,
                     "success-sell",
                     "item",
-                    tempVal2.getDisplayName(),
+                    tempVal2.getDisplayName(player),
                     "price",
                     tempVal2.getSellPrice().getDisplayNameWithOneLine(player,
                             playerUseTimes,

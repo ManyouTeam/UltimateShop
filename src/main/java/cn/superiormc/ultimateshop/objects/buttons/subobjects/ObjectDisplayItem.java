@@ -5,6 +5,7 @@ import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.methods.GUI.ModifyDisplayItem;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import cn.superiormc.ultimateshop.utils.ItemUtil;
+import cn.superiormc.ultimateshop.utils.TextUtil;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
@@ -14,23 +15,11 @@ public class ObjectDisplayItem{
 
     private ConfigurationSection section;
 
-    private ItemStack displayItem;
-
     private ObjectItem item;
 
     public ObjectDisplayItem(ConfigurationSection section, ObjectItem item) {
         this.section = section;
         this.item = item;
-        initDisplayItem();
-    }
-
-    private void initDisplayItem() {
-        // 显示物品
-        displayItem = ItemUtil.buildItemStack(section, section.getInt("amount", 1));
-    }
-
-    public ItemStack getDisplayItem() {
-        return displayItem;
     }
 
     public ItemStack getDisplayItem(Player player) {
@@ -46,6 +35,9 @@ public class ObjectDisplayItem{
             }
         }
         else {
+            // 显示物品
+            ItemStack displayItem = ItemUtil.buildItemStack(section, (int) Double.parseDouble(
+                    (TextUtil.withPAPI(section.getString("amount", "1"), player))));
             addLoreDisplayItem = displayItem.clone();
         }
         if (section.getBoolean("modify-lore", true)) {

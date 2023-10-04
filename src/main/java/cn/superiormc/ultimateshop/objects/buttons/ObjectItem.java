@@ -161,8 +161,8 @@ public class ObjectItem extends AbstractButton {
                 this);
     }
 
-    public String getDisplayName() {
-        return CommonUtil.getItemName(displayItem.getDisplayItem());
+    public String getDisplayName(Player player) {
+        return CommonUtil.getItemName(displayItem.getDisplayItem(player));
 
     }
 
@@ -274,9 +274,5 @@ public class ObjectItem extends AbstractButton {
     @Override
     public ItemStack getDisplayItem(Player player, int multi) {
         return displayItem.getDisplayItem(player, multi);
-    }
-
-    public ItemStack getDisplayItem() {
-        return displayItem.getDisplayItem();
     }
 }

@@ -23,7 +23,7 @@ public class ModifyDisplayItem {
                                         ObjectItem item) {
         if (multi > 1) {
             // 修改物品名称
-            String itemName = item.getDisplayName();
+            String itemName = item.getDisplayName(player);
             itemName = TextUtil.parse("&f" + itemName + ConfigManager.configManager.getString("display-item.add-displayname").
                     replace("{amount}", String.valueOf(multi)));
             ItemMeta meta = addLoreDisplayItem.getItemMeta();
