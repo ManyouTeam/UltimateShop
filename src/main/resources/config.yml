@@ -1,4 +1,4 @@
-debug: true
+debug: false
 
 menu:
   select-more:
@@ -36,11 +36,13 @@ display-item:
       - '&7Purchase: {buy-price}'
     sell-price:
       - '&7Sell: {sell-price}'
-    buy-limit:
+    buy-limit-player:
       - '&7Player Buy Stock: {buy-times-player}/{buy-limit-player}'
+    buy-limit-server:
       - '&7Server Buy Stock: {buy-times-server}/{buy-limit-server}'
-    sell-limit:
+    sell-limit-player:
       - '&7Player Sell Limit: {sell-times-player}/{sell-limit-player}'
+    sell-limit-server:
       - '&7Server Sell Limit: {sell-times-server}/{sell-limit-server}'
     buy-refresh-player:
       - ''

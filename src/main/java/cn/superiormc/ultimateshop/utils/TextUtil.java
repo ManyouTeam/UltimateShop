@@ -42,10 +42,10 @@ public class TextUtil {
     public static List<String> getListWithColorAndPAPI(List<String> inList, Player player) {
         List<String> resultList = new ArrayList<>();
         for (String s : inList) {
-            resultList.add(TextUtil.parse(s));
             if (CommonUtil.checkPluginLoad("PlaceholderAPI")) {
                 PlaceholderAPI.setPlaceholders(player, s);
             }
+            resultList.add(TextUtil.parse(s));
         }
         return resultList;
     }

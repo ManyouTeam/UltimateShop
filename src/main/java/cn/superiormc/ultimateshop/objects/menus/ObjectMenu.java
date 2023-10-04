@@ -96,6 +96,11 @@ public class ObjectMenu {
                 int slot = i;
                 i ++;
                 if (shop.getProduct(String.valueOf(itemChar)) == null) {
+                    if (shop.getButton(String.valueOf(itemChar)) == null) {
+                        continue;
+                    }
+                    Bukkit.getConsoleSender().sendMessage("放置成功");
+                    menuItems.put(slot, shop.getButton(String.valueOf(itemChar)));
                     continue;
                 }
                 menuItems.put(slot, shop.

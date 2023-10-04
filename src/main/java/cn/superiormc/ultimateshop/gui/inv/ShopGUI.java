@@ -4,6 +4,7 @@ import cn.superiormc.ultimateshop.cache.PlayerCache;
 import cn.superiormc.ultimateshop.cache.ServerCache;
 import cn.superiormc.ultimateshop.gui.InvGUI;
 import cn.superiormc.ultimateshop.managers.CacheManager;
+import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.LanguageManager;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import cn.superiormc.ultimateshop.objects.caches.ObjectUseTimesCache;
@@ -93,6 +94,11 @@ public class ShopGUI extends InvGUI {
             }
         }
         menuButtons = shopMenu.getMenu();
+        if (ConfigManager.configManager.getBoolean("debug")) {
+            for (Integer i : menuButtons.keySet()) {
+                Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §fMenu Buttons: " + menuButtons.get(i));
+            }
+        }
         menuItems = getMenuItems(owner.getPlayer());
         if (Objects.isNull(inv)) {
             inv = Bukkit.createInventory(owner, shopMenu.getInt("size", 54),

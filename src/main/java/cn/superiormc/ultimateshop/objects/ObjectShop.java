@@ -1,8 +1,12 @@
 package cn.superiormc.ultimateshop.objects;
 
 import cn.superiormc.ultimateshop.managers.ErrorManager;
+import cn.superiormc.ultimateshop.objects.buttons.AbstractButton;
+import cn.superiormc.ultimateshop.objects.buttons.ObjectButton;
 import cn.superiormc.ultimateshop.objects.menus.ObjectMenu;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
+import org.bukkit.Bukkit;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.util.ArrayList;
@@ -16,12 +20,15 @@ public class ObjectShop {
 
     private Map<String, ObjectItem> items = new HashMap<>();
 
+    public Map<String, AbstractButton> buttonItems = new HashMap<>();
+
     private String shopName;
 
     public ObjectShop(String fileName, YamlConfiguration config) {
         this.shopName = fileName;
         this.config = config;
         initProducts();
+        initButtonItems();
         if (config.getString("settings.menu") != null) {
             initMenus();
         }
@@ -41,8 +48,22 @@ public class ObjectShop {
         new ObjectMenu(getShopMenu(), this);
     }
 
+    public void initButtonItems() {
+        ConfigurationSection tempVal1 = config.getConfigurationSection("buttons");
+        if (tempVal1 == null) {
+            return;
+        }
+        for (String button : tempVal1.getKeys(false)) {
+            buttonItems.put(button, new ObjectButton(tempVal1.getConfigurationSection(button)));
+        }
+    }
+
     public YamlConfiguration getShopConfig() {
         return config;
+    }
+
+    public AbstractButton getButton(String buttonID) {
+        return buttonItems.get(buttonID);
     }
 
     public ObjectItem getProduct(String productID) {
