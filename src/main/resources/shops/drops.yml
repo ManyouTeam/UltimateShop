@@ -1,0 +1,426 @@
+settings:
+  menu: 'example-shop-menu'
+  buy-more: true
+  shop-name: 'Logs'
+
+items:
+  A:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: rotten_flesh
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: 10
+        placeholder: '&6{amount} Coins'
+        start-apply: 0
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: 0.8
+        placeholder: '&6{amount} Coins'
+        start-apply: 0
+    sell-limits:
+      global: 1280
+      default: 128
+      vip: 192
+    sell-limits-conditions:
+      vip:
+        - 'permission: group.vip'
+    sell-limits-reset-mode: 'TIMED'
+    sell-limits-reset-time: '00:00:00'
+  B:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: gunpowder
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: 12.5
+        placeholder: '&6{amount} Coins'
+        start-apply: 0
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: 1
+        placeholder: '&6{amount} Coins'
+        start-apply: 0
+    sell-limits:
+      global: 1280
+      default: 64
+      vip: 192
+    sell-limits-conditions:
+      vip:
+        - 'permission: group.vip'
+    sell-limits-reset-mode: 'TIMED'
+    sell-limits-reset-time: '00:00:00'
+  C:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: ender_pearl
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: 25
+        placeholder: '&6{amount} Coins'
+        start-apply: 0
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: 2
+        placeholder: '&6{amount} Coins'
+        start-apply: 0
+    sell-limits:
+      global: 640
+      default: 64
+      vip: 96
+    sell-limits-conditions:
+      vip:
+        - 'permission: group.vip'
+    sell-limits-reset-mode: 'TIMED'
+    sell-limits-reset-time: '00:00:00'
+  D:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: spider_eye
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: 12.5
+        placeholder: '&6{amount} Coins'
+        start-apply: 0
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: 1
+        placeholder: '&6{amount} Coins'
+        start-apply: 0
+    sell-limits:
+      global: 640
+      default: 64
+      vip: 96
+    sell-limits-conditions:
+      vip:
+        - 'permission: group.vip'
+    sell-limits-reset-mode: 'TIMED'
+    sell-limits-reset-time: '00:00:00'
+  E:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: string
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: 12.5
+        placeholder: '&6{amount} Coins'
+        start-apply: 0
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: 1
+        placeholder: '&6{amount} Coins'
+        start-apply: 0
+    sell-limits:
+      global: 640
+      default: 64
+      vip: 96
+    sell-limits-conditions:
+      vip:
+        - 'permission: group.vip'
+    sell-limits-reset-mode: 'TIMED'
+    sell-limits-reset-time: '00:00:00'
+  F:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: bone
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: 12.5
+        placeholder: '&6{amount} Coins'
+        start-apply: 0
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: 1
+        placeholder: '&6{amount} Coins'
+        start-apply: 0
+    sell-limits:
+      global: 640
+      default: 64
+      vip: 96
+    sell-limits-conditions:
+      vip:
+        - 'permission: group.vip'
+    sell-limits-reset-mode: 'TIMED'
+    sell-limits-reset-time: '00:00:00'
+  G:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: slime_ball
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: 25
+        placeholder: '&6{amount} Coins'
+        start-apply: 0
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: 2
+        placeholder: '&6{amount} Coins'
+        start-apply: 0
+    sell-limits:
+      global: 640
+      default: 64
+      vip: 96
+    sell-limits-conditions:
+      vip:
+        - 'permission: group.vip'
+    sell-limits-reset-mode: 'TIMED'
+    sell-limits-reset-time: '00:00:00'
+  H:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: blaze_rod
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: 100
+        placeholder: '&6{amount} Coins'
+        start-apply: 0
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: 8
+        placeholder: '&6{amount} Coins'
+        start-apply: 0
+    sell-limits:
+      global: 640
+      default: 64
+      vip: 96
+    sell-limits-conditions:
+      vip:
+        - 'permission: group.vip'
+    sell-limits-reset-mode: 'TIMED'
+    sell-limits-reset-time: '00:00:00'
+  I:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: leather
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: 25
+        placeholder: '&6{amount} Coins'
+        start-apply: 0
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: 2
+        placeholder: '&6{amount} Coins'
+        start-apply: 0
+    sell-limits:
+      global: 640
+      default: 64
+      vip: 96
+    sell-limits-conditions:
+      vip:
+        - 'permission: group.vip'
+    sell-limits-reset-mode: 'TIMED'
+    sell-limits-reset-time: '00:00:00'
+  J:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: rabbit_hide
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: 25
+        placeholder: '&6{amount} Coins'
+        start-apply: 0
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: 2
+        placeholder: '&6{amount} Coins'
+        start-apply: 0
+    sell-limits:
+      global: 640
+      default: 64
+      vip: 96
+    sell-limits-conditions:
+      vip:
+        - 'permission: group.vip'
+    sell-limits-reset-mode: 'TIMED'
+    sell-limits-reset-time: '00:00:00'
+  K:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: feather
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: 25
+        placeholder: '&6{amount} Coins'
+        start-apply: 0
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: 2
+        placeholder: '&6{amount} Coins'
+        start-apply: 0
+    sell-limits:
+      global: 640
+      default: 64
+      vip: 96
+    sell-limits-conditions:
+      vip:
+        - 'permission: group.vip'
+    sell-limits-reset-mode: 'TIMED'
+    sell-limits-reset-time: '00:00:00'
+  L:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: prismarine_shard
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: 50
+        placeholder: '&6{amount} Coins'
+        start-apply: 0
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: 4
+        placeholder: '&6{amount} Coins'
+        start-apply: 0
+    sell-limits:
+      global: 640
+      default: 64
+      vip: 96
+    sell-limits-conditions:
+      vip:
+        - 'permission: group.vip'
+    sell-limits-reset-mode: 'TIMED'
+    sell-limits-reset-time: '00:00:00'
+  M:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: prismarine_crystals
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: 50
+        placeholder: '&6{amount} Coins'
+        start-apply: 0
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: 4
+        placeholder: '&6{amount} Coins'
+        start-apply: 0
+    sell-limits:
+      global: 640
+      default: 64
+      vip: 96
+    sell-limits-conditions:
+      vip:
+        - 'permission: group.vip'
+    sell-limits-reset-mode: 'TIMED'
+    sell-limits-reset-time: '00:00:00'
+  N:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: magma_cream
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: 50
+        placeholder: '&6{amount} Coins'
+        start-apply: 0
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: 4
+        placeholder: '&6{amount} Coins'
+        start-apply: 0
+    sell-limits:
+      global: 640
+      default: 64
+      vip: 96
+    sell-limits-conditions:
+      vip:
+        - 'permission: group.vip'
+    sell-limits-reset-mode: 'TIMED'
+    sell-limits-reset-time: '00:00:00'
+  O:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: phantom_membrane
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: 75
+        placeholder: '&6{amount} Coins'
+        start-apply: 0
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: 6
+        placeholder: '&6{amount} Coins'
+        start-apply: 0
+    sell-limits:
+      global: 640
+      default: 64
+      vip: 96
+    sell-limits-conditions:
+      vip:
+        - 'permission: group.vip'
+    sell-limits-reset-mode: 'TIMED'
+    sell-limits-reset-time: '00:00:00'

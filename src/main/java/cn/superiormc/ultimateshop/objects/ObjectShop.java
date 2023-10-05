@@ -40,7 +40,7 @@ public class ObjectShop {
             return;
         }
         for (String s : config.getConfigurationSection("items").getKeys(false)) {
-            items.put(s, new ObjectItem(shopName, config.getConfigurationSection("items." + s)));
+            items.put(s, new ObjectItem(this, config.getConfigurationSection("items." + s)));
         }
     }
 
@@ -54,7 +54,7 @@ public class ObjectShop {
             return;
         }
         for (String button : tempVal1.getKeys(false)) {
-            buttonItems.put(button, new ObjectButton(tempVal1.getConfigurationSection(button)));
+            buttonItems.put(button, new ObjectButton(tempVal1.getConfigurationSection(button), this));
         }
     }
 

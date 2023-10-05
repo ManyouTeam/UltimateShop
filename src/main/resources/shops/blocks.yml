@@ -1,0 +1,28 @@
+settings:
+  menu: 'example-shop-menu'
+  buy-more: true
+  shop-name: 'Blocks'
+
+items:
+  A:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    display-item:
+      material: sea_lantern
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: 5
+        start-apply: 0
+        placeholder: '{amount} Coins'
+  B:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    display-item:
+      material: bricks
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: 5
+        start-apply: 0
+        placeholder: '{amount} Coins'

@@ -5,6 +5,7 @@ import cn.superiormc.ultimateshop.managers.ErrorManager;
 import cn.superiormc.ultimateshop.methods.GUI.OpenGUI;
 import cn.superiormc.ultimateshop.methods.Product.BuyProductMethod;
 import cn.superiormc.ultimateshop.methods.Product.SellProductMethod;
+import cn.superiormc.ultimateshop.objects.ObjectShop;
 import cn.superiormc.ultimateshop.objects.buttons.subobjects.ObjectDisplayItem;
 import cn.superiormc.ultimateshop.objects.items.ObjectAction;
 import cn.superiormc.ultimateshop.objects.items.ObjectLimit;
@@ -20,7 +21,7 @@ import org.bukkit.inventory.ItemStack;
 
 public class ObjectItem extends AbstractButton {
 
-    private String shop;
+    private ObjectShop shop;
 
     private ObjectDisplayItem displayItem;
 
@@ -38,7 +39,7 @@ public class ObjectItem extends AbstractButton {
 
     private ObjectLimit sellLimit;
 
-    public ObjectItem(String shop, ConfigurationSection config) {
+    public ObjectItem(ObjectShop shop, ConfigurationSection config) {
         super(config);
         this.shop = shop;
         this.type = ButtonType.SHOP;
@@ -243,6 +244,10 @@ public class ObjectItem extends AbstractButton {
     }
 
     public String getShop() {
+        return shop.getShopName();
+    }
+
+    public ObjectShop getShopObject() {
         return shop;
     }
 
@@ -274,5 +279,9 @@ public class ObjectItem extends AbstractButton {
     @Override
     public ItemStack getDisplayItem(Player player, int multi) {
         return displayItem.getDisplayItem(player, multi);
+    }
+
+    public ItemStack getDisplayItem(Player player) {
+        return displayItem.getDisplayItem(player);
     }
 }

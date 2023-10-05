@@ -29,8 +29,6 @@ public class ShopGUI extends InvGUI {
 
     private ObjectMenu shopMenu = null;
 
-    private boolean reload = false;
-
     public ShopGUI(Player owner, ObjectShop shop) {
         super(owner);
         this.shop = shop;

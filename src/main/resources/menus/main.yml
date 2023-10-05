@@ -9,17 +9,60 @@ title: 'Shop'
 layout:
   - '000000000'
   - '000000000'
-  - '0000A0000'
-  - '000000000'
+  - '00AB0CD00'
+  - '00E000F00'
   - '000000000'
   - '000000000'
 
 buttons:
   A:
     display-item:
-      material: BREAD
-      name: '&dFoods'
+      material: wheat
+      name: '&dCrops'
       lore:
-        - '&7Click to open food shop!'
+        - '&7Click to open this shop!'
     actions:
-      - 'shop_menu: example'
+      - 'shop_menu: crops'
+  B:
+    display-item:
+      material: bone
+      name: '&dDrops'
+      lore:
+        - '&7Click to open this shop!'
+    actions:
+      - 'shop_menu: drops'
+  C:
+    display-item:
+      material: bricks
+      name: '&dBlocks'
+      lore:
+        - '&7Click to open this shop!'
+    actions:
+      - 'shop_menu: blocks'
+  D:
+    display-item:
+      material: fishing_rod
+      name: '&dBaits'
+      lore:
+        - '&cThis is an example for ItemsAdder and'
+        - '&ccommand shop, not for real use!'
+        - ''
+        - '&7Click to open this shop!'
+    actions:
+      - 'shop_menu: baits'
+  E:
+    display-item:
+      material: oak_log
+      name: '&dLogs'
+      lore:
+        - '&7Click to open this shop!'
+    actions:
+      - 'shop_menu: logs'
+  F:
+    display-item:
+      material: diamond_ore
+      name: '&dOres'
+      lore:
+        - '&7Click to open this shop!'
+    actions:
+      - 'shop_menu: ores'

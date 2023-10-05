@@ -23,10 +23,6 @@ public class ObjectDisplayItem{
     }
 
     public ItemStack getDisplayItem(Player player) {
-        return getDisplayItem(player, 1);
-    }
-
-    public ItemStack getDisplayItem(Player player, int multi) {
         ItemStack addLoreDisplayItem = null;
         if (section == null && ConfigManager.configManager.getBoolean("display-item.auto-set-first-product")) {
             addLoreDisplayItem = item.getReward().getDisplayItem(section, player, false, 0, 1);
@@ -40,6 +36,11 @@ public class ObjectDisplayItem{
                     (TextUtil.withPAPI(section.getString("amount", "1"), player))));
             addLoreDisplayItem = displayItem.clone();
         }
+        return addLoreDisplayItem;
+    }
+
+    public ItemStack getDisplayItem(Player player, int multi) {
+        ItemStack addLoreDisplayItem = getDisplayItem(player);
         if (section.getBoolean("modify-lore", true)) {
             return ModifyDisplayItem.modifyItem(player, multi, addLoreDisplayItem, item);
         }

@@ -1,0 +1,376 @@
+settings:
+  menu: 'example-shop-menu'
+  buy-more: true
+  shop-name: 'Ores'
+
+items:
+  A:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: coal
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: 5
+        placeholder: '&6{amount} Coins'
+        start-apply: 0
+    buy-limits:
+      global: 320
+      default: 240
+      vip: 320
+    buy-limits-conditions:
+      vip:
+        - 'permission: group.vip'
+    buy-limits-reset-mode: 'TIMED'
+    buy-limits-reset-time: '00:00:00'
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: 0.5
+        placeholder: '&6{amount} Coins'
+        start-apply: 0
+    sell-limits:
+      global: 320
+      default: 64
+      vip: 96
+    sell-limits-conditions:
+      vip:
+        - 'permission: group.vip'
+    sell-limits-reset-mode: 'TIMED'
+    sell-limits-reset-time: '00:00:00'
+  B:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: copper_ingot
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: 15
+        placeholder: '&6{amount} Coins'
+        start-apply: 0
+    buy-limits:
+      global: 320
+      default: 240
+      vip: 320
+    buy-limits-conditions:
+      vip:
+        - 'permission: group.vip'
+    buy-limits-reset-mode: 'TIMED'
+    buy-limits-reset-time: '00:00:00'
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: 1.5
+        placeholder: '&6{amount} Coins'
+        start-apply: 0
+    sell-limits:
+      global: 320
+      default: 64
+      vip: 96
+    sell-limits-conditions:
+      vip:
+        - 'permission: group.vip'
+    sell-limits-reset-mode: 'TIMED'
+    sell-limits-reset-time: '00:00:00'
+  C:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: iron_ingot
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: 50
+        placeholder: '&6{amount} Coins'
+        start-apply: 0
+    buy-limits:
+      global: 320
+      default: 240
+      vip: 320
+    buy-limits-conditions:
+      vip:
+        - 'permission: group.vip'
+    buy-limits-reset-mode: 'TIMED'
+    buy-limits-reset-time: '00:00:00'
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: 3
+        placeholder: '&6{amount} Coins'
+        start-apply: 0
+    sell-limits:
+      global: 320
+      default: 64
+      vip: 96
+    sell-limits-conditions:
+      vip:
+        - 'permission: group.vip'
+    sell-limits-reset-mode: 'TIMED'
+    sell-limits-reset-time: '00:00:00'
+  D:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: gold_ingot
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: 50
+        placeholder: '&6{amount} Coins'
+        start-apply: 0
+    buy-limits:
+      global: 320
+      default: 240
+      vip: 320
+    buy-limits-conditions:
+      vip:
+        - 'permission: group.vip'
+    buy-limits-reset-mode: 'TIMED'
+    buy-limits-reset-time: '00:00:00'
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: 5
+        placeholder: '&6{amount} Coins'
+        start-apply: 0
+    sell-limits:
+      global: 320
+      default: 64
+      vip: 96
+    sell-limits-conditions:
+      vip:
+        - 'permission: group.vip'
+    sell-limits-reset-mode: 'TIMED'
+    sell-limits-reset-time: '00:00:00'
+  E:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: diamond
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: 300
+        placeholder: '&6{amount} Coins'
+        start-apply: 0
+    buy-limits:
+      global: 60
+      default: 12
+      vip: 18
+    buy-limits-conditions:
+      vip:
+        - 'permission: group.vip'
+    buy-limits-reset-mode: 'TIMED'
+    buy-limits-reset-time: '00:00:00'
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: 15
+        placeholder: '&6{amount} Coins'
+        start-apply: 0
+    sell-limits:
+      global: 120
+      default: 8
+      vip: 12
+    sell-limits-conditions:
+      vip:
+        - 'permission: group.vip'
+    sell-limits-reset-mode: 'TIMED'
+    sell-limits-reset-time: '00:00:00'
+  F:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: netherite_ingot
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: 2000
+        placeholder: '&6{amount} Coins'
+        start-apply: 0
+    buy-limits:
+      global: 60
+      default: 12
+      vip: 18
+    buy-limits-conditions:
+      vip:
+        - 'permission: group.vip'
+    buy-limits-reset-mode: 'TIMED'
+    buy-limits-reset-time: '00:00:00'
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: 100
+        placeholder: '&6{amount} Coins'
+        start-apply: 0
+    sell-limits:
+      global: 120
+      default: 8
+      vip: 12
+    sell-limits-conditions:
+      vip:
+        - 'permission: group.vip'
+    sell-limits-reset-mode: 'TIMED'
+    sell-limits-reset-time: '00:00:00'
+  G:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: redstone
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: 5
+        placeholder: '&6{amount} Coins'
+        start-apply: 0
+    buy-limits:
+      global: 320
+      default: 240
+      vip: 320
+    buy-limits-conditions:
+      vip:
+        - 'permission: group.vip'
+    buy-limits-reset-mode: 'TIMED'
+    buy-limits-reset-time: '00:00:00'
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: 0.5
+        placeholder: '&6{amount} Coins'
+        start-apply: 0
+    sell-limits:
+      global: 320
+      default: 64
+      vip: 96
+    sell-limits-conditions:
+      vip:
+        - 'permission: group.vip'
+    sell-limits-reset-mode: 'TIMED'
+    sell-limits-reset-time: '00:00:00'
+  H:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: lapis_lazuli
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: 5
+        placeholder: '&6{amount} Coins'
+        start-apply: 0
+    buy-limits:
+      global: 320
+      default: 240
+      vip: 320
+    buy-limits-conditions:
+      vip:
+        - 'permission: group.vip'
+    buy-limits-reset-mode: 'TIMED'
+    buy-limits-reset-time: '00:00:00'
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: 0.5
+        placeholder: '&6{amount} Coins'
+        start-apply: 0
+    sell-limits:
+      global: 320
+      default: 64
+      vip: 96
+    sell-limits-conditions:
+      vip:
+        - 'permission: group.vip'
+    sell-limits-reset-mode: 'TIMED'
+    sell-limits-reset-time: '00:00:00'
+  I:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: emerald
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: PlayerPoints
+        amount: 15
+        placeholder: '&6{amount} Points'
+        start-apply: 0
+    buy-limits:
+      global: 60
+      default: 12
+      vip: 18
+    buy-limits-conditions:
+      vip:
+        - 'permission: group.vip'
+    buy-limits-reset-mode: 'TIMED'
+    buy-limits-reset-time: '00:00:00'
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: 15
+        placeholder: '&6{amount} Coins'
+        start-apply: 0
+    sell-limits:
+      global: 120
+      default: 8
+      vip: 12
+    sell-limits-conditions:
+      vip:
+        - 'permission: group.vip'
+    sell-limits-reset-mode: 'TIMED'
+    sell-limits-reset-time: '00:00:00'
+  J:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: quartz
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: PlayerPoints
+        amount: 5
+        placeholder: '&6{amount} Coins'
+        start-apply: 0
+    buy-limits:
+      global: 320
+      default: 240
+      vip: 320
+    buy-limits-conditions:
+      vip:
+        - 'permission: group.vip'
+    buy-limits-reset-mode: 'TIMED'
+    buy-limits-reset-time: '00:00:00'
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: 0.5
+        placeholder: '&6{amount} Coins'
+        start-apply: 0
+    sell-limits:
+      global: 320
+      default: 64
+      vip: 96
+    sell-limits-conditions:
+      vip:
+        - 'permission: group.vip'
+    sell-limits-reset-mode: 'TIMED'
+    sell-limits-reset-time: '00:00:00'

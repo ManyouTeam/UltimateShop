@@ -1,9 +1,7 @@
 package cn.superiormc.ultimateshop.objects.menus;
 
-import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
-import cn.superiormc.ultimateshop.objects.buttons.ObjectMoreButton;
-import cn.superiormc.ultimateshop.objects.buttons.ObjectMoreBuyButton;
-import cn.superiormc.ultimateshop.objects.buttons.ObjectMoreDisplayButton;
+import cn.superiormc.ultimateshop.managers.ConfigManager;
+import cn.superiormc.ultimateshop.objects.buttons.*;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.HashMap;
@@ -33,6 +31,9 @@ public class ObjectMoreMenu extends ObjectMenu {
             return;
         }
         String displayItem = menuConfigs.getString("display-item");
+        if (displayItem == null) {
+            return;
+        }
         int i = 0;
         for (String singleLine : menuConfigs.getStringList("layout")) {
             for (int c = 0 ; c < singleLine.length() ; c ++) {

@@ -1,0 +1,72 @@
+settings:
+  menu: 'example-shop-menu'
+  buy-more: true
+  shop-name: 'Crops page.2'
+
+items:
+  A:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: apple
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: 2
+        placeholder: '&6{amount} Coins'
+        start-apply: 0
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: 1
+        placeholder: '&6{amount} Coins'
+        start-apply: 0
+    sell-limits:
+      global: 1280
+      default: 320
+      vip: 480
+    sell-limits-conditions:
+      vip:
+        - 'permission: group.vip'
+    sell-limits-reset-mode: 'TIMED'
+    sell-limits-reset-time: '00:00:00'
+  B:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: bread
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: 2
+        placeholder: '&6{amount} Coins'
+        start-apply: 0
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: 1
+        placeholder: '&6{amount} Coins'
+        start-apply: 0
+    sell-limits:
+      global: 1280
+      default: 320
+      vip: 480
+    sell-limits-conditions:
+      vip:
+        - 'permission: group.vip'
+    sell-limits-reset-mode: 'TIMED'
+    sell-limits-reset-time: '00:00:00'
+
+buttons:
+  a:
+    display-item:
+      material: arrow
+      name: '&cPrevious page'
+      lore:
+        - '&7Click to view previous page!'
+    actions:
+      - 'shop_menu: crops'    

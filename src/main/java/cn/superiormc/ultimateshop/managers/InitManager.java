@@ -18,7 +18,13 @@ public class InitManager {
 
     public void init() {
         resourceOutputFix(new File("message.yml"));
-        resourceOutput(new File("shops/example.yml"));
+        resourceOutput(new File("shops/baits.yml"));
+        resourceOutput(new File("shops/blocks.yml"));
+        resourceOutput(new File("shops/crops.yml"));
+        resourceOutput(new File("shops/crops1.yml"));
+        resourceOutput(new File("shops/drops.yml"));
+        resourceOutput(new File("shops/logs.yml"));
+        resourceOutput(new File("shops/ores.yml"));
         resourceOutput(new File("menus/main.yml"));
         resourceOutput(new File("menus/buy-more.yml"));
         resourceOutput(new File("menus/example-shop-menu.yml"));

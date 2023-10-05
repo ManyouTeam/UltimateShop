@@ -1,0 +1,48 @@
+settings:
+  menu: 'example-shop-menu'
+  buy-more: true
+  shop-name: 'Baits (Just an example shop)'
+
+items:
+  A:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    display-item:
+      hook-plugin: ItemsAdder
+      hook-item: fish:common_bait
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: 5
+        start-apply: 0
+        placeholder: '{amount} Coins'
+    buy-actions:
+      - 'console_command: customfishing items bait give %player_name% common_bait 1'
+  B:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    display-item:
+      hook-plugin: ItemsAdder
+      hook-item: fish:rare_bait
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: 15
+        start-apply: 0
+        placeholder: '{amount} Coins'
+    buy-actions:
+      - 'console_command: customfishing items bait give %player_name% rare_bait 1'
+  C:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    display-item:
+      hook-plugin: ItemsAdder
+      hook-item: fish:epic_bait
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: 25
+        start-apply: 0
+        placeholder: '{amount} Coins'
+    buy-actions:
+      - 'console_command: customfishing items bait give %player_name% epic_bait 1'

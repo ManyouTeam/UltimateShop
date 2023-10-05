@@ -65,9 +65,9 @@ confirm-items:
 buttons:
   A:
     display-item:
-      material: BREAD
+      material: ARROW
       name: '&cBack'
       lore:
-        - '&7Click to back food shop!'
+        - '&7Click to back shop!'
     actions:
-      - 'shop_menu: example'
+      - 'shop_menu: {shop_name}'

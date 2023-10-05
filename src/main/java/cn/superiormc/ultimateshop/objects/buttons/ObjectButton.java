@@ -1,5 +1,6 @@
 package cn.superiormc.ultimateshop.objects.buttons;
 
+import cn.superiormc.ultimateshop.objects.ObjectShop;
 import cn.superiormc.ultimateshop.objects.items.ObjectAction;
 import cn.superiormc.ultimateshop.utils.ItemUtil;
 import cn.superiormc.ultimateshop.utils.TextUtil;
@@ -11,15 +12,30 @@ import org.bukkit.inventory.ItemStack;
 
 public class ObjectButton extends AbstractButton {
 
+    private ObjectShop shop;
+
+    private ObjectAction action;
+
     public ObjectButton(ConfigurationSection config) {
         super(config);
         this.type = ButtonType.COMMON;
     }
 
+    public ObjectButton(ConfigurationSection config, ObjectShop shop) {
+        super(config);
+        this.type = ButtonType.COMMON;
+        this.shop = shop;
+    }
+
     @Override
     public void clickEvent(ClickType type, Player player) {
-        ObjectAction tempVal1 = new ObjectAction(config.getStringList("actions"));
-        tempVal1.doAction(player, 1);
+        if (shop == null) {
+            action  = new ObjectAction(config.getStringList("actions"));
+        }
+        else {
+            action = new ObjectAction(config.getStringList("actions"), shop);
+        }
+        action.doAction(player, 1);
     }
 
     @Override

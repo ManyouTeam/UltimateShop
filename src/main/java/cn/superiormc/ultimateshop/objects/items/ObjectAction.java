@@ -4,6 +4,8 @@ import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.ErrorManager;
 import cn.superiormc.ultimateshop.methods.GUI.OpenGUI;
+import cn.superiormc.ultimateshop.objects.ObjectShop;
+import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import cn.superiormc.ultimateshop.utils.TextUtil;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
 import me.clip.placeholderapi.PlaceholderAPI;
@@ -24,6 +26,8 @@ public class ObjectAction {
 
     private List<String> onceAction = new ArrayList<>();
 
+    private ObjectShop shop = null;
+
     public ObjectAction() {
         // Empty...
     }
@@ -40,6 +44,19 @@ public class ObjectAction {
         }
     }
 
+    public ObjectAction(List<String> action, ObjectShop shop) {
+        for (String s : action) {
+            if (s.endsWith("-o")) {
+                s = s.substring(0, s.length() - 3);
+                onceAction.add(s);
+            }
+            else {
+                everyAction.add(s);
+            }
+        }
+        this.shop = shop;
+    }
+
     public void doAction(Player player, int multi){
         if (everyAction.isEmpty() && onceAction.isEmpty()) {
             return;
@@ -51,21 +68,22 @@ public class ObjectAction {
     }
 
     private void checkAction(Player player, List<String> actions, int multi) {
-        for(String singleAction : actions) {
+        for (String singleAction : actions) {
+            singleAction = replacePlaceholder(singleAction, player, multi);
             if (singleAction.startsWith("none")) {
                 return;
-            } else if (singleAction.startsWith("message: ") && player != null) {
-                player.sendMessage(replacePlaceholder(TextUtil.parse(singleAction.substring(9), player), player, multi));
-            } else if (singleAction.startsWith("open_menu: ") && player != null) {
+            } else if (singleAction.startsWith("message: ")) {
+                player.sendMessage(TextUtil.parse(singleAction.substring(9), player));
+            } else if (singleAction.startsWith("open_menu: ")) {
                 OpenGUI.openCommonGUI(player, singleAction.substring(11));
-            } else if (singleAction.startsWith("shop_menu: ") && player != null) {
+            } else if (singleAction.startsWith("shop_menu: ")) {
                 OpenGUI.openShopGUI(player, ConfigManager.configManager.getShop(singleAction.substring(11)));
             } else if (singleAction.startsWith("announcement: ")) {
                 Collection<? extends Player> players = Bukkit.getOnlinePlayers();
                 for (Player p : players) {
                     p.sendMessage(TextUtil.parse(singleAction.substring(14), player));
                 }
-            } else if (singleAction.startsWith("effect: ") && player != null) {
+            } else if (singleAction.startsWith("effect: ")) {
                 try {
                     if (PotionEffectType.getByName(singleAction.substring(8).split(";;")[0].toUpperCase()) == null) {
                         ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Can not found potion effect: " +
@@ -82,7 +100,7 @@ public class ObjectAction {
                 catch (ArrayIndexOutOfBoundsException e) {
                     ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Your effect action in totem configs can not being correctly load.");
                 }
-            } else if (singleAction.startsWith("teleport: ") && player != null) {
+            } else if (singleAction.startsWith("teleport: ")) {
                 try {
                     if (singleAction.split(";;").length == 4) {
                         Location loc = new Location(Bukkit.getWorld(singleAction.substring(10).split(";;")[0]),
@@ -110,60 +128,54 @@ public class ObjectAction {
                     ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Your teleport action in totem configs can not being correctly load.");
                 }
             } else if (CommonUtil.checkPluginLoad("MythicMobs") && singleAction.startsWith("mythicmobs_spawn: ")) {
-                Bukkit.getScheduler().runTask(UltimateShop.instance, () -> {
-                    try {
-                        if (singleAction.substring(18).split(";;").length == 1) {
-                            CommonUtil.summonMythicMobs(player.getLocation(),
-                                    singleAction.substring(18).split(";;")[0],
-                                    1);
-                        }
-                        else if (singleAction.substring(18).split(";;").length == 2) {
-                            CommonUtil.summonMythicMobs(player.getLocation(),
-                                    singleAction.substring(18).split(";;")[0],
-                                    Integer.parseInt(singleAction.substring(18).split(";;")[1]));
-                        }
-                        else if (singleAction.substring(18).split(";;").length == 5) {
-                            World world = Bukkit.getWorld(singleAction.substring(18).split(";;")[1]);
-                            Location location = new Location(world,
-                                    Double.parseDouble(singleAction.substring(18).split(";;")[2]),
-                                    Double.parseDouble(singleAction.substring(18).split(";;")[3]),
-                                    Double.parseDouble(singleAction.substring(18).split(";;")[4])
-                            );
-                            CommonUtil.summonMythicMobs(location,
-                                    singleAction.substring(18).split(";;")[0],
-                                    1);
-                        }
-                        else if (singleAction.substring(18).split(";;").length == 6) {
-                            World world = Bukkit.getWorld(singleAction.substring(18).split(";;")[2]);
-                            Location location = new Location(world,
-                                    Double.parseDouble(singleAction.substring(18).split(";;")[3]),
-                                    Double.parseDouble(singleAction.substring(18).split(";;")[4]),
-                                    Double.parseDouble(singleAction.substring(18).split(";;")[5])
-                            );
-                            CommonUtil.summonMythicMobs(location,
-                                    singleAction.substring(18).split(";;")[0],
-                                    Integer.parseInt(singleAction.substring(18).split(";;")[1]));
-                        }
-                        else {
-                            ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Your mythicmobs_spawn action in totem configs can not being correctly load.");
-                        }
-                    }
-                    catch (ArrayIndexOutOfBoundsException e) {
-                        ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Your mythicmobs_spawn action in totem configs can not being correctly load.");
-                    }
-                });
+                 try {
+                     if (singleAction.substring(18).split(";;").length == 1) {
+                         CommonUtil.summonMythicMobs(player.getLocation(),
+                                 singleAction.substring(18).split(";;")[0],
+                                 1);
+                     }
+                     else if (singleAction.substring(18).split(";;").length == 2) {
+                         CommonUtil.summonMythicMobs(player.getLocation(),
+                                 singleAction.substring(18).split(";;")[0],
+                                 Integer.parseInt(singleAction.substring(18).split(";;")[1]));
+                     }
+                     else if (singleAction.substring(18).split(";;").length == 5) {
+                         World world = Bukkit.getWorld(singleAction.substring(18).split(";;")[1]);
+                         Location location = new Location(world,
+                                 Double.parseDouble(singleAction.substring(18).split(";;")[2]),
+                                 Double.parseDouble(singleAction.substring(18).split(";;")[3]),
+                                 Double.parseDouble(singleAction.substring(18).split(";;")[4])
+                         );
+                         CommonUtil.summonMythicMobs(location,
+                                 singleAction.substring(18).split(";;")[0],
+                                 1);
+                     }
+                     else if (singleAction.substring(18).split(";;").length == 6) {
+                         World world = Bukkit.getWorld(singleAction.substring(18).split(";;")[2]);
+                         Location location = new Location(world,
+                                 Double.parseDouble(singleAction.substring(18).split(";;")[3]),
+                                 Double.parseDouble(singleAction.substring(18).split(";;")[4]),
+                                 Double.parseDouble(singleAction.substring(18).split(";;")[5])
+                         );
+                         CommonUtil.summonMythicMobs(location,
+                                 singleAction.substring(18).split(";;")[0],
+                                 Integer.parseInt(singleAction.substring(18).split(";;")[1]));
+                     }
+                     else {
+                         ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Your mythicmobs_spawn action in totem configs can not being correctly load.");
+                     }
+                 }
+                 catch (ArrayIndexOutOfBoundsException e) {
+                     ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Your mythicmobs_spawn action in totem configs can not being correctly load.");
+                 }
             } else if (singleAction.startsWith("console_command: ")) {
-                Bukkit.getScheduler().runTask(UltimateShop.instance, () -> {
-                    CommonUtil.dispatchCommand(replacePlaceholder(singleAction.substring(17), player, multi));
-                });
+                CommonUtil.dispatchCommand(singleAction.substring(17));
             } else if (singleAction.startsWith("player_command: ") && player != null) {
-                Bukkit.getScheduler().runTask(UltimateShop.instance, () -> {
-                    CommonUtil.dispatchCommand(player, replacePlaceholder(singleAction.substring(16), player, multi));
-                });
+                CommonUtil.dispatchCommand(player, singleAction.substring(16));
             } else if (singleAction.equals("close") && player != null) {
                 Bukkit.getScheduler().runTaskLater(UltimateShop.instance, () -> {
                     player.closeInventory();
-                }, 5L);
+                }, 2L);
             }
         }
     }
@@ -178,6 +190,10 @@ public class ObjectAction {
                 .replace("{player}", player.getName());
         if (CommonUtil.checkPluginLoad("PlaceholderAPI")) {
             str = PlaceholderAPI.setPlaceholders(player, str);
+        }
+        if (shop != null) {
+            str = str.replace("{shop_menu}", shop.getShopMenu())
+                    .replace("{shop_name}", shop.getShopName());
         }
         return str;
     }

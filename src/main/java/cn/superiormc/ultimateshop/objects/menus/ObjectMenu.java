@@ -1,6 +1,7 @@
 package cn.superiormc.ultimateshop.objects.menus;
 
 import cn.superiormc.ultimateshop.UltimateShop;
+import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.objects.ObjectShop;
 import cn.superiormc.ultimateshop.objects.buttons.AbstractButton;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectButton;
@@ -47,6 +48,7 @@ public class ObjectMenu {
 
     public ObjectMenu(String fileName, ObjectItem item) {
         this.fileName = fileName;
+        this.shop = item.getShopObject();
         this.type = MenuType.More;
         initMenu();
         initButtonItems();
@@ -117,7 +119,13 @@ public class ObjectMenu {
             return;
         }
         for (String button : tempVal1.getKeys(false)) {
-            buttonItems.put(button, new ObjectButton(tempVal1.getConfigurationSection(button)));
+            if (shop == null) {
+                buttonItems.put(button, new ObjectButton(tempVal1.getConfigurationSection(button)));
+            }
+            else {
+                buttonItems.put(button, new ObjectButton(tempVal1.getConfigurationSection(button),
+                        shop));
+            }
         }
         int i = 0;
         for (String singleLine : menuConfigs.getStringList("layout")) {

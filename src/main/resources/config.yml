@@ -33,39 +33,39 @@ display-item:
     top:
       - ''
     buy-price:
-      - '&7Purchase: {buy-price}'
+      - '&ePurchase: {buy-price}'
     sell-price:
-      - '&7Sell: {sell-price}'
+      - '&eSell: {sell-price}'
     buy-limit-player:
-      - '&7Player Buy Stock: {buy-times-player}/{buy-limit-player}'
+      - '&#FF7777Player Buy Stock: {buy-times-player}/{buy-limit-player}'
     buy-limit-server:
-      - '&7Server Buy Stock: {buy-times-server}/{buy-limit-server}'
+      - '&#FF7777Server Buy Stock: {buy-times-server}/{buy-limit-server}'
     sell-limit-player:
-      - '&7Player Sell Limit: {sell-times-player}/{sell-limit-player}'
+      - '&#FF7777Player Sell Limit: {sell-times-player}/{sell-limit-player}'
     sell-limit-server:
-      - '&7Server Sell Limit: {sell-times-server}/{sell-limit-server}'
+      - '&#FF7777Server Sell Limit: {sell-times-server}/{sell-limit-server}'
     buy-refresh-player:
       - ''
-      - '&cCan not buy more!'
+      - '&#ff3300cCan not buy more!'
       - '&8Refresh Time: {buy-refresh-player}'
     buy-refresh-server:
       - ''
-      - '&cSold Out!'
+      - '&#ff3300Sold Out!'
       - '&8Refresh Time: {buy-refresh-server}'
     sell-refresh-player:
       - ''
-      - '&cCan not sell more!'
+      - '&#ff3300Can not sell more!'
       - '&8Refresh Time: {sell-refresh-player}'
     sell-refresh-server:
       - ''
-      - '&cCan not sell more for server!'
+      - '&#ff3300Can not sell more for server!'
       - '&8Refresh Time: {sell-refresh-server}'
     buy-click:
       - '{buy-click}'
     sell-click:
       - '{sell-click}'
     below:
-      - '&eRight-Shift click to pick amount!'
+      - '&#FFFACDRight-Shift click to pick amount!'
 
 placeholder:
   refresh:
@@ -78,15 +78,15 @@ placeholder:
     unknown-price-type: "Unknown Price Type"
   click:
     enabled: true
-    buy: '&eLeft-click to buy!'
-    sell: '&eRight-click to sell!'
-    buy-max-limit-player: '&cYou can not buy more!'
-    buy-max-limit-server: '&cSOLD OUT!'
-    sell-max-limit-player: '&cCan not sell more!'
-    sell-max-limit-server: '&cTHIS ITEM CAN NOT BE SELLED!'
-    buy-price-not-enough: '&cDo not have enough money to buy!'
-    sell-price-not-enough: '&cDo not have enough item to sell!'
-    error: '&cError!'
+    buy: '&#FFFACDLeft-click to buy!'
+    sell: '&#FFFACDRight-click to sell!'
+    buy-max-limit-player: '&#ff3300You can not buy more!'
+    buy-max-limit-server: '&#ff3300SOLD OUT!'
+    sell-max-limit-player: '&#ff3300Can not sell more!'
+    sell-max-limit-server: '&#ff3300THIS ITEM CAN NOT BE SELLED!'
+    buy-price-not-enough: '&#ff3300Do not have enough money to buy!'
+    sell-price-not-enough: '&#ff3300Do not have enough item to sell!'
+    error: '&#ff3300Error!'
 
 database:
   enabled: false
