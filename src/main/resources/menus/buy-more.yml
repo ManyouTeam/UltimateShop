@@ -70,4 +70,4 @@ buttons:
       lore:
         - '&7Click to back shop!'
     actions:
-      - 'shop_menu: {shop_name}'
+      - 'shop_menu: {shop}'

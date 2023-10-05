@@ -50,7 +50,7 @@ public class ObjectLimit {
         if (limitSection == null) {
             return -1;
         }
-        int tempVal2 = getPlayerLimits(player);
+        int tempVal2 = -1;
         if (limitSection.getDouble("global", -1) != -1) {
             tempVal2 = (MathUtil.doCalculate(
                     TextUtil.withPAPI(limitSection.getString("global", "0"), player)).intValue());

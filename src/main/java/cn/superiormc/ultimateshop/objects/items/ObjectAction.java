@@ -192,8 +192,8 @@ public class ObjectAction {
             str = PlaceholderAPI.setPlaceholders(player, str);
         }
         if (shop != null) {
-            str = str.replace("{shop_menu}", shop.getShopMenu())
-                    .replace("{shop_name}", shop.getShopName());
+            str = str.replace("{shop-menu}", shop.getShopMenu())
+                    .replace("{shop}", shop.getShopName());
         }
         return str;
     }
