@@ -3,6 +3,7 @@ package cn.superiormc.ultimateshop.objects.caches;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
+import org.bukkit.Bukkit;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -77,11 +78,11 @@ public class ObjectUseTimesCache {
 
     public LocalDateTime getBuyRefreshTime() {
         if (lastBuyTime == null) {
-            return LocalDateTime.now().withYear(1999);
+            return LocalDateTime.now().withYear(2999);
         }
-        String mode = product.getItemConfig().getString("limits-reset-mode",
+        String mode = product.getItemConfig().getString("buy-limits-reset-mode",
                 ConfigManager.configManager.getString("use-times.default-reset-mode"));
-        String tempVal1 = product.getItemConfig().getString("limits-reset-time",
+        String tempVal1 = product.getItemConfig().getString("buy-limits-reset-time",
                 ConfigManager.configManager.getString("use-times.default-reset-time"));
         if (mode.equals("TIMED")) {
             return getTimedBuyRefreshTime(tempVal1);
@@ -90,17 +91,17 @@ public class ObjectUseTimesCache {
             return getTimerBuyRefreshTime(tempVal1);
         }
         else {
-            return LocalDateTime.now().withYear(1999);
+            return LocalDateTime.now().withYear(2999);
         }
     }
 
     public LocalDateTime getSellRefreshTime() {
         if (lastSellTime == null) {
-            return LocalDateTime.now().withYear(1999);
+            return LocalDateTime.now().withYear(2999);
         }
-        String mode = product.getItemConfig().getString("limits-reset-time-mode",
+        String mode = product.getItemConfig().getString("sell-limits-reset-mode",
                 ConfigManager.configManager.getString("use-times.default-reset-mode"));
-        String tempVal1 = product.getItemConfig().getString("limits-reset-time",
+        String tempVal1 = product.getItemConfig().getString("sell-limits-reset-time",
                 ConfigManager.configManager.getString("use-times.default-reset-time"));
         if (mode.equals("TIMED")) {
             return getTimedSellRefreshTime(tempVal1);
@@ -109,13 +110,13 @@ public class ObjectUseTimesCache {
             return getTimerSellRefreshTime(tempVal1);
         }
         else {
-            return LocalDateTime.now().withYear(1999);
+            return LocalDateTime.now().withYear(2999);
         }
     }
 
     public String getBuyRefreshTimeDisplayName() {
         LocalDateTime tempVal1 = getBuyRefreshTime();
-        if (tempVal1 == null || tempVal1.getYear() == 1999) {
+        if (tempVal1 == null || tempVal1.getYear() == 2999) {
             return ConfigManager.configManager.getString("placeholder.refresh.never");
         }
         return CommonUtil.timeToString(tempVal1, ConfigManager.configManager.getString("placeholder.refresh.format"));
@@ -123,7 +124,7 @@ public class ObjectUseTimesCache {
 
     public String getSellRefreshTimeDisplayName() {
         LocalDateTime tempVal1 = getSellRefreshTime();
-        if (tempVal1.getYear() == 1999) {
+        if (tempVal1 == null || tempVal1.getYear() == 2999) {
             return ConfigManager.configManager.getString("placeholder.refresh.never");
         }
         return CommonUtil.timeToString(tempVal1, ConfigManager.configManager.getString("placeholder.refresh.format"));

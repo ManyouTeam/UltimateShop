@@ -21,6 +21,7 @@ softdepend:
   - RedisEconomy
   - EcoBits
   - MythicMobs
+  - PEconomy
 commands:
   ultimateshop:
     aliases:

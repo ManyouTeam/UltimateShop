@@ -21,7 +21,7 @@ public class ItemsHook {
     public static ItemStack getHookItem(String pluginName, String itemID) {
         if (!CommonUtil.checkPluginLoad(pluginName)) {
             ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Your server don't have " + pluginName +
-                    " plugin, but your UI config try use its hook!");
+                    " plugin, but your shop config try use its hook!");
             return null;
         }
         switch (pluginName) {
@@ -113,7 +113,7 @@ public class ItemsHook {
                 }
         }
         ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: You set hook plugin to "
-                + pluginName + " in UI config, however for now FlipCard is not support it!");
+                + pluginName + " in shop config, however for now UltimateShop is not support it!");
         return null;
     }
 

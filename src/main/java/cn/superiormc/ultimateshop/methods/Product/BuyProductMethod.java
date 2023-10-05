@@ -10,6 +10,7 @@ import cn.superiormc.ultimateshop.objects.caches.ObjectUseTimesCache;
 import cn.superiormc.ultimateshop.objects.items.prices.ObjectPrices;
 import cn.superiormc.ultimateshop.objects.ObjectShop;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.time.LocalDateTime;
@@ -65,7 +66,7 @@ public class BuyProductMethod {
         if (tempVal9 != null) {
             if (quick) {
                 // 重置
-                if (tempVal9.getBuyRefreshTime() != null && tempVal9.getBuyRefreshTime().isAfter(LocalDateTime.now())) {
+                if (tempVal9.getBuyRefreshTime() != null && tempVal9.getBuyRefreshTime().isBefore(LocalDateTime.now())) {
                     tempVal3.getUseTimesCache().get(tempVal2).setBuyUseTimes(0);
                 }
             }
@@ -162,11 +163,19 @@ public class BuyProductMethod {
         tempVal2.getBuyAction().doAction(player, multi);
         // limit+1
         if (tempVal9 != null) {
+            if (ConfigManager.configManager.getBoolean("debug")) {
+                Bukkit.getConsoleSender().sendMessage("" +
+                        "§x§9§8§F§B§9§8[UltimateShop] §aSet player limit value to " + tempVal9.getSellUseTimes() + multi + "!");
+            }
             tempVal9.setBuyUseTimes(tempVal9.getBuyUseTimes() + multi);
             tempVal9.setLastBuyTime(LocalDateTime.now());
             tempVal3.getUseTimesCache().put(tempVal2, tempVal9);
         }
         if (tempVal8 != null) {
+            if (ConfigManager.configManager.getBoolean("debug")) {
+                Bukkit.getConsoleSender().sendMessage("" +
+                        "§x§9§8§F§B§9§8[UltimateShop] §aSet server limit value to " + tempVal8.getSellUseTimes() + multi + "!");
+            }
             tempVal8.setBuyUseTimes(tempVal8.getBuyUseTimes() + multi);
             tempVal8.setLastBuyTime(LocalDateTime.now());
             tempVal11.getUseTimesCache().put(tempVal2, tempVal8);

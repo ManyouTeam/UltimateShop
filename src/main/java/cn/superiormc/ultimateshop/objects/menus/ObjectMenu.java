@@ -99,7 +99,6 @@ public class ObjectMenu {
                     if (shop.getButton(String.valueOf(itemChar)) == null) {
                         continue;
                     }
-                    Bukkit.getConsoleSender().sendMessage("放置成功");
                     menuItems.put(slot, shop.getButton(String.valueOf(itemChar)));
                     continue;
                 }

@@ -159,15 +159,25 @@ public class MainCommand implements CommandExecutor {
             if (sender.hasPermission("ultimateshop.quickbuy")) {
                 switch (args.length) {
                     case 3:
-                        BuyProductMethod.startBuy(args[1], args[2], ((Player) sender).getPlayer(), true);
+                        if (sender.hasPermission("ultimateshop.quickbuy." + args[1] + "." + args[2])) {
+                            BuyProductMethod.startBuy(args[1], args[2], ((Player) sender).getPlayer(), true);
+                        }
+                        else {
+                            LanguageManager.languageManager.sendStringText((Player) sender, "error.miss-permission");
+                        }
                         break;
                     case 4:
-                        BuyProductMethod.startBuy(args[1],
-                                args[2],
-                                ((Player) sender).getPlayer(),
-                                true,
-                                false,
-                                Integer.parseInt(args[3]));
+                        if (sender.hasPermission("ultimateshop.quickbuy." + args[1] + "." + args[2])) {
+                            BuyProductMethod.startBuy(args[1],
+                                    args[2],
+                                    ((Player) sender).getPlayer(),
+                                    true,
+                                    false,
+                                    Integer.parseInt(args[3]));
+                        }
+                        else {
+                            LanguageManager.languageManager.sendStringText((Player) sender, "error.miss-permission");
+                        }
                         break;
                 }
             }
@@ -185,15 +195,25 @@ public class MainCommand implements CommandExecutor {
             if (sender.hasPermission("ultimateshop.quicksell")) {
                 switch (args.length) {
                     case 3:
-                        SellProductMethod.startSell(args[1], args[2], ((Player) sender).getPlayer(), true);
+                        if (sender.hasPermission("ultimateshop.quicksell." + args[1] + "." + args[2])) {
+                            SellProductMethod.startSell(args[1], args[2], ((Player) sender).getPlayer(), true);
+                        }
+                        else {
+                            LanguageManager.languageManager.sendStringText((Player) sender, "error.miss-permission");
+                        }
                         break;
                     case 4:
-                        SellProductMethod.startSell(args[1],
+                        if (sender.hasPermission("ultimateshop.quicksell." + args[1] + "." + args[2])) {
+                            SellProductMethod.startSell(args[1],
                                 args[2],
                                 ((Player) sender).getPlayer(),
                                 true,
                                 false,
                                 Integer.parseInt(args[3]));
+                        }
+                        else {
+                            LanguageManager.languageManager.sendStringText((Player) sender, "error.miss-permission");
+                        }
                         break;
                 }
             }

@@ -14,30 +14,27 @@ import org.bukkit.event.Listener;
 public class OpenGUI {
 
     public static void openShopGUI(Player player, ObjectShop shop) {
-        player.closeInventory();
         if (shop == null) {
             return;
         }
         ShopGUI gui = new ShopGUI(player, shop);
+        gui.openGUI();
         Listener guiListener = new GUIListener(gui);
         Bukkit.getPluginManager().registerEvents(guiListener, UltimateShop.instance);
-        gui.openGUI();
     }
 
     public static void openCommonGUI(Player player, String fileName) {
-        player.closeInventory();
         CommonGUI gui = new CommonGUI(player, fileName);
+        gui.openGUI();
         Listener guiListener = new GUIListener(gui);
         Bukkit.getPluginManager().registerEvents(guiListener, UltimateShop.instance);
-        gui.openGUI();
     }
 
     public static void openMoreGUI(Player player, ObjectItem item) {
-        player.closeInventory();
         BuyMoreGUI gui = new BuyMoreGUI(player, item);
+        gui.openGUI();
         Listener guiListener = new GUIListener(gui);
         Bukkit.getPluginManager().registerEvents(guiListener, UltimateShop.instance);
-        gui.openGUI();
     }
 
 }

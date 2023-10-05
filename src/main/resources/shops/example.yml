@@ -69,12 +69,12 @@ items:
     buy-actions:
       - 'player_command: say {player} purchased an Apple!'
       - 'announcement: &7{player} purchased an Apple!'
-    limits:
+    buy-limits:
       global: 100
       default: 10
       test-condition: 20
-    limits-conditions:
+    buy-limits-conditions:
       test-condition:
         - 'permission: test.permission'
-    limits-reset-mode: 'TIMED'
-    limits-reset-time: '00:00:00'
+    buy-limits-reset-mode: 'TIMED'
+    buy-limits-reset-time: '00:00:00'

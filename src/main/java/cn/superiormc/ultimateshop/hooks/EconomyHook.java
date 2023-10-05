@@ -5,12 +5,15 @@ import cn.superiormc.ultimateshop.managers.ErrorManager;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
 import com.willfp.ecobits.currencies.Currencies;
 import com.willfp.ecobits.currencies.CurrencyUtils;
+import dev.unnm3d.rediseconomy.api.RedisEconomyAPI;
 import me.TechsCode.UltraEconomy.UltraEconomy;
 import me.TechsCode.UltraEconomy.UltraEconomyAPI;
 import net.milkbowl.vault.economy.Economy;
 import org.black_ixx.playerpoints.PlayerPoints;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
+import ru.soknight.peconomy.api.PEconomyAPI;
+import ru.soknight.peconomy.database.model.WalletModel;
 import su.nightexpress.coinsengine.api.CoinsEngineAPI;
 import su.nightexpress.coinsengine.api.currency.Currency;
 import su.nightexpress.gamepoints.api.GamePointsAPI;
@@ -26,13 +29,12 @@ public class EconomyHook {
                     " plugin, but your shop config try use its hook!");
             return;
         }
-        pluginName = pluginName.toLowerCase();
         switch (pluginName) {
-            case "gamepoints":
+            case "GamePoints":
                 PointUser user = GamePointsAPI.getUserData(player);
                 user.addPoints((int) value);
                 return;
-            case "playerpoints":
+            case "PlayerPoints":
                 PlayerPoints playerPoints = PlayerPoints.getInstance();
                 if (playerPoints == null) {
                     ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cCan not hook into PlayerPoints plugin, " +
@@ -41,7 +43,7 @@ public class EconomyHook {
                 }
                 playerPoints.getAPI().give(player.getUniqueId(), (int) value);
                 return;
-            case "vault":
+            case "Vault":
                 RegisteredServiceProvider<Economy> rsp = UltimateShop.instance.getServer().getServicesManager().getRegistration(Economy.class);
                 if (rsp == null) {
                     ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cCan not hook into Vault plugin, " +
@@ -51,7 +53,7 @@ public class EconomyHook {
                 Economy eco = rsp.getProvider();
                 eco.depositPlayer(player, value);
                 return;
-            case "coinsengine":
+            case "CoinsEngine":
                 Currency currency = CoinsEngineAPI.getCurrency(currencyName);
                 if (currency == null) {
                     ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cCan not find currency " +
@@ -60,7 +62,7 @@ public class EconomyHook {
                 }
                 CoinsEngineAPI.removeBalance(player, currency, value);
                 return;
-            case "ultraeconomy":
+            case "UltraEconomy":
                 UltraEconomyAPI ueAPI = UltraEconomy.getAPI();
                 if (ueAPI == null) {
                     ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cCan not hook into UltraEconomy plugin!");
@@ -73,7 +75,7 @@ public class EconomyHook {
                 }
                 UltraEconomy.getAPI().getAccounts().uuid(player.getUniqueId()).get().getBalance(UltraEconomy.getAPI().getCurrencies().name(currencyName).get()).addHand((float) value);
                 return;
-            case "ecobits":
+            case "EcoBits":
                 if (Currencies.getByID(currencyName) == null) {
                     ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cCan not find currency " +
                             currencyName + " in EcoBits plugin!");
@@ -84,10 +86,33 @@ public class EconomyHook {
                     return;
                 }
                 return;
+            case "PEconomy":
+                PEconomyAPI peAPI = PEconomyAPI.get();
+                if (peAPI == null) {
+                    ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cCan not hook into PEconomy plugin!");
+                    return;
+                }
+                WalletModel wallet = peAPI.getWallet(player.getName());
+                wallet.addAmount(currencyName, (int) value);
+                peAPI.updateWallet(wallet);
+                return;
+            case "RedisEconomy":
+                RedisEconomyAPI api = RedisEconomyAPI.getAPI();
+                if (api == null) {
+                    ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cCan not hook into RedisEconomy plugin!");
+                    return;
+                }
+                dev.unnm3d.rediseconomy.currency.Currency redisCurrency = api.getCurrencyByName("vault");
+                if (redisCurrency == null) {
+                    ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cCan not find currency " +
+                            currencyName + " in RedisEconomy plugin!");
+                    return;
+                }
+                redisCurrency.depositPlayer(player, value);
+                return;
         }
         ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: You set hook plugin to "
                 + pluginName + " in shop config, however for now UltimateShop does not support it!");
-        return;
     }
 
     public static void giveEconomy(String vanillaType, Player player, int value) {

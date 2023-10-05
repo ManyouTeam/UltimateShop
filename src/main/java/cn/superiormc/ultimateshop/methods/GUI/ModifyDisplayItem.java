@@ -35,10 +35,8 @@ public class ModifyDisplayItem {
         ObjectUseTimesCache tempVal9 = CacheManager.cacheManager.playerCacheMap.get(player).getUseTimesCache().get(item);
         ObjectUseTimesCache tempVal10 = CacheManager.cacheManager.serverCache.getUseTimesCache().get(item);
         if (tempVal9 != null) {
-            buyTimes = CacheManager.cacheManager.playerCacheMap.get(player).
-                    getUseTimesCache().get(item).getBuyUseTimes();
-            sellTimes = CacheManager.cacheManager.playerCacheMap.get(player).
-                    getUseTimesCache().get(item).getSellUseTimes();
+            buyTimes = tempVal9.getBuyUseTimes();
+            sellTimes = tempVal9.getSellUseTimes();
         }
         else {
             CacheManager.cacheManager.playerCacheMap.get(player).setUseTimesCache(item.getShop(),
@@ -48,6 +46,15 @@ public class ModifyDisplayItem {
                     null,
                     null);
             tempVal9 = CacheManager.cacheManager.playerCacheMap.get(player).getUseTimesCache().get(item);
+        }
+        if (tempVal10 == null) {
+            CacheManager.cacheManager.serverCache.setUseTimesCache(item.getShop(),
+                    item.getProduct(),
+                    0,
+                    0,
+                    null,
+                    null);
+            tempVal10 = CacheManager.cacheManager.serverCache.getUseTimesCache().get(item);
         }
         ItemMeta tempVal2 = addLoreDisplayItem.getItemMeta();
         List<String> addLore = new ArrayList<>();
@@ -119,9 +126,9 @@ public class ModifyDisplayItem {
                     "sell-limit-server",
                     String.valueOf(item.getServerSellLimit(player)),
                     "buy-times-player",
-                    String.valueOf(tempVal9 == null ? "-" : tempVal9.getBuyUseTimes()),
+                    String.valueOf(tempVal9 == null ? "-" : buyTimes),
                     "sell-times-player",
-                    String.valueOf(tempVal9 == null ? "-" : tempVal9.getSellUseTimes()),
+                    String.valueOf(tempVal9 == null ? "-" : sellTimes),
                     "buy-refresh-player",
                     String.valueOf(tempVal9 == null ? ConfigManager.configManager.getString("placeholder.refresh.never") : tempVal9.getBuyRefreshTimeDisplayName()),
                     "sell-refresh-player",
