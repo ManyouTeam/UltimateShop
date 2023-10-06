@@ -56,7 +56,6 @@ display-item:
     - '@j'
     - '@a{buy-click}'
     - '@b{sell-click}'
-    - '@a&#FFFACDRight-Shift click to pick amount!'
     - '@k&#FFFACDRight-Shift click to pick amount!'
     - '@b&#FFFACDDrop (Q key) to sell all!'
 
