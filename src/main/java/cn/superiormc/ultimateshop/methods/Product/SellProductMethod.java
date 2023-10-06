@@ -214,9 +214,6 @@ public class SellProductMethod {
                     "amount",
                     String.valueOf(multi));
         }
-        if (changedMulti) {
-            return ProductMethodStatus.DONE_WITH_CHANGED_MULTI;
-        }
         return ProductMethodStatus.DONE;
     }
 }

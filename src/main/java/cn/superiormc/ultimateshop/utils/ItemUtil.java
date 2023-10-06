@@ -52,6 +52,7 @@ public class ItemUtil {
             if (!loreList.isEmpty()) {
                 section.set("lore", loreList);
             }
+
             resultItem = XItemStack.deserialize(section);
             resultItem.setAmount(amount);
             return resultItem;

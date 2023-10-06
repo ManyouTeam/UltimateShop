@@ -91,7 +91,6 @@ placeholder:
     sell-max-limit-server: '&#ff3300THIS ITEM CAN NOT BE SELLED!'
     buy-price-not-enough: '&#ff3300Do not have enough money to buy!'
     sell-price-not-enough: '&#ff3300Do not have enough item to sell!'
-    sell-with-changed-amount: '&6Right-click to sell max amount able to sell!'
     error: '&#ff3300Error!'
 
 database:

@@ -208,9 +208,6 @@ public class ModifyDisplayItem {
                     s = ConfigManager.configManager.getString("placeholder.click.sell", "",  "amount", String.valueOf(multi));
                 }
                 break;
-            case DONE_WITH_CHANGED_MULTI:
-                s = ConfigManager.configManager.getString("placeholder.click.sell-with-changed-amount", "",  "amount", String.valueOf(multi));
-                break;
             default :
                 s = "Unknown";
                 break;
