@@ -31,44 +31,34 @@ send-messages-after-buy: true
 display-item:
   auto-set-first-product: true
   add-displayname: ' x{amount}'
+  # @+lower case means conditional lore, do not remove them here.
+  # Otherwise, the line without this will always display it.
   add-lore:
-    top:
-      - ''
-    buy-price:
-      - '&ePurchase: {buy-price}'
-    sell-price:
-      - '&eSell: {sell-price}'
-    buy-limit-player:
-      - '&#FF7777Player Buy Stock: {buy-times-player}/{buy-limit-player}'
-    buy-limit-server:
-      - '&#FF7777Server Buy Stock: {buy-times-server}/{buy-limit-server}'
-    sell-limit-player:
-      - '&#FF7777Player Sell Limit: {sell-times-player}/{sell-limit-player}'
-    sell-limit-server:
-      - '&#FF7777Server Sell Limit: {sell-times-server}/{sell-limit-server}'
-    buy-refresh-player:
-      - ''
-      - '&#ff3300cCan not buy more!'
-      - '&8Refresh Time: {buy-refresh-player}'
-    buy-refresh-server:
-      - ''
-      - '&#ff3300Sold Out!'
-      - '&8Refresh Time: {buy-refresh-server}'
-    sell-refresh-player:
-      - ''
-      - '&#ff3300Can not sell more!'
-      - '&8Refresh Time: {sell-refresh-player}'
-    sell-refresh-server:
-      - ''
-      - '&#ff3300Can not sell more for server!'
-      - '&8Refresh Time: {sell-refresh-server}'
-    buy-click:
-      - '{buy-click}'
-    sell-click:
-      - '{sell-click}'
-    below:
-      - '&#FFFACDRight-Shift click to pick amount!'
-      - '&#FFFACDDrop (Q key) to sell all!'
+    - ''
+    - '@a&ePurchase: {buy-price}'
+    - '@b&eSell: {sell-price}'
+    - '@c&#FF7777Player Buy Stock: {buy-times-player}/{buy-limit-player}'
+    - '@d&#FF7777Server Buy Stock: {buy-times-server}/{buy-limit-server}'
+    - '@e&#FF7777Player Sell Limit: {sell-times-player}/{sell-limit-player}'
+    - '@f&#FF7777Server Sell Limit: {sell-times-server}/{sell-limit-server}'
+    - '@g '
+    - '@g&#ff3300cCan not buy more!'
+    - '@g&8Refresh Time: {buy-refresh-player}'
+    - '@h '
+    - '@h&#ff3300Sold Out!'
+    - '@h&8Refresh Time: {buy-refresh-server}'
+    - '@i '
+    - '@i&#ff3300Can not sell more!'
+    - '@i&8Refresh Time: {sell-refresh-player}'
+    - '@j'
+    - '@j&#ff3300Can not sell more for server!'
+    - '@j&8Refresh Time: {sell-refresh-server}'
+    - '@j'
+    - '@a{buy-click}'
+    - '@b{sell-click}'
+    - '@a&#FFFACDRight-Shift click to pick amount!'
+    - '@k&#FFFACDRight-Shift click to pick amount!'
+    - '@b&#FFFACDDrop (Q key) to sell all!'
 
 placeholder:
   refresh:

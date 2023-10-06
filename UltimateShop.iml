@@ -175,5 +175,14 @@
         <SOURCES />
       </library>
     </orderEntry>
+    <orderEntry type="module-library">
+      <library name="Maven: pers.neigi:NeigiItems:1.15.49">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/NeigeItems-1.15.49-api.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
   </component>
 </module>

@@ -2,6 +2,7 @@ package cn.superiormc.ultimateshop.hooks;
 
 import cn.superiormc.ultimateshop.managers.ErrorManager;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
+import com.willfp.eco.core.items.Items;
 import com.willfp.ecoarmor.sets.ArmorSet;
 import com.willfp.ecoarmor.sets.ArmorSlot;
 import com.willfp.ecoarmor.sets.ArmorUtils;
@@ -12,6 +13,8 @@ import io.lumine.mythic.bukkit.MythicBukkit;
 import io.th0rgal.oraxen.api.OraxenItems;
 import net.Indyuce.mmoitems.MMOItems;
 import org.bukkit.inventory.ItemStack;
+import pers.neige.neigeitems.NeigeItems;
+import pers.neige.neigeitems.manager.ItemManager;
 
 public class CheckValidHook {
 
@@ -80,6 +83,12 @@ public class CheckValidHook {
             else {
                 return tempVal1;
             }
+        }
+        else if (pluginName.equals("NeigeItems")) {
+            if (ItemManager.INSTANCE.isNiItem(itemStack) == null) {
+                return null;
+            }
+            return ItemManager.INSTANCE.isNiItem(itemStack).getId();
         }
         else {
             ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: You set hook plugin to "

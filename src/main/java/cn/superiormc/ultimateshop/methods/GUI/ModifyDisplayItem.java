@@ -20,7 +20,8 @@ public class ModifyDisplayItem {
     public static ItemStack modifyItem (Player player,
                                         int multi,
                                         ItemStack addLoreDisplayItem,
-                                        ObjectItem item) {
+                                        ObjectItem item,
+                                        boolean buyMore) {
         if (multi > 1) {
             // 修改物品名称
             String itemName = item.getDisplayName(player);
@@ -61,52 +62,77 @@ public class ModifyDisplayItem {
         if (tempVal2 != null && tempVal2.hasLore()) {
             addLore.addAll(tempVal2.getLore());
         }
-        addLore.addAll(ConfigManager.configManager.getListWithColor("display-item.add-lore.top"));
-        if (!item.getBuyPrice().empty) {
-            addLore.addAll(ConfigManager.configManager.getListWithColor("display-item.add-lore.buy-price"));
+        for (String tempVal3 : ConfigManager.configManager.getListWithColor("display-item.add-lore")) {
+            if (tempVal3.startsWith("@") && tempVal3.length() >= 2) {
+                switch (tempVal3.charAt(1)) {
+                    case 'a':
+                        if (!item.getBuyPrice().empty) {
+                            addLore.add(tempVal3.substring(2));
+                        }
+                        break;
+                    case 'b':
+                        if (!item.getSellPrice().empty) {
+                            addLore.add(tempVal3.substring(2));
+                        }
+                        break;
+                    case 'c':
+                        if (item.getPlayerBuyLimit(player) != -1) {
+                            addLore.add(tempVal3.substring(2));
+                        }
+                        break;
+                    case 'd':
+                        if (item.getServerBuyLimit(player) != -1) {
+                            addLore.add(tempVal3.substring(2));
+                        }
+                        break;
+                    case 'e':
+                        if (item.getPlayerSellLimit(player) != -1) {
+                            addLore.add(tempVal3.substring(2));
+                        }
+                        break;
+                    case 'f':
+                        if (item.getServerSellLimit(player) != -1) {
+                            addLore.add(tempVal3.substring(2));                        }
+                        break;
+                    case 'g':
+                        if (tempVal9 != null &&
+                                item.getPlayerBuyLimit(player) > 0 &&
+                                tempVal9.getBuyUseTimes() >= item.getPlayerBuyLimit(player)) {
+                            addLore.add(tempVal3.substring(2));
+                        }
+                        break;
+                    case 'h':
+                        if (tempVal9 != null &&
+                                item.getPlayerSellLimit(player) > 0 &&
+                                tempVal9.getSellUseTimes() >= item.getPlayerSellLimit(player)) {
+                            addLore.add(tempVal3.substring(2));
+                        }
+                        break;
+                    case 'i':
+                        if (tempVal10 != null &&
+                                item.getServerBuyLimit(player) > 0 &&
+                                tempVal10.getBuyUseTimes() >= item.getServerBuyLimit(player)) {
+                            addLore.add(tempVal3.substring(2));
+                        }
+                        break;
+                    case 'j':
+                        if (tempVal10 != null &&
+                                item.getServerSellLimit(player) > 0 &&
+                                tempVal10.getSellUseTimes() >= item.getServerSellLimit(player)) {
+                            addLore.add(tempVal3.substring(2));
+                        }
+                        break;
+                    case 'k':
+                        if (buyMore) {
+                            addLore.add(tempVal3.substring(2));
+                        }
+                        break;
+                }
+            }
+            else {
+                addLore.add(TextUtil.parse(tempVal3, player));
+            }
         }
-        if (!item.getSellPrice().empty) {
-            addLore.addAll(ConfigManager.configManager.getListWithColor("display-item.add-lore.sell-price"));
-        }
-        if (item.getPlayerBuyLimit(player) != -1) {
-            addLore.addAll(ConfigManager.configManager.getListWithColor("display-item.add-lore.buy-limit-player"));
-        }
-        if (item.getServerBuyLimit(player) != -1) {
-            addLore.addAll(ConfigManager.configManager.getListWithColor("display-item.add-lore.buy-limit-server"));
-        }
-        if (item.getPlayerSellLimit(player) != -1) {
-            addLore.addAll(ConfigManager.configManager.getListWithColor("display-item.add-lore.sell-limit-player"));
-        }
-        if (item.getServerSellLimit(player) != -1) {
-            addLore.addAll(ConfigManager.configManager.getListWithColor("display-item.add-lore.sell-limit-server"));
-        }
-        if (tempVal9 != null &&
-                item.getPlayerBuyLimit(player) > 0 &&
-                tempVal9.getBuyUseTimes() >= item.getPlayerBuyLimit(player)) {
-            addLore.addAll(ConfigManager.configManager.getListWithColor("display-item.add-lore.buy-refresh-player"));
-        }
-        if (tempVal9 != null &&
-                item.getPlayerSellLimit(player) > 0 &&
-                tempVal9.getSellUseTimes() >= item.getPlayerSellLimit(player)) {
-            addLore.addAll(ConfigManager.configManager.getListWithColor("display-item.add-lore.sell-refresh-player"));
-        }
-        if (tempVal10 != null &&
-                item.getServerBuyLimit(player) > 0 &&
-                tempVal10.getBuyUseTimes() >= item.getServerBuyLimit(player)) {
-            addLore.addAll(ConfigManager.configManager.getListWithColor("display-item.add-lore.buy-refresh-server"));
-        }
-        if (tempVal10 != null &&
-                item.getServerSellLimit(player) > 0 &&
-                tempVal10.getSellUseTimes() >= item.getServerSellLimit(player)) {
-            addLore.addAll(ConfigManager.configManager.getListWithColor("display-item.add-lore.sell-refresh-server"));
-        }
-        if (!item.getBuyPrice().empty) {
-            addLore.addAll(ConfigManager.configManager.getListWithColor("display-item.add-lore.buy-click"));
-        }
-        if (!item.getSellPrice().empty) {
-            addLore.addAll(ConfigManager.configManager.getListWithColor("display-item.add-lore.sell-click"));
-        }
-        addLore.addAll(ConfigManager.configManager.getListWithColor("display-item.add-lore.below"));
         if (!addLore.isEmpty()) {
             tempVal2.setLore(CommonUtil.modifyList(addLore,
                     "buy-price",

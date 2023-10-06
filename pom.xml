@@ -6,7 +6,7 @@
 
     <groupId>cn.superiormc</groupId>
     <artifactId>UltimateShop</artifactId>
-    <version>1.2.4</version>
+    <version>1.2.5</version>
     <packaging>jar</packaging>
 
     <name>UltimateShop</name>
@@ -285,6 +285,12 @@
             <scope>system</scope>
             <systemPath>${project.basedir}/lib/UltraEconomy.jar</systemPath>
         </dependency>
-
+        <dependency>
+            <groupId>pers.neigi</groupId>
+            <artifactId>NeigiItems</artifactId>
+            <version>1.15.49</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/NeigeItems-1.15.49-api.jar</systemPath>
+        </dependency>
     </dependencies>
 </project>

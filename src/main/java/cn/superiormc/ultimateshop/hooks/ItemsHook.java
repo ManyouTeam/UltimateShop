@@ -15,6 +15,8 @@ import io.th0rgal.oraxen.api.OraxenItems;
 import io.th0rgal.oraxen.items.ItemBuilder;
 import net.Indyuce.mmoitems.MMOItems;
 import org.bukkit.inventory.ItemStack;
+import pers.neige.neigeitems.NeigeItems;
+import pers.neige.neigeitems.manager.ItemManager;
 
 public class ItemsHook {
 
@@ -64,8 +66,6 @@ public class ItemsHook {
                     EcoItem ecoItem = ecoItems.getByID(itemID);
                     return ecoItem.getItemStack();
                 }
-            case "eco":
-                return Items.lookup(itemID).getItem();
             case "EcoArmor":
                 if (ArmorSets.getByID(itemID.split(";;")[0]) == null) {
                     return null;
@@ -111,6 +111,10 @@ public class ItemsHook {
                         return MythicMobs.inst().getItemManager().getItemStack(itemID);
                     }
                 }
+            case "eco":
+                return Items.lookup(itemID).getItem();
+            case "NeigeItems":
+                return ItemManager.INSTANCE.getItemStack(itemID);
         }
         ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: You set hook plugin to "
                 + pluginName + " in shop config, however for now UltimateShop is not support it!");
