@@ -163,8 +163,10 @@ public class ObjectItem extends AbstractButton {
     }
 
     public String getDisplayName(Player player) {
-        return CommonUtil.getItemName(displayItem.getDisplayItem(player));
-
+        if (config.getString("display-name") == null) {
+            return CommonUtil.getItemName(displayItem.getDisplayItem(player));
+        }
+        return config.getString("display-name");
     }
 
     public ObjectPrices getBuyPrice() {

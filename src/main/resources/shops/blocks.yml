@@ -7,8 +7,9 @@ items:
   A:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
-    display-item:
-      material: sea_lantern
+    products:
+      1:
+        material: sea_lantern
     buy-prices:
       1:
         economy-plugin: Vault
@@ -18,8 +19,9 @@ items:
   B:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
-    display-item:
-      material: bricks
+    products:
+      1:
+        material: bricks
     buy-prices:
       1:
         economy-plugin: Vault
