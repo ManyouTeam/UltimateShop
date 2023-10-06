@@ -96,14 +96,16 @@ public class SellProductMethod {
         // 更改multi
         ObjectProducts tempVal5 = tempVal2.getReward();
         if (ableMaxSell) {
-            multi = tempVal5.getMaxAbleSellAmount(player, playerUseTimes);
-            if (multi > 0) {
-                if (tempVal2.getPlayerSellLimit(player) != -1 &&
-                        multi > tempVal2.getPlayerSellLimit(player) - playerUseTimes) {
-                    multi = tempVal2.getPlayerSellLimit(player) - playerUseTimes;
-                }
+            if (tempVal5.getMaxAbleSellAmount(player, playerUseTimes) > 0) {
+                multi = tempVal5.getMaxAbleSellAmount(player, playerUseTimes);
+            }
+            if (tempVal2.getPlayerSellLimit(player) != -1 &&
+                    multi > tempVal2.getPlayerSellLimit(player) - playerUseTimes &&
+                    tempVal2.getPlayerSellLimit(player) - playerUseTimes > 0) {
+                multi = tempVal2.getPlayerSellLimit(player) - playerUseTimes;
             }
         }
+
         if (tempVal2.getPlayerSellLimit(player) != -1 &&
                 playerUseTimes + multi - 1 >= tempVal2.getPlayerSellLimit(player)) {
             if (!test && (quick ||
