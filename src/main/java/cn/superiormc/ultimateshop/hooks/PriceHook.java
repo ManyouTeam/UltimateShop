@@ -24,7 +24,7 @@ import java.math.BigDecimal;
 
 public class PriceHook {
 
-    public static boolean getPrice(String pluginName, String currencyName, Player player, double value, boolean take) {
+    public static boolean getPrice(Player player, String pluginName, String currencyName, double value, boolean take) {
         if (value < 0) {
             return false;
         }
@@ -165,7 +165,89 @@ public class PriceHook {
         return false;
     }
 
-    public static boolean getPrice(String vanillaType, Player player, int value, boolean take) {
+    public static double getEconomyAmount(Player player, String pluginName, String currencyName) {
+        if (!CommonUtil.checkPluginLoad(pluginName)) {
+            ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Your server don't have " + pluginName +
+                    " plugin, but your shop config try use its hook!");
+            return 0;
+        }
+        switch (pluginName) {
+            case "GamePoints":
+                PointUser user = GamePointsAPI.getUserData(player);
+                return user.getBalance();
+            case "PlayerPoints":
+                PlayerPoints playerPoints = PlayerPoints.getInstance();
+                if (playerPoints == null) {
+                    ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cCan not hook into PlayerPoints plugin, " +
+                            "maybe your are using old version, please try update it to newer version!");
+                    return 0;
+                }
+                double balance = playerPoints.getAPI().look(player.getUniqueId());
+                return balance;
+            case "Vault":
+                RegisteredServiceProvider<Economy> rsp = UltimateShop.instance.getServer().getServicesManager().getRegistration(Economy.class);
+                if (rsp == null) {
+                    ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cCan not hook into Vault plugin, " +
+                            "Vault is a API plugin, maybe you didn't install a Vault-based economy plugin in your server!");
+                    return 0;
+                }
+                Economy eco = rsp.getProvider();
+                return eco.getBalance(player);
+            case "CoinsEngine":
+                Currency currency = CoinsEngineAPI.getCurrency(currencyName);
+                if (currency == null) {
+                    ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cCan not find currency " +
+                            currencyName + " in CoinsEngine plugin!");
+                    return 0;
+                }
+                return CoinsEngineAPI.getBalance(player, currency);
+            case "UltraEconomy":
+                UltraEconomyAPI ueAPI = UltraEconomy.getAPI();
+                if (ueAPI == null) {
+                    ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cCan not hook into UltraEconomy plugin!");
+                    return 0;
+                }
+                if (!UltraEconomy.getAPI().getCurrencies().name(currencyName).isPresent()) {
+                    ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cCan not find currency " +
+                            currencyName + " in UltraEconomy plugin!");
+                    return 0;
+                }
+                return UltraEconomy.getAPI().getAccounts().uuid(player.getUniqueId()).get().
+                        getBalance(UltraEconomy.getAPI().getCurrencies().name(currencyName).get()).getOnHand();
+            case "EcoBits":
+                if (Currencies.getByID(currencyName) == null) {
+                    ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cCan not find currency " +
+                            currencyName + " in EcoBits plugin!");
+                    return 0;
+                }
+                return CurrencyUtils.getBalance(player, Currencies.getByID(currencyName)).doubleValue();
+            case "PEconomy":
+                PEconomyAPI peAPI = PEconomyAPI.get();
+                if (peAPI == null) {
+                    ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cCan not hook into PEconomy plugin!");
+                    return 0;
+                }
+                return peAPI.getAmount(player.getName(), currencyName);
+            case "RedisEconomy":
+                RedisEconomyAPI api = RedisEconomyAPI.getAPI();
+                if (api == null) {
+                    ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cCan not hook into RedisEconomy plugin!");
+                    return 0;
+                }
+                dev.unnm3d.rediseconomy.currency.Currency redisCurrency = api.getCurrencyByName("vault");
+                if (redisCurrency == null) {
+                    ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cCan not find currency " +
+                            currencyName + " in RedisEconomy plugin!");
+                    return 0;
+                }
+                return redisCurrency.getBalance(player);
+        }
+        ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: You set hook plugin to "
+                + pluginName + " in shop config, however for now UltimateShop does not support it!");
+        return 0;
+    }
+
+    public static boolean getPrice(Player player, String vanillaType, int value, boolean take) {
         vanillaType = vanillaType.toLowerCase();
         if (vanillaType.equals("exp")) {
             if (player.getTotalExperience() >= value) {
@@ -194,29 +276,25 @@ public class PriceHook {
         return false;
     }
 
-    public static boolean getPrice(String pluginName, String item, Player player, int value, boolean take) {
+    public static int getEconomyAmount(Player player, String vanillaType) {
+        vanillaType = vanillaType.toLowerCase();
+        if (vanillaType.equals("exp")) {
+            return player.getTotalExperience();
+        }
+        else if (vanillaType.equals("levels")) {
+            return player.getLevel();
+        }
+        ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: You set economy type to "
+                + vanillaType + " in shop config, however for now UltimateShop does not support it!");
+        return 0;
+    }
+
+    public static boolean getPrice(Player player, String pluginName, String item, int value, boolean take) {
         if (value < 0) {
             return false;
         }
+        int amount = getItemAmount(player, pluginName, item);
         ItemStack[] storage = player.getInventory().getStorageContents();
-        if (item == null) {
-            return false;
-        }
-        int amount = 0;
-        for (ItemStack tempVal1 : storage) {
-            if (tempVal1 == null || tempVal1.getType().isAir()) {
-                continue;
-            }
-            ItemStack temItem = tempVal1.clone();
-            temItem.setAmount(1);
-            String tempVal10 = CheckValidHook.checkValid(pluginName, item, temItem);
-            if (tempVal10 != null && tempVal10.equals(item)) {
-                amount += tempVal1.getAmount();
-            }
-            else if (temItem == ItemsHook.getHookItem(pluginName, item)) {
-                amount += tempVal1.getAmount();
-            }
-        }
         if (amount >= value) {
             if (take) {
                 for (int i = 0 ; i < storage.length ; i++) {
@@ -245,13 +323,10 @@ public class PriceHook {
         }
     }
 
-    public static boolean getPrice(Player player, ItemStack item, int value, boolean take) {
-        if (value < 0) {
-            return false;
-        }
+    public static int getItemAmount(Player player, String pluginName, String item) {
         ItemStack[] storage = player.getInventory().getStorageContents();
         if (item == null) {
-            return false;
+            return 0;
         }
         int amount = 0;
         for (ItemStack tempVal1 : storage) {
@@ -260,10 +335,23 @@ public class PriceHook {
             }
             ItemStack temItem = tempVal1.clone();
             temItem.setAmount(1);
-            if (temItem.equals(item)) {
+            String tempVal10 = CheckValidHook.checkValid(pluginName, item, temItem);
+            if (tempVal10 != null && tempVal10.equals(item)) {
+                amount += tempVal1.getAmount();
+            }
+            else if (temItem == ItemsHook.getHookItem(pluginName, item)) {
                 amount += tempVal1.getAmount();
             }
         }
+        return amount;
+    }
+
+    public static boolean getPrice(Player player, ItemStack item, int value, boolean take) {
+        if (value < 0) {
+            return false;
+        }
+        int amount = getItemAmount(player, item);
+        ItemStack[] storage = player.getInventory().getStorageContents();
         if (amount >= value) {
             if (take) {
                 for (int i = 0 ; i < storage.length ; i++) {
@@ -289,6 +377,25 @@ public class PriceHook {
         else {
             return false;
         }
+    }
+
+    public static int getItemAmount(Player player, ItemStack item) {
+        ItemStack[] storage = player.getInventory().getStorageContents();
+        if (item == null) {
+            return 0;
+        }
+        int amount = 0;
+        for (ItemStack tempVal1 : storage) {
+            if (tempVal1 == null || tempVal1.getType().isAir()) {
+                continue;
+            }
+            ItemStack temItem = tempVal1.clone();
+            temItem.setAmount(1);
+            if (temItem.equals(item)) {
+                amount += tempVal1.getAmount();
+            }
+        }
+        return amount;
     }
 
 }

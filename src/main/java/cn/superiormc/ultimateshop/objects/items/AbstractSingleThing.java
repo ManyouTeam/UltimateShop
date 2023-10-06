@@ -1,12 +1,9 @@
 package cn.superiormc.ultimateshop.objects.items;
 
 import cn.superiormc.ultimateshop.hooks.EconomyHook;
-import cn.superiormc.ultimateshop.hooks.ItemsHook;
 import cn.superiormc.ultimateshop.hooks.PriceHook;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
-import cn.superiormc.ultimateshop.managers.ErrorManager;
 import cn.superiormc.ultimateshop.utils.ItemUtil;
-import cn.superiormc.ultimateshop.utils.TextUtil;
 import com.cryptomorin.xseries.XItemStack;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
@@ -103,19 +100,60 @@ public abstract class AbstractSingleThing {
         return true;
     }
 
-    public boolean checkHasEnough(Player player,
-                                  boolean take,
-                                  double cost) {
-        return checkHasEnough(singleSection,
+    public double playerHasAmount(Player player) {
+        return playerHasAmount(singleSection, player);
+    }
+
+    public double playerHasAmount(ConfigurationSection section, Player player) {
+        if (section == null) {
+            return 0;
+        }
+        switch (type) {
+            case "hook":
+                String pluginName = section.getString("hook-plugin", "");
+                String itemID = section.getString("hook-item", "");
+                if (pluginName.equals("MMOItems") && !itemID.contains(";;")) {
+                    itemID = section.getString("hook-item-type") + ";;" + itemID;
+                } else if (pluginName.equals("EcoArmor") && !itemID.contains(";;")) {
+                    itemID = itemID + ";;" + section.getString("hook-item-type");
+                }
+                return PriceHook.getItemAmount(player,
+                        pluginName,
+                        itemID);
+            case "vanilla":
+                ItemStack itemStack = getItemThing(section, player, false, 1);
+                if (itemStack == null) {
+                    return 0;
+                }
+                itemStack.setAmount(1);
+                return PriceHook.getItemAmount(player, itemStack);
+            case "economy":
+                return PriceHook.getEconomyAmount(player, section.getString("economy-plugin"),
+                        section.getString("economy-type", "default"));
+            case "exp":
+                return PriceHook.getEconomyAmount(player,
+                        section.getString("economy-type"));
+            case "unknwon":
+                Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §c" +
+                        "There is something wrong in your shop configs!");
+                return 0;
+        }
+        return 0;
+    }
+
+    public boolean playerHasEnough(Player player,
+                                   boolean take,
+                                   double cost) {
+        return playerHasEnough(singleSection,
                 player,
                 take,
                 cost);
     }
 
-    public boolean checkHasEnough(ConfigurationSection section,
-                                  Player player,
-                                  boolean take,
-                                  double cost) {
+    public boolean playerHasEnough(ConfigurationSection section,
+                                   Player player,
+                                   boolean take,
+                                   double cost) {
         if (section == null) {
             return false;
         }
@@ -132,25 +170,25 @@ public abstract class AbstractSingleThing {
                 } else if (pluginName.equals("EcoArmor") && !itemID.contains(";;")) {
                     itemID = itemID + ";;" + section.getString("hook-item-type");
                 }
-                return PriceHook.getPrice(pluginName,
+                return PriceHook.getPrice(player,
+                        pluginName,
                         itemID,
-                        player,
                         (int) cost, take);
             case "vanilla":
-                ItemStack itemStack = getItemThing(section, player, false, cost);
+                ItemStack itemStack = getItemThing(section, player, false, 1);
                 if (itemStack == null) {
                     return false;
                 }
                 itemStack.setAmount(1);
                 return PriceHook.getPrice(player, itemStack, (int) cost, take);
             case "economy":
-                return PriceHook.getPrice(section.getString("economy-plugin"),
+                return PriceHook.getPrice(player,
+                        section.getString("economy-plugin"),
                         section.getString("economy-type", "default"),
-                        player,
                         cost, take);
             case "exp":
-                return PriceHook.getPrice(section.getString("economy-type"),
-                        player,
+                return PriceHook.getPrice(player,
+                        section.getString("economy-type"),
                         (int) cost, take);
             case "unknwon":
                 Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §c" +
@@ -164,11 +202,14 @@ public abstract class AbstractSingleThing {
                                   Player player,
                                   boolean give,
                                   double cost) {
-        if (singleSection == null) {
-            return null;
+        if (section == null) {
+            if (singleSection == null) {
+                return null;
+            }
+            section = singleSection;
         }
         ItemStack itemStack;
-        itemStack = ItemUtil.buildItemStack(singleSection, (int) cost);
+        itemStack = ItemUtil.buildItemStack(section, (int) cost);
         if (itemStack == null) {
             return null;
         }

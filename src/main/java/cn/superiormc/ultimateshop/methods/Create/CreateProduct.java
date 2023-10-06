@@ -283,7 +283,7 @@ public class CreateProduct {
                         CommonUtil.getItemName(ItemsHook.getHookItem(args[2], args[3]))));
                 subPriceFirstSection.set("start-apply", startApply);
             }
-            else if (PriceHook.getPrice(args[2], args[3], player, 0D, false)) {
+            else if (PriceHook.getPrice(player, args[2], args[3], 0D, false)) {
                 subPriceFirstSection.set("economy-plugin", args[2]);
                 subPriceFirstSection.set("economy-type", args[3]);
                 subPriceFirstSection.set("amount", args[4]);

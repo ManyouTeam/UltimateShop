@@ -43,14 +43,14 @@ public final class UltimateShop extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        if (SQLDatabase.sqlManager != null) {
-            SQLDatabase.closeSQL();
-        }
         if (ServerCache.serverCache != null) {
             ServerCache.serverCache.shutServerCache();
         }
         for (Player player : Bukkit.getOnlinePlayers()) {
             CacheManager.cacheManager.playerCacheMap.get(player).shutPlayerCache();
+        }
+        if (SQLDatabase.sqlManager != null) {
+            SQLDatabase.closeSQL();
         }
         Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §fPlugin is disabled. Author: PQguanfang.");
     }

@@ -100,19 +100,40 @@ public class BuyMoreGUI extends InvGUI {
                 boolean b = ConfigManager.configManager.getBoolean("placeholder.click.enabled");
                 switch (ConfigManager.configManager.getClickAction(type)){
                     case "buy" :
-                        BuyProductMethod.startBuy(item.getShop(),
-                                item.getProduct(),
-                                owner.getPlayer(),
-                                !b,
-                                false,
-                                nowingAmount);
-                        break;
+                        if (!item.getBuyPrice().empty) {
+                            BuyProductMethod.startBuy(item.getShop(),
+                                    item.getProduct(),
+                                    owner.getPlayer(),
+                                    !b,
+                                    false,
+                                    nowingAmount);
+                            break;
+                        }
                     case "sell" :
+                        if (!item.getSellPrice().empty) {
+                            SellProductMethod.startSell(item.getShop(),
+                                    item.getProduct(),
+                                    owner.getPlayer(),
+                                    !b,
+                                    false,
+                                    nowingAmount);
+                            break;
+                        }
+                    case "buy-or-sell" :
+                        if (item.getBuyPrice().empty && !item.getSellPrice().empty) {
+                            SellProductMethod.startSell(item.getShop(), item.getProduct(), owner.getPlayer(), !b);
+                        }
+                        else {
+                            BuyProductMethod.startBuy(item.getShop(), item.getProduct(), owner.getPlayer(), !b);
+                        }
+                        break;
+                    case "sell-all" :
                         SellProductMethod.startSell(item.getShop(),
                                 item.getProduct(),
                                 owner.getPlayer(),
                                 !b,
                                 false,
+                                true,
                                 nowingAmount);
                         break;
                     default:

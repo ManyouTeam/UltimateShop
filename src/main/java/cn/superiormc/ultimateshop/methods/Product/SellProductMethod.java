@@ -18,11 +18,7 @@ import java.time.LocalDateTime;
 public class SellProductMethod {
 
     public static ProductMethodStatus startSell(String shop, String product, Player player, boolean quick) {
-        return startSell(shop, product, player, quick, false);
-    }
-
-    public static ProductMethodStatus startSell(String shop, String product, Player player, boolean quick, boolean test) {
-        return startSell(shop, product, player, quick, test, 1);
+        return startSell(shop, product, player, quick, false, 1);
     }
 
     public static ProductMethodStatus startSell(String shop,
@@ -31,6 +27,17 @@ public class SellProductMethod {
                                                 boolean quick,
                                                 boolean test,
                                                 int multi) {
+        return startSell(shop, product, player, quick, test, false, multi);
+    }
+
+    public static ProductMethodStatus startSell(String shop,
+                                                String product,
+                                                Player player,
+                                                boolean quick,
+                                                boolean test,
+                                                boolean ableMaxSell,
+                                                int multi) {
+        boolean changedMulti = false;
         ObjectShop tempVal1 = ConfigManager.configManager.getShop(shop);
         if (tempVal1 == null) {
             LanguageManager.languageManager.sendStringText(player,
@@ -59,12 +66,6 @@ public class SellProductMethod {
                     player.getName());
             return ProductMethodStatus.ERROR;
         }
-        /*
-        if (quick && !(player.hasPermission("ultimateshop.quicksell." + shop + "." + product) ||
-                player.hasPermission("ultimateshop.quicksell.*"))) {
-            return "NoPermission";
-        }
-         */
         // limit
         int playerUseTimes = 0;
         int serverUseTimes = 0;
@@ -151,8 +152,13 @@ public class SellProductMethod {
                     null,
                     null);
         }
-        // price
+        // 更改multi
         ObjectProducts tempVal5 = tempVal2.getReward();
+        if (ableMaxSell) {
+            multi = tempVal5.getMaxAbleSellAmount(player, playerUseTimes);
+            changedMulti = true;
+        }
+        // price
         if (!tempVal5.takeThing(player, false, playerUseTimes, multi)) {
             if (!test && (quick ||
                     ConfigManager.configManager.config.
@@ -207,6 +213,9 @@ public class SellProductMethod {
                             multi),
                     "amount",
                     String.valueOf(multi));
+        }
+        if (changedMulti) {
+            return ProductMethodStatus.DONE_WITH_CHANGED_MULTI;
         }
         return ProductMethodStatus.DONE;
     }

@@ -8,9 +8,11 @@ menu:
     enabled: true
     menu: main
   click-event:
-    buy: 'LEFT'
+    buy: 'SHIFT_LEFT'
     sell: 'RIGHT'
+    buy-or-sell: 'LEFT'
     select-amount: 'SHIFT_RIGHT'
+    sell-all: 'DROP'
 
 use-times:
   default-reset-mode: 'NEVER'
@@ -66,6 +68,7 @@ display-item:
       - '{sell-click}'
     below:
       - '&#FFFACDRight-Shift click to pick amount!'
+      - '&#FFFACDDrop (Q key) to sell all!'
 
 placeholder:
   refresh:
@@ -80,12 +83,15 @@ placeholder:
     enabled: true
     buy: '&#FFFACDLeft-click to buy!'
     sell: '&#FFFACDRight-click to sell!'
+    buy-with-no-sell: '&#FFFACDClick to buy!'
+    sell-with-no-buy: '&#FFFACDClick to sell!'
     buy-max-limit-player: '&#ff3300You can not buy more!'
     buy-max-limit-server: '&#ff3300SOLD OUT!'
     sell-max-limit-player: '&#ff3300Can not sell more!'
     sell-max-limit-server: '&#ff3300THIS ITEM CAN NOT BE SELLED!'
     buy-price-not-enough: '&#ff3300Do not have enough money to buy!'
     sell-price-not-enough: '&#ff3300Do not have enough item to sell!'
+    sell-with-changed-amount: '&6Right-click to sell max amount able to sell!'
     error: '&#ff3300Error!'
 
 database:

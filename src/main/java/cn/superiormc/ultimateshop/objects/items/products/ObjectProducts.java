@@ -84,7 +84,7 @@ public class ObjectProducts extends AbstractThings {
             case CLASSIC_ANY:
                 for (ObjectSingleProduct tempVal1 : singleProducts) {
                     cost = getAmount(player, times, amount).get(tempVal1);
-                    if (tempVal1.checkHasEnough(player, take, cost)) {
+                    if (tempVal1.playerHasEnough(player, take, cost)) {
                         return true;
                     }
                 }
@@ -93,7 +93,7 @@ public class ObjectProducts extends AbstractThings {
             case CLASSIC_ALL:
                 for (ObjectSingleProduct tempVal1 : singleProducts) {
                     cost = getAmount(player, times, amount).get(tempVal1);
-                    if (!tempVal1.checkHasEnough(player, take, cost)) {
+                    if (!tempVal1.playerHasEnough(player, take, cost)) {
                         return false;
                     }
                 }
@@ -138,6 +138,29 @@ public class ObjectProducts extends AbstractThings {
                 break;
         }
         return productMaps;
+    }
+
+    public int getMaxAbleSellAmount(Player player, int times) {
+        int maxAmount = -1;
+        switch (mode) {
+            case UNKNOWN:
+                return 0;
+            case ANY:
+            case CLASSIC_ANY:
+            case ALL:
+            case CLASSIC_ALL:
+                for (ObjectSingleProduct tempVal1 : singleProducts) {
+                    double cost = getAmount(player, times, 1).get(tempVal1);
+                    int tempVal2 = (int) (tempVal1.playerHasAmount(player) / cost);
+                    if (maxAmount == -1 || tempVal2 < maxAmount) {
+                        maxAmount = tempVal2;
+                    }
+                }
+                return maxAmount;
+            default:
+                ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Can not get price-mode section in your shop config!!");
+                return 0;
+        }
     }
 
     public ItemStack getDisplayItem(ConfigurationSection section,

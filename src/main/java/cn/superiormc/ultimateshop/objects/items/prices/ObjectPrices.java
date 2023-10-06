@@ -4,7 +4,6 @@ import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.ErrorManager;
 import cn.superiormc.ultimateshop.objects.items.AbstractSingleThing;
 import cn.superiormc.ultimateshop.objects.items.AbstractThings;
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
@@ -48,7 +47,7 @@ public class ObjectPrices extends AbstractThings {
         for (ObjectSinglePrice tempVal1 : getPrices(times)) {
             double cost = getAmount(player, times, amount).get(tempVal1);
             if (tempVal1.getCondition(player)) {
-                if (buyOrSell && tempVal1.checkHasEnough(player, false, cost)) {
+                if (buyOrSell && tempVal1.playerHasEnough(player, false, cost)) {
                     return tempVal1;
                 }
                 else if (!buyOrSell) {
@@ -126,7 +125,7 @@ public class ObjectPrices extends AbstractThings {
             case CLASSIC_ALL:
                 for (ObjectSinglePrice tempVal1 : getPrices(times)) {
                     cost = getAmount(player, times, amount).get(tempVal1);
-                    if (!tempVal1.checkHasEnough(player, take, cost)) {
+                    if (!tempVal1.playerHasEnough(player, take, cost)) {
                         return false;
                     }
                 }
@@ -135,7 +134,7 @@ public class ObjectPrices extends AbstractThings {
             case CLASSIC_ANY:
                 ObjectSinglePrice tempVal11 = getAnyTargetPrice(player, times, true, amount);
                 cost = getAmount(player, times, amount).get(tempVal11);
-                return tempVal11.checkHasEnough(player, take, cost);
+                return tempVal11.playerHasEnough(player, take, cost);
             default:
                 ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Can not get price-mode section in your shop config!!");
                 return false;

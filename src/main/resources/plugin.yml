@@ -28,3 +28,8 @@ commands:
       - "shop"
     usage: "/ultimateshop"
     description: "UltimateShop Main Command."
+  ultimateshopadmin:
+    aliases:
+      - "shopadmin"
+    usage: "/ultimateshopadmin"
+    description: "UltimateShop Admin Command."

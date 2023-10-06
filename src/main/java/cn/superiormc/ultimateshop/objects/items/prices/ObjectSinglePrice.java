@@ -4,8 +4,6 @@ import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.objects.items.AbstractSingleThing;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
 import cn.superiormc.ultimateshop.utils.TextUtil;
-import io.lumine.mythic.bukkit.utils.lib.http.util.TextUtils;
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
@@ -71,20 +69,20 @@ public class ObjectSinglePrice extends AbstractSingleThing {
     }
 
     @Override
-    public boolean checkHasEnough(Player player,
-                                  boolean take,
-                                  double cost) {
+    public boolean playerHasEnough(Player player,
+                                   boolean take,
+                                   double cost) {
         if (singleSection == null) {
             return false;
         }
         if (priceMode) {
-            return super.checkHasEnough(ConfigManager.configManager.config.
+            return super.playerHasEnough(ConfigManager.configManager.config.
                             getConfigurationSection("prices." + singleSection.getString("custom-type")),
                     player,
                     take,
                     cost);
         }
-        return super.checkHasEnough(singleSection, player, take, cost);
+        return super.playerHasEnough(singleSection, player, take, cost);
     }
 
     @Override

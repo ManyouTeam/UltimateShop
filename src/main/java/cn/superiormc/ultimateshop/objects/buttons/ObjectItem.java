@@ -265,6 +265,25 @@ public class ObjectItem extends AbstractButton {
                     SellProductMethod.startSell(getShop(), getProduct(), player, !b);
                 }
                 break;
+            case "buy-or-sell" :
+                if (buyPrice.empty && !sellPrice.empty) {
+                    SellProductMethod.startSell(getShop(), getProduct(), player, !b);
+                }
+                else {
+                    BuyProductMethod.startBuy(getShop(), getProduct(), player, !b);
+                }
+                break;
+            case "sell-all" :
+                if (!sellPrice.empty) {
+                    SellProductMethod.startSell(getShop(),
+                            getProduct(),
+                            player,
+                            !b,
+                            false,
+                            true,
+                            1);
+                }
+                break;
             case "select-amount" :
                 if (config.getBoolean("buy-more",
                         ConfigManager.configManager.getShop(getShop()).getShopConfig().getBoolean("settings.buy-more", true))) {
