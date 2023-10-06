@@ -123,7 +123,7 @@ public class ModifyDisplayItem {
                         }
                         break;
                     case 'k':
-                        if (buyMore) {
+                        if (!buyMore) {
                             addLore.add(tempVal3.substring(2));
                         }
                         break;

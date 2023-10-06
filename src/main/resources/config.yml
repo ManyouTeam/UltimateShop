@@ -53,7 +53,7 @@ display-item:
     - '@j'
     - '@j&#ff3300Can not sell more for server!'
     - '@j&8Refresh Time: {sell-refresh-server}'
-    - '@j'
+    - ' '
     - '@a{buy-click}'
     - '@b{sell-click}'
     - '@k&#FFFACDRight-Shift click to pick amount!'

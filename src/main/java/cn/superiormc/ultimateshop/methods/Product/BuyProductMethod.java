@@ -68,25 +68,6 @@ public class BuyProductMethod {
                 }
             }
             playerUseTimes = tempVal9.getBuyUseTimes();
-            if (tempVal2.getPlayerBuyLimit(player) != -1 &&
-                    playerUseTimes + multi - 1  >= tempVal2.getPlayerBuyLimit(player)) {
-                if (!test && (quick ||
-                        ConfigManager.configManager.config.
-                                getBoolean("send-messages-after-buy", true))) {
-                    LanguageManager.languageManager.sendStringText(player,
-                            "limit-reached-buy-player",
-                            "item",
-                            tempVal2.getDisplayName(player),
-                            "times",
-                            String.valueOf(playerUseTimes),
-                            "limit",
-                            String.valueOf(tempVal2.getPlayerBuyLimit(player)),
-                            "refresh",
-                            tempVal9.getBuyRefreshTimeDisplayName());
-
-                }
-                return ProductMethodStatus.PLAYER_MAX;
-            }
         }
         else {
             tempVal3.setUseTimesCache(shop,
@@ -95,7 +76,28 @@ public class BuyProductMethod {
                     0,
                     null,
                     null);
+            tempVal9 = tempVal3.getUseTimesCache().get(tempVal2);
         }
+        if (tempVal2.getPlayerBuyLimit(player) != -1 &&
+                playerUseTimes + multi - 1  >= tempVal2.getPlayerBuyLimit(player)) {
+            if (!test && (quick ||
+                    ConfigManager.configManager.config.
+                            getBoolean("send-messages-after-buy", true))) {
+                LanguageManager.languageManager.sendStringText(player,
+                        "limit-reached-buy-player",
+                        "item",
+                        tempVal2.getDisplayName(player),
+                        "times",
+                        String.valueOf(playerUseTimes),
+                        "limit",
+                        String.valueOf(tempVal2.getPlayerBuyLimit(player)),
+                        "refresh",
+                        tempVal9.getBuyRefreshTimeDisplayName());
+
+            }
+            return ProductMethodStatus.PLAYER_MAX;
+        }
+        ObjectPrices tempVal5 = tempVal2.getBuyPrice();
         if (tempVal8 != null) {
             if (quick) {
                 // 重置
@@ -105,25 +107,6 @@ public class BuyProductMethod {
                 }
             }
             serverUseTimes = ServerCache.serverCache.getUseTimesCache().get(tempVal2).getBuyUseTimes();
-            if (tempVal2.getServerBuyLimit(player) != -1 &&
-                    serverUseTimes + multi - 1 > tempVal2.getServerBuyLimit(player)) {
-                if (!test && (quick ||
-                        ConfigManager.configManager.config.
-                                getBoolean("send-messages-after-buy", true))) {
-                    LanguageManager.languageManager.sendStringText(player,
-                            "limit-reached-buy-server",
-                            "item",
-                            tempVal2.getDisplayName(player),
-                            "times",
-                            String.valueOf(serverUseTimes),
-                            "limit",
-                            String.valueOf(tempVal2.getServerBuyLimit(player)),
-                            "refresh",
-                            tempVal8.getBuyRefreshTimeDisplayName());
-
-                }
-                return ProductMethodStatus.SERVER_MAX;
-            }
         }
         else {
             tempVal11.setUseTimesCache(shop,
@@ -132,9 +115,28 @@ public class BuyProductMethod {
                     0,
                     null,
                     null);
+            tempVal8 = tempVal11.getUseTimesCache().get(tempVal2);
+        }
+        if (tempVal2.getServerBuyLimit(player) != -1 &&
+                serverUseTimes + multi - 1 > tempVal2.getServerBuyLimit(player)) {
+            if (!test && (quick ||
+                    ConfigManager.configManager.config.
+                            getBoolean("send-messages-after-buy", true))) {
+                LanguageManager.languageManager.sendStringText(player,
+                        "limit-reached-buy-server",
+                        "item",
+                        tempVal2.getDisplayName(player),
+                        "times",
+                        String.valueOf(serverUseTimes),
+                        "limit",
+                        String.valueOf(tempVal2.getServerBuyLimit(player)),
+                        "refresh",
+                        tempVal8.getBuyRefreshTimeDisplayName());
+
+            }
+            return ProductMethodStatus.SERVER_MAX;
         }
         // price
-        ObjectPrices tempVal5 = tempVal2.getBuyPrice();
         if (!tempVal5.takeThing(player, false, playerUseTimes, multi)) {
             if (!test && (quick ||
                     ConfigManager.configManager.config.

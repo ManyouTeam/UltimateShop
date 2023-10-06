@@ -37,7 +37,6 @@ public class SellProductMethod {
                                                 boolean test,
                                                 boolean ableMaxSell,
                                                 int multi) {
-        boolean changedMulti = false;
         ObjectShop tempVal1 = ConfigManager.configManager.getShop(shop);
         if (tempVal1 == null) {
             LanguageManager.languageManager.sendStringText(player,
@@ -84,25 +83,6 @@ public class SellProductMethod {
                 }
             }
             playerUseTimes = tempVal9.getSellUseTimes();
-            if (tempVal2.getPlayerSellLimit(player) != -1 &&
-                    playerUseTimes + multi - 1 >= tempVal2.getPlayerSellLimit(player)) {
-                if (!test && (quick ||
-                        ConfigManager.configManager.config.
-                                getBoolean("send-messages-after-buy", true))) {
-                    LanguageManager.languageManager.sendStringText(player,
-                            "limit-reached-sell-player",
-                            "item",
-                            tempVal2.getDisplayName(player),
-                            "times",
-                            String.valueOf(playerUseTimes),
-                            "limit",
-                            String.valueOf(tempVal2.getPlayerSellLimit(player)),
-                            "refresh",
-                            tempVal9.getSellRefreshTimeDisplayName());
-
-                }
-                return ProductMethodStatus.PLAYER_MAX;
-            }
         }
         else {
             tempVal3.setUseTimesCache(shop,
@@ -111,6 +91,37 @@ public class SellProductMethod {
                     0,
                     null,
                     null);
+            tempVal9 = tempVal3.getUseTimesCache().get(tempVal2);
+        }
+        // 更改multi
+        ObjectProducts tempVal5 = tempVal2.getReward();
+        if (ableMaxSell) {
+            multi = tempVal5.getMaxAbleSellAmount(player, playerUseTimes);
+            if (multi > 0) {
+                if (tempVal2.getPlayerSellLimit(player) != -1 &&
+                        multi > tempVal2.getPlayerSellLimit(player) - playerUseTimes) {
+                    multi = tempVal2.getPlayerSellLimit(player) - playerUseTimes;
+                }
+            }
+        }
+        if (tempVal2.getPlayerSellLimit(player) != -1 &&
+                playerUseTimes + multi - 1 >= tempVal2.getPlayerSellLimit(player)) {
+            if (!test && (quick ||
+                    ConfigManager.configManager.config.
+                            getBoolean("send-messages-after-buy", true))) {
+                LanguageManager.languageManager.sendStringText(player,
+                        "limit-reached-sell-player",
+                        "item",
+                        tempVal2.getDisplayName(player),
+                        "times",
+                        String.valueOf(playerUseTimes),
+                        "limit",
+                        String.valueOf(tempVal2.getPlayerSellLimit(player)),
+                        "refresh",
+                        tempVal9.getSellRefreshTimeDisplayName());
+
+            }
+            return ProductMethodStatus.PLAYER_MAX;
         }
         if (tempVal8 != null) {
             if (quick) {
@@ -124,25 +135,6 @@ public class SellProductMethod {
                 }
             }
             serverUseTimes = ServerCache.serverCache.getUseTimesCache().get(tempVal2).getSellUseTimes();
-            if (tempVal2.getServerSellLimit(player) != -1 &&
-                    serverUseTimes + multi - 1 >= tempVal2.getServerSellLimit(player)) {
-                if (!test && (quick ||
-                        ConfigManager.configManager.config.
-                                getBoolean("send-messages-after-buy", true))) {
-                    LanguageManager.languageManager.sendStringText(player,
-                            "limit-reached-sell-server",
-                            "item",
-                            tempVal2.getDisplayName(player),
-                            "times",
-                            String.valueOf(serverUseTimes),
-                            "limit",
-                            String.valueOf(tempVal2.getServerSellLimit(player)),
-                            "refresh",
-                            tempVal8.getSellRefreshTimeDisplayName());
-
-                }
-                return ProductMethodStatus.SERVER_MAX;
-            }
         }
         else {
             tempVal11.setUseTimesCache(shop,
@@ -152,11 +144,24 @@ public class SellProductMethod {
                     null,
                     null);
         }
-        // 更改multi
-        ObjectProducts tempVal5 = tempVal2.getReward();
-        if (ableMaxSell) {
-            multi = tempVal5.getMaxAbleSellAmount(player, playerUseTimes);
-            changedMulti = true;
+        if (tempVal2.getServerSellLimit(player) != -1 &&
+                serverUseTimes + multi - 1 >= tempVal2.getServerSellLimit(player)) {
+            if (!test && (quick ||
+                    ConfigManager.configManager.config.
+                            getBoolean("send-messages-after-buy", true))) {
+                LanguageManager.languageManager.sendStringText(player,
+                        "limit-reached-sell-server",
+                        "item",
+                        tempVal2.getDisplayName(player),
+                        "times",
+                        String.valueOf(serverUseTimes),
+                        "limit",
+                        String.valueOf(tempVal2.getServerSellLimit(player)),
+                        "refresh",
+                        tempVal8.getSellRefreshTimeDisplayName());
+
+            }
+            return ProductMethodStatus.SERVER_MAX;
         }
         // price
         if (!tempVal5.takeThing(player, false, playerUseTimes, multi)) {
