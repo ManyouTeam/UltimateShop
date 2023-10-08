@@ -91,11 +91,15 @@ public class ObjectItem extends AbstractButton {
                 return;
             }
             else {
-                buyPrice = new ObjectPrices(config.getConfigurationSection("prices"), config.getString("price-mode", "ANY"));
+                buyPrice = new ObjectPrices(config.getConfigurationSection("prices"),
+                        config.getString("price-mode", "ANY"),
+                        this);
                 return;
             }
         }
-        buyPrice = new ObjectPrices(config.getConfigurationSection("buy-prices"), config.getString("price-mode", "ANY"));
+        buyPrice = new ObjectPrices(config.getConfigurationSection("buy-prices"),
+                config.getString("price-mode", "ANY"),
+                this);
     }
 
     private void initSellPrice() {
@@ -107,7 +111,9 @@ public class ObjectItem extends AbstractButton {
             sellPrice = new ObjectPrices();
             return;
         }
-        sellPrice = new ObjectPrices(config.getConfigurationSection("sell-prices"), config.getString("price-mode", "ANY"));
+        sellPrice = new ObjectPrices(config.getConfigurationSection("sell-prices"),
+                config.getString("price-mode", "ANY"),
+                this);
     }
 
     private void initBuyAction() {
@@ -271,7 +277,7 @@ public class ObjectItem extends AbstractButton {
                 if (buyPrice.empty && !sellPrice.empty) {
                     SellProductMethod.startSell(getShop(), getProduct(), player, !b);
                 }
-                else {
+                else if (!buyPrice.empty) {
                     BuyProductMethod.startBuy(getShop(), getProduct(), player, !b);
                 }
                 break;

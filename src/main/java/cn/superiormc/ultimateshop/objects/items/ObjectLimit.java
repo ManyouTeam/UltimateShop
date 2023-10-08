@@ -1,12 +1,13 @@
 package cn.superiormc.ultimateshop.objects.items;
 
-import cn.superiormc.ultimateshop.utils.TextUtil;
 import cn.superiormc.ultimateshop.utils.MathUtil;
-import org.bukkit.Bukkit;
+import cn.superiormc.ultimateshop.utils.TextUtil;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class ObjectLimit {
 

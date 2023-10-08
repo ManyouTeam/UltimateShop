@@ -83,9 +83,9 @@ public class YamlDatabase {
                     cache.setUseTimesCache(shopID, productID, buyUseTimes, sellUseTimes, lastPurchaseTime, lastSellTime);
                 }
             }
-            // 动态价格储存系统
-            // TODO...
         }
+        // 动态价格储存系统
+        // TODO...
     }
 
     public static void updateData(Player player) {

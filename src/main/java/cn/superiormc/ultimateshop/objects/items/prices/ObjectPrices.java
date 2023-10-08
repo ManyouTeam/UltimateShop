@@ -2,6 +2,7 @@ package cn.superiormc.ultimateshop.objects.items.prices;
 
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.ErrorManager;
+import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import cn.superiormc.ultimateshop.objects.items.AbstractSingleThing;
 import cn.superiormc.ultimateshop.objects.items.AbstractThings;
 import org.bukkit.configuration.ConfigurationSection;
@@ -16,15 +17,24 @@ public class ObjectPrices extends AbstractThings {
 
     public List<ObjectSinglePrice> singlePrices = new ArrayList<>();
 
+    private ObjectItem item = null;
+
     public ObjectPrices() {
         super();
-        empty = true;
+        this.empty = true;
     }
 
     public ObjectPrices(ConfigurationSection section, String mode) {
         super(section, mode);
+        this.empty = false;
         initSinglePrices();
-        empty = false;
+    }
+
+    public ObjectPrices(ConfigurationSection section, String mode, ObjectItem item) {
+        super(section, mode);
+        this.item = item;
+        this.empty = false;
+        initSinglePrices();
     }
 
     public void initSinglePrices() {
@@ -34,7 +44,7 @@ public class ObjectPrices extends AbstractThings {
                 singlePrices.add(new ObjectSinglePrice());
             }
             else {
-                singlePrices.add(new ObjectSinglePrice(section.getConfigurationSection(s)));
+                singlePrices.add(new ObjectSinglePrice(section.getConfigurationSection(s), item));
             }
         }
     }

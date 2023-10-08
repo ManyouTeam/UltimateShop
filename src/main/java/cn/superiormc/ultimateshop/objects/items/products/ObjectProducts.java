@@ -1,6 +1,7 @@
 package cn.superiormc.ultimateshop.objects.items.products;
 
 import cn.superiormc.ultimateshop.managers.ErrorManager;
+import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import cn.superiormc.ultimateshop.objects.items.AbstractSingleThing;
 import cn.superiormc.ultimateshop.objects.items.AbstractThings;
 import cn.superiormc.ultimateshop.utils.RandomUtil;
@@ -16,12 +17,20 @@ import java.util.Map;
 public class ObjectProducts extends AbstractThings {
     public List<ObjectSingleProduct> singleProducts = new ArrayList<>();
 
+    public ObjectItem item;
+
     public ObjectProducts() {
         super();
     }
 
     public ObjectProducts(ConfigurationSection section, String mode) {
         super(section, mode);
+        initSingleProducts();
+    }
+
+    public ObjectProducts(ConfigurationSection section, String mode, ObjectItem item) {
+        super(section, mode);
+        this.item = item;
         initSingleProducts();
     }
 
@@ -32,7 +41,7 @@ public class ObjectProducts extends AbstractThings {
                 singleProducts.add(new ObjectSingleProduct());
             }
             else {
-                singleProducts.add(new ObjectSingleProduct(section.getConfigurationSection(s)));
+                singleProducts.add(new ObjectSingleProduct(section.getConfigurationSection(s), item));
             }
         }
     }

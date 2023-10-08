@@ -11,18 +11,13 @@ menu:
     buy: 'SHIFT_LEFT'
     sell: 'RIGHT'
     buy-or-sell: 'LEFT'
+    # If you want to disable select-amount feature, set this to NEVER.
     select-amount: 'SHIFT_RIGHT'
     sell-all: 'DROP'
 
 use-times:
   default-reset-mode: 'NEVER'
   default-reset-time: '00:00:00'
-
-# TODO
-dynamic-prices:
-  default-enabled: false
-  default-add-amount: 5
-  default-remove-amount: 4
 
 check-math: false
 
@@ -60,6 +55,8 @@ display-item:
     - '@b&#FFFACDDrop (Q key) to sell all!'
 
 placeholder:
+  data:
+    can-used-in-amount: false
   refresh:
     format: "yyyy-MM-dd HH:mm:ss"
     never: "Never"
