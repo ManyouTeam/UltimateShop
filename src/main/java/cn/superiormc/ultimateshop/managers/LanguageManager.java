@@ -55,7 +55,9 @@ public class LanguageManager {
                     text = text.replace(var, args[i + 1]);
                 }
             }
-            Bukkit.getConsoleSender().sendMessage(TextUtil.parse(text));
+            if (text.length() != 0) {
+                Bukkit.getConsoleSender().sendMessage(TextUtil.parse(text));
+            }
         }
     }
 
@@ -74,7 +76,9 @@ public class LanguageManager {
                     text = text.replace(var, args[i + 1]);
                 }
             }
-            player.sendMessage(TextUtil.parse(text, player));
+            if (text.length() != 0) {
+                player.sendMessage(TextUtil.parse(text, player));
+            }
         }
     }
 
