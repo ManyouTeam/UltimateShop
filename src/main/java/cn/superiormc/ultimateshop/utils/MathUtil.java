@@ -6,6 +6,7 @@ import cn.superiormc.ultimateshop.managers.ErrorManager;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.EmptyStackException;
 import java.util.LinkedList;
 import java.util.Stack;
 
@@ -112,7 +113,7 @@ public class MathUtil {
             }
             return numStack.pop();
         }
-        catch (NumberFormatException ep) {
+        catch (NumberFormatException | EmptyStackException ep) {
             ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Your number option can not be read, maybe" +
                     " you forgot install PlaceholderAPI plugin in your server, or you didn't enable check-math option in config.yml!");
             return BigDecimal.valueOf(0D);

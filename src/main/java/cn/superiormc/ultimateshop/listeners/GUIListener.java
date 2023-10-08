@@ -22,11 +22,16 @@ public class GUIListener implements Listener {
 
     @EventHandler
     public void onClick(InventoryClickEvent e) {
-        if (e.getWhoClicked().equals(player) && Objects.equals(e.getClickedInventory(), gui.getInv())) {
-            e.setCancelled(gui.clickEventHandle(e.getClick(), e.getSlot()));
-            if (e.getClick().toString().equals("SWAP_OFFHAND") && e.isCancelled()) {
-                player.getInventory().setItemInOffHand(player.getInventory().getItemInOffHand());
+        try {
+            if (e.getWhoClicked().equals(player) && Objects.equals(e.getClickedInventory(), gui.getInv())) {
+                e.setCancelled(gui.clickEventHandle(e.getClick(), e.getSlot()));
+                if (e.getClick().toString().equals("SWAP_OFFHAND") && e.isCancelled()) {
+                    player.getInventory().setItemInOffHand(player.getInventory().getItemInOffHand());
+                }
             }
+        }
+        catch (Exception ep) {
+            e.setCancelled(true);
         }
     }
 

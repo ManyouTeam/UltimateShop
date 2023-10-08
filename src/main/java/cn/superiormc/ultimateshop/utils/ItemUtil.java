@@ -37,7 +37,10 @@ public class ItemUtil {
         }
         else {
             if (section.getString("material") == null) {
-                return null;
+                return new ItemStack(Material.STONE);
+            }
+            if (Material.getMaterial(section.getString("material").toUpperCase()) == null) {
+                return new ItemStack(Material.STONE);
             }
             if (section.getString("name") != null) {
                 section.set("name", TextUtil.parse(section.getString("name")));
