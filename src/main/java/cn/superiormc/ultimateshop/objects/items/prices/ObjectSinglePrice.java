@@ -134,7 +134,7 @@ public class ObjectSinglePrice extends AbstractSingleThing {
                     "sell-times-server",
                     String.valueOf(serverSellTimes));
         }
-        double cost = MathUtil.doCalculate(TextUtil.withPAPI(tempVal1, player)).doubleValue();
+        double cost = MathUtil.doCalculate(TextUtil.withPAPI(tempVal1, player));
         if (singleSection.getString("max-amount") != null) {
             double maxAmount = Double.parseDouble(TextUtil.withPAPI(singleSection.getString("max-amount"), player));
             if (cost > maxAmount) {

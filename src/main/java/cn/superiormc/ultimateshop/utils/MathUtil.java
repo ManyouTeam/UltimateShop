@@ -3,6 +3,8 @@ package cn.superiormc.ultimateshop.utils;
 
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.ErrorManager;
+import org.bukkit.Bukkit;
+import redempt.crunch.Crunch;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -12,10 +14,13 @@ import java.util.Stack;
 
 public class MathUtil {
 
-    public static BigDecimal doCalculate(String mathStr) {
+    public static double doCalculate(String mathStr) {
         try {
-            if (!ConfigManager.configManager.getBoolean("check-math")) {
-                return BigDecimal.valueOf(Double.parseDouble(mathStr));
+            if (!ConfigManager.configManager.getBoolean("math.enabled")) {
+                return Double.parseDouble(mathStr);
+            }
+            if (ConfigManager.configManager.getBoolean("math.use-crunch")) {
+                return Double.parseDouble(String.format("%.2f", Crunch.evaluateExpression(mathStr)));
             }
             // 后缀表达式链
             LinkedList<String> postfixList = new LinkedList<>();
@@ -111,12 +116,12 @@ public class MathUtil {
                         break;
                 }
             }
-            return numStack.pop();
+            return numStack.pop().doubleValue();
         }
         catch (NumberFormatException | EmptyStackException ep) {
             ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Your number option can not be read, maybe" +
-                    " you forgot install PlaceholderAPI plugin in your server, or you didn't enable check-math option in config.yml!");
-            return BigDecimal.valueOf(0D);
+                    " you forgot install PlaceholderAPI plugin in your server, or you didn't enable math.enabled option in config.yml!");
+            return 0D;
         }
     }
 
