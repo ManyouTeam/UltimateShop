@@ -17,7 +17,7 @@ import java.util.List;
 
 public class ModifyDisplayItem {
 
-    public static ItemStack modifyItem (Player player,
+    public static ItemStack modifyItem(Player player,
                                         int multi,
                                         ItemStack addLoreDisplayItem,
                                         ObjectItem item,

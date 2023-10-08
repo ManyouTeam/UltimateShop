@@ -1,21 +1,23 @@
 package cn.superiormc.ultimateshop.gui.inv;
 
+import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.cache.PlayerCache;
 import cn.superiormc.ultimateshop.cache.ServerCache;
 import cn.superiormc.ultimateshop.gui.InvGUI;
 import cn.superiormc.ultimateshop.managers.CacheManager;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.LanguageManager;
+import cn.superiormc.ultimateshop.objects.ObjectShop;
+import cn.superiormc.ultimateshop.objects.buttons.AbstractButton;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import cn.superiormc.ultimateshop.objects.caches.ObjectUseTimesCache;
 import cn.superiormc.ultimateshop.objects.menus.ObjectMenu;
-import cn.superiormc.ultimateshop.objects.ObjectShop;
-import cn.superiormc.ultimateshop.objects.buttons.AbstractButton;
 import cn.superiormc.ultimateshop.utils.TextUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -29,6 +31,8 @@ public class ShopGUI extends InvGUI {
 
     private ObjectMenu shopMenu = null;
 
+    private BukkitRunnable runTask = null;
+
     public ShopGUI(Player owner, ObjectShop shop) {
         super(owner);
         this.shop = shop;
@@ -41,6 +45,15 @@ public class ShopGUI extends InvGUI {
             return;
         }
         owner.getPlayer().openInventory(inv);
+        if (ConfigManager.configManager.getBoolean("menu.shop.update")) {
+            runTask = new BukkitRunnable() {
+                @Override
+                public void run() {
+                    constructGUI();
+                }
+            };
+            runTask.runTaskTimer(UltimateShop.instance, 20L, 20L);
+        }
     }
 
     @Override
@@ -137,6 +150,9 @@ public class ShopGUI extends InvGUI {
 
     @Override
     public boolean closeEventHandle() {
+        if (runTask != null) {
+            runTask.cancel();
+        }
         return true;
     }
 

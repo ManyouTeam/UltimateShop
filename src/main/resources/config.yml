@@ -1,6 +1,11 @@
 debug: false
 
 menu:
+  shop:
+    # Whether shop menu will refresh every 1 second.
+    # This will refresh placeholder that displayed in display item lore.
+    # But maybe lead to server lag if you have much online players and they are all opening shop GUI.
+    update: true
   select-more:
     menu: buy-more
     max-amount: 64
