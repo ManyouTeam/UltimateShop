@@ -8,6 +8,8 @@ import com.willfp.ecobits.currencies.CurrencyUtils;
 import dev.unnm3d.rediseconomy.api.RedisEconomyAPI;
 import me.TechsCode.UltraEconomy.UltraEconomy;
 import me.TechsCode.UltraEconomy.UltraEconomyAPI;
+import me.qKing12.RoyaleEconomy.API.MultiCurrencyHandler;
+import me.qKing12.RoyaleEconomy.RoyaleEconomy;
 import net.milkbowl.vault.economy.Economy;
 import org.black_ixx.playerpoints.PlayerPoints;
 import org.bukkit.entity.Player;
@@ -110,6 +112,14 @@ public class EconomyHook {
                 }
                 redisCurrency.depositPlayer(player, value);
                 return;
+            case "RoyaleEconomy":
+                me.qKing12.RoyaleEconomy.API.Currency reCurrency = MultiCurrencyHandler.findCurrencyById(currencyName);
+                if (reCurrency == null) {
+                    ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cCan not find currency " +
+                            currencyName + " in RoyaleEconomy plugin!");
+                    return;
+                }
+                reCurrency.addAmount(player.getUniqueId().toString(), value);
         }
         ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: You set hook plugin to "
                 + pluginName + " in shop config, however for now UltimateShop does not support it!");

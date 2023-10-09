@@ -176,6 +176,15 @@
       </library>
     </orderEntry>
     <orderEntry type="module-library">
+      <library name="Maven: me.qKing12:RoyaleEconomy:2.3.5.2">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/RoyaleEconomy.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
       <library name="Maven: pers.neigi:NeigiItems:1.15.49">
         <CLASSES>
           <root url="jar://$MODULE_DIR$/lib/NeigeItems-1.15.49-api.jar!/" />

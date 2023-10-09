@@ -8,6 +8,7 @@ import com.willfp.ecobits.currencies.CurrencyUtils;
 import dev.unnm3d.rediseconomy.api.RedisEconomyAPI;
 import me.TechsCode.UltraEconomy.UltraEconomy;
 import me.TechsCode.UltraEconomy.UltraEconomyAPI;
+import me.qKing12.RoyaleEconomy.API.MultiCurrencyHandler;
 import net.milkbowl.vault.economy.Economy;
 import org.black_ixx.playerpoints.PlayerPoints;
 import org.bukkit.entity.Player;
@@ -158,6 +159,25 @@ public class PriceHook {
                         redisCurrency.withdrawPlayer(player, value);
                     }
                     return true;
+                }
+                else {
+                    return false;
+                }
+            case "RoyaleEconomy":
+                me.qKing12.RoyaleEconomy.API.Currency reCurrency = MultiCurrencyHandler.findCurrencyById(currencyName);
+                if (reCurrency == null) {
+                    ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cCan not find currency " +
+                            currencyName + " in RoyaleEconomy plugin!");
+                    return false;
+                }
+                if (reCurrency.getAmount(player.getUniqueId().toString()) >= value) {
+                    if (take) {
+                        reCurrency.removeAmount(player.getUniqueId().toString(), value);
+                    }
+                    return true;
+                }
+                else {
+                    return false;
                 }
         }
         ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: You set hook plugin to "

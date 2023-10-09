@@ -6,7 +6,7 @@
 
     <groupId>cn.superiormc</groupId>
     <artifactId>UltimateShop</artifactId>
-    <version>1.2.10</version>
+    <version>1.2.11</version>
     <packaging>jar</packaging>
 
     <name>UltimateShop</name>
@@ -138,12 +138,6 @@
             <groupId>com.github.stleary</groupId>
             <artifactId>JSON-java</artifactId>
             <version>20230618</version>
-        </dependency>
-        <dependency>
-            <groupId>io.lumine</groupId>
-            <artifactId>Mythic-Dist</artifactId>
-            <version>5.2.3</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>net.Indyuce</groupId>
@@ -284,6 +278,13 @@
             <version>2.4.0</version>
             <scope>system</scope>
             <systemPath>${project.basedir}/lib/UltraEconomy.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>me.qKing12</groupId>
+            <artifactId>RoyaleEconomy</artifactId>
+            <version>2.3.5.2</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/RoyaleEconomy.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>pers.neigi</groupId>
