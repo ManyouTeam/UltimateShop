@@ -31,7 +31,6 @@
     <orderEntry type="library" name="Maven: cc.carm.lib:easysql-api:0.4.3" level="project" />
     <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:1.7.36" level="project" />
     <orderEntry type="library" name="Maven: com.github.stleary:JSON-java:20230618" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Maven: io.lumine:Mythic-Dist:5.2.3" level="project" />
     <orderEntry type="module-library">
       <library name="Maven: net.Indyuce:MMOItems:6.9.4">
         <CLASSES>
@@ -148,6 +147,7 @@
         <SOURCES />
       </library>
     </orderEntry>
+    <orderEntry type="library" scope="PROVIDED" name="Maven: io.lumine:Mythic-Dist:5.2.3" level="project" />
     <orderEntry type="module-library">
       <library name="Maven: su.nightexpress.coinsengine:CoinsEngine:2.0.1">
         <CLASSES>

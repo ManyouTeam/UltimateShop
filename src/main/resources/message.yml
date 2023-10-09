@@ -48,6 +48,7 @@ help:
     &f/shop help &7- View help.
     &f/shop menu <menuName> &7- Open specified common menu.
     &f/shop menu <shopName> &7- Open specified shop menu.
+    &f/shop sellall &7- Open sell all menu.
   main-admin: |
     &#98FB98&lUltimateShop &7Made by @rzt1020 /& @PQguanfang
     &f/shop help &7- View help.

@@ -121,10 +121,14 @@ public class BuyMoreGUI extends InvGUI {
                         }
                     case "buy-or-sell" :
                         if (item.getBuyPrice().empty && !item.getSellPrice().empty) {
-                            SellProductMethod.startSell(item.getShop(), item.getProduct(), owner.getPlayer(), !b);
+                            SellProductMethod.startSell(item.getShop(), item.getProduct(), owner.getPlayer(), !b,
+                                    false,
+                                    nowingAmount);
                         }
                         else {
-                            BuyProductMethod.startBuy(item.getShop(), item.getProduct(), owner.getPlayer(), !b);
+                            BuyProductMethod.startBuy(item.getShop(), item.getProduct(), owner.getPlayer(), !b,
+                                    false,
+                                    nowingAmount);
                         }
                         break;
                     case "sell-all" :
