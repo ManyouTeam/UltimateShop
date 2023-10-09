@@ -2,6 +2,8 @@ package cn.superiormc.ultimateshop.objects.items;
 
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.Map;
 
@@ -50,13 +52,13 @@ public abstract class AbstractThings {
         }
     }
 
-    public abstract boolean takeSingleThing(Player player, boolean take, int times, int amount);
+    public abstract boolean takeSingleThing(Inventory inventory, Player player, boolean take, int times, int amount);
 
 
-    public boolean takeThing(Player player, boolean take, int times, int multi) {
-        if (!takeSingleThing(player, take, times, multi)) {
+    public boolean takeThing(Inventory inventory, Player player, boolean take, int times, int multi) {
+        if (!takeSingleThing(inventory, player, take, times, multi)) {
             if (!take) {
-              return false;
+                return false;
             }
         }
         return true;

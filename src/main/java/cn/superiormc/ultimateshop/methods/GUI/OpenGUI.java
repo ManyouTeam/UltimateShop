@@ -3,6 +3,7 @@ package cn.superiormc.ultimateshop.methods.GUI;
 import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.gui.inv.BuyMoreGUI;
 import cn.superiormc.ultimateshop.gui.inv.CommonGUI;
+import cn.superiormc.ultimateshop.gui.inv.SellAllGUI;
 import cn.superiormc.ultimateshop.gui.inv.ShopGUI;
 import cn.superiormc.ultimateshop.listeners.GUIListener;
 import cn.superiormc.ultimateshop.objects.ObjectShop;
@@ -32,6 +33,13 @@ public class OpenGUI {
 
     public static void openMoreGUI(Player player, ObjectItem item) {
         BuyMoreGUI gui = new BuyMoreGUI(player, item);
+        gui.openGUI();
+        Listener guiListener = new GUIListener(gui);
+        Bukkit.getPluginManager().registerEvents(guiListener, UltimateShop.instance);
+    }
+
+    public static void openSellAllGUI(Player player) {
+        SellAllGUI gui = new SellAllGUI(player);
         gui.openGUI();
         Listener guiListener = new GUIListener(gui);
         Bukkit.getPluginManager().registerEvents(guiListener, UltimateShop.instance);

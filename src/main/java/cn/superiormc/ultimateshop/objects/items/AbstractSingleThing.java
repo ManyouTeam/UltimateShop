@@ -8,6 +8,7 @@ import com.cryptomorin.xseries.XItemStack;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
@@ -94,17 +95,14 @@ public abstract class AbstractSingleThing {
         else {
             condition = new ObjectCondition(conditions);
         }
-        if (!condition.getBoolean(player)) {
-            return false;
-        }
-        return true;
+        return condition.getBoolean(player);
     }
 
-    public double playerHasAmount(Player player) {
-        return playerHasAmount(singleSection, player);
+    public double playerHasAmount(Inventory inventory, Player player) {
+        return playerHasAmount(inventory, singleSection, player);
     }
 
-    public double playerHasAmount(ConfigurationSection section, Player player) {
+    public double playerHasAmount(Inventory inventory, ConfigurationSection section, Player player) {
         if (section == null) {
             return 0;
         }
@@ -117,7 +115,8 @@ public abstract class AbstractSingleThing {
                 } else if (pluginName.equals("EcoArmor") && !itemID.contains(";;")) {
                     itemID = itemID + ";;" + section.getString("hook-item-type");
                 }
-                return PriceHook.getItemAmount(player,
+                return PriceHook.getItemAmount(inventory,
+                        player,
                         pluginName,
                         itemID);
             case "vanilla":
@@ -126,7 +125,7 @@ public abstract class AbstractSingleThing {
                     return 0;
                 }
                 itemStack.setAmount(1);
-                return PriceHook.getItemAmount(player, itemStack);
+                return PriceHook.getItemAmount(inventory, player, itemStack);
             case "economy":
                 return PriceHook.getEconomyAmount(player, section.getString("economy-plugin"),
                         section.getString("economy-type", "default"));
@@ -141,16 +140,19 @@ public abstract class AbstractSingleThing {
         return 0;
     }
 
-    public boolean playerHasEnough(Player player,
+    public boolean playerHasEnough(Inventory inventory,
+                                   Player player,
                                    boolean take,
                                    double cost) {
-        return playerHasEnough(singleSection,
+        return playerHasEnough(inventory,
+                singleSection,
                 player,
                 take,
                 cost);
     }
 
-    public boolean playerHasEnough(ConfigurationSection section,
+    public boolean playerHasEnough(Inventory inventory,
+                                   ConfigurationSection section,
                                    Player player,
                                    boolean take,
                                    double cost) {
@@ -170,7 +172,8 @@ public abstract class AbstractSingleThing {
                 } else if (pluginName.equals("EcoArmor") && !itemID.contains(";;")) {
                     itemID = itemID + ";;" + section.getString("hook-item-type");
                 }
-                return PriceHook.getPrice(player,
+                return PriceHook.getPrice(inventory,
+                        player,
                         pluginName,
                         itemID,
                         (int) cost, take);
@@ -180,7 +183,7 @@ public abstract class AbstractSingleThing {
                     return false;
                 }
                 itemStack.setAmount(1);
-                return PriceHook.getPrice(player, itemStack, (int) cost, take);
+                return PriceHook.getPrice(inventory, player, itemStack, (int) cost, take);
             case "economy":
                 return PriceHook.getPrice(player,
                         section.getString("economy-plugin"),

@@ -31,6 +31,9 @@ public class MainCommandTab implements TabCompleter {
                 if (sender.hasPermission("ultimateshop.reload")) {
                     tempVal1.add("reload");
                 }
+                if (sender.hasPermission("ultimateshop.sellall")) {
+                    tempVal1.add("sellall");
+                }
                 break;
             case 2:
                 switch (args[0]) {

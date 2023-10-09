@@ -57,6 +57,9 @@ public class MainCommand implements CommandExecutor {
                 else if (args[0].equals("help")) {
                     helpCommand(sender);
                 }
+                else if (args[0].equals("sellall")) {
+                    sellAllCommand(sender);
+                }
                 else {
                     LanguageManager.languageManager.sendStringText(sender, "error.args");
                 }
@@ -216,6 +219,20 @@ public class MainCommand implements CommandExecutor {
                         }
                         break;
                 }
+            }
+            else {
+                LanguageManager.languageManager.sendStringText((Player) sender, "error.miss-permission");
+            }
+        }
+        else {
+            LanguageManager.languageManager.sendStringText("error.in-game");
+        }
+    }
+
+    private void sellAllCommand(CommandSender sender) {
+        if (sender instanceof Player) {
+            if (sender.hasPermission("ultimateshop.sellall")) {
+                OpenGUI.openSellAllGUI((Player) sender);
             }
             else {
                 LanguageManager.languageManager.sendStringText((Player) sender, "error.miss-permission");

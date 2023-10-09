@@ -4,9 +4,11 @@ import cn.superiormc.ultimateshop.managers.ErrorManager;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import cn.superiormc.ultimateshop.objects.items.AbstractSingleThing;
 import cn.superiormc.ultimateshop.objects.items.AbstractThings;
+import cn.superiormc.ultimateshop.objects.items.ObjectCondition;
 import cn.superiormc.ultimateshop.utils.RandomUtil;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
@@ -84,7 +86,7 @@ public class ObjectProducts extends AbstractThings {
     }
 
     @Override
-    public boolean takeSingleThing(Player player, boolean take, int times, int amount) {
+    public boolean takeSingleThing(Inventory inventory, Player player, boolean take, int times, int amount) {
         double cost;
         switch (mode) {
             case UNKNOWN:
@@ -93,7 +95,7 @@ public class ObjectProducts extends AbstractThings {
             case CLASSIC_ANY:
                 for (ObjectSingleProduct tempVal1 : singleProducts) {
                     cost = getAmount(player, times, amount).get(tempVal1);
-                    if (tempVal1.playerHasEnough(player, take, cost)) {
+                    if (tempVal1.playerHasEnough(inventory, player, take, cost)) {
                         return true;
                     }
                 }
@@ -102,7 +104,7 @@ public class ObjectProducts extends AbstractThings {
             case CLASSIC_ALL:
                 for (ObjectSingleProduct tempVal1 : singleProducts) {
                     cost = getAmount(player, times, amount).get(tempVal1);
-                    if (!tempVal1.playerHasEnough(player, take, cost)) {
+                    if (!tempVal1.playerHasEnough(inventory, player, take, cost)) {
                         return false;
                     }
                 }
@@ -149,7 +151,7 @@ public class ObjectProducts extends AbstractThings {
         return productMaps;
     }
 
-    public int getMaxAbleSellAmount(Player player, int times) {
+    public int getMaxAbleSellAmount(Inventory inventory, Player player, int times) {
         int maxAmount = -1;
         switch (mode) {
             case UNKNOWN:
@@ -160,7 +162,7 @@ public class ObjectProducts extends AbstractThings {
             case CLASSIC_ALL:
                 for (ObjectSingleProduct tempVal1 : singleProducts) {
                     double cost = getAmount(player, times, 1).get(tempVal1);
-                    int tempVal2 = (int) (tempVal1.playerHasAmount(player) / cost);
+                    int tempVal2 = (int) (tempVal1.playerHasAmount(inventory, player) / cost);
                     if (maxAmount == -1 || tempVal2 < maxAmount) {
                         maxAmount = tempVal2;
                     }

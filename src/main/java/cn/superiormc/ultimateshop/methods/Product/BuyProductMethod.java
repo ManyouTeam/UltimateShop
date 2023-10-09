@@ -12,6 +12,9 @@ import cn.superiormc.ultimateshop.objects.ObjectShop;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 
 import java.time.LocalDateTime;
 
@@ -27,6 +30,20 @@ public class BuyProductMethod {
                                                boolean quick,
                                                boolean test,
                                                int multi) {
+        return startBuy(player.getInventory(),
+                shop, product, player, quick, test, multi);
+    }
+
+    public static ProductMethodStatus startBuy(Inventory inventory,
+                                               String shop,
+                                               String product,
+                                               Player player,
+                                               boolean quick,
+                                               boolean test,
+                                               int multi) {
+        boolean shouldSendMessage = inventory instanceof PlayerInventory && !test && (quick ||
+                ConfigManager.configManager.config.
+                        getBoolean("send-messages-after-buy", true));
         ObjectShop tempVal1 = ConfigManager.configManager.getShop(shop);
         if (tempVal1 == null) {
             LanguageManager.languageManager.sendStringText(player,
@@ -42,6 +59,15 @@ public class BuyProductMethod {
                     "product",
                     product);
             return ProductMethodStatus.ERROR;
+        }
+        if (shouldSendMessage) {
+            if (!tempVal2.getBuyCondition(player)) {
+                LanguageManager.languageManager.sendStringText(player,
+                        "buy-condition-not-meet",
+                        "product",
+                        product);
+                return ProductMethodStatus.PERMISSION;
+            }
         }
         if (tempVal2.getBuyPrice().empty) {
             return ProductMethodStatus.ERROR;
@@ -80,9 +106,7 @@ public class BuyProductMethod {
         }
         if (tempVal2.getPlayerBuyLimit(player) != -1 &&
                 playerUseTimes + multi - 1  >= tempVal2.getPlayerBuyLimit(player)) {
-            if (!test && (quick ||
-                    ConfigManager.configManager.config.
-                            getBoolean("send-messages-after-buy", true))) {
+            if (shouldSendMessage) {
                 LanguageManager.languageManager.sendStringText(player,
                         "limit-reached-buy-player",
                         "item",
@@ -119,9 +143,7 @@ public class BuyProductMethod {
         }
         if (tempVal2.getServerBuyLimit(player) != -1 &&
                 serverUseTimes + multi - 1 > tempVal2.getServerBuyLimit(player)) {
-            if (!test && (quick ||
-                    ConfigManager.configManager.config.
-                            getBoolean("send-messages-after-buy", true))) {
+            if (shouldSendMessage) {
                 LanguageManager.languageManager.sendStringText(player,
                         "limit-reached-buy-server",
                         "item",
@@ -137,10 +159,8 @@ public class BuyProductMethod {
             return ProductMethodStatus.SERVER_MAX;
         }
         // price
-        if (!tempVal5.takeThing(player, false, playerUseTimes, multi)) {
-            if (!test && (quick ||
-                    ConfigManager.configManager.config.
-                            getBoolean("send-messages-after-buy", true))) {
+        if (!tempVal5.takeThing(inventory, player, false, playerUseTimes, multi)) {
+            if (shouldSendMessage) {
                 LanguageManager.languageManager.sendStringText(player,
                         "buy-price-not-enough",
                         "item",
@@ -157,7 +177,7 @@ public class BuyProductMethod {
         // 尝试给物品
         tempVal2.getReward().giveThing(player, playerUseTimes, multi);
         // 扣钱
-        tempVal5.takeThing(player, true, playerUseTimes, multi);
+        tempVal5.takeThing(inventory, player, true, playerUseTimes, multi);
         // 执行动作
         tempVal2.getBuyAction().doAction(player, multi);
         // limit+1

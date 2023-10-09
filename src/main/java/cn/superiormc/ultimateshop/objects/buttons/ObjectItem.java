@@ -8,6 +8,7 @@ import cn.superiormc.ultimateshop.methods.Product.SellProductMethod;
 import cn.superiormc.ultimateshop.objects.ObjectShop;
 import cn.superiormc.ultimateshop.objects.buttons.subobjects.ObjectDisplayItem;
 import cn.superiormc.ultimateshop.objects.items.ObjectAction;
+import cn.superiormc.ultimateshop.objects.items.ObjectCondition;
 import cn.superiormc.ultimateshop.objects.items.ObjectLimit;
 import cn.superiormc.ultimateshop.objects.items.ThingMode;
 import cn.superiormc.ultimateshop.objects.items.prices.ObjectPrices;
@@ -18,6 +19,8 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
+
+import java.util.List;
 
 public class ObjectItem extends AbstractButton {
 
@@ -310,5 +313,23 @@ public class ObjectItem extends AbstractButton {
 
     public ItemStack getDisplayItem(Player player) {
         return displayItem.getDisplayItem(player);
+    }
+
+    public boolean getBuyCondition(Player player) {
+        List<String> section = config.getStringList("conditions");
+        if (section.isEmpty()) {
+            section = config.getStringList("buy-conditions");
+        }
+        ObjectCondition tempVal1 = new ObjectCondition(section);
+        return tempVal1.getBoolean(player);
+    }
+
+    public boolean getSellCondition(Player player) {
+        List<String> section = config.getStringList("conditions");
+        if (section.isEmpty()) {
+            section = config.getStringList("sell-conditions");
+        }
+        ObjectCondition tempVal1 = new ObjectCondition(section);
+        return tempVal1.getBoolean(player);
     }
 }

@@ -63,6 +63,8 @@ help:
 
 success-buy: "&#98FB98[UltimateShop] &fSuccessfully purchased {item}, cost {price}!"
 success-sell: "&#98FB98[UltimateShop] &fSuccessfully sell {item}, gain {price}!"
+buy-condition-not-meet: "&#98FB98[UltimateShop] &cYou didn't meet the condition that buy this product!"
+sell-condition-not-meet: "&#98FB98[UltimateShop] &cYou didn't meet the condition that sell this product!"
 limit-reached-buy-player: "&#98FB98[UltimateShop] &cYou can no longer purchase item {item}, you purchase this item {times} times today, and its daily stock is {limit} for you, next refresh time: {refresh}."
 limit-reached-sell-player: "&#98FB98[UltimateShop] &cYou can no longer sell item {item}, you purchase this item {times} times today, and its daily stock is {limit} for you, next refresh time: {refresh}."
 limit-reached-buy-server: "&#98FB98[UltimateShop] &cYou can no longer purchase item {item}, all players buy this item {times} times today, and its daily stock is {limit}, next refresh time: {refresh}."

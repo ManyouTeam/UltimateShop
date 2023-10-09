@@ -3,6 +3,7 @@ package cn.superiormc.ultimateshop.managers;
 import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.objects.menus.ObjectMenu;
 import cn.superiormc.ultimateshop.objects.ObjectShop;
+import cn.superiormc.ultimateshop.utils.CommonUtil;
 import cn.superiormc.ultimateshop.utils.TextUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
@@ -19,7 +20,7 @@ public class ConfigManager {
 
     public FileConfiguration config;
 
-    private Map<String, ObjectShop> shopConfigs = new HashMap<>();
+    public Map<String, ObjectShop> shopConfigs = new HashMap<>();
 
     public ConfigManager() {
         configManager = this;

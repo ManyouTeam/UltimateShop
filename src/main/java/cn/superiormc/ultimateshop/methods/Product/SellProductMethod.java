@@ -12,6 +12,9 @@ import cn.superiormc.ultimateshop.objects.caches.ObjectUseTimesCache;
 import cn.superiormc.ultimateshop.objects.items.products.ObjectProducts;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 
 import java.time.LocalDateTime;
 
@@ -37,6 +40,21 @@ public class SellProductMethod {
                                                 boolean test,
                                                 boolean ableMaxSell,
                                                 int multi) {
+        return startSell(player.getInventory(),
+                shop, product, player, quick, test, ableMaxSell, multi);
+    }
+
+    public static ProductMethodStatus startSell(Inventory inventory,
+                                                String shop,
+                                                String product,
+                                                Player player,
+                                                boolean quick,
+                                                boolean test,
+                                                boolean ableMaxSell,
+                                                int multi) {
+        boolean shouldSendMessage = inventory instanceof PlayerInventory && !test && (quick ||
+                ConfigManager.configManager.config.
+                        getBoolean("send-messages-after-buy", true));
         ObjectShop tempVal1 = ConfigManager.configManager.getShop(shop);
         if (tempVal1 == null) {
             LanguageManager.languageManager.sendStringText(player,
@@ -52,6 +70,15 @@ public class SellProductMethod {
                     "product",
                     product);
             return ProductMethodStatus.ERROR;
+        }
+        if (shouldSendMessage) {
+            if (!tempVal2.getSellCondition(player)) {
+                LanguageManager.languageManager.sendStringText(player,
+                        "sell-condition-not-meet",
+                        "product",
+                        product);
+                return ProductMethodStatus.PERMISSION;
+            }
         }
         if (tempVal2.getSellPrice().empty) {
             return ProductMethodStatus.ERROR;
@@ -96,8 +123,8 @@ public class SellProductMethod {
         // 更改multi
         ObjectProducts tempVal5 = tempVal2.getReward();
         if (ableMaxSell) {
-            if (tempVal5.getMaxAbleSellAmount(player, playerUseTimes) > 0) {
-                multi = tempVal5.getMaxAbleSellAmount(player, playerUseTimes);
+            if (tempVal5.getMaxAbleSellAmount(inventory, player, playerUseTimes) > 0) {
+                multi = tempVal5.getMaxAbleSellAmount(inventory, player, playerUseTimes);
             }
             if (tempVal2.getPlayerSellLimit(player) != -1 &&
                     multi > tempVal2.getPlayerSellLimit(player) - playerUseTimes &&
@@ -108,9 +135,7 @@ public class SellProductMethod {
 
         if (tempVal2.getPlayerSellLimit(player) != -1 &&
                 playerUseTimes + multi - 1 >= tempVal2.getPlayerSellLimit(player)) {
-            if (!test && (quick ||
-                    ConfigManager.configManager.config.
-                            getBoolean("send-messages-after-buy", true))) {
+            if (shouldSendMessage) {
                 LanguageManager.languageManager.sendStringText(player,
                         "limit-reached-sell-player",
                         "item",
@@ -148,9 +173,7 @@ public class SellProductMethod {
         }
         if (tempVal2.getServerSellLimit(player) != -1 &&
                 serverUseTimes + multi - 1 >= tempVal2.getServerSellLimit(player)) {
-            if (!test && (quick ||
-                    ConfigManager.configManager.config.
-                            getBoolean("send-messages-after-buy", true))) {
+            if (shouldSendMessage) {
                 LanguageManager.languageManager.sendStringText(player,
                         "limit-reached-sell-server",
                         "item",
@@ -166,10 +189,8 @@ public class SellProductMethod {
             return ProductMethodStatus.SERVER_MAX;
         }
         // price
-        if (!tempVal5.takeThing(player, false, playerUseTimes, multi)) {
-            if (!test && (quick ||
-                    ConfigManager.configManager.config.
-                            getBoolean("send-messages-after-buy", true))) {
+        if (!tempVal5.takeThing(inventory, player, false, playerUseTimes, multi)) {
+            if (shouldSendMessage) {
                 LanguageManager.languageManager.sendStringText(player,
                         "sell-products-not-enough",
                         "item",
@@ -185,7 +206,7 @@ public class SellProductMethod {
         tempVal2.getSellPrice().giveThing(player, playerUseTimes, multi);
         // 扣物品
         // 扣的是奖励中的东西
-        tempVal5.takeThing(player, true, playerUseTimes, multi);
+        tempVal5.takeThing(inventory, player, true, playerUseTimes, multi);
         // 执行动作
         tempVal2.getSellAction().doAction(player, multi);
         // limit+1

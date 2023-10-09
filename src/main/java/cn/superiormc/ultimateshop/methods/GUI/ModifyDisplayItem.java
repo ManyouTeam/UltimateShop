@@ -188,6 +188,9 @@ public class ModifyDisplayItem {
             case ERROR:
                 s = ConfigManager.configManager.getString("placeholder.click.error", "",  "amount", String.valueOf(multi));
                 break;
+            case PERMISSION:
+                s = ConfigManager.configManager.getString("placeholder.click.buy-condition-not-meet", "",  "amount", String.valueOf(multi));
+                break;
             case PLAYER_MAX:
                 s = ConfigManager.configManager.getString("placeholder.click.buy-max-limit-player", "", "amount", String.valueOf(multi));
                 break;
@@ -216,6 +219,9 @@ public class ModifyDisplayItem {
         switch(SellProductMethod.startSell(item.getShop(), item.getProduct(), player, false, true, multi)) {
             case ERROR :
                 s = ConfigManager.configManager.getString("placeholder.click.error", "",  "amount", String.valueOf(multi));
+                break;
+            case PERMISSION:
+                s = ConfigManager.configManager.getString("placeholder.click.sell-condition-not-meet", "",  "amount", String.valueOf(multi));
                 break;
             case PLAYER_MAX:
                 s = ConfigManager.configManager.getString("placeholder.click.sell-max-limit-player", "",  "amount", String.valueOf(multi));

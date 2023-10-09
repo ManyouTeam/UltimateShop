@@ -12,7 +12,9 @@ import me.qKing12.RoyaleEconomy.API.MultiCurrencyHandler;
 import net.milkbowl.vault.economy.Economy;
 import org.black_ixx.playerpoints.PlayerPoints;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import ru.soknight.peconomy.api.PEconomyAPI;
 import ru.soknight.peconomy.database.model.WalletModel;
@@ -22,6 +24,8 @@ import su.nightexpress.gamepoints.api.GamePointsAPI;
 import su.nightexpress.gamepoints.data.PointUser;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.Objects;
 
 public class PriceHook {
 
@@ -309,12 +313,12 @@ public class PriceHook {
         return 0;
     }
 
-    public static boolean getPrice(Player player, String pluginName, String item, int value, boolean take) {
+    public static boolean getPrice(Inventory inventory, Player player, String pluginName, String item, int value, boolean take) {
         if (value < 0) {
             return false;
         }
-        int amount = getItemAmount(player, pluginName, item);
-        ItemStack[] storage = player.getInventory().getStorageContents();
+        ItemStack[] storage = inventory.getStorageContents();
+        int amount = getItemAmount(inventory, player, pluginName, item);
         if (amount >= value) {
             if (take) {
                 for (int i = 0 ; i < storage.length ; i++) {
@@ -334,7 +338,12 @@ public class PriceHook {
                         }
                     }
                 }
-                player.getInventory().setStorageContents(storage);
+                if (inventory instanceof PlayerInventory) {
+                    player.getInventory().setStorageContents(storage);
+                }
+                else {
+                    inventory.setStorageContents(storage);
+                }
             }
             return true;
         }
@@ -343,12 +352,12 @@ public class PriceHook {
         }
     }
 
-    public static int getItemAmount(Player player, String pluginName, String item) {
-        ItemStack[] storage = player.getInventory().getStorageContents();
+    public static int getItemAmount(Inventory inventory, Player player, String pluginName, String item) {
         if (item == null) {
             return 0;
         }
         int amount = 0;
+        ItemStack[] storage = inventory.getStorageContents();
         for (ItemStack tempVal1 : storage) {
             if (tempVal1 == null || tempVal1.getType().isAir()) {
                 continue;
@@ -366,12 +375,12 @@ public class PriceHook {
         return amount;
     }
 
-    public static boolean getPrice(Player player, ItemStack item, int value, boolean take) {
+    public static boolean getPrice(Inventory inventory, Player player, ItemStack item, int value, boolean take) {
         if (value < 0) {
             return false;
         }
-        int amount = getItemAmount(player, item);
-        ItemStack[] storage = player.getInventory().getStorageContents();
+        ItemStack[] storage = inventory.getStorageContents();
+        int amount = getItemAmount(inventory, player, item);
         if (amount >= value) {
             if (take) {
                 for (int i = 0 ; i < storage.length ; i++) {
@@ -390,7 +399,12 @@ public class PriceHook {
                         }
                     }
                 }
-                player.getInventory().setStorageContents(storage);
+                if (inventory instanceof PlayerInventory) {
+                    player.getInventory().setStorageContents(storage);
+                }
+                else {
+                    inventory.setStorageContents(storage);
+                }
             }
             return true;
         }
@@ -399,11 +413,11 @@ public class PriceHook {
         }
     }
 
-    public static int getItemAmount(Player player, ItemStack item) {
-        ItemStack[] storage = player.getInventory().getStorageContents();
+    public static int getItemAmount(Inventory inventory, Player player, ItemStack item) {
         if (item == null) {
             return 0;
         }
+        ItemStack[] storage = inventory.getStorageContents();
         int amount = 0;
         for (ItemStack tempVal1 : storage) {
             if (tempVal1 == null || tempVal1.getType().isAir()) {

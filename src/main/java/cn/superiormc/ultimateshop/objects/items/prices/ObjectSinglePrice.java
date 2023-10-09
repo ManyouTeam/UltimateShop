@@ -11,6 +11,8 @@ import cn.superiormc.ultimateshop.utils.TextUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
 
@@ -19,6 +21,7 @@ public class ObjectSinglePrice extends AbstractSingleThing {
     private Map<Integer, Double> applyCostMap = new HashMap<>();
 
     private boolean priceMode;
+
 
     private ObjectItem item;
 
@@ -83,20 +86,22 @@ public class ObjectSinglePrice extends AbstractSingleThing {
     }
 
     @Override
-    public boolean playerHasEnough(Player player,
+    public boolean playerHasEnough(Inventory inventory,
+                                   Player player,
                                    boolean take,
                                    double cost) {
         if (singleSection == null) {
             return false;
         }
         if (priceMode) {
-            return super.playerHasEnough(ConfigManager.configManager.config.
+            return super.playerHasEnough(inventory,
+                    ConfigManager.configManager.config.
                             getConfigurationSection("prices." + singleSection.getString("custom-type")),
                     player,
                     take,
                     cost);
         }
-        return super.playerHasEnough(singleSection, player, take, cost);
+        return super.playerHasEnough(inventory, singleSection, player, take, cost);
     }
 
     @Override
@@ -154,6 +159,9 @@ public class ObjectSinglePrice extends AbstractSingleThing {
     }
 
     public String getDisplayName(double amount) {
+        if (empty) {
+            return ConfigManager.configManager.getString("placeholder.price.empty");
+        }
         if (singleSection == null) {
             return ConfigManager.configManager.getString("placeholder.price.unknown");
         }
