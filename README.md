@@ -18,11 +18,11 @@ Spigot Link: https://www.spigotmc.org/resources/ultimateshop-menus-limits-apply-
 - Dynamic Price based on players buy and sell (DONE)
 
 ## Develop
-# Get shop object
+### Get shop object
 ```java
 ConfigManager.configmanager.shopConfigs.get(shopID);
 ```
-# Get product object
+### Get product object
 ```java
 ObjectShop shop = ConfigManager.configmanager.shopConfigs.get(shopID);
 if (shop == null) {
@@ -32,7 +32,7 @@ ObjectItem item = shop.getProduct("TEST");
 List<ObjectItem> items = shop.getProductList();
 ```
 
-# Stat buy a product
+### Stat buy a product
 ```java
 BuyProductMethod.startBuy(Inventory inventory, String shop, String product, Player player, boolean quick, boolean test, int multi);
 ```
@@ -43,7 +43,7 @@ BuyProductMethod.startBuy(Inventory inventory, String shop, String product, Play
 - test is whether take money or items from player, set it to true if you just want to know whether player has enough money or items.
 - multi is buy amount in one time, default set to 1.
 
-# Start sell a product
+### Start sell a product
 ```java
 SellProductMethod.startSell(Inventory inventory, String shop, String product, Player player, boolean quick, boolean test, boolean ableMaxSell, int multi);
 ```
