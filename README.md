@@ -16,3 +16,29 @@ Spigot Link: https://www.spigotmc.org/resources/ultimateshop-menus-limits-apply-
   For example, we have 15+ item or economy plugin hook, I need create 15 different type product create GUI for them.
   I have no time and effect for it.
 - Dynamic Price based on players buy and sell (DONE)
+
+## Develop
+# Get shop object
+```java
+ConfigManager.configmanager.shopConfigs.get(shopID);
+```
+# Get product object
+```java
+ObjectShop shop = ConfigManager.configmanager.shopConfigs.get(shopID);
+if (shop == null) {
+  return;
+}
+ObjectItem item = shop.getProduct("TEST");
+List<ObjectItem> items = shop.getProductList();
+```
+
+# Stat buy a product
+```java
+BuyProductMethod.startBuy(Inventory inventory,
+                                               String shop,
+                                               String product,
+                                               Player player,
+                                               boolean quick,
+                                               boolean test,
+                                               int multi);
+```
