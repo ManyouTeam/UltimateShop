@@ -1,5 +1,6 @@
 package cn.superiormc.ultimateshop.commands;
 
+import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.LanguageManager;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
@@ -33,6 +34,9 @@ public class MainCommandTab implements TabCompleter {
                 }
                 if (sender.hasPermission("ultimateshop.sellall")) {
                     tempVal1.add("sellall");
+                }
+                if (sender.hasPermission("ultimateshop.givesellstick") && !UltimateShop.freeVersion) {
+                    tempVal1.add("givesellstick");
                 }
                 break;
             case 2:

@@ -1,11 +1,15 @@
 package cn.superiormc.ultimateshop.utils;
 
 import cc.carm.lib.easyplugin.ColorParser;
+import cn.superiormc.ultimateshop.methods.GetDiscountValue;
 import me.clip.placeholderapi.PlaceholderAPI;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class TextUtil {
 
@@ -23,6 +27,13 @@ public class TextUtil {
     }
 
     public static String withPAPI(String text, Player player) {
+        Pattern pattern = Pattern.compile("\\{discount_(.*?)\\}");
+        Matcher matcher = pattern.matcher(text);
+        while (matcher.find()) {
+            String discount = matcher.group(1);
+            text = text.replace("{discount_" + discount + "}",
+                    String.valueOf(GetDiscountValue.getDiscountLimits(discount, player)));
+        }
         if (CommonUtil.checkPluginLoad("PlaceholderAPI")) {
             return PlaceholderAPI.setPlaceholders(player, text);
         }

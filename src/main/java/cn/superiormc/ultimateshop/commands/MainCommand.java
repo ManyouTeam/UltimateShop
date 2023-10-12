@@ -1,5 +1,6 @@
 package cn.superiormc.ultimateshop.commands;
 
+import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.LanguageManager;
 import cn.superiormc.ultimateshop.methods.Create.CreateProduct;
@@ -7,8 +8,11 @@ import cn.superiormc.ultimateshop.methods.GUI.OpenGUI;
 import cn.superiormc.ultimateshop.methods.Product.BuyProductMethod;
 import cn.superiormc.ultimateshop.methods.Product.SellProductMethod;
 import cn.superiormc.ultimateshop.methods.ReloadPlugin;
+import cn.superiormc.ultimateshop.methods.SellStickItem;
 import cn.superiormc.ultimateshop.objects.menus.ObjectMenu;
 import cn.superiormc.ultimateshop.objects.ObjectShop;
+import com.cryptomorin.xseries.XItemStack;
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -51,17 +55,19 @@ public class MainCommand implements CommandExecutor {
         }
         switch (args.length) {
             case 1:
-                if (args[0].equals("reload")) {
-                    reloadCommand(sender);
-                }
-                else if (args[0].equals("help")) {
-                    helpCommand(sender);
-                }
-                else if (args[0].equals("sellall")) {
-                    sellAllCommand(sender);
-                }
-                else {
-                    LanguageManager.languageManager.sendStringText(sender, "error.args");
+                switch (args[0]) {
+                    case "reload":
+                        reloadCommand(sender);
+                        break;
+                    case "help":
+                        helpCommand(sender);
+                        break;
+                    case "sellall":
+                        sellAllCommand(sender);
+                        break;
+                    default:
+                        LanguageManager.languageManager.sendStringText(sender, "error.args");
+                        break;
                 }
                 return true;
             case 2:
@@ -76,6 +82,9 @@ public class MainCommand implements CommandExecutor {
                 }
                 else if (args[0].equals("quicksell")) {
                     quickSellCommand(sender, args);
+                }
+                else if (args[0].equals("givesellstick") && !UltimateShop.freeVersion) {
+                    giveSellStickCommand(sender, args);
                 }
                 return true;
         }
@@ -240,6 +249,48 @@ public class MainCommand implements CommandExecutor {
         }
         else {
             LanguageManager.languageManager.sendStringText("error.in-game");
+        }
+    }
+
+    private void giveSellStickCommand(CommandSender sender, String[] args) {
+        if (sender.hasPermission("ultimateshop.givesellstick")) {
+            Player player = Bukkit.getPlayer(args[2]);
+            if (player == null) {
+                LanguageManager.languageManager.sendStringText
+                        (sender,
+                                "error.player-not-found",
+                                "player",
+                                args[2]);
+                return;
+            }
+            switch (args.length) {
+                // /shop givestick 物品名称 玩家名称 数量
+                case 3:
+                    XItemStack.giveOrDrop(player, SellStickItem.getExtraSlotItem(args[1], 1));
+                    LanguageManager.languageManager.sendStringText(sender,
+                            "give-sell-stick",
+                            "player",
+                            player.getName(),
+                            "item",
+                            args[1],
+                            "amount",
+                            "1");
+                    break;
+                case 4:
+                    XItemStack.giveOrDrop(player, SellStickItem.getExtraSlotItem(args[1], Integer.parseInt(args[3])));
+                    LanguageManager.languageManager.sendStringText(sender,
+                            "give-sell-stick",
+                            "player",
+                            player.getName(),
+                            "item",
+                            args[1],
+                            "amount",
+                            args[3]);
+                    break;
+            }
+        }
+        else {
+            LanguageManager.languageManager.sendStringText(sender, "error.miss-permission");
         }
     }
 }

@@ -67,7 +67,7 @@ public class PlaceholderAPIExpansion extends PlaceholderExpansion {
             return LanguageManager.languageManager.getStringText("placeholderapi.unknown-product");
         }
         ObjectUseTimesCache playerTimesCache = CacheManager.cacheManager.playerCacheMap.get(player).getUseTimesCache().get(item);
-        ObjectUseTimesCache serverTimesCache  = CacheManager.cacheManager.serverCache.getUseTimesCache().get(item);
+        ObjectUseTimesCache serverTimesCache = CacheManager.cacheManager.serverCache.getUseTimesCache().get(item);
         switch (args[2]) {
             case "{buy-limit-player}":
                 return String.valueOf(item.getPlayerBuyLimit(player));
@@ -86,13 +86,13 @@ public class PlaceholderAPIExpansion extends PlaceholderExpansion {
             case "{sell-refresh-player}":
                 return String.valueOf(playerTimesCache == null ? "" : playerTimesCache.getSellRefreshTimeDisplayName());
             case "{buy-times-server}":
-                return String.valueOf(serverTimesCache  == null ? "0" : serverTimesCache .getBuyUseTimes());
+                return String.valueOf(serverTimesCache  == null ? "0" : serverTimesCache.getBuyUseTimes());
             case "{sell-times-server}":
-                return String.valueOf(serverTimesCache  == null ? "0" : serverTimesCache .getSellUseTimes());
+                return String.valueOf(serverTimesCache  == null ? "0" : serverTimesCache.getSellUseTimes());
             case "{buy-refresh-server}":
-                return String.valueOf(serverTimesCache  == null ? "" : serverTimesCache .getBuyRefreshTimeDisplayName());
+                return String.valueOf(serverTimesCache  == null ? "" : serverTimesCache.getBuyRefreshTimeDisplayName());
             case "{sell-refresh-server}":
-                return String.valueOf(serverTimesCache  == null ? "" : serverTimesCache .getSellRefreshTimeDisplayName());
+                return String.valueOf(serverTimesCache  == null ? "" : serverTimesCache.getSellRefreshTimeDisplayName());
         }
         return null;
     }

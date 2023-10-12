@@ -15,6 +15,8 @@ public final class UltimateShop extends JavaPlugin {
 
     public static JavaPlugin instance;
 
+    public static boolean freeVersion = false;
+
     @Override
     public void onEnable() {
         instance = this;

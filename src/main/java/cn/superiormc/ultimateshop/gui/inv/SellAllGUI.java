@@ -5,6 +5,7 @@ import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.methods.Product.SellProductMethod;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import cn.superiormc.ultimateshop.utils.TextUtil;
+import com.cryptomorin.xseries.XItemStack;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
@@ -45,6 +46,9 @@ public class SellAllGUI extends InvGUI {
 
     @Override
     public boolean closeEventHandle() {
+        if (owner.getPlayer() == null) {
+            return true;
+        }
         for (String shop : ConfigManager.configManager.shopConfigs.keySet()) {
             for (ObjectItem products : ConfigManager.configManager.getShop(shop).getProductList()) {
                 SellProductMethod.startSell(inv,
@@ -58,7 +62,7 @@ public class SellAllGUI extends InvGUI {
             }
         }
         ItemStack[] storage = Arrays.stream(inv.getStorageContents()).filter(Objects::nonNull).toArray(ItemStack[]::new);
-        owner.getInventory().addItem(storage);
+        XItemStack.giveOrDrop(owner.getPlayer(), storage);
         return true;
     }
 

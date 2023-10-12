@@ -68,6 +68,23 @@ display-item:
     - '@b&#FFFACDDrop (Q key) to sell all!'
 
 placeholder:
+  # Premium version only.
+  discount:
+    buy:
+      mode: MIN
+      default: 1
+      vip: 0.5
+      mvp: 0.3
+    sell:
+      mode: MAX
+      default: 1
+      vip: 1.5
+      mvp: 2
+  discount-conditions:
+    vip:
+      - 'permission: group.vip'
+    mvp:
+      - 'permission: group.mvp'
   data:
     can-used-in-amount: true
   refresh:
@@ -113,3 +130,18 @@ prices:
     hook-item: AXE;;TEST_AXE
     amount: 1
     placeholder: '1 Mythic Axe'
+
+# Premium version only
+sell-stick-items:
+  A:
+    material: STICK
+    name: '&dSell stick &7(5 times)'
+    lore:
+      - '&fClick a chest to use this item!'
+    usage-times: 5
+  B:
+    material: STICK
+    name: '&dAdvanced Sell stick &7(50 times)'
+    lore:
+      - '&fClick a chest to use this item!'
+    usage-times: 50
