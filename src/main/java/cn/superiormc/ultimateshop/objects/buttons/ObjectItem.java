@@ -332,4 +332,8 @@ public class ObjectItem extends AbstractButton {
         ObjectCondition tempVal1 = new ObjectCondition(section);
         return tempVal1.getBoolean(player);
     }
+
+    public boolean getBuyMore() {
+        return shop.getShopConfig().getBoolean("settings.buy-more", true);
+    }
 }

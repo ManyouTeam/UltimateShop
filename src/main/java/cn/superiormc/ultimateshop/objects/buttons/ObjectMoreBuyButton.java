@@ -27,6 +27,6 @@ public class ObjectMoreBuyButton extends AbstractButton {
         }
         ItemStack addLoreDisplayItem = ItemUtil.buildItemStack(player, tempVal1, (int) Double.parseDouble
                 (TextUtil.withPAPI(tempVal1.getString("amount", "1"), player)));
-        return ModifyDisplayItem.modifyItem(player, multi, addLoreDisplayItem, item, true);
+        return ModifyDisplayItem.modifyItem(player, multi, addLoreDisplayItem, item, item.getBuyMore());
     }
 }

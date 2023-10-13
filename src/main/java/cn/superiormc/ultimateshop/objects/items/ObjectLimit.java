@@ -28,6 +28,10 @@ public class ObjectLimit {
         if (limitSection == null) {
             return -1;
         }
+        if (conditionsSection == null) {
+            return (int) MathUtil.doCalculate(
+                    TextUtil.withPAPI(limitSection.getString("default", "0"), player));
+        }
         List<Integer> result = new ArrayList<>();
         for (String conditionName : limitSection.getKeys(false)) {
             if (!conditionName.equals("default") && checkLimitsCondition(conditionName, player)) {
@@ -59,7 +63,7 @@ public class ObjectLimit {
         return tempVal2;
     }
 
-    private boolean checkLimitsCondition(String conditionName, Player player){
+    private boolean checkLimitsCondition(String conditionName, Player player) {
         List<String> condition;
         if (!conditionsSection.getStringList(conditionName).isEmpty()) {
             condition = conditionsSection.getStringList(conditionName);
