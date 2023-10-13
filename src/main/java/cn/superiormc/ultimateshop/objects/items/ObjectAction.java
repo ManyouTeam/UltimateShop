@@ -34,6 +34,7 @@ public class ObjectAction {
 
     public ObjectAction(List<String> action) {
         for (String s : action) {
+            // Means this action will be active only once.
             if (s.endsWith("-o")) {
                 s = s.substring(0, s.length() - 3);
                 onceAction.add(s);
@@ -72,6 +73,35 @@ public class ObjectAction {
             singleAction = replacePlaceholder(singleAction, player, multi);
             if (singleAction.startsWith("none")) {
                 return;
+            } else if (singleAction.startsWith("sound: ")) {
+                // By: iKiwo
+                String soundData = singleAction.substring(7); // "sound: LEVEL_UP;volume;pitch"
+                String[] soundParts = soundData.split(";;");
+                if (soundParts.length >= 1) {
+                    String soundName = soundParts[0];
+                    float volume = 1.0f;
+                    float pitch = 1.0f;
+                    if (soundParts.length >= 2) {
+                        try {
+                            volume = Float.parseFloat(soundParts[1]);
+                        } catch (NumberFormatException e) {
+                            ErrorManager.errorManager
+                                    .sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Invalid volume value in sound action.");
+                        }
+                    }
+                    if (soundParts.length >= 3) {
+                        try {
+                            pitch = Float.parseFloat(soundParts[2]);
+                        } catch (NumberFormatException e) {
+                            ErrorManager.errorManager
+                                    .sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Invalid pitch value in sound action.");
+                        }
+                    }
+                    Location location = player.getLocation();
+                    player.playSound(location, soundName, volume, pitch);
+                } else {
+                    ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Invalid sound action format.");
+                }
             } else if (singleAction.startsWith("message: ")) {
                 player.sendMessage(TextUtil.parse(singleAction.substring(9), player));
             } else if (singleAction.startsWith("open_menu: ")) {
@@ -98,7 +128,7 @@ public class ObjectAction {
                     player.addPotionEffect(effect);
                 }
                 catch (ArrayIndexOutOfBoundsException e) {
-                    ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Your effect action in totem configs can not being correctly load.");
+                    ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Your effect action in shop configs can not being correctly load.");
                 }
             } else if (singleAction.startsWith("teleport: ")) {
                 try {
@@ -121,11 +151,11 @@ public class ObjectAction {
                         player.teleport(loc);
                     }
                     else {
-                        ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Your teleport action in totem configs can not being correctly load.");
+                        ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Your teleport action in shop configs can not being correctly load.");
                     }
                 }
                 catch (ArrayIndexOutOfBoundsException e) {
-                    ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Your teleport action in totem configs can not being correctly load.");
+                    ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Your teleport action in shop configs can not being correctly load.");
                 }
             } else if (CommonUtil.checkPluginLoad("MythicMobs") && singleAction.startsWith("mythicmobs_spawn: ")) {
                  try {
@@ -162,11 +192,11 @@ public class ObjectAction {
                                  Integer.parseInt(singleAction.substring(18).split(";;")[1]));
                      }
                      else {
-                         ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Your mythicmobs_spawn action in totem configs can not being correctly load.");
+                         ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Your mythicmobs_spawn action in shop configs can not being correctly load.");
                      }
                  }
                  catch (ArrayIndexOutOfBoundsException e) {
-                     ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Your mythicmobs_spawn action in totem configs can not being correctly load.");
+                     ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Your mythicmobs_spawn action in shop configs can not being correctly load.");
                  }
             } else if (singleAction.startsWith("console_command: ")) {
                 CommonUtil.dispatchCommand(singleAction.substring(17));
