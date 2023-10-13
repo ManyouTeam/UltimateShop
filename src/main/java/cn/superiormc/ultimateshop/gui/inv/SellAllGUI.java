@@ -2,6 +2,7 @@ package cn.superiormc.ultimateshop.gui.inv;
 
 import cn.superiormc.ultimateshop.gui.InvGUI;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
+import cn.superiormc.ultimateshop.managers.LanguageManager;
 import cn.superiormc.ultimateshop.methods.Product.SellProductMethod;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import cn.superiormc.ultimateshop.utils.TextUtil;
@@ -49,6 +50,7 @@ public class SellAllGUI extends InvGUI {
         if (owner.getPlayer() == null) {
             return true;
         }
+        LanguageManager.languageManager.sendStringText(owner.getPlayer(), "start-selling");
         for (String shop : ConfigManager.configManager.shopConfigs.keySet()) {
             for (ObjectItem products : ConfigManager.configManager.getShop(shop).getProductList()) {
                 SellProductMethod.startSell(inv,

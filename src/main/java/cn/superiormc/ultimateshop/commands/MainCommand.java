@@ -266,7 +266,7 @@ public class MainCommand implements CommandExecutor {
             switch (args.length) {
                 // /shop givestick 物品名称 玩家名称 数量
                 case 3:
-                    XItemStack.giveOrDrop(player, SellStickItem.getExtraSlotItem(args[1], 1));
+                    XItemStack.giveOrDrop(player, SellStickItem.getExtraSlotItem(player, args[1], 1));
                     LanguageManager.languageManager.sendStringText(sender,
                             "give-sell-stick",
                             "player",
@@ -277,7 +277,7 @@ public class MainCommand implements CommandExecutor {
                             "1");
                     break;
                 case 4:
-                    XItemStack.giveOrDrop(player, SellStickItem.getExtraSlotItem(args[1], Integer.parseInt(args[3])));
+                    XItemStack.giveOrDrop(player, SellStickItem.getExtraSlotItem(player, args[1], Integer.parseInt(args[3])));
                     LanguageManager.languageManager.sendStringText(sender,
                             "give-sell-stick",
                             "player",

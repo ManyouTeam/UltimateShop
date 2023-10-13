@@ -138,10 +138,14 @@ sell-stick-items:
     name: '&dSell stick &7(5 times)'
     lore:
       - '&fClick a chest to use this item!'
+      - ''
+      - '&cLeft usages: {times}'
     usage-times: 5
   B:
     material: STICK
     name: '&dAdvanced Sell stick &7(50 times)'
     lore:
       - '&fClick a chest to use this item!'
+      - ''
+      - '&cLeft usages: {times}'
     usage-times: 50
