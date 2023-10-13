@@ -42,7 +42,7 @@ public class ObjectDisplayItem{
     public ItemStack getDisplayItem(Player player, int multi) {
         ItemStack addLoreDisplayItem = getDisplayItem(player);
         if (section.getBoolean("modify-lore", true)) {
-            return ModifyDisplayItem.modifyItem(player, multi, addLoreDisplayItem, item, false);
+            return ModifyDisplayItem.modifyItem(player, multi, addLoreDisplayItem, item, !item.getBuyMore());
         }
         return addLoreDisplayItem;
     }
