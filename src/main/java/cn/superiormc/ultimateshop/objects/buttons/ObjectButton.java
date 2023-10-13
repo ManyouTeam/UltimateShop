@@ -44,7 +44,7 @@ public class ObjectButton extends AbstractButton {
         if (tempVal1 == null) {
             return new ItemStack(Material.BEDROCK);
         }
-        return ItemUtil.buildItemStack(tempVal1, (int) Double.parseDouble
+        return ItemUtil.buildItemStack(player, tempVal1, (int) Double.parseDouble
                 (TextUtil.withPAPI(tempVal1.getString("amount", "1"), player)));
     }
 }

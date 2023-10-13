@@ -32,7 +32,7 @@ public class ObjectDisplayItem{
         }
         else {
             // 显示物品
-            ItemStack displayItem = ItemUtil.buildItemStack(section, (int) Double.parseDouble(
+            ItemStack displayItem = ItemUtil.buildItemStack(player, section, (int) Double.parseDouble(
                     (TextUtil.withPAPI(section.getString("amount", "1"), player))));
             addLoreDisplayItem = displayItem.clone();
         }

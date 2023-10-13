@@ -212,7 +212,7 @@ public abstract class AbstractSingleThing {
             section = singleSection;
         }
         ItemStack itemStack;
-        itemStack = ItemUtil.buildItemStack(section, (int) cost);
+        itemStack = ItemUtil.buildItemStack(player, section, (int) cost);
         if (itemStack == null) {
             return null;
         }

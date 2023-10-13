@@ -5,6 +5,7 @@ import com.cryptomorin.xseries.XItemStack;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
@@ -12,7 +13,7 @@ import java.util.List;
 
 public class ItemUtil {
     
-    public static ItemStack buildItemStack(ConfigurationSection section, int amount) {
+    public static ItemStack buildItemStack(Player player, ConfigurationSection section, int amount) {
         ItemStack resultItem;
         if (section.contains("hook-item")) {
             String pluginName = section.getString("hook-plugin");
@@ -43,14 +44,14 @@ public class ItemUtil {
                 return new ItemStack(Material.STONE);
             }
             if (section.getString("name") != null) {
-                section.set("name", TextUtil.parse(section.getString("name")));
+                section.set("name", TextUtil.parse(TextUtil.withPAPI(section.getString("name"), player)));
             }
             List<String> loreList = new ArrayList<>();
             for (String s : section.getStringList("lore")) {
-                loreList.add(TextUtil.parse(s));
+                loreList.add(TextUtil.parse(TextUtil.withPAPI(s, player), player));
             }
             if (loreList.isEmpty() && section.getString("lore") != null) {
-                loreList.add(section.getString("lore"));
+                loreList.add(TextUtil.parse(TextUtil.withPAPI(section.getString("lore"), player)));
             }
             if (!loreList.isEmpty()) {
                 section.set("lore", loreList);

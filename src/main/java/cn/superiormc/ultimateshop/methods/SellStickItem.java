@@ -32,7 +32,7 @@ public class SellStickItem {
                     itemID);
             return null;
         }
-        ItemStack resultItem = ItemUtil.buildItemStack(section, 1);
+        ItemStack resultItem = ItemUtil.buildItemStack(player, section, 1);
         resultItem.setAmount(amount);
         return getExtraSlotItem(resultItem, itemID, section.getInt("usage-times", amount));
     }
