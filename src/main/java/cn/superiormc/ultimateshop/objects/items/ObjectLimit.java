@@ -30,18 +30,18 @@ public class ObjectLimit {
         }
         if (conditionsSection == null) {
             return (int) MathUtil.doCalculate(
-                    TextUtil.withPAPI(limitSection.getString("default", "0"), player));
+                    TextUtil.withPAPI(limitSection.getString("default", "-1"), player));
         }
         List<Integer> result = new ArrayList<>();
         for (String conditionName : limitSection.getKeys(false)) {
             if (!conditionName.equals("default") && checkLimitsCondition(conditionName, player)) {
                 result.add((int) MathUtil.doCalculate(
-                        TextUtil.withPAPI(limitSection.getString(conditionName, "0"), player)));
+                        TextUtil.withPAPI(limitSection.getString(conditionName, "-1"), player)));
             }
             else {
-                if (limitSection.getDouble("default", -1) != -1) {
+                if (!limitSection.getString("default", "-1").equals("-1")) {
                     result.add((int) MathUtil.doCalculate(
-                            TextUtil.withPAPI(limitSection.getString("default", "0"), player)));
+                            TextUtil.withPAPI(limitSection.getString("default"), player)));
                 }
             }
         }
@@ -58,7 +58,7 @@ public class ObjectLimit {
         int tempVal2 = -1;
         if (limitSection.getDouble("global", -1) != -1) {
             tempVal2 = ((int) MathUtil.doCalculate(
-                    TextUtil.withPAPI(limitSection.getString("global", "0"), player)));
+                    TextUtil.withPAPI(limitSection.getString("global"), player)));
         }
         return tempVal2;
     }
