@@ -56,7 +56,7 @@ public class ObjectLimit {
             return -1;
         }
         int tempVal2 = -1;
-        if (limitSection.getDouble("global", -1) != -1) {
+        if (!limitSection.getString("global", "-1").equals("-1")) {
             tempVal2 = ((int) MathUtil.doCalculate(
                     TextUtil.withPAPI(limitSection.getString("global"), player)));
         }
