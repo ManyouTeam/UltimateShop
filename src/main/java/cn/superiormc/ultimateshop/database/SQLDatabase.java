@@ -64,15 +64,17 @@ public class SQLDatabase {
         if (player == null) {
             queryAction = sqlManager.createQuery()
                     .inTable("ultimateshop_useTimes")
-                    .selectColumns("playerUUID", "shop", "product", "buyUseTimes",  "sellUseTimes", "lastPurchaseTime")
-                    .addCondition("uuid = 'Global-Server'")
+                    .selectColumns("playerUUID",
+                            "shop", "product", "buyUseTimes",  "sellUseTimes", "lastBuyTime")
+                    .addCondition("playerUUID = 'Global-Server'")
                     .build();
         }
         else {
             queryAction = sqlManager.createQuery()
                     .inTable("ultimateshop_useTimes")
-                    .selectColumns("playerUUID", "shop", "product", "buyUseTimes", "sellUseTimes", "lastPurchaseTime")
-                    .addCondition("uuid = '" + player.getUniqueId().toString() + "'")
+                    .selectColumns("playerUUID",
+                            "shop", "product", "buyUseTimes", "sellUseTimes", "lastBuyTime")
+                    .addCondition("playerUUID = '" + player.getUniqueId().toString() + "'")
                     .build();
         }
         queryAction.executeAsync((result) -> {
