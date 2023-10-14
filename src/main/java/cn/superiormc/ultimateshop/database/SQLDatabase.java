@@ -65,7 +65,7 @@ public class SQLDatabase {
             queryAction = sqlManager.createQuery()
                     .inTable("ultimateshop_useTimes")
                     .selectColumns("playerUUID",
-                            "shop", "product", "buyUseTimes",  "sellUseTimes", "lastBuyTime")
+                            "shop", "product", "buyUseTimes",  "sellUseTimes", "lastBuyTime", "lastSellTime")
                     .addCondition("playerUUID = 'Global-Server'")
                     .build();
         }
@@ -73,7 +73,7 @@ public class SQLDatabase {
             queryAction = sqlManager.createQuery()
                     .inTable("ultimateshop_useTimes")
                     .selectColumns("playerUUID",
-                            "shop", "product", "buyUseTimes", "sellUseTimes", "lastBuyTime")
+                            "shop", "product", "buyUseTimes", "sellUseTimes", "lastBuyTime", "lastSellTime")
                     .addCondition("playerUUID = '" + player.getUniqueId().toString() + "'")
                     .build();
         }

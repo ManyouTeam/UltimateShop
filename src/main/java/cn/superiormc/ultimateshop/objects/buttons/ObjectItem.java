@@ -143,12 +143,14 @@ public class ObjectItem extends AbstractButton {
             }
             else {
                 buyLimit = new ObjectLimit(config.getConfigurationSection("buy-limits"),
-                        config.getConfigurationSection("buy-limits-conditions"));
+                        config.getConfigurationSection("buy-limits-conditions"),
+                        this);
                 return;
             }
         }
         buyLimit = new ObjectLimit(config.getConfigurationSection("limits"),
-                config.getConfigurationSection("limits-conditions"));
+                config.getConfigurationSection("limits-conditions"),
+                this);
     }
 
     private void initSellLimit() {
@@ -159,7 +161,8 @@ public class ObjectItem extends AbstractButton {
             }
             else {
                 sellLimit = new ObjectLimit(config.getConfigurationSection("sell-limits"),
-                        config.getConfigurationSection("sell-limits-conditions"));
+                        config.getConfigurationSection("sell-limits-conditions"),
+                        this);
                 return;
             }
         }

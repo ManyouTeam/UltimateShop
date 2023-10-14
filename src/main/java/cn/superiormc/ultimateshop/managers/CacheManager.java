@@ -20,6 +20,7 @@ public class CacheManager {
     public CacheManager() {
         cacheManager = this;
         if (ConfigManager.configManager.getBoolean("database.enabled")) {
+            SQLDatabase.closeSQL();
             SQLDatabase.initSQL();
         }
         serverCache = new ServerCache();

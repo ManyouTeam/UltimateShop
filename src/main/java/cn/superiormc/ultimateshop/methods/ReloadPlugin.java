@@ -3,6 +3,7 @@ package cn.superiormc.ultimateshop.methods;
 import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.cache.PlayerCache;
 import cn.superiormc.ultimateshop.cache.ServerCache;
+import cn.superiormc.ultimateshop.database.SQLDatabase;
 import cn.superiormc.ultimateshop.managers.CacheManager;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.LanguageManager;

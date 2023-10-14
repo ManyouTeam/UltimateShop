@@ -28,11 +28,7 @@ use-times:
   default-reset-time: '00:00:00'
 
 math:
-  # Enabled base math calculate?
-  # Will support + - * / only.
   enabled: true
-  # Crunch will support more math calculate, but will cost more server resource.
-  use-crunch: false
 
 send-messages-after-buy: true
 
