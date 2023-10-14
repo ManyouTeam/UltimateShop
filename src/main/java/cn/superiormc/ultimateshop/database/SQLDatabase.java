@@ -48,17 +48,15 @@ public class SQLDatabase {
     }
 
     public static void createTable() {
-        if (ConfigManager.configManager.getBoolean("use-times.enabled")) {
-            sqlManager.createTable("ultimateshop_useTimes")
-                    .addColumn("playerUUID", "VARCHAR(36)")
-                    .addColumn("shop", "VARCHAR(48)")
-                    .addColumn("product", "VARCHAR(1)")
-                    .addColumn("buyUseTimes", "INT")
-                    .addColumn("sellUseTimes", "INT")
-                    .addColumn("lastBuyTime", "DATETIME")
-                    .addColumn("lastSellTime", "DATETIME")
-                    .build().execute(null);
-        }
+        sqlManager.createTable("ultimateshop_useTimes")
+                .addColumn("playerUUID", "VARCHAR(36)")
+                .addColumn("shop", "VARCHAR(48)")
+                .addColumn("product", "VARCHAR(1)")
+                .addColumn("buyUseTimes", "INT")
+                .addColumn("sellUseTimes", "INT")
+                .addColumn("lastBuyTime", "DATETIME")
+                .addColumn("lastSellTime", "DATETIME")
+                .build().execute(null);
     }
 
     public static void checkData(Player player) {
@@ -66,19 +64,18 @@ public class SQLDatabase {
         if (player == null) {
             queryAction = sqlManager.createQuery()
                     .inTable("ultimateshop_useTimes")
-                    .selectColumns("playerUUID", "shop", "product", "buyUseTimes", "sellUseTimes", "lastPurchaseTime")
-                    .addCondition("uuid = '" + player.getUniqueId().toString() + "'")
+                    .selectColumns("playerUUID", "shop", "product", "buyUseTimes",  "sellUseTimes", "lastPurchaseTime")
+                    .addCondition("uuid = 'Global-Server'")
                     .build();
         }
         else {
             queryAction = sqlManager.createQuery()
                     .inTable("ultimateshop_useTimes")
-                    .selectColumns("playerUUID", "shop", "product", "buyUseTimes",  "sellUseTimes", "lastPurchaseTime")
-                    .addCondition("uuid = 'Global-Server'")
+                    .selectColumns("playerUUID", "shop", "product", "buyUseTimes", "sellUseTimes", "lastPurchaseTime")
+                    .addCondition("uuid = '" + player.getUniqueId().toString() + "'")
                     .build();
         }
-        queryAction.executeAsync((result) ->
-        {
+        queryAction.executeAsync((result) -> {
             ServerCache cache = null;
             if (player == null) {
                 cache = ServerCache.serverCache;
@@ -91,6 +88,11 @@ public class SQLDatabase {
             else {
                 if (CacheManager.cacheManager.playerCacheMap.containsKey(player)) {
                     cache = CacheManager.cacheManager.playerCacheMap.get(player);
+                }
+                if (cache == null) {
+                    ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cCan not found player cache object," +
+                            " there maybe some issues...");
+                    return;
                 }
             }
             while (result.getResultSet().next()) {
@@ -107,6 +109,7 @@ public class SQLDatabase {
 
     public static void updateData(Player player) {
         ServerCache cache = null;
+        String playerUUID = null;
         if (player == null) {
             cache = ServerCache.serverCache;
             if (cache == null) {
@@ -114,9 +117,16 @@ public class SQLDatabase {
                         " there maybe some issues...");
                 return;
             }
+            playerUUID = "Global-Server";
         }
         else {
             cache = CacheManager.cacheManager.playerCacheMap.get(player);
+            if (cache == null) {
+                ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cCan not found player cache object," +
+                        " there maybe some issues...");
+                return;
+            }
+            playerUUID = player.getUniqueId().toString();
         }
         Map<ObjectItem, ObjectUseTimesCache> tempVal1 = cache.getUseTimesCache();
         for (ObjectItem tempVal2 : tempVal1.keySet()) {
@@ -128,7 +138,7 @@ public class SQLDatabase {
                             "sellUseTimes",
                             "lastBuyTime",
                             "lastSellTime")
-                    .setParams(player.getUniqueId().toString(),
+                    .setParams(playerUUID,
                             tempVal2.getShop(),
                             tempVal2.getProduct(),
                             tempVal1.get(tempVal2).getBuyUseTimes(),
