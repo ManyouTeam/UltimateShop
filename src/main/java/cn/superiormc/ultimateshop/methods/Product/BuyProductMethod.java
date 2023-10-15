@@ -13,7 +13,6 @@ import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
 import java.time.LocalDateTime;
@@ -166,8 +165,10 @@ public class BuyProductMethod {
                         "item",
                         tempVal2.getDisplayName(player),
                         "price",
-                        tempVal5.getDisplayNameWithOneLine(player,
-                                playerUseTimes, multi));
+                        tempVal5.getDisplayNameInChat(inventory,
+                                player,
+                                playerUseTimes,
+                                multi));
             }
             return ProductMethodStatus.NOT_ENOUGH;
         }
@@ -207,7 +208,8 @@ public class BuyProductMethod {
                     "item",
                     tempVal2.getDisplayName(player),
                     "price",
-                    tempVal5.getDisplayNameWithOneLine(player,
+                    tempVal5.getDisplayNameInChat(inventory,
+                            player,
                             playerUseTimes,
                             multi),
                     "amount",

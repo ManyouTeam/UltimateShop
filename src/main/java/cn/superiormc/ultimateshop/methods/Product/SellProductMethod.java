@@ -13,7 +13,6 @@ import cn.superiormc.ultimateshop.objects.items.products.ObjectProducts;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
 import java.time.LocalDateTime;
@@ -236,7 +235,8 @@ public class SellProductMethod {
                     "item",
                     tempVal2.getDisplayName(player),
                     "price",
-                    tempVal2.getSellPrice().getDisplayNameWithOneLine(player,
+                    tempVal2.getSellPrice().getDisplayNameInChat(inventory,
+                            player,
                             playerUseTimes,
                             multi),
                     "amount",

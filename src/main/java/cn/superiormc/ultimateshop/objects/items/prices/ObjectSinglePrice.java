@@ -58,24 +58,14 @@ public class ObjectSinglePrice extends AbstractSingleThing {
             return;
         }
         List<Integer> integers = singleSection.getIntegerList("apply");
-        if (integers.size() == 0) {
-            integers = new ArrayList<>();
-            integers.add(Integer.valueOf(singleSection.getName()));
-        }
         apply = integers;
-        List<Double> cost = new ArrayList<>();
-        List<Double> doubles = singleSection.getDoubleList("cost");
-        if (doubles.size() == 0) {
-            doubles = new ArrayList<>();
-            doubles.add(singleSection.getDouble("amount", 1));
-        }
-        cost = doubles;
+        List<Double> cost = singleSection.getDoubleList("cost");
         while (apply.size() > cost.size()) {
             if (cost.size() > 0) {
                 cost.add(cost.get(cost.size() - 1));
             }
             else {
-                cost.add(0.0);
+                cost.add(-1.0);
             }
         }
         Map<Integer, Double> applyCostMap = new HashMap<>();
@@ -152,8 +142,10 @@ public class ObjectSinglePrice extends AbstractSingleThing {
                 cost = minAmount;
             }
         }
-        if (applyCostMap != null && applyCostMap.containsKey(times)) {
-            cost = applyCostMap.get(times);
+        if (!applyCostMap.isEmpty() && applyCostMap.containsKey(times)) {
+            if (applyCostMap.get(times) != -1) {
+                cost = applyCostMap.get(times);
+            }
         }
         return cost;
     }

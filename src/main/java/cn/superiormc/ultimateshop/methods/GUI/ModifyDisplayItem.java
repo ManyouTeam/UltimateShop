@@ -136,11 +136,11 @@ public class ModifyDisplayItem {
         if (!addLore.isEmpty()) {
             tempVal2.setLore(CommonUtil.modifyList(addLore,
                     "buy-price",
-                    item.getBuyPrice().getDisplayNameWithOneLine(player,
+                    item.getBuyPrice().getDisplayNameInGUI(player,
                             buyTimes,
                             multi),
                     "sell-price",
-                    item.getSellPrice().getDisplayNameWithOneLine(player,
+                    item.getSellPrice().getDisplayNameInGUI(player,
                             sellTimes,
                             multi),
                     "buy-limit-player",

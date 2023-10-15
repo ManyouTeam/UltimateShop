@@ -5,7 +5,6 @@ import cn.superiormc.ultimateshop.managers.ErrorManager;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import cn.superiormc.ultimateshop.objects.items.AbstractSingleThing;
 import cn.superiormc.ultimateshop.objects.items.AbstractThings;
-import cn.superiormc.ultimateshop.objects.items.ObjectCondition;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -94,7 +93,7 @@ public class ObjectPrices extends AbstractThings {
             if (tempVal1.getApplyCostMap().containsKey(times)) {
                 applyThings.add(tempVal1);
             }
-            else if (times >= tempVal1.getStartApply()) {
+            else if (tempVal1.getApplyCostMap().isEmpty() && times >= tempVal1.getStartApply()) {
                 applyThings.add(tempVal1);
             }
         }
@@ -200,7 +199,7 @@ public class ObjectPrices extends AbstractThings {
     }
 
     public List<String> getDisplayName(Player player, int times, int multi) {
-        Map<AbstractSingleThing, Double> priceMaps= getAmount(player, times, multi);
+        Map<AbstractSingleThing, Double> priceMaps = getAmount(player, times, multi);
         List<String> tempVal1 = new ArrayList<>();
         for (AbstractSingleThing tempVal2 : priceMaps.keySet()) {
             tempVal1.add(tempVal2.getDisplayName(priceMaps.get(tempVal2)));
@@ -208,7 +207,7 @@ public class ObjectPrices extends AbstractThings {
         return tempVal1;
     }
 
-    public String getDisplayNameWithOneLine(Player player, int times, int multi) {
+    public String getDisplayNameInGUI(Player player, int times, int multi) {
         List<String> tempVal1 = getDisplayName(player, times, multi);
         StringBuilder tempVal2 = new StringBuilder();
         switch (mode) {
@@ -233,6 +232,22 @@ public class ObjectPrices extends AbstractThings {
                 break;
         }
         return tempVal2.toString();
+    }
+
+    public String getDisplayNameInChat(Inventory inventory, Player player, int times, int multi) {
+        Map<AbstractSingleThing, Double> priceMaps = getAmount(player, times, multi);
+        List<String> tempVal1 = new ArrayList<>();
+        switch (mode) {
+            case ANY: case CLASSIC_ANY:
+                tempVal1.add(getAnyTargetPrice(inventory, player, times, multi).getDisplayName(multi));
+                break;
+            case ALL: case CLASSIC_ALL:
+                for (AbstractSingleThing tempVal2 : priceMaps.keySet()) {
+                    tempVal1.add(tempVal2.getDisplayName(priceMaps.get(tempVal2)));
+                }
+                break;
+        }
+        return getDisplayNameInGUI(player, times, multi);
     }
 
 }
