@@ -179,6 +179,15 @@ public class ObjectSinglePrice extends AbstractSingleThing {
         }
     }
 
+    public int getEndApply() {
+        if (singleSection == null) {
+            return Integer.MAX_VALUE;
+        }
+        else {
+            return singleSection.getInt("end-apply", Integer.MAX_VALUE);
+        }
+    }
+
     public Map<Integer, Double> getApplyCostMap() {
         return applyCostMap;
     }

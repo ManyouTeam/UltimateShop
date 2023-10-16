@@ -93,7 +93,9 @@ public class ObjectPrices extends AbstractThings {
             if (tempVal1.getApplyCostMap().containsKey(times)) {
                 applyThings.add(tempVal1);
             }
-            else if (tempVal1.getApplyCostMap().isEmpty() && times >= tempVal1.getStartApply()) {
+            else if (tempVal1.getApplyCostMap().isEmpty() &&
+                    times >= tempVal1.getStartApply() &&
+                    times <= tempVal1.getEndApply()) {
                 applyThings.add(tempVal1);
             }
         }
