@@ -28,14 +28,6 @@ public class CommonGUI extends InvGUI {
     }
 
     @Override
-    public void openGUI() {
-        if (inv == null) {
-            return;
-        }
-        owner.getPlayer().openInventory(inv);
-    }
-
-    @Override
     protected void constructGUI() {
         commonMenu = ObjectMenu.commonMenus.get(fileName);
         if (commonMenu == null) {

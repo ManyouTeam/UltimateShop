@@ -24,14 +24,6 @@ public class SellAllGUI extends InvGUI {
     }
 
     @Override
-    public void openGUI() {
-        if (inv == null) {
-            return;
-        }
-        owner.getPlayer().openInventory(inv);
-    }
-
-    @Override
     protected void constructGUI() {
         if (Objects.isNull(inv)) {
             inv = Bukkit.createInventory(owner, ConfigManager.configManager.getInt

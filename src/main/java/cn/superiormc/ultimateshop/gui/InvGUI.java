@@ -31,14 +31,17 @@ public abstract class InvGUI extends AbstractGUI {
 
     @Override
     public void openGUI() {
-        owner.openInventory(inv);
+        if (inv == null) {
+            return;
+        }
+        owner.getPlayer().openInventory(inv);
     }
 
     public Inventory getInv() {
         return inv;
     }
 
-    protected void setExtraSlots (ItemStack itemStack) {
+    protected void setExtraSlots(ItemStack itemStack) {
         if (Objects.nonNull(inv)) {
             for (int i = 0 ; i < inv.getSize(); i++) {
                 if (Objects.isNull(inv.getItem(i)) || Objects.requireNonNull(inv.getItem(i)).getType().isAir()) {

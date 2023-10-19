@@ -9,6 +9,12 @@ menu:
   sell-all:
     size: 54
     title: '&fSell All &7- Esc to confirm sell!'
+  # Premium version only
+  bedrock:
+    title: 'What do you need do?'
+    buy-or-sell: 'Buy or Sell?'
+    amount: 'Amount'
+    amount-tip: 'Type all to sell all!'
   select-more:
     menu: buy-more
     max-amount: 64

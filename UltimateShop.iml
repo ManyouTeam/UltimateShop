@@ -25,11 +25,18 @@
     <orderEntry type="library" scope="PROVIDED" name="Maven: com.google.code.gson:gson:2.8.0" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: net.md-5:bungeecord-chat:1.16-R0.4" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: org.yaml:snakeyaml:1.28" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.geysermc.floodgate:api:2.2.2-SNAPSHOT" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.geysermc.geyser:common:2.1.2-SNAPSHOT" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.geysermc.cumulus:cumulus:1.1.2" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.checkerframework:checker-qual:3.21.1" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.geysermc.event:events:1.1-SNAPSHOT" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.lanternpowered:lmbda:2.0.0" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.ow2.asm:asm:7.1" level="project" />
+    <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:2.0.7" level="project" />
     <orderEntry type="library" name="Maven: com.github.cryptomorin:XSeries:9.5.0" level="project" />
     <orderEntry type="library" name="Maven: cc.carm.lib:easysql-hikaricp:0.4.3" level="project" />
     <orderEntry type="library" name="Maven: cc.carm.lib:easysql-impl:0.4.3" level="project" />
     <orderEntry type="library" name="Maven: cc.carm.lib:easysql-api:0.4.3" level="project" />
-    <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:1.7.36" level="project" />
     <orderEntry type="library" name="Maven: com.github.stleary:JSON-java:20230618" level="project" />
     <orderEntry type="module-library">
       <library name="Maven: net.Indyuce:MMOItems:6.9.4">

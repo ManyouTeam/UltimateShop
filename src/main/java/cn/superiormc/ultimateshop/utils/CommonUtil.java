@@ -113,6 +113,16 @@ public class CommonUtil {
         }
     }
 
+    public static boolean getClass(String className) {
+        try {
+            Class.forName(className);
+            return true;
+        }
+        catch (ClassNotFoundException e) {
+            return false;
+        }
+    }
+
     public static String getItemName(ItemStack displayItem) {
         return displayItem.getItemMeta().hasDisplayName() ?
         displayItem.getItemMeta().getDisplayName() :

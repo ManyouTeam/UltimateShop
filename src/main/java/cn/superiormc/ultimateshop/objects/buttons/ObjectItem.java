@@ -1,5 +1,8 @@
 package cn.superiormc.ultimateshop.objects.buttons;
 
+import cn.superiormc.ultimateshop.UltimateShop;
+import cn.superiormc.ultimateshop.gui.form.FormBuyOrSellGUI;
+import cn.superiormc.ultimateshop.gui.form.FormCommonGUI;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.ErrorManager;
 import cn.superiormc.ultimateshop.methods.GUI.OpenGUI;
@@ -19,6 +22,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
+import org.geysermc.floodgate.api.FloodgateApi;
 
 import java.util.List;
 
@@ -267,6 +271,14 @@ public class ObjectItem extends AbstractButton {
 
     @Override
     public void clickEvent(ClickType type, Player player) {
+        if (CommonUtil.getClass("org.geysermc.floodgate.api.FloodgateApi")) {
+            if (!UltimateShop.freeVersion &&
+                    FloodgateApi.getInstance().isFloodgatePlayer(player.getUniqueId())) {
+                FormBuyOrSellGUI buyOrSellGUI = new FormBuyOrSellGUI(player, this);
+                buyOrSellGUI.openGUI();
+                return;
+            }
+        }
         boolean b = ConfigManager.configManager.getBoolean("placeholder.click.enabled");
         switch (ConfigManager.configManager.getClickAction(type)){
             case "buy" :

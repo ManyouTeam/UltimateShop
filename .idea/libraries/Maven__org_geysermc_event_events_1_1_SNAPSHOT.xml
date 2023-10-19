@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: org.geysermc.event:events:1.1-SNAPSHOT">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/geysermc/event/events/1.1-SNAPSHOT/events-1.1-20230815.153219-4.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/org/geysermc/event/events/1.1-SNAPSHOT/events-1.1-20230815.153219-4-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/geysermc/event/events/1.1-SNAPSHOT/events-1.1-20230815.153219-4-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

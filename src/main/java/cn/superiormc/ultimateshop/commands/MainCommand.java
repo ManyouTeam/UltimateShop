@@ -76,6 +76,18 @@ public class MainCommand implements CommandExecutor {
                 }
                 return true;
             case 3:
+                if (args[0].equals("menu")) {
+                    menuCommand(sender, args);
+                } else if (args[0].equals("quickbuy")) {
+                quickBuyCommand(sender, args);
+                }
+                else if (args[0].equals("quicksell")) {
+                    quickSellCommand(sender, args);
+                }
+                else if (args[0].equals("givesellstick") && !UltimateShop.freeVersion) {
+                    giveSellStickCommand(sender, args);
+                }
+                return true;
             case 4:
                 if (args[0].equals("quickbuy")) {
                     quickBuyCommand(sender, args);
@@ -146,6 +158,11 @@ public class MainCommand implements CommandExecutor {
             if (sender.hasPermission("ultimateshop.menu") &&
                     (sender.hasPermission("ultimateshop.menu.*") ||
                             sender.hasPermission("ultimateshop.menu." + args[1]))) {
+                if (args.length < 2) {
+                    LanguageManager.languageManager.sendStringText(sender,
+                            "error.args");
+                    return;
+                }
                 ObjectShop tempVal1 = ConfigManager.configManager.getShop(args[1]);
                 if (tempVal1 == null) {
                     if (args[1].equals(ConfigManager.configManager.getString("menu.select-more.menu"))) {
@@ -162,7 +179,30 @@ public class MainCommand implements CommandExecutor {
             }
         }
         else {
-            LanguageManager.languageManager.sendStringText("error.in-game");
+            if (args.length < 3) {
+                LanguageManager.languageManager.sendStringText(sender,
+                        "error.args");
+                return;
+            }
+            Player player = Bukkit.getPlayer(args[2]);
+            if (player == null) {
+                LanguageManager.languageManager.sendStringText
+                        (sender,
+                                "error.player-not-found",
+                                "player",
+                                args[2]);
+                return;
+            }
+            ObjectShop tempVal1 = ConfigManager.configManager.getShop(args[1]);
+            if (tempVal1 == null) {
+                if (args[1].equals(ConfigManager.configManager.getString("menu.select-more.menu"))) {
+                    return;
+                }
+                OpenGUI.openCommonGUI(player, args[1]);
+            }
+            else {
+                OpenGUI.openShopGUI(player, tempVal1);
+            }
         }
     }
 
@@ -190,6 +230,10 @@ public class MainCommand implements CommandExecutor {
                         else {
                             LanguageManager.languageManager.sendStringText((Player) sender, "error.miss-permission");
                         }
+                        break;
+                    default:
+                        LanguageManager.languageManager.sendStringText(sender,
+                                "error.args");
                         break;
                 }
             }
@@ -227,6 +271,10 @@ public class MainCommand implements CommandExecutor {
                             LanguageManager.languageManager.sendStringText((Player) sender, "error.miss-permission");
                         }
                         break;
+                    default:
+                        LanguageManager.languageManager.sendStringText(sender,
+                                "error.args");
+                        break;
                 }
             }
             else {
@@ -254,6 +302,11 @@ public class MainCommand implements CommandExecutor {
 
     private void giveSellStickCommand(CommandSender sender, String[] args) {
         if (sender.hasPermission("ultimateshop.givesellstick")) {
+            if (args.length < 3) {
+                LanguageManager.languageManager.sendStringText(sender,
+                        "error.args");
+                return;
+            }
             Player player = Bukkit.getPlayer(args[2]);
             if (player == null) {
                 LanguageManager.languageManager.sendStringText
@@ -286,6 +339,10 @@ public class MainCommand implements CommandExecutor {
                             args[1],
                             "amount",
                             args[3]);
+                    break;
+                default:
+                    LanguageManager.languageManager.sendStringText(sender,
+                            "error.args");
                     break;
             }
         }

@@ -34,14 +34,6 @@ public class BuyMoreGUI extends InvGUI {
     }
 
     @Override
-    public void openGUI() {
-        if (inv == null) {
-            return;
-        }
-        owner.getPlayer().openInventory(inv);
-    }
-
-    @Override
     protected void constructGUI() {
         menu = ObjectMoreMenu.moreMenus.get(item);
         if (menu == null) {
@@ -132,13 +124,15 @@ public class BuyMoreGUI extends InvGUI {
                         }
                         break;
                     case "sell-all" :
-                        SellProductMethod.startSell(item.getShop(),
-                                item.getProduct(),
-                                owner.getPlayer(),
-                                !b,
-                                false,
-                                true,
-                                nowingAmount);
+                        if (!item.getSellPrice().empty) {
+                            SellProductMethod.startSell(item.getShop(),
+                                    item.getProduct(),
+                                    owner.getPlayer(),
+                                    !b,
+                                    false,
+                                    true,
+                                    nowingAmount);
+                        }
                         break;
                     default:
                         ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cUnknown click action: "
