@@ -65,21 +65,19 @@ public class ObjectPrices extends AbstractThings {
         List<ObjectSinglePrice> confirmedResult = new ArrayList<>();
         List<ObjectSinglePrice> maybeResult = new ArrayList<>();
         Map<ObjectSinglePrice, PriceType> priceMap = getPrices(player, times, amount);
-        boolean isFirst = true;
         for (ObjectSinglePrice tempVal1 : priceMap.keySet()) {
             double cost = getAmount(player, times, amount).get(tempVal1);
             if (tempVal1.getCondition(player)) {
                 if (tempVal1.playerHasEnough(inventory, player, false, cost)) {
-                    if (isFirst || priceMap.get(tempVal1) == PriceType.NOT_FIRST) {
+                    if (priceMap.get(tempVal1) == PriceType.FIRST) {
                         confirmedResult.add(tempVal1);
                     }
                 }
                 else {
-                    if (isFirst || priceMap.get(tempVal1) == PriceType.NOT_FIRST) {
+                    if (priceMap.get(tempVal1) == PriceType.FIRST) {
                         maybeResult.add(tempVal1);
                     }
                 }
-                isFirst = false;
             }
         }
         if (confirmedResult.isEmpty() && maybeResult.isEmpty()) {
@@ -181,16 +179,14 @@ public class ObjectPrices extends AbstractThings {
             case UNKNOWN:
                 return false;
             case ALL:
-                for (int i = 0 ; i < amount ; i ++) {
-                    Map<AbstractSingleThing, Double> tempVal3 = getAmount(player, times + i, 1);
-                    for (AbstractSingleThing tempVal1 : tempVal3.keySet()) {
-                        if (tempVal1.empty) {
-                            continue;
-                        }
-                        cost = tempVal3.get(tempVal1);
-                        if (!tempVal1.playerHasEnough(inventory, player, take, cost)) {
-                            return false;
-                        }
+                Map<AbstractSingleThing, Double> tempVal6 = getAmount(player, times, amount);
+                for (AbstractSingleThing tempVal1 : tempVal6.keySet()) {
+                    if (tempVal1.empty) {
+                        continue;
+                    }
+                    cost = tempVal6.get(tempVal1);
+                    if (!tempVal1.playerHasEnough(inventory, player, take, cost)) {
+                        return false;
                     }
                 }
                 return true;
@@ -210,8 +206,8 @@ public class ObjectPrices extends AbstractThings {
                 List<ObjectSinglePrice> tempVal4 = getAnyTargetPrice(
                         inventory, player, times, amount);
                 for (ObjectSinglePrice tempVal11 : tempVal4) {
-                    if (Objects.nonNull(getAmount(player, times, 1).get(tempVal11))) {
-                        cost = getAmount(player, times, 1).get(tempVal11);
+                    if (Objects.nonNull(getAmount(player, times, amount).get(tempVal11))) {
+                        cost = getAmount(player, times, amount).get(tempVal11);
                     }
                     if (tempVal11.playerHasEnough(inventory, player, take, cost)) {
                         continue;
