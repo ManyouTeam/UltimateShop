@@ -316,7 +316,7 @@ public class ObjectPrices extends AbstractThings {
         switch (mode) {
             case ANY: case CLASSIC_ANY:
                 for (ObjectSinglePrice tempVal3 : getAnyTargetPrice(inventory, player, times, multi)) {
-                    tempVal1.add(tempVal3.getDisplayName(multi));
+                    tempVal1.add(tempVal3.getDisplayName(priceMaps.get(tempVal3)));
                 }
                 break;
             case ALL: case CLASSIC_ALL:
