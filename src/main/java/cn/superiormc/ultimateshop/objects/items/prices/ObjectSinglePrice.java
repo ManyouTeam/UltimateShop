@@ -192,5 +192,12 @@ public class ObjectSinglePrice extends AbstractSingleThing {
         return applyCostMap;
     }
 
+    @Override
+    public String toString() {
+        if (singleSection == null) {
+            return "Empty Price";
+        }
+        return "Named Price: " + singleSection.getName();
+    }
 
 }

@@ -4,35 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="5408d61d-1b79-4aac-a73e-7cb790e636f7" name="变更" comment="1.4.6">
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_checkerframework_checker_qual_3_21_1.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_geysermc_cumulus_cumulus_1_1_2.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_geysermc_event_events_1_1_SNAPSHOT.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_geysermc_floodgate_api_2_2_2_SNAPSHOT.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_geysermc_geyser_common_2_1_2_SNAPSHOT.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_lanternpowered_lmbda_2_0_0.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_ow2_asm_asm_7_1.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_slf4j_slf4j_api_2_0_7.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/gui/FormGUI.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/gui/form/FormBuyOrSellGUI.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/gui/form/FormCommonGUI.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/gui/form/FormShopGUI.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/gui/form/FormType.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/jarRepositories.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/jarRepositories.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_slf4j_slf4j_api_1_7_36.xml" beforeDir="false" />
+    <list default="true" id="5408d61d-1b79-4aac-a73e-7cb790e636f7" name="变更" comment="1.5.0">
+      <change afterPath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/objects/items/prices/PriceType.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/UltimateShop.iml" beforeDir="false" afterPath="$PROJECT_DIR$/UltimateShop.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/commands/MainCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/commands/MainCommand.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/gui/InvGUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/gui/InvGUI.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/gui/inv/BuyMoreGUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/gui/inv/BuyMoreGUI.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/gui/inv/CommonGUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/gui/inv/CommonGUI.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/gui/inv/SellAllGUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/gui/inv/SellAllGUI.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/methods/GUI/OpenGUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/methods/GUI/OpenGUI.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/objects/buttons/ObjectItem.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/objects/buttons/ObjectItem.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/utils/CommonUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/utils/CommonUtil.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/config.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/config.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/message.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/message.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/methods/GUI/ModifyDisplayItem.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/methods/GUI/ModifyDisplayItem.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/objects/items/prices/ObjectPrices.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/objects/items/prices/ObjectPrices.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/objects/items/prices/ObjectSinglePrice.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/objects/items/prices/ObjectSinglePrice.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -42,8 +19,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Interface" />
         <option value="Class" />
+        <option value="Interface" />
         <option value="Enum" />
       </list>
     </option>
@@ -147,13 +124,6 @@
       <option name="presentableId" value="LOCAL-00018" />
       <option name="project" value="LOCAL" />
       <updated>1694603336852</updated>
-    </task>
-    <task id="LOCAL-00024" summary="1.0.4 release">
-      <created>1693829812536</created>
-      <option name="number" value="00024" />
-      <option name="presentableId" value="LOCAL-00024" />
-      <option name="project" value="LOCAL" />
-      <updated>1693829812536</updated>
     </task>
     <task id="LOCAL-00025" summary="1.0.6 fix">
       <created>1693975575310</created>
@@ -470,7 +440,14 @@
       <option name="project" value="LOCAL" />
       <updated>1697448428584</updated>
     </task>
-    <option name="localTasksCounter" value="70" />
+    <task id="LOCAL-00070" summary="1.5.0">
+      <created>1697689163515</created>
+      <option name="number" value="00070" />
+      <option name="presentableId" value="LOCAL-00070" />
+      <option name="project" value="LOCAL" />
+      <updated>1697689163516</updated>
+    </task>
+    <option name="localTasksCounter" value="71" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -485,7 +462,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="1.0.11" />
     <MESSAGE value="1.0.12" />
     <MESSAGE value="1.0.13" />
     <MESSAGE value="1.1.0" />
@@ -510,6 +486,7 @@
     <MESSAGE value="1.4.4" />
     <MESSAGE value="1.4.5" />
     <MESSAGE value="1.4.6" />
-    <option name="LAST_COMMIT_MESSAGE" value="1.4.6" />
+    <MESSAGE value="1.5.0" />
+    <option name="LAST_COMMIT_MESSAGE" value="1.5.0" />
   </component>
 </project>

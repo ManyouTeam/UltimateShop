@@ -93,7 +93,7 @@ placeholder:
     format: "yyyy-MM-dd HH:mm:ss"
     never: "Never"
   price:
-    split-symbol-any: ' or '
+    split-symbol-any: ', '
     split-symbol-all: ', '
     unknown: "Unknown"
     unknown-price-type: "Unknown Price Type"
