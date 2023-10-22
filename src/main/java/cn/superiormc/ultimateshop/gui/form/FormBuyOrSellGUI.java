@@ -82,6 +82,14 @@ public class FormBuyOrSellGUI extends FormGUI {
         int realAmount = 0;
         try {
             realAmount = Integer.parseInt(amount);
+            if (realAmount < 1) {
+                realAmount = 1;
+            }
+            else if (realAmount > ConfigManager.configManager.getInt
+                    ("menu.select-more.max-amount", 64)) {
+                realAmount = ConfigManager.configManager.getInt
+                        ("menu.select-more.max-amount", 64);
+            }
         }
         catch (Exception e) {
             realAmount = 1;
