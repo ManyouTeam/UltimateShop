@@ -143,7 +143,7 @@ public class ModifyDisplayItem {
                     "sell-price",
                     item.getSellPrice().getDisplayNameInGUI(item.getSellPrice().
                             getDisplayName(player,
-                                    buyTimes,
+                                    sellTimes,
                                     multi)),
                     "buy-limit-player",
                     String.valueOf(item.getPlayerBuyLimit(player)),
