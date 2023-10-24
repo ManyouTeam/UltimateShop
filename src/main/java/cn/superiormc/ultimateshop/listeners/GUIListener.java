@@ -25,11 +25,11 @@ public class GUIListener implements Listener {
     @EventHandler
     public void onClick(InventoryClickEvent e) {
         try {
-            if (!Objects.equals(e.getClickedInventory(), gui.getInv())) {
-                e.setCancelled(true);
-                return;
-            }
             if (e.getWhoClicked().equals(player)) {
+                if (!Objects.equals(e.getClickedInventory(), gui.getInv())) {
+                    e.setCancelled(true);
+                    return;
+                }
                 e.setCancelled(gui.clickEventHandle(e.getClick(), e.getSlot()));
                 if (e.getClick().toString().equals("SWAP_OFFHAND") && e.isCancelled()) {
                     player.getInventory().setItemInOffHand(player.getInventory().getItemInOffHand());
