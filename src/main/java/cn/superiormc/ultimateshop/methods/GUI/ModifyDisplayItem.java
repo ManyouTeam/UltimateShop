@@ -141,7 +141,7 @@ public class ModifyDisplayItem {
                             buyTimes,
                             multi)),
                     "sell-price",
-                    item.getSellPrice().getDisplayNameInGUI(item.getBuyPrice().
+                    item.getSellPrice().getDisplayNameInGUI(item.getSellPrice().
                             getDisplayName(player,
                                     buyTimes,
                                     multi)),
