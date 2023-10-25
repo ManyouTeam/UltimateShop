@@ -62,7 +62,7 @@ public class EconomyHook {
                             currencyName + " in CoinsEngine plugin!");
                     return;
                 }
-                CoinsEngineAPI.removeBalance(player, currency, value);
+                CoinsEngineAPI.addBalance(player, currency, value);
                 return;
             case "UltraEconomy":
                 UltraEconomyAPI ueAPI = UltraEconomy.getAPI();
@@ -70,7 +70,7 @@ public class EconomyHook {
                     ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cCan not hook into UltraEconomy plugin!");
                     return;
                 }
-                if (UltraEconomy.getAPI().getCurrencies().name(currencyName) == null) {
+                if (!UltraEconomy.getAPI().getCurrencies().name(currencyName).isPresent()) {
                     ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cCan not find currency " +
                             currencyName + " in UltraEconomy plugin!");
                     return;

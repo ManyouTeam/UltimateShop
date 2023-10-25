@@ -8,11 +8,9 @@ import cn.superiormc.ultimateshop.objects.items.AbstractSingleThing;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
 import cn.superiormc.ultimateshop.utils.MathUtil;
 import cn.superiormc.ultimateshop.utils.TextUtil;
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
 
@@ -44,12 +42,7 @@ public class ObjectSinglePrice extends AbstractSingleThing {
     }
 
     private void initCustomMode() {
-        if (!singleSection.getString("custom-type", "none").equals("none")) {
-            priceMode = true;
-        }
-        else {
-            priceMode = false;
-        }
+        priceMode = !singleSection.getString("custom-type", "none").equals("none");
     }
 
     private void initApplyCostMap() {

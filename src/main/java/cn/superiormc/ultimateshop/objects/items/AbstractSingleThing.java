@@ -15,7 +15,7 @@ import java.util.List;
 
 public abstract class AbstractSingleThing {
 
-    public String type;
+    public ThingType type;
 
     public ConfigurationSection singleSection;
 
@@ -42,17 +42,17 @@ public abstract class AbstractSingleThing {
 
     private void initType(ConfigurationSection section) {
         if (section == null) {
-            type = "unknown";
+            type = ThingType.UNKNOWN;
         } else if (section.contains("hook-plugin") && section.contains("hook-item")) {
-            type = "hook";
+            type = ThingType.HOOK_ITEM;
         } else if (section.contains("material")) {
-            type = "vanilla";
+            type = ThingType.VANILLA_ITEM;
         } else if (section.contains("economy-plugin")) {
-            type = "economy";
+            type = ThingType.HOOK_ECONOMY;
         } else if (section.contains("economy-type") && !section.contains("economy-plugin")) {
-            type = "exp";
+            type = ThingType.VANILLA_ECONOMY;
         } else {
-            type = "free";
+            type = ThingType.FREE;
         }
     }
 
@@ -62,7 +62,7 @@ public abstract class AbstractSingleThing {
             return;
         }
         switch (type) {
-            case "vanilla":  case "hook":
+            case VANILLA_ITEM:  case HOOK_ITEM:
                 if (getItemThing(singleSection,
                         player,
                         true,
@@ -70,14 +70,14 @@ public abstract class AbstractSingleThing {
                     return;
                 }
                 return;
-            case "economy" :
+            case HOOK_ECONOMY :
                 EconomyHook.giveEconomy(singleSection.getString("economy-plugin"),
                         singleSection.getString("economy-type", "Unknown"),
                         player,
                         cost);
 
                 return;
-            case "exp" :
+            case VANILLA_ECONOMY:
                 EconomyHook.giveEconomy(singleSection.getString("economy-type"),
                         player,
                         (int) cost);
@@ -107,7 +107,7 @@ public abstract class AbstractSingleThing {
             return 0;
         }
         switch (type) {
-            case "hook":
+            case HOOK_ITEM:
                 String pluginName = section.getString("hook-plugin", "");
                 String itemID = section.getString("hook-item", "");
                 if (pluginName.equals("MMOItems") && !itemID.contains(";;")) {
@@ -119,20 +119,20 @@ public abstract class AbstractSingleThing {
                         player,
                         pluginName,
                         itemID);
-            case "vanilla":
+            case VANILLA_ITEM:
                 ItemStack itemStack = getItemThing(section, player, false, 1);
                 if (itemStack == null) {
                     return 0;
                 }
                 itemStack.setAmount(1);
                 return PriceHook.getItemAmount(inventory, player, itemStack);
-            case "economy":
+            case HOOK_ECONOMY:
                 return PriceHook.getEconomyAmount(player, section.getString("economy-plugin"),
                         section.getString("economy-type", "default"));
-            case "exp":
+            case VANILLA_ECONOMY:
                 return PriceHook.getEconomyAmount(player,
                         section.getString("economy-type"));
-            case "unknwon":
+            case UNKNOWN:
                 Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §c" +
                         "There is something wrong in your shop configs!");
                 return 0;
@@ -164,7 +164,7 @@ public abstract class AbstractSingleThing {
             return false;
         }
         switch (type) {
-            case "hook":
+            case HOOK_ITEM:
                 String pluginName = section.getString("hook-plugin", "");
                 String itemID = section.getString("hook-item", "");
                 if (pluginName.equals("MMOItems") && !itemID.contains(";;")) {
@@ -177,23 +177,23 @@ public abstract class AbstractSingleThing {
                         pluginName,
                         itemID,
                         (int) cost, take);
-            case "vanilla":
+            case VANILLA_ITEM:
                 ItemStack itemStack = getItemThing(section, player, false, 1);
                 if (itemStack == null) {
                     return false;
                 }
                 itemStack.setAmount(1);
                 return PriceHook.getPrice(inventory, player, itemStack, (int) cost, take);
-            case "economy":
+            case HOOK_ECONOMY:
                 return PriceHook.getPrice(player,
                         section.getString("economy-plugin"),
                         section.getString("economy-type", "default"),
                         cost, take);
-            case "exp":
+            case VANILLA_ECONOMY:
                 return PriceHook.getPrice(player,
                         section.getString("economy-type"),
                         (int) cost, take);
-            case "unknwon":
+            case UNKNOWN:
                 Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §c" +
                         "There is something wrong in your shop configs!");
                 return false;
