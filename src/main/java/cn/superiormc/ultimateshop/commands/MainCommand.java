@@ -1,14 +1,19 @@
 package cn.superiormc.ultimateshop.commands;
 
 import cn.superiormc.ultimateshop.UltimateShop;
+import cn.superiormc.ultimateshop.cache.PlayerCache;
+import cn.superiormc.ultimateshop.cache.ServerCache;
+import cn.superiormc.ultimateshop.managers.CacheManager;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.LanguageManager;
 import cn.superiormc.ultimateshop.methods.Create.CreateProduct;
 import cn.superiormc.ultimateshop.methods.GUI.OpenGUI;
 import cn.superiormc.ultimateshop.methods.Product.BuyProductMethod;
 import cn.superiormc.ultimateshop.methods.Product.SellProductMethod;
+import cn.superiormc.ultimateshop.methods.ProductMethodStatus;
 import cn.superiormc.ultimateshop.methods.ReloadPlugin;
 import cn.superiormc.ultimateshop.methods.SellStickItem;
+import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import cn.superiormc.ultimateshop.objects.menus.ObjectMenu;
 import cn.superiormc.ultimateshop.objects.ObjectShop;
 import com.cryptomorin.xseries.XItemStack;
@@ -25,34 +30,6 @@ public class MainCommand implements CommandExecutor {
             noCommand(sender);
             return true;
         }
-        else if (args[0].equals("createshop") ||
-                args[0].equals("createproduct")) {
-            if (sender instanceof Player) {
-                if (sender.hasPermission("ultimateshop.admin")) {
-                    String[] newArray = new String[args.length - 1];
-                    System.arraycopy(args, 1, newArray, 0, args.length - 1);
-                    switch (args[0]) {
-                        case "createshop" :
-                            CreateProduct.createShop((Player) sender, newArray);
-                            break;
-                        case "createproduct" :
-                            CreateProduct.createProduct((Player) sender, newArray);
-                            break;
-                        case "setproductbuyprice" :
-                            CreateProduct.setProductPrice((Player) sender, true, newArray);
-                            break;
-                        case "setproductsellprice" :
-                            CreateProduct.setProductPrice((Player) sender, false, newArray);
-                            break;
-                    }
-                } else {
-                    LanguageManager.languageManager.sendStringText(sender, "error.miss-permission");
-                }
-            } else {
-                LanguageManager.languageManager.sendStringText("error.in-game");
-            }
-            return true;
-        }
         switch (args.length) {
             case 1:
                 switch (args[0]) {
@@ -65,6 +42,8 @@ public class MainCommand implements CommandExecutor {
                     case "sellall":
                         sellAllCommand(sender);
                         break;
+                    case "editor":
+                        break;
                     default:
                         LanguageManager.languageManager.sendStringText(sender, "error.args");
                         break;
@@ -73,6 +52,9 @@ public class MainCommand implements CommandExecutor {
             case 2:
                 if (args[0].equals("menu")) {
                     menuCommand(sender, args);
+                }
+                else {
+                    LanguageManager.languageManager.sendStringText(sender, "error.args");
                 }
                 return true;
             case 3:
@@ -86,6 +68,8 @@ public class MainCommand implements CommandExecutor {
                 }
                 else if (args[0].equals("givesellstick") && !UltimateShop.freeVersion) {
                     giveSellStickCommand(sender, args);
+                } else {
+                    LanguageManager.languageManager.sendStringText(sender, "error.args");
                 }
                 return true;
             case 4:
@@ -97,6 +81,24 @@ public class MainCommand implements CommandExecutor {
                 }
                 else if (args[0].equals("givesellstick") && !UltimateShop.freeVersion) {
                     giveSellStickCommand(sender, args);
+                }
+                else if (args[0].equals("setselltimes")) {
+                    setSellTimesCommand(sender, args);
+                }
+                else if (args[0].equals("setbuytimes")) {
+                    setBuyTimesCommand(sender, args);
+                } else {
+                    LanguageManager.languageManager.sendStringText(sender, "error.args");
+                }
+                return true;
+            case 5:
+                if (args[0].equals("setselltimes")) {
+                    setSellTimesCommand(sender, args);
+                }
+                else if (args[0].equals("setbuytimes")) {
+                    setBuyTimesCommand(sender, args);
+                } else {
+                    LanguageManager.languageManager.sendStringText(sender, "error.args");
                 }
                 return true;
         }
@@ -140,7 +142,7 @@ public class MainCommand implements CommandExecutor {
             LanguageManager.languageManager.sendStringText((Player) sender, "help.main");
         }
         else {
-            LanguageManager.languageManager.sendStringText((Player) sender, "help.main-console");
+            LanguageManager.languageManager.sendStringText(sender, "help.main-console");
         }
     }
 
@@ -345,8 +347,166 @@ public class MainCommand implements CommandExecutor {
                             "error.args");
                     break;
             }
+        } else {
+            LanguageManager.languageManager.sendStringText(sender, "error.miss-permission");
         }
-        else {
+    }
+    private void setBuyTimesCommand(CommandSender sender, String[] args) {
+        if (sender.hasPermission("ultimateshop.setbuytimes")) {
+            if (args.length < 4) {
+                LanguageManager.languageManager.sendStringText(sender,
+                        "error.args");
+                return;
+            }
+            ObjectShop tempVal1 = ConfigManager.configManager.getShop(args[1]);
+            if (tempVal1 == null) {
+                LanguageManager.languageManager.sendStringText(sender,
+                        "error.shop-not-found",
+                        "shop",
+                        args[1]);
+                return;
+            }
+            ObjectItem tempVal2 = tempVal1.getProduct(args[2]);
+            if (tempVal2 == null) {
+                LanguageManager.languageManager.sendStringText(sender,
+                        "error.product-not-found",
+                        "product",
+                        args[2]);
+                return;
+            }
+            ServerCache tempVal3 = null;
+            if (args[3].equals("global")) {
+                tempVal3 = ServerCache.serverCache;
+            }
+            else {
+                Player player = Bukkit.getPlayer(args[3]);
+                if (player == null) {
+                    LanguageManager.languageManager.sendStringText
+                            (sender,
+                                    "error.player-not-found",
+                                    "player",
+                                    args[3]);
+                    return;
+                }
+                tempVal3 = CacheManager.cacheManager.playerCacheMap.get(player);
+            }
+            if (tempVal3 == null) {
+                LanguageManager.languageManager.sendStringText
+                        (sender,
+                                "error.player-not-found",
+                                "player",
+                                args[3]);
+                return;
+            }
+            switch (args.length) {
+                case 4:
+                    tempVal3.getUseTimesCache().get(tempVal2).setBuyUseTimes(0);
+                    LanguageManager.languageManager.sendStringText(sender,
+                            "set-times",
+                            "player",
+                            args[3],
+                            "item",
+                            args[2],
+                            "times",
+                            "0");
+                    break;
+                case 5:
+                    tempVal3.getUseTimesCache().get(tempVal2).setBuyUseTimes(Integer.parseInt(args[4]));
+                    LanguageManager.languageManager.sendStringText(sender,
+                            "set-times",
+                            "player",
+                            args[3],
+                            "item",
+                            args[2],
+                            "times",
+                            args[4]);
+                    break;
+                default:
+                    LanguageManager.languageManager.sendStringText(sender,
+                            "error.args");
+                    break;
+            }
+        } else {
+            LanguageManager.languageManager.sendStringText(sender, "error.miss-permission");
+        }
+    }
+    private void setSellTimesCommand(CommandSender sender, String[] args) {
+        // /shop setusetimes 商店名称 物品名称 玩家名称 次数
+        if (sender.hasPermission("ultimateshop.setselltimes")) {
+            if (args.length < 4) {
+                LanguageManager.languageManager.sendStringText(sender,
+                        "error.args");
+                return;
+            }
+            ObjectShop tempVal1 = ConfigManager.configManager.getShop(args[1]);
+            if (tempVal1 == null) {
+                LanguageManager.languageManager.sendStringText(sender,
+                        "error.shop-not-found",
+                        "shop",
+                        args[1]);
+                return;
+            }
+            ObjectItem tempVal2 = tempVal1.getProduct(args[2]);
+            if (tempVal2 == null) {
+                LanguageManager.languageManager.sendStringText(sender,
+                        "error.product-not-found",
+                        "product",
+                        args[2]);
+                return;
+            }
+            ServerCache tempVal3 = null;
+            if (args[3].equals("global")) {
+                tempVal3 = ServerCache.serverCache;
+            }
+            else {
+                Player player = Bukkit.getPlayer(args[3]);
+                if (player == null) {
+                    LanguageManager.languageManager.sendStringText
+                            (sender,
+                                    "error.player-not-found",
+                                    "player",
+                                    args[3]);
+                    return;
+                }
+                tempVal3 = CacheManager.cacheManager.playerCacheMap.get(player);
+            }
+            if (tempVal3 == null) {
+                LanguageManager.languageManager.sendStringText
+                        (sender,
+                                "error.player-not-found",
+                                "player",
+                                args[3]);
+                return;
+            }
+            switch (args.length) {
+                case 4:
+                    tempVal3.getUseTimesCache().get(tempVal2).setSellUseTimes(0);
+                    LanguageManager.languageManager.sendStringText(sender,
+                            "set-times",
+                            "player",
+                            args[3],
+                            "item",
+                            args[2],
+                            "times",
+                            "0");
+                    break;
+                case 5:
+                    tempVal3.getUseTimesCache().get(tempVal2).setSellUseTimes(Integer.parseInt(args[4]));
+                    LanguageManager.languageManager.sendStringText(sender,
+                            "set-times",
+                            "player",
+                            args[3],
+                            "item",
+                            args[2],
+                            "times",
+                            args[4]);
+                    break;
+                default:
+                    LanguageManager.languageManager.sendStringText(sender,
+                            "error.args");
+                    break;
+            }
+        } else {
             LanguageManager.languageManager.sendStringText(sender, "error.miss-permission");
         }
     }

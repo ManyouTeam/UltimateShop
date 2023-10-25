@@ -19,6 +19,8 @@ import org.bukkit.potion.PotionEffectType;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class ObjectAction {
 
@@ -58,18 +60,27 @@ public class ObjectAction {
         this.shop = shop;
     }
 
-    public void doAction(Player player, int multi){
+    public void doAction(Player player, int times, int multi){
         if (everyAction.isEmpty() && onceAction.isEmpty()) {
             return;
         }
-        checkAction(player, onceAction, multi);
+        checkAction(player, onceAction, times, multi);
         for (int i = 0 ; i < multi ; i ++) {
-            checkAction(player, everyAction, multi);
+            checkAction(player, everyAction, times, multi);
         }
     }
 
-    private void checkAction(Player player, List<String> actions, int multi) {
+    private void checkAction(Player player, List<String> actions, int times, int multi) {
         for (String singleAction : actions) {
+            Pattern pattern = Pattern.compile("-\\d+$");
+            Matcher matcher = pattern.matcher(singleAction);
+            if (matcher.find()) {
+                String number = matcher.group().substring(1);
+                int realNumber = Integer.parseInt(number);
+                if (times + 1 != realNumber) {
+                    continue;
+                }
+            }
             singleAction = replacePlaceholder(singleAction, player, multi);
             if (singleAction.startsWith("none")) {
                 return;

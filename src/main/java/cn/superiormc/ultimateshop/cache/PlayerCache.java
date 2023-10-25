@@ -31,4 +31,13 @@ public class PlayerCache extends ServerCache {
             YamlDatabase.updateData(player);
         }
     }
+
+    public void shutPlayerCacheOnDisable() {
+        if (ConfigManager.configManager.getBoolean("database.enabled")) {
+            SQLDatabase.updateDataNoAsync(player);
+        }
+        else {
+            YamlDatabase.updateData(player);
+        }
+    }
 }

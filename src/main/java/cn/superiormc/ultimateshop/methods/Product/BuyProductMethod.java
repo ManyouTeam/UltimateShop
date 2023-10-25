@@ -180,7 +180,7 @@ public class BuyProductMethod {
         // 扣钱
         tempVal5.takeThing(inventory, player, true, playerUseTimes, multi);
         // 执行动作
-        tempVal2.getBuyAction().doAction(player, multi);
+        tempVal2.getBuyAction().doAction(player, playerUseTimes, multi);
         // limit+1
         if (tempVal9 != null) {
             if (ConfigManager.configManager.getBoolean("debug")) {

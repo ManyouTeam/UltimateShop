@@ -151,4 +151,50 @@ public class SQLDatabase {
         }
     }
 
+    public static void updateDataNoAsync(Player player) {
+        ServerCache cache = null;
+        String playerUUID = null;
+        if (player == null) {
+            cache = ServerCache.serverCache;
+            if (cache == null) {
+                ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cCan not found server cache object," +
+                        " there maybe some issues...");
+                return;
+            }
+            playerUUID = "Global-Server";
+        }
+        else {
+            cache = CacheManager.cacheManager.playerCacheMap.get(player);
+            if (cache == null) {
+                ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cCan not found player cache object," +
+                        " there maybe some issues...");
+                return;
+            }
+            playerUUID = player.getUniqueId().toString();
+        }
+        Map<ObjectItem, ObjectUseTimesCache> tempVal1 = cache.getUseTimesCache();
+        for (ObjectItem tempVal2 : tempVal1.keySet()) {
+            try {
+                sqlManager.createReplace("ultimateshop_useTimes")
+                        .setColumnNames("playerUUID",
+                                "shop",
+                                "product",
+                                "buyUseTimes",
+                                "sellUseTimes",
+                                "lastBuyTime",
+                                "lastSellTime")
+                        .setParams(playerUUID,
+                                tempVal2.getShop(),
+                                tempVal2.getProduct(),
+                                tempVal1.get(tempVal2).getBuyUseTimes(),
+                                tempVal1.get(tempVal2).getSellUseTimes(),
+                                tempVal1.get(tempVal2).getLastBuyTime(),
+                                tempVal1.get(tempVal2).getLastSellTime())
+                        .execute();
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
 }

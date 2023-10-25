@@ -37,6 +37,7 @@ public class CacheManager {
             Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §cCan not save player data: " + player.getName() + "!");
         }
         playerCacheMap.get(player).shutPlayerCache();
+        playerCacheMap.remove(player);
     }
 
 }

@@ -267,12 +267,18 @@ public class ObjectPrices extends AbstractThings {
         List<String> tempVal1 = new ArrayList<>();
         switch (mode) {
             case ANY: case CLASSIC_ANY:
-                for (ObjectSinglePrice tempVal3 : getAnyTargetPrice(player.getInventory(), player, times, multi)) {
+                for (AbstractSingleThing tempVal3 : getAnyTargetPrice(player.getInventory(), player, times, multi)) {
+                    if (priceMaps.get(tempVal3) == null) {
+                        continue;
+                    }
                     tempVal1.add(tempVal3.getDisplayName(priceMaps.get(tempVal3)));
                 }
                 break;
             case ALL: case CLASSIC_ALL:
                 for (AbstractSingleThing tempVal2 : priceMaps.keySet()) {
+                    if (priceMaps.get(tempVal2) == null) {
+                        continue;
+                    }
                     tempVal1.add(tempVal2.getDisplayName(priceMaps.get(tempVal2)));
                 }
                 break;

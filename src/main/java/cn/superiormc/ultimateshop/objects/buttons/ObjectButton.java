@@ -35,7 +35,7 @@ public class ObjectButton extends AbstractButton {
         else {
             action = new ObjectAction(config.getStringList("actions"), shop);
         }
-        action.doAction(player, 1);
+        action.doAction(player, 1, 1);
     }
 
     @Override

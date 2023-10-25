@@ -207,7 +207,7 @@ public class SellProductMethod {
         // 扣的是奖励中的东西
         tempVal5.takeThing(inventory, player, true, playerUseTimes, multi);
         // 执行动作
-        tempVal2.getSellAction().doAction(player, multi);
+        tempVal2.getSellAction().doAction(player, playerUseTimes, multi);
         // limit+1
         if (tempVal9 != null) {
             if (ConfigManager.configManager.getBoolean("debug")) {

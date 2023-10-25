@@ -38,10 +38,16 @@ public class MainCommandTab implements TabCompleter {
                 if (sender.hasPermission("ultimateshop.givesellstick") && !UltimateShop.freeVersion) {
                     tempVal1.add("givesellstick");
                 }
+                if (sender.hasPermission("ultimateshop.setbuytimes")) {
+                    tempVal1.add("setbuytimes");
+                }
+                if (sender.hasPermission("ultimateshop.setselltimes")) {
+                    tempVal1.add("setselltimes");
+                }
                 break;
             case 2:
                 switch (args[0]) {
-                    case "quickbuy" : case "quicksell" :
+                    case "quickbuy" : case "quicksell" : case "setbuytimes": case "setselltimes":
                         for (ObjectShop tempVal2: ConfigManager.configManager.getShopList()) {
                             tempVal1.add(tempVal2.getShopName());
                         }
@@ -67,7 +73,7 @@ public class MainCommandTab implements TabCompleter {
                 break;
             case 3:
                 switch (args[0]) {
-                    case "quickbuy" : case "quicksell" :
+                    case "quickbuy": case "quicksell": case "setbuytimes": case "setselltimes":
                         ObjectShop tempVal3 = ConfigManager.configManager.getShop(args[1]);
                         if (tempVal3 == null) {
                             tempVal1.add(LanguageManager.languageManager.getStringText("command-tab.unknown-shop"));
