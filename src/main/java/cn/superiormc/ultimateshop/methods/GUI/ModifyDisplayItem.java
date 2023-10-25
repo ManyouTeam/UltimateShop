@@ -12,6 +12,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,6 +46,8 @@ public class ModifyDisplayItem {
                     0,
                     0,
                     null,
+                    null,
+                    null,
                     null);
             tempVal9 = CacheManager.cacheManager.playerCacheMap.get(player).getUseTimesCache().get(item);
         }
@@ -53,6 +56,8 @@ public class ModifyDisplayItem {
                     item.getProduct(),
                     0,
                     0,
+                    null,
+                    null,
                     null,
                     null);
             tempVal10 = CacheManager.cacheManager.serverCache.getUseTimesCache().get(item);
@@ -92,7 +97,8 @@ public class ModifyDisplayItem {
                         break;
                     case 'f':
                         if (item.getServerSellLimit(player) != -1) {
-                            addLore.add(tempVal3.substring(2));                        }
+                            addLore.add(tempVal3.substring(2));
+                        }
                         break;
                     case 'g':
                         if (tempVal9 != null &&
@@ -124,6 +130,20 @@ public class ModifyDisplayItem {
                         break;
                     case 'k':
                         if (!buyMore) {
+                            addLore.add(tempVal3.substring(2));
+                        }
+                        break;
+                    case 'l':
+                        if (tempVal9 != null &&
+                                tempVal9.getCooldownBuyRefreshTime() != null &&
+                                tempVal9.getCooldownBuyRefreshTime().isAfter(LocalDateTime.now())) {
+                            addLore.add(tempVal3.substring(2));
+                        }
+                        break;
+                    case 'm':
+                        if (tempVal10 != null &&
+                                tempVal10.getCooldownBuyRefreshTime() != null &&
+                                tempVal10.getCooldownBuyRefreshTime().isAfter(LocalDateTime.now())) {
                             addLore.add(tempVal3.substring(2));
                         }
                         break;
@@ -161,6 +181,10 @@ public class ModifyDisplayItem {
                     String.valueOf(tempVal9 == null ? ConfigManager.configManager.getString("placeholder.refresh.never") : tempVal9.getBuyRefreshTimeDisplayName()),
                     "sell-refresh-player",
                     String.valueOf(tempVal9 == null ? ConfigManager.configManager.getString("placeholder.refresh.never") : tempVal9.getSellRefreshTimeDisplayName()),
+                    "buy-cooldown-player",
+                    String.valueOf(tempVal9 == null ? ConfigManager.configManager.getString("placeholder.cooldown.now") : tempVal9.getBuyCooldownTimeDisplayName()),
+                    "sell-cooldown-player",
+                    String.valueOf(tempVal9 == null ? ConfigManager.configManager.getString("placeholder.cooldown.now") : tempVal9.getSellCooldownTimeDisplayName()),
                     "buy-times-server",
                     String.valueOf(tempVal10 == null ? "-" : tempVal10.getBuyUseTimes()),
                     "sell-times-server",
@@ -169,6 +193,10 @@ public class ModifyDisplayItem {
                     String.valueOf(tempVal10 == null ? ConfigManager.configManager.getString("placeholder.refresh.never") : tempVal10.getBuyRefreshTimeDisplayName()),
                     "sell-refresh-server",
                     String.valueOf(tempVal10 == null ? ConfigManager.configManager.getString("placeholder.refresh.never") : tempVal10.getSellRefreshTimeDisplayName()),
+                    "buy-cooldown-server",
+                    String.valueOf(tempVal10 == null ? ConfigManager.configManager.getString("placeholder.cooldown.now") : tempVal10.getBuyCooldownTimeDisplayName()),
+                    "sell-cooldown-server",
+                    String.valueOf(tempVal10 == null ? ConfigManager.configManager.getString("placeholder.cooldown.now") : tempVal10.getSellCooldownTimeDisplayName()),
                     "buy-click",
                     getBuyClickPlaceholder(player, multi, item),
                     "sell-click",
@@ -190,6 +218,9 @@ public class ModifyDisplayItem {
             case ERROR:
                 s = ConfigManager.configManager.getString("placeholder.click.error", "",  "amount", String.valueOf(multi));
                 break;
+            case IN_COOLDOWN:
+                s = ConfigManager.configManager.getString("placeholder.click.buy-in-cooldown", "",  "amount", String.valueOf(multi));
+                break;
             case PERMISSION:
                 s = ConfigManager.configManager.getString("placeholder.click.buy-condition-not-meet", "",  "amount", String.valueOf(multi));
                 break;
@@ -209,6 +240,7 @@ public class ModifyDisplayItem {
                 else {
                     s = ConfigManager.configManager.getString("placeholder.click.buy", "", "amount", String.valueOf(multi));
                 }
+                break;
         }
         return s;
     }
@@ -224,6 +256,9 @@ public class ModifyDisplayItem {
                 break;
             case PERMISSION:
                 s = ConfigManager.configManager.getString("placeholder.click.sell-condition-not-meet", "",  "amount", String.valueOf(multi));
+                break;
+            case IN_COOLDOWN:
+                s = ConfigManager.configManager.getString("placeholder.click.sell-in-cooldown", "",  "amount", String.valueOf(multi));
                 break;
             case PLAYER_MAX:
                 s = ConfigManager.configManager.getString("placeholder.click.sell-max-limit-player", "",  "amount", String.valueOf(multi));

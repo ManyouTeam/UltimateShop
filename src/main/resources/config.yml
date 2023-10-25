@@ -92,6 +92,9 @@ placeholder:
   refresh:
     format: "yyyy-MM-dd HH:mm:ss"
     never: "Never"
+  cooldown:
+    format: "yyyy-MM-dd HH:mm:ss"
+    now: "Now"
   price:
     split-symbol-any: ', '
     split-symbol-all: ', '
@@ -113,6 +116,8 @@ placeholder:
     error: '&#ff3300Error!'
     buy-condition-not-meet: '&#ff3300Not meet the buy condition!'
     sell-condition-not-meet: '&#ff3300Not meet the sell condition!'
+    buy-in-cooldown: '&#ff3300In cooldown!'
+    sell-in-cooldown: '&#ff3300In cooldown!'
 
 database:
   enabled: false

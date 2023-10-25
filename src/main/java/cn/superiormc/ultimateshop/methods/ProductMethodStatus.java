@@ -6,5 +6,6 @@ public enum ProductMethodStatus {
     PLAYER_MAX,
     SERVER_MAX,
     NOT_ENOUGH,
+    IN_COOLDOWN,
     DONE
 }

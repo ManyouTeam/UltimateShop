@@ -86,11 +86,19 @@ public class BuyProductMethod {
         ObjectUseTimesCache tempVal9 = tempVal3.getUseTimesCache().get(tempVal2);
         ObjectUseTimesCache tempVal8 = tempVal11.getUseTimesCache().get(tempVal2);
         if (tempVal9 != null) {
-            if (quick) {
-                // 重置
-                if (tempVal9.getBuyRefreshTime() != null && tempVal9.getBuyRefreshTime().isBefore(LocalDateTime.now())) {
-                    tempVal3.getUseTimesCache().get(tempVal2).setBuyUseTimes(0);
+            if (tempVal9.getBuyRefreshTime() != null && tempVal9.getBuyRefreshTime().isBefore(LocalDateTime.now())) {
+                tempVal3.getUseTimesCache().get(tempVal2).setBuyUseTimes(0);
+            }
+            if (tempVal9.getCooldownBuyRefreshTime() != null && tempVal9.getCooldownBuyRefreshTime().isAfter(LocalDateTime.now())) {
+                if (shouldSendMessage) {
+                    LanguageManager.languageManager.sendStringText(player,
+                            "buy-in-cooldown",
+                            "item",
+                            tempVal2.getDisplayName(player),
+                            "refresh",
+                            tempVal9.getBuyCooldownTimeDisplayName());
                 }
+                return ProductMethodStatus.IN_COOLDOWN;
             }
             playerUseTimes = tempVal9.getBuyUseTimes();
         }
@@ -99,6 +107,8 @@ public class BuyProductMethod {
                     product,
                     0,
                     0,
+                    null,
+                    null,
                     null,
                     null);
             tempVal9 = tempVal3.getUseTimesCache().get(tempVal2);
@@ -136,6 +146,8 @@ public class BuyProductMethod {
                     product,
                     0,
                     0,
+                    null,
+                    null,
                     null,
                     null);
             tempVal8 = tempVal11.getUseTimesCache().get(tempVal2);
@@ -189,6 +201,7 @@ public class BuyProductMethod {
             }
             tempVal9.setBuyUseTimes(tempVal9.getBuyUseTimes() + multi);
             tempVal9.setLastBuyTime(LocalDateTime.now());
+            tempVal9.setCooldownBuyTime();
             tempVal3.getUseTimesCache().put(tempVal2, tempVal9);
         }
         if (tempVal8 != null) {
@@ -198,6 +211,7 @@ public class BuyProductMethod {
             }
             tempVal8.setBuyUseTimes(tempVal8.getBuyUseTimes() + multi);
             tempVal8.setLastBuyTime(LocalDateTime.now());
+            tempVal8.setCooldownBuyTime();
             tempVal11.getUseTimesCache().put(tempVal2, tempVal8);
         }
         if (quick ||

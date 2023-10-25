@@ -80,7 +80,12 @@ public class YamlDatabase {
                     int sellUseTimes = tempVal4.getInt("sellUseTimes");
                     String lastPurchaseTime = tempVal4.getString("lastBuyTime");
                     String lastSellTime = tempVal4.getString("lastSellTime");
-                    cache.setUseTimesCache(shopID, productID, buyUseTimes, sellUseTimes, lastPurchaseTime, lastSellTime);
+                    String cooldownPurchaseTime = tempVal4.getString("cooldownBuyTime");
+                    String cooldownSellTime = tempVal4.getString("cooldownSellTime");
+                    cache.setUseTimesCache(shopID, productID,
+                            buyUseTimes, sellUseTimes,
+                            lastPurchaseTime, lastSellTime,
+                            cooldownPurchaseTime, cooldownSellTime);
                 }
             }
         }
@@ -138,6 +143,12 @@ public class YamlDatabase {
             }
             if (tempVal1.get(tempVal4).getSellRefreshTime() != null) {
                 data.put("lastSellTime", tempVal1.get(tempVal4).getLastSellTime());
+            }
+            if (tempVal1.get(tempVal4).getCooldownBuyTime() != null) {
+                data.put("cooldownBuyTime", tempVal1.get(tempVal4).getCooldownBuyTime());
+            }
+            if (tempVal1.get(tempVal4).getCooldownSellTime() != null) {
+                data.put("cooldownSellTime", tempVal1.get(tempVal4).getCooldownSellTime());
             }
             for (String key : data.keySet()) {
                 tempVal6.set(key, data.get(key));

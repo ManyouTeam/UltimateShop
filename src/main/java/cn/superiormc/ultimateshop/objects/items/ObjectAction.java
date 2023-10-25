@@ -5,9 +5,8 @@ import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.ErrorManager;
 import cn.superiormc.ultimateshop.methods.GUI.OpenGUI;
 import cn.superiormc.ultimateshop.objects.ObjectShop;
-import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
-import cn.superiormc.ultimateshop.utils.TextUtil;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
+import cn.superiormc.ultimateshop.utils.TextUtil;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -80,6 +79,7 @@ public class ObjectAction {
                 if (times + 1 != realNumber) {
                     continue;
                 }
+                singleAction = singleAction.replaceAll("-\\d+$", "");
             }
             singleAction = replacePlaceholder(singleAction, player, multi);
             if (singleAction.startsWith("none")) {

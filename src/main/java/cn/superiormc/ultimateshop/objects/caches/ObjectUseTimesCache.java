@@ -19,6 +19,10 @@ public class ObjectUseTimesCache {
 
     private LocalDateTime lastSellTime;
 
+    private LocalDateTime cooldownBuyTime;
+
+    private LocalDateTime cooldownSellTime;
+
     private ObjectItem product;
 
 
@@ -62,6 +66,44 @@ public class ObjectUseTimesCache {
         lastSellTime = time;
     }
 
+    public void setCooldownBuyTime() {
+        if (cooldownBuyTime == null || !cooldownBuyTime.isAfter(LocalDateTime.now())) {
+            String mode = product.getItemConfig().getString("buy-cooldown-mode");
+            String tempVal1 = product.getItemConfig().getString("buy-cooldown-time");
+            if (mode == null || tempVal1 == null) {
+                return;
+            }
+            if (mode.equals("TIMED")) {
+                cooldownBuyTime = getTimedBuyRefreshTime(tempVal1);
+            }
+            else if (mode.equals("TIMER")) {
+                cooldownBuyTime = getTimerBuyRefreshTime(tempVal1);
+            }
+            else {
+                cooldownBuyTime = LocalDateTime.now().withYear(1999);
+            }
+        }
+    }
+
+    public void setCooldownSellTime() {
+        if (cooldownSellTime == null || !cooldownSellTime.isAfter(LocalDateTime.now())) {
+            String mode = product.getItemConfig().getString("sell-cooldown-mode");
+            String tempVal1 = product.getItemConfig().getString("sell-cooldown-time");
+            if (mode == null || tempVal1 == null) {
+                return;
+            }
+            if (mode.equals("TIMED")) {
+                cooldownSellTime = getTimedSellRefreshTime(tempVal1);
+            }
+            else if (mode.equals("TIMER")) {
+                cooldownSellTime = getTimerSellRefreshTime(tempVal1);
+            }
+            else {
+                cooldownSellTime = LocalDateTime.now().withYear(1999);
+            }
+        }
+    }
+
     public String getLastBuyTime() {
         if (lastBuyTime == null) {
             return null;
@@ -74,6 +116,24 @@ public class ObjectUseTimesCache {
             return null;
         }
         return CommonUtil.timeToString(lastSellTime);
+    }
+
+    public String getCooldownBuyTime() {
+        if (cooldownBuyTime == null) {
+            return null;
+        }
+        return CommonUtil.timeToString(cooldownBuyTime);
+    }
+
+    public String getCooldownSellTime() {
+        if (cooldownSellTime == null) {
+            return null;
+        }
+        return CommonUtil.timeToString(cooldownSellTime);
+    }
+
+    public LocalDateTime getCooldownBuyRefreshTime() {
+        return cooldownBuyTime;
     }
 
     public LocalDateTime getBuyRefreshTime() {
@@ -95,6 +155,10 @@ public class ObjectUseTimesCache {
         }
     }
 
+    public LocalDateTime getCooldownSellRefreshTime() {
+        return cooldownSellTime;
+    }
+
     public LocalDateTime getSellRefreshTime() {
         if (lastSellTime == null) {
             return LocalDateTime.now().withYear(2999);
@@ -114,12 +178,28 @@ public class ObjectUseTimesCache {
         }
     }
 
+    public String getBuyCooldownTimeDisplayName() {
+        LocalDateTime tempVal1 = getCooldownBuyRefreshTime();
+        if (tempVal1 == null || !tempVal1.isAfter(LocalDateTime.now())) {
+            return ConfigManager.configManager.getString("placeholder.cooldown.now");
+        }
+        return CommonUtil.timeToString(tempVal1, ConfigManager.configManager.getString("placeholder.cooldown.format"));
+    }
+
     public String getBuyRefreshTimeDisplayName() {
         LocalDateTime tempVal1 = getBuyRefreshTime();
         if (tempVal1 == null || tempVal1.getYear() == 2999) {
             return ConfigManager.configManager.getString("placeholder.refresh.never");
         }
         return CommonUtil.timeToString(tempVal1, ConfigManager.configManager.getString("placeholder.refresh.format"));
+    }
+
+    public String getSellCooldownTimeDisplayName() {
+        LocalDateTime tempVal1 = getCooldownSellRefreshTime();
+        if (tempVal1 == null || !tempVal1.isAfter(LocalDateTime.now())) {
+            return ConfigManager.configManager.getString("placeholder.cooldown.now");
+        }
+        return CommonUtil.timeToString(tempVal1, ConfigManager.configManager.getString("placeholder.cooldown.format"));
     }
 
     public String getSellRefreshTimeDisplayName() {

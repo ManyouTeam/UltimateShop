@@ -97,16 +97,25 @@ public class SellProductMethod {
         ObjectUseTimesCache tempVal9 = tempVal3.getUseTimesCache().get(tempVal2);
         ObjectUseTimesCache tempVal8 = tempVal11.getUseTimesCache().get(tempVal2);
         if (tempVal9 != null) {
-            if (quick) {
-                // 重置
-                if (tempVal9.getSellRefreshTime() != null && tempVal9.getSellRefreshTime().isBefore(LocalDateTime.now())) {
-                    if (ConfigManager.configManager.getBoolean("debug")) {
-                        Bukkit.getConsoleSender().sendMessage("" +
-                                "§x§9§8§F§B§9§8[UltimateShop] §bReset player sell data by GUI open check!");
-                    }
-                    tempVal3.getUseTimesCache().get(tempVal2).setSellUseTimes(0);
-                    tempVal3.getUseTimesCache().get(tempVal2).setLastSellTime(null);
+            // 重置
+            if (tempVal9.getSellRefreshTime() != null && tempVal9.getSellRefreshTime().isBefore(LocalDateTime.now())) {
+                if (ConfigManager.configManager.getBoolean("debug")) {
+                    Bukkit.getConsoleSender().sendMessage("" +
+                            "§x§9§8§F§B§9§8[UltimateShop] §bReset player sell data by GUI open check!");
                 }
+                tempVal3.getUseTimesCache().get(tempVal2).setSellUseTimes(0);
+                tempVal3.getUseTimesCache().get(tempVal2).setLastSellTime(null);
+            }
+            if (tempVal9.getCooldownSellRefreshTime() != null && tempVal9.getCooldownSellRefreshTime().isAfter(LocalDateTime.now())) {
+                if (shouldSendMessage) {
+                    LanguageManager.languageManager.sendStringText(player,
+                            "sell-in-cooldown",
+                            "item",
+                            tempVal2.getDisplayName(player),
+                            "refresh",
+                            tempVal9.getSellCooldownTimeDisplayName());
+                }
+                return ProductMethodStatus.IN_COOLDOWN;
             }
             playerUseTimes = tempVal9.getSellUseTimes();
         }
@@ -115,6 +124,8 @@ public class SellProductMethod {
                     product,
                     0,
                     0,
+                    null,
+                    null,
                     null,
                     null);
             tempVal9 = tempVal3.getUseTimesCache().get(tempVal2);
@@ -168,6 +179,8 @@ public class SellProductMethod {
                     0,
                     0,
                     null,
+                    null,
+                    null,
                     null);
         }
         if (tempVal2.getServerSellLimit(player) != -1 &&
@@ -216,6 +229,7 @@ public class SellProductMethod {
             }
             tempVal9.setSellUseTimes(tempVal9.getSellUseTimes() + multi);
             tempVal9.setLastSellTime(LocalDateTime.now());
+            tempVal9.setCooldownSellTime();
             tempVal3.getUseTimesCache().put(tempVal2, tempVal9);
         }
         if (tempVal8 != null) {
@@ -225,6 +239,7 @@ public class SellProductMethod {
             }
             tempVal8.setSellUseTimes(tempVal8.getSellUseTimes() + multi);
             tempVal8.setLastSellTime(LocalDateTime.now());
+            tempVal8.setCooldownSellTime();
             tempVal11.getUseTimesCache().put(tempVal2, tempVal8);
         }
         if (quick ||

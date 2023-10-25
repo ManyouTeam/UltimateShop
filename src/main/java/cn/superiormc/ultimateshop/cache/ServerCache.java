@@ -55,7 +55,9 @@ public class ServerCache {
                                  int buyUseTimes,
                                  int sellUseTimes,
                                  String lastBuyTime,
-                                 String lastSellTime
+                                 String lastSellTime,
+                                 String cooldownBuyTime,
+                                 String cooldownSellTime
     ) {
         ObjectShop tempVal1 = ConfigManager.configManager.getShop(shop);
         if (tempVal1 == null) {
