@@ -50,6 +50,15 @@ public class ServerCache {
         }
     }
 
+    public void shutServerCacheOnDisable() {
+        if (ConfigManager.configManager.getBoolean("database.enabled")) {
+            SQLDatabase.updateDataNoAsync(null);
+        }
+        else {
+            YamlDatabase.updateData(null);
+        }
+    }
+
     public void setUseTimesCache(String shop,
                                  String product,
                                  int buyUseTimes,

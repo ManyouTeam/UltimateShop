@@ -156,3 +156,7 @@ sell-stick-items:
       - ''
       - '&cLeft usages: {times}'
     usage-times: 50
+
+check-class:
+  enabled: true
+  classes: []

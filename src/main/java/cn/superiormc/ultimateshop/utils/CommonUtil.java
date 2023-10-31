@@ -1,6 +1,7 @@
 package cn.superiormc.ultimateshop.utils;
 
 import cn.superiormc.ultimateshop.UltimateShop;
+import cn.superiormc.ultimateshop.managers.ConfigManager;
 import io.lumine.mythic.api.mobs.MythicMob;
 import io.lumine.mythic.bukkit.BukkitAdapter;
 import io.lumine.mythic.bukkit.MythicBukkit;
@@ -114,6 +115,14 @@ public class CommonUtil {
     }
 
     public static boolean getClass(String className) {
+        if (!ConfigManager.configManager.getBoolean("check-class.enabled")) {
+            if (ConfigManager.configManager.config.getStringList("check-class.classes").contains(className)) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
         try {
             Class.forName(className);
             return true;

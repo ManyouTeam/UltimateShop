@@ -46,7 +46,7 @@ public final class UltimateShop extends JavaPlugin {
     @Override
     public void onDisable() {
         if (ServerCache.serverCache != null) {
-            ServerCache.serverCache.shutServerCache();
+            ServerCache.serverCache.shutServerCacheOnDisable();
         }
         for (Player player : Bukkit.getOnlinePlayers()) {
             CacheManager.cacheManager.playerCacheMap.get(player).shutPlayerCacheOnDisable();
