@@ -88,6 +88,8 @@ public class ServerCache {
                 sellUseTimes,
                 lastBuyTime,
                 lastSellTime,
+                cooldownBuyTime,
+                cooldownSellTime,
                 tempVal2));
     }
 

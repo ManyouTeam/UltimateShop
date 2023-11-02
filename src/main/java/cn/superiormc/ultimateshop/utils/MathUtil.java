@@ -22,7 +22,8 @@ public class MathUtil {
             return Double.parseDouble(String.format("%.2f", Crunch.evaluateExpression(mathStr)));
         }
         catch (NumberFormatException | EmptyStackException ep) {
-            ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Your number option can not be read, maybe" +
+            ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Your number option value " +
+                    mathStr + " can not be read as a number, maybe" +
                     " you forgot install PlaceholderAPI plugin in your server, or you didn't enable math.enabled option in config.yml!");
             return 0D;
         }

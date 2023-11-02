@@ -1,7 +1,9 @@
 package cn.superiormc.ultimateshop.objects.buttons;
 
 import cn.superiormc.ultimateshop.objects.ObjectShop;
+import cn.superiormc.ultimateshop.objects.buttons.subobjects.ObjectDisplayItem;
 import cn.superiormc.ultimateshop.objects.items.ObjectAction;
+import cn.superiormc.ultimateshop.objects.items.ObjectCondition;
 import cn.superiormc.ultimateshop.utils.ItemUtil;
 import cn.superiormc.ultimateshop.utils.TextUtil;
 import org.bukkit.Material;
@@ -16,35 +18,48 @@ public class ObjectButton extends AbstractButton {
 
     private ObjectAction action;
 
+    private ObjectCondition condition;
+
+    private ObjectDisplayItem displayItem;
+
     public ObjectButton(ConfigurationSection config) {
         super(config);
         this.type = ButtonType.COMMON;
+        initButton();
     }
 
     public ObjectButton(ConfigurationSection config, ObjectShop shop) {
         super(config);
         this.type = ButtonType.COMMON;
         this.shop = shop;
+        initButton();
+    }
+
+    private void initButton() {
+        if (shop == null) {
+            action = new ObjectAction(config.getStringList("actions"));
+        }
+        else {
+            action = new ObjectAction(config.getStringList("actions"), shop);
+        }
+        condition = new ObjectCondition(config.getStringList("conditions"));
+        displayItem = new ObjectDisplayItem(config.getConfigurationSection("display-item"),
+                config.getConfigurationSection("display-item-conditions"));
     }
 
     @Override
     public void clickEvent(ClickType type, Player player) {
-        if (shop == null) {
-            action  = new ObjectAction(config.getStringList("actions"));
-        }
-        else {
-            action = new ObjectAction(config.getStringList("actions"), shop);
+        if (condition != null && !condition.getBoolean(player)) {
+            return;
         }
         action.doAction(player, 1, 1);
     }
 
     @Override
     public ItemStack getDisplayItem(Player player, int unUsed) {
-        ConfigurationSection tempVal1 = config.getConfigurationSection("display-item");
-        if (tempVal1 == null) {
-            return new ItemStack(Material.BEDROCK);
+        if (displayItem == null) {
+            return new ItemStack(Material.STONE);
         }
-        return ItemUtil.buildItemStack(player, tempVal1, (int) Double.parseDouble
-                (TextUtil.withPAPI(tempVal1.getString("amount", "1"), player)));
+        return displayItem.getDisplayItem(player);
     }
 }

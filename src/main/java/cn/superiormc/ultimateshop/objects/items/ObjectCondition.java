@@ -64,6 +64,13 @@ public class ObjectCondition {
                                 break;
                             }
                         }
+                        if (conditionValue.equals("!=")) {
+                            placeholder = PlaceholderAPI.setPlaceholders(player, placeholder);
+                            if (placeholder.equals(value)) {
+                                conditionTrueOrFasle = false;
+                                break;
+                            }
+                        }
                         if (conditionValue.equals("*=")) {
                             placeholder = PlaceholderAPI.setPlaceholders(player, placeholder);
                             if (!placeholder.contains(value)) {
@@ -71,37 +78,44 @@ public class ObjectCondition {
                                 break;
                             }
                         }
+                        if (conditionValue.equals("!*=")) {
+                            placeholder = PlaceholderAPI.setPlaceholders(player, placeholder);
+                            if (placeholder.contains(value)) {
+                                conditionTrueOrFasle = false;
+                                break;
+                            }
+                        }
                         if (conditionValue.equals(">=")) {
                             placeholder = PlaceholderAPI.setPlaceholders(player, placeholder);
-                            if (!(Integer.parseInt(placeholder) >= Integer.parseInt(value))) {
+                            if (!(Double.parseDouble(placeholder) >= Double.parseDouble(value))) {
                                 conditionTrueOrFasle = false;
                                 break;
                             }
                         }
                         if (conditionValue.equals(">")) {
                             placeholder = PlaceholderAPI.setPlaceholders(player, placeholder);
-                            if (!(Integer.parseInt(placeholder) > Integer.parseInt(value))) {
+                            if (!(Double.parseDouble(placeholder) > Double.parseDouble(value))) {
                                 conditionTrueOrFasle = false;
                                 break;
                             }
                         }
                         if (conditionValue.equals("<=")) {
                             placeholder = PlaceholderAPI.setPlaceholders(player, placeholder);
-                            if (!(Integer.parseInt(placeholder) <= Integer.parseInt(value))) {
+                            if (!(Double.parseDouble(placeholder) <= Double.parseDouble(value))) {
                                 conditionTrueOrFasle = false;
                                 break;
                             }
                         }
                         if (conditionValue.equals("<")) {
                             placeholder = PlaceholderAPI.setPlaceholders(player, placeholder);
-                            if (!(Integer.parseInt(placeholder) < Integer.parseInt(value))) {
+                            if (!(Double.parseDouble(placeholder) < Double.parseDouble(value))) {
                                 conditionTrueOrFasle = false;
                                 break;
                             }
                         }
                         if (conditionValue.equals("=")) {
                             placeholder = PlaceholderAPI.setPlaceholders(player, placeholder);
-                            if (!(Integer.parseInt(placeholder) == Integer.parseInt(value))) {
+                            if (!(Double.parseDouble(placeholder) == Double.parseDouble(value))) {
                                 conditionTrueOrFasle = false;
                                 break;
                             }

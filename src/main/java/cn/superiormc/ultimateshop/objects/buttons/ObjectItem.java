@@ -20,6 +20,7 @@ import cn.superiormc.ultimateshop.objects.items.prices.ObjectPrices;
 import cn.superiormc.ultimateshop.objects.items.products.ObjectProducts;
 import cn.superiormc.ultimateshop.objects.menus.ObjectMoreMenu;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
+import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
@@ -44,6 +45,10 @@ public class ObjectItem extends AbstractButton {
 
     private ObjectAction sellAction;
 
+    private ObjectCondition buyCondition;
+
+    private ObjectCondition sellCondition;
+
     private ObjectLimit buyLimit;
 
     private ObjectLimit sellLimit;
@@ -57,6 +62,7 @@ public class ObjectItem extends AbstractButton {
         initSellPrice();
         initBuyAction();
         initSellAction();
+        initBuyCondition();
         initBuyLimit();
         initSellLimit();
         initBuyMoreMenu();
@@ -64,25 +70,9 @@ public class ObjectItem extends AbstractButton {
     }
 
     private void initDisplayItem() {
-        if (config.getConfigurationSection("display-item") == null) {
-            if (config.getConfigurationSection("products") == null) {
-                ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Can not get display-item section in your shop config!!");
-                displayItem = null;
-                return;
-            } else {
-                String tempVal1 = null;
-                for (String s : config.getConfigurationSection("products").getKeys(false)) {
-                    tempVal1 = s;
-                    if (tempVal1 != null) {
-                        break;
-                    }
-                }
-                displayItem = new ObjectDisplayItem(config.getConfigurationSection("products." +
-                        tempVal1), this);
-                return;
-            }
-        }
-        displayItem = new ObjectDisplayItem(config.getConfigurationSection("display-item"), this);
+        displayItem = new ObjectDisplayItem(config.getConfigurationSection("display-item"),
+                config.getConfigurationSection("display-item-conditions"),
+                this);
     }
 
     private void initReward() {
@@ -178,6 +168,22 @@ public class ObjectItem extends AbstractButton {
     private void initBuyMoreMenu() {
         new ObjectMoreMenu(ConfigManager.configManager.getString("menu.select-more.menu"),
                 this);
+    }
+
+    private void initBuyCondition() {
+        List<String> section = config.getStringList("conditions");
+        if (section.isEmpty()) {
+            section = config.getStringList("buy-conditions");
+        }
+        buyCondition = new ObjectCondition(section);
+    }
+
+    private void initSellCondition() {
+        List<String> section = config.getStringList("conditions");
+        if (section.isEmpty()) {
+            section = config.getStringList("sell-conditions");
+        }
+        sellCondition = new ObjectCondition(section);
     }
 
     public String getDisplayName(Player player) {
@@ -325,29 +331,31 @@ public class ObjectItem extends AbstractButton {
 
     @Override
     public ItemStack getDisplayItem(Player player, int multi) {
+        if (displayItem == null) {
+            return new ItemStack(Material.STONE);
+        }
         return displayItem.getDisplayItem(player, multi);
     }
 
     public ItemStack getDisplayItem(Player player) {
+        if (displayItem == null) {
+            return new ItemStack(Material.STONE);
+        }
         return displayItem.getDisplayItem(player);
     }
 
     public boolean getBuyCondition(Player player) {
-        List<String> section = config.getStringList("conditions");
-        if (section.isEmpty()) {
-            section = config.getStringList("buy-conditions");
+        if (buyCondition == null) {
+            return true;
         }
-        ObjectCondition tempVal1 = new ObjectCondition(section);
-        return tempVal1.getBoolean(player);
+        return buyCondition.getBoolean(player);
     }
 
     public boolean getSellCondition(Player player) {
-        List<String> section = config.getStringList("conditions");
-        if (section.isEmpty()) {
-            section = config.getStringList("sell-conditions");
+        if (sellCondition == null) {
+            return true;
         }
-        ObjectCondition tempVal1 = new ObjectCondition(section);
-        return tempVal1.getBoolean(player);
+        return sellCondition.getBoolean(player);
     }
 
     public boolean getBuyMore() {

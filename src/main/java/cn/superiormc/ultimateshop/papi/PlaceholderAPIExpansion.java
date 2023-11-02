@@ -78,22 +78,47 @@ public class PlaceholderAPIExpansion extends PlaceholderExpansion {
             case "{sell-limit-server}" :
                 return String.valueOf(item.getServerBuyLimit(player));
             case "{buy-times-player}":
-                return String.valueOf(playerTimesCache == null ? "0" : playerTimesCache.getBuyUseTimes());
+                return String.valueOf(playerTimesCache == null ? "0" :
+                        playerTimesCache.getBuyUseTimes());
             case "{sell-times-player}":
-                return String.valueOf(playerTimesCache == null ? "0" : playerTimesCache.getSellUseTimes());
+                return String.valueOf(playerTimesCache == null ? "0" :
+                        playerTimesCache.getSellUseTimes());
             case "{buy-refresh-player}":
-                return String.valueOf(playerTimesCache == null ? "" : playerTimesCache.getBuyRefreshTimeDisplayName());
+                return String.valueOf(playerTimesCache == null ? "" :
+                        playerTimesCache.getBuyRefreshTimeDisplayName());
             case "{sell-refresh-player}":
-                return String.valueOf(playerTimesCache == null ? "" : playerTimesCache.getSellRefreshTimeDisplayName());
+                return String.valueOf(playerTimesCache == null ? "" :
+                        playerTimesCache.getSellRefreshTimeDisplayName());
+            case "{buy-cooldown-player}":
+                return String.valueOf(playerTimesCache == null ? ConfigManager.configManager.
+                        getString("placeholder.cooldown.now") :
+                        playerTimesCache.getBuyCooldownTimeDisplayName());
+            case "{sell-cooldown-player}":
+                return String.valueOf(playerTimesCache == null ? ConfigManager.configManager.
+                        getString("placeholder.cooldown.now") :
+                        playerTimesCache.getSellCooldownTimeDisplayName());
             case "{buy-times-server}":
-                return String.valueOf(serverTimesCache  == null ? "0" : serverTimesCache.getBuyUseTimes());
+                return String.valueOf(serverTimesCache  == null ? "0" :
+                        serverTimesCache.getBuyUseTimes());
             case "{sell-times-server}":
-                return String.valueOf(serverTimesCache  == null ? "0" : serverTimesCache.getSellUseTimes());
+                return String.valueOf(serverTimesCache  == null ? "0" :
+                        serverTimesCache.getSellUseTimes());
             case "{buy-refresh-server}":
-                return String.valueOf(serverTimesCache  == null ? "" : serverTimesCache.getBuyRefreshTimeDisplayName());
+                return String.valueOf(serverTimesCache  == null ? "" :
+                        serverTimesCache.getBuyRefreshTimeDisplayName());
             case "{sell-refresh-server}":
-                return String.valueOf(serverTimesCache  == null ? "" : serverTimesCache.getSellRefreshTimeDisplayName());
+                return String.valueOf(serverTimesCache  == null ? "" :
+                        serverTimesCache.getSellRefreshTimeDisplayName());
+            case "{buy-cooldown-server}":
+                return String.valueOf(serverTimesCache == null ? ConfigManager.configManager.
+                        getString("placeholder.cooldown.now") :
+                        serverTimesCache.getBuyCooldownTimeDisplayName());
+            case "{sell-cooldown-server}":
+                return String.valueOf(serverTimesCache == null ? ConfigManager.configManager.
+                        getString("placeholder.cooldown.now") :
+                        serverTimesCache.getSellCooldownTimeDisplayName());
+
         }
-        return null;
+        return args[2];
     }
 }

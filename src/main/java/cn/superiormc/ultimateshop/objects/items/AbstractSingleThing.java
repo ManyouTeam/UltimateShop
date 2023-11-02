@@ -37,6 +37,7 @@ public abstract class AbstractSingleThing {
         else {
             initType(singleSection);
         }
+        initCondition();
         this.empty = false;
     }
 
@@ -53,6 +54,16 @@ public abstract class AbstractSingleThing {
             type = ThingType.VANILLA_ECONOMY;
         } else {
             type = ThingType.FREE;
+        }
+    }
+
+    private void initCondition() {
+        List<String> conditions = singleSection.getStringList("conditions");
+        if (conditions.isEmpty()) {
+            condition = new ObjectCondition();
+        }
+        else {
+            condition = new ObjectCondition(conditions);
         }
     }
 
@@ -88,12 +99,8 @@ public abstract class AbstractSingleThing {
     public abstract double getAmount(Player player, int times);
 
     public boolean getCondition(Player player) {
-        List<String> conditions = singleSection.getStringList("conditions");
-        if (conditions.isEmpty()) {
-            condition = new ObjectCondition();
-        }
-        else {
-            condition = new ObjectCondition(conditions);
+        if (condition == null) {
+            return true;
         }
         return condition.getBoolean(player);
     }

@@ -30,6 +30,8 @@ public class ObjectUseTimesCache {
                                int sellUseTimes,
                                String lastBuyTime,
                                String lastSellTime,
+                               String cooldownBuyTime,
+                               String cooldownSellTime,
                                ObjectItem product) {
         this.buyUseTimes = buyUseTimes;
         if (lastBuyTime != null) {
@@ -38,6 +40,13 @@ public class ObjectUseTimesCache {
         this.sellUseTimes = sellUseTimes;
         if (lastSellTime != null) {
             this.lastSellTime = CommonUtil.stringToTime(lastSellTime);
+        }
+        if (cooldownBuyTime != null) {
+            this.cooldownBuyTime = CommonUtil.stringToTime(cooldownBuyTime);
+        }
+        this.sellUseTimes = sellUseTimes;
+        if (cooldownSellTime != null) {
+            this.cooldownSellTime = CommonUtil.stringToTime(cooldownSellTime);
         }
         this.product = product;
     }

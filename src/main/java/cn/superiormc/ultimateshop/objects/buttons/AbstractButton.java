@@ -1,5 +1,6 @@
 package cn.superiormc.ultimateshop.objects.buttons;
 
+import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
@@ -20,7 +21,7 @@ public abstract class AbstractButton {
     }
 
     public ItemStack getDisplayItem(Player player, int multi) {
-        return null;
+        return new ItemStack(Material.STONE);
     }
 
     public void clickEvent(ClickType type, Player player) {

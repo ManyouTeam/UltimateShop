@@ -4,6 +4,8 @@ import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.ErrorManager;
 import cn.superiormc.ultimateshop.methods.GUI.OpenGUI;
+import cn.superiormc.ultimateshop.methods.Product.BuyProductMethod;
+import cn.superiormc.ultimateshop.methods.Product.SellProductMethod;
 import cn.superiormc.ultimateshop.objects.ObjectShop;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
 import cn.superiormc.ultimateshop.utils.TextUtil;
@@ -70,6 +72,9 @@ public class ObjectAction {
     }
 
     private void checkAction(Player player, List<String> actions, int times, int multi) {
+        if (player == null) {
+            return;
+        }
         for (String singleAction : actions) {
             Pattern pattern = Pattern.compile("-\\d+$");
             Matcher matcher = pattern.matcher(singleAction);
@@ -211,12 +216,46 @@ public class ObjectAction {
                  }
             } else if (singleAction.startsWith("console_command: ")) {
                 CommonUtil.dispatchCommand(singleAction.substring(17));
-            } else if (singleAction.startsWith("player_command: ") && player != null) {
+            } else if (singleAction.startsWith("player_command: ")) {
                 CommonUtil.dispatchCommand(player, singleAction.substring(16));
-            } else if (singleAction.equals("close") && player != null) {
+            } else if (singleAction.equals("close")) {
                 Bukkit.getScheduler().runTaskLater(UltimateShop.instance, () -> {
                     player.closeInventory();
                 }, 2L);
+            } else if (singleAction.startsWith("buy: ")) {
+                try {
+                    BuyProductMethod.startBuy(singleAction.substring(5).split(";;")[0],
+                            singleAction.substring(5).split(";;")[1],
+                            player,
+                            true,
+                            false,
+                            Integer.parseInt(singleAction.substring(5).split(";;")[2]));
+                } catch (ArrayIndexOutOfBoundsException e) {
+                    ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Your buy action in shop configs can not being correctly load.");
+                }
+            } else if (singleAction.startsWith("sell: ")) {
+                try {
+                    SellProductMethod.startSell(singleAction.substring(6).split(";;")[0],
+                            singleAction.substring(6).split(";;")[1],
+                            player,
+                            true,
+                            false,
+                            Integer.parseInt(singleAction.substring(5).split(";;")[2]));
+                } catch (ArrayIndexOutOfBoundsException e) {
+                    ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Your sell action in shop configs can not being correctly load.");
+                }
+            } else if (singleAction.startsWith("sellall: ")) {
+                try {
+                    SellProductMethod.startSell(singleAction.substring(9).split(";;")[0],
+                            singleAction.substring(9).split(";;")[1],
+                            player,
+                            true,
+                            false,
+                            true,
+                            1);
+                } catch (ArrayIndexOutOfBoundsException e) {
+                    ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Your sell action in shop configs can not being correctly load.");
+                }
             }
         }
     }
