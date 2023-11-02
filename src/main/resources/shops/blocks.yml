@@ -2,6 +2,7 @@ settings:
   menu: 'example-shop-menu'
   buy-more: true
   shop-name: 'Blocks'
+  send-messages-after-buy: true
 
 items:
   A:

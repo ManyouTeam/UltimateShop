@@ -36,8 +36,6 @@ use-times:
 math:
   enabled: true
 
-send-messages-after-buy: true
-
 display-item:
   auto-set-first-product: true
   add-displayname: ' x{amount}'

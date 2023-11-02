@@ -40,9 +40,6 @@ public class BuyProductMethod {
                                                boolean quick,
                                                boolean test,
                                                int multi) {
-        boolean shouldSendMessage = inventory instanceof PlayerInventory && !test && (quick ||
-                ConfigManager.configManager.config.
-                        getBoolean("send-messages-after-buy", true));
         ObjectShop tempVal1 = ConfigManager.configManager.getShop(shop);
         if (tempVal1 == null) {
             LanguageManager.languageManager.sendStringText(player,
@@ -51,6 +48,9 @@ public class BuyProductMethod {
                     shop);
             return ProductMethodStatus.ERROR;
         }
+        boolean shouldSendMessage = inventory instanceof PlayerInventory && !test && (quick ||
+                tempVal1.getShopConfig().
+                        getBoolean("settings.send-messages-after-buy", true));
         ObjectItem tempVal2 = tempVal1.getProduct(product);
         if (tempVal2 == null) {
             LanguageManager.languageManager.sendStringText(player,
@@ -215,8 +215,8 @@ public class BuyProductMethod {
             tempVal11.getUseTimesCache().put(tempVal2, tempVal8);
         }
         if (quick ||
-                ConfigManager.configManager.config.
-                        getBoolean("send-messages-after-buy", true)) {
+                tempVal1.getShopConfig().
+                        getBoolean("settings.send-messages-after-buy", true)) {
             LanguageManager.languageManager.sendStringText(player,
                     "success-buy",
                     "item",
