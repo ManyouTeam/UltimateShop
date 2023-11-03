@@ -54,19 +54,13 @@ public class MainCommandTab implements TabCompleter {
                         break;
                     case "menu":
                         for (ObjectShop tempVal2: ConfigManager.configManager.getShopList()) {
-                            if (sender.hasPermission("ultimateshop.menu.*") ||
-                            sender.hasPermission("ultimateshop.menu." + tempVal2.getShopName())) {
-                                tempVal1.add(tempVal2.getShopName());
-                            }
+                            tempVal1.add(tempVal2.getShopName());
                         }
                         for (String tempVal4 : ObjectMenu.commonMenus.keySet()) {
-                            if (sender.hasPermission("ultimateshop.menu.*") ||
-                                    sender.hasPermission("ultimateshop.menu." + tempVal4)) {
-                                if (tempVal4.equals(ConfigManager.configManager.getString("menu.select-more.menu"))) {
+                            if (tempVal4.equals(ConfigManager.configManager.getString("menu.select-more.menu"))) {
                                     continue;
-                                }
-                                tempVal1.add(tempVal4);
                             }
+                            tempVal1.add(tempVal4);
                         }
                         break;
                 }

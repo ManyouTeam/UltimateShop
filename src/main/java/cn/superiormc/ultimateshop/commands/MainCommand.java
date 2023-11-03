@@ -157,9 +157,7 @@ public class MainCommand implements CommandExecutor {
 
     private void menuCommand(CommandSender sender, String[] args) {
         if (sender instanceof Player) {
-            if (sender.hasPermission("ultimateshop.menu") &&
-                    (sender.hasPermission("ultimateshop.menu.*") ||
-                            sender.hasPermission("ultimateshop.menu." + args[1]))) {
+            if (sender.hasPermission("ultimateshop.menu")) {
                 if (args.length < 2) {
                     LanguageManager.languageManager.sendStringText(sender,
                             "error.args");
@@ -213,25 +211,15 @@ public class MainCommand implements CommandExecutor {
             if (sender.hasPermission("ultimateshop.quickbuy")) {
                 switch (args.length) {
                     case 3:
-                        if (sender.hasPermission("ultimateshop.quickbuy." + args[1] + "." + args[2])) {
-                            BuyProductMethod.startBuy(args[1], args[2], ((Player) sender).getPlayer(), true);
-                        }
-                        else {
-                            LanguageManager.languageManager.sendStringText((Player) sender, "error.miss-permission");
-                        }
+                        BuyProductMethod.startBuy(args[1], args[2], ((Player) sender).getPlayer(), true);
                         break;
                     case 4:
-                        if (sender.hasPermission("ultimateshop.quickbuy." + args[1] + "." + args[2])) {
-                            BuyProductMethod.startBuy(args[1],
-                                    args[2],
-                                    ((Player) sender).getPlayer(),
-                                    true,
-                                    false,
-                                    Integer.parseInt(args[3]));
-                        }
-                        else {
-                            LanguageManager.languageManager.sendStringText((Player) sender, "error.miss-permission");
-                        }
+                        BuyProductMethod.startBuy(args[1],
+                               args[2],
+                               ((Player) sender).getPlayer(),
+                               true,
+                               false,
+                               Integer.parseInt(args[3]));
                         break;
                     default:
                         LanguageManager.languageManager.sendStringText(sender,
@@ -253,25 +241,15 @@ public class MainCommand implements CommandExecutor {
             if (sender.hasPermission("ultimateshop.quicksell")) {
                 switch (args.length) {
                     case 3:
-                        if (sender.hasPermission("ultimateshop.quicksell." + args[1] + "." + args[2])) {
-                            SellProductMethod.startSell(args[1], args[2], ((Player) sender).getPlayer(), true);
-                        }
-                        else {
-                            LanguageManager.languageManager.sendStringText((Player) sender, "error.miss-permission");
-                        }
+                        SellProductMethod.startSell(args[1], args[2], ((Player) sender).getPlayer(), true);
                         break;
                     case 4:
-                        if (sender.hasPermission("ultimateshop.quicksell." + args[1] + "." + args[2])) {
-                            SellProductMethod.startSell(args[1],
-                                args[2],
-                                ((Player) sender).getPlayer(),
-                                true,
-                                false,
-                                Integer.parseInt(args[3]));
-                        }
-                        else {
-                            LanguageManager.languageManager.sendStringText((Player) sender, "error.miss-permission");
-                        }
+                        SellProductMethod.startSell(args[1],
+                            args[2],
+                            ((Player) sender).getPlayer(),
+                            true,
+                            false,
+                            Integer.parseInt(args[3]));
                         break;
                     default:
                         LanguageManager.languageManager.sendStringText(sender,

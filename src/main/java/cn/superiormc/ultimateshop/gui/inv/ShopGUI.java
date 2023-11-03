@@ -84,6 +84,13 @@ public class ShopGUI extends InvGUI {
                     shop.getShopMenu());
             return;
         }
+        if (!shopMenu.getCondition().getBoolean(owner.getPlayer())) {
+            LanguageManager.languageManager.sendStringText(owner,
+                    "menu-condition-not-meet",
+                    "menu",
+                    shop.getShopMenu());
+            return;
+        }
         for (ObjectItem tempVal5 : shop.getProductList()) {
             ObjectUseTimesCache tempVal3 = tempVal1.getUseTimesCache().get(tempVal5);
             if (tempVal3 != null && tempVal3.getBuyRefreshTime() != null && tempVal3.getBuyRefreshTime().isBefore(LocalDateTime.now())) {

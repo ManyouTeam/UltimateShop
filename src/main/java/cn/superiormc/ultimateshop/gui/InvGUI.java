@@ -31,10 +31,9 @@ public abstract class InvGUI extends AbstractGUI {
 
     @Override
     public void openGUI() {
-        if (inv == null) {
-            return;
+        if (inv != null) {
+            owner.getPlayer().openInventory(inv);
         }
-        owner.getPlayer().openInventory(inv);
     }
 
     public Inventory getInv() {

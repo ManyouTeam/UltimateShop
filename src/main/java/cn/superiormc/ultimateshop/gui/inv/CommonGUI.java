@@ -37,6 +37,13 @@ public class CommonGUI extends InvGUI {
                     fileName);
             return;
         }
+        if (!commonMenu.getCondition().getBoolean(owner.getPlayer())) {
+            LanguageManager.languageManager.sendStringText(owner,
+                    "menu-condition-not-meet",
+                    "menu",
+                    fileName);
+            return;
+        }
         menuButtons = commonMenu.getMenu();
         menuItems = getMenuItems(owner.getPlayer());
         if (Objects.isNull(inv)) {

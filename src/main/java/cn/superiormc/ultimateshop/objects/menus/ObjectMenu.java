@@ -6,6 +6,7 @@ import cn.superiormc.ultimateshop.objects.ObjectShop;
 import cn.superiormc.ultimateshop.objects.buttons.AbstractButton;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectButton;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
+import cn.superiormc.ultimateshop.objects.items.ObjectCondition;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.ConfigurationSection;
@@ -30,6 +31,8 @@ public class ObjectMenu {
     public String fileName;
 
     private ObjectShop shop = null;
+
+    private ObjectCondition condition;
 
     public Configuration menuConfigs;
 
@@ -85,6 +88,7 @@ public class ObjectMenu {
             }
             this.menuConfigs = YamlConfiguration.loadConfiguration(file);
         }
+        this.condition = new ObjectCondition(menuConfigs.getStringList("conditions"));
     }
 
     public void initShopItems() {
@@ -153,5 +157,8 @@ public class ObjectMenu {
         return menuItems;
     }
 
+    public ObjectCondition getCondition() {
+        return condition;
+    }
 
 }
