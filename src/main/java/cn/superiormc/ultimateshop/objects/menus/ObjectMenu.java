@@ -78,7 +78,7 @@ public class ObjectMenu {
         }
         File file = new File(UltimateShop.instance.getDataFolder() + "/menus/" + fileName + ".yml");
         if (!file.exists()){
-            Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §cWe can not found your menu file: " +
+            Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: We can not found your menu file: " +
                     fileName + ".yml!");
         }
         else {
@@ -88,7 +88,12 @@ public class ObjectMenu {
             }
             this.menuConfigs = YamlConfiguration.loadConfiguration(file);
         }
-        this.condition = new ObjectCondition(menuConfigs.getStringList("conditions"));
+        if (menuConfigs == null) {
+            this.condition = new ObjectCondition(menuConfigs.getStringList("conditions"));
+        }
+        else {
+            this.condition = new ObjectCondition();
+        }
     }
 
     public void initShopItems() {
