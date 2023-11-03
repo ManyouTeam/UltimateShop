@@ -22,6 +22,7 @@ public class ReloadPlugin {
             CacheManager.cacheManager.playerCacheMap.get(player).shutPlayerCache();
         }
         new ConfigManager();
+        new CacheManager();
         new LanguageManager();
         for (Player player : Bukkit.getOnlinePlayers()) {
             CacheManager.cacheManager.playerCacheMap.put(player, new PlayerCache(player));

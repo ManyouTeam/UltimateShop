@@ -239,7 +239,6 @@ public class SellProductMethod {
             }
             tempVal8.setSellUseTimes(tempVal8.getSellUseTimes() + multi);
             tempVal8.setLastSellTime(LocalDateTime.now());
-            tempVal8.setCooldownSellTime();
             tempVal11.getUseTimesCache().put(tempVal2, tempVal8);
         }
         if (tempVal1.getShopConfig().

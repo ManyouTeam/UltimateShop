@@ -90,4 +90,9 @@ public class ObjectShop {
         return config.getString("settings.shop-name", getShopName());
     }
 
+    @Override
+    public String toString() {
+        return getShopName();
+    }
+
 }

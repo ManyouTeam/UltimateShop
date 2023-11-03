@@ -211,7 +211,6 @@ public class BuyProductMethod {
             }
             tempVal8.setBuyUseTimes(tempVal8.getBuyUseTimes() + multi);
             tempVal8.setLastBuyTime(LocalDateTime.now());
-            tempVal8.setCooldownBuyTime();
             tempVal11.getUseTimesCache().put(tempVal2, tempVal8);
         }
         if (tempVal1.getShopConfig().

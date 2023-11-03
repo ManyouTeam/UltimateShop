@@ -14,6 +14,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.Objects;
 
@@ -145,6 +146,20 @@ public class SQLDatabase {
         }
         Map<ObjectItem, ObjectUseTimesCache> tempVal1 = cache.getUseTimesCache();
         for (ObjectItem tempVal2 : tempVal1.keySet()) {
+            int buyUseTimes = tempVal1.get(tempVal2).getBuyUseTimes();
+            int sellUseTimes = tempVal1.get(tempVal2).getSellUseTimes();
+            String lastBuyTime = tempVal1.get(tempVal2).getLastBuyTime();
+            String lastSellTime = tempVal1.get(tempVal2).getLastSellTime();
+            String cooldownBuyTime = tempVal1.get(tempVal2).getCooldownBuyTime();
+            String cooldownSellTime = tempVal1.get(tempVal2).getCooldownSellTime();
+            if (buyUseTimes == 0 && sellUseTimes == 0 && lastBuyTime == null && lastSellTime == null
+            && cooldownBuyTime == null && cooldownSellTime == null) {
+                continue;
+            }
+            if (player == null) {
+                cooldownBuyTime = null;
+                cooldownSellTime = null;
+            }
             sqlManager.createReplace("ultimateshop_useTimes")
                     .setColumnNames("playerUUID",
                             "shop",
@@ -158,12 +173,12 @@ public class SQLDatabase {
                     .setParams(playerUUID,
                             tempVal2.getShop(),
                             tempVal2.getProduct(),
-                            tempVal1.get(tempVal2).getBuyUseTimes(),
-                            tempVal1.get(tempVal2).getSellUseTimes(),
-                            tempVal1.get(tempVal2).getLastBuyTime(),
-                            tempVal1.get(tempVal2).getLastSellTime(),
-                            tempVal1.get(tempVal2).getCooldownBuyTime(),
-                            tempVal1.get(tempVal2).getCooldownSellTime())
+                            buyUseTimes,
+                            sellUseTimes,
+                            lastBuyTime,
+                            lastSellTime,
+                            cooldownBuyTime,
+                            cooldownSellTime)
                     .executeAsync();
         }
     }

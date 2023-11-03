@@ -71,7 +71,7 @@ public class ObjectDisplayItem{
     public ItemStack getDisplayItem(Player player, int multi) {
         ItemStack addLoreDisplayItem = getDisplayItem(player);
         if (item != null) {
-            if (section != null && section.getBoolean("modify-lore", true)) {
+            if (section != null && !section.getBoolean("modify-lore", true)) {
                 return addLoreDisplayItem;
             }
             return ModifyDisplayItem.modifyItem(player, multi, addLoreDisplayItem, item, !item.getBuyMore());

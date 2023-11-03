@@ -10,6 +10,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
 public class ItemUtil {
     
@@ -32,6 +33,7 @@ public class ItemUtil {
                 return new ItemStack(Material.STONE);
             }
             else {
+                XItemStack.edit(resultItem, section, Function.identity(), null);
                 resultItem.setAmount(amount);
                 return resultItem;
             }

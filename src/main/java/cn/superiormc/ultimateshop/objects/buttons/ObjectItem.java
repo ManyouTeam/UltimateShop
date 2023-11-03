@@ -361,4 +361,9 @@ public class ObjectItem extends AbstractButton {
     public boolean getBuyMore() {
         return shop.getShopConfig().getBoolean("settings.buy-more", true);
     }
+
+    @Override
+    public String toString() {
+        return "Shop: " + shop.getShopName() + " Product: " + config.getName();
+    }
 }

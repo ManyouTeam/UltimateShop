@@ -6,6 +6,7 @@ import cn.superiormc.ultimateshop.managers.CacheManager;
 import cn.superiormc.ultimateshop.managers.ErrorManager;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import cn.superiormc.ultimateshop.objects.caches.ObjectUseTimesCache;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -76,12 +77,12 @@ public class YamlDatabase {
                 ConfigurationSection tempVal3 = useTimeSection.getConfigurationSection(shopID);
                 for (String productID : tempVal3.getKeys(false)) {
                     ConfigurationSection tempVal4 = tempVal3.getConfigurationSection(productID);
-                    int buyUseTimes = tempVal4.getInt("buyUseTimes");
-                    int sellUseTimes = tempVal4.getInt("sellUseTimes");
-                    String lastPurchaseTime = tempVal4.getString("lastBuyTime");
-                    String lastSellTime = tempVal4.getString("lastSellTime");
-                    String cooldownPurchaseTime = tempVal4.getString("cooldownBuyTime");
-                    String cooldownSellTime = tempVal4.getString("cooldownSellTime");
+                    int buyUseTimes = tempVal4.getInt("buyUseTimes", 0);
+                    int sellUseTimes = tempVal4.getInt("sellUseTimes", 0);
+                    String lastPurchaseTime = tempVal4.getString("lastBuyTime", null);
+                    String lastSellTime = tempVal4.getString("lastSellTime", null);
+                    String cooldownPurchaseTime = tempVal4.getString("cooldownBuyTime", null);
+                    String cooldownSellTime = tempVal4.getString("cooldownSellTime", null);
                     cache.setUseTimesCache(shopID, productID,
                             buyUseTimes, sellUseTimes,
                             lastPurchaseTime, lastSellTime,
@@ -128,6 +129,7 @@ public class YamlDatabase {
         ConfigurationSection useTimesSection = config.createSection("useTimes");
         Map<ObjectItem, ObjectUseTimesCache> tempVal1 = cache.getUseTimesCache();
         for (ObjectItem tempVal4 : tempVal1.keySet()) {
+            data.clear();
             ConfigurationSection tempVal5 = useTimesSection.getConfigurationSection(tempVal4.getShop());
             if (tempVal5 == null) {
                 tempVal5 = useTimesSection.createSection(tempVal4.getShop());
@@ -136,32 +138,36 @@ public class YamlDatabase {
             if (tempVal6 == null) {
                 tempVal6 = tempVal5.createSection(tempVal4.getProduct());
             }
-            data.put("buyUseTimes", tempVal1.get(tempVal4).getBuyUseTimes());
-            data.put("sellUseTimes", tempVal1.get(tempVal4).getSellUseTimes());
+            if (tempVal1.get(tempVal4).getBuyUseTimes() != 0) {
+                data.put("buyUseTimes", tempVal1.get(tempVal4).getBuyUseTimes());
+            }
+            if (tempVal1.get(tempVal4).getSellUseTimes() != 0) {
+                data.put("sellUseTimes", tempVal1.get(tempVal4).getSellUseTimes());
+            }
             if (tempVal1.get(tempVal4).getBuyRefreshTime() != null) {
                 data.put("lastBuyTime", tempVal1.get(tempVal4).getLastBuyTime());
             }
             if (tempVal1.get(tempVal4).getSellRefreshTime() != null) {
                 data.put("lastSellTime", tempVal1.get(tempVal4).getLastSellTime());
             }
-            if (tempVal1.get(tempVal4).getCooldownBuyTime() != null) {
+            if (player != null && tempVal1.get(tempVal4).getCooldownBuyTime() != null) {
                 data.put("cooldownBuyTime", tempVal1.get(tempVal4).getCooldownBuyTime());
             }
-            if (tempVal1.get(tempVal4).getCooldownSellTime() != null) {
+            if (player != null && tempVal1.get(tempVal4).getCooldownSellTime() != null) {
                 data.put("cooldownSellTime", tempVal1.get(tempVal4).getCooldownSellTime());
             }
             for (String key : data.keySet()) {
                 tempVal6.set(key, data.get(key));
             }
-            try {
-                if (needDelete) {
-                    file.delete();
-                }
-                config.save(file);
-            } catch (IOException e) {
-                ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: " +
-                        "Can not save data file: " + file.getName() + "!");
+        }
+        try {
+            if (needDelete) {
+                file.delete();
             }
+            config.save(file);
+        } catch (IOException e) {
+            ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: " +
+                    "Can not save data file: " + file.getName() + "!");
         }
     }
 

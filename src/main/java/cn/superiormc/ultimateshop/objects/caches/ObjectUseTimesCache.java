@@ -15,13 +15,13 @@ public class ObjectUseTimesCache {
 
     private int sellUseTimes;
 
-    private LocalDateTime lastBuyTime;
+    private LocalDateTime lastBuyTime = null;
 
-    private LocalDateTime lastSellTime;
+    private LocalDateTime lastSellTime = null;
 
-    private LocalDateTime cooldownBuyTime;
+    private LocalDateTime cooldownBuyTime = null;
 
-    private LocalDateTime cooldownSellTime;
+    private LocalDateTime cooldownSellTime = null;
 
     private ObjectItem product;
 
@@ -42,10 +42,16 @@ public class ObjectUseTimesCache {
             this.lastSellTime = CommonUtil.stringToTime(lastSellTime);
         }
         if (cooldownBuyTime != null) {
+            if (ConfigManager.configManager.getBoolean("debug")) {
+                Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §cSet cooldown time to " + product);
+            }
             this.cooldownBuyTime = CommonUtil.stringToTime(cooldownBuyTime);
         }
         this.sellUseTimes = sellUseTimes;
         if (cooldownSellTime != null) {
+            if (ConfigManager.configManager.getBoolean("debug")) {
+                Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §cSet cooldown time to " + product);
+            }
             this.cooldownSellTime = CommonUtil.stringToTime(cooldownSellTime);
         }
         this.product = product;
@@ -76,39 +82,39 @@ public class ObjectUseTimesCache {
     }
 
     public void setCooldownBuyTime() {
+        String mode = product.getItemConfig().getString("buy-cooldown-mode");
+        String tempVal1 = product.getItemConfig().getString("buy-cooldown-time");
+        if (mode == null || tempVal1 == null) {
+            return;
+        }
+        if (ConfigManager.configManager.getBoolean("debug")) {
+            Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §cSet cooldown time to " + product);
+        }
         if (cooldownBuyTime == null || !cooldownBuyTime.isAfter(LocalDateTime.now())) {
-            String mode = product.getItemConfig().getString("buy-cooldown-mode");
-            String tempVal1 = product.getItemConfig().getString("buy-cooldown-time");
-            if (mode == null || tempVal1 == null) {
-                return;
-            }
             if (mode.equals("TIMED")) {
                 cooldownBuyTime = getTimedBuyRefreshTime(tempVal1);
             }
             else if (mode.equals("TIMER")) {
                 cooldownBuyTime = getTimerBuyRefreshTime(tempVal1);
             }
-            else {
-                cooldownBuyTime = LocalDateTime.now().withYear(1999);
-            }
         }
     }
 
     public void setCooldownSellTime() {
+        String mode = product.getItemConfig().getString("sell-cooldown-mode");
+        String tempVal1 = product.getItemConfig().getString("sell-cooldown-time");
+        if (mode == null || tempVal1 == null) {
+            return;
+        }
+        if (ConfigManager.configManager.getBoolean("debug")) {
+            Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §cSet cooldown time to " + product);
+        }
         if (cooldownSellTime == null || !cooldownSellTime.isAfter(LocalDateTime.now())) {
-            String mode = product.getItemConfig().getString("sell-cooldown-mode");
-            String tempVal1 = product.getItemConfig().getString("sell-cooldown-time");
-            if (mode == null || tempVal1 == null) {
-                return;
-            }
             if (mode.equals("TIMED")) {
                 cooldownSellTime = getTimedSellRefreshTime(tempVal1);
             }
             else if (mode.equals("TIMER")) {
                 cooldownSellTime = getTimerSellRefreshTime(tempVal1);
-            }
-            else {
-                cooldownSellTime = LocalDateTime.now().withYear(1999);
             }
         }
     }
@@ -131,12 +137,18 @@ public class ObjectUseTimesCache {
         if (cooldownBuyTime == null) {
             return null;
         }
+        if (ConfigManager.configManager.getBoolean("debug")) {
+            Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §cCooldown time: " + cooldownBuyTime);
+        }
         return CommonUtil.timeToString(cooldownBuyTime);
     }
 
     public String getCooldownSellTime() {
         if (cooldownSellTime == null) {
             return null;
+        }
+        if (ConfigManager.configManager.getBoolean("debug")) {
+            Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §cCooldown time: " + cooldownSellTime);
         }
         return CommonUtil.timeToString(cooldownSellTime);
     }
