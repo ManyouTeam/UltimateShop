@@ -214,8 +214,7 @@ public class BuyProductMethod {
             tempVal8.setCooldownBuyTime();
             tempVal11.getUseTimesCache().put(tempVal2, tempVal8);
         }
-        if (quick ||
-                tempVal1.getShopConfig().
+        if (tempVal1.getShopConfig().
                         getBoolean("settings.send-messages-after-buy", true)) {
             LanguageManager.languageManager.sendStringText(player,
                     "success-buy",

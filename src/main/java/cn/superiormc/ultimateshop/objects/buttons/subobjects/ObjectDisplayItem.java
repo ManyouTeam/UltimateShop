@@ -54,7 +54,7 @@ public class ObjectDisplayItem{
                         ObjectCondition condition = new ObjectCondition(tempVal1);
                         if (condition.getBoolean(player)) {
                             ItemStack displayItem = ItemUtil.buildItemStack(player, section.getConfigurationSection(conditionID), (int) Double.parseDouble(
-                                    (TextUtil.withPAPI(section.getString("amount", "1"), player))));
+                                    (TextUtil.withPAPI(section.getConfigurationSection(conditionID).getString("amount", "1"), player))));
                             addLoreDisplayItem = displayItem.clone();
                             break;
                         }
@@ -70,9 +70,10 @@ public class ObjectDisplayItem{
 
     public ItemStack getDisplayItem(Player player, int multi) {
         ItemStack addLoreDisplayItem = getDisplayItem(player);
-        if (section != null &&
-                item != null &&
-                section.getBoolean("modify-lore", true)) {
+        if (item != null) {
+            if (section != null && section.getBoolean("modify-lore", true)) {
+                return addLoreDisplayItem;
+            }
             return ModifyDisplayItem.modifyItem(player, multi, addLoreDisplayItem, item, !item.getBuyMore());
         }
         return addLoreDisplayItem;
