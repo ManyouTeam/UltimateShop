@@ -65,7 +65,9 @@ public class ObjectItem extends AbstractButton {
         initBuyCondition();
         initBuyLimit();
         initSellLimit();
-        initBuyMoreMenu();
+        if (getBuyMore()) {
+            initBuyMoreMenu();
+        }
         initDisplayItem();
     }
 
@@ -359,7 +361,7 @@ public class ObjectItem extends AbstractButton {
 
     public boolean getBuyMore() {
         return config.getBoolean("buy-more",
-                ConfigManager.configManager.getShop(getShop()).getShopConfig().getBoolean("settings.buy-more", true));
+                shop.getShopConfig().getBoolean("settings.buy-more", true));
     }
 
     @Override

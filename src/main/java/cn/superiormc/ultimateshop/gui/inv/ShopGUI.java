@@ -135,12 +135,11 @@ public class ShopGUI extends InvGUI {
         }
         menuItems = getMenuItems(owner.getPlayer());
         if (Objects.isNull(inv)) {
-            if (shopMenu == null) {
-                inv = Bukkit.createInventory(owner, 54, "Menu is not found!");
+            if (shopMenu != null) {
+                inv = Bukkit.createInventory(owner, shopMenu.getInt("size", 54),
+                        TextUtil.parse(shopMenu.getString("title", shop.getShopDisplayName())
+                                .replace("{shop-name}", shop.getShopDisplayName())));
             }
-            inv = Bukkit.createInventory(owner, shopMenu.getInt("size", 54),
-                    TextUtil.parse(shopMenu.getString("title", shop.getShopDisplayName())
-                            .replace("{shop-name}", shop.getShopDisplayName())));
         }
         for (int slot : menuButtons.keySet()) {
             inv.setItem(slot, menuItems.get(slot));

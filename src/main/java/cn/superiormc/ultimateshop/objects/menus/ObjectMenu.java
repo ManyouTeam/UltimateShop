@@ -89,10 +89,10 @@ public class ObjectMenu {
             this.menuConfigs = YamlConfiguration.loadConfiguration(file);
         }
         if (menuConfigs == null) {
-            this.condition = new ObjectCondition(menuConfigs.getStringList("conditions"));
+            this.condition = new ObjectCondition();
         }
         else {
-            this.condition = new ObjectCondition();
+            this.condition = new ObjectCondition(menuConfigs.getStringList("conditions"));
         }
     }
 

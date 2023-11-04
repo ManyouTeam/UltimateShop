@@ -71,18 +71,10 @@ public class ServerCache {
     ) {
         ObjectShop tempVal1 = ConfigManager.configManager.getShop(shop);
         if (tempVal1 == null) {
-            LanguageManager.languageManager.sendStringText(
-                    "error.shop-not-found",
-                    "shop",
-                    shop);
             return;
         }
         ObjectItem tempVal2 = tempVal1.getProduct(product);
         if (tempVal2 == null) {
-            LanguageManager.languageManager.sendStringText(
-                    "error.product-not-found",
-                    "product",
-                    product);
             return;
         }
         useTimesCache.put(tempVal2, new ObjectUseTimesCache(buyUseTimes,
