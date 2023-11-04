@@ -157,7 +157,7 @@ sell-stick-items:
 
 auto-save:
   enabled: true
-  period-tick: 600
+  period-tick: 6000
 
 check-class:
   enabled: true

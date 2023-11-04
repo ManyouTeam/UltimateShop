@@ -23,6 +23,8 @@ public class TaskManager {
             @Override
             public void run() {
                 Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §fAuto saving data...");
+                Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §fIf this lead to server TPS drop, " +
+                        "you should consider disable auto save feature at config.yml!");
                 ServerCache.serverCache.shutServerCache();
                 for (Player player : Bukkit.getOnlinePlayers()) {
                     CacheManager.cacheManager.playerCacheMap.get(player).shutPlayerCache();
