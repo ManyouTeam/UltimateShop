@@ -1,17 +1,15 @@
 package cn.superiormc.ultimateshop.commands;
 
 import cn.superiormc.ultimateshop.UltimateShop;
-import cn.superiormc.ultimateshop.cache.PlayerCache;
 import cn.superiormc.ultimateshop.cache.ServerCache;
 import cn.superiormc.ultimateshop.managers.CacheManager;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.LanguageManager;
-import cn.superiormc.ultimateshop.methods.Create.CreateProduct;
 import cn.superiormc.ultimateshop.methods.GUI.OpenGUI;
 import cn.superiormc.ultimateshop.methods.Product.BuyProductMethod;
 import cn.superiormc.ultimateshop.methods.Product.SellProductMethod;
-import cn.superiormc.ultimateshop.methods.ProductMethodStatus;
 import cn.superiormc.ultimateshop.methods.ReloadPlugin;
+import cn.superiormc.ultimateshop.methods.ItemManager;
 import cn.superiormc.ultimateshop.methods.SellStickItem;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import cn.superiormc.ultimateshop.objects.menus.ObjectMenu;
@@ -52,6 +50,9 @@ public class MainCommand implements CommandExecutor {
             case 2:
                 if (args[0].equals("menu")) {
                     menuCommand(sender, args);
+                }
+                else if (args[0].equals("saveitem")) {
+                    saveItemCommand(sender, args);
                 }
                 else {
                     LanguageManager.languageManager.sendStringText(sender, "error.args");
@@ -270,6 +271,24 @@ public class MainCommand implements CommandExecutor {
         if (sender instanceof Player) {
             if (sender.hasPermission("ultimateshop.sellall")) {
                 OpenGUI.openSellAllGUI((Player) sender);
+            }
+            else {
+                LanguageManager.languageManager.sendStringText((Player) sender, "error.miss-permission");
+            }
+        }
+        else {
+            LanguageManager.languageManager.sendStringText("error.in-game");
+        }
+    }
+
+    private void saveItemCommand(CommandSender sender, String[] args) {
+        if (sender instanceof Player) {
+            if (args.length != 2) {
+                LanguageManager.languageManager.sendStringText(sender,
+                        "error.args");
+            }
+            else if (sender.hasPermission("ultimateshop.saveitem")) {
+                ItemManager.itemManager.saveMainHandItem((Player) sender, args[1]);
             }
             else {
                 LanguageManager.languageManager.sendStringText((Player) sender, "error.miss-permission");

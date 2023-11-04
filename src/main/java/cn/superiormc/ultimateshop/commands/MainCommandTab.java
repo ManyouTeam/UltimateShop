@@ -44,6 +44,9 @@ public class MainCommandTab implements TabCompleter {
                 if (sender.hasPermission("ultimateshop.setselltimes")) {
                     tempVal1.add("setselltimes");
                 }
+                if (sender.hasPermission("ultimateshop.saveitem")) {
+                    tempVal1.add("saveitem");
+                }
                 break;
             case 2:
                 switch (args[0]) {

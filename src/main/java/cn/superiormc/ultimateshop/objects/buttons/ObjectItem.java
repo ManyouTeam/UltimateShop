@@ -319,8 +319,7 @@ public class ObjectItem extends AbstractButton {
                 }
                 break;
             case "select-amount" :
-                if (config.getBoolean("buy-more",
-                        ConfigManager.configManager.getShop(getShop()).getShopConfig().getBoolean("settings.buy-more", true))) {
+                if (getBuyMore()) {
                     OpenGUI.openMoreGUI(player, this);
                 }
                 break;
@@ -359,7 +358,8 @@ public class ObjectItem extends AbstractButton {
     }
 
     public boolean getBuyMore() {
-        return shop.getShopConfig().getBoolean("settings.buy-more", true);
+        return config.getBoolean("buy-more",
+                ConfigManager.configManager.getShop(getShop()).getShopConfig().getBoolean("settings.buy-more", true));
     }
 
     @Override
