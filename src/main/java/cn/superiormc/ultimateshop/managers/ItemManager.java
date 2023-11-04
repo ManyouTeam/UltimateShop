@@ -1,4 +1,4 @@
-package cn.superiormc.ultimateshop.methods;
+package cn.superiormc.ultimateshop.managers;
 
 import cn.superiormc.ultimateshop.UltimateShop;
 import org.bukkit.Bukkit;
@@ -64,7 +64,7 @@ public class ItemManager {
 
     public ItemStack getItemByKey(String key) {
         if (savedItemMap.containsKey(key)) {
-            return savedItemMap.get(key);
+            return savedItemMap.get(key).clone();
         }
         return null;
     }

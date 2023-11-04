@@ -23,6 +23,7 @@ softdepend:
   - MythicMobs
   - PEconomy
   - RoyaleEconomy
+  - AdvancedEnchantments
 commands:
   ultimateshop:
     aliases:

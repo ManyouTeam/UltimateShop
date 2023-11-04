@@ -2,10 +2,9 @@ package cn.superiormc.ultimateshop.utils;
 
 import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.hooks.ItemsHook;
-import cn.superiormc.ultimateshop.methods.ItemManager;
+import cn.superiormc.ultimateshop.managers.ItemManager;
 import com.cryptomorin.xseries.XItemStack;
 import net.advancedplugins.ae.api.AEAPI;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
@@ -74,7 +73,7 @@ public class ItemUtil {
         if (!UltimateShop.freeVersion && tempVal1 != null) {
             if (CommonUtil.checkPluginLoad("AdvancedEnchantments")) {
                 for (String enchantName : tempVal1.getKeys(false)) {
-                    AEAPI.applyEnchant(enchantName, tempVal1.getInt(enchantName), resultItem);
+                    resultItem = AEAPI.applyEnchant(enchantName, tempVal1.getInt(enchantName), resultItem);
                 }
             }
         }

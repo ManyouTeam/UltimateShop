@@ -9,7 +9,7 @@ import cn.superiormc.ultimateshop.methods.GUI.OpenGUI;
 import cn.superiormc.ultimateshop.methods.Product.BuyProductMethod;
 import cn.superiormc.ultimateshop.methods.Product.SellProductMethod;
 import cn.superiormc.ultimateshop.methods.ReloadPlugin;
-import cn.superiormc.ultimateshop.methods.ItemManager;
+import cn.superiormc.ultimateshop.managers.ItemManager;
 import cn.superiormc.ultimateshop.methods.SellStickItem;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import cn.superiormc.ultimateshop.objects.menus.ObjectMenu;
@@ -289,6 +289,7 @@ public class MainCommand implements CommandExecutor {
             }
             else if (sender.hasPermission("ultimateshop.saveitem")) {
                 ItemManager.itemManager.saveMainHandItem((Player) sender, args[1]);
+                LanguageManager.languageManager.sendStringText((Player) sender, "plugin.saved");
             }
             else {
                 LanguageManager.languageManager.sendStringText((Player) sender, "error.miss-permission");

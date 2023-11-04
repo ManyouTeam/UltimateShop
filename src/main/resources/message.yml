@@ -29,6 +29,7 @@ command-tab:
 
 plugin:
   reloaded: "&#98FB98[UltimateShop] &fPlugin reloaded!"
+  saved: "&#98FB98[UltimateShop] &fItem Saved!"
 
 placeholderapi:
   unknown-shop: "Unknown Shop"
