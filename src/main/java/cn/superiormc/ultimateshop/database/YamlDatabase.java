@@ -2,14 +2,11 @@ package cn.superiormc.ultimateshop.database;
 
 import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.cache.ServerCache;
-import cn.superiormc.ultimateshop.managers.CacheManager;
 import cn.superiormc.ultimateshop.managers.ErrorManager;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import cn.superiormc.ultimateshop.objects.caches.ObjectUseTimesCache;
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.Player;
 
 import java.io.File;
 import java.io.IOException;
@@ -18,31 +15,27 @@ import java.util.Map;
 
 public class YamlDatabase {
 
-    public static void checkData(Player player) {
-        ServerCache cache = null;
+    public static void checkData(ServerCache cache) {
         File dir = new File(UltimateShop.instance.getDataFolder() + "/datas");
         if (!dir.exists()) {
             dir.mkdir();
         }
         File file = null;
-        if (player != null) {
-            file = new File(dir, player.getUniqueId() + ".yml");
+        if (!cache.server) {
+            file = new File(dir, cache.player.getUniqueId() + ".yml");
             if (!file.exists()) {
                 YamlConfiguration config = new YamlConfiguration();
                 Map<String, Object> data = new HashMap<>();
                 try {
-                    data.put("playerName", player.getName());
+                    data.put("playerName", cache.player.getName());
                     for (String key : data.keySet()) {
                         config.set(key, data.get(key));
                     }
                     config.save(file);
                 } catch (IOException e) {
                     ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: " +
-                            "Can not create new data file: " + player.getUniqueId() + ".yml!");
+                            "Can not create new data file: " + cache.player.getUniqueId() + ".yml!");
                 }
-            }
-            if (CacheManager.cacheManager.playerCacheMap.containsKey(player)) {
-                cache = CacheManager.cacheManager.playerCacheMap.get(player);
             }
         } else {
             // 新建文件
@@ -60,13 +53,6 @@ public class YamlDatabase {
                     ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: " +
                             "Can not create new data file: global.yml!");
                 }
-            }
-            // 获取对象
-            cache = ServerCache.serverCache;
-            if (cache == null) {
-                ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cCan not found server cache object," +
-                        " there maybe some issues...");
-                return;
             }
         }
         // 次数储存系统
@@ -90,39 +76,30 @@ public class YamlDatabase {
                 }
             }
         }
-        // 动态价格储存系统
-        // TODO...
     }
 
-    public static void updateData(Player player) {
+    public static void updateData(ServerCache cache) {
         boolean needDelete = false;
-        ServerCache cache = null;
         File dir = new File(UltimateShop.instance.getDataFolder()+"/datas");
         if (!dir.exists()) {
             dir.mkdir();
         }
         File file = null;
         Map<String, Object> data = new HashMap<>();
-        if (player == null) {
+        if (cache.server) {
             data.put("playerName", "global");
             cache = ServerCache.serverCache;
-            if (cache == null) {
-                ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cCan not found server cache object," +
-                        " there maybe some issues...");
-                return;
-            }
             file = new File(dir, "global.yml");
             if (file.exists()){
                 needDelete = true;
             }
         }
         else {
-            data.put("playerName", player.getName());
-            file = new File(dir, player.getUniqueId() + ".yml");
+            data.put("playerName", cache.player);
+            file = new File(dir, cache.player.getUniqueId() + ".yml");
             if (file.exists()){
                 file.delete();
             }
-            cache = CacheManager.cacheManager.playerCacheMap.get(player);
         }
         YamlConfiguration config = new YamlConfiguration();
         // 储存购买次数
@@ -135,9 +112,6 @@ public class YamlDatabase {
                 tempVal5 = useTimesSection.createSection(tempVal4.getShop());
             }
             ConfigurationSection tempVal6 = tempVal5.getConfigurationSection(tempVal4.getProduct());
-            if (tempVal6 == null) {
-                tempVal6 = tempVal5.createSection(tempVal4.getProduct());
-            }
             if (tempVal1.get(tempVal4).getBuyUseTimes() != 0) {
                 data.put("buyUseTimes", tempVal1.get(tempVal4).getBuyUseTimes());
             }
@@ -150,13 +124,16 @@ public class YamlDatabase {
             if (tempVal1.get(tempVal4).getSellRefreshTime() != null) {
                 data.put("lastSellTime", tempVal1.get(tempVal4).getLastSellTime());
             }
-            if (player != null && tempVal1.get(tempVal4).getCooldownBuyTime() != null) {
+            if (!cache.server && tempVal1.get(tempVal4).getCooldownBuyTime() != null) {
                 data.put("cooldownBuyTime", tempVal1.get(tempVal4).getCooldownBuyTime());
             }
-            if (player != null && tempVal1.get(tempVal4).getCooldownSellTime() != null) {
+            if (!cache.server && tempVal1.get(tempVal4).getCooldownSellTime() != null) {
                 data.put("cooldownSellTime", tempVal1.get(tempVal4).getCooldownSellTime());
             }
             for (String key : data.keySet()) {
+                if (tempVal6 == null) {
+                    tempVal6 = tempVal5.createSection(tempVal4.getProduct());
+                }
                 tempVal6.set(key, data.get(key));
             }
         }

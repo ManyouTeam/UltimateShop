@@ -155,6 +155,10 @@ sell-stick-items:
       - '&cLeft usages: {times}'
     usage-times: 50
 
+auto-save:
+  enabled: true
+  period-tick: 600
+
 check-class:
   enabled: true
   classes: []

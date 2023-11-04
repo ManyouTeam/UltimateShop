@@ -24,7 +24,6 @@ public class CacheManager {
             SQLDatabase.initSQL();
         }
         serverCache = new ServerCache();
-        serverCache.initServerCache();
     }
 
     public void addPlayerCache(Player player) {

@@ -20,11 +20,12 @@ public class ServerCache {
 
     public boolean server;
 
-    public Player player;
+    public Player player = null;
 
     public ServerCache() {
         this.server = true;
         serverCache = this;
+        initServerCache();
     }
 
     public ServerCache(Player player) {
@@ -34,28 +35,28 @@ public class ServerCache {
 
     public void initServerCache() {
         if (ConfigManager.configManager.getBoolean("database.enabled")) {
-            SQLDatabase.checkData(null);
+            SQLDatabase.checkData(this);
         }
         else {
-            YamlDatabase.checkData(null);
+            YamlDatabase.checkData(this);
         }
     }
 
     public void shutServerCache() {
         if (ConfigManager.configManager.getBoolean("database.enabled")) {
-            SQLDatabase.updateData(null);
+            SQLDatabase.updateData(this);
         }
         else {
-            YamlDatabase.updateData(null);
+            YamlDatabase.updateData(this);
         }
     }
 
     public void shutServerCacheOnDisable() {
         if (ConfigManager.configManager.getBoolean("database.enabled")) {
-            SQLDatabase.updateDataNoAsync(null);
+            SQLDatabase.updateDataNoAsync(this);
         }
         else {
-            YamlDatabase.updateData(null);
+            YamlDatabase.updateData(this);
         }
     }
 

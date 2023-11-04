@@ -1,5 +1,6 @@
 package cn.superiormc.ultimateshop.objects.buttons;
 
+import cn.superiormc.ultimateshop.managers.ErrorManager;
 import cn.superiormc.ultimateshop.objects.ObjectShop;
 import cn.superiormc.ultimateshop.objects.buttons.subobjects.ObjectDisplayItem;
 import cn.superiormc.ultimateshop.objects.items.ObjectAction;
@@ -25,6 +26,11 @@ public class ObjectButton extends AbstractButton {
     public ObjectButton(ConfigurationSection config) {
         super(config);
         this.type = ButtonType.COMMON;
+        if (config == null) {
+            ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: " +
+                    "Can not found config for button, there is something wrong in your menu configs!");
+            return;
+        }
         initButton();
     }
 
@@ -32,6 +38,11 @@ public class ObjectButton extends AbstractButton {
         super(config);
         this.type = ButtonType.COMMON;
         this.shop = shop;
+        if (config == null) {
+            ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: " +
+                    "Can not found config for button, there is something wrong in your menu configs!");
+            return;
+        }
         initButton();
     }
 
@@ -52,7 +63,9 @@ public class ObjectButton extends AbstractButton {
         if (condition != null && !condition.getBoolean(player)) {
             return;
         }
-        action.doAction(player, 1, 1);
+        if (action != null) {
+            action.doAction(player, 1, 1);
+        }
     }
 
     @Override

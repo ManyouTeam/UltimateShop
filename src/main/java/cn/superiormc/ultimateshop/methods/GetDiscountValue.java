@@ -44,7 +44,6 @@ public class GetDiscountValue {
         if (result.size() == 0) {
             result.add(1D);
         }
-        Bukkit.getConsoleSender().sendMessage(result.toArray().toString());
         if (section.getString("mode", "MIN").toUpperCase().equals("MIN")) {
             return Collections.min(result);
         }

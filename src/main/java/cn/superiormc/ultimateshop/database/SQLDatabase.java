@@ -62,9 +62,9 @@ public class SQLDatabase {
                 .build().execute(null);
     }
 
-    public static void checkData(Player player) {
+    public static void checkData(ServerCache cache) {
         QueryAction queryAction = null;
-        if (player == null) {
+        if (cache.server) {
             queryAction = sqlManager.createQuery()
                     .inTable("ultimateshop_useTimes")
                     .selectColumns("playerUUID",
@@ -83,29 +83,10 @@ public class SQLDatabase {
                             "buyUseTimes", "sellUseTimes",
                             "lastBuyTime", "lastSellTime",
                             "cooldownBuyTime", "cooldownSellTime")
-                    .addCondition("playerUUID = '" + player.getUniqueId().toString() + "'")
+                    .addCondition("playerUUID = '" + cache.player.getUniqueId().toString() + "'")
                     .build();
         }
         queryAction.executeAsync((result) -> {
-            ServerCache cache = null;
-            if (player == null) {
-                cache = ServerCache.serverCache;
-                if (cache == null) {
-                    ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cCan not found server cache object," +
-                            " there maybe some issues...");
-                    return;
-                }
-            }
-            else {
-                if (CacheManager.cacheManager.playerCacheMap.containsKey(player)) {
-                    cache = CacheManager.cacheManager.playerCacheMap.get(player);
-                }
-                if (cache == null) {
-                    ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cCan not found player cache object," +
-                            " there maybe some issues...");
-                    return;
-                }
-            }
             while (result.getResultSet().next()) {
                 String shop = result.getResultSet().getString("shop");
                 String product = result.getResultSet().getString("product");
@@ -123,26 +104,13 @@ public class SQLDatabase {
         });
     }
 
-    public static void updateData(Player player) {
-        ServerCache cache = null;
+    public static void updateData(ServerCache cache) {
         String playerUUID = null;
-        if (player == null) {
-            cache = ServerCache.serverCache;
-            if (cache == null) {
-                ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cCan not found server cache object," +
-                        " there maybe some issues...");
-                return;
-            }
+        if (cache.server) {
             playerUUID = "Global-Server";
         }
         else {
-            cache = CacheManager.cacheManager.playerCacheMap.get(player);
-            if (cache == null) {
-                ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cCan not found player cache object," +
-                        " there maybe some issues...");
-                return;
-            }
-            playerUUID = player.getUniqueId().toString();
+            playerUUID = cache.player.getUniqueId().toString();
         }
         Map<ObjectItem, ObjectUseTimesCache> tempVal1 = cache.getUseTimesCache();
         for (ObjectItem tempVal2 : tempVal1.keySet()) {
@@ -156,7 +124,7 @@ public class SQLDatabase {
             && cooldownBuyTime == null && cooldownSellTime == null) {
                 continue;
             }
-            if (player == null) {
+            if (cache.server) {
                 cooldownBuyTime = null;
                 cooldownSellTime = null;
             }
@@ -183,30 +151,31 @@ public class SQLDatabase {
         }
     }
 
-    public static void updateDataNoAsync(Player player) {
-        ServerCache cache = null;
+    public static void updateDataNoAsync(ServerCache cache) {
         String playerUUID = null;
-        if (player == null) {
-            cache = ServerCache.serverCache;
-            if (cache == null) {
-                ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cCan not found server cache object," +
-                        " there maybe some issues...");
-                return;
-            }
+        if (cache.server) {
             playerUUID = "Global-Server";
         }
         else {
-            cache = CacheManager.cacheManager.playerCacheMap.get(player);
-            if (cache == null) {
-                ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cCan not found player cache object," +
-                        " there maybe some issues...");
-                return;
-            }
-            playerUUID = player.getUniqueId().toString();
+            playerUUID = cache.player.getUniqueId().toString();
         }
         Map<ObjectItem, ObjectUseTimesCache> tempVal1 = cache.getUseTimesCache();
         for (ObjectItem tempVal2 : tempVal1.keySet()) {
             try {
+                int buyUseTimes = tempVal1.get(tempVal2).getBuyUseTimes();
+                int sellUseTimes = tempVal1.get(tempVal2).getSellUseTimes();
+                String lastBuyTime = tempVal1.get(tempVal2).getLastBuyTime();
+                String lastSellTime = tempVal1.get(tempVal2).getLastSellTime();
+                String cooldownBuyTime = tempVal1.get(tempVal2).getCooldownBuyTime();
+                String cooldownSellTime = tempVal1.get(tempVal2).getCooldownSellTime();
+                if (buyUseTimes == 0 && sellUseTimes == 0 && lastBuyTime == null && lastSellTime == null
+                        && cooldownBuyTime == null && cooldownSellTime == null) {
+                    continue;
+                }
+                if (cache.server) {
+                    cooldownBuyTime = null;
+                    cooldownSellTime = null;
+                }
                 sqlManager.createReplace("ultimateshop_useTimes")
                         .setColumnNames("playerUUID",
                                 "shop",
@@ -220,12 +189,12 @@ public class SQLDatabase {
                         .setParams(playerUUID,
                                 tempVal2.getShop(),
                                 tempVal2.getProduct(),
-                                tempVal1.get(tempVal2).getBuyUseTimes(),
-                                tempVal1.get(tempVal2).getSellUseTimes(),
-                                tempVal1.get(tempVal2).getLastBuyTime(),
-                                tempVal1.get(tempVal2).getLastSellTime(),
-                                tempVal1.get(tempVal2).getCooldownBuyTime(),
-                                tempVal1.get(tempVal2).getCooldownSellTime())
+                                buyUseTimes,
+                                sellUseTimes,
+                                lastBuyTime,
+                                lastSellTime,
+                                cooldownBuyTime,
+                                cooldownSellTime)
                         .execute();
             } catch (SQLException e) {
                 throw new RuntimeException(e);
