@@ -16,11 +16,12 @@ public class FormBuyOrSellGUI extends FormGUI {
 
     private ObjectItem item;
 
-    private FormType mode = FormType.UNKNOWN;
+    private FormType mode;
 
-    public FormBuyOrSellGUI(Player owner, ObjectItem item) {
+    public FormBuyOrSellGUI(Player owner, ObjectItem item, FormType mode) {
         super(owner);
         this.item = item;
+        this.mode = mode;
         constructGUI();
     }
 
@@ -36,38 +37,36 @@ public class FormBuyOrSellGUI extends FormGUI {
         }
         CustomForm.Builder tempVal2 = CustomForm.builder();
 
-        // buy
-        if (!item.getBuyPrice().empty) {
-            this.mode = FormType.BUY;
-        }
-
-        // sell
-        if (!item.getSellPrice().empty) {
-            if (this.mode == FormType.BUY) {
-                tempVal2.toggle(TextUtil.parse(
-                        ConfigManager.configManager.getString("menu.bedrock.buy-or-sell")));
-            }
-            else {
-                this.mode = FormType.SELL;
-            }
-        }
+        tempVal2.title(TextUtil.parse(ConfigManager.configManager.getString("menu.bedrock.buy-or-sell.title"))
+                .replace("{item-name}", item.getDisplayName(getOwner().getPlayer())));
 
         tempVal2.input(TextUtil.parse(
-                ConfigManager.configManager.getString("menu.bedrock.amount")),
-                TextUtil.parse(
-                        ConfigManager.configManager.getString("menu.bedrock.amount-tip")));
+                        ConfigManager.configManager.getString("menu.bedrock.buy-or-sell.buttons.amount.name")),
+                getButtonTab());
 
-        tempVal2.title(TextUtil.parse(ConfigManager.configManager.getString("menu.bedrock.title"))
-                .replace("{item-name}", item.getDisplayName(getOwner().getPlayer())));
         tempVal2.validResultHandler(response -> {
-            doThing(response.next(), response.next());
+            doThing(response.next());
         });
         form = tempVal2.build();
     }
 
-    private void doThing(boolean buyOrSell, String amount) {
+    private String getButtonTab() {
+        if (mode == FormType.BUY) {
+            return TextUtil.parse(
+                    ConfigManager.configManager.getString("menu.bedrock.buy-or-sell.buttons.amount.buy-tip"));
+        }
+        else {
+            return TextUtil.parse(
+                    ConfigManager.configManager.getString("menu.bedrock.buy-or-sell.buttons.amount.sell-tip"));
+        }
+    }
+
+    private void doThing(String amount) {
+        if (amount == null) {
+            return;
+        }
         boolean b = ConfigManager.configManager.getBoolean("placeholder.click.enabled");
-        if (amount.equals("all")) {
+        if (mode == FormType.SELL && amount.equals("all")) {
             if (!item.getSellPrice().empty) {
                 SellProductMethod.startSell(item.getShop(),
                         item.getProduct(),
@@ -94,7 +93,7 @@ public class FormBuyOrSellGUI extends FormGUI {
         catch (Exception e) {
             realAmount = 1;
         }
-        if (!buyOrSell) {
+        if (mode == FormType.BUY) {
             if (!item.getBuyPrice().empty) {
                 BuyProductMethod.startBuy(item.getShop(),
                         item.getProduct(),

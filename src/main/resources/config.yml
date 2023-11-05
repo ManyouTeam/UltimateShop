@@ -11,10 +11,18 @@ menu:
     title: '&fSell All &7- Esc to confirm sell!'
   # Premium version only
   bedrock:
-    title: 'What do you need do?'
-    buy-or-sell: 'Buy or Sell?'
-    amount: 'Amount'
-    amount-tip: 'Type all to sell all!'
+    buy-or-sell:
+      title: 'Product Settings'
+      buttons:
+        amount:
+          name: 'Amount'
+          buy-tip: 'Type amount you want to buy!'
+          sell-tip: 'Type all to sell all!'
+    info:
+      title: 'Product Info'
+      buttons:
+        buy: 'Buy'
+        sell: 'Sell'
   select-more:
     menu: buy-more
     max-amount: 64
@@ -62,10 +70,10 @@ display-item:
     - '@j&#ff3300Can not sell more for server!'
     - '@j&8Refresh Time: {sell-refresh-server}'
     - ' '
-    - '@a{buy-click}'
-    - '@b{sell-click}'
-    - '@k&#FFFACDRight-Shift click to pick amount!'
-    - '@b&#FFFACDDrop (Q key) to sell all!'
+    - '@a{buy-click}-b'
+    - '@b{sell-click}-b'
+    - '@k&#FFFACDRight-Shift click to pick amount!-b'
+    - '@b&#FFFACDDrop (Q key) to sell all!-b'
 
 placeholder:
   # Premium version only.

@@ -1,12 +1,8 @@
 package cn.superiormc.ultimateshop.objects.buttons;
 
 import cn.superiormc.ultimateshop.UltimateShop;
-import cn.superiormc.ultimateshop.cache.PlayerCache;
-import cn.superiormc.ultimateshop.gui.form.FormBuyOrSellGUI;
-import cn.superiormc.ultimateshop.gui.form.FormCommonGUI;
-import cn.superiormc.ultimateshop.managers.CacheManager;
+import cn.superiormc.ultimateshop.gui.form.FormInfoGUI;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
-import cn.superiormc.ultimateshop.managers.ErrorManager;
 import cn.superiormc.ultimateshop.methods.GUI.OpenGUI;
 import cn.superiormc.ultimateshop.methods.Product.BuyProductMethod;
 import cn.superiormc.ultimateshop.methods.Product.SellProductMethod;
@@ -284,8 +280,8 @@ public class ObjectItem extends AbstractButton {
         if (CommonUtil.getClass("org.geysermc.floodgate.api.FloodgateApi")) {
             if (!UltimateShop.freeVersion &&
                     FloodgateApi.getInstance().isFloodgatePlayer(player.getUniqueId())) {
-                FormBuyOrSellGUI buyOrSellGUI = new FormBuyOrSellGUI(player, this);
-                buyOrSellGUI.openGUI();
+                FormInfoGUI infoGUI = new FormInfoGUI(player, this);
+                infoGUI.openGUI();
                 return;
             }
         }

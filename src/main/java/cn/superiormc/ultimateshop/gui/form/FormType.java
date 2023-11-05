@@ -4,7 +4,5 @@ public enum FormType {
 
     BUY,
     SELL,
-    UNKNOWN,
-    BOTH
 
 }
