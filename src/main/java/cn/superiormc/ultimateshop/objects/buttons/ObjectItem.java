@@ -78,7 +78,9 @@ public class ObjectItem extends AbstractButton {
             reward = new ObjectProducts();
             return;
         }
-        reward = new ObjectProducts(config.getConfigurationSection("products"), config.getString("product-mode", "ANY"));
+        reward = new ObjectProducts(config.getConfigurationSection("products"),
+                config.getString("product-mode", "ANY"),
+                this);
     }
 
     private void initBuyPrice() {

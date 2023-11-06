@@ -3,6 +3,9 @@ package cn.superiormc.ultimateshop.objects.items;
 import cn.superiormc.ultimateshop.managers.ErrorManager;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
 import me.clip.placeholderapi.PlaceholderAPI;
+import net.luckperms.api.LuckPerms;
+import net.luckperms.api.LuckPermsProvider;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -11,9 +14,6 @@ import java.util.List;
 public class ObjectCondition {
 
     private final List<String> condition;
-
-
-    private boolean conditionTrueOrFasle = true;
 
     public ObjectCondition() {
         this.condition = new ArrayList<>();
@@ -25,11 +25,14 @@ public class ObjectCondition {
     }
 
     public boolean getBoolean(Player player) {
+        if (player == null) {
+            return false;
+        }
+        boolean conditionTrueOrFasle = true;
         for (String singleCondition : condition){
-            if (singleCondition.startsWith("none")){
+            if (singleCondition.equals("none")) {
                 return true;
-            } else if (singleCondition.startsWith("world: "))
-            {
+            } else if (singleCondition.startsWith("world: ")) {
                 int i = 0;
                 for (String str : singleCondition.substring(7).split(";;")){
                     if (str.equals(player.getWorld().getName())){
@@ -41,16 +44,15 @@ public class ObjectCondition {
                     conditionTrueOrFasle = false;
                     break;
                 }
-            } else if (singleCondition.startsWith("permission: ") && player != null)
-            {
-                for(String str : singleCondition.substring(12).split(";;")){
-                    if(!player.hasPermission(str)){
+            } else if (singleCondition.startsWith("permission: ")) {
+                for (String str : singleCondition.substring(12).split(";;")) {
+                    if (!player.hasPermission(str)) {
                         conditionTrueOrFasle = false;
                         break;
                     }
                 }
-            } else if (CommonUtil.checkPluginLoad("PlaceholderAPI") && singleCondition.startsWith("placeholder: ") &&
-            player != null) {
+            } else if (CommonUtil.checkPluginLoad("PlaceholderAPI") &&
+                    singleCondition.startsWith("placeholder: ")) {
                 try {
                     if (singleCondition.split(";;").length == 3) {
                         String[] conditionString = singleCondition.substring(13).split(";;");

@@ -6,6 +6,7 @@ import io.lumine.mythic.api.mobs.MythicMob;
 import io.lumine.mythic.bukkit.BukkitAdapter;
 import io.lumine.mythic.bukkit.MythicBukkit;
 import io.lumine.xikage.mythicmobs.MythicMobs;
+import net.luckperms.api.LuckPermsProvider;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -21,6 +22,17 @@ public class CommonUtil {
 
     public static boolean checkPluginLoad(String pluginName){
         return UltimateShop.instance.getServer().getPluginManager().isPluginEnabled(pluginName);
+    }
+
+    public static boolean checkPermission(Player player, String permission) {
+        if (CommonUtil.checkPluginLoad("LuckPerms")) {
+            return LuckPermsProvider.get().getPlayerAdapter(Player.class).
+                    getPermissionData(player).
+                    checkPermission(permission).asBoolean();
+        }
+        else {
+            return player.hasPermission(permission);
+        }
     }
 
     public static void dispatchCommand(String command){

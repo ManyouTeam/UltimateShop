@@ -5,6 +5,7 @@ import cn.superiormc.ultimateshop.methods.GUI.ModifyDisplayItem;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import cn.superiormc.ultimateshop.objects.items.ObjectCondition;
 import cn.superiormc.ultimateshop.utils.ItemUtil;
+import cn.superiormc.ultimateshop.utils.MathUtil;
 import cn.superiormc.ultimateshop.utils.TextUtil;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
@@ -43,8 +44,9 @@ public class ObjectDisplayItem{
         else {
             // 显示物品
             if (conditionSection == null) {
-                ItemStack displayItem = ItemUtil.buildItemStack(player, section, (int) Double.parseDouble(
-                        (TextUtil.withPAPI(section.getString("amount", "1"), player))));
+                String amount = section.getString("amount", "1");
+                ItemStack displayItem = ItemUtil.buildItemStack(player, section, (int)
+                        MathUtil.doCalculate(TextUtil.withPAPI(amount, player)));
                 addLoreDisplayItem = displayItem.clone();
             }
             else {
@@ -53,8 +55,10 @@ public class ObjectDisplayItem{
                     if (!tempVal1.isEmpty() && section.getConfigurationSection(conditionID) != null) {
                         ObjectCondition condition = new ObjectCondition(tempVal1);
                         if (condition.getBoolean(player)) {
-                            ItemStack displayItem = ItemUtil.buildItemStack(player, section.getConfigurationSection(conditionID), (int) Double.parseDouble(
-                                    (TextUtil.withPAPI(section.getConfigurationSection(conditionID).getString("amount", "1"), player))));
+                            String amount = section.getString("amount", "1");
+                            ItemStack displayItem = ItemUtil.buildItemStack(player,
+                                    section.getConfigurationSection(conditionID), (int)
+                                    MathUtil.doCalculate(TextUtil.withPAPI(amount, player)));
                             addLoreDisplayItem = displayItem.clone();
                             break;
                         }

@@ -1,6 +1,7 @@
 package cn.superiormc.ultimateshop.objects.buttons;
 
 import cn.superiormc.ultimateshop.utils.ItemUtil;
+import cn.superiormc.ultimateshop.utils.MathUtil;
 import cn.superiormc.ultimateshop.utils.TextUtil;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
@@ -20,7 +21,8 @@ public class ObjectMoreButton extends AbstractButton {
         if (tempVal1 == null) {
             return new ItemStack(Material.BEDROCK);
         }
-        return ItemUtil.buildItemStack(player, tempVal1, (int) Double.parseDouble
-                (TextUtil.withPAPI(tempVal1.getString("amount", "1"), player)));
+        String amount = tempVal1.getString("amount", "1");
+        return ItemUtil.buildItemStack(player, tempVal1, (int)
+                MathUtil.doCalculate(TextUtil.withPAPI(amount, player)));
     }
 }

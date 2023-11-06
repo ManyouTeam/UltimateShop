@@ -273,7 +273,8 @@ public class ObjectAction {
         }
         if (shop != null) {
             str = str.replace("{shop-menu}", shop.getShopMenu())
-                    .replace("{shop}", shop.getShopName());
+                    .replace("{shop}", shop.getShopName()
+                    .replace("{shop-name}", shop.getShopDisplayName()));
         }
         return str;
     }
