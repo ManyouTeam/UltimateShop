@@ -3,7 +3,6 @@ package cn.superiormc.ultimateshop.managers;
 import cn.superiormc.ultimateshop.cache.PlayerCache;
 import cn.superiormc.ultimateshop.cache.ServerCache;
 import cn.superiormc.ultimateshop.database.SQLDatabase;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
@@ -36,6 +35,14 @@ public class CacheManager {
             ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cCan not save player data: " + player.getName() + "!");
         }
         playerCacheMap.get(player).shutPlayerCache();
+        playerCacheMap.remove(player);
+    }
+
+    public void savePlayerCacheOnDisable(Player player) {
+        if (playerCacheMap.get(player) == null) {
+            ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cCan not save player data: " + player.getName() + "!");
+        }
+        playerCacheMap.get(player).shutPlayerCacheOnDisable();
         playerCacheMap.remove(player);
     }
 

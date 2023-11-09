@@ -52,7 +52,7 @@ public final class UltimateShop extends JavaPlugin {
             ServerCache.serverCache.shutServerCacheOnDisable();
         }
         for (Player player : Bukkit.getOnlinePlayers()) {
-            CacheManager.cacheManager.playerCacheMap.get(player).shutPlayerCacheOnDisable();
+            CacheManager.cacheManager.savePlayerCacheOnDisable(player);
         }
         SQLDatabase.closeSQL();
         Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §fPlugin is disabled. Author: PQguanfang.");

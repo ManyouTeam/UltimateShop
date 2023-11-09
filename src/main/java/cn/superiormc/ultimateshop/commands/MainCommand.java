@@ -12,6 +12,7 @@ import cn.superiormc.ultimateshop.methods.ReloadPlugin;
 import cn.superiormc.ultimateshop.managers.ItemManager;
 import cn.superiormc.ultimateshop.methods.SellStickItem;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
+import cn.superiormc.ultimateshop.objects.caches.ObjectUseTimesCache;
 import cn.superiormc.ultimateshop.objects.menus.ObjectMenu;
 import cn.superiormc.ultimateshop.objects.ObjectShop;
 import com.cryptomorin.xseries.XItemStack;
@@ -396,9 +397,22 @@ public class MainCommand implements CommandExecutor {
                                 args[3]);
                 return;
             }
+            ObjectUseTimesCache tempVal4 = tempVal3.getUseTimesCache().get(tempVal2);
             switch (args.length) {
                 case 4:
-                    tempVal3.getUseTimesCache().get(tempVal2).setBuyUseTimes(0);
+                    if (tempVal4 == null) {
+                        tempVal3.setUseTimesCache(tempVal1.getShopName(),
+                                tempVal2.getProduct(),
+                                0,
+                                0,
+                                null,
+                                null,
+                                null,
+                                null);
+                    }
+                    else {
+                        tempVal4.setBuyUseTimes(0);
+                    }
                     LanguageManager.languageManager.sendStringText(sender,
                             "set-times",
                             "player",
@@ -409,7 +423,19 @@ public class MainCommand implements CommandExecutor {
                             "0");
                     break;
                 case 5:
-                    tempVal3.getUseTimesCache().get(tempVal2).setBuyUseTimes(Integer.parseInt(args[4]));
+                    if (tempVal4 == null) {
+                        tempVal3.setUseTimesCache(tempVal1.getShopName(),
+                                tempVal2.getProduct(),
+                                Integer.parseInt(args[4]),
+                                0,
+                                null,
+                                null,
+                                null,
+                                null);
+                    }
+                    else {
+                        tempVal4.setBuyUseTimes(Integer.parseInt(args[4]));
+                    }
                     LanguageManager.languageManager.sendStringText(sender,
                             "set-times",
                             "player",
@@ -476,9 +502,22 @@ public class MainCommand implements CommandExecutor {
                                 args[3]);
                 return;
             }
+            ObjectUseTimesCache tempVal4 = tempVal3.getUseTimesCache().get(tempVal2);
             switch (args.length) {
                 case 4:
-                    tempVal3.getUseTimesCache().get(tempVal2).setSellUseTimes(0);
+                    if (tempVal4 == null) {
+                        tempVal3.setUseTimesCache(tempVal1.getShopName(),
+                                tempVal2.getProduct(),
+                                0,
+                                0,
+                                null,
+                                null,
+                                null,
+                                null);
+                    }
+                    else {
+                        tempVal4.setSellUseTimes(0);
+                    }
                     LanguageManager.languageManager.sendStringText(sender,
                             "set-times",
                             "player",
@@ -489,7 +528,19 @@ public class MainCommand implements CommandExecutor {
                             "0");
                     break;
                 case 5:
-                    tempVal3.getUseTimesCache().get(tempVal2).setSellUseTimes(Integer.parseInt(args[4]));
+                    if (tempVal4 == null) {
+                        tempVal3.setUseTimesCache(tempVal1.getShopName(),
+                                tempVal2.getProduct(),
+                                0,
+                                Integer.parseInt(args[4]),
+                                null,
+                                null,
+                                null,
+                                null);
+                    }
+                    else {
+                        tempVal4.setSellUseTimes(Integer.parseInt(args[4]));
+                    }
                     LanguageManager.languageManager.sendStringText(sender,
                             "set-times",
                             "player",
