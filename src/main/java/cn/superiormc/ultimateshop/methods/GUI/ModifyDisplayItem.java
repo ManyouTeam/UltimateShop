@@ -25,11 +25,13 @@ public class ModifyDisplayItem {
                                         ItemStack addLoreDisplayItem,
                                         ObjectItem item,
                                         boolean buyMore) {
-        if (multi > 1) {
-            // 修改物品名称
+        // 修改物品名称
+        if (buyMore || item.getItemConfig().getString("display-name") != null) {
             String itemName = item.getDisplayName(player);
-            itemName = TextUtil.parse("&f" + itemName + ConfigManager.configManager.getString("display-item.add-displayname").
-                    replace("{amount}", String.valueOf(multi)));
+            if (buyMore) {
+                itemName = itemName + TextUtil.parse(ConfigManager.configManager.getString("display-item.add-displayname").
+                        replace("{amount}", String.valueOf(multi)));
+            }
             ItemMeta meta = addLoreDisplayItem.getItemMeta();
             meta.setDisplayName(itemName);
             addLoreDisplayItem.setItemMeta(meta);

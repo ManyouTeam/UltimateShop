@@ -16,6 +16,7 @@ import cn.superiormc.ultimateshop.objects.items.prices.ObjectPrices;
 import cn.superiormc.ultimateshop.objects.items.products.ObjectProducts;
 import cn.superiormc.ultimateshop.objects.menus.ObjectMoreMenu;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
+import cn.superiormc.ultimateshop.utils.TextUtil;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
@@ -59,6 +60,7 @@ public class ObjectItem extends AbstractButton {
         initBuyAction();
         initSellAction();
         initBuyCondition();
+        initSellCondition();
         initBuyLimit();
         initSellLimit();
         if (getBuyMore()) {
@@ -190,7 +192,7 @@ public class ObjectItem extends AbstractButton {
         if (config.getString("display-name") == null) {
             return CommonUtil.getItemName(displayItem.getDisplayItem(player));
         }
-        return config.getString("display-name");
+        return TextUtil.parse(config.getString("display-name"));
     }
 
     public ObjectPrices getBuyPrice() {

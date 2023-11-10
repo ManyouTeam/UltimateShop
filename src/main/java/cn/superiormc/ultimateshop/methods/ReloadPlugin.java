@@ -15,7 +15,7 @@ import org.bukkit.entity.Player;
 public class ReloadPlugin {
 
     public static void reload(CommandSender sender) {
-        sender.sendMessage("§x§9§8§F§B§9§8[UltimateShop] &fTrying reload the plugin, server may have TPS " +
+        sender.sendMessage("§x§9§8§F§B§9§8[UltimateShop] §fTrying reload the plugin, server may have TPS " +
                 "drop or even crash if you have much shop products and online players because we are trying save" +
                 "their data in server main thread. We recommend you restart the server instead of reload plugin" +
                 "to keep the data save.");
