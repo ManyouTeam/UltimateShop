@@ -24,6 +24,7 @@ softdepend:
   - PEconomy
   - RoyaleEconomy
   - AdvancedEnchantments
+  - NeigeItems
 commands:
   ultimateshop:
     aliases:

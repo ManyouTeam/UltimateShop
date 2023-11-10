@@ -11,6 +11,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import pers.neige.neigeitems.utils.ItemUtils;
 
 import java.io.File;
 import java.time.LocalDateTime;
@@ -145,10 +146,13 @@ public class CommonUtil {
     }
 
     public static String getItemName(ItemStack displayItem) {
+        if (CommonUtil.checkPluginLoad("NeigeItems")) {
+            return ItemUtils.getItemName(displayItem);
+        }
         return displayItem.getItemMeta().hasDisplayName() ?
         displayItem.getItemMeta().getDisplayName() :
         displayItem.getItemMeta().hasLocalizedName() ?
         displayItem.getItemMeta().getLocalizedName() :
-        displayItem.getType().name();
+                displayItem.getType().name();
     }
 }
