@@ -23,7 +23,7 @@ public abstract class InvGUI extends AbstractGUI {
         super(owner);
     }
 
-    public abstract boolean clickEventHandle(ClickType type, int slot);
+    public abstract boolean clickEventHandle(Inventory inventpry, ClickType type, int slot);
 
     public abstract boolean closeEventHandle();
 

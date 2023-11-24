@@ -16,6 +16,7 @@ import cn.superiormc.ultimateshop.utils.TextUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -148,7 +149,10 @@ public class ShopGUI extends InvGUI {
     }
 
     @Override
-    public boolean clickEventHandle(ClickType type, int slot) {
+    public boolean clickEventHandle(Inventory inventory, ClickType type, int slot) {
+        if (!Objects.equals(inventory, getInv())) {
+            return true;
+        }
         if (menuButtons.get(slot) == null) {
             return true;
         }

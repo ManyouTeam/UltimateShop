@@ -6,7 +6,7 @@
 
     <groupId>cn.superiormc</groupId>
     <artifactId>UltimateShop</artifactId>
-    <version>1.7.12</version>
+    <version>1.8.0</version>
     <packaging>jar</packaging>
 
     <name>UltimateShop</name>
@@ -34,26 +34,11 @@
                 <configuration>
                     <relocations>
                         <relocation>
-                            <pattern>com.cryptomorin.xseries</pattern>
+                            <pattern>com.cryptomorin.xserieschanged</pattern>
                             <!-- Be sure to change the package below -->
                             <shadedPattern>my.plugin.utils</shadedPattern>
                         </relocation>
                     </relocations>
-                    <!-- Here you can remove the classes you don't use. -->
-                    <!-- These are some examples. -->
-                    <!-- The "unused" package and SkullCacheListener are excluded by default. -->
-                    <!-- Some utilities such a XItemStack depend on more than 3 other classes, so watch out. -->
-                    <filters>
-                        <filter>
-                            <artifact>*:*</artifact>
-                            <excludes>
-                                <exclude>com/cryptomorin/xseries/XBiome*</exclude>
-                                <exclude>com/cryptomorin/xseries/NMSExtras*</exclude>
-                                <exclude>com/cryptomorin/xseries/NoteBlockMusic*</exclude>
-                                <exclude>com/cryptomorin/xseries/SkullCacheListener*</exclude>
-                            </excludes>
-                        </filter>
-                    </filters>
                 </configuration>
                 <executions>
                     <execution>
@@ -125,7 +110,7 @@
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
-            <version>1.17-R0.1-SNAPSHOT</version>
+            <version>1.20.2-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -139,11 +124,6 @@
             <artifactId>api</artifactId>
             <version>2.2.2-SNAPSHOT</version>
             <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.github.cryptomorin</groupId>
-            <artifactId>XSeries</artifactId>
-            <version>9.5.0</version>
         </dependency>
         <dependency>
             <groupId>cc.carm.lib</groupId>
@@ -197,7 +177,7 @@
         <dependency>
             <groupId>com.mojang</groupId>
             <artifactId>authlib</artifactId>
-            <version>1.5.21</version>
+            <version>1.5.25</version>
             <scope>provided</scope>
         </dependency>
         <dependency>

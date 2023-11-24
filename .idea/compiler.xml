@@ -9,8 +9,5 @@
         <module name="UltimateShop" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="UltimateShop" target="1.8" />
-    </bytecodeTargetLevel>
   </component>
 </project>

@@ -6,10 +6,11 @@ import cn.superiormc.ultimateshop.managers.LanguageManager;
 import cn.superiormc.ultimateshop.methods.Product.SellProductMethod;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import cn.superiormc.ultimateshop.utils.TextUtil;
-import com.cryptomorin.xseries.XItemStack;
+import com.cryptomorin.xserieschanged.XItemStack;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.Arrays;
@@ -33,7 +34,7 @@ public class SellAllGUI extends InvGUI {
     }
 
     @Override
-    public boolean clickEventHandle(ClickType type, int slot) {
+    public boolean clickEventHandle(Inventory inventory, ClickType type, int slot) {
         return false;
     }
 

@@ -4,7 +4,7 @@ import cn.superiormc.ultimateshop.hooks.EconomyHook;
 import cn.superiormc.ultimateshop.hooks.PriceHook;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.utils.ItemUtil;
-import com.cryptomorin.xseries.XItemStack;
+import com.cryptomorin.xserieschanged.XItemStack;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;

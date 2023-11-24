@@ -15,7 +15,7 @@ import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import cn.superiormc.ultimateshop.objects.caches.ObjectUseTimesCache;
 import cn.superiormc.ultimateshop.objects.menus.ObjectMenu;
 import cn.superiormc.ultimateshop.objects.ObjectShop;
-import com.cryptomorin.xseries.XItemStack;
+import com.cryptomorin.xserieschanged.XItemStack;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -234,7 +234,37 @@ public class MainCommand implements CommandExecutor {
             }
         }
         else {
-            LanguageManager.languageManager.sendStringText("error.in-game");
+            if (args.length < 4) {
+                LanguageManager.languageManager.sendStringText(sender,
+                        "error.args");
+                return;
+            }
+            Player player = Bukkit.getPlayer(args[args.length - 1]);
+            if (player == null) {
+                LanguageManager.languageManager.sendStringText
+                        (sender,
+                                "error.player-not-found",
+                                "player",
+                                args[args.length - 1]);
+                return;
+            }
+            switch (args.length) {
+                case 4:
+                    BuyProductMethod.startBuy(args[1], args[2], player, true);
+                    break;
+                case 5:
+                    BuyProductMethod.startBuy(args[1],
+                            args[2],
+                            player,
+                            true,
+                            false,
+                            Integer.parseInt(args[3]));
+                    break;
+                default:
+                    LanguageManager.languageManager.sendStringText(sender,
+                            "error.args");
+                    break;
+            }
         }
     }
 
@@ -264,7 +294,37 @@ public class MainCommand implements CommandExecutor {
             }
         }
         else {
-            LanguageManager.languageManager.sendStringText("error.in-game");
+            if (args.length < 4) {
+                LanguageManager.languageManager.sendStringText(sender,
+                        "error.args");
+                return;
+            }
+            Player player = Bukkit.getPlayer(args[args.length - 1]);
+            if (player == null) {
+                LanguageManager.languageManager.sendStringText
+                        (sender,
+                                "error.player-not-found",
+                                "player",
+                                args[args.length - 1]);
+                return;
+            }
+            switch (args.length) {
+                case 4:
+                    SellProductMethod.startSell(args[1], args[2], player, true);
+                    break;
+                case 5:
+                    SellProductMethod.startSell(args[1],
+                            args[2],
+                            player,
+                            true,
+                            false,
+                            Integer.parseInt(args[3]));
+                    break;
+                default:
+                    LanguageManager.languageManager.sendStringText(sender,
+                            "error.args");
+                    break;
+            }
         }
     }
 
