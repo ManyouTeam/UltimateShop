@@ -20,6 +20,9 @@ public class MainCommandTab implements TabCompleter {
         switch (args.length) {
             case 1 :
                 tempVal1.add("help");
+                if (sender.hasPermission("ultimateshop.editor")) {
+                    tempVal1.add("editor");
+                }
                 if (sender.hasPermission("ultimateshop.quickbuy")) {
                     tempVal1.add("quickbuy");
                 }

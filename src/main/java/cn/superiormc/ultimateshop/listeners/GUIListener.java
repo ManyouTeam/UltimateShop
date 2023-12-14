@@ -52,8 +52,6 @@ public class GUIListener implements Listener {
             if (gui.closeEventHandle()) {
                 HandlerList.unregisterAll(this);
                 player.updateInventory();
-            } else {
-                gui.openGUI();
             }
         }
     }

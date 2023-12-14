@@ -1,5 +1,6 @@
 package cn.superiormc.ultimateshop.listeners;
 
+import cn.superiormc.ultimateshop.gui.inv.editor.CreateShopGUI;
 import cn.superiormc.ultimateshop.managers.CacheManager;
 import com.willfp.eco.core.items.CustomItem;
 import com.willfp.eco.core.items.Items;
@@ -19,5 +20,6 @@ public class CacheListener implements Listener {
     @EventHandler
     public void onExit(PlayerQuitEvent event) {
         CacheManager.cacheManager.savePlayerCache(event.getPlayer());
+        CreateShopGUI.guiCache.remove(event.getPlayer());
     }
 }

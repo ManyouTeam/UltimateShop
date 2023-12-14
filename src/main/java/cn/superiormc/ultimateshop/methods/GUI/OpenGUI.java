@@ -7,7 +7,12 @@ import cn.superiormc.ultimateshop.gui.inv.BuyMoreGUI;
 import cn.superiormc.ultimateshop.gui.inv.CommonGUI;
 import cn.superiormc.ultimateshop.gui.inv.SellAllGUI;
 import cn.superiormc.ultimateshop.gui.inv.ShopGUI;
+import cn.superiormc.ultimateshop.gui.inv.editor.ChooseShopGUI;
+import cn.superiormc.ultimateshop.gui.inv.editor.CreateOrEditShopGUI;
+import cn.superiormc.ultimateshop.gui.inv.editor.CreateShopGUI;
+import cn.superiormc.ultimateshop.gui.inv.editor.EditShopGUI;
 import cn.superiormc.ultimateshop.listeners.GUIListener;
+import cn.superiormc.ultimateshop.managers.LanguageManager;
 import cn.superiormc.ultimateshop.objects.ObjectShop;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
@@ -60,6 +65,50 @@ public class OpenGUI {
 
     public static void openSellAllGUI(Player player) {
         SellAllGUI gui = new SellAllGUI(player);
+        gui.openGUI();
+        Listener guiListener = new GUIListener(gui);
+        Bukkit.getPluginManager().registerEvents(guiListener, UltimateShop.instance);
+    }
+
+    public static void openEditorGUI(Player player) {
+        if (CommonUtil.getEditing(player)) {
+            LanguageManager.languageManager.sendStringText(player, "editor.already-editing");
+            return;
+        }
+        CreateOrEditShopGUI gui = new CreateOrEditShopGUI(player);
+        gui.openGUI();
+        Listener guiListener = new GUIListener(gui);
+        Bukkit.getPluginManager().registerEvents(guiListener, UltimateShop.instance);
+    }
+
+    public static void openChooseShopGUI(Player player) {
+        if (CommonUtil.getEditing(player)) {
+            LanguageManager.languageManager.sendStringText(player, "editor.already-editing");
+            return;
+        }
+        ChooseShopGUI gui = new ChooseShopGUI(player);
+        gui.openGUI();
+        Listener guiListener = new GUIListener(gui);
+        Bukkit.getPluginManager().registerEvents(guiListener, UltimateShop.instance);
+    }
+
+    public static void openCreateShopGUI(Player player) {
+        if (CommonUtil.getEditing(player)) {
+            LanguageManager.languageManager.sendStringText(player, "editor.already-editing");
+            return;
+        }
+        CreateShopGUI gui = new CreateShopGUI(player);
+        gui.openGUI();
+        Listener guiListener = new GUIListener(gui);
+        Bukkit.getPluginManager().registerEvents(guiListener, UltimateShop.instance);
+    }
+
+    public static void openEditShopGUI(Player player, ObjectShop shop) {
+        if (CommonUtil.getEditing(player)) {
+            LanguageManager.languageManager.sendStringText(player, "editor.already-editing");
+            return;
+        }
+        EditShopGUI gui = new EditShopGUI(player, shop);
         gui.openGUI();
         Listener guiListener = new GUIListener(gui);
         Bukkit.getPluginManager().registerEvents(guiListener, UltimateShop.instance);

@@ -9,6 +9,8 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 public class LanguageManager {
 
@@ -87,6 +89,15 @@ public class LanguageManager {
             return "§cCan not found language key: " + path + "!";
         }
         return this.messageFile.getString(path);
+    }
+
+    public List<String> getStringListText(String path) {
+        if (this.messageFile.getStringList(path).isEmpty()) {
+            List<String> tempVal1 = new ArrayList<>();
+            tempVal1.add("§cCan not found language key: " + path + "!");
+            return tempVal1;
+        }
+        return this.messageFile.getStringList(path);
     }
 
 }

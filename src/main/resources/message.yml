@@ -11,22 +11,6 @@ error:
   shop-does-not-have-menu: "&#98FB98[UltimateShop] &cShop {shop} does not have valid menu!"
   length-only-one: "&#98FB98[UltimateShop] &cProduct ID length must be 1 char!"
 
-command-tab:
-  unknown-shop: 'Unknown Shop!'
-  enter-shop-id: 'Please enter the shop id you want!'
-  enter-shop-displayname: 'Please enter the shop display name you want!'
-  enter-product-id: 'Please enter the product id you want!'
-  enter-economy-plugin: 'You can also enter economy plugin here, like: Vault!'
-  enter-hook-plugin: 'You can also enter item plugin here, like: MMOItems'
-  enter-placeholder: 'Enter the display name of this price, like: Coins, Points'
-  enter-currency: 'Enter the currency ID in your economy plugin'
-  enter-hook-item-id: 'Enter the item ID in your item plugin'
-  enter-hook-item-namespace-id: 'Enter the item namespace:ID, like: ores:big_ore'
-  enter-hook-item-slot-id: 'Enter the item slot;;ID, like: CHESTPLATE;;angel'
-  enter-hook-item-type-id: 'Enter the item type;;ID, like: SWORD;;newkit'
-  enter-apply-number: 'Enter the price apply number, only support ANY and ALL type price!'
-  must-select-default: '!!!Select default above to continue!!!'
-
 plugin:
   reloaded: "&#98FB98[UltimateShop] &fPlugin reloaded!"
   saved: "&#98FB98[UltimateShop] &fItem Saved!"
@@ -36,9 +20,103 @@ placeholderapi:
   unknown-product: "Unknown Product"
 
 editor:
+  enter-shop-name: '&#98FB98[UltimateShop] &fPlease enter the shop display name you want in chat box!'
+  enter-shop-id: '&#98FB98[UltimateShop] &fPlease enter the shop id you want in chat box!'
+  enter-menu-id: '&#98FB98[UltimateShop] &fPlease enter the menu id you want in chat box!'
+  create-or-edit-shop-gui:
+    title: 'Create or edit shop'
+    create-shop:
+      name: '&aCreate new shop'
+      lore:
+        - '&7Create a new shop for your server.'
+        - '&7Different from other plugins, a shop can have a GUI page only.'
+        - '&7If you want make multi page, you need create a new shop'
+        - '&7for that.'
+        - '&7'
+        - '&eClick to create'
+    edit-shop:
+      name: '&aEdit shop'
+      lore:
+        - '&7Edit a shop which has alreadly created in your server.'
+        - '&7'
+        - '&eClick to edit'
+  create-shop-gui:
+    title: 'Create shop'
+    shop-name:
+      name: '&bShop Name'
+      lore:
+        - '&7Shop name will display to players.'
+        - '&7It will appear at shop menu GUI title, '
+        - '&7messages and so on.'
+        - '&7You can also use color code here.'
+        - '&7'
+        - '&8Now value: {value}'
+        - '&eClick to set'
+    shop-id:
+      name: '&bShop ID &c(Required)'
+      lore:
+        - '&7Shop ID must be unique and is a key for plugin know this shop.'
+        - '&7'
+        - '&8Now value: {value}'
+        - '&eClick to set'
+    buy-more:
+      name: '&bBuy More Menu'
+      lore:
+        - '&7Whether enable buy more menu for this shop.'
+        - '&7This option also can be added in single product option.'
+        - '&7'
+        - '&8Now value: {value}'
+        - '&eClick to set'
+    menu-id:
+      name: '&bMenu ID'
+      lore:
+        - '&7Set specified menu as shop menu GUI.'
+        - '&7You need type a valid menu ID here'
+        - '&7'
+        - '&8Now value: {value}'
+        - '&eClick to set'
+    send-message-after-buy:
+      name: '&bSend Message after buy'
+      lore:
+        - '&7Whether player will receive message'
+        - '&7after he try buy or sell product in'
+        - '&7this shop?'
+        - '&7'
+        - '&8Now value: {value}'
+        - '&eClick to set'
+    finish:
+      name: '&cFinish and Save'
+      lore:
+        - '&7Save your shop config to your server.'
+        - '&7'
+        - '&eClick to create'
+      can-not-lore:
+        - '&7Save your shop config to your server.'
+        - '&7'
+        - '&cRequired options not set!'
+  edit-shop-gui:
+    title: 'Editing shop: {shop}'
+  choose-shop-gui:
+    title: 'Choose a shop'
+    shop:
+      lore:
+        - '&7'
+        - '&eClick to edit this shop'
+    next-page:
+      name: '&bNext page'
+      lore:
+        - '&7'
+        - '&eClick to view next page'
+    previous-page:
+      name: '&bPrevious page'
+      lore:
+        - '&7'
+        - '&eClick to view previous page'
+  already-editing: "&#98FB98[UltimateShop] &cYou are now editing other things, we are waiting you print something in chat box!"
   shop-already-exists: "&#98FB98[UltimateShop] &cAlready exists a shop called {shop}!"
   product-already-exists: "&#98FB98[UltimateShop] &cAlready exists a product called {product}!"
   shop-created: "&#98FB98[UltimateShop] &aSuccessfully created new shop: {shop}!"
+  shop-edited: "&#98FB98[UltimateShop] &aSuccessfully edited shop: {shop}!"
   product-created: "&#98FB98[UltimateShop] &aSuccessfully created new product: {product}!"
   hand-item-empty: "&#98FB98[UltimateShop] &cYour mainhand does not have any items!"
   unsupported-price-type: "&#98FB98[UltimateShop] &cThs price type is not supported in command editor."

@@ -42,7 +42,18 @@ public class MainCommand implements CommandExecutor {
                         sellAllCommand(sender);
                         break;
                     case "editor":
-                        break;
+                        if (sender instanceof Player) {
+                            if (sender.hasPermission("ultimateshop.editor")) {
+                                OpenGUI.openEditorGUI((Player) sender);
+                                break;
+                            }
+                            else {
+                                LanguageManager.languageManager.sendStringText((Player) sender, "error.miss-permission");
+                            }
+                        }
+                        else {
+                            LanguageManager.languageManager.sendStringText("error.in-game");
+                        }
                     default:
                         LanguageManager.languageManager.sendStringText(sender, "error.args");
                         break;
@@ -63,7 +74,7 @@ public class MainCommand implements CommandExecutor {
                 if (args[0].equals("menu")) {
                     menuCommand(sender, args);
                 } else if (args[0].equals("quickbuy")) {
-                quickBuyCommand(sender, args);
+                    quickBuyCommand(sender, args);
                 }
                 else if (args[0].equals("quicksell")) {
                     quickSellCommand(sender, args);
