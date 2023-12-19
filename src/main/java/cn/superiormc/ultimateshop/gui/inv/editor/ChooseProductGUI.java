@@ -1,10 +1,10 @@
 package cn.superiormc.ultimateshop.gui.inv.editor;
 
 import cn.superiormc.ultimateshop.gui.InvGUI;
-import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.LanguageManager;
 import cn.superiormc.ultimateshop.methods.GUI.OpenGUI;
 import cn.superiormc.ultimateshop.objects.ObjectShop;
+import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import cn.superiormc.ultimateshop.utils.TextUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -19,62 +19,65 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
-public class ChooseShopGUI extends InvGUI {
+public class ChooseProductGUI extends InvGUI {
 
-    private Map<Integer, ObjectShop> shopCache = new HashMap<>();
+    private Map<Integer, ObjectItem> itemCache = new HashMap<>();
+
+    private ObjectShop shop;
 
     private int needPages = 1;
 
     private int nowPage = 1;
 
-    public ChooseShopGUI(Player owner) {
+    public ChooseProductGUI(Player owner, ObjectShop shop) {
         super(owner);
+        this.shop = shop;
         constructGUI();
     }
 
     @Override
     protected void constructGUI() {
         int i = 0;
-        for (ObjectShop shop : ConfigManager.configManager.getShopList()) {
-            shopCache.put(i, shop);
+        for (ObjectItem item : shop.getProductList()) {
+            itemCache.put(i, item);
             i ++;
         }
-        if (shopCache.size() > 54) {
-            needPages = (int) (Math.ceil(shopCache.size() / 45));
+        if (itemCache.size() > 54) {
+            needPages = (int) (Math.ceil(itemCache.size() / 45));
         }
         if (Objects.isNull(inv)) {
             inv = Bukkit.createInventory(owner, 54,
                     TextUtil.parse(LanguageManager.languageManager.getStringText("editor." +
-                            "choose-shop-gui.title")));
+                            "choose-product-gui.title")));
         }
         if (needPages == 1) {
             for (int c = 0 ; c < 54 ; c ++) {
-                ObjectShop shop = shopCache.get(c);
-                if (shop == null) {
+                ObjectItem item = itemCache.get(c);
+                if (item == null) {
                     break;
                 }
-                ItemStack shopItem = new ItemStack(Material.GOLD_NUGGET);
-                ItemMeta tempVal1 = shopItem.getItemMeta();
-                tempVal1.setDisplayName(TextUtil.parse("&e" + shop.getShopDisplayName()));
+                ItemStack productItem = new ItemStack(Material.EMERALD);
+                ItemMeta tempVal1 = productItem.getItemMeta();
+                tempVal1.setDisplayName(TextUtil.parse("&e" + item.getDisplayName(owner)));
                 tempVal1.setLore(TextUtil.getListWithColor(LanguageManager.languageManager.getStringListText("editor." +
-                        "choose-shop-gui.shop.lore")));
-                shopItem.setItemMeta(tempVal1);
-                inv.setItem(c, shopItem);
+                        "choose-product-gui.product.lore")));
+                productItem.setItemMeta(tempVal1);
+                inv.setItem(c, productItem);
             }
         }
         else {
             for (int c = 0 ; c < 45 ; c ++) {
-                ObjectShop shop = shopCache.get(nowPage * 45 + c);
-                if (shop == null) {
+                ObjectItem item = itemCache.get(nowPage * 45 + c);
+                if (item == null) {
                     break;
                 }
-                ItemStack shopItem = new ItemStack(Material.GOLD_NUGGET);
-                ItemMeta tempVal1 = shopItem.getItemMeta();
-                tempVal1.setDisplayName(TextUtil.parse("&e" + shop.getShopDisplayName()));
+                ItemStack productItem = new ItemStack(Material.EMERALD);
+                ItemMeta tempVal1 = productItem.getItemMeta();
+                tempVal1.setDisplayName(TextUtil.parse("&e" + item.getDisplayName(owner)));
                 tempVal1.setLore(TextUtil.getListWithColor(LanguageManager.languageManager.getStringListText("editor." +
-                        "choose-shop-gui.shop.lore")));
-                shopItem.setItemMeta(tempVal1);
-                inv.setItem(c, shopItem);
+                        "choose-product-gui.product.lore")));
+                productItem.setItemMeta(tempVal1);
+                inv.setItem(c, productItem);
             }
             if (nowPage != 1) {
                 ItemStack nextPageItem = new ItemStack(Material.ARROW);
@@ -102,11 +105,11 @@ public class ChooseShopGUI extends InvGUI {
     @Override
     public boolean clickEventHandle(Inventory inventory, ClickType type, int slot) {
         if (needPages == 1) {
-            OpenGUI.openEditShopGUI(owner, shopCache.get(slot));
+            OpenGUI.openEditProductGUI(owner, itemCache.get(slot));
         }
         else {
             if (slot < 45) {
-                OpenGUI.openEditShopGUI(owner, shopCache.get(nowPage * 45 + slot));
+                OpenGUI.openEditProductGUI(owner, itemCache.get(nowPage * 45 + slot));
             }
             else if (slot == 46) {
                 nowPage--;

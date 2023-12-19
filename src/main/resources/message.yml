@@ -96,6 +96,58 @@ editor:
         - '&cRequired options not set!'
   edit-shop-gui:
     title: 'Editing shop: {shop}'
+    create-product:
+      name: '&cCreate Product'
+      lore:
+        - '&7Create a new product for this shop.'
+        - '&7'
+        - '&eClick to create'
+    edit-product:
+      name: '&cEdit Product'
+      lore:
+        - '&7Edit existed products in this shop.'
+        - '&7'
+        - '&eClick to edit'
+  edit-product-gui:
+    title: 'Editing product: {item}'
+    price-type:
+      name: '&cPrice Type'
+      lore:
+        - '&7Set product type to this thing.'
+        - '&7'
+        - '&8Now value: {value}'
+        - '&eClick to change'
+    product-type:
+      name: '&cProduct Type'
+      lore:
+        - '&7Set product type to this thing.'
+        - '&7'
+        - '&8Now value: {value}'
+        - '&eClick to change'
+    buy-prices:
+      name: '&cBuy Prices'
+      lore:
+        - '&7Manage this thing buy prices.'
+        - '&7'
+        - '&eClick to set'
+    sell-prices:
+      name: '&cBuy Prices'
+      lore:
+        - '&7Manage this thing buy prices.'
+        - '&7'
+        - '&eClick to set'
+    products:
+      name: '&cProducts'
+      lore:
+        - '&7Manage this thing products.'
+        - '&7'
+        - '&eClick to set'
+    display-item:
+      name: '&cDisplay Item'
+      lore:
+        - '&7Set this thing display item in GUI.'
+        - '&7'
+        - '&eClick to set'
   choose-shop-gui:
     title: 'Choose a shop'
     shop:
@@ -112,12 +164,19 @@ editor:
       lore:
         - '&7'
         - '&eClick to view previous page'
+  choose-product-gui:
+    title: 'Choose a product'
+    product:
+      lore:
+        - '&7'
+        - '&eClick to edit this product'
   already-editing: "&#98FB98[UltimateShop] &cYou are now editing other things, we are waiting you print something in chat box!"
   shop-already-exists: "&#98FB98[UltimateShop] &cAlready exists a shop called {shop}!"
   product-already-exists: "&#98FB98[UltimateShop] &cAlready exists a product called {product}!"
   shop-created: "&#98FB98[UltimateShop] &aSuccessfully created new shop: {shop}!"
   shop-edited: "&#98FB98[UltimateShop] &aSuccessfully edited shop: {shop}!"
   product-created: "&#98FB98[UltimateShop] &aSuccessfully created new product: {product}!"
+  product-edited: "&#98FB98[UltimateShop] &aSuccessfully edited product: {product}!"
   hand-item-empty: "&#98FB98[UltimateShop] &cYour mainhand does not have any items!"
   unsupported-price-type: "&#98FB98[UltimateShop] &cThs price type is not supported in command editor."
 

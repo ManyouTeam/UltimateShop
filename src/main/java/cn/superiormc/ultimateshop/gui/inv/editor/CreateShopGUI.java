@@ -27,7 +27,7 @@ public class CreateShopGUI extends InvGUI {
 
     public static Map<Player, CreateShopGUI> guiCache = new HashMap<>();
 
-    public EditorMode editMode = EditorMode.NOT_EDITING;
+    public EditorShopMode editMode = EditorShopMode.NOT_EDITING;
 
     public String shopID = "";
 
@@ -46,7 +46,7 @@ public class CreateShopGUI extends InvGUI {
 
     @Override
     public void openGUI() {
-        editMode = EditorMode.NOT_EDITING;
+        editMode = EditorShopMode.NOT_EDITING;
         constructGUI();
         if (inv != null) {
             owner.getPlayer().openInventory(inv);
@@ -137,12 +137,12 @@ public class CreateShopGUI extends InvGUI {
             return true;
         }
         if (slot == 0) {
-            editMode = EditorMode.EDIT_SHOP_NAME;
+            editMode = EditorShopMode.EDIT_SHOP_NAME;
             LanguageManager.languageManager.sendStringText(owner, "editor.enter-shop-name");
             owner.closeInventory();
         }
         if (slot == 1) {
-            editMode = EditorMode.EDIT_SHOP_ID;
+            editMode = EditorShopMode.EDIT_SHOP_ID;
             LanguageManager.languageManager.sendStringText(owner, "editor.enter-shop-id");
             owner.closeInventory();
         }
@@ -155,7 +155,7 @@ public class CreateShopGUI extends InvGUI {
             constructGUI();
         }
         if (slot == 3) {
-            editMode = EditorMode.EDIT_MENU_ID;
+            editMode = EditorShopMode.EDIT_MENU_ID;
             LanguageManager.languageManager.sendStringText(owner, "editor.enter-menu-id");
             owner.closeInventory();
         }
@@ -212,7 +212,7 @@ public class CreateShopGUI extends InvGUI {
 
     @Override
     public boolean closeEventHandle() {
-        if (editMode == EditorMode.NOT_EDITING) {
+        if (editMode == EditorShopMode.NOT_EDITING) {
             guiCache.remove(owner);
             return true;
         }

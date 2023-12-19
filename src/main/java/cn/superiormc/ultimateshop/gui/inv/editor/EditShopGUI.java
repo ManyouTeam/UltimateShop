@@ -2,11 +2,10 @@ package cn.superiormc.ultimateshop.gui.inv.editor;
 
 import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.gui.InvGUI;
-import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.LanguageManager;
+import cn.superiormc.ultimateshop.methods.GUI.OpenGUI;
 import cn.superiormc.ultimateshop.methods.ReloadPlugin;
 import cn.superiormc.ultimateshop.objects.ObjectShop;
-import cn.superiormc.ultimateshop.objects.menus.ObjectMenu;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
 import cn.superiormc.ultimateshop.utils.TextUtil;
 import org.bukkit.Bukkit;
@@ -26,19 +25,22 @@ public class EditShopGUI extends InvGUI {
 
     public static Map<Player, EditShopGUI> guiCache = new HashMap<>();
 
-    public EditorMode editMode = EditorMode.NOT_EDITING;
+    public EditorShopMode editMode = EditorShopMode.NOT_EDITING;
 
     public YamlConfiguration config = null;
 
+    private ObjectShop shop;
+
     public EditShopGUI(Player owner, ObjectShop shop) {
         super(owner);
-        config = shop.getShopConfig();
+        this.config = shop.getShopConfig();
+        this.shop = shop;
         guiCache.put(owner, this);
     }
 
     @Override
     public void openGUI() {
-        editMode = EditorMode.NOT_EDITING;
+        editMode = EditorShopMode.NOT_EDITING;
         constructGUI();
         if (inv != null) {
             owner.getPlayer().openInventory(inv);
@@ -87,9 +89,25 @@ public class EditShopGUI extends InvGUI {
                 "value",
                 config.getString("settings.send-message-after-buy", "true")));
         sendMessageAfterBuyItem.setItemMeta(tempVal5);
+        // product
+        ItemStack createProductItem = new ItemStack(Material.EMERALD_BLOCK);
+        ItemMeta tempVal2 = createProductItem.getItemMeta();
+        tempVal2.setDisplayName(TextUtil.parse(LanguageManager.languageManager.getStringText("editor." +
+                "edit-shop-gui.create-product.name")));
+        tempVal2.setLore(TextUtil.getListWithColor(LanguageManager.languageManager.getStringListText("editor." +
+                "edit-shop-gui.create-product.lore")));
+        createProductItem.setItemMeta(tempVal2);
+        // edit product
+        ItemStack editProductItem = new ItemStack(Material.GOLD_BLOCK);
+        ItemMeta tempVal7 = editProductItem.getItemMeta();
+        tempVal7.setDisplayName(TextUtil.parse(LanguageManager.languageManager.getStringText("editor." +
+                "edit-shop-gui.edit-product.name")));
+        tempVal7.setLore(TextUtil.getListWithColor(LanguageManager.languageManager.getStringListText("editor." +
+                "edit-shop-gui.edit-product.lore")));
+        editProductItem.setItemMeta(tempVal7);
         // finish
         ItemStack finishItem = new ItemStack(Material.GREEN_DYE);
-        ItemMeta tempVal6 = shopNameItem.getItemMeta();
+        ItemMeta tempVal6 = finishItem.getItemMeta();
         tempVal6.setDisplayName(TextUtil.parse(LanguageManager.languageManager.getStringText("editor." +
                 "create-shop-gui.finish.name")));
         tempVal6.setLore(TextUtil.getListWithColor(LanguageManager.languageManager.getStringListText("editor." +
@@ -104,6 +122,8 @@ public class EditShopGUI extends InvGUI {
         inv.setItem(1, buyMoreItem);
         inv.setItem(2, menuItem);
         inv.setItem(3, sendMessageAfterBuyItem);
+        inv.setItem(4, createProductItem);
+        inv.setItem(5, editProductItem);
         inv.setItem(8, finishItem);
     }
 
@@ -113,7 +133,7 @@ public class EditShopGUI extends InvGUI {
             return true;
         }
         if (slot == 0) {
-            editMode = EditorMode.EDIT_SHOP_NAME;
+            editMode = EditorShopMode.EDIT_SHOP_NAME;
             LanguageManager.languageManager.sendStringText(owner, "editor.enter-shop-name");
             owner.closeInventory();
         }
@@ -126,7 +146,7 @@ public class EditShopGUI extends InvGUI {
             constructGUI();
         }
         if (slot == 2) {
-            editMode = EditorMode.EDIT_MENU_ID;
+            editMode = EditorShopMode.EDIT_MENU_ID;
             LanguageManager.languageManager.sendStringText(owner, "editor.enter-menu-id");
             owner.closeInventory();
         }
@@ -138,25 +158,26 @@ public class EditShopGUI extends InvGUI {
             }
             constructGUI();
         }
+        if (slot == 5) {
+            OpenGUI.openChooseProductGUI(owner, shop);
+        }
         if (slot == 8) {
-            Bukkit.getScheduler().runTaskAsynchronously(UltimateShop.instance, () -> {
-                File dir = new File(UltimateShop.instance.getDataFolder() + "/shops");
-                if (!dir.exists()) {
-                    dir.mkdir();
-                }
-                File file = new File(dir, config.getName() + ".yml");
-                file.delete();
-                try {
-                    config.save(file);
-                    ReloadPlugin.reload(owner);
-                    LanguageManager.languageManager.sendStringText(owner,
-                            "editor.shop-edited",
-                            "shop",
-                            config.getName());
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            });
+            File dir = new File(UltimateShop.instance.getDataFolder() + "/shops");
+            if (!dir.exists()) {
+                dir.mkdir();
+            }
+            File file = new File(dir, config.getName() + ".yml");
+            file.delete();
+            try {
+                config.save(file);
+                ReloadPlugin.reload(owner);
+                LanguageManager.languageManager.sendStringText(owner,
+                        "editor.shop-edited",
+                        "shop",
+                        config.getName());
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
             owner.closeInventory();
         }
         return true;
@@ -164,7 +185,7 @@ public class EditShopGUI extends InvGUI {
 
     @Override
     public boolean closeEventHandle() {
-        if (editMode == EditorMode.NOT_EDITING) {
+        if (editMode == EditorShopMode.NOT_EDITING) {
             guiCache.remove(owner);
             return true;
         }

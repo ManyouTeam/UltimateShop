@@ -1,6 +1,6 @@
 package cn.superiormc.ultimateshop.gui.inv.editor;
 
-public enum EditorMode {
+public enum EditorProductMode {
     NOT_EDITING,
     EDIT_SHOP_NAME,
     EDIT_SHOP_ID,
