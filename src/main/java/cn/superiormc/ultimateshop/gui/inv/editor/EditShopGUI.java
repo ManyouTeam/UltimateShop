@@ -1,9 +1,8 @@
 package cn.superiormc.ultimateshop.gui.inv.editor;
 
 import cn.superiormc.ultimateshop.UltimateShop;
-import cn.superiormc.ultimateshop.gui.InvGUI;
+import cn.superiormc.ultimateshop.listeners.GUIListener;
 import cn.superiormc.ultimateshop.managers.LanguageManager;
-import cn.superiormc.ultimateshop.methods.GUI.OpenGUI;
 import cn.superiormc.ultimateshop.methods.ReloadPlugin;
 import cn.superiormc.ultimateshop.objects.ObjectShop;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
@@ -12,6 +11,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -21,11 +21,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
-public class EditShopGUI extends InvGUI {
-
-    public static Map<Player, EditShopGUI> guiCache = new HashMap<>();
-
-    public EditorShopMode editMode = EditorShopMode.NOT_EDITING;
+public class EditShopGUI extends EditorInvGUI {
 
     public YamlConfiguration config = null;
 
@@ -35,16 +31,6 @@ public class EditShopGUI extends InvGUI {
         super(owner);
         this.config = shop.getShopConfig();
         this.shop = shop;
-        guiCache.put(owner, this);
-    }
-
-    @Override
-    public void openGUI() {
-        editMode = EditorShopMode.NOT_EDITING;
-        constructGUI();
-        if (inv != null) {
-            owner.getPlayer().openInventory(inv);
-        }
     }
 
     @Override
@@ -57,7 +43,7 @@ public class EditShopGUI extends InvGUI {
         tempVal1.setLore(CommonUtil.modifyList(TextUtil.getListWithColor(LanguageManager.languageManager.getStringListText("editor." +
                         "create-shop-gui.shop-name.lore")),
                 "value",
-                config.getString("settings.shop-name", "Shop")));
+                config.getString("settings.shop-name", "Unset, default to 'Shop'")));
         shopNameItem.setItemMeta(tempVal1);
         // buy more
         ItemStack buyMoreItem = new ItemStack(Material.BEACON);
@@ -67,7 +53,7 @@ public class EditShopGUI extends InvGUI {
         tempVal3.setLore(CommonUtil.modifyList(TextUtil.getListWithColor(LanguageManager.languageManager.getStringListText("editor." +
                 "create-shop-gui.buy-more.lore")),
                 "value",
-                config.getString("settings.buy-more", "true")));
+                config.getString("settings.buy-more", "Unset, default to true")));
         buyMoreItem.setItemMeta(tempVal3);
         // menu
         ItemStack menuItem = new ItemStack(Material.CHEST);
@@ -87,7 +73,7 @@ public class EditShopGUI extends InvGUI {
         tempVal5.setLore(CommonUtil.modifyList(TextUtil.getListWithColor(LanguageManager.languageManager.getStringListText("editor." +
                         "create-shop-gui.send-message-after-buy.lore")),
                 "value",
-                config.getString("settings.send-message-after-buy", "true")));
+                config.getString("settings.send-message-after-buy", "Unset, default to true")));
         sendMessageAfterBuyItem.setItemMeta(tempVal5);
         // product
         ItemStack createProductItem = new ItemStack(Material.EMERALD_BLOCK);
@@ -129,16 +115,14 @@ public class EditShopGUI extends InvGUI {
 
     @Override
     public boolean clickEventHandle(Inventory inventory, ClickType type, int slot) {
-        if (!Objects.equals(inventory, getInv())) {
-            return true;
-        }
         if (slot == 0) {
-            editMode = EditorShopMode.EDIT_SHOP_NAME;
+            editMode = EditorMode.EDIT_SHOP_NAME;
             LanguageManager.languageManager.sendStringText(owner, "editor.enter-shop-name");
             owner.closeInventory();
         }
         if (slot == 1) {
-            if (config.getBoolean("settings.buy-more")) {
+            if (config.getString("settings.buy-more") != null &&
+                    config.getString("settings.buy-more").equals("true")) {
                 config.set("settings.buy-more", "false");
             } else {
                 config.set("settings.buy-more", "true");
@@ -146,12 +130,13 @@ public class EditShopGUI extends InvGUI {
             constructGUI();
         }
         if (slot == 2) {
-            editMode = EditorShopMode.EDIT_MENU_ID;
+            editMode = EditorMode.EDIT_MENU_ID;
             LanguageManager.languageManager.sendStringText(owner, "editor.enter-menu-id");
             owner.closeInventory();
         }
         if (slot == 3) {
-            if (config.getBoolean("settings.send-message-after-buy")) {
+            if (config.getString("settings.send-message-after-buy") != null &&
+                    config.getString("settings.send-message-after-buy").equals("true")) {
                 config.set("settings.send-message-after-buy", "false");
             } else {
                 config.set("settings.send-message-after-buy", "true");
@@ -159,14 +144,17 @@ public class EditShopGUI extends InvGUI {
             constructGUI();
         }
         if (slot == 5) {
-            OpenGUI.openChooseProductGUI(owner, shop);
+            ChooseProductGUI gui = new ChooseProductGUI(owner, this);
+            gui.openGUI();
+            Listener guiListener = new GUIListener(gui);
+            Bukkit.getPluginManager().registerEvents(guiListener, UltimateShop.instance);
         }
         if (slot == 8) {
             File dir = new File(UltimateShop.instance.getDataFolder() + "/shops");
             if (!dir.exists()) {
                 dir.mkdir();
             }
-            File file = new File(dir, config.getName() + ".yml");
+            File file = new File(dir, shop.getShopName() + ".yml");
             file.delete();
             try {
                 config.save(file);
@@ -184,16 +172,11 @@ public class EditShopGUI extends InvGUI {
     }
 
     @Override
-    public boolean closeEventHandle() {
-        if (editMode == EditorShopMode.NOT_EDITING) {
-            guiCache.remove(owner);
-            return true;
-        }
-        return false;
+    public boolean dragEventHandle(Map<Integer, ItemStack> newItems) {
+        return true;
     }
 
-    @Override
-    public boolean dragEventHandle(Set<Integer> slots) {
-        return true;
+    public ObjectShop getShop() {
+        return shop;
     }
 }

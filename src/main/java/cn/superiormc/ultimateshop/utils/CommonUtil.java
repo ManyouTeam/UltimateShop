@@ -1,7 +1,7 @@
 package cn.superiormc.ultimateshop.utils;
 
 import cn.superiormc.ultimateshop.UltimateShop;
-import cn.superiormc.ultimateshop.gui.inv.editor.CreateShopGUI;
+import cn.superiormc.ultimateshop.gui.inv.editor.EditorInvGUI;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import io.lumine.mythic.api.mobs.MythicMob;
 import io.lumine.mythic.bukkit.BukkitAdapter;
@@ -155,9 +155,5 @@ public class CommonUtil {
         displayItem.getItemMeta().hasLocalizedName() ?
         displayItem.getItemMeta().getLocalizedName() :
                 displayItem.getType().name();
-    }
-
-    public static boolean getEditing(Player player) {
-        return CreateShopGUI.guiCache.containsKey(player);
     }
 }

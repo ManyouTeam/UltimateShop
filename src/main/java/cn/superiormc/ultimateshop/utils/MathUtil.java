@@ -3,7 +3,10 @@ package cn.superiormc.ultimateshop.utils;
 
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.ErrorManager;
+import org.bukkit.Bukkit;
 import redempt.crunch.Crunch;
+
+import java.text.DecimalFormat;
 
 public class MathUtil {
 
@@ -20,7 +23,7 @@ public class MathUtil {
             }
             ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Your number option value " +
                     mathStr + " can not be read as a number, maybe" +
-                    " you forgot install PlaceholderAPI plugin in your server, or you didn't enable math.enabled option in config.yml!");
+                    "set math.enabled to false in config.yml maybe solve this problem!");
             return 0D;
         }
     }

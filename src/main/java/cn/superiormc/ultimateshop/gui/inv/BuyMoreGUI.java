@@ -60,9 +60,6 @@ public class BuyMoreGUI extends InvGUI {
 
     @Override
     public boolean clickEventHandle(Inventory inventory, ClickType type, int slot) {
-        if (!Objects.equals(inventory, getInv())) {
-            return true;
-        }
         AbstractButton button = menuButtons.get(slot);
         if (button == null) {
             return true;
@@ -153,12 +150,12 @@ public class BuyMoreGUI extends InvGUI {
     }
 
     @Override
-    public boolean closeEventHandle() {
+    public boolean closeEventHandle(Inventory inventory) {
         return true;
     }
 
     @Override
-    public boolean dragEventHandle(Set<Integer> slots) {
+    public boolean dragEventHandle(Map<Integer, ItemStack> newItems) {
         return true;
     }
 

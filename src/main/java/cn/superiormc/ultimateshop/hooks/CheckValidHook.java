@@ -13,12 +13,11 @@ import io.lumine.mythic.bukkit.MythicBukkit;
 import io.th0rgal.oraxen.api.OraxenItems;
 import net.Indyuce.mmoitems.MMOItems;
 import org.bukkit.inventory.ItemStack;
-import pers.neige.neigeitems.NeigeItems;
 import pers.neige.neigeitems.manager.ItemManager;
 
 public class CheckValidHook {
 
-    public static String checkValid(String pluginName, String itemID, ItemStack itemStack) {
+    public static String checkValid(String pluginName, ItemStack itemStack) {
         if (!CommonUtil.checkPluginLoad(pluginName)) {
             ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Your server don't have " + pluginName +
                     " plugin, but your shop config try use its hook!");
@@ -75,6 +74,12 @@ public class CheckValidHook {
                 return tempVal2 + ";;" + tempVal3.toString();
             }
         }
+        else if (pluginName.equals("eco")) {
+            if (Items.getCustomItem(itemStack) == null) {
+                return null;
+            }
+            return ItemManager.INSTANCE.isNiItem(itemStack).getId();
+        }
         else if (pluginName.equals("MythicMobs")) {
             String tempVal1 = MythicBukkit.inst().getItemManager().getMythicTypeFromItem(itemStack);
             if (tempVal1 == null) {
@@ -95,5 +100,55 @@ public class CheckValidHook {
                     + pluginName + " in shop config, however for now UltimateShop is not support it!");
             return null;
         }
+    }
+
+    public static String[] checkValid(ItemStack itemStack) {
+        if (CommonUtil.checkPluginLoad("ItemsAdder")) {
+            CustomStack customStack = CustomStack.byItemStack(itemStack);
+            if (customStack != null) {
+                return new String[]{"ItemsAdder", customStack.getId()};
+            }
+        }
+        if (CommonUtil.checkPluginLoad("Oraxen")) {
+            String tempVal1 = OraxenItems.getIdByItem(itemStack);
+            if (tempVal1 != null) {
+                return new String[]{"Oraxen", tempVal1};
+            }
+        }
+        if (CommonUtil.checkPluginLoad("MMOItems")) {
+            String tempVal1 = MMOItems.getID(itemStack);
+            if (tempVal1 != null) {
+                return new String[]{"MMOItems", tempVal1};
+            }
+        }
+        if (CommonUtil.checkPluginLoad("EcoItems")) {
+            EcoItem tempVal1 = ItemUtilsKt.getEcoItem(itemStack);
+            if (tempVal1 != null) {
+                return new String[]{"EcoItems", tempVal1.getID()};
+            }
+        }
+        if (CommonUtil.checkPluginLoad("EcoArmor")) {
+            ArmorSet tempVal1 = ArmorUtils.getSetOnItem(itemStack);
+            if (tempVal1 != null) {
+                return new String[]{"EcoArmor", tempVal1.getId()};
+            }
+        }
+        if (CommonUtil.checkPluginLoad("eco")) {
+            if (Items.getCustomItem(itemStack) != null) {
+                return new String[]{"eco", Items.getCustomItem(itemStack).getKey().getKey()};
+            }
+        }
+        if (CommonUtil.checkPluginLoad("MythicMobs")) {
+            String tempVal1 = MythicBukkit.inst().getItemManager().getMythicTypeFromItem(itemStack);
+            if (tempVal1 != null) {
+                return new String[]{"MythicMobs", tempVal1};
+            }
+        }
+        if (CommonUtil.checkPluginLoad("NeigeItems")) {
+            if (ItemManager.INSTANCE.isNiItem(itemStack) != null) {
+                return new String[]{"NeigeItems", ItemManager.INSTANCE.isNiItem(itemStack).getId()};
+            }
+        }
+        return null;
     }
 }

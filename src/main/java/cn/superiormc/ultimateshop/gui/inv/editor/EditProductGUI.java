@@ -1,7 +1,9 @@
 package cn.superiormc.ultimateshop.gui.inv.editor;
 
 import cn.superiormc.ultimateshop.UltimateShop;
-import cn.superiormc.ultimateshop.gui.InvGUI;
+import cn.superiormc.ultimateshop.gui.inv.editor.subinventory.ChooseSingleProductGUI;
+import cn.superiormc.ultimateshop.gui.inv.editor.subinventory.EditDisplayItem;
+import cn.superiormc.ultimateshop.listeners.GUIListener;
 import cn.superiormc.ultimateshop.managers.LanguageManager;
 import cn.superiormc.ultimateshop.methods.ReloadPlugin;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
@@ -13,6 +15,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -20,16 +23,10 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 
-public class EditProductGUI extends InvGUI {
-
-    public static Map<Player, EditProductGUI> guiCache = new HashMap<>();
-
-    public EditorProductMode editMode = EditorProductMode.NOT_EDITING;
+public class EditProductGUI extends EditorInvGUI {
 
     public ConfigurationSection section;
 
@@ -59,16 +56,6 @@ public class EditProductGUI extends InvGUI {
             throw new RuntimeException(e);
         }
         this.section = config.getConfigurationSection("items." + item.getItemConfig().getName());
-        guiCache.put(owner, this);
-    }
-
-    @Override
-    public void openGUI() {
-        editMode = EditorProductMode.NOT_EDITING;
-        constructGUI();
-        if (inv != null) {
-            owner.getPlayer().openInventory(inv);
-        }
     }
 
     @Override
@@ -93,29 +80,35 @@ public class EditProductGUI extends InvGUI {
                 "value",
                 section.getString("product-mode", "ANY")));
         productTypeItem.setItemMeta(tempVal2);
-        // buy price
-        ItemStack buyPricesItem = new ItemStack(Material.EMERALD);
-        ItemMeta tempVal3 = buyPricesItem.getItemMeta();
+        // edit price
+        ItemStack editPriceItem = new ItemStack(Material.EMERALD);
+        ItemMeta tempVal3 = editPriceItem.getItemMeta();
         tempVal3.setDisplayName(TextUtil.parse(LanguageManager.languageManager.getStringText("editor." +
-                "edit-product-gui.buy-prices.name")));
+                "edit-product-gui.edit-prices.name")));
         tempVal3.setLore(CommonUtil.modifyList(TextUtil.getListWithColor(LanguageManager.languageManager.getStringListText("editor." +
-                        "edit-product-gui.buy-prices.lore"))));
-        buyPricesItem.setItemMeta(tempVal3);
-        // sell price
-        ItemStack sellPricesItem = new ItemStack(Material.GOLD_BLOCK);
-        ItemMeta tempVal4 = buyPricesItem.getItemMeta();
+                        "edit-product-gui.edit-prices.lore"))));
+        editPriceItem.setItemMeta(tempVal3);
+        // edit single product
+        ItemStack editSingleProduct = new ItemStack(Material.ARMOR_STAND);
+        ItemMeta tempVal4 = editSingleProduct.getItemMeta();
         tempVal4.setDisplayName(TextUtil.parse(LanguageManager.languageManager.getStringText("editor." +
-                "edit-product-gui.sell-prices.name")));
+                "edit-product-gui.edit-single-products.name")));
         tempVal4.setLore(CommonUtil.modifyList(TextUtil.getListWithColor(LanguageManager.languageManager.getStringListText("editor." +
-                "edit-product-gui.sell-prices.lore"))));
-        sellPricesItem.setItemMeta(tempVal4);
+                "edit-product-gui.edit-single-products.lore"))));
+        editSingleProduct.setItemMeta(tempVal4);
         // display item
         ItemStack displayItem = new ItemStack(Material.ITEM_FRAME);
-        ItemMeta tempVal5 = buyPricesItem.getItemMeta();
+        ItemMeta tempVal5 = displayItem.getItemMeta();
         tempVal5.setDisplayName(TextUtil.parse(LanguageManager.languageManager.getStringText("editor." +
                 "edit-product-gui.display-item.name")));
-        tempVal5.setLore(CommonUtil.modifyList(TextUtil.getListWithColor(LanguageManager.languageManager.getStringListText("editor." +
-                "edit-product-gui.display-item.lore"))));
+        if (section.getConfigurationSection("display-item") == null) {
+            tempVal5.setLore(CommonUtil.modifyList(TextUtil.getListWithColor(LanguageManager.languageManager.getStringListText("editor." +
+                    "edit-product-gui.display-item.not-set-lore"))));
+        }
+        else {
+            tempVal5.setLore(CommonUtil.modifyList(TextUtil.getListWithColor(LanguageManager.languageManager.getStringListText("editor." +
+                    "edit-product-gui.display-item.has-set-lore"))));
+        }
         displayItem.setItemMeta(tempVal5);
         // finish
         ItemStack finishItem = new ItemStack(Material.GREEN_DYE);
@@ -132,17 +125,14 @@ public class EditProductGUI extends InvGUI {
         }
         inv.setItem(0, priceTypeItem);
         inv.setItem(1, productTypeItem);
-        inv.setItem(2, buyPricesItem);
-        inv.setItem(3, sellPricesItem);
+        inv.setItem(2, editPriceItem);
+        inv.setItem(3, editSingleProduct);
         inv.setItem(4, displayItem);
         inv.setItem(8, finishItem);
     }
 
     @Override
     public boolean clickEventHandle(Inventory inventory, ClickType type, int slot) {
-        if (!Objects.equals(inventory, getInv())) {
-            return true;
-        }
         if (slot == 0) {
             if (section.getString("price-mode", "ANY").equals("ANY")) {
                 section.set("price-mode", "ALL");
@@ -167,6 +157,18 @@ public class EditProductGUI extends InvGUI {
             }
             constructGUI();
         }
+        if (slot == 3) {
+            ChooseSingleProductGUI gui = new ChooseSingleProductGUI(owner, this);
+            gui.openGUI();
+            Listener guiListener = new GUIListener(gui);
+            Bukkit.getPluginManager().registerEvents(guiListener, UltimateShop.instance);
+        }
+        if (slot == 4) {
+            EditDisplayItem subGUI = new EditDisplayItem(owner, this);
+            subGUI.openGUI();
+            Listener guiListener = new GUIListener(subGUI);
+            Bukkit.getPluginManager().registerEvents(guiListener, UltimateShop.instance);
+        }
         if (slot == 8) {
             file.delete();
             try {
@@ -185,16 +187,7 @@ public class EditProductGUI extends InvGUI {
     }
 
     @Override
-    public boolean closeEventHandle() {
-        if (editMode == EditorProductMode.NOT_EDITING) {
-            guiCache.remove(owner);
-            return true;
-        }
-        return false;
-    }
-
-    @Override
-    public boolean dragEventHandle(Set<Integer> slots) {
+    public boolean dragEventHandle(Map<Integer, ItemStack> newItems) {
         return true;
     }
 }

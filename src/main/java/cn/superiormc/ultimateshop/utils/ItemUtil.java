@@ -1,6 +1,7 @@
 package cn.superiormc.ultimateshop.utils;
 
 import cn.superiormc.ultimateshop.UltimateShop;
+import cn.superiormc.ultimateshop.hooks.CheckValidHook;
 import cn.superiormc.ultimateshop.hooks.ItemsHook;
 import cn.superiormc.ultimateshop.managers.ItemManager;
 import com.cryptomorin.xserieschanged.XItemStack;
@@ -10,8 +11,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.function.Function;
 
 public class ItemUtil {
@@ -78,6 +78,19 @@ public class ItemUtil {
             }
         }
         return resultItem;
+    }
+
+    public static Map<String, Object> debuildItem(ItemStack itemStack) {
+        Map<String, Object> resultMap = new HashMap<>();
+        if (CheckValidHook.checkValid(itemStack) != null) {
+            resultMap.put("hook-plugin", CheckValidHook.checkValid(itemStack)[0]);
+            resultMap.put("hook-item", CheckValidHook.checkValid(itemStack)[1]);
+        }
+        resultMap.putAll(XItemStack.serialize(itemStack));
+        if (resultMap.containsKey("hook-item")) {
+            resultMap.remove("material");
+        }
+        return resultMap;
     }
 
 }

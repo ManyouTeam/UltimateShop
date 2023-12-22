@@ -124,30 +124,34 @@ editor:
         - '&7'
         - '&8Now value: {value}'
         - '&eClick to change'
-    buy-prices:
-      name: '&cBuy Prices'
-      lore:
-        - '&7Manage this thing buy prices.'
-        - '&7'
-        - '&eClick to set'
-    sell-prices:
-      name: '&cBuy Prices'
-      lore:
-        - '&7Manage this thing buy prices.'
-        - '&7'
-        - '&eClick to set'
-    products:
-      name: '&cProducts'
+    edit-single-products:
+      name: '&cEdit Products'
       lore:
         - '&7Manage this thing products.'
+        - '&7If you want to make a command shop,'
+        - '&7do not click this button, use buy action.'
         - '&7'
         - '&eClick to set'
+    edit-prices:
+      name: '&cEdit Prices'
+      lore:
+        - '&7Manage this thing prices.'
+        - '&7'
+        - '&cCan not edit by GUI editor for now, wait next update.'
     display-item:
       name: '&cDisplay Item'
-      lore:
-        - '&7Set this thing display item in GUI.'
+      has-set-lore:
+        - '&7Change this thing display item in GUI.'
+        - '&7'
+        - '&eClick to change'
+      not-set-lore:
+        - '&7You did not set this product display item in GUI.'
+        - '&7If not set, plugin will consider first item product to'
+        - '&7display item by default.'
         - '&7'
         - '&eClick to set'
+        - '&cAfter click this button, you will have to set a item'
+        - '&cto display item, be careful!'
   choose-shop-gui:
     title: 'Choose a shop'
     shop:
@@ -170,6 +174,40 @@ editor:
       lore:
         - '&7'
         - '&eClick to edit this product'
+    create:
+      name: '&cCreate new product'
+      lore:
+        - '&7Drag item you want to make product'
+        - '&7here then edit this product at this GUI.'
+        - '&7'
+        - '&eDrag item here to create'
+  edit-display-item-gui:
+    title: 'Edit display item'
+    display-item:
+      add-lore:
+        - '&7'
+        - '&eDrag item to here to change'
+    modify-lore:
+      name: '&dModify Lore'
+      lore:
+        - '&7'
+        - '&7Whether we auto add product info lore'
+        - '&7at the end of display item.'
+    finish:
+      name: '&cFinish and Back'
+      lore:
+        - '&7'
+        - '&7Finish your change and return back to'
+        - '&7edit product GUI, you need save your'
+        - '&7change in this GUI.'
+        - '&7'
+        - '&eClick to back'
+  choose-single-product-gui:
+    title: 'Choose a single product'
+    single-product:
+      add-lore:
+        - '&7'
+        - '&eClick to edit this single product'
   already-editing: "&#98FB98[UltimateShop] &cYou are now editing other things, we are waiting you print something in chat box!"
   shop-already-exists: "&#98FB98[UltimateShop] &cAlready exists a shop called {shop}!"
   product-already-exists: "&#98FB98[UltimateShop] &cAlready exists a product called {product}!"

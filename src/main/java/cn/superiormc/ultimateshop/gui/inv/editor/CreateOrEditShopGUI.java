@@ -1,21 +1,24 @@
 package cn.superiormc.ultimateshop.gui.inv.editor;
 
-import cn.superiormc.ultimateshop.gui.InvGUI;
+import cn.superiormc.ultimateshop.UltimateShop;
+import cn.superiormc.ultimateshop.listeners.GUIListener;
 import cn.superiormc.ultimateshop.managers.LanguageManager;
 import cn.superiormc.ultimateshop.methods.GUI.OpenGUI;
+import cn.superiormc.ultimateshop.utils.CommonUtil;
 import cn.superiormc.ultimateshop.utils.TextUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 
-public class CreateOrEditShopGUI extends InvGUI {
+public class CreateOrEditShopGUI extends EditorInvGUI {
 
     public CreateOrEditShopGUI(Player owner) {
         super(owner);
@@ -47,25 +50,23 @@ public class CreateOrEditShopGUI extends InvGUI {
 
     @Override
     public boolean clickEventHandle(Inventory inventory, ClickType type, int slot) {
-        if (!Objects.equals(inventory, getInv())) {
-            return true;
-        }
         if (slot == 0) {
-            OpenGUI.openCreateShopGUI(owner);
+            CreateShopGUI gui = new CreateShopGUI(owner);
+            gui.openGUI();
+            Listener guiListener = new GUIListener(gui);
+            Bukkit.getPluginManager().registerEvents(guiListener, UltimateShop.instance);
         }
         if (slot == 1) {
-            OpenGUI.openChooseShopGUI(owner);
+            ChooseShopGUI gui = new ChooseShopGUI(owner);
+            gui.openGUI();
+            Listener guiListener = new GUIListener(gui);
+            Bukkit.getPluginManager().registerEvents(guiListener, UltimateShop.instance);
         }
         return true;
     }
 
     @Override
-    public boolean closeEventHandle() {
-        return true;
-    }
-
-    @Override
-    public boolean dragEventHandle(Set<Integer> slots) {
+    public boolean dragEventHandle(Map<Integer, ItemStack> newItems) {
         return true;
     }
 }

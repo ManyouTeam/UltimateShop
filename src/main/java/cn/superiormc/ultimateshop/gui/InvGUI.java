@@ -8,8 +8,6 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
 
 public abstract class InvGUI extends AbstractGUI {
 
@@ -25,9 +23,9 @@ public abstract class InvGUI extends AbstractGUI {
 
     public abstract boolean clickEventHandle(Inventory inventory, ClickType type, int slot);
 
-    public abstract boolean closeEventHandle();
+    public abstract boolean closeEventHandle(Inventory inventory);
 
-    public abstract boolean dragEventHandle(Set<Integer> slots);
+    public abstract boolean dragEventHandle(Map<Integer, ItemStack> newItems);
 
     @Override
     public void openGUI() {
@@ -38,15 +36,5 @@ public abstract class InvGUI extends AbstractGUI {
 
     public Inventory getInv() {
         return inv;
-    }
-
-    protected void setExtraSlots(ItemStack itemStack) {
-        if (Objects.nonNull(inv)) {
-            for (int i = 0 ; i < inv.getSize(); i++) {
-                if (Objects.isNull(inv.getItem(i)) || Objects.requireNonNull(inv.getItem(i)).getType().isAir()) {
-                    inv.setItem(i, itemStack);
-                }
-            }
-        }
     }
 }

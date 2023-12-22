@@ -43,6 +43,7 @@ use-times:
 
 math:
   enabled: true
+  result-pattern: '#.00'
 
 display-item:
   auto-set-first-product: true

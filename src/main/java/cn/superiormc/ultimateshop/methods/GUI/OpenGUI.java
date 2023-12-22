@@ -68,66 +68,11 @@ public class OpenGUI {
     }
 
     public static void openEditorGUI(Player player) {
-        if (CommonUtil.getEditing(player)) {
+        if (EditorInvGUI.guiCache.containsKey(player)) {
             LanguageManager.languageManager.sendStringText(player, "editor.already-editing");
             return;
         }
         CreateOrEditShopGUI gui = new CreateOrEditShopGUI(player);
-        gui.openGUI();
-        Listener guiListener = new GUIListener(gui);
-        Bukkit.getPluginManager().registerEvents(guiListener, UltimateShop.instance);
-    }
-
-    public static void openChooseShopGUI(Player player) {
-        if (CommonUtil.getEditing(player)) {
-            LanguageManager.languageManager.sendStringText(player, "editor.already-editing");
-            return;
-        }
-        ChooseShopGUI gui = new ChooseShopGUI(player);
-        gui.openGUI();
-        Listener guiListener = new GUIListener(gui);
-        Bukkit.getPluginManager().registerEvents(guiListener, UltimateShop.instance);
-    }
-
-    public static void openChooseProductGUI(Player player, ObjectShop shop) {
-        if (CommonUtil.getEditing(player)) {
-            LanguageManager.languageManager.sendStringText(player, "editor.already-editing");
-            return;
-        }
-        ChooseProductGUI gui = new ChooseProductGUI(player, shop);
-        gui.openGUI();
-        Listener guiListener = new GUIListener(gui);
-        Bukkit.getPluginManager().registerEvents(guiListener, UltimateShop.instance);
-    }
-
-    public static void openCreateShopGUI(Player player) {
-        if (CommonUtil.getEditing(player)) {
-            LanguageManager.languageManager.sendStringText(player, "editor.already-editing");
-            return;
-        }
-        CreateShopGUI gui = new CreateShopGUI(player);
-        gui.openGUI();
-        Listener guiListener = new GUIListener(gui);
-        Bukkit.getPluginManager().registerEvents(guiListener, UltimateShop.instance);
-    }
-
-    public static void openEditShopGUI(Player player, ObjectShop shop) {
-        if (CommonUtil.getEditing(player)) {
-            LanguageManager.languageManager.sendStringText(player, "editor.already-editing");
-            return;
-        }
-        EditShopGUI gui = new EditShopGUI(player, shop);
-        gui.openGUI();
-        Listener guiListener = new GUIListener(gui);
-        Bukkit.getPluginManager().registerEvents(guiListener, UltimateShop.instance);
-    }
-
-    public static void openEditProductGUI(Player player, ObjectItem item) {
-        if (CommonUtil.getEditing(player)) {
-            LanguageManager.languageManager.sendStringText(player, "editor.already-editing");
-            return;
-        }
-        EditProductGUI gui = new EditProductGUI(player, item);
         gui.openGUI();
         Listener guiListener = new GUIListener(gui);
         Bukkit.getPluginManager().registerEvents(guiListener, UltimateShop.instance);

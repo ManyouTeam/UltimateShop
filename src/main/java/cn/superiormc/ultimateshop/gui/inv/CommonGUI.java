@@ -59,9 +59,6 @@ public class CommonGUI extends InvGUI {
 
     @Override
     public boolean clickEventHandle(Inventory inventory, ClickType type, int slot) {
-        if (!Objects.equals(inventory, getInv())) {
-            return true;
-        }
         if (menuButtons.get(slot) == null) {
             return true;
         }
@@ -71,12 +68,12 @@ public class CommonGUI extends InvGUI {
     }
 
     @Override
-    public boolean closeEventHandle() {
+    public boolean closeEventHandle(Inventory inventory) {
         return true;
     }
 
     @Override
-    public boolean dragEventHandle(Set<Integer> slots) {
+    public boolean dragEventHandle(Map<Integer, ItemStack> newItems) {
         return true;
     }
 

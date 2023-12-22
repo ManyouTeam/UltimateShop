@@ -14,6 +14,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.Arrays;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
@@ -39,7 +40,7 @@ public class SellAllGUI extends InvGUI {
     }
 
     @Override
-    public boolean closeEventHandle() {
+    public boolean closeEventHandle(Inventory inventory) {
         if (owner.getPlayer() == null) {
             return true;
         }
@@ -62,7 +63,7 @@ public class SellAllGUI extends InvGUI {
     }
 
     @Override
-    public boolean dragEventHandle(Set<Integer> slots) {
+    public boolean dragEventHandle(Map<Integer, ItemStack> newItems) {
         owner.updateInventory();
         return false;
     }

@@ -24,8 +24,6 @@ import su.nightexpress.gamepoints.api.GamePointsAPI;
 import su.nightexpress.gamepoints.data.PointUser;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
-import java.util.Objects;
 
 public class PriceHook {
 
@@ -327,7 +325,7 @@ public class PriceHook {
                     }
                     ItemStack temItem = storage[i].clone();
                     temItem.setAmount(1);
-                    String tempVal10 = CheckValidHook.checkValid(pluginName, item, temItem);
+                    String tempVal10 = CheckValidHook.checkValid(pluginName, temItem);
                     if (tempVal10 != null && tempVal10.equals(item)) {
                         if (storage[i].getAmount() >= value) {
                             storage[i].setAmount(storage[i].getAmount() - value);
@@ -364,7 +362,7 @@ public class PriceHook {
             }
             ItemStack temItem = tempVal1.clone();
             temItem.setAmount(1);
-            String tempVal10 = CheckValidHook.checkValid(pluginName, item, temItem);
+            String tempVal10 = CheckValidHook.checkValid(pluginName, temItem);
             if (tempVal10 != null && tempVal10.equals(item)) {
                 amount += tempVal1.getAmount();
             }

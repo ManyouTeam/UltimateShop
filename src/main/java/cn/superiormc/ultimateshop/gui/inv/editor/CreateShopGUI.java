@@ -1,7 +1,6 @@
 package cn.superiormc.ultimateshop.gui.inv.editor;
 
 import cn.superiormc.ultimateshop.UltimateShop;
-import cn.superiormc.ultimateshop.gui.InvGUI;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.LanguageManager;
 import cn.superiormc.ultimateshop.methods.ReloadPlugin;
@@ -23,11 +22,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
-public class CreateShopGUI extends InvGUI {
+public class CreateShopGUI extends EditorInvGUI {
 
-    public static Map<Player, CreateShopGUI> guiCache = new HashMap<>();
-
-    public EditorShopMode editMode = EditorShopMode.NOT_EDITING;
+    public EditorMode editMode;
 
     public String shopID = "";
 
@@ -41,16 +38,6 @@ public class CreateShopGUI extends InvGUI {
 
     public CreateShopGUI(Player owner) {
         super(owner);
-        guiCache.put(owner, this);
-    }
-
-    @Override
-    public void openGUI() {
-        editMode = EditorShopMode.NOT_EDITING;
-        constructGUI();
-        if (inv != null) {
-            owner.getPlayer().openInventory(inv);
-        }
     }
 
     @Override
@@ -133,16 +120,13 @@ public class CreateShopGUI extends InvGUI {
 
     @Override
     public boolean clickEventHandle(Inventory inventory, ClickType type, int slot) {
-        if (!Objects.equals(inventory, getInv())) {
-            return true;
-        }
         if (slot == 0) {
-            editMode = EditorShopMode.EDIT_SHOP_NAME;
+            editMode = EditorMode.EDIT_SHOP_NAME;
             LanguageManager.languageManager.sendStringText(owner, "editor.enter-shop-name");
             owner.closeInventory();
         }
         if (slot == 1) {
-            editMode = EditorShopMode.EDIT_SHOP_ID;
+            editMode = EditorMode.EDIT_SHOP_ID;
             LanguageManager.languageManager.sendStringText(owner, "editor.enter-shop-id");
             owner.closeInventory();
         }
@@ -155,7 +139,7 @@ public class CreateShopGUI extends InvGUI {
             constructGUI();
         }
         if (slot == 3) {
-            editMode = EditorShopMode.EDIT_MENU_ID;
+            editMode = EditorMode.EDIT_MENU_ID;
             LanguageManager.languageManager.sendStringText(owner, "editor.enter-menu-id");
             owner.closeInventory();
         }
@@ -211,16 +195,7 @@ public class CreateShopGUI extends InvGUI {
     }
 
     @Override
-    public boolean closeEventHandle() {
-        if (editMode == EditorShopMode.NOT_EDITING) {
-            guiCache.remove(owner);
-            return true;
-        }
-        return false;
-    }
-
-    @Override
-    public boolean dragEventHandle(Set<Integer> slots) {
+    public boolean dragEventHandle(Map<Integer, ItemStack> newItems) {
         return true;
     }
 
