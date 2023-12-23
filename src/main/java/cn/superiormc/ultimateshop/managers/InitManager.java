@@ -8,11 +8,14 @@ import java.io.File;
 public class InitManager {
     public static InitManager initManager;
 
+    private boolean firstLoad = false;
+
     public InitManager() {
         initManager = this;
         File file = new File(UltimateShop.instance.getDataFolder(), "config.yml");
         if (!file.exists()) {
             UltimateShop.instance.saveDefaultConfig();
+            firstLoad = true;
         }
         init();
     }
@@ -32,9 +35,12 @@ public class InitManager {
     }
     private void resourceOutput(String fileName, boolean fix) {
         File tempVal1 = new File(UltimateShop.instance.getDataFolder(), fileName);
-        if (!tempVal1.exists() && fix) {
+        if (!tempVal1.exists()) {
+            if (!firstLoad && !fix) {
+                return;
+            }
             File tempVal2 = new File(fileName);
-            if (tempVal2.getParentFile() != null) {
+            if (tempVal2.getParentFile() != null && fix) {
                 CommonUtil.mkDir(tempVal2.getParentFile());
             }
             UltimateShop.instance.saveResource(tempVal2.getPath(), false);
