@@ -32,9 +32,9 @@ public class InitManager {
     }
     private void resourceOutput(String fileName, boolean fix) {
         File tempVal1 = new File(UltimateShop.instance.getDataFolder(), fileName);
-        if (!tempVal1.exists()) {
+        if (!tempVal1.exists() && fix) {
             File tempVal2 = new File(fileName);
-            if (fix && tempVal2.getParentFile() != null) {
+            if (tempVal2.getParentFile() != null) {
                 CommonUtil.mkDir(tempVal2.getParentFile());
             }
             UltimateShop.instance.saveResource(tempVal2.getPath(), false);
