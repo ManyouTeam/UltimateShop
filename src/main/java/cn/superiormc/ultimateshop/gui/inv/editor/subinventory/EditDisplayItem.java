@@ -1,10 +1,11 @@
 package cn.superiormc.ultimateshop.gui.inv.editor.subinventory;
 
+import cn.superiormc.ultimateshop.gui.InvGUI;
 import cn.superiormc.ultimateshop.gui.inv.editor.EditProductGUI;
-import cn.superiormc.ultimateshop.gui.inv.editor.EditorInvGUI;
 import cn.superiormc.ultimateshop.managers.LanguageManager;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
 import cn.superiormc.ultimateshop.utils.ItemUtil;
+import cn.superiormc.ultimateshop.utils.MathUtil;
 import cn.superiormc.ultimateshop.utils.TextUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -17,11 +18,13 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.*;
 
-public class EditDisplayItem extends EditorInvGUI {
+public class EditDisplayItem extends InvGUI {
 
     public ConfigurationSection section;
 
     public ItemStack displayItem;
+
+    public ItemStack tempDisplayItem;
 
     public EditDisplayItem(Player owner, EditProductGUI gui) {
         super(owner);
@@ -29,15 +32,24 @@ public class EditDisplayItem extends EditorInvGUI {
         this.section = gui.section.getConfigurationSection("display-item");
         if (section == null) {
             section = gui.section.createSection("display-item");
+            this.displayItem = new ItemStack(Material.STONE);
+            this.tempDisplayItem = new ItemStack(Material.STONE);
+        }
+        else {
+            // display item
+            this.displayItem = ItemUtil.buildItemStack(owner, section, (int)
+                    MathUtil.doCalculate(TextUtil.withPAPI(section.getString("amount", "1"), owner)));
+            this.tempDisplayItem = ItemUtil.buildItemStack(owner, section, (int)
+                    MathUtil.doCalculate(TextUtil.withPAPI(section.getString("amount", "1"), owner)));
         }
     }
 
     @Override
     protected void constructGUI() {
-        // display item
-        this.displayItem = ItemUtil.buildItemStack(owner, section, 1);
-        ItemStack tempDisplayItem = this.displayItem.clone();
         ItemMeta tempVal1 = tempDisplayItem.getItemMeta();
+        if (tempVal1 == null) {
+            return;
+        }
         List<String> tempVal3 = new ArrayList<>();
         if (tempVal1.hasLore()) {
             tempVal3 = tempVal1.getLore();
@@ -88,22 +100,28 @@ public class EditDisplayItem extends EditorInvGUI {
             constructGUI();
         }
         if (slot == 8) {
-            Map<String, Object> itemSection = ItemUtil.debuildItem(displayItem);
-            for (String key : itemSection.keySet()) {
-                section.set(key, itemSection.get(key));
-            }
             previousGUI.openGUI();
         }
         return true;
     }
 
     @Override
-    public boolean dragEventHandle(Map<Integer, ItemStack> newItems) {
-        if (newItems.containsKey(0)) {
-            this.displayItem = newItems.get(0);
-            constructGUI();
-            return true;
+    public void afterClickEventHandle(ItemStack item, ItemStack currentItem, int slot) {
+        if (slot == 0) {
+            if (item != null) {
+                this.displayItem = item;
+                this.tempDisplayItem = item;
+                for (String key : section.getKeys(true)) {
+                    if (!key.equals("modify-lore")) {
+                        section.set(key, null);
+                    }
+                }
+                Map<String, Object> itemSection = ItemUtil.debuildItem(displayItem);
+                for (String key : itemSection.keySet()) {
+                    section.set(key, itemSection.get(key));
+                }
+                constructGUI();
+            }
         }
-        return true;
     }
 }

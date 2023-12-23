@@ -25,7 +25,6 @@ public class CommonGUI extends InvGUI {
     public CommonGUI(Player owner, String fileName) {
         super(owner);
         this.fileName = fileName;
-        constructGUI();
     }
 
     @Override
@@ -64,16 +63,6 @@ public class CommonGUI extends InvGUI {
         }
         menuButtons.get(slot).clickEvent(type, owner.getPlayer());
         constructGUI();
-        return true;
-    }
-
-    @Override
-    public boolean closeEventHandle(Inventory inventory) {
-        return true;
-    }
-
-    @Override
-    public boolean dragEventHandle(Map<Integer, ItemStack> newItems) {
         return true;
     }
 

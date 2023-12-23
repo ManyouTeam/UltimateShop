@@ -1,10 +1,10 @@
 package cn.superiormc.ultimateshop.gui.inv.editor.subinventory;
 
+import cn.superiormc.ultimateshop.gui.InvGUI;
 import cn.superiormc.ultimateshop.gui.inv.editor.EditProductGUI;
-import cn.superiormc.ultimateshop.gui.inv.editor.EditorInvGUI;
-import cn.superiormc.ultimateshop.gui.inv.editor.EditorMode;
 import cn.superiormc.ultimateshop.managers.LanguageManager;
 import cn.superiormc.ultimateshop.utils.ItemUtil;
+import cn.superiormc.ultimateshop.utils.MathUtil;
 import cn.superiormc.ultimateshop.utils.TextUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -17,7 +17,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.*;
 
-public class ChooseSingleProductGUI extends EditorInvGUI {
+public class ChooseSingleProductGUI extends InvGUI {
 
     private Map<Integer, String> itemCache = new HashMap<>();
 
@@ -58,8 +58,10 @@ public class ChooseSingleProductGUI extends EditorInvGUI {
                 break;
             }
             ItemStack productItem = new ItemStack(Material.ANVIL);
-            if (section.getConfigurationSection(tempVal2).contains("material")) {
-                productItem = ItemUtil.buildItemStack(owner, section.getConfigurationSection(tempVal2), 1);
+            ConfigurationSection tempVal5 = section.getConfigurationSection(tempVal2);
+            if (tempVal5 != null && tempVal5.contains("material")) {
+                productItem = ItemUtil.buildItemStack(owner, tempVal5, (int)
+                        MathUtil.doCalculate(TextUtil.withPAPI(tempVal5.getString("amount", "1"), owner)));
             }
             ItemMeta tempVal1 = productItem.getItemMeta();
             if (!tempVal1.hasDisplayName()) {
@@ -115,31 +117,24 @@ public class ChooseSingleProductGUI extends EditorInvGUI {
             nowPage++;
             constructGUI();
         }
+        else if (slot < 45 && inventory.getItem(slot) != null){
+            return false;
+        }
         return true;
     }
 
     @Override
-    public boolean dragEventHandle(Map<Integer, ItemStack> newItems) {
-        if (newItems.isEmpty()) {
-            return true;
-        }
-        int slot = 0;
-        ItemStack item = null;
-        for (int i : newItems.keySet()) {
-            slot = i;
-            item = newItems.get(i);
-            break;
-        }
+    public void afterClickEventHandle(ItemStack item, ItemStack currentItem, int slot) {
         if (slot < 45) {
             ConfigurationSection tempVal1 = section.getConfigurationSection(itemCache.get((nowPage - 1)  * 45 + slot));
-            if (tempVal1 == null || tempVal1.contains("material")) {
-                return true;
+            if (tempVal1 == null) {
+                return;
             }
             Map<String, Object> tempVal2 = ItemUtil.debuildItem(item);
             for (String key : tempVal2.keySet()) {
                 tempVal1.set(key, tempVal2.get(key));
             }
         }
-        return true;
+        constructGUI();
     }
 }

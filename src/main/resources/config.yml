@@ -5,7 +5,7 @@ menu:
     # Whether shop menu will refresh every 1 second.
     # This will refresh placeholder that displayed in display item lore.
     # But maybe lead to server lag if you have much online players and they are all opening shop GUI.
-    update: true
+    update: false
   sell-all:
     size: 54
     title: '&fSell All &7- Esc to confirm sell!'
@@ -43,7 +43,6 @@ use-times:
 
 math:
   enabled: true
-  result-pattern: '#.00'
 
 display-item:
   auto-set-first-product: true

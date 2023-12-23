@@ -17,7 +17,6 @@ import org.bukkit.inventory.ItemStack;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 
 public class BuyMoreGUI extends InvGUI {
 
@@ -31,7 +30,6 @@ public class BuyMoreGUI extends InvGUI {
         super(owner);
         this.item = item;
         this.nowingAmount = 1;
-        constructGUI();
     }
 
     @Override
@@ -146,16 +144,6 @@ public class BuyMoreGUI extends InvGUI {
                 break;
         }
         constructGUI();
-        return true;
-    }
-
-    @Override
-    public boolean closeEventHandle(Inventory inventory) {
-        return true;
-    }
-
-    @Override
-    public boolean dragEventHandle(Map<Integer, ItemStack> newItems) {
         return true;
     }
 

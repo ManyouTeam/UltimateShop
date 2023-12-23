@@ -2,8 +2,7 @@ package cn.superiormc.ultimateshop.listeners;
 
 import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.gui.InvGUI;
-import cn.superiormc.ultimateshop.gui.inv.editor.EditorInvGUI;
-import cn.superiormc.ultimateshop.gui.inv.editor.EditorMode;
+import cn.superiormc.ultimateshop.gui.inv.GUIMode;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -26,20 +25,28 @@ public class GUIListener implements Listener {
 
     @EventHandler
     public void onClick(InventoryClickEvent e) {
-        //try {
+        try {
             if (e.getWhoClicked().equals(player)) {
                 if (e.getClickedInventory() != gui.getInv()) {
                     return;
                 }
-                e.setCancelled(gui.clickEventHandle(e.getClickedInventory(), e.getClick(), e.getSlot()));
+                if (gui.clickEventHandle(e.getClickedInventory(), e.getClick(), e.getSlot())) {
+                    e.setCancelled(true);
+                }
+                else {
+                    gui.afterClickEventHandle(e.getCursor(), e.getCurrentItem(), e.getSlot());
+                    if (e.getCursor() != null) {
+                        e.getCursor().setAmount(0);
+                    }
+                }
                 if (e.getClick().toString().equals("SWAP_OFFHAND") && e.isCancelled()) {
                     player.getInventory().setItemInOffHand(player.getInventory().getItemInOffHand());
                 }
             }
-        //}
-        //catch (Exception ep) {
-        //    e.setCancelled(true);
-        //}
+        }
+        catch (Exception ep) {
+            e.setCancelled(true);
+        }
     }
 
     @EventHandler
@@ -54,17 +61,13 @@ public class GUIListener implements Listener {
     @EventHandler
     public void onClose(InventoryCloseEvent e) {
         if (e.getPlayer().equals(player)) {
+            // 判定是否要打开上一页菜单
             if (gui.closeEventHandle(e.getInventory())) {
-                HandlerList.unregisterAll(this);
-                player.updateInventory();
-                if (gui instanceof EditorInvGUI) {
-                    EditorInvGUI tempVal1 = (EditorInvGUI) gui;
-                    if (tempVal1.previousGUI != null) {
-                        tempVal1.previousGUI.openGUI();
-                        Listener guiListener = new GUIListener(tempVal1.previousGUI);
-                        Bukkit.getPluginManager().registerEvents(guiListener, UltimateShop.instance);
+                Bukkit.getScheduler().runTaskLater(UltimateShop.instance, () -> {
+                    if (gui.previousGUI != null && gui.guiMode == GUIMode.NOT_EDITING) {
+                        gui.previousGUI.openGUI();
                     }
-                }
+                }, 2L);
             }
         }
     }

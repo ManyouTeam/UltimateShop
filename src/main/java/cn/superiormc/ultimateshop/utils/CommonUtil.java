@@ -1,7 +1,6 @@
 package cn.superiormc.ultimateshop.utils;
 
 import cn.superiormc.ultimateshop.UltimateShop;
-import cn.superiormc.ultimateshop.gui.inv.editor.EditorInvGUI;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import io.lumine.mythic.api.mobs.MythicMob;
 import io.lumine.mythic.bukkit.BukkitAdapter;
@@ -147,6 +146,9 @@ public class CommonUtil {
     }
 
     public static String getItemName(ItemStack displayItem) {
+        if (displayItem == null) {
+            return "";
+        }
         if (CommonUtil.checkPluginLoad("NeigeItems")) {
             return ItemUtils.getItemName(displayItem);
         }
@@ -154,6 +156,6 @@ public class CommonUtil {
         displayItem.getItemMeta().getDisplayName() :
         displayItem.getItemMeta().hasLocalizedName() ?
         displayItem.getItemMeta().getLocalizedName() :
-                displayItem.getType().name();
+                displayItem.getType().name().replace("_", " ");
     }
 }

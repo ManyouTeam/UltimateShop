@@ -1,9 +1,9 @@
 package cn.superiormc.ultimateshop.listeners;
 
 import cn.superiormc.ultimateshop.UltimateShop;
+import cn.superiormc.ultimateshop.gui.InvGUI;
 import cn.superiormc.ultimateshop.gui.inv.editor.CreateShopGUI;
-import cn.superiormc.ultimateshop.gui.inv.editor.EditorInvGUI;
-import cn.superiormc.ultimateshop.gui.inv.editor.EditorMode;
+import cn.superiormc.ultimateshop.gui.inv.GUIMode;
 import cn.superiormc.ultimateshop.gui.inv.editor.EditShopGUI;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.LanguageManager;
@@ -19,18 +19,16 @@ public class ChatListener implements Listener {
     @EventHandler
     public void onChat(AsyncPlayerChatEvent event) {
         Bukkit.getScheduler().runTask(UltimateShop.instance, () -> {
-            Bukkit.getConsoleSender().sendMessage("5555");
-            if (EditorInvGUI.guiCache.containsKey(event.getPlayer())) {
-                Bukkit.getConsoleSender().sendMessage("6666");
+            if (InvGUI.guiCache.containsKey(event.getPlayer())) {
                 event.setCancelled(true);
-                EditorInvGUI tempVal1 = CreateShopGUI.guiCache.get(event.getPlayer());
+                InvGUI tempVal1 = CreateShopGUI.guiCache.get(event.getPlayer());
                 if (tempVal1 instanceof CreateShopGUI) {
                     CreateShopGUI gui = (CreateShopGUI) tempVal1;
-                    if (gui.editMode == EditorMode.EDIT_SHOP_NAME) {
+                    if (gui.editMode == GUIMode.EDIT_SHOP_NAME) {
                         gui.shopName = TextUtil.parse(event.getMessage());
                         gui.openGUI();
                     }
-                    if (gui.editMode == EditorMode.EDIT_SHOP_ID) {
+                    if (gui.editMode == GUIMode.EDIT_SHOP_ID) {
                         if (ConfigManager.configManager.shopConfigs.containsKey(event.getMessage())) {
                             LanguageManager.languageManager.sendStringText(event.getPlayer(),
                                     "editor.shop-already-exists",
@@ -42,7 +40,7 @@ public class ChatListener implements Listener {
                             gui.openGUI();
                         }
                     }
-                    if (gui.editMode == EditorMode.EDIT_MENU_ID) {
+                    if (gui.editMode == GUIMode.EDIT_MENU_ID) {
                         if (!ObjectMenu.commonMenus.containsKey(event.getMessage()) &&
                                 !ObjectMenu.shopMenuNames.contains(event.getMessage())) {
                             LanguageManager.languageManager.sendStringText(event.getPlayer(),
@@ -58,11 +56,11 @@ public class ChatListener implements Listener {
                 }
                 else if (tempVal1 instanceof EditShopGUI) {
                     EditShopGUI gui = (EditShopGUI) tempVal1;
-                    if (gui.editMode == EditorMode.EDIT_SHOP_NAME) {
+                    if (gui.guiMode == GUIMode.EDIT_SHOP_NAME) {
                         gui.config.set("settings.shop-name", TextUtil.parse(event.getMessage()));
                         gui.openGUI();
                     }
-                    if (gui.editMode == EditorMode.EDIT_MENU_ID) {
+                    if (gui.guiMode == GUIMode.EDIT_MENU_ID) {
                         if (!ObjectMenu.commonMenus.containsKey(event.getMessage()) &&
                                 !ObjectMenu.shopMenuNames.contains(event.getMessage())) {
                             LanguageManager.languageManager.sendStringText(event.getPlayer(),

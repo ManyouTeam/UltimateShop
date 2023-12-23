@@ -1,6 +1,8 @@
 package cn.superiormc.ultimateshop.gui.inv.editor;
 
 import cn.superiormc.ultimateshop.UltimateShop;
+import cn.superiormc.ultimateshop.gui.InvGUI;
+import cn.superiormc.ultimateshop.gui.inv.GUIMode;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.LanguageManager;
 import cn.superiormc.ultimateshop.methods.ReloadPlugin;
@@ -22,9 +24,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
-public class CreateShopGUI extends EditorInvGUI {
+public class CreateShopGUI extends InvGUI {
 
-    public EditorMode editMode;
+    public GUIMode editMode;
 
     public String shopID = "";
 
@@ -121,12 +123,14 @@ public class CreateShopGUI extends EditorInvGUI {
     @Override
     public boolean clickEventHandle(Inventory inventory, ClickType type, int slot) {
         if (slot == 0) {
-            editMode = EditorMode.EDIT_SHOP_NAME;
+            editMode = GUIMode.EDIT_SHOP_NAME;
+            guiCache.put(owner, this);
             LanguageManager.languageManager.sendStringText(owner, "editor.enter-shop-name");
             owner.closeInventory();
         }
         if (slot == 1) {
-            editMode = EditorMode.EDIT_SHOP_ID;
+            editMode = GUIMode.EDIT_SHOP_ID;
+            guiCache.put(owner, this);
             LanguageManager.languageManager.sendStringText(owner, "editor.enter-shop-id");
             owner.closeInventory();
         }
@@ -139,7 +143,8 @@ public class CreateShopGUI extends EditorInvGUI {
             constructGUI();
         }
         if (slot == 3) {
-            editMode = EditorMode.EDIT_MENU_ID;
+            editMode = GUIMode.EDIT_MENU_ID;
+            guiCache.put(owner, this);
             LanguageManager.languageManager.sendStringText(owner, "editor.enter-menu-id");
             owner.closeInventory();
         }
@@ -154,6 +159,12 @@ public class CreateShopGUI extends EditorInvGUI {
         if (slot == 8) {
             if (!shopID.isEmpty()) {
                 Bukkit.getScheduler().runTaskAsynchronously(UltimateShop.instance, () -> {
+                    if (UltimateShop.freeVersion) {
+                        owner.closeInventory();
+                        owner.sendMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: You are now using free version, " +
+                                "your changes in GUI Editor won't get saved.");
+                        return;
+                    }
                     File dir = new File(UltimateShop.instance.getDataFolder() + "/shops");
                     if (!dir.exists()) {
                         dir.mkdir();
@@ -191,11 +202,6 @@ public class CreateShopGUI extends EditorInvGUI {
                 owner.closeInventory();
             }
         }
-        return true;
-    }
-
-    @Override
-    public boolean dragEventHandle(Map<Integer, ItemStack> newItems) {
         return true;
     }
 

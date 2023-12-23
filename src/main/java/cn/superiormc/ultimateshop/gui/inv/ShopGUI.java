@@ -37,15 +37,11 @@ public class ShopGUI extends InvGUI {
     public ShopGUI(Player owner, ObjectShop shop) {
         super(owner);
         this.shop = shop;
-        constructGUI();
     }
 
     @Override
     public void openGUI() {
-        if (inv == null) {
-            return;
-        }
-        owner.getPlayer().openInventory(inv);
+        super.openGUI();
         if (ConfigManager.configManager.getBoolean("menu.shop.update")) {
             runTask = new BukkitRunnable() {
                 @Override
@@ -163,11 +159,6 @@ public class ShopGUI extends InvGUI {
         if (runTask != null) {
             runTask.cancel();
         }
-        return true;
-    }
-
-    @Override
-    public boolean dragEventHandle(Map<Integer, ItemStack> newItems) {
         return true;
     }
 

@@ -1,24 +1,18 @@
 package cn.superiormc.ultimateshop.gui.inv.editor;
 
-import cn.superiormc.ultimateshop.UltimateShop;
-import cn.superiormc.ultimateshop.listeners.GUIListener;
+import cn.superiormc.ultimateshop.gui.InvGUI;
+import cn.superiormc.ultimateshop.gui.inv.GUIMode;
 import cn.superiormc.ultimateshop.managers.LanguageManager;
-import cn.superiormc.ultimateshop.methods.GUI.OpenGUI;
-import cn.superiormc.ultimateshop.utils.CommonUtil;
 import cn.superiormc.ultimateshop.utils.TextUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.Map;
-import java.util.Objects;
-
-public class CreateOrEditShopGUI extends EditorInvGUI {
+public class CreateOrEditShopGUI extends InvGUI {
 
     public CreateOrEditShopGUI(Player owner) {
         super(owner);
@@ -51,22 +45,15 @@ public class CreateOrEditShopGUI extends EditorInvGUI {
     @Override
     public boolean clickEventHandle(Inventory inventory, ClickType type, int slot) {
         if (slot == 0) {
+            guiMode = GUIMode.OPEN_NEW_GUI;
             CreateShopGUI gui = new CreateShopGUI(owner);
             gui.openGUI();
-            Listener guiListener = new GUIListener(gui);
-            Bukkit.getPluginManager().registerEvents(guiListener, UltimateShop.instance);
         }
         if (slot == 1) {
+            guiMode = GUIMode.OPEN_NEW_GUI;
             ChooseShopGUI gui = new ChooseShopGUI(owner);
             gui.openGUI();
-            Listener guiListener = new GUIListener(gui);
-            Bukkit.getPluginManager().registerEvents(guiListener, UltimateShop.instance);
         }
-        return true;
-    }
-
-    @Override
-    public boolean dragEventHandle(Map<Integer, ItemStack> newItems) {
         return true;
     }
 }

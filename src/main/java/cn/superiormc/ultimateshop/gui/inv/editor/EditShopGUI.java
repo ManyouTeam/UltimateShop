@@ -1,7 +1,8 @@
 package cn.superiormc.ultimateshop.gui.inv.editor;
 
 import cn.superiormc.ultimateshop.UltimateShop;
-import cn.superiormc.ultimateshop.listeners.GUIListener;
+import cn.superiormc.ultimateshop.gui.InvGUI;
+import cn.superiormc.ultimateshop.gui.inv.GUIMode;
 import cn.superiormc.ultimateshop.managers.LanguageManager;
 import cn.superiormc.ultimateshop.methods.ReloadPlugin;
 import cn.superiormc.ultimateshop.objects.ObjectShop;
@@ -11,7 +12,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -21,7 +21,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
-public class EditShopGUI extends EditorInvGUI {
+public class EditShopGUI extends InvGUI {
 
     public YamlConfiguration config = null;
 
@@ -116,7 +116,8 @@ public class EditShopGUI extends EditorInvGUI {
     @Override
     public boolean clickEventHandle(Inventory inventory, ClickType type, int slot) {
         if (slot == 0) {
-            editMode = EditorMode.EDIT_SHOP_NAME;
+            guiCache.put(owner, this);
+            guiMode = GUIMode.EDIT_SHOP_NAME;
             LanguageManager.languageManager.sendStringText(owner, "editor.enter-shop-name");
             owner.closeInventory();
         }
@@ -130,7 +131,8 @@ public class EditShopGUI extends EditorInvGUI {
             constructGUI();
         }
         if (slot == 2) {
-            editMode = EditorMode.EDIT_MENU_ID;
+            guiCache.put(owner, this);
+            guiMode = GUIMode.EDIT_MENU_ID;
             LanguageManager.languageManager.sendStringText(owner, "editor.enter-menu-id");
             owner.closeInventory();
         }
@@ -144,12 +146,17 @@ public class EditShopGUI extends EditorInvGUI {
             constructGUI();
         }
         if (slot == 5) {
+            guiMode = GUIMode.OPEN_NEW_GUI;
             ChooseProductGUI gui = new ChooseProductGUI(owner, this);
             gui.openGUI();
-            Listener guiListener = new GUIListener(gui);
-            Bukkit.getPluginManager().registerEvents(guiListener, UltimateShop.instance);
         }
         if (slot == 8) {
+            if (UltimateShop.freeVersion) {
+                owner.closeInventory();
+                owner.sendMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: You are now using free version, " +
+                        "your changes in GUI Editor won't get saved.");
+                return true;
+            }
             File dir = new File(UltimateShop.instance.getDataFolder() + "/shops");
             if (!dir.exists()) {
                 dir.mkdir();
@@ -168,11 +175,6 @@ public class EditShopGUI extends EditorInvGUI {
             }
             owner.closeInventory();
         }
-        return true;
-    }
-
-    @Override
-    public boolean dragEventHandle(Map<Integer, ItemStack> newItems) {
         return true;
     }
 

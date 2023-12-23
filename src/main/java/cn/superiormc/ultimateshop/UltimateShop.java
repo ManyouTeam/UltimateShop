@@ -16,19 +16,13 @@ public final class UltimateShop extends JavaPlugin {
 
     public static JavaPlugin instance;
 
-    public static boolean freeVersion = true;
+    public static boolean freeVersion = false;
 
     @Override
     public void onEnable() {
         instance = this;
         new ErrorManager();
-        File file = new File(getDataFolder(), "config.yml");
-        if (!file.exists()) {
-            this.saveDefaultConfig();
-            new InitManager(true);
-        } else {
-            new InitManager(false);
-        }
+        new InitManager();
         new ConfigManager();
         new ItemManager();
         new LanguageManager();

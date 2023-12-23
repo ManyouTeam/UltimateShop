@@ -22,7 +22,6 @@ public class SellAllGUI extends InvGUI {
 
     public SellAllGUI(Player owner) {
         super(owner);
-        constructGUI();
     }
 
     @Override

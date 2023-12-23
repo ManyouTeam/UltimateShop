@@ -8,41 +8,36 @@ import java.io.File;
 public class InitManager {
     public static InitManager initManager;
 
-    private final boolean first;
-
-    public InitManager(boolean first) {
+    public InitManager() {
         initManager = this;
-        this.first = first;
+        File file = new File(UltimateShop.instance.getDataFolder(), "config.yml");
+        if (!file.exists()) {
+            UltimateShop.instance.saveDefaultConfig();
+        }
         init();
     }
 
     public void init() {
-        resourceOutputFix(new File("message.yml"));
-        resourceOutput(new File("shops/baits.yml"));
-        resourceOutput(new File("shops/blocks.yml"));
-        resourceOutput(new File("shops/crops.yml"));
-        resourceOutput(new File("shops/crops1.yml"));
-        resourceOutput(new File("shops/drops.yml"));
-        resourceOutput(new File("shops/logs.yml"));
-        resourceOutput(new File("shops/ores.yml"));
-        resourceOutput(new File("menus/main.yml"));
-        resourceOutput(new File("menus/buy-more.yml"));
-        resourceOutput(new File("menus/example-shop-menu.yml"));
+        resourceOutput("message.yml", true);
+        resourceOutput("shops/baits.yml", false);
+        resourceOutput("shops/blocks.yml", false);
+        resourceOutput("shops/crops.yml", false);
+        resourceOutput("shops/crops1.yml", false);
+        resourceOutput("shops/drops.yml", false);
+        resourceOutput("shops/logs.yml", false);
+        resourceOutput("shops/ores.yml", false);
+        resourceOutput("menus/main.yml", false);
+        resourceOutput("menus/buy-more.yml", false);
+        resourceOutput("menus/example-shop-menu.yml", false);
     }
-    private void resourceOutput(File file) {
-        if (!first) {
-            return;
+    private void resourceOutput(String fileName, boolean fix) {
+        File tempVal1 = new File(UltimateShop.instance.getDataFolder(), fileName);
+        if (!tempVal1.exists()) {
+            File tempVal2 = new File(fileName);
+            if (fix && tempVal2.getParentFile() != null) {
+                CommonUtil.mkDir(tempVal2.getParentFile());
+            }
+            UltimateShop.instance.saveResource(tempVal2.getPath(), false);
         }
-        UltimateShop.instance.saveResource(file.getPath(), false);
-    }
-
-    private void resourceOutputFix(File file) {
-        if (file.getParentFile() != null) {
-            CommonUtil.mkDir(file.getParentFile());
-        }
-        if (!first) {
-            return;
-        }
-        UltimateShop.instance.saveResource(file.getPath(), false);
     }
 }
