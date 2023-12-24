@@ -61,6 +61,8 @@ public class GUIListener implements Listener {
     @EventHandler
     public void onClose(InventoryCloseEvent e) {
         if (e.getPlayer().equals(player)) {
+            HandlerList.unregisterAll(this);
+            player.updateInventory();
             // 判定是否要打开上一页菜单
             if (gui.closeEventHandle(e.getInventory())) {
                 Bukkit.getScheduler().runTaskLater(UltimateShop.instance, () -> {

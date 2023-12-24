@@ -38,8 +38,6 @@ public abstract class InvGUI extends AbstractGUI {
     public abstract boolean clickEventHandle(Inventory inventory, ClickType type, int slot);
 
     public boolean closeEventHandle(Inventory inventory) {
-        HandlerList.unregisterAll(guiListener);
-        owner.updateInventory();
         return guiMode != null && guiMode == GUIMode.NOT_EDITING;
     }
 

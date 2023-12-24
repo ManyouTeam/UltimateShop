@@ -539,36 +539,40 @@ public final class XItemStack {
         // Material
         String materialName = config.getString("material");
         if (!Strings.isNullOrEmpty(materialName)) {
-            Optional<XMaterial> materialOpt = XMaterial.matchXMaterial(materialName);
-            XMaterial material;
-            if (materialOpt.isPresent()) material = materialOpt.get();
+            if (Material.getMaterial(materialName) != null) {
+                item.setType(Material.getMaterial(materialName));
+            }
             else {
-                UnknownMaterialCondition unknownMaterialCondition = new UnknownMaterialCondition(materialName);
-                if (restart == null) throw unknownMaterialCondition;
-                restart.accept(unknownMaterialCondition);
+                Optional<XMaterial> materialOpt = XMaterial.matchXMaterial(materialName);
+                XMaterial material;
+                if (materialOpt.isPresent()) material = materialOpt.get();
+                else {
+                    UnknownMaterialCondition unknownMaterialCondition = new UnknownMaterialCondition(materialName);
+                    if (restart == null) throw unknownMaterialCondition;
+                    restart.accept(unknownMaterialCondition);
 
-                if (unknownMaterialCondition.hasSolution()) material = unknownMaterialCondition.solution;
-                else throw unknownMaterialCondition;
+                    if (unknownMaterialCondition.hasSolution()) material = unknownMaterialCondition.solution;
+                    else throw unknownMaterialCondition;
+                }
+
+                if (!material.isSupported()) {
+                    UnAcceptableMaterialCondition unsupportedMaterialCondition = new UnAcceptableMaterialCondition(material, UnAcceptableMaterialCondition.Reason.UNSUPPORTED);
+                    if (restart == null) throw unsupportedMaterialCondition;
+                    restart.accept(unsupportedMaterialCondition);
+
+                    if (unsupportedMaterialCondition.hasSolution()) material = unsupportedMaterialCondition.solution;
+                    else throw unsupportedMaterialCondition;
+                }
+                if (XTag.INVENTORY_NOT_DISPLAYABLE.isTagged(material)) {
+                    UnAcceptableMaterialCondition unsupportedMaterialCondition = new UnAcceptableMaterialCondition(material, UnAcceptableMaterialCondition.Reason.NOT_DISPLAYABLE);
+                    if (restart == null) throw unsupportedMaterialCondition;
+                    restart.accept(unsupportedMaterialCondition);
+
+                    if (unsupportedMaterialCondition.hasSolution()) material = unsupportedMaterialCondition.solution;
+                    else throw unsupportedMaterialCondition;
+                }
+                material.setType(item);
             }
-
-            if (!material.isSupported()) {
-                UnAcceptableMaterialCondition unsupportedMaterialCondition = new UnAcceptableMaterialCondition(material, UnAcceptableMaterialCondition.Reason.UNSUPPORTED);
-                if (restart == null) throw unsupportedMaterialCondition;
-                restart.accept(unsupportedMaterialCondition);
-
-                if (unsupportedMaterialCondition.hasSolution()) material = unsupportedMaterialCondition.solution;
-                else throw unsupportedMaterialCondition;
-            }
-            if (XTag.INVENTORY_NOT_DISPLAYABLE.isTagged(material)) {
-                UnAcceptableMaterialCondition unsupportedMaterialCondition = new UnAcceptableMaterialCondition(material, UnAcceptableMaterialCondition.Reason.NOT_DISPLAYABLE);
-                if (restart == null) throw unsupportedMaterialCondition;
-                restart.accept(unsupportedMaterialCondition);
-
-                if (unsupportedMaterialCondition.hasSolution()) material = unsupportedMaterialCondition.solution;
-                else throw unsupportedMaterialCondition;
-            }
-
-            material.setType(item);
         }
 
         // Amount

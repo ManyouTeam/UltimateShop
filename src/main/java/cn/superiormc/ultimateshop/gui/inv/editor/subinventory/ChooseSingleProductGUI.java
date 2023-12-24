@@ -131,10 +131,13 @@ public class ChooseSingleProductGUI extends InvGUI {
                 return;
             }
             Map<String, Object> tempVal2 = ItemUtil.debuildItem(item);
+            for (String key : tempVal1.getKeys(true)) {
+                tempVal1.set(key, null);
+            }
             for (String key : tempVal2.keySet()) {
                 tempVal1.set(key, tempVal2.get(key));
             }
+            constructGUI();
         }
-        constructGUI();
     }
 }

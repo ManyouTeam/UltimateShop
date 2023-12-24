@@ -4,12 +4,14 @@ import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.hooks.CheckValidHook;
 import cn.superiormc.ultimateshop.hooks.ItemsHook;
 import cn.superiormc.ultimateshop.managers.ItemManager;
+import cn.superiormc.ultimateshop.managers.LanguageManager;
 import com.cryptomorin.xserieschanged.XItemStack;
 import net.advancedplugins.ae.api.AEAPI;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.*;
 import java.util.function.Function;
@@ -75,6 +77,18 @@ public class ItemUtil {
                 for (String enchantName : tempVal1.getKeys(false)) {
                     resultItem = AEAPI.applyEnchant(enchantName, tempVal1.getInt(enchantName), resultItem);
                 }
+            }
+        }
+        if (!section.getStringList("add-lore").isEmpty()) {
+            ItemMeta tempVal2 = resultItem.getItemMeta();
+            if (tempVal2 != null) {
+                List<String> tempVal3 = new ArrayList<>();
+                if (tempVal2.hasLore()) {
+                    tempVal3 = tempVal2.getLore();
+                }
+                tempVal3.addAll(TextUtil.getListWithColor(section.getStringList("add-lore")));
+                tempVal2.setLore(tempVal3);
+                resultItem.setItemMeta(tempVal2);
             }
         }
         return resultItem;
