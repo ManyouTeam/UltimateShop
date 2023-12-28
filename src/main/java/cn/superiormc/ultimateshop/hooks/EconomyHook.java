@@ -18,8 +18,6 @@ import ru.soknight.peconomy.api.PEconomyAPI;
 import ru.soknight.peconomy.database.model.WalletModel;
 import su.nightexpress.coinsengine.api.CoinsEngineAPI;
 import su.nightexpress.coinsengine.api.currency.Currency;
-import su.nightexpress.gamepoints.api.GamePointsAPI;
-import su.nightexpress.gamepoints.data.PointUser;
 
 import java.math.BigDecimal;
 
@@ -32,10 +30,6 @@ public class EconomyHook {
             return;
         }
         switch (pluginName) {
-            case "GamePoints":
-                PointUser user = GamePointsAPI.getUserData(player);
-                user.addPoints((int) value);
-                return;
             case "PlayerPoints":
                 PlayerPoints playerPoints = PlayerPoints.getInstance();
                 if (playerPoints == null) {

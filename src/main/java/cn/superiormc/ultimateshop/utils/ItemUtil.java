@@ -4,7 +4,6 @@ import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.hooks.CheckValidHook;
 import cn.superiormc.ultimateshop.hooks.ItemsHook;
 import cn.superiormc.ultimateshop.managers.ItemManager;
-import cn.superiormc.ultimateshop.managers.LanguageManager;
 import com.cryptomorin.xserieschanged.XItemStack;
 import net.advancedplugins.ae.api.AEAPI;
 import org.bukkit.Material;
