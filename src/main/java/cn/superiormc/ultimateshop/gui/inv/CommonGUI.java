@@ -53,7 +53,6 @@ public class CommonGUI extends InvGUI {
         for (int slot : menuButtons.keySet()) {
             inv.setItem(slot, menuItems.get(slot));
         }
-        //setExtraSlots(glassPane);
     }
 
     @Override

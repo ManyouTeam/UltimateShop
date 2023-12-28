@@ -37,7 +37,7 @@ public class CommonUtil {
     }
 
     public static void dispatchCommand(String command){
-        Bukkit.dispatchCommand(Bukkit.getConsoleSender(),  command);
+        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command);
     }
 
     public static void dispatchCommand(Player player, String command){

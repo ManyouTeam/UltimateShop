@@ -956,7 +956,7 @@ public final class XItemStack {
         ConfigurationSection enchants = config.getConfigurationSection("enchants");
         if (enchants != null) {
             for (String ench : enchants.getKeys(false)) {
-                Enchantment vanillaEnchant = Enchantment.getByKey(NamespacedKey.minecraft(ench));
+                Enchantment vanillaEnchant = Enchantment.getByKey(NamespacedKey.minecraft(ench.toLowerCase()));
                 if (vanillaEnchant != null) {
                     meta.addEnchant(vanillaEnchant, enchants.getInt(ench), true);
                 }

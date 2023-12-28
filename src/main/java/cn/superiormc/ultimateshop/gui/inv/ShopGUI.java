@@ -42,6 +42,7 @@ public class ShopGUI extends InvGUI {
     @Override
     public void openGUI() {
         super.openGUI();
+        constructGUI();
         if (ConfigManager.configManager.getBoolean("menu.shop.update")) {
             runTask = new BukkitRunnable() {
                 @Override
@@ -50,6 +51,23 @@ public class ShopGUI extends InvGUI {
                 }
             };
             runTask.runTaskTimer(UltimateShop.instance, 20L, 20L);
+        }
+        shopMenu = ObjectMenu.shopMenus.get(shop);
+        if (shopMenu == null) {
+            LanguageManager.languageManager.sendStringText(owner.getPlayer(),
+                    "error.shop-menu-not-found",
+                    "shop",
+                    shop.getShopName(),
+                    "menu",
+                    shop.getShopMenu());
+            return;
+        }
+        if (!shopMenu.getCondition().getBoolean(owner.getPlayer())) {
+            LanguageManager.languageManager.sendStringText(owner,
+                    "menu-condition-not-meet",
+                    "menu",
+                    shop.getShopMenu());
+            return;
         }
     }
 
@@ -69,23 +87,6 @@ public class ShopGUI extends InvGUI {
                     "error.shop-does-not-have-menu",
                     "shop",
                     shop.getShopName());
-            return;
-        }
-        shopMenu = ObjectMenu.shopMenus.get(shop);
-        if (shopMenu == null) {
-            LanguageManager.languageManager.sendStringText(owner.getPlayer(),
-                    "error.shop-menu-not-found",
-                    "shop",
-                    shop.getShopName(),
-                    "menu",
-                    shop.getShopMenu());
-            return;
-        }
-        if (!shopMenu.getCondition().getBoolean(owner.getPlayer())) {
-            LanguageManager.languageManager.sendStringText(owner,
-                    "menu-condition-not-meet",
-                    "menu",
-                    shop.getShopMenu());
             return;
         }
         for (ObjectItem tempVal5 : shop.getProductList()) {
