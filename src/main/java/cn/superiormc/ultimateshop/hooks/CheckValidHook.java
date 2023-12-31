@@ -44,7 +44,10 @@ public class CheckValidHook {
         else if (pluginName.equals("MMOItems")) {
             String tempVal1 = MMOItems.getID(itemStack);
             String tempVal2 = MMOItems.getTypeName(itemStack);
-            if (tempVal1 == null || tempVal2 == null) {
+            if (tempVal1 == null || tempVal1.isEmpty()) {
+                return null;
+            }
+            if (tempVal2 == null || tempVal2.isEmpty()) {
                 return null;
             }
             else {
