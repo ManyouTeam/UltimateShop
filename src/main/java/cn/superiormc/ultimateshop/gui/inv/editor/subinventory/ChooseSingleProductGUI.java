@@ -118,7 +118,7 @@ public class ChooseSingleProductGUI extends InvGUI {
             constructGUI();
         }
         else if (slot < 45 && inventory.getItem(slot) != null){
-            return false;
+            return true;
         }
         return true;
     }

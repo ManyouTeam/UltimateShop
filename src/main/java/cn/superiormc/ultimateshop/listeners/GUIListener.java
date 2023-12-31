@@ -15,7 +15,7 @@ import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 
 public class GUIListener implements Listener {
 
-    private Player player = null;
+    private Player player;
     private InvGUI gui = null;
 
     public GUIListener(InvGUI gui) {
@@ -33,12 +33,7 @@ public class GUIListener implements Listener {
                 if (gui.clickEventHandle(e.getClickedInventory(), e.getClick(), e.getSlot())) {
                     e.setCancelled(true);
                 }
-                else {
-                    gui.afterClickEventHandle(e.getCursor(), e.getCurrentItem(), e.getSlot());
-                    if (e.getCursor() != null) {
-                        e.getCursor().setAmount(0);
-                    }
-                }
+                gui.afterClickEventHandle(e.getCursor(), e.getCurrentItem(), e.getSlot());
                 if (e.getClick().toString().equals("SWAP_OFFHAND") && e.isCancelled()) {
                     player.getInventory().setItemInOffHand(player.getInventory().getItemInOffHand());
                 }

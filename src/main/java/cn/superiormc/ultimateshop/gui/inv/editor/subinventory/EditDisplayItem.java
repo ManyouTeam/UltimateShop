@@ -89,7 +89,7 @@ public class EditDisplayItem extends InvGUI {
     @Override
     public boolean clickEventHandle(Inventory inventory, ClickType type, int slot) {
         if (slot == 0) {
-            return false;
+            return true;
         }
         if (slot == 1) {
             if (section.getBoolean("modify-lore", true)) {
@@ -109,8 +109,8 @@ public class EditDisplayItem extends InvGUI {
     public void afterClickEventHandle(ItemStack item, ItemStack currentItem, int slot) {
         if (slot == 0) {
             if (item != null) {
-                this.displayItem = item;
-                this.tempDisplayItem = item;
+                this.displayItem = new ItemStack(item);
+                this.tempDisplayItem = new ItemStack(item);
                 for (String key : section.getKeys(true)) {
                     if (!key.equals("modify-lore")) {
                         section.set(key, null);
