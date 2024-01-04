@@ -60,8 +60,8 @@ public class ChooseSingleProductGUI extends InvGUI {
             ItemStack productItem = new ItemStack(Material.ANVIL);
             ConfigurationSection tempVal5 = section.getConfigurationSection(tempVal2);
             if (tempVal5 != null && tempVal5.contains("material")) {
-                productItem = ItemUtil.buildItemStack(owner, tempVal5, (int)
-                        MathUtil.doCalculate(TextUtil.withPAPI(tempVal5.getString("amount", "1"), owner)));
+                productItem = ItemUtil.buildItemStack(owner, tempVal5,
+                        MathUtil.doCalculate(TextUtil.withPAPI(tempVal5.getString("amount", "1"), owner)).intValue());
             }
             ItemMeta tempVal1 = productItem.getItemMeta();
             if (!tempVal1.hasDisplayName()) {

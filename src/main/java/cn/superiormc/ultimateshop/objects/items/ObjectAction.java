@@ -235,6 +235,8 @@ public class ObjectAction {
                 CommonUtil.dispatchCommand(singleAction.substring(17));
             } else if (singleAction.startsWith("player_command: ")) {
                 CommonUtil.dispatchCommand(player, singleAction.substring(16));
+            } else if (singleAction.startsWith("op_command: ")) {
+                CommonUtil.dispatchOpCommand(player, singleAction.substring(12));
             } else if (singleAction.equals("close")) {
                 Bukkit.getScheduler().runTaskLater(UltimateShop.instance, () -> {
                     player.closeInventory();

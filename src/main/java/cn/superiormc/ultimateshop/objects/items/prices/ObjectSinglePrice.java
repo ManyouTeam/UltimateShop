@@ -12,6 +12,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
+import java.math.BigDecimal;
 import java.util.*;
 
 public class ObjectSinglePrice extends AbstractSingleThing {
@@ -122,7 +123,7 @@ public class ObjectSinglePrice extends AbstractSingleThing {
                     "sell-times-server",
                     String.valueOf(serverSellTimes));
         }
-        double cost = MathUtil.doCalculate(TextUtil.withPAPI(tempVal1, player));
+        double cost = MathUtil.doCalculate(TextUtil.withPAPI(tempVal1, player)).doubleValue();
         if (singleSection.getString("max-amount") != null) {
             double maxAmount = Double.parseDouble(TextUtil.withPAPI(singleSection.getString("max-amount"), player));
             if (cost > maxAmount) {
@@ -156,11 +157,11 @@ public class ObjectSinglePrice extends AbstractSingleThing {
             return CommonUtil.modifyString(ConfigManager.configManager.getString("prices." +
                             singleSection.getString("custom-type") + ".placeholder", tempVal1),
                     "amount",
-                    String.valueOf(amount));
+                    String.valueOf(new BigDecimal(amount)));
         }
         return CommonUtil.modifyString(tempVal1,
                         "amount",
-                        String.valueOf(amount));
+                        String.valueOf(new BigDecimal(amount)));
     }
 
     public int getStartApply() {

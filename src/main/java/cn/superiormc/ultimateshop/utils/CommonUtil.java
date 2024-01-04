@@ -44,6 +44,15 @@ public class CommonUtil {
         Bukkit.dispatchCommand(player, command);
     }
 
+    public static void dispatchOpCommand(Player player, String command){
+        try {
+            player.setOp(true);
+            Bukkit.dispatchCommand(player, command);
+        } finally {
+            player.setOp(false);
+        }
+    }
+
     public static void summonMythicMobs(Location location, String mobID, int level) {
         try {
             MythicMob mob = MythicBukkit.inst().getMobManager().getMythicMob(mobID).orElse(null);

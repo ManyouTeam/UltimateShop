@@ -22,7 +22,7 @@ public class ObjectMoreButton extends AbstractButton {
             return new ItemStack(Material.BEDROCK);
         }
         String amount = tempVal1.getString("amount", "1");
-        return ItemUtil.buildItemStack(player, tempVal1, (int)
-                MathUtil.doCalculate(TextUtil.withPAPI(amount, player)));
+        return ItemUtil.buildItemStack(player, tempVal1,
+                MathUtil.doCalculate(TextUtil.withPAPI(amount, player)).intValue());
     }
 }

@@ -37,10 +37,10 @@ public class EditDisplayItem extends InvGUI {
         }
         else {
             // display item
-            this.displayItem = ItemUtil.buildItemStack(owner, section, (int)
-                    MathUtil.doCalculate(TextUtil.withPAPI(section.getString("amount", "1"), owner)));
-            this.tempDisplayItem = ItemUtil.buildItemStack(owner, section, (int)
-                    MathUtil.doCalculate(TextUtil.withPAPI(section.getString("amount", "1"), owner)));
+            this.displayItem = ItemUtil.buildItemStack(owner, section,
+                    MathUtil.doCalculate(TextUtil.withPAPI(section.getString("amount", "1"), owner)).intValue());
+            this.tempDisplayItem = ItemUtil.buildItemStack(owner, section,
+                    MathUtil.doCalculate(TextUtil.withPAPI(section.getString("amount", "1"), owner)).intValue());
         }
     }
 

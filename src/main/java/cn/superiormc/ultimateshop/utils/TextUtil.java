@@ -27,6 +27,9 @@ public class TextUtil {
     }
 
     public static String withPAPI(String text, Player player) {
+        if (text.matches("[0-9]+")) {
+            return text;
+        }
         Pattern pattern = Pattern.compile("\\{discount_(.*?)\\}");
         Matcher matcher = pattern.matcher(text);
         while (matcher.find()) {
@@ -34,7 +37,7 @@ public class TextUtil {
             text = text.replace("{discount_" + discount + "}",
                     String.valueOf(GetDiscountValue.getDiscountLimits(discount, player)));
         }
-        if (CommonUtil.checkPluginLoad("PlaceholderAPI")) {
+        if (text.contains("%") && CommonUtil.checkPluginLoad("PlaceholderAPI")) {
             return PlaceholderAPI.setPlaceholders(player, text);
         }
         else {

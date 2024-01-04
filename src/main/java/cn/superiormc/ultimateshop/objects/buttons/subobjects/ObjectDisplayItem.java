@@ -45,8 +45,8 @@ public class ObjectDisplayItem{
             // 显示物品
             if (conditionSection == null) {
                 String amount = section.getString("amount", "1");
-                ItemStack displayItem = ItemUtil.buildItemStack(player, section, (int)
-                        MathUtil.doCalculate(TextUtil.withPAPI(amount, player)));
+                ItemStack displayItem = ItemUtil.buildItemStack(player, section,
+                        MathUtil.doCalculate(TextUtil.withPAPI(amount, player)).intValue());
                 addLoreDisplayItem = displayItem.clone();
             }
             else {
@@ -57,8 +57,8 @@ public class ObjectDisplayItem{
                         if (condition.getBoolean(player)) {
                             String amount = section.getString("amount", "1");
                             ItemStack displayItem = ItemUtil.buildItemStack(player,
-                                    section.getConfigurationSection(conditionID), (int)
-                                    MathUtil.doCalculate(TextUtil.withPAPI(amount, player)));
+                                    section.getConfigurationSection(conditionID),
+                                    MathUtil.doCalculate(TextUtil.withPAPI(amount, player)).intValue());
                             addLoreDisplayItem = displayItem.clone();
                             break;
                         }

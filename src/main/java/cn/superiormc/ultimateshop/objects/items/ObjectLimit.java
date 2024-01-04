@@ -118,8 +118,8 @@ public class ObjectLimit {
                         "sell-times-server",
                         String.valueOf(serverSellTimes));
             }
-            tempVal2 = ((int) MathUtil.doCalculate(
-                    TextUtil.withPAPI(tempVal1, player)));
+            tempVal2 = MathUtil.doCalculate(
+                    TextUtil.withPAPI(tempVal1, player)).intValue();
         }
         return tempVal2;
     }
