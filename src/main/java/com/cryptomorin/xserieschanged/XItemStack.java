@@ -21,7 +21,6 @@
  */
 package com.cryptomorin.xserieschanged;
 
-import cn.superiormc.ultimateshop.UltimateShop;
 import com.google.common.base.Enums;
 import com.google.common.base.Strings;
 import com.google.common.collect.Multimap;
@@ -904,8 +903,10 @@ public final class XItemStack {
         } else if (name != null && name.isEmpty())
             meta.setDisplayName(" "); // For GUI easy access configuration purposes
 
-        // Unbreakable
-        if (supports(11)) meta.setUnbreakable(config.getBoolean("unbreakable"));
+        if (config.getString("unbreakable") != null) {
+            // Unbreakable
+            if (supports(11)) meta.setUnbreakable(config.getBoolean("unbreakable"));
+        }
 
         // Custom Model Data
         if (supports(14)) {
