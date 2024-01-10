@@ -120,8 +120,9 @@ public class CheckValidHook {
         }
         if (CommonUtil.checkPluginLoad("MMOItems")) {
             String tempVal1 = MMOItems.getID(itemStack);
-            if (tempVal1 != null) {
-                return new String[]{"MMOItems", tempVal1};
+            String tempVal2 = MMOItems.getTypeName(itemStack);
+            if (tempVal1 != null && !tempVal1.isEmpty() && tempVal2 != null && !tempVal2.isEmpty()) {
+                return new String[]{"MMOItems", tempVal2 + ";;" + tempVal1};
             }
         }
         if (CommonUtil.checkPluginLoad("EcoItems")) {
@@ -132,8 +133,9 @@ public class CheckValidHook {
         }
         if (CommonUtil.checkPluginLoad("EcoArmor")) {
             ArmorSet tempVal1 = ArmorUtils.getSetOnItem(itemStack);
-            if (tempVal1 != null) {
-                return new String[]{"EcoArmor", tempVal1.getId()};
+            ArmorSlot tempVal2 = ArmorSlot.getSlot(itemStack);
+            if (tempVal1 != null && tempVal2 != null) {
+                return new String[]{"EcoArmor", tempVal1.getId() + tempVal2.toString()};
             }
         }
         if (CommonUtil.checkPluginLoad("eco")) {

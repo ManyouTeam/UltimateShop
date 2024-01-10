@@ -13,11 +13,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.*;
 
 public class ObjectSinglePrice extends AbstractSingleThing {
 
-    private Map<Integer, Double> applyCostMap = new HashMap<>();
+    private Map<Integer, BigDecimal> applyCostMap = new HashMap<>();
 
     private boolean priceMode;
 
@@ -47,24 +48,22 @@ public class ObjectSinglePrice extends AbstractSingleThing {
     }
 
     private void initApplyCostMap() {
-        List<Integer> apply = new ArrayList<>();
         if (Objects.isNull(singleSection) || singleSection.getInt("start-apply", -1) != -1) {
             return;
         }
-        List<Integer> integers = singleSection.getIntegerList("apply");
-        apply = integers;
+        List<Integer> apply = singleSection.getIntegerList("apply");
         List<Double> cost = singleSection.getDoubleList("cost");
         while (apply.size() > cost.size()) {
-            if (cost.size() > 0) {
+            if (!cost.isEmpty()) {
                 cost.add(cost.get(cost.size() - 1));
             }
             else {
                 cost.add(-1.0);
             }
         }
-        Map<Integer, Double> applyCostMap = new HashMap<>();
+        Map<Integer, BigDecimal> applyCostMap = new HashMap<>();
         for (int i = 0 ; i < apply.size() ; i++) {
-            applyCostMap.put(apply.get(i), cost.get(i));
+            applyCostMap.put(apply.get(i), BigDecimal.valueOf(cost.get(i)));
         }
         this.applyCostMap = applyCostMap;
     }
@@ -89,9 +88,9 @@ public class ObjectSinglePrice extends AbstractSingleThing {
     }
 
     @Override
-    public double getAmount(Player player, int times) {
+    public BigDecimal getAmount(Player player, int times) {
         if (singleSection == null) {
-            return -1;
+            return new BigDecimal(-1);
         }
         String tempVal1 = singleSection.getString("amount", "1");
         String tempVal2 = ConfigManager.configManager.getString("prices." + singleSection.getString("custom-type") + ".amount", "1");
@@ -123,28 +122,28 @@ public class ObjectSinglePrice extends AbstractSingleThing {
                     "sell-times-server",
                     String.valueOf(serverSellTimes));
         }
-        double cost = MathUtil.doCalculate(TextUtil.withPAPI(tempVal1, player)).doubleValue();
+        BigDecimal cost = MathUtil.doCalculate(TextUtil.withPAPI(tempVal1, player));
         if (singleSection.getString("max-amount") != null) {
-            double maxAmount = Double.parseDouble(TextUtil.withPAPI(singleSection.getString("max-amount"), player));
-            if (cost > maxAmount) {
+            BigDecimal maxAmount = new BigDecimal(TextUtil.withPAPI(singleSection.getString("max-amount"), player));
+            if (cost.compareTo(maxAmount) > 0) {
                 cost = maxAmount;
             }
         }
         if (singleSection.getString("min-amount") != null) {
-            double minAmount = Double.parseDouble(TextUtil.withPAPI(singleSection.getString("min-amount"), player));
-            if (cost < minAmount) {
+            BigDecimal minAmount = new BigDecimal(TextUtil.withPAPI(singleSection.getString("min-amount"), player));
+            if (cost.compareTo(minAmount) < 0) {
                 cost = minAmount;
             }
         }
         if (!applyCostMap.isEmpty() && applyCostMap.containsKey(times)) {
-            if (applyCostMap.get(times) != -1) {
+            if (applyCostMap.get(times).compareTo(new BigDecimal(-1)) == 0) {
                 cost = applyCostMap.get(times);
             }
         }
-        return cost;
+        return cost.setScale(2, RoundingMode.HALF_UP);
     }
 
-    public String getDisplayName(double amount) {
+    public String getDisplayName(BigDecimal amount) {
         if (empty) {
             return ConfigManager.configManager.getString("placeholder.price.empty");
         }
@@ -157,11 +156,11 @@ public class ObjectSinglePrice extends AbstractSingleThing {
             return CommonUtil.modifyString(ConfigManager.configManager.getString("prices." +
                             singleSection.getString("custom-type") + ".placeholder", tempVal1),
                     "amount",
-                    String.valueOf(new BigDecimal(amount)));
+                    String.valueOf(amount));
         }
         return CommonUtil.modifyString(tempVal1,
                         "amount",
-                        String.valueOf(new BigDecimal(amount)));
+                        String.valueOf(amount));
     }
 
     public int getStartApply() {
@@ -182,7 +181,7 @@ public class ObjectSinglePrice extends AbstractSingleThing {
         }
     }
 
-    public Map<Integer, Double> getApplyCostMap() {
+    public Map<Integer, BigDecimal> getApplyCostMap() {
         return applyCostMap;
     }
 

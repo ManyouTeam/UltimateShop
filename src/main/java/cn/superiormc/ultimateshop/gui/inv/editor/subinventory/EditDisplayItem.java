@@ -32,8 +32,8 @@ public class EditDisplayItem extends InvGUI {
         this.section = gui.section.getConfigurationSection("display-item");
         if (section == null) {
             section = gui.section.createSection("display-item");
-            this.displayItem = new ItemStack(Material.STONE);
-            this.tempDisplayItem = new ItemStack(Material.STONE);
+            this.displayItem = new ItemStack(Material.BARRIER);
+            this.tempDisplayItem = new ItemStack(Material.BARRIER);
         }
         else {
             // display item
@@ -100,6 +100,9 @@ public class EditDisplayItem extends InvGUI {
             constructGUI();
         }
         if (slot == 8) {
+            if (displayItem.getType() == Material.BARRIER && previousGUI instanceof EditProductGUI) {
+                previousGUI.getSection().set("display-item", null);
+            }
             previousGUI.openGUI();
         }
         return true;
@@ -108,7 +111,7 @@ public class EditDisplayItem extends InvGUI {
     @Override
     public void afterClickEventHandle(ItemStack item, ItemStack currentItem, int slot) {
         if (slot == 0) {
-            if (item != null) {
+            if (item != null && !item.getType().isAir()) {
                 this.displayItem = new ItemStack(item);
                 this.tempDisplayItem = new ItemStack(item);
                 for (String key : section.getKeys(true)) {

@@ -188,4 +188,9 @@ public class EditProductGUI extends InvGUI {
         }
         return true;
     }
+
+    @Override
+    public ConfigurationSection getSection() {
+        return section;
+    }
 }

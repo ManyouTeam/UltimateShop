@@ -11,6 +11,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public abstract class AbstractSingleThing {
@@ -96,7 +97,7 @@ public abstract class AbstractSingleThing {
         }
     }
 
-    public abstract double getAmount(Player player, int times);
+    public abstract BigDecimal getAmount(Player player, int times);
 
     public boolean getCondition(Player player) {
         if (condition == null) {
@@ -229,6 +230,6 @@ public abstract class AbstractSingleThing {
         return itemStack;
     }
 
-    public abstract String getDisplayName(double amount);
+    public abstract String getDisplayName(BigDecimal amount);
 
 }

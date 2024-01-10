@@ -3,8 +3,8 @@ package cn.superiormc.ultimateshop.objects.items;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
 
+import java.math.BigDecimal;
 import java.util.Map;
 
 
@@ -31,9 +31,9 @@ public abstract class AbstractThings {
         return mode;
     }
 
-    public abstract Map<AbstractSingleThing, Double> getAmount(Player player,
-                                                               int times,
-                                                               int amount);
+    public abstract Map<AbstractSingleThing, BigDecimal> getAmount(Player player,
+                                                                   int times,
+                                                                   int amount);
 
     public abstract void giveSingleThing(Player player, int times, int amount);
 

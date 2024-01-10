@@ -31,6 +31,9 @@ public class ChooseSingleProductGUI extends InvGUI {
         super(player);
         this.previousGUI = gui;
         this.section = gui.section.getConfigurationSection("products");
+        if (section == null) {
+            section = gui.section.createSection("products");
+        }
         constructGUI();
     }
 
@@ -57,13 +60,16 @@ public class ChooseSingleProductGUI extends InvGUI {
             if (tempVal2 == null) {
                 break;
             }
-            ItemStack productItem = new ItemStack(Material.ANVIL);
+            ItemStack productItem = new ItemStack(Material.STONE);
             ConfigurationSection tempVal5 = section.getConfigurationSection(tempVal2);
-            if (tempVal5 != null && tempVal5.contains("material")) {
+            if (tempVal5 != null) {
                 productItem = ItemUtil.buildItemStack(owner, tempVal5,
                         MathUtil.doCalculate(TextUtil.withPAPI(tempVal5.getString("amount", "1"), owner)).intValue());
             }
             ItemMeta tempVal1 = productItem.getItemMeta();
+            if (tempVal1 == null) {
+                continue;
+            }
             if (!tempVal1.hasDisplayName()) {
                 tempVal1.setDisplayName(TextUtil.parse("&e" + tempVal2));
             }
@@ -117,27 +123,89 @@ public class ChooseSingleProductGUI extends InvGUI {
             nowPage++;
             constructGUI();
         }
-        else if (slot < 45 && inventory.getItem(slot) != null){
-            return true;
-        }
         return true;
     }
 
     @Override
     public void afterClickEventHandle(ItemStack item, ItemStack currentItem, int slot) {
+        if (item == null || item.getType().isAir()) {
+            return;
+        }
         if (slot < 45) {
+            if (itemCache.get((nowPage - 1)  * 45 + slot) == null) {
+                return;
+            }
             ConfigurationSection tempVal1 = section.getConfigurationSection(itemCache.get((nowPage - 1)  * 45 + slot));
             if (tempVal1 == null) {
                 return;
             }
-            Map<String, Object> tempVal2 = ItemUtil.debuildItem(item);
+            if (item.getType() == Material.BARRIER) {
+                section.set(itemCache.get((nowPage - 1)  * 45 + slot), null);
+                if (section.getKeys(false).isEmpty()) {
+                    previousGUI.getSection().set("products", null);
+                    previousGUI.openGUI();
+                    return;
+                }
+                constructGUI();
+                return;
+            }
             for (String key : tempVal1.getKeys(true)) {
                 tempVal1.set(key, null);
             }
+            Map<String, Object> tempVal2 = ItemUtil.debuildItem(item);
             for (String key : tempVal2.keySet()) {
                 tempVal1.set(key, tempVal2.get(key));
             }
             constructGUI();
         }
+        if (slot == 53) {
+            ConfigurationSection tempVal1 = section.createSection(generateID());
+            Map<String, Object> tempVal2 = ItemUtil.debuildItem(item);
+            for (String key : tempVal2.keySet()) {
+                tempVal1.set(key, tempVal2.get(key));
+            }
+            constructGUI();
+        }
+    }
+
+    @Override
+    public boolean closeEventHandle(Inventory inventory) {
+        if (section.getKeys(false).isEmpty()) {
+            previousGUI.getSection().set("products", null);
+        }
+        return super.closeEventHandle(inventory);
+    }
+
+    private String generateID() {
+        int i = itemCache.size() + 1;
+        while (section.getConfigurationSection(String.valueOf(i)) != null) {
+            i ++;
+        }
+        return String.valueOf(itemCache.size() + 1);
+    }
+
+    // For create new product use
+    private char generateID1() {
+        for (String keyID : itemCache.values()) {
+            for (char c = 'a'; c <= 'z'; c++) {
+                if (keyID.equals(String.valueOf(c))) {
+                    continue;
+                }
+                return c;
+            }
+            for (char c = 'A'; c <= 'Z'; c++) {
+                if (keyID.equals(String.valueOf(c))) {
+                    continue;
+                }
+                return c;
+            }
+            for (char c = '0'; c <= '9'; c++) {
+                if (keyID.equals(String.valueOf(c))) {
+                    continue;
+                }
+                return c;
+            }
+        }
+        return '?';
     }
 }

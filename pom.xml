@@ -6,7 +6,7 @@
 
     <groupId>cn.superiormc</groupId>
     <artifactId>UltimateShop</artifactId>
-    <version>1.8.11</version>
+    <version>1.9.0</version>
     <packaging>jar</packaging>
 
     <name>UltimateShop</name>

@@ -8,9 +8,11 @@ import cn.superiormc.ultimateshop.objects.items.AbstractSingleThing;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
 import cn.superiormc.ultimateshop.utils.MathUtil;
 import cn.superiormc.ultimateshop.utils.TextUtil;
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
+
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 public class ObjectSingleProduct extends AbstractSingleThing {
 
@@ -29,7 +31,7 @@ public class ObjectSingleProduct extends AbstractSingleThing {
         this.item = item;
     }
 
-    public String getDisplayName(double amount) {
+    public String getDisplayName(BigDecimal amount) {
         if (singleSection == null) {
             return ConfigManager.configManager.getString("placeholder.price.unknown");
         }
@@ -40,7 +42,8 @@ public class ObjectSingleProduct extends AbstractSingleThing {
                 String.valueOf(amount));
     }
 
-    public double getAmount(Player player, int times) {
+    @Override
+    public BigDecimal getAmount(Player player, int times) {
         String tempVal1 = singleSection.getString("amount", "1");
         if (item != null && ConfigManager.configManager.getBoolean("placeholder.data.can-used-in-amount")) {
             int playerBuyTimes = 0;
@@ -67,20 +70,20 @@ public class ObjectSingleProduct extends AbstractSingleThing {
                     "sell-times-server",
                     String.valueOf(serverSellTimes));
         }
-        double cost = MathUtil.doCalculate(TextUtil.withPAPI(tempVal1, player)).doubleValue();
+        BigDecimal cost = MathUtil.doCalculate(TextUtil.withPAPI(tempVal1, player));
         if (singleSection.getString("max-amount") != null) {
-            double maxAmount = Double.parseDouble(TextUtil.withPAPI(singleSection.getString("max-amount"), player));
-            if (cost > maxAmount) {
+            BigDecimal maxAmount = new BigDecimal(TextUtil.withPAPI(singleSection.getString("max-amount"), player));
+            if (cost.compareTo(maxAmount) > 0) {
                 cost = maxAmount;
             }
         }
         if (singleSection.getString("min-amount") != null) {
-            double minAmount = Double.parseDouble(TextUtil.withPAPI(singleSection.getString("min-amount"), player));
-            if (cost < minAmount) {
+            BigDecimal minAmount = new BigDecimal(TextUtil.withPAPI(singleSection.getString("min-amount"), player));
+            if (cost.compareTo(minAmount) < 0) {
                 cost = minAmount;
             }
         }
-        return cost;
+        return cost.setScale(2, RoundingMode.HALF_UP);
     }
 
 }

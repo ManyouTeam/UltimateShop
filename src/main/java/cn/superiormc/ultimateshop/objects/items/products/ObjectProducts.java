@@ -4,13 +4,13 @@ import cn.superiormc.ultimateshop.managers.ErrorManager;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import cn.superiormc.ultimateshop.objects.items.AbstractSingleThing;
 import cn.superiormc.ultimateshop.objects.items.AbstractThings;
-import cn.superiormc.ultimateshop.objects.items.ObjectCondition;
 import cn.superiormc.ultimateshop.utils.RandomUtil;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -69,13 +69,13 @@ public class ObjectProducts extends AbstractThings {
                     return;
                 }
                 ObjectSingleProduct tempVal1 = RandomUtil.getRandomElement(tempVal6);
-                cost = getAmount(player, times, amount).get(tempVal1);
+                cost = getAmount(player, times, amount).get(tempVal1).doubleValue();
                 tempVal1.playerGive(player, cost);
                 return;
             case ALL:
             case CLASSIC_ALL:
                 for (ObjectSingleProduct tempVal2 : singleProducts) {
-                    cost = getAmount(player, times, amount).get(tempVal2);
+                    cost = getAmount(player, times, amount).get(tempVal2).doubleValue();
                     tempVal2.playerGive(player, cost);
                 }
                 return;
@@ -94,7 +94,7 @@ public class ObjectProducts extends AbstractThings {
             case ANY:
             case CLASSIC_ANY:
                 for (ObjectSingleProduct tempVal1 : singleProducts) {
-                    cost = getAmount(player, times, amount).get(tempVal1);
+                    cost = getAmount(player, times, amount).get(tempVal1).doubleValue();
                     if (tempVal1.playerHasEnough(inventory, player, take, cost)) {
                         return true;
                     }
@@ -103,7 +103,7 @@ public class ObjectProducts extends AbstractThings {
             case ALL:
             case CLASSIC_ALL:
                 for (ObjectSingleProduct tempVal1 : singleProducts) {
-                    cost = getAmount(player, times, amount).get(tempVal1);
+                    cost = getAmount(player, times, amount).get(tempVal1).doubleValue();
                     if (!tempVal1.playerHasEnough(inventory, player, take, cost)) {
                         return false;
                     }
@@ -116,8 +116,8 @@ public class ObjectProducts extends AbstractThings {
     }
 
     @Override
-    public Map<AbstractSingleThing, Double> getAmount(Player player, int times, int multi) {
-        Map<AbstractSingleThing, Double> productMaps = new HashMap<>();
+    public Map<AbstractSingleThing, BigDecimal> getAmount(Player player, int times, int multi) {
+        Map<AbstractSingleThing, BigDecimal> productMaps = new HashMap<>();
         switch (mode) {
             case ALL:
             case ANY:
@@ -125,8 +125,7 @@ public class ObjectProducts extends AbstractThings {
                     for (AbstractSingleThing tempVal3 : singleProducts) {
                         if (productMaps.containsKey(tempVal3)) {
                             productMaps.put(tempVal3,
-                                    productMaps.get(tempVal3) +
-                                            tempVal3.getAmount(player, times + i));
+                                    productMaps.get(tempVal3).add(tempVal3.getAmount(player, times + i)));
                         }
                         else {
                             productMaps.put(tempVal3, tempVal3.getAmount(player, times + i));
@@ -139,11 +138,10 @@ public class ObjectProducts extends AbstractThings {
                 for (AbstractSingleThing tempVal3 : singleProducts) {
                     if (productMaps.containsKey(tempVal3)) {
                         productMaps.put(tempVal3,
-                                productMaps.get(tempVal3) +
-                                        tempVal3.getAmount(player, times) * multi);
+                                productMaps.get(tempVal3).add(tempVal3.getAmount(player, times).multiply(new BigDecimal(multi))));
                     }
                     else {
-                        productMaps.put(tempVal3, tempVal3.getAmount(player, times) * multi);
+                        productMaps.put(tempVal3, tempVal3.getAmount(player, times).multiply(new BigDecimal(multi)));
                     }
                 }
                 break;
@@ -161,7 +159,7 @@ public class ObjectProducts extends AbstractThings {
             case ALL:
             case CLASSIC_ALL:
                 for (ObjectSingleProduct tempVal1 : singleProducts) {
-                    double cost = getAmount(player, times, 1).get(tempVal1);
+                    double cost = getAmount(player, times, 1).get(tempVal1).doubleValue();
                     int tempVal2 = (int) (tempVal1.playerHasAmount(inventory, player) / cost);
                     if (maxAmount == -1 || tempVal2 < maxAmount) {
                         maxAmount = tempVal2;
@@ -181,7 +179,7 @@ public class ObjectProducts extends AbstractThings {
                                     int classic_multi) {
         for (ObjectSingleProduct tempVal1 : singleProducts) {
             // 商品的 times 是没用的，因为商品没有 apply 选项
-            double cost = getAmount(player, times, classic_multi).get(tempVal1);
+            double cost = getAmount(player, times, classic_multi).get(tempVal1).doubleValue();
             ItemStack tempVal2 = tempVal1.getItemThing(section, player, give, cost);
             if (tempVal2 != null) {
                 return tempVal2;

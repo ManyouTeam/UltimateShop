@@ -9,6 +9,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
+import java.math.BigDecimal;
 import java.util.*;
 
 public class ObjectPrices extends AbstractThings {
@@ -65,9 +66,9 @@ public class ObjectPrices extends AbstractThings {
         List<ObjectSinglePrice> maybeResult = new ArrayList<>();
         Map<ObjectSinglePrice, PriceType> priceMap = getPrices(player, times, amount);
         for (ObjectSinglePrice tempVal1 : priceMap.keySet()) {
-            double cost = getAmount(player, times, amount).get(tempVal1);
+            BigDecimal cost = getAmount(player, times, amount).get(tempVal1);
             if (tempVal1.getCondition(player)) {
-                if (tempVal1.playerHasEnough(inventory, player, false, cost)) {
+                if (tempVal1.playerHasEnough(inventory, player, false, cost.doubleValue())) {
                     if (priceMap.get(tempVal1) == PriceType.FIRST) {
                         confirmedResult.add(tempVal1);
                     }
@@ -151,13 +152,13 @@ public class ObjectPrices extends AbstractThings {
             case ANY:
             case CLASSIC_ANY:
                 AbstractSingleThing tempVal5 = getAnyTargetPrice(player, times);
-                cost = getAmount(player, times, amount).get(tempVal5);
+                cost = getAmount(player, times, amount).get(tempVal5).doubleValue();
                 tempVal5.playerGive(player, cost);
                 return;
             case ALL:
             case CLASSIC_ALL:
                 for (AbstractSingleThing tempVal2 : getPrices(player, times, amount).keySet()) {
-                    cost = getAmount(player, times, amount).get(tempVal2);
+                    cost = getAmount(player, times, amount).get(tempVal2).doubleValue();
                     tempVal2.playerGive(player, cost);
                 }
                 return;
@@ -178,24 +179,24 @@ public class ObjectPrices extends AbstractThings {
             case UNKNOWN:
                 return false;
             case ALL:
-                Map<AbstractSingleThing, Double> tempVal6 = getAmount(player, times, amount);
+                Map<AbstractSingleThing, BigDecimal> tempVal6 = getAmount(player, times, amount);
                 for (AbstractSingleThing tempVal1 : tempVal6.keySet()) {
                     if (tempVal1.empty) {
                         continue;
                     }
-                    cost = tempVal6.get(tempVal1);
+                    cost = tempVal6.get(tempVal1).doubleValue();
                     if (!tempVal1.playerHasEnough(inventory, player, take, cost)) {
                         return false;
                     }
                 }
                 return true;
             case CLASSIC_ALL:
-                Map<AbstractSingleThing, Double> tempVal3 = getAmount(player, times, amount);
+                Map<AbstractSingleThing, BigDecimal> tempVal3 = getAmount(player, times, amount);
                 for (AbstractSingleThing tempVal1 : tempVal3.keySet()) {
                     if (tempVal1.empty) {
                         return false;
                     }
-                    cost = tempVal3.get(tempVal1);
+                    cost = tempVal3.get(tempVal1).doubleValue();
                     if (!tempVal1.playerHasEnough(inventory, player, take, cost)) {
                         return false;
                     }
@@ -206,7 +207,7 @@ public class ObjectPrices extends AbstractThings {
                         inventory, player, times, amount);
                 for (ObjectSinglePrice tempVal11 : tempVal4) {
                     if (Objects.nonNull(getAmount(player, times, amount).get(tempVal11))) {
-                        cost = getAmount(player, times, amount).get(tempVal11);
+                        cost = getAmount(player, times, amount).get(tempVal11).doubleValue();
                     }
                     if (tempVal11.playerHasEnough(inventory, player, take, cost)) {
                         continue;
@@ -217,7 +218,7 @@ public class ObjectPrices extends AbstractThings {
             case CLASSIC_ANY:
                 ObjectSinglePrice tempVal11 = getAnyTargetPrice
                         (inventory, player, times, amount).get(0);
-                cost = getAmount(player, times, amount).get(tempVal11);
+                cost = getAmount(player, times, amount).get(tempVal11).doubleValue();
                 return tempVal11.playerHasEnough(inventory, player, take, cost);
             default:
                 ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Can not get price-mode section in your shop config!!");
@@ -226,8 +227,8 @@ public class ObjectPrices extends AbstractThings {
     }
 
     @Override
-    public Map<AbstractSingleThing, Double> getAmount(Player player, int times, int multi) {
-        Map<AbstractSingleThing, Double> priceMaps = new HashMap<>();
+    public Map<AbstractSingleThing, BigDecimal> getAmount(Player player, int times, int multi) {
+        Map<AbstractSingleThing, BigDecimal> priceMaps = new HashMap<>();
         switch (mode) {
             case ALL:
             case ANY:
@@ -235,8 +236,7 @@ public class ObjectPrices extends AbstractThings {
                     for (AbstractSingleThing tempVal3 : getPrices(player, times + i, 1).keySet()) {
                         if (priceMaps.containsKey(tempVal3)) {
                             priceMaps.put(tempVal3,
-                                    priceMaps.get(tempVal3) +
-                                            tempVal3.getAmount(player, times + i));
+                                    priceMaps.get(tempVal3).add(tempVal3.getAmount(player, times + i)));
                         }
                         else {
                             priceMaps.put(tempVal3, tempVal3.getAmount(player, times + i));
@@ -249,11 +249,11 @@ public class ObjectPrices extends AbstractThings {
                 for (AbstractSingleThing tempVal3 : getPrices(player, times, multi).keySet()) {
                     if (priceMaps.containsKey(tempVal3)) {
                         priceMaps.put(tempVal3,
-                                priceMaps.get(tempVal3) +
-                                        tempVal3.getAmount(player, times) * multi);
+                                priceMaps.get(tempVal3).add(tempVal3.getAmount(player, times).multiply(new BigDecimal(multi))));
                     }
                     else {
-                        priceMaps.put(tempVal3, tempVal3.getAmount(player, times) * multi);
+                        priceMaps.put(tempVal3,
+                                tempVal3.getAmount(player, times).multiply(new BigDecimal(multi)));
                     }
                 }
                 break;
@@ -262,7 +262,7 @@ public class ObjectPrices extends AbstractThings {
     }
 
     public List<String> getDisplayName(Player player, int times, int multi) {
-        Map<AbstractSingleThing, Double> priceMaps = getAmount(player, times, multi);
+        Map<AbstractSingleThing, BigDecimal> priceMaps = getAmount(player, times, multi);
         List<String> tempVal1 = new ArrayList<>();
         switch (mode) {
             case ANY: case CLASSIC_ANY:
@@ -312,7 +312,7 @@ public class ObjectPrices extends AbstractThings {
     }
 
     public String getDisplayNameInChat(Inventory inventory, Player player, int times, int multi) {
-        Map<AbstractSingleThing, Double> priceMaps = getAmount(player, times, multi);
+        Map<AbstractSingleThing, BigDecimal> priceMaps = getAmount(player, times, multi);
         List<String> tempVal1 = new ArrayList<>();
         switch (mode) {
             case ANY: case CLASSIC_ANY:

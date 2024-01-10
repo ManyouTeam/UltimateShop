@@ -5,6 +5,7 @@ import cn.superiormc.ultimateshop.gui.inv.GUIMode;
 import cn.superiormc.ultimateshop.listeners.GUIListener;
 import cn.superiormc.ultimateshop.objects.buttons.AbstractButton;
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.ClickType;
@@ -64,5 +65,9 @@ public abstract class InvGUI extends AbstractGUI {
 
     public Inventory getInv() {
         return inv;
+    }
+
+    public ConfigurationSection getSection() {
+        return null;
     }
 }

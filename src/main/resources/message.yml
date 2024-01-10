@@ -187,6 +187,7 @@ editor:
       add-lore:
         - '&7'
         - '&eDrag item to here to change'
+        - '&cDrag barrier to here to delete'
     modify-lore:
       name: '&dModify Lore'
       lore:
@@ -208,6 +209,12 @@ editor:
       add-lore:
         - '&7'
         - '&eClick to edit this single product'
+        - '&cDrag barrier to here to delete'
+    create:
+      name: '&cCreate new product'
+      lore:
+        - '&7'
+        - '&7Drag the item you want to add as product here.'
   already-editing: "&#98FB98[UltimateShop] &cYou are now editing other things, we are waiting you print something in chat box!"
   shop-already-exists: "&#98FB98[UltimateShop] &cAlready exists a shop called {shop}!"
   product-already-exists: "&#98FB98[UltimateShop] &cAlready exists a product called {product}!"
