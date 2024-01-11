@@ -85,7 +85,7 @@ public class ItemUtil {
                 if (tempVal2.hasLore()) {
                     tempVal3 = tempVal2.getLore();
                 }
-                tempVal3.addAll(TextUtil.getListWithColor(section.getStringList("add-lore")));
+                tempVal3.addAll(TextUtil.getListWithColorAndPAPI(section.getStringList("add-lore"), player));
                 tempVal2.setLore(tempVal3);
                 resultItem.setItemMeta(tempVal2);
             }

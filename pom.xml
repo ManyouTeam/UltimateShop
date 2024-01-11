@@ -6,7 +6,7 @@
 
     <groupId>cn.superiormc</groupId>
     <artifactId>UltimateShop</artifactId>
-    <version>1.9.0</version>
+    <version>1.9.1</version>
     <packaging>jar</packaging>
 
     <name>UltimateShop</name>
@@ -209,11 +209,6 @@
             <groupId>cc.carm.lib</groupId>
             <artifactId>easysql-hikaricp</artifactId>
             <version>0.4.3</version>
-        </dependency>
-        <dependency>
-            <groupId>com.github.stleary</groupId>
-            <artifactId>JSON-java</artifactId>
-            <version>20230618</version>
         </dependency>
         <dependency>
             <groupId>com.github.Emibergo02</groupId>

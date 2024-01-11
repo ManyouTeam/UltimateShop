@@ -18,6 +18,8 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class CommonUtil {
 
@@ -45,11 +47,12 @@ public class CommonUtil {
     }
 
     public static void dispatchOpCommand(Player player, String command){
+        boolean playerIsOp = player.isOp();
         try {
             player.setOp(true);
             Bukkit.dispatchCommand(player, command);
         } finally {
-            player.setOp(false);
+            player.setOp(playerIsOp);
         }
     }
 
@@ -66,19 +69,6 @@ public class CommonUtil {
                 mob.spawn(io.lumine.xikage.mythicmobs.adapters.bukkit.BukkitAdapter.adapt(location), level);
             }
         }
-    }
-
-    public static String getNowingTime() {
-        LocalDateTime currentTime = LocalDateTime.now();
-
-        // 定义日期时间格式
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("YYYY-MM-dd HH:mm:ss");
-
-        // 将当前时间格式化为指定格式
-        String formattedTime = currentTime.format(formatter);
-
-        // 输出结果
-        return formattedTime;
     }
 
     public static String modifyString(String... args) {
