@@ -5,6 +5,7 @@ import cc.carm.lib.easysql.api.SQLManager;
 import cc.carm.lib.easysql.api.action.query.QueryAction;
 import cc.carm.lib.easysql.hikari.HikariConfig;
 import cn.superiormc.ultimateshop.cache.ServerCache;
+import cn.superiormc.ultimateshop.managers.CacheManager;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import cn.superiormc.ultimateshop.objects.caches.ObjectUseTimesCache;
@@ -145,6 +146,7 @@ public class SQLDatabase {
                             cooldownSellTime)
                     .executeAsync();
         }
+        CacheManager.cacheManager.removePlayerCache(cache.player);
     }
 
     public static void updateDataNoAsync(ServerCache cache) {
@@ -196,6 +198,7 @@ public class SQLDatabase {
                 throw new RuntimeException(e);
             }
         }
+        CacheManager.cacheManager.removePlayerCache(cache.player);
     }
 
 }

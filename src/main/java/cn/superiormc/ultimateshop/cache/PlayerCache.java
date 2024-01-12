@@ -3,6 +3,7 @@ package cn.superiormc.ultimateshop.cache;
 import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.database.SQLDatabase;
 import cn.superiormc.ultimateshop.database.YamlDatabase;
+import cn.superiormc.ultimateshop.managers.CacheManager;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;

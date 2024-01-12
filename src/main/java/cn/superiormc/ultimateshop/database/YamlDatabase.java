@@ -2,6 +2,7 @@ package cn.superiormc.ultimateshop.database;
 
 import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.cache.ServerCache;
+import cn.superiormc.ultimateshop.managers.CacheManager;
 import cn.superiormc.ultimateshop.managers.ErrorManager;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import cn.superiormc.ultimateshop.objects.caches.ObjectUseTimesCache;
@@ -137,6 +138,7 @@ public class YamlDatabase {
                 tempVal6.set(key, data.get(key));
             }
         }
+        CacheManager.cacheManager.removePlayerCache(cache.player);
         try {
             if (needDelete) {
                 file.delete();

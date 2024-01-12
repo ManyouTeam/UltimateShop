@@ -5,14 +5,14 @@ import cn.superiormc.ultimateshop.cache.ServerCache;
 import cn.superiormc.ultimateshop.database.SQLDatabase;
 import org.bukkit.entity.Player;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class CacheManager {
 
     public static CacheManager cacheManager;
 
-    public Map<Player, PlayerCache> playerCacheMap = new HashMap<>();
+    public Map<Player, PlayerCache> playerCacheMap = new ConcurrentHashMap<>();
 
     public ServerCache serverCache;
 
@@ -36,7 +36,6 @@ public class CacheManager {
             return;
         }
         playerCacheMap.get(player).shutPlayerCache();
-        playerCacheMap.remove(player);
     }
 
     public void savePlayerCacheOnDisable(Player player) {
@@ -45,7 +44,12 @@ public class CacheManager {
             return;
         }
         playerCacheMap.get(player).shutPlayerCacheOnDisable();
-        playerCacheMap.remove(player);
+    }
+
+    public void removePlayerCache(Player player) {
+        if (player != null) {
+            playerCacheMap.remove(player);
+        }
     }
 
 }
