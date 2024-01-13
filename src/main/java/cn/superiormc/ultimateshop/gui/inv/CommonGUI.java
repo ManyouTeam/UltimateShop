@@ -4,6 +4,7 @@ import cn.superiormc.ultimateshop.gui.InvGUI;
 import cn.superiormc.ultimateshop.managers.LanguageManager;
 import cn.superiormc.ultimateshop.objects.menus.ObjectMenu;
 import cn.superiormc.ultimateshop.objects.buttons.AbstractButton;
+import cn.superiormc.ultimateshop.utils.InvUtil;
 import cn.superiormc.ultimateshop.utils.TextUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -47,8 +48,9 @@ public class CommonGUI extends InvGUI {
         menuButtons = commonMenu.getMenu();
         menuItems = getMenuItems(owner.getPlayer());
         if (Objects.isNull(inv)) {
-            inv = Bukkit.createInventory(owner, commonMenu.getInt("size", 54),
-                    TextUtil.parse(commonMenu.getString("title", "Shop")));
+            inv = InvUtil.createNewInv(owner, commonMenu.getInt("size", 54),
+                    TextUtil.parse(commonMenu.getString("title", "Shop")),
+                    commonMenu.getString("font", null));
         }
         for (int slot : menuButtons.keySet()) {
             inv.setItem(slot, menuItems.get(slot));

@@ -39,7 +39,7 @@ public class ChooseShopGUI extends InvGUI {
             i ++;
         }
         if (shopCache.size() >= 45) {
-            needPages = (int) (Math.ceil(shopCache.size() / 45));
+            needPages = (int) (Math.ceil((double) shopCache.size() / 45));
         }
         if (Objects.isNull(inv)) {
             inv = Bukkit.createInventory(owner, 54,
@@ -59,7 +59,7 @@ public class ChooseShopGUI extends InvGUI {
             shopItem.setItemMeta(tempVal1);
             inv.setItem(c, shopItem);
         }
-        if (nowPage != 1) {
+        if (nowPage < needPages) {
             ItemStack nextPageItem = new ItemStack(Material.ARROW);
             ItemMeta tempVal2 = nextPageItem.getItemMeta();
             tempVal2.setDisplayName(TextUtil.parse(LanguageManager.languageManager.getStringText("editor." +
@@ -69,7 +69,7 @@ public class ChooseShopGUI extends InvGUI {
             nextPageItem.setItemMeta(tempVal2);
             inv.setItem(52, nextPageItem);
         }
-        if (nowPage != needPages) {
+        if (nowPage > 1) {
             ItemStack previousPageItem = new ItemStack(Material.ARROW);
             ItemMeta tempVal3 = previousPageItem.getItemMeta();
             tempVal3.setDisplayName(TextUtil.parse(LanguageManager.languageManager.getStringText("editor." +
@@ -89,13 +89,18 @@ public class ChooseShopGUI extends InvGUI {
             EditShopGUI gui = new EditShopGUI(owner, shopCache.get((nowPage - 1)  * 45 + slot));
             gui.openGUI();
         }
+        // 上一页
         else if (slot == 46) {
-            nowPage--;
-            constructGUI();
+            if (nowPage > 0) {
+                nowPage--;
+                constructGUI();
+            }
         }
         else if (slot == 52) {
-            nowPage++;
-            constructGUI();
+            if (nowPage < needPages) {
+                nowPage++;
+                constructGUI();
+            }
         }
         return true;
     }

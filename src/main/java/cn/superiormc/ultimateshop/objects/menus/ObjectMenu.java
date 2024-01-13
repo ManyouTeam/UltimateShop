@@ -151,6 +151,9 @@ public class ObjectMenu {
     }
 
     public String getString(String path, String defaultValue) {
+        if (defaultValue == null) {
+            return menuConfigs.getString(path);
+        }
         return menuConfigs.getString(path, defaultValue);
     }
 

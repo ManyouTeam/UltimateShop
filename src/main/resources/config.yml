@@ -1,6 +1,8 @@
 debug: false
 
 menu:
+  # Paper only feature.
+  use-component-title: false
   shop:
     # Whether shop menu will refresh every 1 second.
     # This will refresh placeholder that displayed in display item lore.
@@ -9,6 +11,7 @@ menu:
   sell-all:
     size: 54
     title: '&fSell All &7- Esc to confirm sell!'
+    black-slots: []
   # Premium version only
   bedrock:
     buy-or-sell:

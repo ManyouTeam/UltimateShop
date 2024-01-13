@@ -32,7 +32,8 @@ public class CacheManager {
 
     public void savePlayerCache(Player player) {
         if (playerCacheMap.get(player) == null) {
-            ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cCan not save player data: " + player.getName() + "!");
+            ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cCan not save player data: " + player.getName() + "! " +
+                    "This is usually because this player joined the server before server fully started, ask him rejoin the server.");
             return;
         }
         playerCacheMap.get(player).shutPlayerCache();
@@ -40,7 +41,8 @@ public class CacheManager {
 
     public void savePlayerCacheOnDisable(Player player) {
         if (playerCacheMap.get(player) == null) {
-            ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cCan not save player data: " + player.getName() + "!");
+            ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cCan not save player data: " + player.getName() + "! " +
+                    "This is usually because this player joined the server before server fully started, ask him rejoin the server.");
             return;
         }
         playerCacheMap.get(player).shutPlayerCacheOnDisable();

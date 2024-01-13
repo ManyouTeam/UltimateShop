@@ -5,6 +5,7 @@ import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.LanguageManager;
 import cn.superiormc.ultimateshop.methods.Product.SellProductMethod;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
+import cn.superiormc.ultimateshop.utils.InvUtil;
 import cn.superiormc.ultimateshop.utils.TextUtil;
 import com.cryptomorin.xserieschanged.XItemStack;
 import org.bukkit.Bukkit;
@@ -27,15 +28,16 @@ public class SellAllGUI extends InvGUI {
     @Override
     protected void constructGUI() {
         if (Objects.isNull(inv)) {
-            inv = Bukkit.createInventory(owner, ConfigManager.configManager.getInt
+            inv = InvUtil.createNewInv(owner, ConfigManager.configManager.getInt
                             ("menu.sell-all.size", 54),
-                    TextUtil.parse(ConfigManager.configManager.getString("menu.sell-all.title")));
+                    TextUtil.parse(ConfigManager.configManager.getString("menu.sell-all.title")),
+                    ConfigManager.configManager.getString("menu.sell-all.font"));
         }
     }
 
     @Override
     public boolean clickEventHandle(Inventory inventory, ClickType type, int slot) {
-        return false;
+        return ConfigManager.configManager.getIntList("menu.sell-all.black-slots").contains(slot);
     }
 
     @Override
@@ -64,6 +66,11 @@ public class SellAllGUI extends InvGUI {
     @Override
     public boolean dragEventHandle(Map<Integer, ItemStack> newItems) {
         owner.updateInventory();
+        for (int i : newItems.keySet()) {
+            if (ConfigManager.configManager.getIntList("menu.sell-all.black-slots").contains(i)) {
+                return true;
+            }
+        }
         return false;
     }
 

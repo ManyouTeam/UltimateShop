@@ -12,6 +12,7 @@ import cn.superiormc.ultimateshop.objects.buttons.AbstractButton;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import cn.superiormc.ultimateshop.objects.caches.ObjectUseTimesCache;
 import cn.superiormc.ultimateshop.objects.menus.ObjectMenu;
+import cn.superiormc.ultimateshop.utils.InvUtil;
 import cn.superiormc.ultimateshop.utils.TextUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -133,9 +134,10 @@ public class ShopGUI extends InvGUI {
         menuItems = getMenuItems(owner.getPlayer());
         if (Objects.isNull(inv)) {
             if (shopMenu != null) {
-                inv = Bukkit.createInventory(owner, shopMenu.getInt("size", 54),
+                inv = InvUtil.createNewInv(owner, shopMenu.getInt("size", 54),
                         TextUtil.parse(shopMenu.getString("title", shop.getShopDisplayName())
-                                .replace("{shop-name}", shop.getShopDisplayName())));
+                                .replace("{shop-name}", shop.getShopDisplayName())),
+                        shopMenu.getString("font", null));
             }
         }
         for (int slot : menuButtons.keySet()) {

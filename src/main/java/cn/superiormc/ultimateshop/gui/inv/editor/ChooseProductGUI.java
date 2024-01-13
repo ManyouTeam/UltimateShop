@@ -43,7 +43,7 @@ public class ChooseProductGUI extends InvGUI {
             i ++;
         }
         if (itemCache.size() >= 45) {
-            needPages = (int) (Math.ceil(itemCache.size() / 45));
+            needPages = (int) (Math.ceil((double) itemCache.size() / 45));
         }
         if (Objects.isNull(inv)) {
             inv = Bukkit.createInventory(owner, 54,
@@ -63,7 +63,7 @@ public class ChooseProductGUI extends InvGUI {
             productItem.setItemMeta(tempVal1);
             inv.setItem(c, productItem);
         }
-        if (nowPage != 1) {
+        if (nowPage < needPages) {
             ItemStack nextPageItem = new ItemStack(Material.ARROW);
             ItemMeta tempVal2 = nextPageItem.getItemMeta();
             tempVal2.setDisplayName(TextUtil.parse(LanguageManager.languageManager.getStringText("editor." +
@@ -73,7 +73,7 @@ public class ChooseProductGUI extends InvGUI {
             nextPageItem.setItemMeta(tempVal2);
             inv.setItem(52, nextPageItem);
         }
-        if (nowPage != needPages) {
+        if (nowPage > 1) {
             ItemStack previousPageItem = new ItemStack(Material.ARROW);
             ItemMeta tempVal3 = previousPageItem.getItemMeta();
             tempVal3.setDisplayName(TextUtil.parse(LanguageManager.languageManager.getStringText("editor." +
@@ -93,12 +93,16 @@ public class ChooseProductGUI extends InvGUI {
             gui.openGUI();
         }
         else if (slot == 46) {
-            nowPage--;
-            constructGUI();
+            if (nowPage > 0) {
+                nowPage--;
+                constructGUI();
+            }
         }
         else if (slot == 52) {
-            nowPage++;
-            constructGUI();
+            if (nowPage < needPages) {
+                nowPage++;
+                constructGUI();
+            }
         }
 
         return true;

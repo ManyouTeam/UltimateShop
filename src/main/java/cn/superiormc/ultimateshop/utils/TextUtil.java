@@ -14,6 +14,8 @@ import java.util.regex.Pattern;
 public class TextUtil {
 
     public static String parse(String text) {
+        if (text == null)
+            return "";
         return ColorParser.parse(text);
     }
 

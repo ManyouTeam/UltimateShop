@@ -105,6 +105,10 @@ public class ConfigManager {
         return resultList;
     }
 
+    public List<Integer> getIntList(String path) {
+        return config.getIntegerList(path);
+    }
+
     public boolean getBoolean(String path) {
         return config.getBoolean(path, false);
     }
@@ -116,6 +120,9 @@ public class ConfigManager {
     public String getString(String path, String... args) {
         String s = config.getString(path);
         if (s == null) {
+            if (args.length == 0) {
+                return null;
+            }
             s = args[0];
         }
         for (int i = 1 ; i < args.length ; i += 2) {
