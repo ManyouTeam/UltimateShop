@@ -53,7 +53,8 @@ public class ChooseProductGUI extends InvGUI {
         for (int c = 0 ; c < 45 ; c ++) {
             ObjectItem item = itemCache.get((nowPage - 1)  * 45 + c);
             if (item == null) {
-                break;
+                inv.clear(c);
+                continue;
             }
             ItemStack productItem = new ItemStack(Material.EMERALD);
             ItemMeta tempVal1 = productItem.getItemMeta();
@@ -72,6 +73,8 @@ public class ChooseProductGUI extends InvGUI {
                     "choose-shop-gui.next-page.lore")));
             nextPageItem.setItemMeta(tempVal2);
             inv.setItem(52, nextPageItem);
+        } else {
+            inv.clear(52);
         }
         if (nowPage > 1) {
             ItemStack previousPageItem = new ItemStack(Material.ARROW);
@@ -82,12 +85,14 @@ public class ChooseProductGUI extends InvGUI {
                     "choose-shop-gui.previous-page.lore")));
             previousPageItem.setItemMeta(tempVal3);
             inv.setItem(46, previousPageItem);
+        } else {
+            inv.clear(46);
         }
     }
 
     @Override
     public boolean clickEventHandle(Inventory inventory, ClickType type, int slot) {
-        if (slot < 45) {
+        if (slot < 45 && itemCache.get((nowPage - 1)  * 45 + slot) != null) {
             guiMode = GUIMode.OPEN_NEW_GUI;
             EditProductGUI gui = new EditProductGUI(owner, itemCache.get((nowPage - 1)  * 45 + slot));
             gui.openGUI();

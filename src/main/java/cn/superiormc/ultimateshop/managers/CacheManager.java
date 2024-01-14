@@ -30,6 +30,14 @@ public class CacheManager {
         playerCacheMap.get(player).initPlayerCache();
     }
 
+    public PlayerCache getPlayerCache(Player player) {
+        PlayerCache tempVal1 = playerCacheMap.get(player);
+        if (tempVal1 == null) {
+            addPlayerCache(player);
+        }
+        return tempVal1;
+    }
+
     public void savePlayerCache(Player player) {
         if (playerCacheMap.get(player) == null) {
             ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cCan not save player data: " + player.getName() + "! " +

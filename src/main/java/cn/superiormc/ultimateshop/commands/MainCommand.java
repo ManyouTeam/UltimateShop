@@ -458,7 +458,7 @@ public class MainCommand implements CommandExecutor {
                                     args[3]);
                     return;
                 }
-                tempVal3 = CacheManager.cacheManager.playerCacheMap.get(player);
+                tempVal3 = CacheManager.cacheManager.getPlayerCache(player);
             }
             if (tempVal3 == null) {
                 LanguageManager.languageManager.sendStringText
@@ -563,7 +563,7 @@ public class MainCommand implements CommandExecutor {
                                     args[3]);
                     return;
                 }
-                tempVal3 = CacheManager.cacheManager.playerCacheMap.get(player);
+                tempVal3 = CacheManager.cacheManager.getPlayerCache(player);
             }
             if (tempVal3 == null) {
                 LanguageManager.languageManager.sendStringText

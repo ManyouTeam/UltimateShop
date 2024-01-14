@@ -38,7 +38,7 @@ public class FormShopGUI extends FormGUI {
 
     @Override
     protected void constructGUI() {
-        PlayerCache tempVal1 = CacheManager.cacheManager.playerCacheMap.get(owner.getPlayer());
+        PlayerCache tempVal1 = CacheManager.cacheManager.getPlayerCache(owner.getPlayer());
         ServerCache tempVal2 = ServerCache.serverCache;
         if (tempVal1 == null) {
             LanguageManager.languageManager.sendStringText(owner.getPlayer(),

@@ -98,7 +98,7 @@ public class ObjectLimit {
                 int playerSellTimes = 0;
                 int serverBuyTimes = 0;
                 int serverSellTimes = 0;
-                ObjectUseTimesCache tempVal3 = CacheManager.cacheManager.playerCacheMap.get(player).getUseTimesCache().get(item);
+                ObjectUseTimesCache tempVal3 = CacheManager.cacheManager.getPlayerCache(player).getUseTimesCache().get(item);
                 ObjectUseTimesCache tempVal4 = CacheManager.cacheManager.serverCache.getUseTimesCache().get(item);
                 if (tempVal3 != null) {
                     playerBuyTimes = tempVal3.getBuyUseTimes();

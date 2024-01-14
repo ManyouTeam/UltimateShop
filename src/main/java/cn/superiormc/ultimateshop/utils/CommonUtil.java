@@ -151,6 +151,9 @@ public class CommonUtil {
         if (CommonUtil.checkPluginLoad("NeigeItems")) {
             return ItemUtils.getItemName(displayItem);
         }
+        if (displayItem.getItemMeta() == null) {
+            return displayItem.getType().name().replace("_", " ");
+        }
         return displayItem.getItemMeta().hasDisplayName() ?
         displayItem.getItemMeta().getDisplayName() :
         displayItem.getItemMeta().hasLocalizedName() ?

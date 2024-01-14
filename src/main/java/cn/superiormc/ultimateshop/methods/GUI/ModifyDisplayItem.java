@@ -64,14 +64,14 @@ public class ModifyDisplayItem {
         List<String> addLore = new ArrayList<>();
         int buyTimes = 0;
         int sellTimes = 0;
-        ObjectUseTimesCache tempVal9 = CacheManager.cacheManager.playerCacheMap.get(player).getUseTimesCache().get(item);
+        ObjectUseTimesCache tempVal9 = CacheManager.cacheManager.getPlayerCache(player).getUseTimesCache().get(item);
         ObjectUseTimesCache tempVal10 = CacheManager.cacheManager.serverCache.getUseTimesCache().get(item);
         if (tempVal9 != null) {
             buyTimes = tempVal9.getBuyUseTimes();
             sellTimes = tempVal9.getSellUseTimes();
         }
         else {
-            CacheManager.cacheManager.playerCacheMap.get(player).setUseTimesCache(item.getShop(),
+            CacheManager.cacheManager.getPlayerCache(player).setUseTimesCache(item.getShop(),
                     item.getProduct(),
                     0,
                     0,
@@ -79,7 +79,7 @@ public class ModifyDisplayItem {
                     null,
                     null,
                     null);
-            tempVal9 = CacheManager.cacheManager.playerCacheMap.get(player).getUseTimesCache().get(item);
+            tempVal9 = CacheManager.cacheManager.getPlayerCache(player).getUseTimesCache().get(item);
         }
         if (tempVal10 == null) {
             CacheManager.cacheManager.serverCache.setUseTimesCache(item.getShop(),

@@ -27,7 +27,9 @@ public class TaskManager {
                         "you should consider disable auto save feature at config.yml!");
                 ServerCache.serverCache.shutServerCache();
                 for (Player player : Bukkit.getOnlinePlayers()) {
-                    CacheManager.cacheManager.playerCacheMap.get(player).shutPlayerCache();
+                    if (CacheManager.cacheManager.getPlayerCache(player) != null) {
+                        CacheManager.cacheManager.getPlayerCache(player).shutPlayerCache();
+                    }
                 }
             }
 

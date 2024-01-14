@@ -66,7 +66,7 @@ public class PlaceholderAPIExpansion extends PlaceholderExpansion {
         if (item == null) {
             return LanguageManager.languageManager.getStringText("placeholderapi.unknown-product");
         }
-        ObjectUseTimesCache playerTimesCache = CacheManager.cacheManager.playerCacheMap.get(player).getUseTimesCache().get(item);
+        ObjectUseTimesCache playerTimesCache = CacheManager.cacheManager.getPlayerCache(player).getUseTimesCache().get(item);
         ObjectUseTimesCache serverTimesCache = CacheManager.cacheManager.serverCache.getUseTimesCache().get(item);
         switch (args[2]) {
             case "{buy-limit-player}":
