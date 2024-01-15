@@ -8,6 +8,7 @@ import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import cn.superiormc.ultimateshop.objects.caches.ObjectUseTimesCache;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
 import cn.superiormc.ultimateshop.utils.TextUtil;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -19,10 +20,22 @@ import java.util.List;
 public class ModifyDisplayItem {
 
     public static ItemStack modifyItem(Player player,
+                                         int multi,
+                                         ItemStack addLoreDisplayItem,
+                                         ObjectItem item,
+                                         boolean buyMore) {
+        return modifyItem(player, multi, addLoreDisplayItem, item, buyMore, "general");
+    }
+
+    public static ItemStack modifyItem(Player player,
                                         int multi,
                                         ItemStack addLoreDisplayItem,
                                         ObjectItem item,
-                                        boolean buyMore) {
+                                        boolean buyMore,
+                                        String clickType) {
+        if (clickType == null) {
+            clickType = "general";
+        }
         ItemMeta tempVal2 = addLoreDisplayItem.getItemMeta();
         if (tempVal2 == null) {
             return addLoreDisplayItem;
@@ -41,7 +54,7 @@ public class ModifyDisplayItem {
         if (tempVal2.hasLore()) {
             addLore.addAll(tempVal2.getLore());
         }
-        addLore.addAll(getModifiedLore(player, multi, item, buyMore, false));
+        addLore.addAll(getModifiedLore(player, multi, item, buyMore, false, clickType));
         if (!addLore.isEmpty()) {
             tempVal2.setLore(addLore);
             addLoreDisplayItem.setItemMeta(tempVal2);
@@ -53,7 +66,8 @@ public class ModifyDisplayItem {
                                                 int multi,
                                                 ObjectItem item,
                                                 boolean buyMore,
-                                                boolean bedrock) {
+                                                boolean bedrock,
+                                                String clickType) {
         List<String> addLore = new ArrayList<>();
         int buyTimes = 0;
         int sellTimes = 0;
@@ -86,11 +100,15 @@ public class ModifyDisplayItem {
             tempVal10 = CacheManager.cacheManager.serverCache.getUseTimesCache().get(item);
         }
         for (String tempVal3 : ConfigManager.configManager.getListWithColor("display-item.add-lore")) {
+            //String[] newArgs = new String[args.length + 1];
+            //newArgs[0] = tempVal3;
+            //System.arraycopy(args, 0, newArgs, 1, args.length);
+            //tempVal3 = CommonUtil.modifyString(newArgs);
             if (tempVal3.startsWith("@") && tempVal3.length() >= 2) {
                 String tempVal4 = tempVal3.substring(2);
                 switch (tempVal3.charAt(1)) {
                     case 'a':
-                        if (!item.getBuyPrice().empty) {
+                        if (!item.getBuyPrice().empty && (clickType.equals("general") || clickType.equals("buy"))) {
                             if (tempVal3.endsWith("-b")) {
                                 if (bedrock) {
                                     continue;
@@ -103,7 +121,7 @@ public class ModifyDisplayItem {
                         }
                         break;
                     case 'b':
-                        if (!item.getSellPrice().empty) {
+                        if (!item.getSellPrice().empty && (clickType.equals("general") || clickType.equals("sell"))) {
                             if (tempVal3.endsWith("-b")) {
                                 if (bedrock) {
                                     continue;
@@ -321,9 +339,9 @@ public class ModifyDisplayItem {
                     "sell-cooldown-server",
                     String.valueOf(tempVal10 == null ? ConfigManager.configManager.getString("placeholder.cooldown.now") : tempVal10.getSellCooldownTimeDisplayName()),
                     "buy-click",
-                    getBuyClickPlaceholder(player, multi, item),
+                    getBuyClickPlaceholder(player, multi, item, clickType),
                     "sell-click",
-                    getSellClickPlaceholder(player, multi, item),
+                    getSellClickPlaceholder(player, multi, item, clickType),
                     "amount",
                     String.valueOf(multi)
             );
@@ -331,12 +349,12 @@ public class ModifyDisplayItem {
         return addLore;
     }
 
-    private static String getBuyClickPlaceholder(Player player, int multi, ObjectItem item) {
+    private static String getBuyClickPlaceholder(Player player, int multi, ObjectItem item, String clickType) {
         if (!ConfigManager.configManager.getBoolean("placeholder.click.enabled")) {
             return "";
         }
         String s = "";
-        switch(BuyProductMethod.startBuy(item.getShop(), item.getProduct(), player, false, true, multi)) {
+        switch (BuyProductMethod.startBuy(item.getShop(), item.getProduct(), player, false, true, multi)) {
             case ERROR:
                 s = ConfigManager.configManager.getString("placeholder.click.error", "",  "amount", String.valueOf(multi));
                 break;
@@ -356,7 +374,7 @@ public class ModifyDisplayItem {
                 s = ConfigManager.configManager.getString("placeholder.click.buy-price-not-enough", "", "amount", String.valueOf(multi));
                 break;
             case DONE :
-                if (item.getSellPrice().empty) {
+                if (item.getSellPrice().empty || clickType.equals("buy")) {
                     s = ConfigManager.configManager.getString("placeholder.click.buy-with-no-sell", "", "amount", String.valueOf(multi));
                 }
                 else {
@@ -367,12 +385,12 @@ public class ModifyDisplayItem {
         return s;
     }
 
-    private static String getSellClickPlaceholder(Player player, int multi, ObjectItem item) {
+    private static String getSellClickPlaceholder(Player player, int multi, ObjectItem item, String clickType) {
         if (!ConfigManager.configManager.getBoolean("placeholder.click.enabled")) {
             return "";
         }
         String s = "";
-        switch(SellProductMethod.startSell(item.getShop(), item.getProduct(), player, false, true, multi)) {
+        switch (SellProductMethod.startSell(item.getShop(), item.getProduct(), player, false, true, multi)) {
             case ERROR :
                 s = ConfigManager.configManager.getString("placeholder.click.error", "",  "amount", String.valueOf(multi));
                 break;
@@ -392,7 +410,7 @@ public class ModifyDisplayItem {
                 s = ConfigManager.configManager.getString("placeholder.click.sell-price-not-enough", "",  "amount", String.valueOf(multi));
                 break;
             case DONE :
-                if (item.getBuyPrice().empty) {
+                if (item.getBuyPrice().empty || clickType.equals("sell")) {
                     s = ConfigManager.configManager.getString("placeholder.click.sell-with-no-buy", "",  "amount", String.valueOf(multi));
                 }
                 else {

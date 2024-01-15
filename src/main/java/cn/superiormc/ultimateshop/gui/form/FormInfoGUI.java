@@ -44,7 +44,8 @@ public class FormInfoGUI extends FormGUI {
                 1,
                 item,
                 false,
-                true
+                true,
+                "general"
         )));
         // 购买
         ButtonComponent buy = ButtonComponent.of(TextUtil.parse(ConfigManager.configManager.getString(

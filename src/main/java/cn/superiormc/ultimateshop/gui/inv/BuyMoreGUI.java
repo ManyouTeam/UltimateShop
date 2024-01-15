@@ -91,7 +91,11 @@ public class BuyMoreGUI extends InvGUI {
                 break;
             case CONFIRM:
                 boolean b = ConfigManager.configManager.getBoolean("placeholder.click.enabled");
-                switch (ConfigManager.configManager.getClickAction(type)){
+                String clickType = ConfigManager.configManager.getClickAction(type);
+                if (((ObjectMoreBuyButton)button).getClickType() != null) {
+                    clickType = ((ObjectMoreBuyButton)button).getClickType().toLowerCase();
+                }
+                switch (clickType){
                     case "buy" :
                         if (!item.getBuyPrice().empty) {
                             BuyProductMethod.startBuy(item.getShop(),

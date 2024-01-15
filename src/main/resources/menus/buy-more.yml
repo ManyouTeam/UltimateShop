@@ -61,6 +61,7 @@ confirm-items:
       name: '&aConfirm'
       lore:
         - '&7Click to finish the trade!'
+    #click-action: buy
 
 buttons:
   A:

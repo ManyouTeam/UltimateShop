@@ -29,6 +29,10 @@ public class ObjectMoreBuyButton extends AbstractButton {
         String amount = tempVal1.getString("amount", "1");
         ItemStack addLoreDisplayItem = ItemUtil.buildItemStack(player, tempVal1,
                 MathUtil.doCalculate(TextUtil.withPAPI(amount, player)).intValue());
-        return ModifyDisplayItem.modifyItem(player, multi, addLoreDisplayItem, item, true);
+        return ModifyDisplayItem.modifyItem(player, multi, addLoreDisplayItem, item, true, getClickType());
+    }
+
+    public String getClickType() {
+        return config.getString("click-action", null);
     }
 }

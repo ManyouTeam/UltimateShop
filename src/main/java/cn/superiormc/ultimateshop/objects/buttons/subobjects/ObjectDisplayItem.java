@@ -14,7 +14,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
 
-public class ObjectDisplayItem{
+public class ObjectDisplayItem {
 
     private ConfigurationSection section;
 
