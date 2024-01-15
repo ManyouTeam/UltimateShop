@@ -34,6 +34,7 @@ public class CacheManager {
         PlayerCache tempVal1 = playerCacheMap.get(player);
         if (tempVal1 == null) {
             addPlayerCache(player);
+            tempVal1 = playerCacheMap.get(player);
         }
         return tempVal1;
     }

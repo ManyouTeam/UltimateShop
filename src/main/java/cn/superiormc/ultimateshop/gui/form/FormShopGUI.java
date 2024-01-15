@@ -28,8 +28,6 @@ public class FormShopGUI extends FormGUI {
 
     private ObjectMenu shopMenu = null;
 
-    private BukkitRunnable runTask = null;
-
     public FormShopGUI(Player owner, ObjectShop shop) {
         super(owner);
         this.shop = shop;
@@ -127,14 +125,5 @@ public class FormShopGUI extends FormGUI {
             menuButtons.get(menuItems.get(response.clickedButton())).clickEvent(ClickType.LEFT, owner.getPlayer());
         });
         form = tempVal5.build();
-    }
-
-    private ClickType getClickType(String key) {
-        try {
-            return ClickType.valueOf(key);
-        }
-        catch (IllegalArgumentException e) {
-            return ClickType.LEFT;
-        }
     }
 }

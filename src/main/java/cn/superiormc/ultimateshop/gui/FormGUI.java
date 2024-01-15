@@ -9,12 +9,13 @@ import org.geysermc.floodgate.api.player.FloodgatePlayer;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 public abstract class FormGUI extends AbstractGUI {
 
     protected Form form;
 
-    public Map<Integer, AbstractButton> menuButtons = new HashMap<>();
+    public Map<Integer, AbstractButton> menuButtons = new TreeMap<>();
 
     public Map<ButtonComponent, Integer> menuItems = new HashMap<>();
 

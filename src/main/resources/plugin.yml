@@ -27,6 +27,7 @@ softdepend:
   - RoyaleEconomy
   - AdvancedEnchantments
   - NeigeItems
+  - floodgate
 commands:
   ultimateshop:
     aliases:

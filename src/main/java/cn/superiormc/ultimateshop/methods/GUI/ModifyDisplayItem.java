@@ -8,8 +8,6 @@ import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import cn.superiormc.ultimateshop.objects.caches.ObjectUseTimesCache;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
 import cn.superiormc.ultimateshop.utils.TextUtil;
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -25,6 +23,10 @@ public class ModifyDisplayItem {
                                         ItemStack addLoreDisplayItem,
                                         ObjectItem item,
                                         boolean buyMore) {
+        ItemMeta tempVal2 = addLoreDisplayItem.getItemMeta();
+        if (tempVal2 == null) {
+            return addLoreDisplayItem;
+        }
         // 修改物品名称
         if (buyMore || item.getItemConfig().getString("display-name") != null) {
             String itemName = item.getDisplayName(player);
@@ -32,20 +34,11 @@ public class ModifyDisplayItem {
                 itemName = itemName + TextUtil.parse(ConfigManager.configManager.getString("display-item.add-displayname").
                         replace("{amount}", String.valueOf(multi)));
             }
-            ItemMeta meta = addLoreDisplayItem.getItemMeta();
-            meta.setDisplayName(itemName);
-            addLoreDisplayItem.setItemMeta(meta);
-        }
-        
-        ItemMeta tempVal2 = addLoreDisplayItem.getItemMeta();
-        if (tempVal2 == null) {
-            if (addLoreDisplayItem.getType().isAir()) {
-                addLoreDisplayItem = new ItemStack(Material.STONE);
-            }
-            tempVal2 = Bukkit.getItemFactory().getItemMeta(addLoreDisplayItem.getType());
+            tempVal2.setDisplayName(itemName);
+            addLoreDisplayItem.setItemMeta(tempVal2);
         }
         List<String> addLore = new ArrayList<>();
-        if (tempVal2 != null && tempVal2.hasLore()) {
+        if (tempVal2.hasLore()) {
             addLore.addAll(tempVal2.getLore());
         }
         addLore.addAll(getModifiedLore(player, multi, item, buyMore, false));

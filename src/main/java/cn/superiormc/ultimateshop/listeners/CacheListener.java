@@ -3,6 +3,7 @@ package cn.superiormc.ultimateshop.listeners;
 import cn.superiormc.ultimateshop.gui.inv.editor.CreateShopGUI;
 import cn.superiormc.ultimateshop.managers.CacheManager;
 import cn.superiormc.ultimateshop.methods.GUI.OpenGUI;
+import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerLoginEvent;

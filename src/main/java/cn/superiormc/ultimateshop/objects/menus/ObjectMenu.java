@@ -13,10 +13,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class ObjectMenu {
 
@@ -36,7 +33,7 @@ public class ObjectMenu {
 
     public Configuration menuConfigs;
 
-    public Map<Integer, AbstractButton> menuItems = new HashMap<>();
+    public Map<Integer, AbstractButton> menuItems = new TreeMap<>();
 
     public Map<String, AbstractButton> buttonItems = new HashMap<>();
 
