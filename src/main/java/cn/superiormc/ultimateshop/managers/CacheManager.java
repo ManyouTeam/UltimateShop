@@ -3,6 +3,7 @@ package cn.superiormc.ultimateshop.managers;
 import cn.superiormc.ultimateshop.cache.PlayerCache;
 import cn.superiormc.ultimateshop.cache.ServerCache;
 import cn.superiormc.ultimateshop.database.SQLDatabase;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.util.Map;
@@ -12,7 +13,7 @@ public class CacheManager {
 
     public static CacheManager cacheManager;
 
-    public Map<Player, PlayerCache> playerCacheMap = new ConcurrentHashMap<>();
+    private Map<Player, PlayerCache> playerCacheMap = new ConcurrentHashMap<>();
 
     public ServerCache serverCache;
 
@@ -41,7 +42,7 @@ public class CacheManager {
 
     public void savePlayerCache(Player player) {
         if (playerCacheMap.get(player) == null) {
-            ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cCan not save player data: " + player.getName() + "! " +
+            Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §cCan not save player data: " + player.getName() + "! " +
                     "This is usually because this player joined the server before server fully started, ask him rejoin the server.");
             return;
         }
@@ -50,7 +51,7 @@ public class CacheManager {
 
     public void savePlayerCacheOnDisable(Player player) {
         if (playerCacheMap.get(player) == null) {
-            ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cCan not save player data: " + player.getName() + "! " +
+            Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §cCan not save player data: " + player.getName() + "! " +
                     "This is usually because this player joined the server before server fully started, ask him rejoin the server.");
             return;
         }

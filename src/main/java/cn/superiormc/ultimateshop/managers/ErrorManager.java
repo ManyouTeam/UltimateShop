@@ -21,12 +21,15 @@ public class ErrorManager {
             Bukkit.getConsoleSender().sendMessage(message);
             lastErrorMessage = message;
             getError = true;
-            new BukkitRunnable() {
-                @Override
-                public void run() {
-                    getError = false;
-                }
-            }.runTaskLater(UltimateShop.instance, 100);
+            try {
+                new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        getError = false;
+                    }
+                }.runTaskLater(UltimateShop.instance, 100);
+            } catch (Exception ignored) {
+            }
         }
     }
 }
