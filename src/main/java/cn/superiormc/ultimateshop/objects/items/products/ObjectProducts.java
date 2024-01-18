@@ -11,13 +11,10 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class ObjectProducts extends AbstractThings {
-    public List<ObjectSingleProduct> singleProducts = new ArrayList<>();
+    public Collection<ObjectSingleProduct> singleProducts = new TreeSet<>();
 
     public ObjectItem item;
 
@@ -43,7 +40,7 @@ public class ObjectProducts extends AbstractThings {
                 singleProducts.add(new ObjectSingleProduct());
             }
             else {
-                singleProducts.add(new ObjectSingleProduct(section.getConfigurationSection(s), item));
+                singleProducts.add(new ObjectSingleProduct(s, section.getConfigurationSection(s), item));
             }
         }
     }
@@ -117,7 +114,7 @@ public class ObjectProducts extends AbstractThings {
 
     @Override
     public Map<AbstractSingleThing, BigDecimal> getAmount(Player player, int times, int multi) {
-        Map<AbstractSingleThing, BigDecimal> productMaps = new HashMap<>();
+        Map<AbstractSingleThing, BigDecimal> productMaps = new TreeMap<>();
         switch (mode) {
             case ALL:
             case ANY:

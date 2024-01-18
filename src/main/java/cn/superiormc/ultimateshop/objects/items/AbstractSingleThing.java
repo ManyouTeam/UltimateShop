@@ -10,11 +10,12 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import java.math.BigDecimal;
 import java.util.List;
 
-public abstract class AbstractSingleThing {
+public abstract class AbstractSingleThing implements Comparable<AbstractSingleThing> {
 
     public ThingType type;
 
@@ -24,12 +25,15 @@ public abstract class AbstractSingleThing {
 
     public boolean empty;
 
+    private String id;
+
     public AbstractSingleThing() {
         initType(null);
         this.empty = true;
     }
 
-    public AbstractSingleThing(ConfigurationSection singleSection) {
+    public AbstractSingleThing(String id, ConfigurationSection singleSection) {
+        this.id = id;
         this.singleSection = singleSection;
         if (singleSection.contains("custom-type")) {
             initType(ConfigManager.configManager.config.getConfigurationSection("prices." +
@@ -231,5 +235,33 @@ public abstract class AbstractSingleThing {
     }
 
     public abstract String getDisplayName(BigDecimal amount);
+
+    public String getId() {
+        return id;
+    }
+
+    @Override
+    public int compareTo(@NotNull AbstractSingleThing otherThing) {
+        int len1 = getId().length();
+        int len2 = otherThing.getId().length();
+        int minLength = Math.min(len1, len2);
+
+        for (int i = 0; i < minLength; i++) {
+            char c1 = getId().charAt(i);
+            char c2 = otherThing.getId().charAt(i);
+
+            if (c1 != c2) {
+                if (Character.isDigit(c1) && Character.isDigit(c2)) {
+                    // 如果字符都是数字，则按照数字大小进行比较
+                    return Integer.compare(Integer.parseInt(getId().substring(i)), Integer.parseInt(otherThing.getId().substring(i)));
+                } else {
+                    // 否则，按照字符的unicode值进行比较
+                    return c1 - c2;
+                }
+            }
+        }
+
+        return len1 - len2;
+    }
 
 }

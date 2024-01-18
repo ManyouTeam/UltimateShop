@@ -30,14 +30,14 @@ public class ObjectSinglePrice extends AbstractSingleThing {
         super();
     }
 
-    public ObjectSinglePrice(ConfigurationSection singleSection) {
-        super(singleSection);
+    public ObjectSinglePrice(String id, ConfigurationSection singleSection) {
+        super(id, singleSection);
         initCustomMode();
         initApplyCostMap();
     }
 
-    public ObjectSinglePrice(ConfigurationSection singleSection, ObjectItem item) {
-        super(singleSection);
+    public ObjectSinglePrice(String id, ConfigurationSection singleSection, ObjectItem item) {
+        super(id, singleSection);
         this.item = item;
         initCustomMode();
         initApplyCostMap();

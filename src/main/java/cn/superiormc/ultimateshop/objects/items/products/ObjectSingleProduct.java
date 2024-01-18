@@ -22,12 +22,12 @@ public class ObjectSingleProduct extends AbstractSingleThing {
         super();
     }
 
-    public ObjectSingleProduct(ConfigurationSection singleSection) {
-        super(singleSection);
+    public ObjectSingleProduct(String id, ConfigurationSection singleSection) {
+        super(id, singleSection);
     }
 
-    public ObjectSingleProduct(ConfigurationSection singleSection, ObjectItem item) {
-        super(singleSection);
+    public ObjectSingleProduct(String id, ConfigurationSection singleSection, ObjectItem item) {
+        super(id, singleSection);
         this.item = item;
     }
 

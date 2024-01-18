@@ -18,8 +18,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class CommonUtil {
 
@@ -96,6 +94,13 @@ public class CommonUtil {
                 else {
                     s = s.replace(var, args[i + 1]);
                 }
+            }
+            String[] tempVal1 = s.split(";;");
+            if (tempVal1.length > 1) {
+                for (String string : tempVal1) {
+                    resultList.add(TextUtil.parse(string));
+                }
+                continue;
             }
             resultList.add(TextUtil.parse(s));
         }

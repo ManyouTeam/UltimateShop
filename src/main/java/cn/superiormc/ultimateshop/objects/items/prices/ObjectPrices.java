@@ -14,7 +14,7 @@ import java.util.*;
 
 public class ObjectPrices extends AbstractThings {
 
-    public List<ObjectSinglePrice> singlePrices = new ArrayList<>();
+    public Collection<ObjectSinglePrice> singlePrices = new TreeSet<>();
 
     private ObjectItem item = null;
 
@@ -43,7 +43,7 @@ public class ObjectPrices extends AbstractThings {
                 singlePrices.add(new ObjectSinglePrice());
             }
             else {
-                singlePrices.add(new ObjectSinglePrice(section.getConfigurationSection(s), item));
+                singlePrices.add(new ObjectSinglePrice(s, section.getConfigurationSection(s), item));
             }
         }
     }
@@ -228,7 +228,7 @@ public class ObjectPrices extends AbstractThings {
 
     @Override
     public Map<AbstractSingleThing, BigDecimal> getAmount(Player player, int times, int multi) {
-        Map<AbstractSingleThing, BigDecimal> priceMaps = new HashMap<>();
+        Map<AbstractSingleThing, BigDecimal> priceMaps = new TreeMap<>();
         switch (mode) {
             case ALL:
             case ANY:
