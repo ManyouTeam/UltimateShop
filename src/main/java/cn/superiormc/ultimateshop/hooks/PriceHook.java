@@ -301,7 +301,7 @@ public class PriceHook {
             return false;
         }
         ItemStack[] storage = inventory.getStorageContents();
-        int amount = getItemAmount(inventory, player, pluginName, item);
+        int amount = getItemAmount(inventory, pluginName, item);
         if (amount >= value) {
             if (take) {
                 for (int i = 0 ; i < storage.length ; i++) {
@@ -335,7 +335,7 @@ public class PriceHook {
         }
     }
 
-    public static int getItemAmount(Inventory inventory, Player player, String pluginName, String item) {
+    public static int getItemAmount(Inventory inventory, String pluginName, String item) {
         if (item == null) {
             return 0;
         }

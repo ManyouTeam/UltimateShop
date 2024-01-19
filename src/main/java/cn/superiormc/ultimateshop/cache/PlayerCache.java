@@ -28,13 +28,13 @@ public class PlayerCache extends ServerCache {
         });
     }
 
-    public void shutPlayerCache() {
+    public void shutPlayerCache(boolean quitServer) {
         Bukkit.getScheduler().runTaskAsynchronously(UltimateShop.instance, () -> {
             if (ConfigManager.configManager.getBoolean("database.enabled")) {
-                SQLDatabase.updateData(this);
+                SQLDatabase.updateData(this, quitServer);
             }
             else {
-                YamlDatabase.updateData(this);
+                YamlDatabase.updateData(this, quitServer);
             }
         });
     }
@@ -44,7 +44,7 @@ public class PlayerCache extends ServerCache {
             SQLDatabase.updateDataNoAsync(this);
         }
         else {
-            YamlDatabase.updateData(this);
+            YamlDatabase.updateData(this, true);
         }
     }
 }

@@ -101,7 +101,7 @@ public class SQLDatabase {
         });
     }
 
-    public static void updateData(ServerCache cache) {
+    public static void updateData(ServerCache cache, boolean quitServer) {
         String playerUUID = null;
         if (cache.server) {
             playerUUID = "Global-Server";
@@ -146,7 +146,9 @@ public class SQLDatabase {
                             cooldownSellTime)
                     .executeAsync();
         }
-        CacheManager.cacheManager.removePlayerCache(cache.player);
+        if (quitServer) {
+            CacheManager.cacheManager.removePlayerCache(cache.player);
+        }
     }
 
     public static void updateDataNoAsync(ServerCache cache) {

@@ -128,7 +128,6 @@ public abstract class AbstractSingleThing implements Comparable<AbstractSingleTh
                     itemID = itemID + ";;" + section.getString("hook-item-type");
                 }
                 return PriceHook.getItemAmount(inventory,
-                        player,
                         pluginName,
                         itemID);
             case VANILLA_ITEM:

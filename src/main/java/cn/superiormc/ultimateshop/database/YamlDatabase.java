@@ -79,7 +79,7 @@ public class YamlDatabase {
         }
     }
 
-    public static void updateData(ServerCache cache) {
+    public static void updateData(ServerCache cache, boolean quitServer) {
         boolean needDelete = false;
         File dir = new File(UltimateShop.instance.getDataFolder()+"/datas");
         if (!dir.exists()) {
@@ -138,7 +138,9 @@ public class YamlDatabase {
                 tempVal6.set(key, data.get(key));
             }
         }
-        CacheManager.cacheManager.removePlayerCache(cache.player);
+        if (quitServer) {
+            CacheManager.cacheManager.removePlayerCache(cache.player);
+        }
         try {
             if (needDelete) {
                 file.delete();

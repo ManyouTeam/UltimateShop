@@ -46,7 +46,7 @@ public class CacheManager {
                     "This is usually because this player joined the server before server fully started, ask him rejoin the server.");
             return;
         }
-        playerCacheMap.get(player).shutPlayerCache();
+        playerCacheMap.get(player).shutPlayerCache(true);
     }
 
     public void savePlayerCacheOnDisable(Player player) {

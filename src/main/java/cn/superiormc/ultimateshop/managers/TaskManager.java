@@ -25,14 +25,18 @@ public class TaskManager {
                 Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §fAuto saving data...");
                 Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §fIf this lead to server TPS drop, " +
                         "you should consider disable auto save feature at config.yml!");
-                ServerCache.serverCache.shutServerCache();
+                ServerCache.serverCache.shutServerCache(false);
                 for (Player player : Bukkit.getOnlinePlayers()) {
                     if (CacheManager.cacheManager.getPlayerCache(player) != null) {
-                        CacheManager.cacheManager.getPlayerCache(player).shutPlayerCache();
+                        CacheManager.cacheManager.getPlayerCache(player).shutPlayerCache(false);
                     }
                 }
             }
 
         }.runTaskTimer(UltimateShop.instance, 180L, ConfigManager.configManager.config.getLong("auto-save.period-tick", 600));
+    }
+
+    public BukkitTask getSaveTask() {
+        return saveTask;
     }
 }

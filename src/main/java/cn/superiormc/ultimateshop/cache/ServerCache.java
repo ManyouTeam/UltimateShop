@@ -42,12 +42,12 @@ public class ServerCache {
         }
     }
 
-    public void shutServerCache() {
+    public void shutServerCache(boolean quitServer) {
         if (ConfigManager.configManager.getBoolean("database.enabled")) {
-            SQLDatabase.updateData(this);
+            SQLDatabase.updateData(this, quitServer);
         }
         else {
-            YamlDatabase.updateData(this);
+            YamlDatabase.updateData(this, quitServer);
         }
     }
 
@@ -56,7 +56,7 @@ public class ServerCache {
             SQLDatabase.updateDataNoAsync(this);
         }
         else {
-            YamlDatabase.updateData(this);
+            YamlDatabase.updateData(this, true);
         }
     }
 

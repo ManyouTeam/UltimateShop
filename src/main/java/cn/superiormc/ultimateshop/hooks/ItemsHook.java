@@ -15,7 +15,6 @@ import io.th0rgal.oraxen.api.OraxenItems;
 import io.th0rgal.oraxen.items.ItemBuilder;
 import net.Indyuce.mmoitems.MMOItems;
 import org.bukkit.inventory.ItemStack;
-import pers.neige.neigeitems.NeigeItems;
 import pers.neige.neigeitems.manager.ItemManager;
 
 public class ItemsHook {
