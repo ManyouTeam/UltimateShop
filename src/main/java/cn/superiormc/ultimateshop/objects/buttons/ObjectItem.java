@@ -364,6 +364,15 @@ public class ObjectItem extends AbstractButton {
                 shop.getShopConfig().getBoolean("settings.buy-more", true));
     }
 
+    public List<String> getAddLore() {
+        List<String> resultString = config.getStringList("add-lore");
+        if (resultString.isEmpty()) {
+            return ConfigManager.configManager.getListWithColor("display-item.add-lore");
+        } else {
+            return resultString;
+        }
+    }
+
     @Override
     public String toString() {
         return "Shop: " + shop.getShopName() + " Product: " + config.getName();

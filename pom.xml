@@ -6,7 +6,7 @@
 
     <groupId>cn.superiormc</groupId>
     <artifactId>UltimateShop</artifactId>
-    <version>1.9.8</version>
+    <version>1.9.9</version>
     <packaging>jar</packaging>
 
     <name>UltimateShop</name>
@@ -35,8 +35,11 @@
                     <relocations>
                         <relocation>
                             <pattern>com.cryptomorin.xserieschanged</pattern>
-                            <!-- Be sure to change the package below -->
-                            <shadedPattern>my.plugin.utils</shadedPattern>
+                            <shadedPattern>cn.superiormc.ultimateshop.libs</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>org.bstats</pattern>
+                            <shadedPattern>cn.superiormc.ultimateshop.bstats</shadedPattern>
                         </relocation>
                     </relocations>
                 </configuration>
@@ -137,6 +140,12 @@
             <artifactId>paper-api</artifactId>
             <version>1.20.4-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.bstats</groupId>
+            <artifactId>bstats-bukkit</artifactId>
+            <version>3.0.2</version>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.geysermc.floodgate</groupId>

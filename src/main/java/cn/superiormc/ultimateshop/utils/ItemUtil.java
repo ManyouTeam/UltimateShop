@@ -17,16 +17,13 @@ import java.util.function.Function;
 
 public class ItemUtil {
     
-    public static ItemStack buildItemStack(Player player, ConfigurationSection section, int amount) {
+    public static ItemStack buildItemStack(Player player, ConfigurationSection section, int amount, String... args) {
         if (section.getString("name") != null) {
             section.set("name", TextUtil.parse(TextUtil.withPAPI(section.getString("name"), player)));
         }
-        List<String> loreList = new ArrayList<>();
-        for (String s : section.getStringList("lore")) {
-            loreList.add(TextUtil.parse(TextUtil.withPAPI(s, player), player));
-        }
+        List<String> loreList = TextUtil.getListWithColor(CommonUtil.modifyList(section.getStringList("lore"), args));
         if (loreList.isEmpty() && section.getString("lore") != null) {
-            loreList.add(TextUtil.parse(TextUtil.withPAPI(section.getString("lore"), player)));
+            loreList.add(TextUtil.parse(CommonUtil.modifyString(section.getString("lore"), args), player));
         }
         if (!loreList.isEmpty()) {
             section.set("lore", loreList);

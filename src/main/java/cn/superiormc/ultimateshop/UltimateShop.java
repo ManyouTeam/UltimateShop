@@ -5,6 +5,7 @@ import cn.superiormc.ultimateshop.database.SQLDatabase;
 import cn.superiormc.ultimateshop.managers.*;
 import cn.superiormc.ultimateshop.papi.PlaceholderAPIExpansion;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
+import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -34,6 +35,7 @@ public final class UltimateShop extends JavaPlugin {
                 Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §fFinished hook!");
             }
         }
+        new Metrics(this, 20783);
         Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §fPlugin is loaded. Author: PQguanfang.");
     }
 

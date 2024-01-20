@@ -8,7 +8,6 @@ import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import cn.superiormc.ultimateshop.objects.caches.ObjectUseTimesCache;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
 import cn.superiormc.ultimateshop.utils.TextUtil;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -99,7 +98,7 @@ public class ModifyDisplayItem {
                     null);
             tempVal10 = CacheManager.cacheManager.serverCache.getUseTimesCache().get(item);
         }
-        for (String tempVal3 : ConfigManager.configManager.getListWithColor("display-item.add-lore")) {
+        for (String tempVal3 : item.getAddLore()) {
             //String[] newArgs = new String[args.length + 1];
             //newArgs[0] = tempVal3;
             //System.arraycopy(args, 0, newArgs, 1, args.length);
@@ -389,7 +388,7 @@ public class ModifyDisplayItem {
         if (!ConfigManager.configManager.getBoolean("placeholder.click.enabled")) {
             return "";
         }
-        String s = "";
+        String s;
         switch (SellProductMethod.startSell(item.getShop(), item.getProduct(), player, false, true, multi)) {
             case ERROR :
                 s = ConfigManager.configManager.getString("placeholder.click.error", "",  "amount", String.valueOf(multi));

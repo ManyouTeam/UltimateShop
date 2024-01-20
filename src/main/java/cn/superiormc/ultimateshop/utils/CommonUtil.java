@@ -69,9 +69,8 @@ public class CommonUtil {
         }
     }
 
-    public static String modifyString(String... args) {
-        String text = args[0];
-        for (int i = 1 ; i < args.length ; i += 2) {
+    public static String modifyString(String text, String... args) {
+        for (int i = 0 ; i < args.length ; i += 2) {
             String var = "{" + args[i] + "}";
             if (args[i + 1] == null) {
                 text = text.replace(var, "");
