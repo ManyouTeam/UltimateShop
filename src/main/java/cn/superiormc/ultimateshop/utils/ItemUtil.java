@@ -17,7 +17,7 @@ import java.util.Map;
 public class ItemUtil {
     
     public static ItemStack buildItemStack(Player player, ConfigurationSection section, int amount) {
-        ItemStack resultItem;
+        ItemStack resultItem = new ItemStack(Material.STONE);
         if (section.contains("hook-item")) {
             String pluginName = section.getString("hook-plugin");
             String itemID = section.getString("hook-item");
@@ -35,27 +35,16 @@ public class ItemUtil {
                 return new ItemStack(Material.STONE);
             }
             else {
-                XItemStack.deserialize(resultItem, section, player);
+                XItemStack.edit(resultItem, section, player);
                 resultItem.setAmount(amount);
             }
         }
-        else {
-            if (section.getString("material") == null) {
-                return new ItemStack(Material.STONE);
-            }
-            if (ItemManager.itemManager.getItemByKey(section.getString("material")) != null) {
-                resultItem = ItemManager.itemManager.getItemByKey(section.getString("material"));
-            }
-            else {
-                if (Material.getMaterial(section.getString("material").toUpperCase()) == null) {
-                    return new ItemStack(Material.STONE);
-                }
-                else {
-                    resultItem = XItemStack.deserialize(section, player);
-                }
-            }
-            resultItem.setAmount(amount);
+        if (section.getString("material") != null &&
+                ItemManager.itemManager.getItemByKey(section.getString("material")) != null) {
+            resultItem = ItemManager.itemManager.getItemByKey(section.getString("material"));
         }
+        resultItem = XItemStack.edit(resultItem, section, player);
+        resultItem.setAmount(amount);
         ConfigurationSection tempVal1 = section.getConfigurationSection("plugin-enchants");
         if (!UltimateShop.freeVersion && tempVal1 != null) {
             if (CommonUtil.checkPluginLoad("AdvancedEnchantments")) {

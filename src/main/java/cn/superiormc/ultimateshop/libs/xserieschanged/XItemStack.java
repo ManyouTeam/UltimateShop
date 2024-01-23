@@ -456,7 +456,7 @@ public final class XItemStack {
     @Nonnull
     public static ItemStack deserialize(@Nonnull final ConfigurationSection config,
                                         @Nonnull final Player player) {
-        return deserialize(new ItemStack(Material.STONE), config, player);
+        return edit(new ItemStack(Material.STONE), config, player);
     }
 
     /**
@@ -468,7 +468,7 @@ public final class XItemStack {
      */
     @SuppressWarnings("deprecation")
     @Nonnull
-    public static ItemStack deserialize(@Nonnull ItemStack item,
+    public static ItemStack edit(@Nonnull ItemStack item,
                                  @Nonnull final ConfigurationSection config,
                                  @Nonnull final Player player) {
         Objects.requireNonNull(item, "Cannot operate on null ItemStack, considering using an AIR ItemStack instead");
@@ -487,10 +487,6 @@ public final class XItemStack {
                 if (material != null) material.setType(item);
             }
         }
-
-        // Amount
-        int amount = config.getInt("amount");
-        if (amount > 1) item.setAmount(amount);
 
         ItemMeta meta;
         { // For Java's stupid closure capture system.

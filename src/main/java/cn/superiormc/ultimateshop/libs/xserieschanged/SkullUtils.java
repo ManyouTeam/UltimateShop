@@ -173,20 +173,6 @@ public class SkullUtils {
 
     @SuppressWarnings("deprecation")
     @Nonnull
-    public static ItemStack getSkull(@Nonnull UUID id) {
-        ItemStack head = XMaterial.PLAYER_HEAD.parseItem();
-        SkullMeta meta = (SkullMeta) head.getItemMeta();
-
-        OfflinePlayer player = Bukkit.getOfflinePlayer(id);
-        if (SUPPORTS_UUID) meta.setOwningPlayer(player);
-        else meta.setOwner(player.getName());
-
-        head.setItemMeta(meta);
-        return head;
-    }
-
-    @SuppressWarnings("deprecation")
-    @Nonnull
     public static SkullMeta applySkin(@Nonnull ItemMeta head, @Nonnull OfflinePlayer identifier) {
         SkullMeta meta = (SkullMeta) head;
         if (SUPPORTS_UUID) {
