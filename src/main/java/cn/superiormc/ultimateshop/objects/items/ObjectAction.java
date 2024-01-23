@@ -8,6 +8,7 @@ import cn.superiormc.ultimateshop.methods.Product.BuyProductMethod;
 import cn.superiormc.ultimateshop.methods.Product.SellProductMethod;
 import cn.superiormc.ultimateshop.objects.ObjectShop;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
+import cn.superiormc.ultimateshop.utils.InvUtil;
 import cn.superiormc.ultimateshop.utils.TextUtil;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;
@@ -120,7 +121,7 @@ public class ObjectAction {
                     ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Invalid sound action format.");
                 }
             } else if (singleAction.startsWith("message: ")) {
-                player.sendMessage(TextUtil.parse(singleAction.substring(9), player));
+                InvUtil.sendMessage(player, singleAction.substring(9));
             } else if (singleAction.startsWith("open_menu: ")) {
                 OpenGUI.openCommonGUI(player, singleAction.substring(11));
             } else if (singleAction.startsWith("shop_menu: ")) {
@@ -128,7 +129,7 @@ public class ObjectAction {
             } else if (singleAction.startsWith("announcement: ")) {
                 Collection<? extends Player> players = Bukkit.getOnlinePlayers();
                 for (Player p : players) {
-                    p.sendMessage(TextUtil.parse(singleAction.substring(14), player));
+                    InvUtil.sendMessage(p, singleAction.substring(14));
                 }
             } else if (singleAction.startsWith("effect: ")) {
                 try {

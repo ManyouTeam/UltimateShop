@@ -6,6 +6,7 @@ import io.lumine.mythic.api.mobs.MythicMob;
 import io.lumine.mythic.bukkit.BukkitAdapter;
 import io.lumine.mythic.bukkit.MythicBukkit;
 import io.lumine.xikage.mythicmobs.MythicMobs;
+import net.kyori.adventure.text.Component;
 import net.luckperms.api.LuckPermsProvider;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -132,12 +133,7 @@ public class CommonUtil {
 
     public static boolean getClass(String className) {
         if (!ConfigManager.configManager.getBoolean("check-class.enabled")) {
-            if (ConfigManager.configManager.config.getStringList("check-class.classes").contains(className)) {
-                return true;
-            }
-            else {
-                return false;
-            }
+            return ConfigManager.configManager.config.getStringList("check-class.classes").contains(className);
         }
         try {
             Class.forName(className);
@@ -149,19 +145,23 @@ public class CommonUtil {
     }
 
     public static String getItemName(ItemStack displayItem) {
-        if (displayItem == null) {
+        if (displayItem == null || displayItem.getItemMeta() == null) {
             return "";
         }
         if (CommonUtil.checkPluginLoad("NeigeItems")) {
             return ItemUtils.getItemName(displayItem);
         }
-        if (displayItem.getItemMeta() == null) {
-            return displayItem.getType().name().replace("_", " ");
+        if (displayItem.getItemMeta().hasDisplayName()) {
+            return displayItem.getItemMeta().getDisplayName();
         }
-        return displayItem.getItemMeta().hasDisplayName() ?
-        displayItem.getItemMeta().getDisplayName() :
-        displayItem.getItemMeta().hasLocalizedName() ?
-        displayItem.getItemMeta().getLocalizedName() :
-                displayItem.getType().name().replace("_", " ");
+        StringBuilder result = new StringBuilder();
+        for (String word : displayItem.getType().name().toLowerCase().split("_")) {
+            if (!word.isEmpty()) {
+                char firstChar = Character.toUpperCase(word.charAt(0));
+                String restOfWord = word.substring(1);
+                result.append(firstChar).append(restOfWord).append(" ");
+            }
+        }
+        return result.toString();
     }
 }

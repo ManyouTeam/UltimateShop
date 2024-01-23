@@ -2,6 +2,7 @@ package cn.superiormc.ultimateshop.managers;
 
 import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
+import cn.superiormc.ultimateshop.utils.InvUtil;
 import cn.superiormc.ultimateshop.utils.TextUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -93,7 +94,7 @@ public class LanguageManager {
             }
         }
         if (text.length() != 0) {
-            Bukkit.getConsoleSender().sendMessage(TextUtil.parse(text));
+            InvUtil.sendMessage(null, text);
         }
     }
 
@@ -126,7 +127,7 @@ public class LanguageManager {
             }
         }
         if (text.length() != 0) {
-            player.sendMessage(TextUtil.parse(text, player));
+            InvUtil.sendMessage(player, text);
         }
     }
 

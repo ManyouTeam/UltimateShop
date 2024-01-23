@@ -135,9 +135,8 @@ public class ShopGUI extends InvGUI {
         if (Objects.isNull(inv)) {
             if (shopMenu != null) {
                 inv = InvUtil.createNewInv(owner, shopMenu.getInt("size", 54),
-                        TextUtil.parse(shopMenu.getString("title", shop.getShopDisplayName())
-                                .replace("{shop-name}", shop.getShopDisplayName())),
-                        shopMenu.getString("font", null));
+                        shopMenu.getString("title", shop.getShopDisplayName())
+                                .replace("{shop-name}", shop.getShopDisplayName()));
             }
         }
         for (int slot : menuButtons.keySet()) {

@@ -49,8 +49,7 @@ public class CommonGUI extends InvGUI {
         menuItems = getMenuItems(owner.getPlayer());
         if (Objects.isNull(inv)) {
             inv = InvUtil.createNewInv(owner, commonMenu.getInt("size", 54),
-                    TextUtil.parse(commonMenu.getString("title", "Shop")),
-                    commonMenu.getString("font", null));
+                    commonMenu.getString("title", "Shop"));
         }
         for (int slot : menuButtons.keySet()) {
             inv.setItem(slot, menuItems.get(slot));

@@ -30,8 +30,7 @@ public class SellAllGUI extends InvGUI {
         if (Objects.isNull(inv)) {
             inv = InvUtil.createNewInv(owner, ConfigManager.configManager.getInt
                             ("menu.sell-all.size", 54),
-                    TextUtil.parse(ConfigManager.configManager.getString("menu.sell-all.title")),
-                    ConfigManager.configManager.getString("menu.sell-all.font"));
+                   ConfigManager.configManager.getString("menu.sell-all.title"));
         }
     }
 

@@ -47,8 +47,7 @@ public class BuyMoreGUI extends InvGUI {
         tempVal1.setAmount(nowingAmount);
         if (Objects.isNull(inv)) {
             inv = InvUtil.createNewInv(owner, menu.getInt("size", 54),
-                    TextUtil.parse(menu.getString("title", "Shop")),
-                    menu.getString("font", null));
+                    menu.getString("title", "Shop"));
         }
         inv.setItem(displaySlot, tempVal1);
         // 其他物品

@@ -1,8 +1,11 @@
 debug: false
 
+# Paper only feature.
+use-component:
+  menu-title: false
+  message: false
+
 menu:
-  # Paper only feature.
-  use-component-title: false
   shop:
     # Whether shop menu will refresh every 1 second.
     # This will refresh placeholder that displayed in display item lore.
