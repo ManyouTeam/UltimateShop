@@ -1,9 +1,8 @@
 package cn.superiormc.ultimateshop.utils;
 
-import cc.carm.lib.easyplugin.ColorParser;
+import cn.superiormc.ultimateshop.libs.easyplugin.ColorParser;
 import cn.superiormc.ultimateshop.methods.GetDiscountValue;
 import me.clip.placeholderapi.PlaceholderAPI;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;

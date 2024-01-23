@@ -19,7 +19,7 @@
  * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
  * ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package com.cryptomorin.xserieschanged;
+package cn.superiormc.ultimateshop.libs.xserieschanged;
 
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
@@ -63,7 +63,7 @@ import javax.annotation.Nullable;
 import java.util.*;
 import java.util.function.Predicate;
 
-import static com.cryptomorin.xserieschanged.XMaterial.supports;
+import static cn.superiormc.ultimateshop.libs.xserieschanged.XMaterial.supports;
 
 /**
  * <b>XItemStack</b> - YAML Item Serializer<br>

@@ -19,7 +19,7 @@
  * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
  * ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package com.cryptomorin.xserieschanged;
+package cn.superiormc.ultimateshop.libs.xserieschanged;
 
 import com.google.common.base.Enums;
 import org.bukkit.NamespacedKey;
@@ -84,13 +84,6 @@ public enum XEnchantment {
     THORNS(true, "HIGHCRIT", "THORN", "HIGHERCRIT", "T"),
     VANISHING_CURSE(true, "VANISHING_CURSE", "VANISH_CURSE", "VANISHING", "VANISH"),
     WATER_WORKER("AQUA_AFFINITY", "WATER_WORKER", "AQUA_AFFINITY", "WATER_MINE", "WW");
-
-    /**
-     * Cached list of {@link XEnchantment#values()} to avoid allocating memory for
-     *
-     * @since 1.0.0
-     */
-    public static final XEnchantment[] VALUES = values();
 
     /**
      * Entity types that {@link #DAMAGE_UNDEAD} enchantment is effective against.
@@ -207,21 +200,6 @@ public enum XEnchantment {
         return Optional.ofNullable(Data.NAMES.get(format(enchantment)));
     }
 
-    /**
-     * Gets an enchantment from Vanilla and bukkit names.
-     * There are also some aliases available.
-     *
-     * @param enchantment the enchantment.
-     * @return an enchantment.
-     * @throws IllegalArgumentException may be thrown as an unexpected exception.
-     * @since 1.0.0
-     */
-    @Nonnull
-    @SuppressWarnings("deprecation")
-    public static XEnchantment matchXEnchantment(@Nonnull Enchantment enchantment) {
-        Objects.requireNonNull(enchantment, "Cannot parse XEnchantment of a null enchantment");
-        return Objects.requireNonNull(Data.NAMES.get(enchantment.getName()), () -> "Unsupported enchantment: " + enchantment.getName());
-    }
 
     /**
      * Parse the Vanilla enchantment.

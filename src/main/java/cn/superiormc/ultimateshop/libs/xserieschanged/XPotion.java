@@ -19,15 +19,10 @@
  * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
  * ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package com.cryptomorin.xserieschanged;
+package cn.superiormc.ultimateshop.libs.xserieschanged;
 
 import com.google.common.base.Strings;
-import org.bukkit.Color;
-import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.ThrownPotion;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.potion.PotionType;
@@ -185,20 +180,6 @@ public enum XPotion {
         return Optional.ofNullable(Data.NAMES.get(format(potion)));
     }
 
-    /**
-     * Parses the XPotion for this potion effect.
-     *
-     * @param type the potion effect type.
-     * @return the XPotion of this potion effect.
-     * @throws IllegalArgumentException may be thrown as an unexpected exception.
-     * @since 1.0.0
-     */
-    @SuppressWarnings("deprecation")
-    @Nonnull
-    public static XPotion matchXPotion(@Nonnull PotionEffectType type) {
-        Objects.requireNonNull(type, "Cannot match XPotion of a null potion effect type");
-        return POTIONEFFECTTYPE_MAPPING[type.getId()];
-    }
 
     /**
      * Parses the type ID if available.
@@ -308,185 +289,6 @@ public enum XPotion {
     }
 
     /**
-     * Add a list of potion effects to an entity from a string list, usually from config.
-     *
-     * @param entity  the entity to add potion effects to.
-     * @param effects the list of potion effects to parse and add to the entity.
-     * @see #parseEffect(String)
-     * @since 1.0.0
-     */
-    public static void addEffects(@Nonnull LivingEntity entity, @Nullable List<String> effects) {
-        Objects.requireNonNull(entity, "Cannot add potion effects to null entity");
-        for (Effect effect : parseEffects(effects)) effect.apply(entity);
-    }
-
-    /**
-     * @param effectsString a list of effects with a format following {@link #parseEffect(String)}
-     * @return a list of parsed effets.
-     * @since 3.0.0
-     */
-    public static List<Effect> parseEffects(@Nullable List<String> effectsString) {
-        if (effectsString == null || effectsString.isEmpty()) return new ArrayList<>();
-        List<Effect> effects = new ArrayList<>(effectsString.size());
-
-        for (String effectStr : effectsString) {
-            Effect effect = parseEffect(effectStr);
-            if (effect != null) effects.add(effect);
-        }
-
-        return effects;
-    }
-
-    /**
-     * Throws a splash potion from the target entity.
-     * This method is only compatible for 1.9+
-     *
-     * @param entity  the entity to throw the potion from.
-     * @param color   the color of the potion's bottle.
-     * @param effects the effects of the potion.
-     * @return a thrown splash potion.
-     * @since 1.0.0
-     */
-    @Nonnull
-    public static ThrownPotion throwPotion(@Nonnull LivingEntity entity, @Nullable Color color, @Nullable PotionEffect... effects) {
-        Objects.requireNonNull(entity, "Cannot throw potion from null entity");
-        @SuppressWarnings("deprecation")
-        ItemStack potion = Material.getMaterial("SPLASH_POTION") == null ?
-                new ItemStack(Material.POTION, 1, (short) 16398) : // or 16384?
-                new ItemStack(Material.SPLASH_POTION);
-        // Why the fuck isn't Lingering potion supported?
-
-        PotionMeta meta = (PotionMeta) potion.getItemMeta();
-        meta.setColor(color);
-        if (effects != null) for (PotionEffect effect : effects) meta.addCustomEffect(effect, true);
-        potion.setItemMeta(meta);
-
-        ThrownPotion thrownPotion = entity.launchProjectile(ThrownPotion.class);
-        thrownPotion.setItem(potion);
-        return thrownPotion;
-    }
-
-    /**
-     * Builds an item with the given type, color and effects.
-     * This method is only compatible for 1.9+
-     * <p>
-     * The item type must be one of the following:
-     * <pre>
-     *     {@link Material#POTION}
-     *     {@link Material#SPLASH_POTION}
-     *     {@link Material#LINGERING_POTION}
-     *     {@link Material#TIPPED_ARROW}
-     * </pre>
-     *
-     * @param type    the type of the potion.
-     * @param color   the color of the potion's bottle.
-     * @param effects the effects of the potion.
-     * @return an item with the specified effects.
-     * @since 1.0.0
-     */
-    @Nonnull
-    public static ItemStack buildItemWithEffects(@Nonnull Material type, @Nullable Color color, @Nullable PotionEffect... effects) {
-        Objects.requireNonNull(type, "Cannot build an effected item with null type");
-        if (!canHaveEffects(type))
-            throw new IllegalArgumentException("Cannot build item with " + type.name() + " potion type");
-
-        ItemStack item = new ItemStack(type);
-        PotionMeta meta = (PotionMeta) item.getItemMeta();
-
-        meta.setColor(color);
-        meta.setDisplayName(type == Material.POTION ? "Potion" : type == Material.SPLASH_POTION ? "Splash Potion" :
-                type == Material.TIPPED_ARROW ? "Tipped Arrow" : "Lingering Potion");
-        if (effects != null) for (PotionEffect effect : effects) meta.addCustomEffect(effect, true);
-        item.setItemMeta(meta);
-        return item;
-    }
-
-    /**
-     * Checks if a material can have potion effects.
-     * This method does not check for {@code LEGACY} materials.
-     * You should avoid using them or use XMaterial instead.
-     *
-     * @param material the material to check.
-     * @return true if the material is a potion, otherwise false.
-     * @since 1.0.0
-     */
-    public static boolean canHaveEffects(@Nullable Material material) {
-        return material != null && (material.name().endsWith("POTION") || material.name().startsWith("TIPPED_ARROW"));
-    }
-
-    /**
-     * Parses the potion effect type.
-     *
-     * @return the parsed potion effect type.
-     * @see #getPotionType()
-     * @since 1.0.0
-     */
-    @Nullable
-    public PotionEffectType getPotionEffectType() {
-        return this.type;
-    }
-
-    /**
-     * Checks if this potion is supported in the current Minecraft version.
-     * <p>
-     * An invocation of this method yields exactly the same result as the expression:
-     * <p>
-     * <blockquote>
-     * {@link #getPotionEffectType()} != null
-     * </blockquote>
-     *
-     * @return true if the current version has this potion effect type, otherwise false.
-     * @since 1.0.0
-     */
-    public boolean isSupported() {
-        return this.type != null;
-    }
-
-    /**
-     * Checks if this potion is supported in the current version and
-     * returns itself if yes.
-     * <p>
-     * In the other case, the alternate potion will get returned,
-     * no matter if it is supported or not.
-     *
-     * @param alternatePotion the potion to get if this one is not supported.
-     * @return this potion or the {@code alternatePotion} if not supported.
-     */
-    @Nullable
-    public XPotion or(@Nullable XPotion alternatePotion) {
-        return isSupported() ? this : alternatePotion;
-    }
-
-    /**
-     * Gets the PotionType from this PotionEffectType.
-     * Usually for potion items.
-     *
-     * @return a potion type for potions.
-     * @see #getPotionEffectType()
-     * @since 1.0.0
-     * @deprecated not for removal, but use {@link PotionEffectType} instead.
-     */
-    @Nullable
-    @Deprecated
-    public PotionType getPotionType() {
-        return type == null ? null : PotionType.getByEffect(type);
-    }
-
-    /**
-     * Builds a potion effect with the given duration and amplifier.
-     *
-     * @param duration  the duration of the potion effect in ticks.
-     * @param amplifier the amplifier of the potion effect (starting from 1).
-     * @return a potion effect.
-     * @see #parseEffect(String)
-     * @since 1.0.0
-     */
-    @Nullable
-    public PotionEffect buildPotionEffect(int duration, int amplifier) {
-        return type == null ? null : new PotionEffect(type, duration, amplifier - 1);
-    }
-
-    /**
      * In most cases you should be using {@link #name()} instead.
      *
      * @return a friendly readable string name.
@@ -521,20 +323,8 @@ public enum XPotion {
             this.chance = chance;
         }
 
-        public XPotion getXPotion() {
-            return XPotion.matchXPotion(effect.getType());
-        }
-
-        public double getChance() {
-            return chance;
-        }
-
         public boolean hasChance() {
             return chance >= 100 || ThreadLocalRandom.current().nextDouble(0, 100) <= chance;
-        }
-
-        public void setChance(double chance) {
-            this.chance = chance;
         }
 
         public void apply(LivingEntity entity) {
@@ -543,10 +333,6 @@ public enum XPotion {
 
         public PotionEffect getEffect() {
             return effect;
-        }
-
-        public void setEffect(PotionEffect effect) {
-            this.effect = effect;
         }
     }
 }

@@ -19,16 +19,13 @@
  * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
  * ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package com.cryptomorin.xserieschanged;
+package cn.superiormc.ultimateshop.libs.xserieschanged;
 
 import com.google.common.collect.Lists;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.block.Block;
-import org.bukkit.block.BlockState;
-import org.bukkit.block.Skull;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
@@ -200,11 +197,6 @@ public class SkullUtils {
         return meta;
     }
 
-    @Nonnull
-    public static SkullMeta applySkin(@Nonnull ItemMeta head, @Nonnull UUID identifier) {
-        return applySkin(head, Bukkit.getOfflinePlayer(identifier));
-    }
-
     @SuppressWarnings("deprecation")
     private static SkullMeta applySkinFromName(SkullMeta head, String name) {
         GameProfile nullPlayer = NULL_PLAYERS.get(name);
@@ -275,27 +267,6 @@ public class SkullUtils {
     }
 
     @Nonnull
-    public static GameProfile profileFromPlayer(OfflinePlayer player) {
-        return new GameProfile(player.getUniqueId(), player.getName());
-    }
-
-    @Nonnull
-    public static GameProfile detectProfileFromString(String identifier) {
-        // @formatter:off sometimes programming is just art that a machine can't understand :)
-        StringSkullCache result = detectSkullValueType(identifier);
-        switch (result.valueType) {
-            case UUID:         return new GameProfile((UUID) result.object,          GAME_PROFILE_EMPTY_NAME);
-            case NAME:         return new GameProfile(GAME_PROFILE_EMPTY_UUID,       identifier);
-            case BASE64:       return profileFromBase64(                             identifier,  extractMojangSHAFromBase64((String) result.object));
-            case TEXTURE_URL:  return profileFromBase64(encodeTexturesURL(           identifier), extractMojangSHAFromBase64(identifier));
-            case TEXTURE_HASH: return profileFromBase64(encodeTexturesURL(TEXTURES + identifier), identifier);
-            case UNKNOWN:      return profileFromBase64(INVALID_BASE64,                           INVALID_BASE64); // This can't be cached because the caller might change it.
-            default: throw new AssertionError("Unknown skull value");
-        }
-        // @formatter:on
-    }
-
-    @Nonnull
     public static StringSkullCache detectSkullValueType(@Nonnull String identifier) {
         try {
             UUID id = UUID.fromString(identifier);
@@ -314,23 +285,6 @@ public class SkullUtils {
         if (MOJANG_SHA256_APPROX.matcher(identifier).matches()) return new StringSkullCache(ValueType.TEXTURE_HASH);
 
         return new StringSkullCache(ValueType.UNKNOWN);
-    }
-
-    public static void setSkin(@Nonnull Block block, @Nonnull String value) {
-        Objects.requireNonNull(block, "Can't set skin of null block");
-
-        BlockState state = block.getState();
-        if (!(state instanceof Skull)) return;
-        Skull skull = (Skull) state;
-
-        GameProfile profile = detectProfileFromString(value);
-        try {
-            CRAFT_META_SKULL_BLOCK_SETTER.invoke(skull, profile);
-        } catch (Throwable e) {
-            throw new RuntimeException("Error while setting block skin with value: " + value, e);
-        }
-
-        skull.update(true);
     }
 
     public static String encodeTexturesURL(String url) {

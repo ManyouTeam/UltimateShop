@@ -34,7 +34,7 @@
                 <configuration>
                     <relocations>
                         <relocation>
-                            <pattern>com.cryptomorin.xserieschanged</pattern>
+                            <pattern>cn.superiormc.ultimateshop.libs.xserieschanged</pattern>
                             <shadedPattern>cn.superiormc.ultimateshop.libs</shadedPattern>
                         </relocation>
                         <relocation>

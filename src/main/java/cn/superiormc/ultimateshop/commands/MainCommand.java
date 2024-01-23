@@ -15,7 +15,7 @@ import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import cn.superiormc.ultimateshop.objects.caches.ObjectUseTimesCache;
 import cn.superiormc.ultimateshop.objects.menus.ObjectMenu;
 import cn.superiormc.ultimateshop.objects.ObjectShop;
-import com.cryptomorin.xserieschanged.XItemStack;
+import cn.superiormc.ultimateshop.libs.xserieschanged.XItemStack;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;

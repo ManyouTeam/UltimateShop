@@ -1,4 +1,4 @@
-package cc.carm.lib.easyplugin;
+package cn.superiormc.ultimateshop.libs.easyplugin;
 
 import java.awt.*;
 import java.util.*;
