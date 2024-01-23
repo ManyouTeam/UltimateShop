@@ -4,6 +4,7 @@ debug: false
 use-component:
   menu-title: false
   message: false
+  item: false
 
 menu:
   shop:

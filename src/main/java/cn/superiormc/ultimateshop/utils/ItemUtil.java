@@ -10,24 +10,13 @@ import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.*;
-import java.util.function.Function;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ItemUtil {
     
-    public static ItemStack buildItemStack(Player player, ConfigurationSection section, int amount, String... args) {
-        if (section.getString("name") != null) {
-            section.set("name", TextUtil.parse(TextUtil.withPAPI(section.getString("name"), player)));
-        }
-        List<String> loreList = TextUtil.getListWithColor(CommonUtil.modifyList(section.getStringList("lore"), args));
-        if (loreList.isEmpty() && section.getString("lore") != null) {
-            loreList.add(TextUtil.parse(CommonUtil.modifyString(section.getString("lore"), args), player));
-        }
-        if (!loreList.isEmpty()) {
-            section.set("lore", loreList);
-        }
+    public static ItemStack buildItemStack(Player player, ConfigurationSection section, int amount) {
         ItemStack resultItem;
         if (section.contains("hook-item")) {
             String pluginName = section.getString("hook-plugin");
@@ -46,7 +35,7 @@ public class ItemUtil {
                 return new ItemStack(Material.STONE);
             }
             else {
-                XItemStack.edit(resultItem, section, Function.identity(), null);
+                XItemStack.deserialize(resultItem, section, player);
                 resultItem.setAmount(amount);
             }
         }
@@ -62,7 +51,7 @@ public class ItemUtil {
                     return new ItemStack(Material.STONE);
                 }
                 else {
-                    resultItem = XItemStack.deserialize(section);
+                    resultItem = XItemStack.deserialize(section, player);
                 }
             }
             resultItem.setAmount(amount);
@@ -73,18 +62,6 @@ public class ItemUtil {
                 for (String enchantName : tempVal1.getKeys(false)) {
                     resultItem = AEAPI.applyEnchant(enchantName, tempVal1.getInt(enchantName), resultItem);
                 }
-            }
-        }
-        if (!section.getStringList("add-lore").isEmpty()) {
-            ItemMeta tempVal2 = resultItem.getItemMeta();
-            if (tempVal2 != null) {
-                List<String> tempVal3 = new ArrayList<>();
-                if (tempVal2.hasLore()) {
-                    tempVal3 = tempVal2.getLore();
-                }
-                tempVal3.addAll(TextUtil.getListWithColorAndPAPI(section.getStringList("add-lore"), player));
-                tempVal2.setLore(tempVal3);
-                resultItem.setItemMeta(tempVal2);
             }
         }
         return resultItem;

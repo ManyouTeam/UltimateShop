@@ -21,16 +21,18 @@
  */
 package com.cryptomorin.xserieschanged;
 
+import cn.superiormc.ultimateshop.managers.ConfigManager;
+import cn.superiormc.ultimateshop.utils.CommonUtil;
+import cn.superiormc.ultimateshop.utils.TextUtil;
 import com.google.common.base.Enums;
 import com.google.common.base.Strings;
 import com.google.common.collect.Multimap;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
-import org.bukkit.block.Banner;
-import org.bukkit.block.BlockState;
-import org.bukkit.block.CreatureSpawner;
-import org.bukkit.block.ShulkerBox;
+import org.bukkit.block.*;
 import org.bukkit.block.banner.Pattern;
 import org.bukkit.block.banner.PatternType;
 import org.bukkit.configuration.ConfigurationSection;
@@ -59,9 +61,6 @@ import org.bukkit.potion.PotionType;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
-import java.util.function.BiPredicate;
-import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.function.Predicate;
 
 import static com.cryptomorin.xserieschanged.XMaterial.supports;
@@ -89,13 +88,8 @@ public final class XItemStack {
     /**
      * Because item metas cannot be applied to AIR, apparently.
      */
-    private static final XMaterial DEFAULT_MATERIAL = XMaterial.NETHER_PORTAL;
 
     private XItemStack() {
-    }
-
-    public static boolean isDefaultItem(ItemStack item) {
-        return DEFAULT_MATERIAL.isSimilar(item);
     }
 
     /**
@@ -215,7 +209,9 @@ public final class XItemStack {
                     effects.add(effect.getType().getName() + ", " + effect.getDuration() + ", " + effect.getAmplifier());
                 }
 
-                config.set("effects", effects);
+                if (!effects.isEmpty()) {
+                    config.set("effects", effects);
+                }
                 PotionData potionData = potion.getBasePotionData();
                 config.set("base-effect", potionData.getType().name() + ", " + potionData.isExtended() + ", " + potionData.isUpgraded());
 
@@ -392,67 +388,6 @@ public final class XItemStack {
         return configSectionToMap(config);
     }
 
-    /**
-     * Deserialize an ItemStack from the config.
-     *
-     * @param config the config section to deserialize the ItemStack object from.
-     * @return a deserialized ItemStack.
-     * @since 1.0.0
-     */
-    @Nonnull
-    public static ItemStack deserialize(@Nonnull ConfigurationSection config) {
-        return edit(new ItemStack(DEFAULT_MATERIAL.parseMaterial()), config, Function.identity(), null);
-    }
-
-    /**
-     * Deserialize an ItemStack from a {@code Map}.
-     *
-     * @param serializedItem the map holding the item configurations to deserialize
-     *                       the ItemStack object from.
-     * @return a deserialized ItemStack.
-     */
-    @Nonnull
-    public static ItemStack deserialize(@Nonnull Map<String, Object> serializedItem) {
-        Objects.requireNonNull(serializedItem, "serializedItem cannot be null.");
-        return deserialize(mapToConfigSection(serializedItem));
-    }
-
-    @Nonnull
-    public static ItemStack deserialize(@Nonnull ConfigurationSection config,
-                                        @Nonnull Function<String, String> translator) {
-        return deserialize(config, translator, null);
-    }
-
-    /**
-     * Deserialize an ItemStack from the config.
-     *
-     * @param config the config section to deserialize the ItemStack object from.
-     * @return an edited ItemStack.
-     * @since 7.2.0
-     */
-    @Nonnull
-    public static ItemStack deserialize(@Nonnull ConfigurationSection config,
-                                        @Nonnull Function<String, String> translator,
-                                        @Nullable Consumer<Exception> restart) {
-        return edit(new ItemStack(DEFAULT_MATERIAL.parseMaterial()), config, translator, restart);
-    }
-
-
-    /**
-     * Deserialize an ItemStack from a {@code Map}.
-     *
-     * @param serializedItem the map holding the item configurations to deserialize
-     *                       the ItemStack object from.
-     * @param translator     the translator to use for translating the item's name.
-     * @return a deserialized ItemStack.
-     */
-    @Nonnull
-    public static ItemStack deserialize(@Nonnull Map<String, Object> serializedItem, @Nonnull Function<String, String> translator) {
-        Objects.requireNonNull(serializedItem, "serializedItem cannot be null.");
-        Objects.requireNonNull(translator, "translator cannot be null.");
-        return deserialize(mapToConfigSection(serializedItem), translator);
-    }
-
     private static int toInt(String str, @SuppressWarnings("SameParameterValue") int defaultValue) {
         try {
             return Integer.parseInt(str);
@@ -518,6 +453,12 @@ public final class XItemStack {
         return list;
     }
 
+    @Nonnull
+    public static ItemStack deserialize(@Nonnull final ConfigurationSection config,
+                                        @Nonnull final Player player) {
+        return deserialize(new ItemStack(Material.STONE), config, player);
+    }
+
     /**
      * Deserialize an ItemStack from the config.
      *
@@ -527,13 +468,11 @@ public final class XItemStack {
      */
     @SuppressWarnings("deprecation")
     @Nonnull
-    public static ItemStack edit(@Nonnull ItemStack item,
+    public static ItemStack deserialize(@Nonnull ItemStack item,
                                  @Nonnull final ConfigurationSection config,
-                                 @Nonnull final Function<String, String> translator,
-                                 @Nullable final Consumer<Exception> restart) {
+                                 @Nonnull final Player player) {
         Objects.requireNonNull(item, "Cannot operate on null ItemStack, considering using an AIR ItemStack instead");
         Objects.requireNonNull(config, "Cannot deserialize item to a null configuration section.");
-        Objects.requireNonNull(translator, "Translator function cannot be null");
 
         // Material
         String materialName = config.getString("material");
@@ -543,34 +482,9 @@ public final class XItemStack {
             }
             else {
                 Optional<XMaterial> materialOpt = XMaterial.matchXMaterial(materialName);
-                XMaterial material;
+                XMaterial material = null;
                 if (materialOpt.isPresent()) material = materialOpt.get();
-                else {
-                    UnknownMaterialCondition unknownMaterialCondition = new UnknownMaterialCondition(materialName);
-                    if (restart == null) throw unknownMaterialCondition;
-                    restart.accept(unknownMaterialCondition);
-
-                    if (unknownMaterialCondition.hasSolution()) material = unknownMaterialCondition.solution;
-                    else throw unknownMaterialCondition;
-                }
-
-                if (!material.isSupported()) {
-                    UnAcceptableMaterialCondition unsupportedMaterialCondition = new UnAcceptableMaterialCondition(material, UnAcceptableMaterialCondition.Reason.UNSUPPORTED);
-                    if (restart == null) throw unsupportedMaterialCondition;
-                    restart.accept(unsupportedMaterialCondition);
-
-                    if (unsupportedMaterialCondition.hasSolution()) material = unsupportedMaterialCondition.solution;
-                    else throw unsupportedMaterialCondition;
-                }
-                if (XTag.INVENTORY_NOT_DISPLAYABLE.isTagged(material)) {
-                    UnAcceptableMaterialCondition unsupportedMaterialCondition = new UnAcceptableMaterialCondition(material, UnAcceptableMaterialCondition.Reason.NOT_DISPLAYABLE);
-                    if (restart == null) throw unsupportedMaterialCondition;
-                    restart.accept(unsupportedMaterialCondition);
-
-                    if (unsupportedMaterialCondition.hasSolution()) material = unsupportedMaterialCondition.solution;
-                    else throw unsupportedMaterialCondition;
-                }
-                material.setType(item);
+                if (material != null) material.setType(item);
             }
         }
 
@@ -681,7 +595,7 @@ public final class XItemStack {
                 if (shulkerSection != null) {
                     ShulkerBox box = (ShulkerBox) state;
                     for (String key : shulkerSection.getKeys(false)) {
-                        ItemStack boxItem = deserialize(shulkerSection.getConfigurationSection(key));
+                        ItemStack boxItem = deserialize(shulkerSection.getConfigurationSection(key), player);
                         int slot = toInt(key, 0);
                         box.getInventory().setItem(slot, boxItem);
                     }
@@ -709,6 +623,13 @@ public final class XItemStack {
                     banner.update(true);
                     bsm.setBlockState(banner);
                 }
+            } else if (supports(20) && state instanceof BrushableBlock) {
+                BrushableBlock brushableBlock = (BrushableBlock) state;
+                ConfigurationSection contentSection = config.getConfigurationSection("content");
+                if (contentSection != null) {
+                    brushableBlock.setItem(deserialize(contentSection, player));
+                }
+                bsm.setBlockState(brushableBlock);
             }
         } else if (meta instanceof FireworkMeta) {
             FireworkMeta firework = (FireworkMeta) meta;
@@ -852,7 +773,7 @@ public final class XItemStack {
                     ConfigurationSection projectiles = config.getConfigurationSection("projectiles");
                     if (projectiles != null) {
                         for (String projectile : projectiles.getKeys(false)) {
-                            ItemStack projectileItem = deserialize(config.getConfigurationSection("projectiles." + projectile));
+                            ItemStack projectileItem = deserialize(config.getConfigurationSection("projectiles." + projectile), player);
                             crossbow.addChargedProjectile(projectileItem);
                         }
                     }
@@ -898,10 +819,14 @@ public final class XItemStack {
         // Display Name
         String name = config.getString("name");
         if (!Strings.isNullOrEmpty(name)) {
-            String translated = translator.apply(name);
-            meta.setDisplayName(translated);
+            if (CommonUtil.getClass("io.papermc.paperclip.Paperclip") &&
+                    ConfigManager.configManager.getBoolean("use-component.item")) {
+                meta.displayName(MiniMessage.miniMessage().deserialize(TextUtil.withPAPI(name, player)));
+            } else {
+                meta.setDisplayName(TextUtil.parse(name, player));
+            }
         } else if (name != null && name.isEmpty())
-            meta.setDisplayName(" "); // For GUI easy access configuration purposes
+            meta.setDisplayName(" ");
 
         if (config.getString("unbreakable") != null) {
             // Unbreakable
@@ -915,42 +840,48 @@ public final class XItemStack {
         }
 
         // Lore
-        if (config.isSet("lore")) {
-            List<String> translatedLore;
-            List<String> lores = config.getStringList("lore");
-            if (!lores.isEmpty()) {
-                translatedLore = new ArrayList<>(lores.size());
+        List<String> newLore = new ArrayList<>();
+        List<Component> veryNewLore = new ArrayList<>();
+        List<String> lores = config.getStringList("lore");
+        if (!lores.isEmpty()) {
 
-                for (String lore : lores) {
-                    if (lore.isEmpty()) {
-                        translatedLore.add(" ");
+            for (String lore : lores) {
+                if (lore.isEmpty()) {
+                    if (CommonUtil.getClass("io.papermc.paperclip.Paperclip") &&
+                            ConfigManager.configManager.getBoolean("use-component.item")) {
+                        veryNewLore.add(Component.space());
+                    } else {
+                        newLore.add(" ");
+                    }
+                    continue;
+                }
+
+                for (String singleLore : splitNewLine(lore)) {
+                    if (singleLore.isEmpty()) {
+                        if (CommonUtil.getClass("io.papermc.paperclip.Paperclip") &&
+                                ConfigManager.configManager.getBoolean("use-component.item")) {
+                            veryNewLore.add(Component.space());
+                        } else {
+                            newLore.add(" ");
+                        }
                         continue;
                     }
-
-                    for (String singleLore : splitNewLine(lore)) {
-                        if (singleLore.isEmpty()) {
-                            translatedLore.add(" ");
-                            continue;
-                        }
-                        translatedLore.add(translator.apply(singleLore));
-                    }
-                }
-            } else {
-                String lore = config.getString("lore");
-                translatedLore = new ArrayList<>(10);
-
-                if (!Strings.isNullOrEmpty(lore)) {
-                    for (String singleLore : splitNewLine(lore)) {
-                        if (singleLore.isEmpty()) {
-                            translatedLore.add(" ");
-                            continue;
-                        }
-                        translatedLore.add(translator.apply(singleLore));
+                    if (CommonUtil.getClass("io.papermc.paperclip.Paperclip") &&
+                            ConfigManager.configManager.getBoolean("use-component.item")) {
+                        veryNewLore.add(MiniMessage.miniMessage().deserialize(TextUtil.withPAPI(singleLore, player)));
+                    } else {
+                        newLore.add(TextUtil.parse(singleLore, player));
                     }
                 }
             }
+        }
 
-            meta.setLore(translatedLore);
+
+        if (!newLore.isEmpty()) {
+            meta.setLore(newLore);
+        }
+        if (!veryNewLore.isEmpty()) {
+            meta.lore(veryNewLore);
         }
 
         // Enchantments
@@ -1253,50 +1184,6 @@ public final class XItemStack {
         return -1;
     }
 
-    public static List<ItemStack> stack(@Nonnull Collection<ItemStack> items) {
-        return stack(items, ItemStack::isSimilar);
-    }
-
-    /**
-     * Stacks up the items in the given item collection that are pass the similarity check.
-     * This means that if you have a collection that consists of separate items with the same material, you can reduce them using the following:
-     * <pre>{@code
-     *   List<ItemStack> items = Arrays.asList(XMaterial.STONE.parseItem(), XMaterial.STONE.parseItem(), XMaterial.AIR.parseItem());
-     *   items = XItemStack.stack(items, (first, second) -> first.getType == second.getType());
-     *   // items -> [STONE x2, AIR x1]
-     * }</pre>
-     *
-     * @param items the items to stack.
-     * @return stacked up items.
-     * @since 4.0.0
-     */
-    @Nonnull
-    public static List<ItemStack> stack(@Nonnull Collection<ItemStack> items, @Nonnull BiPredicate<ItemStack, ItemStack> similarity) {
-        Objects.requireNonNull(items, "Cannot stack null items");
-        Objects.requireNonNull(similarity, "Similarity check cannot be null");
-        List<ItemStack> stacked = new ArrayList<>(items.size());
-
-        for (ItemStack item : items) {
-            if (item == null) continue;
-
-            boolean add = true;
-            for (ItemStack stack : stacked) {
-                if (similarity.test(item, stack)) {
-                    stack.setAmount(stack.getAmount() + item.getAmount());
-                    add = false;
-                    break;
-                }
-            }
-
-            if (add) stacked.add(item.clone());
-        }
-        return stacked;
-    }
-
-    public static int firstEmpty(@Nonnull Inventory inventory, int beginIndex) {
-        return firstEmpty(inventory, beginIndex, null);
-    }
-
     /**
      * Gets the first item slot in the inventory that is empty or matches the given item argument.
      * The matched item must be {@link ItemStack#isSimilar(ItemStack)} and has not
@@ -1320,82 +1207,5 @@ public final class XItemStack {
             if (items[beginIndex] == null) return beginIndex;
         }
         return -1;
-    }
-
-    /**
-     * Gets the first empty slot or partial item in the inventory from an index.
-     *
-     * @param inventory  the inventory to search from.
-     * @param beginIndex the item slot to start the search from in the inventory.
-     * @return first empty or partial item slot, otherwise -1
-     * @throws IndexOutOfBoundsException if the beginning index is less than 0 or greater than the inventory storage size.
-     * @see #firstEmpty(Inventory, int)
-     * @see #firstPartial(Inventory, ItemStack, int)
-     * @since 4.2.0
-     */
-    public static int firstPartialOrEmpty(@Nonnull Inventory inventory, @Nullable ItemStack item, int beginIndex) {
-        if (item != null) {
-            ItemStack[] items = inventory.getStorageContents();
-            int len = items.length;
-            if (beginIndex < 0 || beginIndex >= len)
-                throw new IndexOutOfBoundsException("Begin Index: " + beginIndex + ", Size: " + len);
-
-            for (; beginIndex < len; beginIndex++) {
-                ItemStack cItem = items[beginIndex];
-                if (cItem == null || (cItem.getAmount() < cItem.getMaxStackSize() && cItem.isSimilar(item)))
-                    return beginIndex;
-            }
-        }
-        return -1;
-    }
-
-    public static class MaterialCondition extends RuntimeException {
-        protected XMaterial solution;
-
-        public MaterialCondition(String message) {
-            super(message);
-        }
-
-        public void setSolution(XMaterial solution) {
-            this.solution = solution;
-        }
-
-        public boolean hasSolution() {
-            return this.solution != null;
-        }
-    }
-
-    public static final class UnknownMaterialCondition extends MaterialCondition {
-        private final String material;
-
-        public UnknownMaterialCondition(String material) {
-            super("Unknown material: " + material);
-            this.material = material;
-        }
-
-        public String getMaterial() {
-            return material;
-        }
-    }
-
-    public static final class UnAcceptableMaterialCondition extends MaterialCondition {
-        private final XMaterial material;
-        private final Reason reason;
-
-        public UnAcceptableMaterialCondition(XMaterial material, Reason reason) {
-            super("Unacceptable material: " + material.name() + " (" + reason.name() + ')');
-            this.material = material;
-            this.reason = reason;
-        }
-
-        public Reason getReason() {
-            return reason;
-        }
-
-        public XMaterial getMaterial() {
-            return material;
-        }
-
-        public enum Reason {UNSUPPORTED, NOT_DISPLAYABLE}
     }
 }
