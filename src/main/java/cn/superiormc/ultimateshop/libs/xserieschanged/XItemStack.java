@@ -870,14 +870,12 @@ public final class XItemStack {
                     }
                 }
             }
-        }
-
-
-        if (!newLore.isEmpty()) {
-            meta.setLore(newLore);
-        }
-        if (!veryNewLore.isEmpty()) {
-            meta.lore(veryNewLore);
+            if (!newLore.isEmpty()) {
+                meta.setLore(newLore);
+            }
+            if (!veryNewLore.isEmpty()) {
+                meta.lore(veryNewLore);
+            }
         }
 
         // Enchantments
