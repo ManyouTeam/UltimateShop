@@ -22,7 +22,7 @@ public class ItemUtil {
             String pluginName = section.getString("hook-plugin");
             String itemID = section.getString("hook-item");
             if (pluginName == null || itemID == null) {
-                return new ItemStack(Material.STONE);
+                return resultItem;
             }
             if (pluginName.equals("MMOItems") && !itemID.contains(";;")) {
                 itemID = section.getString("hook-item-type") + ";;" + itemID;
@@ -33,10 +33,6 @@ public class ItemUtil {
                     itemID);
             if (resultItem == null) {
                 return new ItemStack(Material.STONE);
-            }
-            else {
-                XItemStack.edit(resultItem, section, player);
-                resultItem.setAmount(amount);
             }
         }
         if (section.getString("material") != null &&
