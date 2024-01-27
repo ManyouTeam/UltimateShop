@@ -10,12 +10,14 @@ Spigot Link: https://www.spigotmc.org/resources/ultimateshop-menus-limits-apply-
 
 ## Update Plan
 - Sell All click action (DONE)
-- /shop save command to make mainhand item as product (Use NeigeItems or MythicMobs instead)
-- GUI Editor (WON'T ADDED IN NEAR FUTURE)
+- /shop save command to make mainhand item as product (DONE)
+- GUI Editor (WIP)
   I found it's too hard for me to add it becuase UltimateShop's config has much options and sections.
   For example, we have 15+ item or economy plugin hook, I need create 15 different type product create GUI for them.
   I have no time and effect for it.
 - Dynamic Price based on players buy and sell (DONE)
+- Rotate Shop (Planning)
+- BungeeCord Sync (Planning)
 
 ## Develop
 ### Get shop object
