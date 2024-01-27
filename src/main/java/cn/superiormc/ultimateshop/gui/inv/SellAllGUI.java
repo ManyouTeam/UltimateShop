@@ -70,4 +70,9 @@ public class SellAllGUI extends InvGUI {
         return false;
     }
 
+    @Override
+    public boolean getChangeable() {
+        return true;
+    }
+
 }

@@ -35,6 +35,10 @@ public abstract class InvGUI extends AbstractGUI {
         super(owner);
     }
 
+    public boolean getChangeable() {
+        return false;
+    }
+
     public abstract boolean clickEventHandle(Inventory inventory, ClickType type, int slot);
 
     public boolean closeEventHandle(Inventory inventory) {

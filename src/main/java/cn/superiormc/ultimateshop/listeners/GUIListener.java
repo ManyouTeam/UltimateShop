@@ -30,7 +30,7 @@ public class GUIListener implements Listener {
         try {
             if (e.getWhoClicked().equals(player)) {
                 if (!Objects.equals(e.getClickedInventory(), gui.getInv())) {
-                    e.setCancelled(true);
+                    e.setCancelled(!gui.getChangeable());
                     return;
                 }
                 if (gui.clickEventHandle(e.getClickedInventory(), e.getClick(), e.getSlot())) {

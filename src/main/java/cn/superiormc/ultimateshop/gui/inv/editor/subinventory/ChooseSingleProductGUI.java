@@ -176,6 +176,11 @@ public class ChooseSingleProductGUI extends InvGUI {
         return super.closeEventHandle(inventory);
     }
 
+    @Override
+    public boolean getChangeable() {
+        return true;
+    }
+
     private String generateID() {
         int i = itemCache.size() + 1;
         while (section.getConfigurationSection(String.valueOf(i)) != null) {

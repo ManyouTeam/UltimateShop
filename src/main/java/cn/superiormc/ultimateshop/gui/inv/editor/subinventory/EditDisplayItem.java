@@ -127,4 +127,9 @@ public class EditDisplayItem extends InvGUI {
             }
         }
     }
+
+    @Override
+    public boolean getChangeable() {
+        return true;
+    }
 }
