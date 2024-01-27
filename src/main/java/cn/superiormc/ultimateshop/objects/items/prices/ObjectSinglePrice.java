@@ -22,7 +22,6 @@ public class ObjectSinglePrice extends AbstractSingleThing {
 
     private boolean priceMode;
 
-
     private ObjectItem item;
 
 
@@ -183,6 +182,10 @@ public class ObjectSinglePrice extends AbstractSingleThing {
 
     public Map<Integer, BigDecimal> getApplyCostMap() {
         return applyCostMap;
+    }
+
+    public boolean getCustomPrice() {
+        return priceMode;
     }
 
     @Override

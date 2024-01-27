@@ -5,6 +5,8 @@ import cn.superiormc.ultimateshop.managers.ErrorManager;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import cn.superiormc.ultimateshop.objects.items.AbstractSingleThing;
 import cn.superiormc.ultimateshop.objects.items.AbstractThings;
+import cn.superiormc.ultimateshop.objects.items.shbobjects.ObjectDisplayPlaceholder;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -101,12 +103,15 @@ public class ObjectPrices extends AbstractThings {
                   if (!tempVal1.getCondition(player)) {
                       continue;
                   }
-                  if (tempVal1.getApplyCostMap().containsKey(times)) {
-                      applyThings.put(tempVal1, PriceType.FIRST);
-                  } else if (tempVal1.getApplyCostMap().isEmpty() &&
-                          times >= tempVal1.getStartApply() &&
-                          times <= tempVal1.getEndApply()) {
-                      applyThings.put(tempVal1, PriceType.FIRST);
+                  if (tempVal1.getApplyCostMap().containsKey(times) ||
+                          (tempVal1.getApplyCostMap().isEmpty() &&
+                                  times >= tempVal1.getStartApply() &&
+                                  times <= tempVal1.getEndApply())) {
+                      if (applyThings.isEmpty()) {
+                          applyThings.put(tempVal1, PriceType.FIRST);
+                      } else {
+                          applyThings.put(tempVal1, PriceType.NOT_FIRST);
+                      }
                   }
               }
               break;
@@ -179,17 +184,6 @@ public class ObjectPrices extends AbstractThings {
             case UNKNOWN:
                 return false;
             case ALL:
-                Map<AbstractSingleThing, BigDecimal> tempVal6 = getAmount(player, times, amount);
-                for (AbstractSingleThing tempVal1 : tempVal6.keySet()) {
-                    if (tempVal1.empty) {
-                        continue;
-                    }
-                    cost = tempVal6.get(tempVal1).doubleValue();
-                    if (!tempVal1.playerHasEnough(inventory, player, take, cost)) {
-                        return false;
-                    }
-                }
-                return true;
             case CLASSIC_ALL:
                 Map<AbstractSingleThing, BigDecimal> tempVal3 = getAmount(player, times, amount);
                 for (AbstractSingleThing tempVal1 : tempVal3.keySet()) {
@@ -203,6 +197,7 @@ public class ObjectPrices extends AbstractThings {
                 }
                 return true;
             case ANY:
+            case CLASSIC_ANY:
                 List<ObjectSinglePrice> tempVal4 = getAnyTargetPrice(
                         inventory, player, times, amount);
                 for (ObjectSinglePrice tempVal11 : tempVal4) {
@@ -215,11 +210,6 @@ public class ObjectPrices extends AbstractThings {
                     return false;
                 }
                 return true;
-            case CLASSIC_ANY:
-                ObjectSinglePrice tempVal11 = getAnyTargetPrice
-                        (inventory, player, times, amount).get(0);
-                cost = getAmount(player, times, amount).get(tempVal11).doubleValue();
-                return tempVal11.playerHasEnough(inventory, player, take, cost);
             default:
                 ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Can not get price-mode section in your shop config!!");
                 return false;
@@ -263,14 +253,18 @@ public class ObjectPrices extends AbstractThings {
 
     public List<String> getDisplayName(Player player, int times, int multi) {
         Map<AbstractSingleThing, BigDecimal> priceMaps = getAmount(player, times, multi);
-        List<String> tempVal1 = new ArrayList<>();
+        Map<ObjectDisplayPlaceholder, BigDecimal> tempVal1 = new TreeMap<>();
         switch (mode) {
             case ANY: case CLASSIC_ANY:
                 for (AbstractSingleThing tempVal3 : getAnyTargetPrice(player.getInventory(), player, times, multi)) {
                     if (priceMaps.get(tempVal3) == null) {
                         continue;
                     }
-                    tempVal1.add(tempVal3.getDisplayName(priceMaps.get(tempVal3)));
+                    if (tempVal1.containsKey(tempVal3.getDisplayPlaceholder())) {
+                        tempVal1.replace(tempVal3.getDisplayPlaceholder(), tempVal1.get(tempVal3.getDisplayPlaceholder()).add(priceMaps.get(tempVal3)));
+                        continue;
+                    }
+                    tempVal1.put(tempVal3.getDisplayPlaceholder(), priceMaps.get(tempVal3));
                 }
                 break;
             case ALL: case CLASSIC_ALL:
@@ -278,11 +272,19 @@ public class ObjectPrices extends AbstractThings {
                     if (priceMaps.get(tempVal2) == null) {
                         continue;
                     }
-                    tempVal1.add(tempVal2.getDisplayName(priceMaps.get(tempVal2)));
+                    if (tempVal1.containsKey(tempVal2.getDisplayPlaceholder())) {
+                        tempVal1.replace(tempVal2.getDisplayPlaceholder(), tempVal1.get(tempVal2.getDisplayPlaceholder()).add(priceMaps.get(tempVal2)));
+                        continue;
+                    }
+                    tempVal1.put(tempVal2.getDisplayPlaceholder(), priceMaps.get(tempVal2));
                 }
                 break;
         }
-        return tempVal1;
+        List<String> tempVal2 = new ArrayList<>();
+        for (ObjectDisplayPlaceholder placeholder : tempVal1.keySet()) {
+            tempVal2.add(placeholder.getDisplayName(tempVal1.get(placeholder)));
+        }
+        return tempVal2;
     }
 
     public String getDisplayNameInGUI(List<String> text) {
@@ -308,25 +310,43 @@ public class ObjectPrices extends AbstractThings {
                 tempVal2 = new StringBuilder(ConfigManager.configManager.getString("placeholder.price.unknown-price-type"));
                 break;
         }
-        return tempVal2.toString();
+        return tempVal2.toString().replace(";;", ConfigManager.configManager.getString("placeholder.price.replace-new-line-symbol"));
     }
 
     public String getDisplayNameInChat(Inventory inventory, Player player, int times, int multi) {
         Map<AbstractSingleThing, BigDecimal> priceMaps = getAmount(player, times, multi);
-        List<String> tempVal1 = new ArrayList<>();
+        Map<ObjectDisplayPlaceholder, BigDecimal> tempVal1 = new TreeMap<>();
         switch (mode) {
             case ANY: case CLASSIC_ANY:
-                for (ObjectSinglePrice tempVal3 : getAnyTargetPrice(inventory, player, times, multi)) {
-                    tempVal1.add(tempVal3.getDisplayName(priceMaps.get(tempVal3)));
+                for (AbstractSingleThing tempVal3 : getAnyTargetPrice(inventory, player, times, multi)) {
+                    if (priceMaps.get(tempVal3) == null) {
+                        continue;
+                    }
+                    if (tempVal1.containsKey(tempVal3.getDisplayPlaceholder())) {
+                        tempVal1.replace(tempVal3.getDisplayPlaceholder(), tempVal1.get(tempVal3.getDisplayPlaceholder()).add(priceMaps.get(tempVal3)));
+                        continue;
+                    }
+                    tempVal1.put(tempVal3.getDisplayPlaceholder(), priceMaps.get(tempVal3));
                 }
                 break;
             case ALL: case CLASSIC_ALL:
                 for (AbstractSingleThing tempVal2 : priceMaps.keySet()) {
-                    tempVal1.add(tempVal2.getDisplayName(priceMaps.get(tempVal2)));
+                    if (priceMaps.get(tempVal2) == null) {
+                        continue;
+                    }
+                    if (tempVal1.containsKey(tempVal2.getDisplayPlaceholder())) {
+                        tempVal1.replace(tempVal2.getDisplayPlaceholder(), tempVal1.get(tempVal2.getDisplayPlaceholder()).add(priceMaps.get(tempVal2)));
+                        continue;
+                    }
+                    tempVal1.put(tempVal2.getDisplayPlaceholder(), priceMaps.get(tempVal2));
                 }
                 break;
         }
-        return getDisplayNameInGUI(tempVal1);
+        List<String> tempVal2 = new ArrayList<>();
+        for (ObjectDisplayPlaceholder placeholder : tempVal1.keySet()) {
+            tempVal2.add(placeholder.getDisplayName(tempVal1.get(placeholder)));
+        }
+        return getDisplayNameInGUI(tempVal2);
     }
 
 }

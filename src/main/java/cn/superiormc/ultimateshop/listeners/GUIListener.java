@@ -13,6 +13,8 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 
+import java.util.Objects;
+
 public class GUIListener implements Listener {
 
     private Player player;
@@ -27,7 +29,8 @@ public class GUIListener implements Listener {
     public void onClick(InventoryClickEvent e) {
         try {
             if (e.getWhoClicked().equals(player)) {
-                if (e.getClickedInventory() != gui.getInv()) {
+                if (!Objects.equals(e.getClickedInventory(), gui.getInv())) {
+                    e.setCancelled(true);
                     return;
                 }
                 if (gui.clickEventHandle(e.getClickedInventory(), e.getClick(), e.getSlot())) {

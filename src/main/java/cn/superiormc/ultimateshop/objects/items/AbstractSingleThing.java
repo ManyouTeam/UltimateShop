@@ -3,6 +3,7 @@ package cn.superiormc.ultimateshop.objects.items;
 import cn.superiormc.ultimateshop.hooks.EconomyHook;
 import cn.superiormc.ultimateshop.hooks.PriceHook;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
+import cn.superiormc.ultimateshop.objects.items.shbobjects.ObjectDisplayPlaceholder;
 import cn.superiormc.ultimateshop.utils.ItemUtil;
 import cn.superiormc.ultimateshop.libs.xserieschanged.XItemStack;
 import org.bukkit.Bukkit;
@@ -25,11 +26,14 @@ public abstract class AbstractSingleThing implements Comparable<AbstractSingleTh
 
     public boolean empty;
 
+    private ObjectDisplayPlaceholder displayPlaceholder;
+
     private String id;
 
     public AbstractSingleThing() {
         initType(null);
         this.empty = true;
+        this.displayPlaceholder = new ObjectDisplayPlaceholder(this);
     }
 
     public AbstractSingleThing(String id, ConfigurationSection singleSection) {
@@ -44,6 +48,7 @@ public abstract class AbstractSingleThing implements Comparable<AbstractSingleTh
         }
         initCondition();
         this.empty = false;
+        this.displayPlaceholder = new ObjectDisplayPlaceholder(this);
     }
 
     private void initType(ConfigurationSection section) {
@@ -237,6 +242,10 @@ public abstract class AbstractSingleThing implements Comparable<AbstractSingleTh
 
     public String getId() {
         return id;
+    }
+
+    public ObjectDisplayPlaceholder getDisplayPlaceholder() {
+        return displayPlaceholder;
     }
 
     @Override

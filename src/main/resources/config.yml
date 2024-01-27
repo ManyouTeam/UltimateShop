@@ -111,6 +111,7 @@ placeholder:
   price:
     split-symbol-any: ', '
     split-symbol-all: ', '
+    replace-new-line-symbol: ', '
     unknown: "Unknown"
     unknown-price-type: "Unknown Price Type"
     empty: "Price is empty!"
