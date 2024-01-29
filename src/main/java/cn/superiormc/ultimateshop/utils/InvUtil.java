@@ -12,7 +12,7 @@ import cn.superiormc.ultimateshop.managers.ConfigManager;
 public class InvUtil {
 
     public static Inventory createNewInv(Player player, int size, String text) {
-        if (CommonUtil.getClass("io.papermc.paperclip.Paperclip") &&
+        if (CommonUtil.getClass("com.destroystokyo.paper.PaperConfig") &&
                 ConfigManager.configManager.getBoolean("use-component.menu-title")) {
             return Bukkit.createInventory(player, size, MiniMessage.miniMessage().deserialize(TextUtil.withPAPI(text, player)));
         } else {
@@ -21,7 +21,7 @@ public class InvUtil {
     }
 
     public static void sendMessage(Player player, String text) {
-        if (CommonUtil.getClass("io.papermc.paperclip.Paperclip") &&
+        if (CommonUtil.getClass("com.destroystokyo.paper.PaperConfig") &&
                 ConfigManager.configManager.getBoolean("use-component.message")) {
             if (player == null) {
                 Bukkit.getConsoleSender().sendMessage(MiniMessage.miniMessage().deserialize(text));

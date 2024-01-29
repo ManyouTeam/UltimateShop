@@ -815,7 +815,7 @@ public final class XItemStack {
         // Display Name
         String name = config.getString("name");
         if (!Strings.isNullOrEmpty(name)) {
-            if (CommonUtil.getClass("io.papermc.paperclip.Paperclip") &&
+            if (CommonUtil.getClass("com.destroystokyo.paper.PaperConfig") &&
                     ConfigManager.configManager.getBoolean("use-component.item")) {
                 meta.displayName(MiniMessage.miniMessage().deserialize(TextUtil.withPAPI(name, player)));
             } else {
@@ -843,7 +843,7 @@ public final class XItemStack {
 
             for (String lore : lores) {
                 if (lore.isEmpty()) {
-                    if (CommonUtil.getClass("io.papermc.paperclip.Paperclip") &&
+                    if (CommonUtil.getClass("com.destroystokyo.paper.PaperConfig") &&
                             ConfigManager.configManager.getBoolean("use-component.item")) {
                         veryNewLore.add(Component.space());
                     } else {
@@ -854,7 +854,7 @@ public final class XItemStack {
 
                 for (String singleLore : splitNewLine(lore)) {
                     if (singleLore.isEmpty()) {
-                        if (CommonUtil.getClass("io.papermc.paperclip.Paperclip") &&
+                        if (CommonUtil.getClass("com.destroystokyo.paper.PaperConfig") &&
                                 ConfigManager.configManager.getBoolean("use-component.item")) {
                             veryNewLore.add(Component.space());
                         } else {
@@ -862,7 +862,7 @@ public final class XItemStack {
                         }
                         continue;
                     }
-                    if (CommonUtil.getClass("io.papermc.paperclip.Paperclip") &&
+                    if (CommonUtil.getClass("com.destroystokyo.paper.PaperConfig") &&
                             ConfigManager.configManager.getBoolean("use-component.item")) {
                         veryNewLore.add(MiniMessage.miniMessage().deserialize(TextUtil.withPAPI(singleLore, player)));
                     } else {
