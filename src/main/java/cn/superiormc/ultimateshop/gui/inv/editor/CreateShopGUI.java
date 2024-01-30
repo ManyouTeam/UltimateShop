@@ -159,12 +159,6 @@ public class CreateShopGUI extends InvGUI {
         if (slot == 8) {
             if (!shopID.isEmpty()) {
                 Bukkit.getScheduler().runTaskAsynchronously(UltimateShop.instance, () -> {
-                    if (UltimateShop.freeVersion) {
-                        owner.closeInventory();
-                        owner.sendMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: You are now using free version, " +
-                                "your changes in GUI Editor won't get saved.");
-                        return;
-                    }
                     File dir = new File(UltimateShop.instance.getDataFolder() + "/shops");
                     if (!dir.exists()) {
                         dir.mkdir();

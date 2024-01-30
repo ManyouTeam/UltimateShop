@@ -30,7 +30,9 @@ public class GUIListener implements Listener {
         try {
             if (e.getWhoClicked().equals(player)) {
                 if (!Objects.equals(e.getClickedInventory(), gui.getInv())) {
-                    e.setCancelled(!gui.getChangeable());
+                    if (e.getClick().isShiftClick()) {
+                        e.setCancelled(!gui.getChangeable());
+                    }
                     return;
                 }
                 if (gui.clickEventHandle(e.getClickedInventory(), e.getClick(), e.getSlot())) {
@@ -60,6 +62,9 @@ public class GUIListener implements Listener {
     @EventHandler
     public void onClose(InventoryCloseEvent e) {
         if (e.getPlayer().equals(player)) {
+            if (!Objects.equals(e.getInventory(), gui.getInv())) {
+                return;
+            }
             HandlerList.unregisterAll(this);
             player.updateInventory();
             // 判定是否要打开上一页菜单

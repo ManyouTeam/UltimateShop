@@ -42,7 +42,7 @@ public class MainCommand implements CommandExecutor {
                         sellAllCommand(sender);
                         break;
                     case "editor":
-                        if (sender instanceof Player) {
+                        if (sender instanceof Player && !UltimateShop.freeVersion) {
                             if (sender.hasPermission("ultimateshop.editor")) {
                                 OpenGUI.openEditorGUI((Player) sender);
                                 break;

@@ -5,5 +5,7 @@ public enum GUIMode {
     OPEN_NEW_GUI,
     EDIT_SHOP_NAME,
     EDIT_SHOP_ID,
-    EDIT_MENU_ID
+    EDIT_MENU_ID,
+    EDIT_ECONOMY_TYPE,
+    EDIT_ECONOMY_AMOUNT
 }

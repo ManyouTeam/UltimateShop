@@ -102,7 +102,7 @@ public class EditShopGUI extends InvGUI {
         if (Objects.isNull(inv)) {
             inv = Bukkit.createInventory(owner, 9,
                     TextUtil.parse(LanguageManager.languageManager.getStringText("editor." +
-                            "edit-shop-gui.title")));
+                            "edit-shop-gui.title").replace("{shop}", shop.getShopName())));
         }
         inv.setItem(0, shopNameItem);
         inv.setItem(1, buyMoreItem);
@@ -151,12 +151,6 @@ public class EditShopGUI extends InvGUI {
             gui.openGUI();
         }
         if (slot == 8) {
-            if (UltimateShop.freeVersion) {
-                owner.closeInventory();
-                owner.sendMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: You are now using free version, " +
-                        "your changes in GUI Editor won't get saved.");
-                return true;
-            }
             File dir = new File(UltimateShop.instance.getDataFolder() + "/shops");
             if (!dir.exists()) {
                 dir.mkdir();

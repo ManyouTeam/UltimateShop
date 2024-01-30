@@ -5,6 +5,7 @@ import cn.superiormc.ultimateshop.gui.InvGUI;
 import cn.superiormc.ultimateshop.gui.inv.editor.CreateShopGUI;
 import cn.superiormc.ultimateshop.gui.inv.GUIMode;
 import cn.superiormc.ultimateshop.gui.inv.editor.EditShopGUI;
+import cn.superiormc.ultimateshop.gui.inv.editor.subinventory.EditEconomyItem;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.LanguageManager;
 import cn.superiormc.ultimateshop.objects.menus.ObjectMenu;
@@ -53,8 +54,7 @@ public class ChatListener implements Listener {
                             gui.openGUI();
                         }
                     }
-                }
-                else if (tempVal1 instanceof EditShopGUI) {
+                } else if (tempVal1 instanceof EditShopGUI) {
                     EditShopGUI gui = (EditShopGUI) tempVal1;
                     if (gui.guiMode == GUIMode.EDIT_SHOP_NAME) {
                         gui.config.set("settings.shop-name", TextUtil.parse(event.getMessage()));
@@ -72,6 +72,16 @@ public class ChatListener implements Listener {
                             gui.config.set("settings.menu", event.getMessage());
                             gui.openGUI();
                         }
+                    }
+                } else if (tempVal1 instanceof EditEconomyItem) {
+                    EditEconomyItem gui = (EditEconomyItem) tempVal1;
+                    if (gui.guiMode == GUIMode.EDIT_ECONOMY_TYPE) {
+                        gui.section.set("economy-type", event.getMessage());
+                        gui.openGUI();
+                    }
+                    if (gui.guiMode == GUIMode.EDIT_ECONOMY_AMOUNT) {
+                        gui.section.set("amount", event.getMessage());
+                        gui.openGUI();
                     }
                 }
             }

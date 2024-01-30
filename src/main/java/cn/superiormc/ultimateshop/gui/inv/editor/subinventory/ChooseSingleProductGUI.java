@@ -1,6 +1,7 @@
 package cn.superiormc.ultimateshop.gui.inv.editor.subinventory;
 
 import cn.superiormc.ultimateshop.gui.InvGUI;
+import cn.superiormc.ultimateshop.gui.inv.GUIMode;
 import cn.superiormc.ultimateshop.gui.inv.editor.EditProductGUI;
 import cn.superiormc.ultimateshop.managers.LanguageManager;
 import cn.superiormc.ultimateshop.utils.ItemUtil;
@@ -25,7 +26,7 @@ public class ChooseSingleProductGUI extends InvGUI {
 
     private int nowPage = 1;
 
-    private ConfigurationSection section;
+    public ConfigurationSection section;
 
     public ChooseSingleProductGUI(Player player, EditProductGUI gui) {
         super(player);
@@ -60,11 +61,24 @@ public class ChooseSingleProductGUI extends InvGUI {
             if (tempVal2 == null) {
                 break;
             }
-            ItemStack productItem = new ItemStack(Material.STONE);
+            ItemStack productItem = new ItemStack(Material.GOLD_INGOT);
             ConfigurationSection tempVal5 = section.getConfigurationSection(tempVal2);
             if (tempVal5 != null) {
-                productItem = ItemUtil.buildItemStack(owner, tempVal5,
-                        MathUtil.doCalculate(TextUtil.withPAPI(tempVal5.getString("amount", "1"), owner)).intValue());
+                if (tempVal5.getString("economy-plugin") != null ||
+                tempVal5.getString("economy-type") != null) {
+                    ItemMeta tempVal7 = productItem.getItemMeta();
+                    tempVal7.setDisplayName("§f" + tempVal5.getString("economy-plugin", "VANILLA"));
+                    if (tempVal5.getString("economy-type") != null) {
+                        List<String> lore = new ArrayList<>();
+                        lore.add("§7Type: " + tempVal5.getString("economy-type"));
+                        lore.add("§7Amount: " + MathUtil.doCalculate(TextUtil.withPAPI(tempVal5.getString("amount", "1"), owner)).intValue());
+                        tempVal7.setLore(lore);
+                    }
+                    productItem.setItemMeta(tempVal7);
+                } else {
+                    productItem = ItemUtil.buildItemStack(owner, tempVal5,
+                            MathUtil.doCalculate(TextUtil.withPAPI(tempVal5.getString("amount", "1"), owner)).intValue());
+                }
             }
             ItemMeta tempVal1 = productItem.getItemMeta();
             if (tempVal1 == null) {
@@ -103,6 +117,14 @@ public class ChooseSingleProductGUI extends InvGUI {
             previousPageItem.setItemMeta(tempVal3);
             inv.setItem(46, previousPageItem);
         }
+        ItemStack createNewEconomyItem = new ItemStack(Material.ORANGE_STAINED_GLASS_PANE);
+        ItemMeta tempVal5 = createNewEconomyItem.getItemMeta();
+        tempVal5.setDisplayName(TextUtil.parse(LanguageManager.languageManager.getStringText("editor." +
+                "choose-single-product-gui.create-economy.name")));
+        tempVal5.setLore(TextUtil.getListWithColor(LanguageManager.languageManager.getStringListText("editor." +
+                "choose-single-product-gui.create-economy.lore")));
+        createNewEconomyItem.setItemMeta(tempVal5);
+        inv.setItem(45, createNewEconomyItem);
         ItemStack createNewProductItem = new ItemStack(Material.GREEN_STAINED_GLASS_PANE);
         ItemMeta tempVal4 = createNewProductItem.getItemMeta();
         tempVal4.setDisplayName(TextUtil.parse(LanguageManager.languageManager.getStringText("editor." +
@@ -111,6 +133,15 @@ public class ChooseSingleProductGUI extends InvGUI {
                 "choose-single-product-gui.create.lore")));
         createNewProductItem.setItemMeta(tempVal4);
         inv.setItem(53, createNewProductItem);
+        // finish
+        ItemStack finishItem = new ItemStack(Material.GREEN_DYE);
+        ItemMeta tempVal6 = finishItem.getItemMeta();
+        tempVal6.setDisplayName(TextUtil.parse(LanguageManager.languageManager.getStringText("editor." +
+                "edit-display-item-gui.finish.name")));
+        tempVal6.setLore(TextUtil.getListWithColor(LanguageManager.languageManager.getStringListText("editor." +
+                "edit-display-item-gui.finish.lore")));
+        finishItem.setItemMeta(tempVal6);
+        inv.setItem(49, finishItem);
     }
 
     @Override
@@ -122,6 +153,15 @@ public class ChooseSingleProductGUI extends InvGUI {
         else if (slot == 52) {
             nowPage++;
             constructGUI();
+        }
+        else if (slot == 45) {
+            guiMode = GUIMode.OPEN_NEW_GUI;
+            EditEconomyItem gui = new EditEconomyItem(owner, generateID(), this);
+            gui.openGUI();
+        }
+        else if (slot == 49) {
+            guiMode = GUIMode.OPEN_NEW_GUI;
+            previousGUI.openGUI();
         }
         return true;
     }
@@ -176,17 +216,17 @@ public class ChooseSingleProductGUI extends InvGUI {
         return super.closeEventHandle(inventory);
     }
 
-    @Override
-    public boolean getChangeable() {
-        return true;
-    }
-
     private String generateID() {
         int i = itemCache.size() + 1;
         while (section.getConfigurationSection(String.valueOf(i)) != null) {
             i ++;
         }
         return String.valueOf(itemCache.size() + 1);
+    }
+
+    @Override
+    public ConfigurationSection getSection() {
+        return section;
     }
 
     // For create new product use

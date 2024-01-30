@@ -33,6 +33,8 @@ public class EditProductGUI extends InvGUI {
 
     private final File file;
 
+    private ObjectItem item;
+
     public EditProductGUI(Player owner, ObjectItem item) {
         super(owner);
         String fileName = item.getShopObject().getShopName();
@@ -48,6 +50,7 @@ public class EditProductGUI extends InvGUI {
                     item.getShop());
             return;
         }
+        this.item = item;
         this.config = new YamlConfiguration();
         try {
             config.load(file);
@@ -120,7 +123,7 @@ public class EditProductGUI extends InvGUI {
         if (Objects.isNull(inv)) {
             inv = Bukkit.createInventory(owner, 9,
                     TextUtil.parse(LanguageManager.languageManager.getStringText("editor." +
-                            "edit-product-gui.title")));
+                            "edit-product-gui.title").replace("{item}", item.getDisplayName(owner))));
         }
         inv.setItem(0, priceTypeItem);
         inv.setItem(1, productTypeItem);
@@ -167,12 +170,6 @@ public class EditProductGUI extends InvGUI {
             subGUI.openGUI();
         }
         if (slot == 8) {
-            if (UltimateShop.freeVersion) {
-                owner.closeInventory();
-                owner.sendMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: You are now using free version, " +
-                        "your changes in GUI Editor won't get saved.");
-                return true;
-            }
             file.delete();
             try {
                 config.save(file);

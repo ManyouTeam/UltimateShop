@@ -19,10 +19,56 @@ placeholderapi:
   unknown-shop: "Unknown Shop"
   unknown-product: "Unknown Product"
 
+# All messages also support multi lines, just do it like this!
+help:
+  main: |
+    &#98FB98&lUltimateShop &7Made by @rzt1020 / @PQguanfang
+    &f/shop help &7- View help.
+    &f/shop menu <menuName> &7- Open specified common menu.
+    &f/shop menu <shopName> &7- Open specified shop menu.
+    &f/shop sellall &7- Open sell all menu.
+  main-admin: |
+    &#98FB98&lUltimateShop &7Made by @rzt1020 / @PQguanfang
+    &f/shop help &7- View help.
+    &f/shop menu <menuName> &7- Open specified common menu.
+    &f/shop menu <shopName> &7- Open specified shop menu.
+    &f/shop quickbuy <shopName> <itemName> &7- Quick purchase specified item without open menu.
+    &f/shop quicksell <shopName> <itemName> &7- Quick sell specified item without open menu.
+    &f/shop reload &7- Reload the plugin.
+    &f/shop setbuytimes <shopName> <itemName> <playerName> [amount] &7- Set buy times.
+    &f/shop setselltimes <shopName> <itemName> <playerName> [amount] &7- Set sell times.
+  main-console: |
+    &#98FB98&lUltimateShop &7Made by @rzt1020 / @PQguanfang
+    &f/shop help &7- View help.
+    &f/shop menu <menuName> <playerName> &7- Force open specified common menu.
+    &f/shop menu <shopName> <playerName> &7- Force open specified shop menu.
+    &f/shop reload &7- Reload the plugin.
+    &f/shop setbuytimes <shopName> <itemName> <playerName> [amount] &7- Set buy times.
+    &f/shop setselltimes <shopName> <itemName> <playerName> [amount] &7- Set sell times.
+
+start-selling: "&#98FB98[UltimateShop] &fStarting selling your items, if you see nothing below, this means nothing can be selled!"
+give-sell-stick: "&#98FB98[UltimateShop] &fGive {player} sell stick {item} x{amount}!"
+set-times: "&#98FB98[UltimateShop] &fSet {player}'s {item} use times to {times}!"
+buy-in-cooldown: "&#98FB98[UltimateShop] &fYou can no longer buy {item} because it's in cooldown!"
+sell-in-cooldown: "&#98FB98[UltimateShop] &fYou can no longer sell {item} because it's in cooldown!"
+success-buy: "&#98FB98[UltimateShop] &fSuccessfully purchased {item}, cost {price}!"
+success-sell: "&#98FB98[UltimateShop] &fSuccessfully sell {item}, gain {price}!"
+menu-condition-not-meet: "&#98FB98[UltimateShop] &cYou didn't meet the condition that open this menu!"
+buy-condition-not-meet: "&#98FB98[UltimateShop] &cYou didn't meet the condition that buy this product!"
+sell-condition-not-meet: "&#98FB98[UltimateShop] &cYou didn't meet the condition that sell this product!"
+limit-reached-buy-player: "&#98FB98[UltimateShop] &cYou can no longer purchase item {item}, you purchase this item {times} times today, and its daily stock is {limit} for you, next refresh time: {refresh}."
+limit-reached-sell-player: "&#98FB98[UltimateShop] &cYou can no longer sell item {item}, you purchase this item {times} times today, and its daily stock is {limit} for you, next refresh time: {refresh}."
+limit-reached-buy-server: "&#98FB98[UltimateShop] &cYou can no longer purchase item {item}, all players buy this item {times} times today, and its daily stock is {limit}, next refresh time: {refresh}."
+limit-reached-sell-server: "&#98FB98[UltimateShop] &cYou can no longer sell item {item}, all players sell this item {times} times today, and its daily stock is {limit}, next refresh time: {refresh}."
+buy-price-not-enough: "&#98FB98[UltimateShop] &cYou do not have enough money to purchase {item}. Required price: {price}."
+sell-products-not-enough: "&#98FB98[UltimateShop] &cYou do not have enough {item} to sell."
+
 editor:
   enter-shop-name: '&#98FB98[UltimateShop] &fPlease enter the shop display name you want in chat box!'
   enter-shop-id: '&#98FB98[UltimateShop] &fPlease enter the shop id you want in chat box!'
   enter-menu-id: '&#98FB98[UltimateShop] &fPlease enter the menu id you want in chat box!'
+  enter-economy-type: '&#98FB98[UltimateShop] &fPlease enter the economy type you want in chat box!'
+  enter-economy-amount: '&#98FB98[UltimateShop] &fPlease enter the economy amount you want in chat box!'
   create-or-edit-shop-gui:
     title: 'Create or edit shop'
     create-shop:
@@ -88,10 +134,14 @@ editor:
       name: '&cFinish and Save'
       lore:
         - '&7Save your shop config to your server.'
+        - '&4Close this UI directly will drop this'
+        - '&4change!'
         - '&7'
         - '&eClick to create'
       can-not-lore:
         - '&7Save your shop config to your server.'
+        - '&4Close this UI directly will drop this'
+        - '&4change!'
         - '&7'
         - '&cRequired options not set!'
   edit-shop-gui:
@@ -173,7 +223,7 @@ editor:
     product:
       lore:
         - '&7'
-        - '&eClick to edit this product'
+        - '&eDrag barrier here to delete'
     create:
       name: '&cCreate new product'
       lore:
@@ -201,6 +251,8 @@ editor:
         - '&7Finish your change and return back to'
         - '&7edit product GUI, you need save your'
         - '&7change in this GUI.'
+        - '&4Close this UI directly will drop this'
+        - '&4change!'
         - '&7'
         - '&eClick to back'
   choose-single-product-gui:
@@ -211,10 +263,44 @@ editor:
         - '&eClick to edit this single product'
         - '&cDrag barrier to here to delete'
     create:
-      name: '&cCreate new product'
+      name: '&cCreate new item product'
       lore:
         - '&7'
         - '&7Drag the item you want to add as product here.'
+    create-economy:
+      name: '&6Create new economy product'
+      lore:
+        - '&7'
+        - '&7Click to add new economy product, like Vault, PlayerPoints and so on.'
+  edit-economy-item-gui:
+    title: 'Edit economy item'
+    economy-plugin:
+      name: '&bEconomy Plugin'
+      lore:
+        - '&7'
+        - '&7Type the economy plugin name or VANILLA to use vanilla'
+        - '&7exp and levels.'
+        - '&8Now Value: {value}'
+        - '&7'
+        - '&eClick to change'
+    economy-type:
+      name: '&bEconomy Type'
+      lore:
+        - '&7'
+        - '&7Type the economy type.'
+        - '&7For single economy plugin like Vault do not'
+        - '&7need change this.'
+        - '&8Now Value: {value}'
+        - '&7'
+        - '&eClick to change'
+    amount:
+      name: '&bAmount'
+      lore:
+        - '&7'
+        - '&7Type the economy required amount.'
+        - '&8Now Value: {value}'
+        - '&7'
+        - '&eClick to change'
   already-editing: "&#98FB98[UltimateShop] &cYou are now editing other things, we are waiting you print something in chat box!"
   shop-already-exists: "&#98FB98[UltimateShop] &cAlready exists a shop called {shop}!"
   product-already-exists: "&#98FB98[UltimateShop] &cAlready exists a product called {product}!"
@@ -224,47 +310,3 @@ editor:
   product-edited: "&#98FB98[UltimateShop] &aSuccessfully edited product: {product}!"
   hand-item-empty: "&#98FB98[UltimateShop] &cYour mainhand does not have any items!"
   unsupported-price-type: "&#98FB98[UltimateShop] &cThs price type is not supported in command editor."
-
-# All messages also support multi lines, just do it like this!
-help:
-  main: |
-    &#98FB98&lUltimateShop &7Made by @rzt1020 / @PQguanfang
-    &f/shop help &7- View help.
-    &f/shop menu <menuName> &7- Open specified common menu.
-    &f/shop menu <shopName> &7- Open specified shop menu.
-    &f/shop sellall &7- Open sell all menu.
-  main-admin: |
-    &#98FB98&lUltimateShop &7Made by @rzt1020 / @PQguanfang
-    &f/shop help &7- View help.
-    &f/shop menu <menuName> &7- Open specified common menu.
-    &f/shop menu <shopName> &7- Open specified shop menu.
-    &f/shop quickbuy <shopName> <itemName> &7- Quick purchase specified item without open menu.
-    &f/shop quicksell <shopName> <itemName> &7- Quick sell specified item without open menu.
-    &f/shop reload &7- Reload the plugin.
-    &f/shop setbuytimes <shopName> <itemName> <playerName> [amount] &7- Set buy times.
-    &f/shop setselltimes <shopName> <itemName> <playerName> [amount] &7- Set sell times.
-  main-console: |
-    &#98FB98&lUltimateShop &7Made by @rzt1020 / @PQguanfang
-    &f/shop help &7- View help.
-    &f/shop menu <menuName> <playerName> &7- Force open specified common menu.
-    &f/shop menu <shopName> <playerName> &7- Force open specified shop menu.
-    &f/shop reload &7- Reload the plugin.
-    &f/shop setbuytimes <shopName> <itemName> <playerName> [amount] &7- Set buy times.
-    &f/shop setselltimes <shopName> <itemName> <playerName> [amount] &7- Set sell times.
-
-start-selling: "&#98FB98[UltimateShop] &fStarting selling your items, if you see nothing below, this means nothing can be selled!"
-give-sell-stick: "&#98FB98[UltimateShop] &fGive {player} sell stick {item} x{amount}!"
-set-times: "&#98FB98[UltimateShop] &fSet {player}'s {item} use times to {times}!"
-buy-in-cooldown: "&#98FB98[UltimateShop] &fYou can no longer buy {item} because it's in cooldown!"
-sell-in-cooldown: "&#98FB98[UltimateShop] &fYou can no longer sell {item} because it's in cooldown!"
-success-buy: "&#98FB98[UltimateShop] &fSuccessfully purchased {item}, cost {price}!"
-success-sell: "&#98FB98[UltimateShop] &fSuccessfully sell {item}, gain {price}!"
-menu-condition-not-meet: "&#98FB98[UltimateShop] &cYou didn't meet the condition that open this menu!"
-buy-condition-not-meet: "&#98FB98[UltimateShop] &cYou didn't meet the condition that buy this product!"
-sell-condition-not-meet: "&#98FB98[UltimateShop] &cYou didn't meet the condition that sell this product!"
-limit-reached-buy-player: "&#98FB98[UltimateShop] &cYou can no longer purchase item {item}, you purchase this item {times} times today, and its daily stock is {limit} for you, next refresh time: {refresh}."
-limit-reached-sell-player: "&#98FB98[UltimateShop] &cYou can no longer sell item {item}, you purchase this item {times} times today, and its daily stock is {limit} for you, next refresh time: {refresh}."
-limit-reached-buy-server: "&#98FB98[UltimateShop] &cYou can no longer purchase item {item}, all players buy this item {times} times today, and its daily stock is {limit}, next refresh time: {refresh}."
-limit-reached-sell-server: "&#98FB98[UltimateShop] &cYou can no longer sell item {item}, all players sell this item {times} times today, and its daily stock is {limit}, next refresh time: {refresh}."
-buy-price-not-enough: "&#98FB98[UltimateShop] &cYou do not have enough money to purchase {item}. Required price: {price}."
-sell-products-not-enough: "&#98FB98[UltimateShop] &cYou do not have enough {item} to sell."
