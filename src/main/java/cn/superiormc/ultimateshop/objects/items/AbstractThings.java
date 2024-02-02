@@ -1,5 +1,6 @@
 package cn.superiormc.ultimateshop.objects.items;
 
+import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -16,24 +17,23 @@ public abstract class AbstractThings {
 
     public boolean empty;
 
+    private ObjectItem item;
+
     public AbstractThings() {
         this.mode = ThingMode.UNKNOWN;
         this.empty = true;
     }
 
-    public AbstractThings(ConfigurationSection section, String mode) {
+    public AbstractThings(ConfigurationSection section, String mode, ObjectItem item) {
         initThingMode(mode);
         this.section = section;
         this.empty = false;
+        this.item = item;
     }
 
     public ThingMode getMode() {
         return mode;
     }
-
-    public abstract Map<AbstractSingleThing, BigDecimal> getAmount(Player player,
-                                                                   int times,
-                                                                   int amount);
 
     public abstract GiveResult giveSingleThing(Player player, int times, int amount);
 
@@ -71,5 +71,9 @@ public abstract class AbstractThings {
                 this.mode = ThingMode.UNKNOWN;
                 break;
         }
+    }
+
+    public ObjectItem getItem() {
+        return item;
     }
 }

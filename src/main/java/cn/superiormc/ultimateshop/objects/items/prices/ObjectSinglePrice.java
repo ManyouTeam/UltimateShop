@@ -8,42 +8,40 @@ import cn.superiormc.ultimateshop.objects.items.AbstractSingleThing;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
 import cn.superiormc.ultimateshop.utils.MathUtil;
 import cn.superiormc.ultimateshop.utils.TextUtil;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 public class ObjectSinglePrice extends AbstractSingleThing {
 
     private Map<Integer, BigDecimal> applyCostMap = new HashMap<>();
 
-    private boolean priceMode;
+    private boolean customPrice;
 
     private ObjectItem item;
 
+    private PriceMode priceMode;
 
     public ObjectSinglePrice() {
         super();
     }
 
-    public ObjectSinglePrice(String id, ConfigurationSection singleSection) {
-        super(id, singleSection);
-        initCustomMode();
-        initApplyCostMap();
-    }
-
-    public ObjectSinglePrice(String id, ConfigurationSection singleSection, ObjectItem item) {
-        super(id, singleSection);
-        this.item = item;
+    public ObjectSinglePrice(String id, ObjectPrices prices) {
+        super(id, prices);
+        this.item = prices.getItem();
+        this.priceMode = prices.getPriceMode();
         initCustomMode();
         initApplyCostMap();
     }
 
     private void initCustomMode() {
-        priceMode = !singleSection.getString("custom-type", "none").equals("none");
+        customPrice = !singleSection.getString("custom-type", "none").equals("none");
     }
 
     private void initApplyCostMap() {
@@ -75,7 +73,7 @@ public class ObjectSinglePrice extends AbstractSingleThing {
         if (singleSection == null) {
             return false;
         }
-        if (priceMode) {
+        if (customPrice) {
             return super.playerHasEnough(inventory,
                     ConfigManager.configManager.config.
                             getConfigurationSection("prices." + singleSection.getString("custom-type")),
@@ -86,7 +84,6 @@ public class ObjectSinglePrice extends AbstractSingleThing {
         return super.playerHasEnough(inventory, singleSection, player, take, cost);
     }
 
-    @Override
     public BigDecimal getAmount(Player player, int times, int offsetAmount) {
         if (singleSection == null) {
             return new BigDecimal(-1);
@@ -113,13 +110,13 @@ public class ObjectSinglePrice extends AbstractSingleThing {
             }
             tempVal1 = CommonUtil.modifyString(tempVal1,
                     "buy-times-player",
-                    String.valueOf(playerBuyTimes + offsetAmount),
+                    replacePlaceholder(playerBuyTimes, offsetAmount, true),
                     "sell-times-player",
-                    String.valueOf(playerSellTimes + offsetAmount),
+                    replacePlaceholder(playerSellTimes, offsetAmount, false),
                     "buy-times-server",
-                    String.valueOf(serverBuyTimes + offsetAmount),
+                    replacePlaceholder(serverBuyTimes, offsetAmount, true),
                     "sell-times-server",
-                    String.valueOf(serverSellTimes+ offsetAmount));
+                    replacePlaceholder(serverSellTimes, offsetAmount, false));
         }
         BigDecimal cost = MathUtil.doCalculate(TextUtil.withPAPI(tempVal1, player));
         if (singleSection.getString("max-amount") != null) {
@@ -151,7 +148,7 @@ public class ObjectSinglePrice extends AbstractSingleThing {
         }
         String tempVal1 = singleSection.getString("placeholder",
                 ConfigManager.configManager.getString("placeholder.price.unknown"));
-        if (priceMode) {
+        if (customPrice) {
             return CommonUtil.modifyString(ConfigManager.configManager.getString("prices." +
                             singleSection.getString("custom-type") + ".placeholder", tempVal1),
                     "amount",
@@ -185,7 +182,15 @@ public class ObjectSinglePrice extends AbstractSingleThing {
     }
 
     public boolean getCustomPrice() {
-        return priceMode;
+        return customPrice;
+    }
+
+    private String replacePlaceholder(int baseAmount, int offsetAmount, boolean buyOrSell) {
+        // 如果是buy
+        if ((buyOrSell && priceMode == PriceMode.BUY) || (!buyOrSell && priceMode == PriceMode.SELL)) {
+            return String.valueOf(baseAmount + offsetAmount);
+        }
+        return String.valueOf(baseAmount);
     }
 
     @Override

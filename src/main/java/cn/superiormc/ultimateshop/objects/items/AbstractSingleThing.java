@@ -3,6 +3,7 @@ package cn.superiormc.ultimateshop.objects.items;
 import cn.superiormc.ultimateshop.hooks.EconomyHook;
 import cn.superiormc.ultimateshop.hooks.PriceHook;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
+import cn.superiormc.ultimateshop.objects.items.prices.PriceMode;
 import cn.superiormc.ultimateshop.objects.items.shbobjects.ObjectDisplayPlaceholder;
 import cn.superiormc.ultimateshop.utils.ItemUtil;
 import cn.superiormc.ultimateshop.libs.xserieschanged.XItemStack;
@@ -36,9 +37,9 @@ public abstract class AbstractSingleThing implements Comparable<AbstractSingleTh
         this.displayPlaceholder = new ObjectDisplayPlaceholder(this);
     }
 
-    public AbstractSingleThing(String id, ConfigurationSection singleSection) {
+    public AbstractSingleThing(String id, AbstractThings things) {
         this.id = id;
-        this.singleSection = singleSection;
+        this.singleSection = things.section.getConfigurationSection(id);
         if (singleSection.contains("custom-type")) {
             initType(ConfigManager.configManager.config.getConfigurationSection("prices." +
                     singleSection.getString("custom-type")));
@@ -105,8 +106,6 @@ public abstract class AbstractSingleThing implements Comparable<AbstractSingleTh
                 return;
         }
     }
-
-    public abstract BigDecimal getAmount(Player player, int times, int offsetAmount);
 
     public boolean getCondition(Player player) {
         if (condition == null) {

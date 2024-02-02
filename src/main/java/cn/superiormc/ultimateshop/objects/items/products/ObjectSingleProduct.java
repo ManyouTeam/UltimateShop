@@ -8,7 +8,6 @@ import cn.superiormc.ultimateshop.objects.items.AbstractSingleThing;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
 import cn.superiormc.ultimateshop.utils.MathUtil;
 import cn.superiormc.ultimateshop.utils.TextUtil;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
 import java.math.BigDecimal;
@@ -22,13 +21,9 @@ public class ObjectSingleProduct extends AbstractSingleThing {
         super();
     }
 
-    public ObjectSingleProduct(String id, ConfigurationSection singleSection) {
-        super(id, singleSection);
-    }
-
-    public ObjectSingleProduct(String id, ConfigurationSection singleSection, ObjectItem item) {
-        super(id, singleSection);
-        this.item = item;
+    public ObjectSingleProduct(String id, ObjectProducts products) {
+        super(id, products);
+        this.item = products.getItem();
     }
 
     public String getDisplayName(BigDecimal amount) {
@@ -42,8 +37,7 @@ public class ObjectSingleProduct extends AbstractSingleThing {
                 String.valueOf(amount));
     }
 
-    @Override
-    public BigDecimal getAmount(Player player, int times, int offsetAmount) {
+    public BigDecimal getAmount(Player player, int offsetAmount, boolean buyOrSell) {
         String tempVal1 = singleSection.getString("amount", "1");
         if (item != null && ConfigManager.configManager.getBoolean("placeholder.data.can-used-in-amount")) {
             int playerBuyTimes = 0;
@@ -62,13 +56,13 @@ public class ObjectSingleProduct extends AbstractSingleThing {
             }
             tempVal1 = CommonUtil.modifyString(tempVal1,
                     "buy-times-player",
-                    String.valueOf(playerBuyTimes + offsetAmount),
+                    replacePlaceholder(playerBuyTimes, offsetAmount, buyOrSell, true),
                     "sell-times-player",
-                    String.valueOf(playerSellTimes + offsetAmount),
+                    replacePlaceholder(playerSellTimes, offsetAmount, buyOrSell, false),
                     "buy-times-server",
-                    String.valueOf(serverBuyTimes + offsetAmount),
+                    replacePlaceholder(serverBuyTimes, offsetAmount, buyOrSell, true),
                     "sell-times-server",
-                    String.valueOf(serverSellTimes + offsetAmount));
+                    replacePlaceholder(serverSellTimes, offsetAmount, buyOrSell, false));
         }
         BigDecimal cost = MathUtil.doCalculate(TextUtil.withPAPI(tempVal1, player));
         if (singleSection.getString("max-amount") != null) {
@@ -84,6 +78,14 @@ public class ObjectSingleProduct extends AbstractSingleThing {
             }
         }
         return cost.setScale(2, RoundingMode.HALF_UP);
+    }
+
+    protected String replacePlaceholder(int baseAmount, int offsetAmount, boolean buyOrSell, boolean placeholderBuyOrSell) {
+        // 如果是buy
+        if ((buyOrSell && placeholderBuyOrSell) || (!buyOrSell && !placeholderBuyOrSell)) {
+            return String.valueOf(baseAmount + offsetAmount);
+        }
+        return String.valueOf(baseAmount);
     }
 
 }

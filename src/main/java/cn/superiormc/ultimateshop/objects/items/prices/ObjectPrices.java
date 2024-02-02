@@ -19,23 +19,17 @@ public class ObjectPrices extends AbstractThings {
 
     public Collection<ObjectSinglePrice> singlePrices = new TreeSet<>();
 
-    private ObjectItem item = null;
+    private PriceMode priceMode;
 
     public ObjectPrices() {
         super();
         this.empty = true;
     }
 
-    public ObjectPrices(ConfigurationSection section, String mode) {
-        super(section, mode);
+    public ObjectPrices(ConfigurationSection section, String mode, ObjectItem item, PriceMode priceMode) {
+        super(section, mode, item);
         this.empty = false;
-        initSinglePrices();
-    }
-
-    public ObjectPrices(ConfigurationSection section, String mode, ObjectItem item) {
-        super(section, mode);
-        this.item = item;
-        this.empty = false;
+        this.priceMode = priceMode;
         initSinglePrices();
     }
 
@@ -46,7 +40,7 @@ public class ObjectPrices extends AbstractThings {
                 singlePrices.add(new ObjectSinglePrice());
             }
             else {
-                singlePrices.add(new ObjectSinglePrice(s, section.getConfigurationSection(s), item));
+                singlePrices.add(new ObjectSinglePrice(s, this));
             }
         }
     }
@@ -167,7 +161,7 @@ public class ObjectPrices extends AbstractThings {
                 return resultObject;
             case ALL:
             case CLASSIC_ALL:
-                for (AbstractSingleThing tempVal2 : getAmount(player, times, amount).keySet()) {
+                for (ObjectSinglePrice tempVal2 : getAmount(player, times, amount).keySet()) {
                     cost = getAmount(player, times, amount).get(tempVal2);
                     resultObject.addResultMapElement(tempVal2, cost);
                 }
@@ -193,8 +187,8 @@ public class ObjectPrices extends AbstractThings {
                 return resultObject;
             case ALL:
             case CLASSIC_ALL:
-                Map<AbstractSingleThing, BigDecimal> tempVal3 = getAmount(player, times, amount);
-                for (AbstractSingleThing tempVal1 : tempVal3.keySet()) {
+                Map<ObjectSinglePrice, BigDecimal> tempVal3 = getAmount(player, times, amount);
+                for (ObjectSinglePrice tempVal1 : tempVal3.keySet()) {
                     if (tempVal1.empty) {
                         continue;
                     }
@@ -231,14 +225,13 @@ public class ObjectPrices extends AbstractThings {
         }
     }
 
-    @Override
-    public Map<AbstractSingleThing, BigDecimal> getAmount(Player player, int times, int multi) {
-        Map<AbstractSingleThing, BigDecimal> priceMaps = new TreeMap<>();
+    public Map<ObjectSinglePrice, BigDecimal> getAmount(Player player, int times, int multi) {
+        Map<ObjectSinglePrice, BigDecimal> priceMaps = new TreeMap<>();
         switch (mode) {
             case ALL:
             case ANY:
                 for (int i = 0 ; i < multi ; i ++) {
-                    for (AbstractSingleThing tempVal3 : getAllPrices(player, times + i, 1).keySet()) {
+                    for (ObjectSinglePrice tempVal3 : getAllPrices(player, times + i, 1).keySet()) {
                         if (priceMaps.containsKey(tempVal3)) {
                             priceMaps.put(tempVal3,
                                     priceMaps.get(tempVal3).add(tempVal3.getAmount(player, times + i, i)));
@@ -251,7 +244,7 @@ public class ObjectPrices extends AbstractThings {
                 break;
             case CLASSIC_ALL:
             case CLASSIC_ANY:
-                for (AbstractSingleThing tempVal3 : getAllPrices(player, times, multi).keySet()) {
+                for (ObjectSinglePrice tempVal3 : getAllPrices(player, times, multi).keySet()) {
                     if (priceMaps.containsKey(tempVal3)) {
                         priceMaps.put(tempVal3,
                                 priceMaps.get(tempVal3).add(tempVal3.getAmount(player, times, 0).multiply(new BigDecimal(multi))));
@@ -323,6 +316,10 @@ public class ObjectPrices extends AbstractThings {
                 break;
         }
         return tempVal2.toString().replace(";;", ConfigManager.configManager.getString("placeholder.price.replace-new-line-symbol"));
+    }
+
+    public PriceMode getPriceMode() {
+        return priceMode;
     }
 
 }

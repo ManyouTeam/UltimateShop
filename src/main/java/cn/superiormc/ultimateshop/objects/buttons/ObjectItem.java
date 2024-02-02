@@ -13,6 +13,7 @@ import cn.superiormc.ultimateshop.objects.items.ObjectCondition;
 import cn.superiormc.ultimateshop.objects.items.ObjectLimit;
 import cn.superiormc.ultimateshop.objects.items.ThingMode;
 import cn.superiormc.ultimateshop.objects.items.prices.ObjectPrices;
+import cn.superiormc.ultimateshop.objects.items.prices.PriceMode;
 import cn.superiormc.ultimateshop.objects.items.products.ObjectProducts;
 import cn.superiormc.ultimateshop.objects.menus.ObjectMoreMenu;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
@@ -94,27 +95,35 @@ public class ObjectItem extends AbstractButton {
             else {
                 buyPrice = new ObjectPrices(config.getConfigurationSection("prices"),
                         config.getString("price-mode", "ANY"),
-                        this);
+                        this,
+                        PriceMode.BUY);
                 return;
             }
         }
         buyPrice = new ObjectPrices(config.getConfigurationSection("buy-prices"),
                 config.getString("price-mode", "ANY"),
-                this);
+                this,
+                PriceMode.BUY);
     }
 
     private void initSellPrice() {
         if (config.getConfigurationSection("sell-prices") == null) {
-            if (buyPrice.getMode() == ThingMode.UNKNOWN) {
-                sellPrice = buyPrice;
+            if (config.getConfigurationSection("prices") == null) {
+                sellPrice = new ObjectPrices();
                 return;
             }
-            sellPrice = new ObjectPrices();
-            return;
+            else {
+                sellPrice = new ObjectPrices(config.getConfigurationSection("prices"),
+                        config.getString("price-mode", "ANY"),
+                        this,
+                        PriceMode.SELL);
+                return;
+            }
         }
         sellPrice = new ObjectPrices(config.getConfigurationSection("sell-prices"),
                 config.getString("price-mode", "ANY"),
-                this);
+                this,
+                PriceMode.SELL);
     }
 
     private void initBuyAction() {
