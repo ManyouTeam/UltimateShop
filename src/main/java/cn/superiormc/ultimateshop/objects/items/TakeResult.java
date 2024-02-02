@@ -1,4 +1,4 @@
-package cn.superiormc.ultimateshop.objects.items.prices;
+package cn.superiormc.ultimateshop.objects.items;
 
 import cn.superiormc.ultimateshop.objects.items.AbstractSingleThing;
 

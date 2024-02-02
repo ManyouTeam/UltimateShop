@@ -5,6 +5,8 @@ import cn.superiormc.ultimateshop.managers.ErrorManager;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import cn.superiormc.ultimateshop.objects.items.AbstractSingleThing;
 import cn.superiormc.ultimateshop.objects.items.AbstractThings;
+import cn.superiormc.ultimateshop.objects.items.GiveResult;
+import cn.superiormc.ultimateshop.objects.items.TakeResult;
 import cn.superiormc.ultimateshop.objects.items.shbobjects.ObjectDisplayPlaceholder;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
@@ -145,32 +147,34 @@ public class ObjectPrices extends AbstractThings {
     }
 
     @Override
-    public void giveSingleThing(Player player, int times, int amount) {
+    public GiveResult giveSingleThing(Player player, int times, int amount) {
+        Map<AbstractSingleThing, BigDecimal> result = new TreeMap<>();
+        GiveResult resultObject = new GiveResult(result);
         if (section == null || singlePrices.isEmpty()) {
-            return;
+            return resultObject;
         }
-        double cost;
+        BigDecimal cost;
         switch (mode) {
             case UNKNOWN:
-                return;
+                return resultObject;
             case ANY:
             case CLASSIC_ANY:
                 Collection<ObjectSinglePrice> tempVal1 = getTargetPrices(null, player, times, amount, true);
                 for (ObjectSinglePrice tempVal5 : tempVal1) {
-                    cost = getAmount(player, times, amount).get(tempVal5).doubleValue();
-                    tempVal5.playerGive(player, cost);
+                    cost = getAmount(player, times, amount).get(tempVal5);
+                    resultObject.addResultMapElement(tempVal5, cost);
                 }
-                return;
+                return resultObject;
             case ALL:
             case CLASSIC_ALL:
                 for (AbstractSingleThing tempVal2 : getAmount(player, times, amount).keySet()) {
-                    cost = getAmount(player, times, amount).get(tempVal2).doubleValue();
-                    tempVal2.playerGive(player, cost);
+                    cost = getAmount(player, times, amount).get(tempVal2);
+                    resultObject.addResultMapElement(tempVal2, cost);
                 }
-                return;
+                return resultObject;
             default:
                 ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Can not get price-mode section in your shop config!!");
-                return;
+                return resultObject;
         }
     }
 

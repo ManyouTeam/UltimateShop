@@ -298,7 +298,7 @@ public class ModifyDisplayItem {
                     "buy-price",
                     item.getBuyPrice().getDisplayNameInLine(item.getBuyPrice().takeSingleThing(player.getInventory(), player, tempVal9.getBuyUseTimes(), multi).getResultMap()),
                     "sell-price",
-                    item.getSellPrice().getDisplayNameInLine(item.getSellPrice().takeSingleThing(player.getInventory(), player, tempVal9.getBuyUseTimes(), multi).getResultMap()),
+                    item.getSellPrice().getDisplayNameInLine(item.getSellPrice().giveSingleThing(player, tempVal9.getBuyUseTimes(), multi).getResultMap()),
                     "buy-limit-player",
                     String.valueOf(item.getPlayerBuyLimit(player)),
                     "sell-limit-player",

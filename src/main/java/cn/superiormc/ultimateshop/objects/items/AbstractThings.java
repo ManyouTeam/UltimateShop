@@ -1,12 +1,10 @@
 package cn.superiormc.ultimateshop.objects.items;
 
-import cn.superiormc.ultimateshop.objects.items.prices.TakeResult;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
 import java.math.BigDecimal;
-import java.util.List;
 import java.util.Map;
 
 
@@ -37,20 +35,11 @@ public abstract class AbstractThings {
                                                                    int times,
                                                                    int amount);
 
-    public abstract void giveSingleThing(Player player, int times, int amount);
+    public abstract GiveResult giveSingleThing(Player player, int times, int amount);
 
-    public void giveThing(Player player, int times, int multi) {
-        switch (mode) {
-            case ALL:
-            case ANY:
-                for (int i = 0; i < multi; i++) {
-                    giveSingleThing(player, times + i, 1);
-                }
-                break;
-            case CLASSIC_ALL:
-            case CLASSIC_ANY:
-                giveSingleThing(player, times, multi);
-                break;
+    public void giveThing(Player player, Map<AbstractSingleThing, BigDecimal> result) {
+        for (AbstractSingleThing singleThing: result.keySet()) {
+            singleThing.playerGive(player, result.get(singleThing).doubleValue());
         }
     }
 

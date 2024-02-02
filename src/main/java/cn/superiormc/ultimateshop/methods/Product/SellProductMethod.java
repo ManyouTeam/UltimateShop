@@ -9,7 +9,8 @@ import cn.superiormc.ultimateshop.methods.ProductMethodStatus;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import cn.superiormc.ultimateshop.objects.ObjectShop;
 import cn.superiormc.ultimateshop.objects.caches.ObjectUseTimesCache;
-import cn.superiormc.ultimateshop.objects.items.prices.TakeResult;
+import cn.superiormc.ultimateshop.objects.items.GiveResult;
+import cn.superiormc.ultimateshop.objects.items.TakeResult;
 import cn.superiormc.ultimateshop.objects.items.products.ObjectProducts;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -215,7 +216,8 @@ public class SellProductMethod {
         }
         // 尝试给物品
         // 回收的价格就是给的
-        tempVal2.getSellPrice().giveThing(player, playerUseTimes, multi);
+        GiveResult giveResult = tempVal2.getSellPrice().giveSingleThing(player, playerUseTimes, multi);
+        tempVal2.getSellPrice().giveThing(player, giveResult.getResultMap());
         // 扣物品
         // 扣的是奖励中的东西
         tempVal5.takeThing(inventory, player, takeResult.getResultMap());
@@ -246,7 +248,7 @@ public class SellProductMethod {
                     "item",
                     tempVal2.getDisplayName(player),
                     "price",
-                    tempVal2.getSellPrice().getDisplayNameInLine(takeResult.getResultMap()),
+                    tempVal2.getSellPrice().getDisplayNameInLine(giveResult.getResultMap()),
                     "amount",
                     String.valueOf(multi));
         }

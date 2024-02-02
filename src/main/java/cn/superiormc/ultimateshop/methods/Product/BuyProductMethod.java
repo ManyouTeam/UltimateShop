@@ -7,10 +7,11 @@ import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.LanguageManager;
 import cn.superiormc.ultimateshop.methods.ProductMethodStatus;
 import cn.superiormc.ultimateshop.objects.caches.ObjectUseTimesCache;
+import cn.superiormc.ultimateshop.objects.items.GiveResult;
 import cn.superiormc.ultimateshop.objects.items.prices.ObjectPrices;
 import cn.superiormc.ultimateshop.objects.ObjectShop;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
-import cn.superiormc.ultimateshop.objects.items.prices.TakeResult;
+import cn.superiormc.ultimateshop.objects.items.TakeResult;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -186,8 +187,9 @@ public class BuyProductMethod {
         if (test) {
             return ProductMethodStatus.DONE;
         }
+        GiveResult giveResult = tempVal2.getReward().giveSingleThing(player, playerUseTimes, multi);
         // 尝试给物品
-        tempVal2.getReward().giveThing(player, playerUseTimes, multi);
+        tempVal2.getReward().giveThing(player, giveResult.getResultMap());
         // 扣钱
         tempVal5.takeThing(inventory, player, takeResult.getResultMap());
         // 执行动作
