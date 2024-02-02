@@ -44,18 +44,11 @@ public class ObjectLimit {
         }
         List<Integer> result = new ArrayList<>();
         for (String conditionName : limitSection.getKeys(false)) {
-            if (!conditionName.equals("default") && checkLimitsCondition(conditionName, player)) {
+            if (!conditionName.equals("default") && !conditionName.equals("global") && checkLimitsCondition(conditionName, player)) {
                 result.add(checkLimitValue(player, conditionName));
             }
-            else {
-                if (!limitSection.getString("default", "-1").equals("-1")) {
-                    result.add(checkLimitValue(player, "default"));
-                }
-            }
         }
-        if (result.size() == 0) {
-            result.add(0);
-        }
+        result.add(checkLimitValue(player, "default"));
         return Collections.max(result);
     }
 

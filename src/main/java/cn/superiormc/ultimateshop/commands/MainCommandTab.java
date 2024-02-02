@@ -6,9 +6,11 @@ import cn.superiormc.ultimateshop.managers.LanguageManager;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import cn.superiormc.ultimateshop.objects.menus.ObjectMenu;
 import cn.superiormc.ultimateshop.objects.ObjectShop;
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
+import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -82,6 +84,28 @@ public class MainCommandTab implements TabCompleter {
                         for (ObjectItem tempVal4 : tempVal3.getProductList()) {
                             tempVal1.add(tempVal4.getItemConfig().getName());
                         }
+                        break;
+                }
+                break;
+            case 4:
+                switch (args[0]) {
+                    case "setbuytimes": case "setselltimes":
+                        for (Player player : Bukkit.getOnlinePlayers()) {
+                            tempVal1.add(player.getName());
+                        }
+                        tempVal1.add("global");
+                        break;
+                    case "quickbuy": case "quicksell":
+                        tempVal1.add("1");
+                        tempVal1.add("5");
+                        break;
+                }
+                break;
+            case 5:
+                switch (args[0]) {
+                    case "setbuytimes": case "setselltimes":
+                        tempVal1.add("0");
+                        tempVal1.add("5");
                         break;
                 }
                 break;

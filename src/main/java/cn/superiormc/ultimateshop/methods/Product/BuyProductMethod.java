@@ -10,6 +10,7 @@ import cn.superiormc.ultimateshop.objects.caches.ObjectUseTimesCache;
 import cn.superiormc.ultimateshop.objects.items.prices.ObjectPrices;
 import cn.superiormc.ultimateshop.objects.ObjectShop;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
+import cn.superiormc.ultimateshop.objects.items.prices.TakeResult;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -114,7 +115,7 @@ public class BuyProductMethod {
             tempVal9 = tempVal3.getUseTimesCache().get(tempVal2);
         }
         if (tempVal2.getPlayerBuyLimit(player) != -1 &&
-                playerUseTimes + multi - 1  >= tempVal2.getPlayerBuyLimit(player)) {
+                playerUseTimes + multi > tempVal2.getPlayerBuyLimit(player)) {
             if (shouldSendMessage) {
                 LanguageManager.languageManager.sendStringText(player,
                         "limit-reached-buy-player",
@@ -153,7 +154,7 @@ public class BuyProductMethod {
             tempVal8 = tempVal11.getUseTimesCache().get(tempVal2);
         }
         if (tempVal2.getServerBuyLimit(player) != -1 &&
-                serverUseTimes + multi - 1 > tempVal2.getServerBuyLimit(player)) {
+                serverUseTimes + multi > tempVal2.getServerBuyLimit(player)) {
             if (shouldSendMessage) {
                 LanguageManager.languageManager.sendStringText(player,
                         "limit-reached-buy-server",
@@ -170,17 +171,15 @@ public class BuyProductMethod {
             return ProductMethodStatus.SERVER_MAX;
         }
         // price
-        if (!tempVal5.takeThing(inventory, player, false, playerUseTimes, multi)) {
+        TakeResult takeResult = tempVal5.takeSingleThing(inventory, player, playerUseTimes, multi);
+        if (!takeResult.getResultBoolean()) {
             if (shouldSendMessage) {
                 LanguageManager.languageManager.sendStringText(player,
                         "buy-price-not-enough",
                         "item",
                         tempVal2.getDisplayName(player),
                         "price",
-                        tempVal5.getDisplayNameInChat(inventory,
-                                player,
-                                playerUseTimes,
-                                multi));
+                        tempVal5.getDisplayNameInLine(takeResult.getResultMap()));
             }
             return ProductMethodStatus.NOT_ENOUGH;
         }
@@ -190,14 +189,13 @@ public class BuyProductMethod {
         // 尝试给物品
         tempVal2.getReward().giveThing(player, playerUseTimes, multi);
         // 扣钱
-        tempVal5.takeThing(inventory, player, true, playerUseTimes, multi);
+        tempVal5.takeThing(inventory, player, takeResult.getResultMap());
         // 执行动作
         tempVal2.getBuyAction().doAction(player, playerUseTimes, multi);
         // limit+1
         if (tempVal9 != null) {
             if (ConfigManager.configManager.getBoolean("debug")) {
-                Bukkit.getConsoleSender().sendMessage("" +
-                        "§x§9§8§F§B§9§8[UltimateShop] §aSet player limit value to " + tempVal9.getSellUseTimes() + multi + "!");
+                Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §aSet player limit value to " + tempVal9.getBuyUseTimes() + multi + "!");
             }
             tempVal9.setBuyUseTimes(tempVal9.getBuyUseTimes() + multi);
             tempVal9.setLastBuyTime(LocalDateTime.now());
@@ -206,8 +204,7 @@ public class BuyProductMethod {
         }
         if (tempVal8 != null) {
             if (ConfigManager.configManager.getBoolean("debug")) {
-                Bukkit.getConsoleSender().sendMessage("" +
-                        "§x§9§8§F§B§9§8[UltimateShop] §aSet server limit value to " + tempVal8.getSellUseTimes() + multi + "!");
+                Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §aSet server limit value to " + tempVal8.getBuyUseTimes() + multi + "!");
             }
             tempVal8.setBuyUseTimes(tempVal8.getBuyUseTimes() + multi);
             tempVal8.setLastBuyTime(LocalDateTime.now());
@@ -220,10 +217,7 @@ public class BuyProductMethod {
                     "item",
                     tempVal2.getDisplayName(player),
                     "price",
-                    tempVal5.getDisplayNameInChat(inventory,
-                            player,
-                            playerUseTimes,
-                            multi),
+                    tempVal5.getDisplayNameInLine(takeResult.getResultMap()),
                     "amount",
                     String.valueOf(multi));
         }

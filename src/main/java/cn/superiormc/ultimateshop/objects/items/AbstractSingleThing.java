@@ -106,7 +106,7 @@ public abstract class AbstractSingleThing implements Comparable<AbstractSingleTh
         }
     }
 
-    public abstract BigDecimal getAmount(Player player, int times);
+    public abstract BigDecimal getAmount(Player player, int times, int offsetAmount);
 
     public boolean getCondition(Player player) {
         if (condition == null) {

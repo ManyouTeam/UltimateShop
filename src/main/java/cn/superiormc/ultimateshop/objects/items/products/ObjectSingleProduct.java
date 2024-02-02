@@ -43,7 +43,7 @@ public class ObjectSingleProduct extends AbstractSingleThing {
     }
 
     @Override
-    public BigDecimal getAmount(Player player, int times) {
+    public BigDecimal getAmount(Player player, int times, int offsetAmount) {
         String tempVal1 = singleSection.getString("amount", "1");
         if (item != null && ConfigManager.configManager.getBoolean("placeholder.data.can-used-in-amount")) {
             int playerBuyTimes = 0;
@@ -62,13 +62,13 @@ public class ObjectSingleProduct extends AbstractSingleThing {
             }
             tempVal1 = CommonUtil.modifyString(tempVal1,
                     "buy-times-player",
-                    String.valueOf(playerBuyTimes),
+                    String.valueOf(playerBuyTimes + offsetAmount),
                     "sell-times-player",
-                    String.valueOf(playerSellTimes),
+                    String.valueOf(playerSellTimes + offsetAmount),
                     "buy-times-server",
-                    String.valueOf(serverBuyTimes),
+                    String.valueOf(serverBuyTimes + offsetAmount),
                     "sell-times-server",
-                    String.valueOf(serverSellTimes));
+                    String.valueOf(serverSellTimes + offsetAmount));
         }
         BigDecimal cost = MathUtil.doCalculate(TextUtil.withPAPI(tempVal1, player));
         if (singleSection.getString("max-amount") != null) {

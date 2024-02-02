@@ -1,10 +1,12 @@
 package cn.superiormc.ultimateshop.objects.items;
 
+import cn.superiormc.ultimateshop.objects.items.prices.TakeResult;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Map;
 
 
@@ -52,16 +54,13 @@ public abstract class AbstractThings {
         }
     }
 
-    public abstract boolean takeSingleThing(Inventory inventory, Player player, boolean take, int times, int amount);
+    public abstract TakeResult takeSingleThing(Inventory inventory, Player player, int times, int amount);
 
 
-    public boolean takeThing(Inventory inventory, Player player, boolean take, int times, int multi) {
-        if (!takeSingleThing(inventory, player, take, times, multi)) {
-            if (!take) {
-                return false;
-            }
+    public void takeThing(Inventory inventory, Player player, Map<AbstractSingleThing, BigDecimal> result) {
+        for (AbstractSingleThing singleThing : result.keySet()) {
+            singleThing.playerHasEnough(inventory, player, true, result.get(singleThing).doubleValue());
         }
-        return true;
     }
 
     private void initThingMode(String mode) {

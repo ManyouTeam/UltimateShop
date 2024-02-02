@@ -4,6 +4,7 @@ import cn.superiormc.ultimateshop.managers.ErrorManager;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import cn.superiormc.ultimateshop.objects.items.AbstractSingleThing;
 import cn.superiormc.ultimateshop.objects.items.AbstractThings;
+import cn.superiormc.ultimateshop.objects.items.prices.TakeResult;
 import cn.superiormc.ultimateshop.utils.RandomUtil;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
@@ -83,32 +84,43 @@ public class ObjectProducts extends AbstractThings {
     }
 
     @Override
-    public boolean takeSingleThing(Inventory inventory, Player player, boolean take, int times, int amount) {
-        double cost;
+    public TakeResult takeSingleThing(Inventory inventory, Player player, int times, int amount) {
+        Map<AbstractSingleThing, BigDecimal> result = new TreeMap<>();
+        TakeResult resultObject = new TakeResult(result);
+        if (section == null) {
+            return resultObject;
+        }
+        BigDecimal cost = BigDecimal.ZERO;
+        boolean needFalse = false;
         switch (mode) {
             case UNKNOWN:
-                return false;
+                return resultObject;
             case ANY:
             case CLASSIC_ANY:
                 for (ObjectSingleProduct tempVal1 : singleProducts) {
-                    cost = getAmount(player, times, amount).get(tempVal1).doubleValue();
-                    if (tempVal1.playerHasEnough(inventory, player, take, cost)) {
-                        return true;
+                    cost = getAmount(player, times, amount).get(tempVal1);
+                    resultObject.addResultMapElement(tempVal1, cost);
+                    if (tempVal1.playerHasEnough(inventory, player, false, cost.doubleValue())) {
+                        resultObject.setResultBoolean();
                     }
                 }
-                return false;
+                return resultObject;
             case ALL:
             case CLASSIC_ALL:
                 for (ObjectSingleProduct tempVal1 : singleProducts) {
-                    cost = getAmount(player, times, amount).get(tempVal1).doubleValue();
-                    if (!tempVal1.playerHasEnough(inventory, player, take, cost)) {
-                        return false;
+                    cost = getAmount(player, times, amount).get(tempVal1);
+                    resultObject.addResultMapElement(tempVal1, cost);
+                    if (!tempVal1.playerHasEnough(inventory, player, false, cost.doubleValue())) {
+                        needFalse = true;
                     }
                 }
-                return true;
+                if (!needFalse) {
+                    resultObject.setResultBoolean();
+                }
+                return resultObject;
             default:
                 ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Can not get price-mode section in your shop config!!");
-                return false;
+                return resultObject;
         }
     }
 
@@ -122,10 +134,10 @@ public class ObjectProducts extends AbstractThings {
                     for (AbstractSingleThing tempVal3 : singleProducts) {
                         if (productMaps.containsKey(tempVal3)) {
                             productMaps.put(tempVal3,
-                                    productMaps.get(tempVal3).add(tempVal3.getAmount(player, times + i)));
+                                    productMaps.get(tempVal3).add(tempVal3.getAmount(player, times + i, i)));
                         }
                         else {
-                            productMaps.put(tempVal3, tempVal3.getAmount(player, times + i));
+                            productMaps.put(tempVal3, tempVal3.getAmount(player, times + i, i));
                         }
                     }
                 }
@@ -135,10 +147,10 @@ public class ObjectProducts extends AbstractThings {
                 for (AbstractSingleThing tempVal3 : singleProducts) {
                     if (productMaps.containsKey(tempVal3)) {
                         productMaps.put(tempVal3,
-                                productMaps.get(tempVal3).add(tempVal3.getAmount(player, times).multiply(new BigDecimal(multi))));
+                                productMaps.get(tempVal3).add(tempVal3.getAmount(player, times, 0).multiply(new BigDecimal(multi))));
                     }
                     else {
-                        productMaps.put(tempVal3, tempVal3.getAmount(player, times).multiply(new BigDecimal(multi)));
+                        productMaps.put(tempVal3, tempVal3.getAmount(player, times, 0).multiply(new BigDecimal(multi)));
                     }
                 }
                 break;

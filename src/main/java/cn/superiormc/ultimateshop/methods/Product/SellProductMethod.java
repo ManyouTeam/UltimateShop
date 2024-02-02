@@ -9,6 +9,7 @@ import cn.superiormc.ultimateshop.methods.ProductMethodStatus;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import cn.superiormc.ultimateshop.objects.ObjectShop;
 import cn.superiormc.ultimateshop.objects.caches.ObjectUseTimesCache;
+import cn.superiormc.ultimateshop.objects.items.prices.TakeResult;
 import cn.superiormc.ultimateshop.objects.items.products.ObjectProducts;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -100,8 +101,7 @@ public class SellProductMethod {
             // 重置
             if (tempVal9.getSellRefreshTime() != null && tempVal9.getSellRefreshTime().isBefore(LocalDateTime.now())) {
                 if (ConfigManager.configManager.getBoolean("debug")) {
-                    Bukkit.getConsoleSender().sendMessage("" +
-                            "§x§9§8§F§B§9§8[UltimateShop] §bReset player sell data by GUI open check!");
+                    Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §bReset player sell data by GUI open check!");
                 }
                 tempVal3.getUseTimesCache().get(tempVal2).setSellUseTimes(0);
                 tempVal3.getUseTimesCache().get(tempVal2).setLastSellTime(null);
@@ -144,7 +144,7 @@ public class SellProductMethod {
         }
 
         if (tempVal2.getPlayerSellLimit(player) != -1 &&
-                playerUseTimes + multi - 1 >= tempVal2.getPlayerSellLimit(player)) {
+                playerUseTimes + multi > tempVal2.getPlayerSellLimit(player)) {
             if (shouldSendMessage) {
                 LanguageManager.languageManager.sendStringText(player,
                         "limit-reached-sell-player",
@@ -165,8 +165,7 @@ public class SellProductMethod {
                 // 重置
                 if (tempVal8.getSellRefreshTime() != null && tempVal8.getSellRefreshTime().isBefore(LocalDateTime.now())) {
                     if (ConfigManager.configManager.getBoolean("debug")) {
-                        Bukkit.getConsoleSender().sendMessage("" +
-                                "§x§9§8§F§B§9§8[UltimateShop] §bReset server sell data by GUI open check!");
+                        Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §bReset server sell data by GUI open check!");
                     }
                     ServerCache.serverCache.getUseTimesCache().get(tempVal2).setSellUseTimes(0);
                 }
@@ -184,7 +183,7 @@ public class SellProductMethod {
                     null);
         }
         if (tempVal2.getServerSellLimit(player) != -1 &&
-                serverUseTimes + multi - 1 >= tempVal2.getServerSellLimit(player)) {
+                serverUseTimes + multi > tempVal2.getServerSellLimit(player)) {
             if (shouldSendMessage) {
                 LanguageManager.languageManager.sendStringText(player,
                         "limit-reached-sell-server",
@@ -200,8 +199,9 @@ public class SellProductMethod {
             }
             return ProductMethodStatus.SERVER_MAX;
         }
+        TakeResult takeResult = tempVal5.takeSingleThing(inventory, player, playerUseTimes, multi);
         // price
-        if (!tempVal5.takeThing(inventory, player, false, playerUseTimes, multi)) {
+        if (!takeResult.getResultBoolean()) {
             if (shouldSendMessage) {
                 LanguageManager.languageManager.sendStringText(player,
                         "sell-products-not-enough",
@@ -218,14 +218,13 @@ public class SellProductMethod {
         tempVal2.getSellPrice().giveThing(player, playerUseTimes, multi);
         // 扣物品
         // 扣的是奖励中的东西
-        tempVal5.takeThing(inventory, player, true, playerUseTimes, multi);
+        tempVal5.takeThing(inventory, player, takeResult.getResultMap());
         // 执行动作
         tempVal2.getSellAction().doAction(player, playerUseTimes, multi);
         // limit+1
         if (tempVal9 != null) {
             if (ConfigManager.configManager.getBoolean("debug")) {
-                Bukkit.getConsoleSender().sendMessage("" +
-                        "§x§9§8§F§B§9§8[UltimateShop] §aSet player limit value to " + tempVal9.getSellUseTimes() + multi + "!");
+                Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §aSet player limit value to " + tempVal9.getSellUseTimes() + multi + "!");
             }
             tempVal9.setSellUseTimes(tempVal9.getSellUseTimes() + multi);
             tempVal9.setLastSellTime(LocalDateTime.now());
@@ -234,8 +233,7 @@ public class SellProductMethod {
         }
         if (tempVal8 != null) {
             if (ConfigManager.configManager.getBoolean("debug")) {
-                Bukkit.getConsoleSender().sendMessage("" +
-                        "§x§9§8§F§B§9§8[UltimateShop] §aSet server limit value to " + tempVal8.getSellUseTimes() + multi + "!");
+                Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §aSet server limit value to " + tempVal8.getSellUseTimes() + multi + "!");
             }
             tempVal8.setSellUseTimes(tempVal8.getSellUseTimes() + multi);
             tempVal8.setLastSellTime(LocalDateTime.now());
@@ -248,10 +246,7 @@ public class SellProductMethod {
                     "item",
                     tempVal2.getDisplayName(player),
                     "price",
-                    tempVal2.getSellPrice().getDisplayNameInChat(inventory,
-                            player,
-                            playerUseTimes,
-                            multi),
+                    tempVal2.getSellPrice().getDisplayNameInLine(takeResult.getResultMap()),
                     "amount",
                     String.valueOf(multi));
         }

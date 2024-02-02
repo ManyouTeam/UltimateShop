@@ -6,7 +6,6 @@ import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import cn.superiormc.ultimateshop.objects.items.AbstractSingleThing;
 import cn.superiormc.ultimateshop.objects.items.AbstractThings;
 import cn.superiormc.ultimateshop.objects.items.shbobjects.ObjectDisplayPlaceholder;
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -50,73 +49,74 @@ public class ObjectPrices extends AbstractThings {
         }
     }
 
-    public ObjectSinglePrice getAnyTargetPrice(Player player,
-                                               int times) {
-        for (ObjectSinglePrice tempVal1 : getPrices(player, times, 1).keySet()) {
-            if (tempVal1.getCondition(player)) {
-                return tempVal1;
-            }
-        }
-        return new ObjectSinglePrice();
-    }
-
-    public List<ObjectSinglePrice> getAnyTargetPrice(Inventory inventory,
-                                               Player player,
-                                               int times,
-                                               int amount) {
-        List<ObjectSinglePrice> confirmedResult = new ArrayList<>();
-        List<ObjectSinglePrice> maybeResult = new ArrayList<>();
-        Map<ObjectSinglePrice, PriceType> priceMap = getPrices(player, times, amount);
-        for (ObjectSinglePrice tempVal1 : priceMap.keySet()) {
-            BigDecimal cost = getAmount(player, times, amount).get(tempVal1);
-            if (tempVal1.getCondition(player)) {
-                if (tempVal1.playerHasEnough(inventory, player, false, cost.doubleValue())) {
-                    if (priceMap.get(tempVal1) == PriceType.FIRST) {
-                        confirmedResult.add(tempVal1);
+    private Collection<ObjectSinglePrice> getTargetPrices(Inventory inventory,
+                                                          Player player,
+                                                          int times,
+                                                          int amount,
+                                                          boolean giveOrTake) {
+        switch (mode) {
+            case ANY:
+            case CLASSIC_ANY:
+                Collection<ObjectSinglePrice> confirmedResult = new TreeSet<>();
+                Collection<ObjectSinglePrice> maybeResult = new TreeSet<>();
+                Map<ObjectSinglePrice, PriceType> priceMap = getAllPrices(player, times, amount);
+                for (ObjectSinglePrice tempVal1 : priceMap.keySet()) {
+                    BigDecimal cost = getAmount(player, times, amount).get(tempVal1);
+                    if (tempVal1.getCondition(player)) {
+                        if (giveOrTake || tempVal1.playerHasEnough(inventory, player, false, cost.doubleValue())) {
+                            if (priceMap.get(tempVal1) == PriceType.FIRST) {
+                                confirmedResult.add(tempVal1);
+                            }
+                        }
+                        else {
+                            if (priceMap.get(tempVal1) == PriceType.FIRST) {
+                                maybeResult.add(tempVal1);
+                            }
+                        }
                     }
+                }
+                if (confirmedResult.isEmpty() && maybeResult.isEmpty()) {
+                    maybeResult.add(new ObjectSinglePrice());
+                    return maybeResult;
+                }
+                else if (confirmedResult.isEmpty()) {
+                    return maybeResult;
                 }
                 else {
-                    if (priceMap.get(tempVal1) == PriceType.FIRST) {
-                        maybeResult.add(tempVal1);
-                    }
+                    return confirmedResult;
                 }
-            }
+            case ALL:
+            case CLASSIC_ALL:
+                return getAllPrices(player, times, amount).keySet();
         }
-        if (confirmedResult.isEmpty() && maybeResult.isEmpty()) {
-            maybeResult.add(new ObjectSinglePrice());
-            return maybeResult;
-        }
-        else if (confirmedResult.isEmpty()) {
-            return maybeResult;
-        }
-        else {
-            return confirmedResult;
-        }
+        return new TreeSet<>();
     }
 
-    private Map<ObjectSinglePrice, PriceType> getPrices(Player player, int times, int amount) {
-        Map<ObjectSinglePrice, PriceType> applyThings = new HashMap<>();
+    // 满足条件和apply的
+    private Map<ObjectSinglePrice, PriceType> getAllPrices(Player player, int times, int amount) {
+        Map<ObjectSinglePrice, PriceType> applyThings = new TreeMap<>();
         switch (mode) {
             case CLASSIC_ALL:
             case CLASSIC_ANY:
-              for (ObjectSinglePrice tempVal1 : singlePrices) {
-                  if (!tempVal1.getCondition(player)) {
-                      continue;
-                  }
-                  if (tempVal1.getApplyCostMap().containsKey(times) ||
-                          (tempVal1.getApplyCostMap().isEmpty() &&
-                                  times >= tempVal1.getStartApply() &&
-                                  times <= tempVal1.getEndApply())) {
-                      if (applyThings.isEmpty()) {
-                          applyThings.put(tempVal1, PriceType.FIRST);
-                      } else {
-                          applyThings.put(tempVal1, PriceType.NOT_FIRST);
-                      }
-                  }
-              }
+                for (ObjectSinglePrice tempVal1 : singlePrices) {
+                    if (!tempVal1.getCondition(player)) {
+                        continue;
+                    }
+                    if (tempVal1.getApplyCostMap().containsKey(times) ||
+                            (tempVal1.getApplyCostMap().isEmpty() &&
+                                    times >= tempVal1.getStartApply() &&
+                                    times <= tempVal1.getEndApply())) {
+                        if (applyThings.isEmpty()) {
+                            applyThings.put(tempVal1, PriceType.FIRST);
+                        } else {
+                            applyThings.put(tempVal1, PriceType.NOT_FIRST);
+                        }
+                    }
+                }
               break;
             case ALL:
             case ANY:
+                // 已经决定好价格的次数
                 Set<Integer> confirmedAmount = new HashSet<>();
                 for (int i = 0 ; i < amount ; i ++) {
                     for (ObjectSinglePrice tempVal1 : singlePrices) {
@@ -134,7 +134,6 @@ public class ObjectPrices extends AbstractThings {
                             else {
                                 if (!applyThings.containsKey(tempVal1)) {
                                     applyThings.put(tempVal1, PriceType.NOT_FIRST);
-                                    confirmedAmount.add(i);
                                 }
                             }
                         }
@@ -156,13 +155,15 @@ public class ObjectPrices extends AbstractThings {
                 return;
             case ANY:
             case CLASSIC_ANY:
-                AbstractSingleThing tempVal5 = getAnyTargetPrice(player, times);
-                cost = getAmount(player, times, amount).get(tempVal5).doubleValue();
-                tempVal5.playerGive(player, cost);
+                Collection<ObjectSinglePrice> tempVal1 = getTargetPrices(null, player, times, amount, true);
+                for (ObjectSinglePrice tempVal5 : tempVal1) {
+                    cost = getAmount(player, times, amount).get(tempVal5).doubleValue();
+                    tempVal5.playerGive(player, cost);
+                }
                 return;
             case ALL:
             case CLASSIC_ALL:
-                for (AbstractSingleThing tempVal2 : getPrices(player, times, amount).keySet()) {
+                for (AbstractSingleThing tempVal2 : getAmount(player, times, amount).keySet()) {
                     cost = getAmount(player, times, amount).get(tempVal2).doubleValue();
                     tempVal2.playerGive(player, cost);
                 }
@@ -175,44 +176,54 @@ public class ObjectPrices extends AbstractThings {
 
     // 作为价格时候使用
     @Override
-    public boolean takeSingleThing(Inventory inventory, Player player, boolean take, int times, int amount) {
+    public TakeResult takeSingleThing(Inventory inventory, Player player, int times, int amount) {
+        Map<AbstractSingleThing, BigDecimal> result = new TreeMap<>();
+        TakeResult resultObject = new TakeResult(result);
         if (section == null) {
-            return false;
+            return resultObject;
         }
-        double cost = 0;
+        BigDecimal cost = BigDecimal.ZERO;
+        boolean needFalse = false;
         switch (mode) {
             case UNKNOWN:
-                return false;
+                return resultObject;
             case ALL:
             case CLASSIC_ALL:
                 Map<AbstractSingleThing, BigDecimal> tempVal3 = getAmount(player, times, amount);
                 for (AbstractSingleThing tempVal1 : tempVal3.keySet()) {
                     if (tempVal1.empty) {
-                        return false;
-                    }
-                    cost = tempVal3.get(tempVal1).doubleValue();
-                    if (!tempVal1.playerHasEnough(inventory, player, take, cost)) {
-                        return false;
-                    }
-                }
-                return true;
-            case ANY:
-            case CLASSIC_ANY:
-                List<ObjectSinglePrice> tempVal4 = getAnyTargetPrice(
-                        inventory, player, times, amount);
-                for (ObjectSinglePrice tempVal11 : tempVal4) {
-                    if (Objects.nonNull(getAmount(player, times, amount).get(tempVal11))) {
-                        cost = getAmount(player, times, amount).get(tempVal11).doubleValue();
-                    }
-                    if (tempVal11.playerHasEnough(inventory, player, take, cost)) {
                         continue;
                     }
-                    return false;
+                    cost = tempVal3.get(tempVal1);
+                    resultObject.addResultMapElement(tempVal1, cost);
+                    if (!tempVal1.playerHasEnough(inventory, player, false, cost.doubleValue())) {
+                        needFalse = true;
+                    }
                 }
-                return true;
+                if (!needFalse) {
+                    resultObject.setResultBoolean();
+                }
+                return resultObject;
+            case ANY:
+            case CLASSIC_ANY:
+                Collection<ObjectSinglePrice> tempVal4 = getTargetPrices(
+                        inventory, player, times, amount, false);
+                for (ObjectSinglePrice tempVal11 : tempVal4) {
+                    if (tempVal11.empty) {
+                        continue;
+                    }
+                    if (Objects.nonNull(getAmount(player, times, amount).get(tempVal11))) {
+                        cost = getAmount(player, times, amount).get(tempVal11);
+                    }
+                    resultObject.addResultMapElement(tempVal11, cost);
+                    if (tempVal11.playerHasEnough(inventory, player, false, cost.doubleValue())) {
+                        resultObject.setResultBoolean();
+                    }
+                }
+                return resultObject;
             default:
                 ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Can not get price-mode section in your shop config!!");
-                return false;
+                return resultObject;
         }
     }
 
@@ -223,27 +234,27 @@ public class ObjectPrices extends AbstractThings {
             case ALL:
             case ANY:
                 for (int i = 0 ; i < multi ; i ++) {
-                    for (AbstractSingleThing tempVal3 : getPrices(player, times + i, 1).keySet()) {
+                    for (AbstractSingleThing tempVal3 : getAllPrices(player, times + i, 1).keySet()) {
                         if (priceMaps.containsKey(tempVal3)) {
                             priceMaps.put(tempVal3,
-                                    priceMaps.get(tempVal3).add(tempVal3.getAmount(player, times + i)));
+                                    priceMaps.get(tempVal3).add(tempVal3.getAmount(player, times + i, i)));
                         }
                         else {
-                            priceMaps.put(tempVal3, tempVal3.getAmount(player, times + i));
+                            priceMaps.put(tempVal3, tempVal3.getAmount(player, times + i, i));
                         }
                     }
                 }
                 break;
             case CLASSIC_ALL:
             case CLASSIC_ANY:
-                for (AbstractSingleThing tempVal3 : getPrices(player, times, multi).keySet()) {
+                for (AbstractSingleThing tempVal3 : getAllPrices(player, times, multi).keySet()) {
                     if (priceMaps.containsKey(tempVal3)) {
                         priceMaps.put(tempVal3,
-                                priceMaps.get(tempVal3).add(tempVal3.getAmount(player, times).multiply(new BigDecimal(multi))));
+                                priceMaps.get(tempVal3).add(tempVal3.getAmount(player, times, 0).multiply(new BigDecimal(multi))));
                     }
                     else {
                         priceMaps.put(tempVal3,
-                                tempVal3.getAmount(player, times).multiply(new BigDecimal(multi)));
+                                tempVal3.getAmount(player, times, 0).multiply(new BigDecimal(multi)));
                     }
                 }
                 break;
@@ -251,32 +262,28 @@ public class ObjectPrices extends AbstractThings {
         return priceMaps;
     }
 
-    public List<String> getDisplayName(Player player, int times, int multi) {
-        Map<AbstractSingleThing, BigDecimal> priceMaps = getAmount(player, times, multi);
+    public List<String> getDisplayName(Map<AbstractSingleThing, BigDecimal> result) {
         Map<ObjectDisplayPlaceholder, BigDecimal> tempVal1 = new TreeMap<>();
         switch (mode) {
             case ANY: case CLASSIC_ANY:
-                for (AbstractSingleThing tempVal3 : getAnyTargetPrice(player.getInventory(), player, times, multi)) {
-                    if (priceMaps.get(tempVal3) == null) {
-                        continue;
-                    }
+                for (AbstractSingleThing tempVal3 : result.keySet()) {
                     if (tempVal1.containsKey(tempVal3.getDisplayPlaceholder())) {
-                        tempVal1.replace(tempVal3.getDisplayPlaceholder(), tempVal1.get(tempVal3.getDisplayPlaceholder()).add(priceMaps.get(tempVal3)));
+                        tempVal1.replace(tempVal3.getDisplayPlaceholder(), tempVal1.get(tempVal3.getDisplayPlaceholder()).add(result.get(tempVal3)));
                         continue;
                     }
-                    tempVal1.put(tempVal3.getDisplayPlaceholder(), priceMaps.get(tempVal3));
+                    tempVal1.put(tempVal3.getDisplayPlaceholder(), result.get(tempVal3));
                 }
                 break;
             case ALL: case CLASSIC_ALL:
-                for (AbstractSingleThing tempVal2 : priceMaps.keySet()) {
-                    if (priceMaps.get(tempVal2) == null) {
+                for (AbstractSingleThing tempVal2 : result.keySet()) {
+                    if (result.get(tempVal2) == null) {
                         continue;
                     }
                     if (tempVal1.containsKey(tempVal2.getDisplayPlaceholder())) {
-                        tempVal1.replace(tempVal2.getDisplayPlaceholder(), tempVal1.get(tempVal2.getDisplayPlaceholder()).add(priceMaps.get(tempVal2)));
+                        tempVal1.replace(tempVal2.getDisplayPlaceholder(), tempVal1.get(tempVal2.getDisplayPlaceholder()).add(result.get(tempVal2)));
                         continue;
                     }
-                    tempVal1.put(tempVal2.getDisplayPlaceholder(), priceMaps.get(tempVal2));
+                    tempVal1.put(tempVal2.getDisplayPlaceholder(), result.get(tempVal2));
                 }
                 break;
         }
@@ -287,7 +294,8 @@ public class ObjectPrices extends AbstractThings {
         return tempVal2;
     }
 
-    public String getDisplayNameInGUI(List<String> text) {
+    public String getDisplayNameInLine(Map<AbstractSingleThing, BigDecimal> result) {
+        List<String> text = getDisplayName(result);
         StringBuilder tempVal2 = new StringBuilder();
         switch (mode) {
             case ANY: case CLASSIC_ANY:
@@ -311,42 +319,6 @@ public class ObjectPrices extends AbstractThings {
                 break;
         }
         return tempVal2.toString().replace(";;", ConfigManager.configManager.getString("placeholder.price.replace-new-line-symbol"));
-    }
-
-    public String getDisplayNameInChat(Inventory inventory, Player player, int times, int multi) {
-        Map<AbstractSingleThing, BigDecimal> priceMaps = getAmount(player, times, multi);
-        Map<ObjectDisplayPlaceholder, BigDecimal> tempVal1 = new TreeMap<>();
-        switch (mode) {
-            case ANY: case CLASSIC_ANY:
-                for (AbstractSingleThing tempVal3 : getAnyTargetPrice(inventory, player, times, multi)) {
-                    if (priceMaps.get(tempVal3) == null) {
-                        continue;
-                    }
-                    if (tempVal1.containsKey(tempVal3.getDisplayPlaceholder())) {
-                        tempVal1.replace(tempVal3.getDisplayPlaceholder(), tempVal1.get(tempVal3.getDisplayPlaceholder()).add(priceMaps.get(tempVal3)));
-                        continue;
-                    }
-                    tempVal1.put(tempVal3.getDisplayPlaceholder(), priceMaps.get(tempVal3));
-                }
-                break;
-            case ALL: case CLASSIC_ALL:
-                for (AbstractSingleThing tempVal2 : priceMaps.keySet()) {
-                    if (priceMaps.get(tempVal2) == null) {
-                        continue;
-                    }
-                    if (tempVal1.containsKey(tempVal2.getDisplayPlaceholder())) {
-                        tempVal1.replace(tempVal2.getDisplayPlaceholder(), tempVal1.get(tempVal2.getDisplayPlaceholder()).add(priceMaps.get(tempVal2)));
-                        continue;
-                    }
-                    tempVal1.put(tempVal2.getDisplayPlaceholder(), priceMaps.get(tempVal2));
-                }
-                break;
-        }
-        List<String> tempVal2 = new ArrayList<>();
-        for (ObjectDisplayPlaceholder placeholder : tempVal1.keySet()) {
-            tempVal2.add(placeholder.getDisplayName(tempVal1.get(placeholder)));
-        }
-        return getDisplayNameInGUI(tempVal2);
     }
 
 }

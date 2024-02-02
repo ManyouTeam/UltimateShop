@@ -87,7 +87,7 @@ public class ObjectSinglePrice extends AbstractSingleThing {
     }
 
     @Override
-    public BigDecimal getAmount(Player player, int times) {
+    public BigDecimal getAmount(Player player, int times, int offsetAmount) {
         if (singleSection == null) {
             return new BigDecimal(-1);
         }
@@ -113,13 +113,13 @@ public class ObjectSinglePrice extends AbstractSingleThing {
             }
             tempVal1 = CommonUtil.modifyString(tempVal1,
                     "buy-times-player",
-                    String.valueOf(playerBuyTimes),
+                    String.valueOf(playerBuyTimes + offsetAmount),
                     "sell-times-player",
-                    String.valueOf(playerSellTimes),
+                    String.valueOf(playerSellTimes + offsetAmount),
                     "buy-times-server",
-                    String.valueOf(serverBuyTimes),
+                    String.valueOf(serverBuyTimes + offsetAmount),
                     "sell-times-server",
-                    String.valueOf(serverSellTimes));
+                    String.valueOf(serverSellTimes+ offsetAmount));
         }
         BigDecimal cost = MathUtil.doCalculate(TextUtil.withPAPI(tempVal1, player));
         if (singleSection.getString("max-amount") != null) {
