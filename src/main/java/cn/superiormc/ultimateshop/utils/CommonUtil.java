@@ -151,6 +151,16 @@ public class CommonUtil {
         if (CommonUtil.checkPluginLoad("NeigeItems")) {
             return ItemUtils.getItemName(displayItem);
         }
+        return getItemNameWithoutVanilla(displayItem);
+    }
+
+    public static String getItemNameWithoutVanilla(ItemStack displayItem) {
+        if (displayItem == null || displayItem.getItemMeta() == null) {
+            return "";
+        }
+        if (displayItem.getItemMeta().hasDisplayName()) {
+            return displayItem.getItemMeta().getDisplayName();
+        }
         if (displayItem.getItemMeta().hasDisplayName()) {
             return displayItem.getItemMeta().getDisplayName();
         }

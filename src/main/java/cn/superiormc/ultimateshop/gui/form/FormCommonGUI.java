@@ -8,6 +8,7 @@ import cn.superiormc.ultimateshop.utils.CommonUtil;
 import cn.superiormc.ultimateshop.utils.TextUtil;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
+import org.bukkit.inventory.ItemStack;
 import org.geysermc.cumulus.component.ButtonComponent;
 import org.geysermc.cumulus.form.SimpleForm;
 import org.geysermc.cumulus.util.FormImage;
@@ -41,28 +42,30 @@ public class FormCommonGUI extends FormGUI {
         if (Objects.isNull(form)) {
             for (int slot : menuButtons.keySet()) {
                 AbstractButton button = menuButtons.get(slot);
-                String tempVal3 = TextUtil.parse(
-                        CommonUtil.getItemName(button.getDisplayItem(
-                                owner.getPlayer(), 1)));
-                if (tempVal3.length() == 0) {
+                ItemStack displayItem = button.getDisplayItem(owner, 1);
+                if (CommonUtil.getItemNameWithoutVanilla(displayItem).trim().isEmpty() ||
+                        button.getButtonConfig().getBoolean("bedrock.hide", false)) {
                     continue;
                 }
-                ButtonComponent tempVal6 = null;
-                String icon = button.getButtonConfig().getString("bedrock-icon");
+                String icon = button.getButtonConfig().getString("bedrock.icon",
+                        button.getButtonConfig().getString("bedrock-icon"));
+                String tempVal3 = TextUtil.parse(
+                        CommonUtil.getItemName(displayItem));
+                ButtonComponent tempVal1 = null;
                 if (icon != null && icon.split(";;").length == 2) {
                     String type = icon.split(";;")[0].toLowerCase();
                     if (type.equals("url")) {
-                        tempVal6 = ButtonComponent.of(tempVal3, FormImage.Type.URL, icon.split(";;")[1]);
+                        tempVal1 = ButtonComponent.of(tempVal3, FormImage.Type.URL, icon.split(";;")[1]);
                     } else if (type.equals("path")) {
-                        tempVal6 = ButtonComponent.of(tempVal3, FormImage.Type.PATH, icon.split(";;")[1]);
+                        tempVal1 = ButtonComponent.of(tempVal3, FormImage.Type.PATH, icon.split(";;")[1]);
                     }
                 } else {
-                    tempVal6 = ButtonComponent.of(tempVal3);
+                    tempVal1 = ButtonComponent.of(tempVal3);
                 }
-                if (tempVal6 != null) {
-                    tempVal2.button(tempVal6);
+                if (tempVal1 != null) {
+                    tempVal2.button(tempVal3);
                 }
-                menuItems.put(tempVal6, slot);
+                menuItems.put(tempVal1, slot);
             }
         }
         tempVal2.title(TextUtil.parse(commonMenu.getString("title", "Shop")));

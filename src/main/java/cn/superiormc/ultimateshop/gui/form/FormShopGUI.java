@@ -16,6 +16,7 @@ import cn.superiormc.ultimateshop.utils.TextUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
+import org.bukkit.inventory.ItemStack;
 import org.geysermc.cumulus.component.ButtonComponent;
 import org.geysermc.cumulus.form.SimpleForm;
 import org.geysermc.cumulus.util.FormImage;
@@ -105,14 +106,15 @@ public class FormShopGUI extends FormGUI {
         if (Objects.isNull(form)) {
             for (int slot : menuButtons.keySet()) {
                 AbstractButton button = menuButtons.get(slot);
-                String tempVal3 = TextUtil.parse(
-                        CommonUtil.getItemName(button.getDisplayItem(
-                                owner.getPlayer(), 1)));
-                if (tempVal3.trim().length() == 0) {
+                ItemStack displayItem = button.getDisplayItem(owner, 1);
+                if (CommonUtil.getItemNameWithoutVanilla(displayItem).trim().isEmpty() ||
+                        button.getButtonConfig().getBoolean("bedrock.hide", false)) {
                     continue;
                 }
+                String tempVal3 = TextUtil.parse(CommonUtil.getItemName(displayItem));
+                String icon = button.getButtonConfig().getString("bedrock.icon",
+                        button.getButtonConfig().getString("bedrock-icon"));
                 ButtonComponent tempVal6 = null;
-                String icon = button.getButtonConfig().getString("bedrock-icon");
                 if (icon != null && icon.split(";;").length == 2) {
                     String type = icon.split(";;")[0].toLowerCase();
                     if (type.equals("url")) {
