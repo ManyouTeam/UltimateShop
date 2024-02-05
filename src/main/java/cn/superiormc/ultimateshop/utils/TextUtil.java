@@ -20,7 +20,7 @@ public class TextUtil {
 
     public static String parse(String text, Player player) {
         if (CommonUtil.checkPluginLoad("PlaceholderAPI")) {
-            return PlaceholderAPI.setPlaceholders(player, parse(text));
+            return parse(PlaceholderAPI.setPlaceholders(player, text));
         }
         else {
             return parse(text);

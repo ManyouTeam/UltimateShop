@@ -103,40 +103,39 @@ public class FormShopGUI extends FormGUI {
             }
         }
         SimpleForm.Builder tempVal5 = SimpleForm.builder();
-        if (Objects.isNull(form)) {
-            for (int slot : menuButtons.keySet()) {
-                AbstractButton button = menuButtons.get(slot);
-                ItemStack displayItem = button.getDisplayItem(owner, 1);
-                if (CommonUtil.getItemNameWithoutVanilla(displayItem).trim().isEmpty() ||
-                        button.getButtonConfig().getBoolean("bedrock.hide", false)) {
-                    continue;
-                }
-                String tempVal3 = TextUtil.parse(CommonUtil.getItemName(displayItem));
-                String icon = button.getButtonConfig().getString("bedrock.icon",
-                        button.getButtonConfig().getString("bedrock-icon"));
-                ButtonComponent tempVal6 = null;
-                if (icon != null && icon.split(";;").length == 2) {
-                    String type = icon.split(";;")[0].toLowerCase();
-                    if (type.equals("url")) {
-                        tempVal6 = ButtonComponent.of(tempVal3, FormImage.Type.URL, icon.split(";;")[1]);
-                    } else if (type.equals("path")) {
-                        tempVal6 = ButtonComponent.of(tempVal3, FormImage.Type.PATH, icon.split(";;")[1]);
-                    }
-                } else {
-                    tempVal6 = ButtonComponent.of(tempVal3);
-                }
-                if (tempVal6 != null) {
-                    tempVal5.button(tempVal6);
-                }
-                menuItems.put(tempVal6, slot);
+        for (int slot : menuButtons.keySet()) {
+            AbstractButton button = menuButtons.get(slot);
+            ItemStack displayItem = button.getDisplayItem(owner, 1);
+            if (CommonUtil.getItemNameWithoutVanilla(displayItem).trim().isEmpty() ||
+                    button.getButtonConfig().getBoolean("bedrock.hide", false)) {
+                continue;
             }
+            String tempVal3 = TextUtil.parse(CommonUtil.getItemName(displayItem), owner);
+            String icon = button.getButtonConfig().getString("bedrock.icon",
+                    button.getButtonConfig().getString("bedrock-icon"));
+            ButtonComponent tempVal6 = null;
+            if (icon != null && icon.split(";;").length == 2) {
+                String type = icon.split(";;")[0].toLowerCase();
+                if (type.equals("url")) {
+                    tempVal6 = ButtonComponent.of(tempVal3, FormImage.Type.URL, icon.split(";;")[1]);
+                } else if (type.equals("path")) {
+                    tempVal6 = ButtonComponent.of(tempVal3, FormImage.Type.PATH, icon.split(";;")[1]);
+                }
+            } else {
+                tempVal6 = ButtonComponent.of(tempVal3);
+            }
+            if (tempVal6 != null) {
+                tempVal5.button(tempVal6);
+            }
+            menuItems.put(tempVal6, slot);
         }
 
         tempVal5.title(TextUtil.parse(shopMenu.getString("title", shop.getShopDisplayName())
                 .replace("{shop-name}", shop.getShopDisplayName())));
         tempVal5.validResultHandler(response -> {
-            menuButtons.get(menuItems.get(response.clickedButton())).clickEvent(ClickType.LEFT, owner.getPlayer());
+            menuButtons.get(menuItems.get(response.clickedButton())).clickEvent(ClickType.LEFT, owner);
         });
         form = tempVal5.build();
+
     }
 }

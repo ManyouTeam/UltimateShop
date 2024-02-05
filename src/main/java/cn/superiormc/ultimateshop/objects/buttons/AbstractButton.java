@@ -35,4 +35,12 @@ public abstract class AbstractButton {
     public ButtonType getType() {
         return type;
     }
+
+    @Override
+    public String toString() {
+        if (config == null) {
+            return "Empty Button";
+        }
+        return "Button Config: " + config.getCurrentPath();
+    }
 }

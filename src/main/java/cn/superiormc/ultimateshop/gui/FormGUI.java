@@ -7,7 +7,7 @@ import org.geysermc.cumulus.form.Form;
 import org.geysermc.floodgate.api.FloodgateApi;
 import org.geysermc.floodgate.api.player.FloodgatePlayer;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -17,7 +17,7 @@ public abstract class FormGUI extends AbstractGUI {
 
     public Map<Integer, AbstractButton> menuButtons = new TreeMap<>();
 
-    public Map<ButtonComponent, Integer> menuItems = new HashMap<>();
+    public Map<ButtonComponent, Integer> menuItems = new LinkedHashMap<>();
 
     public FormGUI(Player owner) {
         super(owner);
