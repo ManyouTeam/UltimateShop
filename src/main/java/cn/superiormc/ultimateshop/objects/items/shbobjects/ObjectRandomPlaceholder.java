@@ -1,5 +1,6 @@
 package cn.superiormc.ultimateshop.objects.items.shbobjects;
 
+import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.cache.ServerCache;
 import cn.superiormc.ultimateshop.managers.CacheManager;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
@@ -39,6 +40,9 @@ public class ObjectRandomPlaceholder {
     }
 
     public static String getNowValue(String id) {
+        if (UltimateShop.freeVersion) {
+            return "";
+        }
         ObjectRandomPlaceholder tempVal1 = ConfigManager.configManager.getRandomPlaceholder(id);
         if (tempVal1 == null) {
             return "";
