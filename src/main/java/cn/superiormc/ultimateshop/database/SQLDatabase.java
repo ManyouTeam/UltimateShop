@@ -4,6 +4,7 @@ import cc.carm.lib.easysql.EasySQL;
 import cc.carm.lib.easysql.api.SQLManager;
 import cc.carm.lib.easysql.api.action.query.QueryAction;
 import cc.carm.lib.easysql.hikari.HikariConfig;
+import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.cache.ServerCache;
 import cn.superiormc.ultimateshop.managers.CacheManager;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
@@ -109,12 +110,11 @@ public class SQLDatabase {
         });
 
         QueryAction queryAction2;
-        if (cache.server) {
+        if (cache.server && !UltimateShop.freeVersion) {
             queryAction2 = sqlManager.createQuery()
                     .inTable("ultimateshop_randomPlaceholder")
                     .selectColumns("placeholderID", "nowValue",
                             "refreshDoneTime")
-                    .addCondition("playerUUID = 'Global-Server'")
                     .build();
         }
         else {
@@ -176,7 +176,7 @@ public class SQLDatabase {
                     .executeAsync();
         }
 
-        if (cache.server) {
+        if (cache.server && !UltimateShop.freeVersion) {
             Collection<ObjectRandomPlaceholderCache> tempVal3 = cache.getRandomPlaceholderCache().values();
             for (ObjectRandomPlaceholderCache tempVal4 : tempVal3) {
                 String placeholderID = tempVal4.getPlaceholder().getID();
@@ -244,7 +244,7 @@ public class SQLDatabase {
             }
         }
 
-        if (cache.server) {
+        if (cache.server && !UltimateShop.freeVersion) {
             Collection<ObjectRandomPlaceholderCache> tempVal3 = cache.getRandomPlaceholderCache().values();
             for (ObjectRandomPlaceholderCache tempVal4 : tempVal3) {
                 String placeholderID = tempVal4.getPlaceholder().getID();
