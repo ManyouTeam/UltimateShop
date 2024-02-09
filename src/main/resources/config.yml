@@ -100,6 +100,15 @@ placeholder:
       - 'permission: group.vip'
     mvp:
       - 'permission: group.mvp'
+  # Premium version only.
+  random:
+    rotate:
+      reset-mode: TIMED
+      reset-time: '00:00:00'
+      elements:
+        - 'A'
+        - 'B'
+        - 'C'
   data:
     can-used-in-amount: true
   refresh:
@@ -140,6 +149,10 @@ database:
   properties:
     user: root
     password: 123456
+
+# Premium version only.
+bungeecord-sync:
+  enabled: false
 
 prices:
   example:

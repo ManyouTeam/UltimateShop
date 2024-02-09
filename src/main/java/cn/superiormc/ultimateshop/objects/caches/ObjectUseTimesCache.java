@@ -1,5 +1,7 @@
 package cn.superiormc.ultimateshop.objects.caches;
 
+import cn.superiormc.ultimateshop.cache.ServerCache;
+import cn.superiormc.ultimateshop.managers.BungeeCordManager;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
@@ -23,16 +25,20 @@ public class ObjectUseTimesCache {
 
     private LocalDateTime cooldownSellTime = null;
 
-    private ObjectItem product;
+    private final ObjectItem product;
+
+    private final ServerCache cache;
 
 
-    public ObjectUseTimesCache(int buyUseTimes,
+    public ObjectUseTimesCache(ServerCache cache,
+                               int buyUseTimes,
                                int sellUseTimes,
                                String lastBuyTime,
                                String lastSellTime,
                                String cooldownBuyTime,
                                String cooldownSellTime,
                                ObjectItem product) {
+        this.cache = cache;
         this.buyUseTimes = buyUseTimes;
         if (lastBuyTime != null) {
             this.lastBuyTime = CommonUtil.stringToTime(lastBuyTime);
@@ -66,22 +72,70 @@ public class ObjectUseTimesCache {
     }
 
     public void setBuyUseTimes(int i) {
+        setBuyUseTimes(i, false);
+    }
+
+    public void setBuyUseTimes(int i, boolean notUseBungee) {
         buyUseTimes = i;
+        if (!notUseBungee && cache.server && BungeeCordManager.bungeeCordManager != null) {
+            BungeeCordManager.bungeeCordManager.sendToOtherServer(
+                    product.getShop(),
+                    product.getProduct(),
+                    "buy-times",
+                    String.valueOf(i));
+        }
     }
 
     public void setSellUseTimes(int i) {
+        setSellUseTimes(i, false);
+    }
+
+    public void setSellUseTimes(int i, boolean notUseBungee) {
         sellUseTimes = i;
+        if (!notUseBungee && cache.server && BungeeCordManager.bungeeCordManager != null) {
+            BungeeCordManager.bungeeCordManager.sendToOtherServer(
+                    product.getShop(),
+                    product.getProduct(),
+                    "sell-times",
+                    String.valueOf(i));
+        }
     }
 
     public void setLastBuyTime(LocalDateTime time) {
+        setLastBuyTime(time, false);
+    }
+
+    public void setLastBuyTime(LocalDateTime time, boolean notUseBungee) {
         lastBuyTime = time;
+        if (!notUseBungee && cache.server && BungeeCordManager.bungeeCordManager != null) {
+            BungeeCordManager.bungeeCordManager.sendToOtherServer(
+                    product.getShop(),
+                    product.getProduct(),
+                    "last-buy-time",
+                    CommonUtil.timeToString(time));
+        }
     }
 
     public void setLastSellTime(LocalDateTime time) {
+        setLastSellTime(time, false);
+    }
+
+    public void setLastSellTime(LocalDateTime time, boolean notUseBungee) {
         lastSellTime = time;
+        if (!notUseBungee && cache.server && BungeeCordManager.bungeeCordManager != null) {
+            BungeeCordManager.bungeeCordManager.sendToOtherServer(
+                    product.getShop(),
+                    product.getProduct(),
+                    "last-sell-time",
+                    CommonUtil.timeToString(time));
+        }
     }
 
     public void setCooldownBuyTime() {
+        setCooldownBuyTime(false);
+    }
+
+    public void setCooldownBuyTime(boolean notUseBungee) {
         String mode = product.getItemConfig().getString("buy-cooldown-mode");
         String tempVal1 = product.getItemConfig().getString("buy-cooldown-time");
         if (mode == null || tempVal1 == null) {
@@ -93,14 +147,32 @@ public class ObjectUseTimesCache {
         if (cooldownBuyTime == null || !cooldownBuyTime.isAfter(LocalDateTime.now())) {
             if (mode.equals("TIMED")) {
                 cooldownBuyTime = getTimedBuyRefreshTime(tempVal1);
+                if (!notUseBungee && cache.server && BungeeCordManager.bungeeCordManager != null) {
+                    BungeeCordManager.bungeeCordManager.sendToOtherServer(
+                            product.getShop(),
+                            product.getProduct(),
+                            "cooldown-buy-time",
+                            null);
+                }
             }
             else if (mode.equals("TIMER")) {
                 cooldownBuyTime = getTimerBuyRefreshTime(tempVal1);
+                if (!notUseBungee && cache.server && BungeeCordManager.bungeeCordManager != null) {
+                    BungeeCordManager.bungeeCordManager.sendToOtherServer(
+                            product.getShop(),
+                            product.getProduct(),
+                            "cooldown-buy-time",
+                            null);
+                }
             }
         }
     }
 
     public void setCooldownSellTime() {
+        setCooldownSellTime(false);
+    }
+
+    public void setCooldownSellTime(boolean notUseBungee) {
         String mode = product.getItemConfig().getString("sell-cooldown-mode");
         String tempVal1 = product.getItemConfig().getString("sell-cooldown-time");
         if (mode == null || tempVal1 == null) {
@@ -112,9 +184,23 @@ public class ObjectUseTimesCache {
         if (cooldownSellTime == null || !cooldownSellTime.isAfter(LocalDateTime.now())) {
             if (mode.equals("TIMED")) {
                 cooldownSellTime = getTimedSellRefreshTime(tempVal1);
+                if (!notUseBungee && cache.server && BungeeCordManager.bungeeCordManager != null) {
+                    BungeeCordManager.bungeeCordManager.sendToOtherServer(
+                            product.getShop(),
+                            product.getProduct(),
+                            "cooldown-sell-time",
+                            null);
+                }
             }
             else if (mode.equals("TIMER")) {
                 cooldownSellTime = getTimerSellRefreshTime(tempVal1);
+                if (!notUseBungee && cache.server && BungeeCordManager.bungeeCordManager != null) {
+                    BungeeCordManager.bungeeCordManager.sendToOtherServer(
+                            product.getShop(),
+                            product.getProduct(),
+                            "cooldown-sell-time",
+                            null);
+                }
             }
         }
     }

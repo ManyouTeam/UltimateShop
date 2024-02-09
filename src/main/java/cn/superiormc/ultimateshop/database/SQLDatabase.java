@@ -8,10 +8,13 @@ import cn.superiormc.ultimateshop.cache.ServerCache;
 import cn.superiormc.ultimateshop.managers.CacheManager;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
+import cn.superiormc.ultimateshop.objects.caches.ObjectRandomPlaceholderCache;
 import cn.superiormc.ultimateshop.objects.caches.ObjectUseTimesCache;
+import cn.superiormc.ultimateshop.utils.CommonUtil;
 import org.bukkit.Bukkit;
 
 import java.sql.SQLException;
+import java.util.Collection;
 import java.util.Map;
 import java.util.Objects;
 
@@ -57,12 +60,17 @@ public class SQLDatabase {
                 .addColumn("cooldownBuyTime", "DATETIME")
                 .addColumn("cooldownSellTime", "DATETIME")
                 .build().execute(null);
+        sqlManager.createTable("ultimateshop_randomPlaceholder")
+                .addColumn("placeholderID", "VARCHAR(48)")
+                .addColumn("nowValue", "TEXT")
+                .addColumn("refreshDoneTime", "DATETIME")
+                .build().execute(null);
     }
 
     public static void checkData(ServerCache cache) {
-        QueryAction queryAction = null;
+        QueryAction queryAction1;
         if (cache.server) {
-            queryAction = sqlManager.createQuery()
+            queryAction1 = sqlManager.createQuery()
                     .inTable("ultimateshop_useTimes")
                     .selectColumns("playerUUID",
                             "shop", "product",
@@ -73,17 +81,17 @@ public class SQLDatabase {
                     .build();
         }
         else {
-            queryAction = sqlManager.createQuery()
+            queryAction1 = sqlManager.createQuery()
                     .inTable("ultimateshop_useTimes")
                     .selectColumns("playerUUID",
                             "shop", "product",
                             "buyUseTimes", "sellUseTimes",
                             "lastBuyTime", "lastSellTime",
                             "cooldownBuyTime", "cooldownSellTime")
-                    .addCondition("playerUUID = '" + cache.player.getUniqueId().toString() + "'")
+                    .addCondition("playerUUID = '" + cache.player.getUniqueId() + "'")
                     .build();
         }
-        queryAction.executeAsync((result) -> {
+        queryAction1.executeAsync((result) -> {
             while (result.getResultSet().next()) {
                 String shop = result.getResultSet().getString("shop");
                 String product = result.getResultSet().getString("product");
@@ -99,10 +107,31 @@ public class SQLDatabase {
                         cooldownPurchaseTime, cooldownSellTime);
             }
         });
+
+        QueryAction queryAction2;
+        if (cache.server) {
+            queryAction2 = sqlManager.createQuery()
+                    .inTable("ultimateshop_randomPlaceholder")
+                    .selectColumns("placeholderID", "nowValue",
+                            "refreshDoneTime")
+                    .addCondition("playerUUID = 'Global-Server'")
+                    .build();
+        }
+        else {
+            return;
+        }
+        queryAction2.executeAsync((result) -> {
+            while (result.getResultSet().next()) {
+                String placeholderID = result.getResultSet().getString("placeholderID");
+                String nowValue = result.getResultSet().getString("nowValue");
+                String refreshDoneTime = result.getResultSet().getString("refreshDoneTime");
+                cache.setRandomPlaceholderCache(placeholderID, refreshDoneTime, nowValue);
+            }
+        });
     }
 
     public static void updateData(ServerCache cache, boolean quitServer) {
-        String playerUUID = null;
+        String playerUUID;
         if (cache.server) {
             playerUUID = "Global-Server";
         }
@@ -146,13 +175,27 @@ public class SQLDatabase {
                             cooldownSellTime)
                     .executeAsync();
         }
+
+        if (cache.server) {
+            Collection<ObjectRandomPlaceholderCache> tempVal3 = cache.getRandomPlaceholderCache().values();
+            for (ObjectRandomPlaceholderCache tempVal4 : tempVal3) {
+                String placeholderID = tempVal4.getPlaceholder().getID();
+                String nowValue = tempVal4.getNowValue();
+                String refreshDoneTime = CommonUtil.timeToString(tempVal4.getRefreshDoneTime());
+                sqlManager.createReplace("ultimateshop_randomPlaceholder")
+                        .setColumnNames("placeholderID", "nowValue",
+                                "refreshDoneTime")
+                        .setParams(placeholderID, nowValue, refreshDoneTime)
+                        .executeAsync();
+            }
+        }
         if (quitServer) {
             CacheManager.cacheManager.removePlayerCache(cache.player);
         }
     }
 
     public static void updateDataNoAsync(ServerCache cache) {
-        String playerUUID = null;
+        String playerUUID;
         if (cache.server) {
             playerUUID = "Global-Server";
         }
@@ -198,6 +241,24 @@ public class SQLDatabase {
                         .execute();
             } catch (SQLException e) {
                 throw new RuntimeException(e);
+            }
+        }
+
+        if (cache.server) {
+            Collection<ObjectRandomPlaceholderCache> tempVal3 = cache.getRandomPlaceholderCache().values();
+            for (ObjectRandomPlaceholderCache tempVal4 : tempVal3) {
+                String placeholderID = tempVal4.getPlaceholder().getID();
+                String nowValue = tempVal4.getNowValue();
+                String refreshDoneTime = CommonUtil.timeToString(tempVal4.getRefreshDoneTime());
+                try {
+                    sqlManager.createReplace("ultimateshop_randomPlaceholder")
+                            .setColumnNames("placeholderID", "nowValue",
+                                    "refreshDoneTime")
+                            .setParams(placeholderID, nowValue, refreshDoneTime)
+                            .execute();
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
             }
         }
         CacheManager.cacheManager.removePlayerCache(cache.player);

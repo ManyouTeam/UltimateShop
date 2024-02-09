@@ -5,12 +5,16 @@ import cn.superiormc.ultimateshop.cache.ServerCache;
 import cn.superiormc.ultimateshop.managers.CacheManager;
 import cn.superiormc.ultimateshop.managers.ErrorManager;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
+import cn.superiormc.ultimateshop.objects.caches.ObjectRandomPlaceholderCache;
 import cn.superiormc.ultimateshop.objects.caches.ObjectUseTimesCache;
+import cn.superiormc.ultimateshop.objects.items.shbobjects.ObjectRandomPlaceholder;
+import cn.superiormc.ultimateshop.utils.CommonUtil;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -77,6 +81,18 @@ public class YamlDatabase {
                 }
             }
         }
+        if (cache.server) {
+            // 随机变量系统
+            ConfigurationSection randomPlaceholderSection = config.getConfigurationSection("randomPlaceholder");
+            if (randomPlaceholderSection != null && !UltimateShop.freeVersion) {
+                for (String placeholderID : randomPlaceholderSection.getKeys(false)) {
+                    ConfigurationSection tempVal3 = randomPlaceholderSection.getConfigurationSection(placeholderID);
+                    String refreshDoneTime = tempVal3.getString("refreshDoneTime", null);
+                    String nowValue = tempVal3.getString("nowValue", null);
+                    cache.setRandomPlaceholderCache(placeholderID, refreshDoneTime, nowValue);
+                }
+            }
+        }
     }
 
     public static void updateData(ServerCache cache, boolean quitServer) {
@@ -136,6 +152,28 @@ public class YamlDatabase {
                     tempVal6 = tempVal5.createSection(tempVal4.getProduct());
                 }
                 tempVal6.set(key, data.get(key));
+            }
+        }
+        if (cache.server) {
+            // 储存变量值
+            ConfigurationSection randomPlaceholderSection = config.createSection("randomPlaceholder");
+            Collection<ObjectRandomPlaceholderCache> tempVal7 = cache.getRandomPlaceholderCache().values();
+            for (ObjectRandomPlaceholderCache tempVal8 : tempVal7) {
+                data.clear();
+                ConfigurationSection tempVal9 = randomPlaceholderSection.getConfigurationSection(tempVal8.getPlaceholder().getID());
+                if (tempVal9 == null) {
+                    tempVal9 = randomPlaceholderSection.createSection(tempVal8.getPlaceholder().getID());
+                }
+                if (tempVal8.getPlaceholder().getMode().equals("TIMED") ||
+                        tempVal8.getPlaceholder().getMode().equals("TIMER")) {
+                    data.put("nowValue", tempVal8.getNowValue());
+                    data.put("refreshDoneTime", CommonUtil.timeToString(tempVal8.getRefreshDoneTime()));
+                }
+                for (String key : data.keySet()) {
+                    if (!UltimateShop.freeVersion) {
+                        tempVal9.set(key, data.get(key));
+                    }
+                }
             }
         }
         if (quitServer) {

@@ -28,6 +28,9 @@ public final class UltimateShop extends JavaPlugin {
         new CommandManager();
         new ListenerManager();
         new TaskManager();
+        if (BungeeCordManager.enableThis()) {
+            new BungeeCordManager();
+        }
         if (CommonUtil.checkPluginLoad("PlaceholderAPI")) {
             PlaceholderAPIExpansion.papi = new PlaceholderAPIExpansion(this);
             Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §fHooking into PlaceholderAPI...");
@@ -48,6 +51,9 @@ public final class UltimateShop extends JavaPlugin {
             CacheManager.cacheManager.savePlayerCacheOnDisable(player);
         }
         SQLDatabase.closeSQL();
+        if (BungeeCordManager.enableThis()) {
+            BungeeCordManager.bungeeCordManager.disable();
+        }
         Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §fPlugin is disabled. Author: PQguanfang.");
     }
 

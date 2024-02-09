@@ -108,14 +108,23 @@ public class CommonUtil {
     }
 
     public static LocalDateTime stringToTime(String time) {
+        if (time.equals("null")) {
+            return null;
+        }
         return LocalDateTime.parse(time, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
     }
 
     public static String timeToString(LocalDateTime time) {
+        if (time == null) {
+            return null;
+        }
         return time.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
     }
 
     public static String timeToString(LocalDateTime time, String format) {
+        if (time == null) {
+            return null;
+        }
         return time.format(DateTimeFormatter.ofPattern(format));
     }
 

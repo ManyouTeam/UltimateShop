@@ -6,9 +6,14 @@ import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.LanguageManager;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import cn.superiormc.ultimateshop.objects.ObjectShop;
+import cn.superiormc.ultimateshop.objects.caches.ObjectRandomPlaceholderCache;
 import cn.superiormc.ultimateshop.objects.caches.ObjectUseTimesCache;
+import cn.superiormc.ultimateshop.objects.items.shbobjects.ObjectRandomPlaceholder;
+import cn.superiormc.ultimateshop.utils.CommonUtil;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -17,6 +22,8 @@ public class ServerCache {
     public static ServerCache serverCache;
 
     public Map<ObjectItem, ObjectUseTimesCache> useTimesCache = new HashMap<>();
+
+    public Map<ObjectRandomPlaceholder, ObjectRandomPlaceholderCache> randomPlaceholderCache = new HashMap<>();
 
     public boolean server;
 
@@ -77,7 +84,8 @@ public class ServerCache {
         if (tempVal2 == null) {
             return;
         }
-        useTimesCache.put(tempVal2, new ObjectUseTimesCache(buyUseTimes,
+        useTimesCache.put(tempVal2, new ObjectUseTimesCache(this,
+                buyUseTimes,
                 sellUseTimes,
                 lastBuyTime,
                 lastSellTime,
@@ -86,7 +94,25 @@ public class ServerCache {
                 tempVal2));
     }
 
+    public void setRandomPlaceholderCache(String id,
+                                          String refreshDoneTime,
+                                          String nowValue) {
+        ObjectRandomPlaceholder tempVal1 = ConfigManager.configManager.getRandomPlaceholder(id);
+        if (tempVal1 == null) {
+            return;
+        }
+        randomPlaceholderCache.put(tempVal1, new ObjectRandomPlaceholderCache(tempVal1, nowValue, CommonUtil.stringToTime(refreshDoneTime)));
+    }
+
     public Map<ObjectItem, ObjectUseTimesCache> getUseTimesCache() {
         return useTimesCache;
+    }
+
+    public void addRandomPlaceholderCache(ObjectRandomPlaceholder placeholder) {
+        randomPlaceholderCache.put(placeholder, new ObjectRandomPlaceholderCache(placeholder));
+    }
+
+    public Map<ObjectRandomPlaceholder, ObjectRandomPlaceholderCache> getRandomPlaceholderCache() {
+        return randomPlaceholderCache;
     }
 }

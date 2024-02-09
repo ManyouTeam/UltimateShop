@@ -3,9 +3,11 @@ package cn.superiormc.ultimateshop.managers;
 import cn.superiormc.ultimateshop.cache.PlayerCache;
 import cn.superiormc.ultimateshop.cache.ServerCache;
 import cn.superiormc.ultimateshop.database.SQLDatabase;
+import cn.superiormc.ultimateshop.objects.caches.ObjectRandomPlaceholderCache;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 

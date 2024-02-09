@@ -1,6 +1,7 @@
 package cn.superiormc.ultimateshop.managers;
 
 import cn.superiormc.ultimateshop.UltimateShop;
+import cn.superiormc.ultimateshop.objects.items.shbobjects.ObjectRandomPlaceholder;
 import cn.superiormc.ultimateshop.objects.menus.ObjectMenu;
 import cn.superiormc.ultimateshop.objects.ObjectShop;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
@@ -22,12 +23,17 @@ public class ConfigManager {
 
     public Map<String, ObjectShop> shopConfigs = new HashMap<>();
 
+    public Map<String, ObjectRandomPlaceholder> randomPlaceholders = new HashMap<>();
+
     public ConfigManager() {
         configManager = this;
         UltimateShop.instance.saveDefaultConfig();
         this.config = UltimateShop.instance.getConfig();
         initShopConfigs();
         initMenuConfigs();
+        if (!UltimateShop.freeVersion) {
+            initRandomPlaceholder();
+        }
     }
 
     private void initShopConfigs() {
@@ -76,6 +82,17 @@ public class ConfigManager {
         }
     }
 
+    private void initRandomPlaceholder() {
+        this.randomPlaceholders = new HashMap<>();
+        ConfigurationSection tempVal1 = config.getConfigurationSection("placeholder.random");
+        if (tempVal1 == null) {
+            return;
+        }
+        for (String key : tempVal1.getKeys(false)) {
+            randomPlaceholders.put(key, new ObjectRandomPlaceholder(key, tempVal1.getConfigurationSection(key)));
+        }
+    }
+
     public ObjectShop getShop(String fileName) {
         return shopConfigs.get(fileName);
     }
@@ -86,6 +103,10 @@ public class ConfigManager {
             resultShops.add(shopConfigs.get(key));
         }
         return resultShops;
+    }
+
+    public ObjectRandomPlaceholder getRandomPlaceholder(String id) {
+        return randomPlaceholders.get(id);
     }
 
     public List<String> getListWithColor(String... args) {
