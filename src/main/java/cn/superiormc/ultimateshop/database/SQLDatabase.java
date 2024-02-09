@@ -61,11 +61,13 @@ public class SQLDatabase {
                 .addColumn("cooldownBuyTime", "DATETIME")
                 .addColumn("cooldownSellTime", "DATETIME")
                 .build().execute(null);
-        sqlManager.createTable("ultimateshop_randomPlaceholder")
-                .addColumn("placeholderID", "VARCHAR(48)")
-                .addColumn("nowValue", "TEXT")
-                .addColumn("refreshDoneTime", "DATETIME")
-                .build().execute(null);
+        if (!UltimateShop.freeVersion) {
+            sqlManager.createTable("ultimateshop_randomPlaceholder")
+                    .addColumn("placeholderID", "VARCHAR(48)")
+                    .addColumn("nowValue", "TEXT")
+                    .addColumn("refreshDoneTime", "DATETIME")
+                    .build().execute(null);
+        }
     }
 
     public static void checkData(ServerCache cache) {
