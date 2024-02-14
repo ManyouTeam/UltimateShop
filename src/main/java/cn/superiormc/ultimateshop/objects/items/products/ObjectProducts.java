@@ -96,6 +96,9 @@ public class ObjectProducts extends AbstractThings {
             case ANY:
             case CLASSIC_ANY:
                 for (ObjectSingleProduct tempVal1 : singleProducts) {
+                    if (!tempVal1.getCondition(player)) {
+                        continue;
+                    }
                     cost = getAmount(player, times, amount, false).get(tempVal1);
                     resultObject.addResultMapElement(tempVal1, cost);
                     if (tempVal1.playerHasEnough(inventory, player, false, cost.doubleValue())) {
@@ -106,6 +109,9 @@ public class ObjectProducts extends AbstractThings {
             case ALL:
             case CLASSIC_ALL:
                 for (ObjectSingleProduct tempVal1 : singleProducts) {
+                    if (!tempVal1.getCondition(player)) {
+                        continue;
+                    }
                     cost = getAmount(player, times, amount, false).get(tempVal1);
                     resultObject.addResultMapElement(tempVal1, cost);
                     if (!tempVal1.playerHasEnough(inventory, player, false, cost.doubleValue())) {
