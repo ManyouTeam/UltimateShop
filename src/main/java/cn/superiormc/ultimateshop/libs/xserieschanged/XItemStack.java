@@ -21,6 +21,7 @@
  */
 package cn.superiormc.ultimateshop.libs.xserieschanged;
 
+import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
 import cn.superiormc.ultimateshop.utils.TextUtil;
@@ -815,8 +816,7 @@ public final class XItemStack {
         // Display Name
         String name = config.getString("name");
         if (!Strings.isNullOrEmpty(name)) {
-            if (CommonUtil.getClass("com.destroystokyo.paper.PaperConfig") &&
-                    ConfigManager.configManager.getBoolean("use-component.item")) {
+            if (UltimateShop.isPaper && ConfigManager.configManager.getBoolean("use-component.item")) {
                 meta.displayName(MiniMessage.miniMessage().deserialize(TextUtil.withPAPI(name, player)));
             } else {
                 meta.setDisplayName(TextUtil.parse(name, player));
@@ -843,8 +843,7 @@ public final class XItemStack {
 
             for (String lore : lores) {
                 if (lore.isEmpty()) {
-                    if (CommonUtil.getClass("com.destroystokyo.paper.PaperConfig") &&
-                            ConfigManager.configManager.getBoolean("use-component.item")) {
+                    if (UltimateShop.isPaper && ConfigManager.configManager.getBoolean("use-component.item")) {
                         veryNewLore.add(Component.space());
                     } else {
                         newLore.add(" ");
@@ -854,16 +853,14 @@ public final class XItemStack {
 
                 for (String singleLore : splitNewLine(lore)) {
                     if (singleLore.isEmpty()) {
-                        if (CommonUtil.getClass("com.destroystokyo.paper.PaperConfig") &&
-                                ConfigManager.configManager.getBoolean("use-component.item")) {
+                        if (UltimateShop.isPaper && ConfigManager.configManager.getBoolean("use-component.item")) {
                             veryNewLore.add(Component.space());
                         } else {
                             newLore.add(" ");
                         }
                         continue;
                     }
-                    if (CommonUtil.getClass("com.destroystokyo.paper.PaperConfig") &&
-                            ConfigManager.configManager.getBoolean("use-component.item")) {
+                    if (UltimateShop.isPaper && ConfigManager.configManager.getBoolean("use-component.item")) {
                         veryNewLore.add(MiniMessage.miniMessage().deserialize(TextUtil.withPAPI(singleLore, player)));
                     } else {
                         newLore.add(TextUtil.parse(singleLore, player));

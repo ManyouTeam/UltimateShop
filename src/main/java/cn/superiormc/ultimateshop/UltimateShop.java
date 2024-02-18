@@ -16,6 +16,10 @@ public final class UltimateShop extends JavaPlugin {
 
     public static boolean freeVersion = false;
 
+    public static boolean isPaper = false;
+
+    public static boolean useGeyser = false;
+
     @Override
     public void onEnable() {
         instance = this;
@@ -37,6 +41,13 @@ public final class UltimateShop extends JavaPlugin {
             if (PlaceholderAPIExpansion.papi.register()){
                 Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §fFinished hook!");
             }
+        }
+        if (CommonUtil.getClass("com.destroystokyo.paper.PaperConfig")) {
+            isPaper = true;
+        }
+        if (!UltimateShop.freeVersion && CommonUtil.getClass("org.geysermc.floodgate.api.FloodgateApi")) {
+            Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §fEnabled bedrock UI feature!");
+            useGeyser = true;
         }
         new Metrics(this, 20783);
         Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §fPlugin is loaded. Author: PQguanfang.");

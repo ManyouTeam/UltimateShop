@@ -104,6 +104,7 @@ public class ObjectProducts extends AbstractThings {
                     if (tempVal1.playerHasEnough(inventory, player, false, cost.doubleValue())) {
                         resultObject.setResultBoolean();
                     }
+                    return resultObject;
                 }
                 return resultObject;
             case ALL:

@@ -1,5 +1,6 @@
 package cn.superiormc.ultimateshop.utils;
 
+import cn.superiormc.ultimateshop.UltimateShop;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
@@ -12,8 +13,7 @@ import cn.superiormc.ultimateshop.managers.ConfigManager;
 public class InvUtil {
 
     public static Inventory createNewInv(Player player, int size, String text) {
-        if (CommonUtil.getClass("com.destroystokyo.paper.PaperConfig") &&
-                ConfigManager.configManager.getBoolean("use-component.menu-title")) {
+        if (UltimateShop.isPaper && ConfigManager.configManager.getBoolean("use-component.menu-title")) {
             return Bukkit.createInventory(player, size, MiniMessage.miniMessage().deserialize(TextUtil.withPAPI(text, player)));
         } else {
             return Bukkit.createInventory(player, size, TextUtil.parse(text, player));
@@ -21,8 +21,7 @@ public class InvUtil {
     }
 
     public static void sendMessage(Player player, String text) {
-        if (CommonUtil.getClass("com.destroystokyo.paper.PaperConfig") &&
-                ConfigManager.configManager.getBoolean("use-component.message")) {
+        if (UltimateShop.isPaper && ConfigManager.configManager.getBoolean("use-component.message")) {
             if (player == null) {
                 Bukkit.getConsoleSender().sendMessage(MiniMessage.miniMessage().deserialize(text));
             } else {

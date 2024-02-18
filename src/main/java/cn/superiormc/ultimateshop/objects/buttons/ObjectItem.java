@@ -290,9 +290,8 @@ public class ObjectItem extends AbstractButton {
 
     @Override
     public void clickEvent(ClickType type, Player player) {
-        if (CommonUtil.getClass("org.geysermc.floodgate.api.FloodgateApi")) {
-            if (!UltimateShop.freeVersion &&
-                    FloodgateApi.getInstance().isFloodgatePlayer(player.getUniqueId())) {
+        if (UltimateShop.useGeyser) {
+            if (FloodgateApi.getInstance().isFloodgatePlayer(player.getUniqueId())) {
                 FormInfoGUI infoGUI = new FormInfoGUI(player, this);
                 infoGUI.openGUI();
                 return;

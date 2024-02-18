@@ -30,9 +30,8 @@ public class OpenGUI {
         if (shop == null) {
             return;
         }
-        if (CommonUtil.getClass("org.geysermc.floodgate.api.FloodgateApi")) {
-            if (!UltimateShop.freeVersion &&
-                    FloodgateApi.getInstance().isFloodgatePlayer(player.getUniqueId())) {
+        if (UltimateShop.useGeyser) {
+            if (FloodgateApi.getInstance().isFloodgatePlayer(player.getUniqueId())) {
                 FormShopGUI formShopGUI = new FormShopGUI(player, shop);
                 formShopGUI.openGUI();
                 return;
@@ -43,9 +42,8 @@ public class OpenGUI {
     }
 
     public static void openCommonGUI(Player player, String fileName) {
-        if (CommonUtil.getClass("org.geysermc.floodgate.api.FloodgateApi")) {
-            if (!UltimateShop.freeVersion &&
-                    FloodgateApi.getInstance().isFloodgatePlayer(player.getUniqueId())) {
+        if (UltimateShop.useGeyser) {
+            if (FloodgateApi.getInstance().isFloodgatePlayer(player.getUniqueId())) {
                 FormCommonGUI formCommonGUI = new FormCommonGUI(player, fileName);
                 formCommonGUI.openGUI();
                 return;
