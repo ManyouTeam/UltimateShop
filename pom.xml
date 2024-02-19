@@ -6,7 +6,7 @@
 
     <groupId>cn.superiormc</groupId>
     <artifactId>UltimateShop</artifactId>
-    <version>1.12.1</version>
+    <version>1.12.2</version>
     <packaging>jar</packaging>
 
     <name>UltimateShop</name>
@@ -225,6 +225,12 @@
             <artifactId>RedisEconomy</artifactId>
             <version>main-370fa8da6d-1</version>
             <scope>provided</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>*</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>me.soknight</groupId>

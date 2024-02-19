@@ -9,7 +9,9 @@ import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Container;
+import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
@@ -18,9 +20,12 @@ import org.bukkit.inventory.ItemStack;
 
 public class ClickListener implements Listener {
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.LOWEST)
     public void onInteract(PlayerInteractEvent event) {
         if (!EquipmentSlot.HAND.equals(event.getHand())) {
+            return;
+        }
+        if (event.useInteractedBlock() == Event.Result.DENY) {
             return;
         }
         ItemStack item = event.getItem();
