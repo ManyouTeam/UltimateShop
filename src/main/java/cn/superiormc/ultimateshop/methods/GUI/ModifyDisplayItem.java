@@ -43,8 +43,8 @@ public class ModifyDisplayItem {
         if (buyMore || item.getItemConfig().getString("display-name") != null) {
             String itemName = item.getDisplayName(player);
             if (buyMore) {
-                itemName = itemName + TextUtil.parse(ConfigManager.configManager.getString("display-item.add-displayname").
-                        replace("{amount}", String.valueOf(multi)));
+                itemName = TextUtil.parse(ConfigManager.configManager.getString("display-item.add-name").
+                        replace("{amount}", String.valueOf(multi))).replace("{item-name}", itemName);
             }
             tempVal2.setDisplayName(itemName);
             addLoreDisplayItem.setItemMeta(tempVal2);

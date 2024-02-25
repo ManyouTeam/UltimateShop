@@ -53,7 +53,7 @@ math:
 
 display-item:
   auto-set-first-product: true
-  add-displayname: ' x{amount}'
+  add-name: '&f{item-name} x{amount}'
   # @+lower case means conditional lore, do not remove them here.
   # Otherwise, the line without this will always display it.
   add-lore:
