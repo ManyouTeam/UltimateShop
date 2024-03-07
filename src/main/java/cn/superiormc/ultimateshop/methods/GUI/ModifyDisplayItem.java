@@ -344,7 +344,12 @@ public class ModifyDisplayItem {
 
     private static String getBuyClickPlaceholder(Player player, int multi, ObjectItem item, String clickType) {
         if (!ConfigManager.configManager.getBoolean("placeholder.click.enabled")) {
-            return "";
+            if (item.getSellPrice().empty || clickType.equals("buy")) {
+                return ConfigManager.configManager.getString("placeholder.click.buy-with-no-sell", "", "amount", String.valueOf(multi));
+            }
+            else {
+                return ConfigManager.configManager.getString("placeholder.click.buy", "", "amount", String.valueOf(multi));
+            }
         }
         String s = "";
         switch (BuyProductMethod.startBuy(item.getShop(), item.getProduct(), player, false, true, multi)) {
@@ -380,7 +385,12 @@ public class ModifyDisplayItem {
 
     private static String getSellClickPlaceholder(Player player, int multi, ObjectItem item, String clickType) {
         if (!ConfigManager.configManager.getBoolean("placeholder.click.enabled")) {
-            return "";
+            if (item.getBuyPrice().empty || clickType.equals("sell")) {
+                return ConfigManager.configManager.getString("placeholder.click.sell-with-no-buy", "",  "amount", String.valueOf(multi));
+            }
+            else {
+                return ConfigManager.configManager.getString("placeholder.click.sell", "",  "amount", String.valueOf(multi));
+            }
         }
         String s;
         switch (SellProductMethod.startSell(item.getShop(), item.getProduct(), player, false, true, multi)) {

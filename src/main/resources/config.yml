@@ -125,7 +125,7 @@ placeholder:
     unknown-price-type: "Unknown Price Type"
     empty: "Price is empty!"
   click:
-    enabled: true
+    enabled: false
     buy: '&#FFFACDLeft-click to buy!'
     sell: '&#FFFACDRight-click to sell!'
     buy-with-no-sell: '&#FFFACDClick to buy!'

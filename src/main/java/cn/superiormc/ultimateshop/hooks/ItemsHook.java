@@ -45,11 +45,7 @@ public class ItemsHook {
                     return builder.build();
                 }
             case "MMOItems":
-                if (MMOItems.plugin.getTypes().get(itemID.split(";;")[0]) == null) {
-                    ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Can not get "
-                            + pluginName + " item: " + itemID + "!");
-                    return null;
-                } else if (MMOItems.plugin.getItem(itemID.split(";;")[0], itemID.split(";;")[1]) == null) {
+                if (MMOItems.plugin.getItem(itemID.split(";;")[0], itemID.split(";;")[1]) == null) {
                     ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Can not get "
                             + pluginName + " item: " + itemID + "!");
                     return null;

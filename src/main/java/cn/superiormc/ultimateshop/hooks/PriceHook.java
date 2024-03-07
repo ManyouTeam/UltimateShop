@@ -351,9 +351,6 @@ public class PriceHook {
             if (tempVal10 != null && tempVal10.equals(item)) {
                 amount += tempVal1.getAmount();
             }
-            else if (temItem.equals(ItemsHook.getHookItem(pluginName, item))) {
-                amount += tempVal1.getAmount();
-            }
         }
         return amount;
     }
