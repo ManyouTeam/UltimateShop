@@ -43,7 +43,7 @@ public abstract class AbstractThings {
         }
     }
 
-    public abstract TakeResult takeSingleThing(Inventory inventory, Player player, int times, int amount);
+    public abstract TakeResult takeSingleThing(Inventory inventory, Player player, int times, int amount, boolean test);
 
 
     public void takeThing(Inventory inventory, Player player, Map<AbstractSingleThing, BigDecimal> result) {

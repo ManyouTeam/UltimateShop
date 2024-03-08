@@ -172,7 +172,7 @@ public class BuyProductMethod {
             return ProductMethodStatus.SERVER_MAX;
         }
         // price
-        TakeResult takeResult = tempVal5.takeSingleThing(inventory, player, playerUseTimes, multi);
+        TakeResult takeResult = tempVal5.takeSingleThing(inventory, player, playerUseTimes, multi, false);
         if (!takeResult.getResultBoolean()) {
             if (shouldSendMessage) {
                 LanguageManager.languageManager.sendStringText(player,

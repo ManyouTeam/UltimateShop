@@ -1,5 +1,6 @@
 package cn.superiormc.ultimateshop.hooks;
 
+import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.ErrorManager;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
 import com.willfp.eco.core.items.Items;
@@ -14,12 +15,18 @@ import io.lumine.xikage.mythicmobs.MythicMobs;
 import io.th0rgal.oraxen.api.OraxenItems;
 import io.th0rgal.oraxen.items.ItemBuilder;
 import net.Indyuce.mmoitems.MMOItems;
+import org.bukkit.Bukkit;
 import org.bukkit.inventory.ItemStack;
 import pers.neige.neigeitems.manager.ItemManager;
 
 public class ItemsHook {
 
+    public static int mythicMobsVersion = 0;
+
     public static ItemStack getHookItem(String pluginName, String itemID) {
+        if (ConfigManager.configManager.getBoolean("debug")) {
+            Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §cGetting hook item...!");
+        }
         if (!CommonUtil.checkPluginLoad(pluginName)) {
             ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Your server don't have " + pluginName +
                     " plugin, but your shop config try use its hook!");
@@ -27,39 +34,39 @@ public class ItemsHook {
         }
         switch (pluginName) {
             case "ItemsAdder":
-                if (CustomStack.getInstance(itemID) == null) {
+                CustomStack customStack = CustomStack.getInstance(itemID);
+                if (customStack == null) {
                     ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Can not get "
                             + pluginName + " item: " + itemID + "!");
                     return null;
                 } else {
-                    CustomStack customStack = CustomStack.getInstance(itemID);
                     return customStack.getItemStack();
                 }
             case "Oraxen":
-                if (OraxenItems.getItemById(itemID) == null) {
+                ItemBuilder itemBuilder = OraxenItems.getItemById(itemID);
+                if (itemBuilder == null) {
                     ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Can not get "
                             + pluginName + " item: " + itemID + "!");
                     return null;
                 } else {
-                    ItemBuilder builder = OraxenItems.getItemById(itemID);
-                    return builder.build();
+                    return itemBuilder.build();
                 }
             case "MMOItems":
-                if (MMOItems.plugin.getItem(itemID.split(";;")[0], itemID.split(";;")[1]) == null) {
+                ItemStack resultItem = MMOItems.plugin.getItem(itemID.split(";;")[0], itemID.split(";;")[1]);
+                if (resultItem == null) {
                     ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Can not get "
                             + pluginName + " item: " + itemID + "!");
                     return null;
                 }
-                return MMOItems.plugin.getItem(itemID.split(";;")[0], itemID.split(";;")[1]);
+                return resultItem;
             case "EcoItems":
-                EcoItems ecoItems = EcoItems.INSTANCE;
-                if (ecoItems.getByID(itemID) == null) {
+                EcoItem ecoItems = EcoItems.INSTANCE.getByID(itemID);
+                if (ecoItems == null) {
                     ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Can not get "
                             + pluginName + " item: " + itemID + "!");
                     return null;
                 } else {
-                    EcoItem ecoItem = ecoItems.getByID(itemID);
-                    return ecoItem.getItemStack();
+                    return ecoItems.getItemStack();
                 }
             case "EcoArmor":
                 if (ArmorSets.getByID(itemID.split(";;")[0]) == null) {
@@ -89,22 +96,33 @@ public class ItemsHook {
                     return itemStack;
                 }
             case "MythicMobs":
-                try {
-                    if (MythicBukkit.inst().getItemManager().getItemStack(itemID) == null) {
+                if (mythicMobsVersion == 0) {
+                    if (CommonUtil.getClass("io.lumine.mythic.bukkit.MythicBukkit")) {
+                        mythicMobsVersion = 5;
+                    } else if (CommonUtil.getClass("io.lumine.xikage.mythicmobs.MythicMobs")) {
+                        mythicMobsVersion = 4;
+                    }
+                }
+                if (mythicMobsVersion == 5) {
+                    ItemStack mmItem = MythicBukkit.inst().getItemManager().getItemStack(itemID);
+                    if (mmItem == null) {
                         ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Can not get "
                                 + pluginName + " item: " + itemID + "!");
                         return null;
                     } else {
-                        return MythicBukkit.inst().getItemManager().getItemStack(itemID);
+                        return mmItem;
                     }
-                } catch (NoClassDefFoundError ep) {
-                    if (MythicMobs.inst().getItemManager().getItemStack(itemID) == null) {
+                } else if (mythicMobsVersion == 4) {
+                    ItemStack mmItem = MythicMobs.inst().getItemManager().getItemStack(itemID);
+                    if (mmItem == null) {
                         ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Can not get "
                                 + pluginName + " v4 item: " + itemID + "!");
                         return null;
                     } else {
-                        return MythicMobs.inst().getItemManager().getItemStack(itemID);
+                        return mmItem;
                     }
+                } else {
+                    return null;
                 }
             case "eco":
                 return Items.lookup(itemID).getItem();

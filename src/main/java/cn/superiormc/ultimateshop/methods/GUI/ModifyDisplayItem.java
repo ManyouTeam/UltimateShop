@@ -296,7 +296,7 @@ public class ModifyDisplayItem {
         if (!addLore.isEmpty()) {
             addLore = CommonUtil.modifyList(addLore,
                     "buy-price",
-                    item.getBuyPrice().getDisplayNameInLine(item.getBuyPrice().takeSingleThing(player.getInventory(), player, tempVal9.getBuyUseTimes(), multi).getResultMap()),
+                    item.getBuyPrice().getDisplayNameInLine(item.getBuyPrice().takeSingleThing(player.getInventory(), player, tempVal9.getBuyUseTimes(), multi, true).getResultMap()),
                     "sell-price",
                     item.getSellPrice().getDisplayNameInLine(item.getSellPrice().giveSingleThing(player, tempVal9.getBuyUseTimes(), multi).getResultMap()),
                     "buy-limit-player",

@@ -11,6 +11,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -30,6 +31,8 @@ public abstract class InvGUI extends AbstractGUI {
     public Listener guiListener;
 
     public GUIMode guiMode;
+
+    protected BukkitRunnable runTask = null;
 
     public InvGUI(Player owner) {
         super(owner);

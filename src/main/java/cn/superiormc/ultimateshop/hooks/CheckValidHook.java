@@ -1,5 +1,6 @@
 package cn.superiormc.ultimateshop.hooks;
 
+import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.ErrorManager;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
 import com.willfp.eco.core.items.Items;
@@ -12,12 +13,19 @@ import dev.lone.itemsadder.api.CustomStack;
 import io.lumine.mythic.bukkit.MythicBukkit;
 import io.th0rgal.oraxen.api.OraxenItems;
 import net.Indyuce.mmoitems.MMOItems;
+import org.bukkit.Bukkit;
 import org.bukkit.inventory.ItemStack;
 import pers.neige.neigeitems.manager.ItemManager;
 
 public class CheckValidHook {
 
     public static String checkValid(String pluginName, ItemStack itemStack) {
+        if (!itemStack.hasItemMeta()) {
+            return null;
+        }
+        if (ConfigManager.configManager.getBoolean("debug")) {
+            Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §cChecking valid price...!");
+        }
         if (!CommonUtil.checkPluginLoad(pluginName)) {
             ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Your server don't have " + pluginName +
                     " plugin, but your shop config try use its hook!");
@@ -43,10 +51,10 @@ public class CheckValidHook {
         }
         else if (pluginName.equals("MMOItems")) {
             String tempVal1 = MMOItems.getID(itemStack);
-            String tempVal2 = MMOItems.getTypeName(itemStack);
             if (tempVal1 == null || tempVal1.isEmpty()) {
                 return null;
             }
+            String tempVal2 = MMOItems.getTypeName(itemStack);
             if (tempVal2 == null || tempVal2.isEmpty()) {
                 return null;
             }

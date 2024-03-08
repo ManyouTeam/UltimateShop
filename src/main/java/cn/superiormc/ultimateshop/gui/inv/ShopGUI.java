@@ -33,8 +33,6 @@ public class ShopGUI extends InvGUI {
 
     private ObjectMenu shopMenu = null;
 
-    private BukkitRunnable runTask = null;
-
     public ShopGUI(Player owner, ObjectShop shop) {
         super(owner);
         this.shop = shop;
