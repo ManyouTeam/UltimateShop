@@ -136,7 +136,7 @@ public class ObjectSinglePrice extends AbstractSingleThing {
                 cost = applyCostMap.get(times);
             }
         }
-        return cost.setScale(2, RoundingMode.HALF_UP);
+        return cost.setScale(MathUtil.scale, RoundingMode.HALF_UP);
     }
 
     public String getDisplayName(BigDecimal amount) {

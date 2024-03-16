@@ -8,6 +8,7 @@ import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.ItemManager;
 import cn.superiormc.ultimateshop.managers.LanguageManager;
 import cn.superiormc.ultimateshop.objects.caches.ObjectUseTimesCache;
+import cn.superiormc.ultimateshop.utils.MathUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -33,6 +34,7 @@ public class ReloadPlugin {
         for (Player player : Bukkit.getOnlinePlayers()) {
             CacheManager.cacheManager.addPlayerCache(player);
         }
+        MathUtil.scale = ConfigManager.configManager.getInt("math.scale", 2);
         LanguageManager.languageManager.sendStringText(sender, "plugin.reloaded");
     }
 }

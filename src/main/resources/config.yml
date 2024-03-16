@@ -50,6 +50,7 @@ use-times:
 
 math:
   enabled: true
+  scale: 2
 
 display-item:
   auto-set-first-product: true

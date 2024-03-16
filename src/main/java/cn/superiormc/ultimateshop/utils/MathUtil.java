@@ -12,12 +12,14 @@ import java.util.List;
 
 public class MathUtil {
 
+    public static int scale = ConfigManager.configManager.getInt("math.scale", 2);
+
     public static BigDecimal doCalculate(String mathStr) {
         try {
             if (!ConfigManager.configManager.getBoolean("math.enabled")) {
                 return new BigDecimal(mathStr);
             }
-            return BigDecimal.valueOf(Crunch.evaluateExpression(mathStr)).setScale(2, RoundingMode.HALF_UP);
+            return BigDecimal.valueOf(Crunch.evaluateExpression(mathStr)).setScale(MathUtil.scale, RoundingMode.HALF_UP);
         }
         catch (NumberFormatException ep) {
             if (ConfigManager.configManager.getBoolean("debug")) {

@@ -77,7 +77,7 @@ public class ObjectSingleProduct extends AbstractSingleThing {
                 cost = minAmount;
             }
         }
-        return cost.setScale(2, RoundingMode.HALF_UP);
+        return cost.setScale(MathUtil.scale, RoundingMode.HALF_UP);
     }
 
     protected String replacePlaceholder(int baseAmount, int offsetAmount, boolean buyOrSell, boolean placeholderBuyOrSell) {
