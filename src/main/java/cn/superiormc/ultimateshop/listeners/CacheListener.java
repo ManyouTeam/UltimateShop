@@ -1,5 +1,6 @@
 package cn.superiormc.ultimateshop.listeners;
 
+import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.cache.ServerCache;
 import cn.superiormc.ultimateshop.gui.inv.editor.CreateShopGUI;
 import cn.superiormc.ultimateshop.managers.CacheManager;
@@ -15,10 +16,12 @@ public class CacheListener implements Listener {
 
     @EventHandler
     public void onLogin(PlayerLoginEvent event) {
-        CacheManager.cacheManager.addPlayerCache(event.getPlayer());
-        if (ConfigManager.configManager.getBoolean("bungeecord-sync.enabled") && ServerCache.serverCache != null) {
-            ServerCache.serverCache.initServerCache();
-        }
+        Bukkit.getScheduler().runTaskLater(UltimateShop.instance, () -> {
+            CacheManager.cacheManager.addPlayerCache(event.getPlayer());
+            if (ConfigManager.configManager.getBoolean("bungeecord-sync.enabled") && ServerCache.serverCache != null) {
+                ServerCache.serverCache.initServerCache();
+            }
+        }, 5L);
     }
 
     @EventHandler

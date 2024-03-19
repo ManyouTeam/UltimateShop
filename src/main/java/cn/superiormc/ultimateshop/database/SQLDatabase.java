@@ -142,6 +142,14 @@ public class SQLDatabase {
         }
         Map<ObjectItem, ObjectUseTimesCache> tempVal1 = cache.getUseTimesCache();
         for (ObjectItem tempVal2 : tempVal1.keySet()) {
+            try {
+                sqlManager.createDelete("ultimateshop_useTimes").
+                        setConditions("playerUUID = '" + playerUUID + "'").
+                        setConditions("shop = '" + tempVal2.getShop() + "'").
+                        setConditions("product = '" + tempVal2.getProduct() + "'").build().execute();
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
             int buyUseTimes = tempVal1.get(tempVal2).getBuyUseTimes();
             int sellUseTimes = tempVal1.get(tempVal2).getSellUseTimes();
             String lastBuyTime = tempVal1.get(tempVal2).getLastBuyTime();
@@ -156,7 +164,7 @@ public class SQLDatabase {
                 cooldownBuyTime = null;
                 cooldownSellTime = null;
             }
-            sqlManager.createReplace("ultimateshop_useTimes")
+            sqlManager.createInsert("ultimateshop_useTimes")
                     .setColumnNames("playerUUID",
                             "shop",
                             "product",

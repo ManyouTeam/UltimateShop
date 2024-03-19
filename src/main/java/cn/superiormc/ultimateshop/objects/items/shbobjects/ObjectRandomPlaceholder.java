@@ -8,6 +8,8 @@ import cn.superiormc.ultimateshop.objects.caches.ObjectRandomPlaceholderCache;
 import cn.superiormc.ultimateshop.utils.RandomUtil;
 import org.bukkit.configuration.ConfigurationSection;
 
+import java.util.Random;
+
 public class ObjectRandomPlaceholder {
 
     private final String id;
@@ -24,7 +26,14 @@ public class ObjectRandomPlaceholder {
     }
 
     public String getNewValue() {
-        return RandomUtil.getRandomElement(section.getStringList("elements"));
+        String[] element = RandomUtil.getRandomElement(section.getStringList("elements")).split("~");
+        if (element.length == 1) {
+            return element[0];
+        }
+        int min = Integer.parseInt(element[0]);
+        int max = Integer.parseInt(element[1]);
+        Random random = new Random();
+        return String.valueOf(random.nextInt(max - min + 1) + min);
     }
 
     public ConfigurationSection getConfig() {
