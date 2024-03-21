@@ -22,8 +22,9 @@ I am the copyright owner of this project, and the prerequisite for granting you 
   For example, we have 15+ item or economy plugin hook, I need create 15 different type product create GUI for them.
   I have no time and effect for it.
 - Dynamic Price based on players buy and sell (DONE)
-- Rotate Shop (Planning)
-- BungeeCord Sync (Planning)
+- Rotate Shop (DONE)
+- BungeeCord Sync (DONE)
+- 2.0.0 RELEASE: After finish GUI Editor, we will publish v2 version, this version won't have any big change, we just make everyone know UltimateShop has finished all planned work and now should be stable to use.
 ## Develop
 ### Get shop object
 ```java
