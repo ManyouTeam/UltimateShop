@@ -3,10 +3,7 @@ package cn.superiormc.ultimateshop.objects.items.prices;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.ErrorManager;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
-import cn.superiormc.ultimateshop.objects.items.AbstractSingleThing;
-import cn.superiormc.ultimateshop.objects.items.AbstractThings;
-import cn.superiormc.ultimateshop.objects.items.GiveResult;
-import cn.superiormc.ultimateshop.objects.items.TakeResult;
+import cn.superiormc.ultimateshop.objects.items.*;
 import cn.superiormc.ultimateshop.objects.items.shbobjects.ObjectDisplayPlaceholder;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
@@ -259,7 +256,7 @@ public class ObjectPrices extends AbstractThings {
         return priceMaps;
     }
 
-    public List<String> getDisplayName(Map<AbstractSingleThing, BigDecimal> result) {
+    public static List<String> getDisplayName(Map<AbstractSingleThing, BigDecimal> result, ThingMode mode) {
         Map<ObjectDisplayPlaceholder, BigDecimal> tempVal1 = new TreeMap<>();
         switch (mode) {
             case ANY: case CLASSIC_ANY:
@@ -291,8 +288,8 @@ public class ObjectPrices extends AbstractThings {
         return tempVal2;
     }
 
-    public String getDisplayNameInLine(Map<AbstractSingleThing, BigDecimal> result) {
-        List<String> text = getDisplayName(result);
+    public static String getDisplayNameInLine(Map<AbstractSingleThing, BigDecimal> result, ThingMode mode) {
+        List<String> text = getDisplayName(result, mode);
         StringBuilder tempVal2 = new StringBuilder();
         switch (mode) {
             case ANY: case CLASSIC_ANY:
@@ -304,7 +301,7 @@ public class ObjectPrices extends AbstractThings {
                 }
                 break;
             case ALL: case CLASSIC_ALL:
-                    for (int i = 0; i < text.size(); i++) {
+                for (int i = 0; i < text.size(); i++) {
                     if (i > 0) {
                         tempVal2.append(ConfigManager.configManager.getString("placeholder.price.split-symbol-all"));
                     }

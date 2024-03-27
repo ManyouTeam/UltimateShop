@@ -1,10 +1,9 @@
 package cn.superiormc.ultimateshop.managers;
 
 import cn.superiormc.ultimateshop.UltimateShop;
+import cn.superiormc.ultimateshop.objects.ObjectShop;
 import cn.superiormc.ultimateshop.objects.items.shbobjects.ObjectRandomPlaceholder;
 import cn.superiormc.ultimateshop.objects.menus.ObjectMenu;
-import cn.superiormc.ultimateshop.objects.ObjectShop;
-import cn.superiormc.ultimateshop.utils.CommonUtil;
 import cn.superiormc.ultimateshop.utils.TextUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
@@ -164,8 +163,10 @@ public class ConfigManager {
             return "none";
         }
         for (String s : tempVal1.getKeys(false)) {
-            if (tempVal1.getString(s).equals(type.name())) {
-                return s;
+            for (String t : tempVal1.getString(s).split(";;")) {
+                if (t.equals(type.name())){
+                    return s;
+                }
             }
         }
         return "none";

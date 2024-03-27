@@ -12,6 +12,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.geysermc.floodgate.api.FloodgateApi;
 import pers.neige.neigeitems.utils.ItemUtils;
 
 import java.io.File;
@@ -182,5 +183,16 @@ public class CommonUtil {
             }
         }
         return result.toString();
+    }
+
+    public static boolean isBedrockPlayer(Player player) {
+        if (!UltimateShop.useGeyser) {
+            return false;
+        }
+        if (ConfigManager.configManager.getString("menu.bedrock.check-method", "FLOODGATE").equalsIgnoreCase("FLOODGATE")) {
+            return FloodgateApi.getInstance().getPlayer(player.getUniqueId()) != null;
+        } else {
+            return player.getUniqueId().toString().startsWith("00000000-0000-0000-000");
+        }
     }
 }

@@ -5,12 +5,13 @@ import cn.superiormc.ultimateshop.cache.ServerCache;
 import cn.superiormc.ultimateshop.managers.CacheManager;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.LanguageManager;
-import cn.superiormc.ultimateshop.methods.ProductMethodStatus;
+import cn.superiormc.ultimateshop.methods.ProductTradeStatus;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import cn.superiormc.ultimateshop.objects.ObjectShop;
 import cn.superiormc.ultimateshop.objects.caches.ObjectUseTimesCache;
 import cn.superiormc.ultimateshop.objects.items.GiveResult;
 import cn.superiormc.ultimateshop.objects.items.TakeResult;
+import cn.superiormc.ultimateshop.objects.items.prices.ObjectPrices;
 import cn.superiormc.ultimateshop.objects.items.products.ObjectProducts;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -21,47 +22,48 @@ import java.time.LocalDateTime;
 
 public class SellProductMethod {
 
-    public static ProductMethodStatus startSell(String shop, String product, Player player, boolean quick) {
+    public static ProductTradeStatus startSell(String shop, String product, Player player, boolean quick) {
         return startSell(shop, product, player, quick, false, 1);
     }
 
-    public static ProductMethodStatus startSell(String shop,
-                                                String product,
-                                                Player player,
-                                                boolean quick,
-                                                boolean test,
-                                                int multi) {
+    public static ProductTradeStatus startSell(String shop,
+                                                                   String product,
+                                                                   Player player,
+                                                                   boolean quick,
+                                                                   boolean test,
+                                                                   int multi) {
         return startSell(shop, product, player, quick, test, false, multi);
     }
 
-    public static ProductMethodStatus startSell(String shop,
-                                                String product,
-                                                Player player,
-                                                boolean quick,
-                                                boolean test,
-                                                boolean ableMaxSell,
-                                                int multi) {
+    public static ProductTradeStatus startSell(String shop,
+                                                                   String product,
+                                                                   Player player,
+                                                                   boolean quick,
+                                                                   boolean test,
+                                                                   boolean ableMaxSell,
+                                                                   int multi) {
         return startSell(player.getInventory(),
-                shop, product, player, quick, test, ableMaxSell, multi);
+                shop, product, player, quick, test, false, ableMaxSell, multi);
     }
 
-    public static ProductMethodStatus startSell(Inventory inventory,
-                                                String shop,
-                                                String product,
-                                                Player player,
-                                                boolean quick,
-                                                boolean test,
-                                                boolean ableMaxSell,
-                                                int multi) {
+    public static ProductTradeStatus startSell(Inventory inventory,
+                                                                   String shop,
+                                                                   String product,
+                                                                   Player player,
+                                                                   boolean quick,
+                                                                   boolean test,
+                                                                   boolean hide,
+                                                                   boolean ableMaxSell,
+                                                                   int multi) {
         ObjectShop tempVal1 = ConfigManager.configManager.getShop(shop);
         if (tempVal1 == null) {
             LanguageManager.languageManager.sendStringText(player,
                     "error.shop-not-found",
                     "shop",
                     shop);
-            return ProductMethodStatus.ERROR;
+            return ProductTradeStatus.ERROR;
         }
-        boolean shouldSendMessage = inventory instanceof PlayerInventory && !test && (quick ||
+        boolean shouldSendMessage = !hide && inventory instanceof PlayerInventory && !test && (quick ||
                 tempVal1.getShopConfig().
                         getBoolean("settings.send-messages-after-buy", true));
         ObjectItem tempVal2 = tempVal1.getProduct(product);
@@ -70,7 +72,7 @@ public class SellProductMethod {
                     "error.product-not-found",
                     "product",
                     product);
-            return ProductMethodStatus.ERROR;
+            return ProductTradeStatus.ERROR;
         }
         if (shouldSendMessage) {
             if (!tempVal2.getSellCondition(player)) {
@@ -78,11 +80,11 @@ public class SellProductMethod {
                         "sell-condition-not-meet",
                         "product",
                         product);
-                return ProductMethodStatus.PERMISSION;
+                return ProductTradeStatus.PERMISSION;
             }
         }
         if (tempVal2.getSellPrice().empty) {
-            return ProductMethodStatus.ERROR;
+            return ProductTradeStatus.ERROR;
         }
         PlayerCache tempVal3 = CacheManager.cacheManager.getPlayerCache(player);
         ServerCache tempVal11 = ServerCache.serverCache;
@@ -91,7 +93,7 @@ public class SellProductMethod {
                     "error.player-not-found",
                     "player",
                     player.getName());
-            return ProductMethodStatus.ERROR;
+            return ProductTradeStatus.ERROR;
         }
         // limit
         int playerUseTimes = 0;
@@ -116,7 +118,7 @@ public class SellProductMethod {
                             "refresh",
                             tempVal9.getSellCooldownTimeDisplayName());
                 }
-                return ProductMethodStatus.IN_COOLDOWN;
+                return ProductTradeStatus.IN_COOLDOWN;
             }
             playerUseTimes = tempVal9.getSellUseTimes();
         }
@@ -142,8 +144,8 @@ public class SellProductMethod {
                     tempVal2.getPlayerSellLimit(player) - playerUseTimes > 0) {
                 multi = tempVal2.getPlayerSellLimit(player) - playerUseTimes;
             }
-            if (multi >= ConfigManager.configManager.getInt("menu.select-more.max-amount", 64)) {
-                multi = ConfigManager.configManager.getInt("menu.select-more.max-amount", 64);
+            if (multi >= ConfigManager.configManager.getInt("menu.sell-all.max-amount", 128)) {
+                multi = ConfigManager.configManager.getInt("menu.sell-all.max-amount", 128);
             }
         }
 
@@ -162,7 +164,7 @@ public class SellProductMethod {
                         tempVal9.getSellRefreshTimeDisplayName());
 
             }
-            return ProductMethodStatus.PLAYER_MAX;
+            return ProductTradeStatus.PLAYER_MAX;
         }
         if (tempVal8 != null) {
             if (quick) {
@@ -201,7 +203,7 @@ public class SellProductMethod {
                         tempVal8.getSellRefreshTimeDisplayName());
 
             }
-            return ProductMethodStatus.SERVER_MAX;
+            return ProductTradeStatus.SERVER_MAX;
         }
         TakeResult takeResult = tempVal5.takeSingleThing(inventory, player, playerUseTimes, multi, false);
         // price
@@ -212,10 +214,10 @@ public class SellProductMethod {
                         "item",
                         tempVal2.getDisplayName(player));
             }
-            return ProductMethodStatus.NOT_ENOUGH;
+            return ProductTradeStatus.NOT_ENOUGH;
         }
         if (test) {
-            return ProductMethodStatus.DONE;
+            return new ProductTradeStatus(ProductTradeStatus.Status.DONE, takeResult);
         }
         // 尝试给物品
         // 回收的价格就是给的
@@ -244,17 +246,17 @@ public class SellProductMethod {
             tempVal8.setLastSellTime(LocalDateTime.now());
             tempVal11.getUseTimesCache().put(tempVal2, tempVal8);
         }
-        if (tempVal1.getShopConfig().
+        if (!hide && tempVal1.getShopConfig().
                         getBoolean("settings.send-messages-after-buy", true)) {
             LanguageManager.languageManager.sendStringText(player,
                     "success-sell",
                     "item",
                     tempVal2.getDisplayName(player),
                     "price",
-                    tempVal2.getSellPrice().getDisplayNameInLine(giveResult.getResultMap()),
+                    ObjectPrices.getDisplayNameInLine(giveResult.getResultMap(), tempVal2.getSellPrice().getMode()),
                     "amount",
                     String.valueOf(multi));
         }
-        return ProductMethodStatus.DONE;
+        return new ProductTradeStatus(ProductTradeStatus.Status.DONE, takeResult, giveResult);
     }
 }

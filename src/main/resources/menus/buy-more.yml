@@ -5,7 +5,7 @@ layout:
   - '012304560'
   - '0000B0000'
   - '000000000'
-  - '0000D0000'
+  - '000D0E000'
   - '00000000A'
 
 amount-items:
@@ -60,8 +60,21 @@ confirm-items:
       material: PAPER
       name: '&aConfirm'
       lore:
-        - '&7Click to finish the trade!'
-    #click-action: buy
+        - '&7Click to buy!'
+    click-action: buy
+  E:
+    display-item:
+      material: PAPER
+      name: '&aConfirm'
+      lore:
+        - '&7Click to sell!'
+    click-action: sell
+  #F:
+  #  display-item:
+  #    material: PAPER
+  #    name: '&aConfirm'
+  #    lore:
+  #      - '&7Click to confirm trade!'
 
 buttons:
   A:

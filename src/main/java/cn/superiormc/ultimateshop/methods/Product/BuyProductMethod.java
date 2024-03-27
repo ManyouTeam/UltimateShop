@@ -5,7 +5,7 @@ import cn.superiormc.ultimateshop.cache.ServerCache;
 import cn.superiormc.ultimateshop.managers.CacheManager;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.LanguageManager;
-import cn.superiormc.ultimateshop.methods.ProductMethodStatus;
+import cn.superiormc.ultimateshop.methods.ProductTradeStatus;
 import cn.superiormc.ultimateshop.objects.caches.ObjectUseTimesCache;
 import cn.superiormc.ultimateshop.objects.items.GiveResult;
 import cn.superiormc.ultimateshop.objects.items.prices.ObjectPrices;
@@ -21,11 +21,11 @@ import java.time.LocalDateTime;
 
 public class BuyProductMethod {
 
-    public static ProductMethodStatus startBuy(String shop, String product, Player player, boolean quick) {
+    public static ProductTradeStatus startBuy(String shop, String product, Player player, boolean quick) {
         return startBuy(shop, product, player, quick, false, 1);
     }
 
-    public static ProductMethodStatus startBuy(String shop,
+    public static ProductTradeStatus startBuy(String shop,
                                                String product,
                                                Player player,
                                                boolean quick,
@@ -35,7 +35,7 @@ public class BuyProductMethod {
                 shop, product, player, quick, test, multi);
     }
 
-    public static ProductMethodStatus startBuy(Inventory inventory,
+    public static ProductTradeStatus startBuy(Inventory inventory,
                                                String shop,
                                                String product,
                                                Player player,
@@ -48,7 +48,7 @@ public class BuyProductMethod {
                     "error.shop-not-found",
                     "shop",
                     shop);
-            return ProductMethodStatus.ERROR;
+            return ProductTradeStatus.ERROR;
         }
         boolean shouldSendMessage = inventory instanceof PlayerInventory && !test && (quick ||
                 tempVal1.getShopConfig().
@@ -59,7 +59,7 @@ public class BuyProductMethod {
                     "error.product-not-found",
                     "product",
                     product);
-            return ProductMethodStatus.ERROR;
+            return ProductTradeStatus.ERROR;
         }
         if (shouldSendMessage) {
             if (!tempVal2.getBuyCondition(player)) {
@@ -67,11 +67,11 @@ public class BuyProductMethod {
                         "buy-condition-not-meet",
                         "product",
                         product);
-                return ProductMethodStatus.PERMISSION;
+                return ProductTradeStatus.PERMISSION;
             }
         }
         if (tempVal2.getBuyPrice().empty) {
-            return ProductMethodStatus.ERROR;
+            return ProductTradeStatus.ERROR;
         }
         PlayerCache tempVal3 = CacheManager.cacheManager.getPlayerCache(player);
         ServerCache tempVal11 = ServerCache.serverCache;
@@ -80,7 +80,7 @@ public class BuyProductMethod {
                     "error.player-not-found",
                     "player",
                     player.getName());
-            return ProductMethodStatus.ERROR;
+            return ProductTradeStatus.ERROR;
         }
         // limit
         int playerUseTimes = 0;
@@ -100,7 +100,7 @@ public class BuyProductMethod {
                             "refresh",
                             tempVal9.getBuyCooldownTimeDisplayName());
                 }
-                return ProductMethodStatus.IN_COOLDOWN;
+                return ProductTradeStatus.IN_COOLDOWN;
             }
             playerUseTimes = tempVal9.getBuyUseTimes();
         }
@@ -130,7 +130,7 @@ public class BuyProductMethod {
                         tempVal9.getBuyRefreshTimeDisplayName());
 
             }
-            return ProductMethodStatus.PLAYER_MAX;
+            return ProductTradeStatus.PLAYER_MAX;
         }
         ObjectPrices tempVal5 = tempVal2.getBuyPrice();
         if (tempVal8 != null) {
@@ -169,7 +169,7 @@ public class BuyProductMethod {
                         tempVal8.getBuyRefreshTimeDisplayName());
 
             }
-            return ProductMethodStatus.SERVER_MAX;
+            return ProductTradeStatus.SERVER_MAX;
         }
         // price
         TakeResult takeResult = tempVal5.takeSingleThing(inventory, player, playerUseTimes, multi, false);
@@ -180,12 +180,12 @@ public class BuyProductMethod {
                         "item",
                         tempVal2.getDisplayName(player),
                         "price",
-                        tempVal5.getDisplayNameInLine(takeResult.getResultMap()));
+                        ObjectPrices.getDisplayNameInLine(takeResult.getResultMap(), tempVal5.getMode()));
             }
-            return ProductMethodStatus.NOT_ENOUGH;
+            return ProductTradeStatus.NOT_ENOUGH;
         }
         if (test) {
-            return ProductMethodStatus.DONE;
+            return new ProductTradeStatus(ProductTradeStatus.Status.DONE, takeResult);
         }
         GiveResult giveResult = tempVal2.getReward().giveSingleThing(player, playerUseTimes, multi);
         // 尝试给物品
@@ -219,10 +219,10 @@ public class BuyProductMethod {
                     "item",
                     tempVal2.getDisplayName(player),
                     "price",
-                    tempVal5.getDisplayNameInLine(takeResult.getResultMap()),
+                    ObjectPrices.getDisplayNameInLine(takeResult.getResultMap(), tempVal5.getMode()),
                     "amount",
                     String.valueOf(multi));
         }
-        return ProductMethodStatus.DONE;
+        return new ProductTradeStatus(ProductTradeStatus.Status.DONE, takeResult, giveResult);
     }
 }

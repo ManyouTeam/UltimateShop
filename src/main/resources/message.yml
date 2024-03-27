@@ -13,6 +13,7 @@ error:
 
 plugin:
   reloaded: "&#98FB98[UltimateShop] &fPlugin reloaded!"
+  reload-close-gui: "&#98FB98[UltimateShop] &fYour GUI has been closed because the server admin is trying reload the plugin!"
   saved: "&#98FB98[UltimateShop] &fItem Saved!"
 
 placeholderapi:
@@ -46,7 +47,8 @@ help:
     &f/shop setbuytimes <shopName> <itemName> <playerName> [amount] &7- Set buy times.
     &f/shop setselltimes <shopName> <itemName> <playerName> [amount] &7- Set sell times.
 
-start-selling: "&#98FB98[UltimateShop] &fStarting selling your items, if you see nothing below, this means nothing can be selled!"
+start-sell-all: "&#98FB98[UltimateShop] &fAll your {amount}x sellable items have been sold, you earned {reward} for this!"
+start-sell-stick: "&#98FB98[UltimateShop] &fAll your sellable items in this container have been sold, you earned {reward} for this!"
 give-sell-stick: "&#98FB98[UltimateShop] &fGive {player} sell stick {item} x{amount}!"
 set-times: "&#98FB98[UltimateShop] &fSet {player}'s {item} use times to {times}!"
 buy-in-cooldown: "&#98FB98[UltimateShop] &fYou can no longer buy {item} because it's in cooldown!"

@@ -156,7 +156,6 @@ public class EditEconomyItem extends InvGUI {
         }
         if (slot == 8) {
             if (section.getString("economy-plugin") == null && section.getString("economy-type") == null) {
-                Bukkit.getConsoleSender().sendMessage("333");
                 previousGUI.getSection().set(id, null);
             }
             else if (section.getString("economy-plugin") != null && section.getString("economy-plugin").equals("VANILLA")) {
@@ -171,7 +170,6 @@ public class EditEconomyItem extends InvGUI {
     @Override
     public boolean closeEventHandle(Inventory inventory) {
         if (section.get("economy-plugin") == null && section.get("economy-type") == null) {
-            Bukkit.getConsoleSender().sendMessage("222");
             previousGUI.getSection().set(id, null);
         }
         return super.closeEventHandle(inventory);

@@ -26,10 +26,7 @@ public abstract class FormGUI extends AbstractGUI {
     @Override
     public void openGUI() {
         if (form != null) {
-            FloodgatePlayer player = FloodgateApi.getInstance().getPlayer(owner.getUniqueId());
-            if (player != null) {
-                player.sendForm(form);
-            }
+            FloodgateApi.getInstance().sendForm(owner.getUniqueId(), form);
         }
     }
 

@@ -130,11 +130,11 @@ public class MainCommand implements CommandExecutor {
                         LanguageManager.languageManager.sendStringText(sender, "error.args");
                     }
                     else {
-                        OpenGUI.openShopGUI((Player) sender, shop);
+                        OpenGUI.openShopGUI((Player) sender, shop, false);
                     }
                 }
                 else {
-                    OpenGUI.openCommonGUI((Player) sender, tempVal1);
+                    OpenGUI.openCommonGUI((Player) sender, tempVal1, false);
                 }
             }
             else {
@@ -169,6 +169,7 @@ public class MainCommand implements CommandExecutor {
     }
 
     private void menuCommand(CommandSender sender, String[] args) {
+        boolean bypassBedrockCheck = false;
         if (sender instanceof Player) {
             if (sender.hasPermission("ultimateshop.menu")) {
                 if (args.length < 2) {
@@ -176,15 +177,18 @@ public class MainCommand implements CommandExecutor {
                             "error.args");
                     return;
                 }
+                if (args[args.length - 1].equals("-b")) {
+                    bypassBedrockCheck = true;
+                }
                 ObjectShop tempVal1 = ConfigManager.configManager.getShop(args[1]);
                 if (tempVal1 == null) {
                     if (args[1].equals(ConfigManager.configManager.getString("menu.select-more.menu"))) {
                         return;
                     }
-                    OpenGUI.openCommonGUI((Player) sender, args[1]);
+                    OpenGUI.openCommonGUI((Player) sender, args[1], bypassBedrockCheck);
                 }
                 else {
-                    OpenGUI.openShopGUI((Player) sender, tempVal1);
+                    OpenGUI.openShopGUI((Player) sender, tempVal1, bypassBedrockCheck);
                 }
             }
             else {
@@ -206,15 +210,18 @@ public class MainCommand implements CommandExecutor {
                                 args[2]);
                 return;
             }
+            if (args[args.length - 1].equals("-b")) {
+                bypassBedrockCheck = true;
+            }
             ObjectShop tempVal1 = ConfigManager.configManager.getShop(args[1]);
             if (tempVal1 == null) {
                 if (args[1].equals(ConfigManager.configManager.getString("menu.select-more.menu"))) {
                     return;
                 }
-                OpenGUI.openCommonGUI(player, args[1]);
+                OpenGUI.openCommonGUI(player, args[1], bypassBedrockCheck);
             }
             else {
-                OpenGUI.openShopGUI(player, tempVal1);
+                OpenGUI.openShopGUI(player, tempVal1, bypassBedrockCheck);
             }
         }
     }

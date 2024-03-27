@@ -3,8 +3,12 @@ package cn.superiormc.ultimateshop.listeners;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.LanguageManager;
 import cn.superiormc.ultimateshop.methods.Product.SellProductMethod;
+import cn.superiormc.ultimateshop.methods.ProductTradeStatus;
 import cn.superiormc.ultimateshop.methods.SellStickItem;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
+import cn.superiormc.ultimateshop.objects.items.AbstractSingleThing;
+import cn.superiormc.ultimateshop.objects.items.ThingMode;
+import cn.superiormc.ultimateshop.objects.items.prices.ObjectPrices;
 import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
@@ -17,6 +21,10 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+
+import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ClickListener implements Listener {
 
@@ -46,20 +54,30 @@ public class ClickListener implements Listener {
             if (inventory.isEmpty()) {
                 return;
             }
-            LanguageManager.languageManager.sendStringText(event.getPlayer(), "start-selling");
+            Map<AbstractSingleThing, BigDecimal> result = new HashMap<>();
             for (String shop : ConfigManager.configManager.shopConfigs.keySet()) {
                 for (ObjectItem products : ConfigManager.configManager.getShop(shop).getProductList()) {
-                    SellProductMethod.startSell(inventory,
+                    ProductTradeStatus status = SellProductMethod.startSell(inventory,
                             shop,
                             products.getProduct(),
                             event.getPlayer(),
                             false,
                             false,
+                            ConfigManager.configManager.getBoolean("menu.sell-all.hide-message"),
                             true,
                             1);
+                    if (status.getStatus() == ProductTradeStatus.Status.DONE && status.getGiveResult() != null) {
+                        result.putAll(status.getGiveResult().getResultMap());
+                    }
                 }
             }
-            SellStickItem.removeExtraSlotItemValue(event.getPlayer(), item);
+            if (!result.isEmpty()) {
+                LanguageManager.languageManager.sendStringText(event.getPlayer(), "start-sell-stick",
+                        "reward", ObjectPrices.getDisplayNameInLine(
+                        result, ThingMode.ALL
+                ));
+                SellStickItem.removeExtraSlotItemValue(event.getPlayer(), item);
+            }
         }
     }
 

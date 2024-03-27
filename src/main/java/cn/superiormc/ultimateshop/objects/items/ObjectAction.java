@@ -123,9 +123,13 @@ public class ObjectAction {
             } else if (singleAction.startsWith("message: ")) {
                 InvUtil.sendMessage(player, singleAction.substring(9));
             } else if (singleAction.startsWith("open_menu: ")) {
-                OpenGUI.openCommonGUI(player, singleAction.substring(11));
+                OpenGUI.openCommonGUI(player, singleAction.substring(11), false);
+            } else if (singleAction.startsWith("open_bedrock_menu: ")) {
+                OpenGUI.openCommonGUI(player, singleAction.substring(19), true);
             } else if (singleAction.startsWith("shop_menu: ")) {
-                OpenGUI.openShopGUI(player, ConfigManager.configManager.getShop(singleAction.substring(11)));
+                OpenGUI.openShopGUI(player, ConfigManager.configManager.getShop(singleAction.substring(11)), false);
+            } else if (singleAction.startsWith("shop_bedrock_menu: ")) {
+                OpenGUI.openShopGUI(player, ConfigManager.configManager.getShop(singleAction.substring(19)), true);
             } else if (singleAction.startsWith("announcement: ")) {
                 Collection<? extends Player> players = Bukkit.getOnlinePlayers();
                 for (Player p : players) {

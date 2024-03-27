@@ -16,8 +16,12 @@ menu:
     size: 54
     title: '&fSell All &7- Esc to confirm sell!'
     black-slots: []
+    max-amount: 128
+    hide-message: true
   # Premium version only
   bedrock:
+    # Support value: FLOODGATE, UUID
+    check-method: FLOODGATE
     buy-or-sell:
       title: 'Product Settings'
       buttons:
@@ -36,12 +40,14 @@ menu:
   auto-open:
     enabled: true
     menu: main
+  # Support value: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/event/inventory/ClickType.htm
+  # Support use ;; symbol to make multi click type.
   click-event:
     buy: 'SHIFT_LEFT'
     sell: 'RIGHT'
     buy-or-sell: 'LEFT'
     # If you want to disable select-amount feature, set this to NEVER.
-    select-amount: 'SHIFT_RIGHT'
+    select-amount: 'SHIFT_RIGHT;;SWAP_OFFHAND'
     sell-all: 'DROP'
 
 use-times:

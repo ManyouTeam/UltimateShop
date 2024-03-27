@@ -25,7 +25,20 @@ public class SellStickItem {
         ConfigurationSection section = ConfigManager.configManager.config.getConfigurationSection(
                 "sell-stick-items." + itemID
         );
-        if (section == null && player != null) {
+        if (section == null) {
+            LanguageManager.languageManager.sendStringText("error-item-not-found",
+                    "item",
+                    itemID);
+            return null;
+        }
+        return getExtraSlotItem(player, itemID, amount, section.getInt("usage-times"));
+    }
+
+    public static ItemStack getExtraSlotItem(Player player, String itemID, int amount, int times) {
+        ConfigurationSection section = ConfigManager.configManager.config.getConfigurationSection(
+                "sell-stick-items." + itemID
+        );
+        if (section == null) {
             LanguageManager.languageManager.sendStringText("error-item-not-found",
                     "item",
                     itemID);
@@ -33,10 +46,6 @@ public class SellStickItem {
         }
         ItemStack resultItem = ItemUtil.buildItemStack(player, section, 1);
         resultItem.setAmount(amount);
-        return getExtraSlotItem(resultItem, itemID, section.getInt("usage-times", amount));
-    }
-
-    public static ItemStack getExtraSlotItem(ItemStack resultItem, String itemID, int times) {
         if (!resultItem.hasItemMeta()) {
             ItemMeta tempMeta = Bukkit.getItemFactory().getItemMeta(resultItem.getType());
             resultItem.setItemMeta(tempMeta);
@@ -94,10 +103,12 @@ public class SellStickItem {
             ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Can not found sell stick item ID");
         }
         else {
-            ItemStack tempItem = item.clone();
             item.setAmount(item.getAmount() - 1);
             if (nowValue - 1 > 0) {
-                player.getInventory().addItem(getExtraSlotItem(tempItem, id, nowValue - 1));
+                ItemStack tempItem = getExtraSlotItem(player, id, 1, nowValue - 1);
+                if (tempItem != null) {
+                    player.getInventory().addItem(tempItem);
+                }
             }
         }
     }

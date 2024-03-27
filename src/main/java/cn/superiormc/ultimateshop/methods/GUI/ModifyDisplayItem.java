@@ -2,13 +2,17 @@ package cn.superiormc.ultimateshop.methods.GUI;
 
 import cn.superiormc.ultimateshop.managers.CacheManager;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
+import cn.superiormc.ultimateshop.managers.LanguageManager;
 import cn.superiormc.ultimateshop.methods.Product.BuyProductMethod;
 import cn.superiormc.ultimateshop.methods.Product.SellProductMethod;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import cn.superiormc.ultimateshop.objects.caches.ObjectUseTimesCache;
+import cn.superiormc.ultimateshop.objects.items.prices.ObjectPrices;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
 import cn.superiormc.ultimateshop.utils.TextUtil;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -294,50 +298,55 @@ public class ModifyDisplayItem {
             }
         }
         if (!addLore.isEmpty()) {
-            addLore = CommonUtil.modifyList(addLore,
-                    "buy-price",
-                    item.getBuyPrice().getDisplayNameInLine(item.getBuyPrice().takeSingleThing(player.getInventory(), player, tempVal9.getBuyUseTimes(), multi, true).getResultMap()),
-                    "sell-price",
-                    item.getSellPrice().getDisplayNameInLine(item.getSellPrice().giveSingleThing(player, tempVal9.getBuyUseTimes(), multi).getResultMap()),
-                    "buy-limit-player",
-                    String.valueOf(item.getPlayerBuyLimit(player)),
-                    "sell-limit-player",
-                    String.valueOf(item.getPlayerSellLimit(player)),
-                    "buy-limit-server",
-                    String.valueOf(item.getServerBuyLimit(player)),
-                    "sell-limit-server",
-                    String.valueOf(item.getServerSellLimit(player)),
-                    "buy-times-player",
-                    String.valueOf(tempVal9 == null ? "-" : buyTimes),
-                    "sell-times-player",
-                    String.valueOf(tempVal9 == null ? "-" : sellTimes),
-                    "buy-refresh-player",
-                    String.valueOf(tempVal9 == null ? ConfigManager.configManager.getString("placeholder.refresh.never") : tempVal9.getBuyRefreshTimeDisplayName()),
-                    "sell-refresh-player",
-                    String.valueOf(tempVal9 == null ? ConfigManager.configManager.getString("placeholder.refresh.never") : tempVal9.getSellRefreshTimeDisplayName()),
-                    "buy-cooldown-player",
-                    String.valueOf(tempVal9 == null ? ConfigManager.configManager.getString("placeholder.cooldown.now") : tempVal9.getBuyCooldownTimeDisplayName()),
-                    "sell-cooldown-player",
-                    String.valueOf(tempVal9 == null ? ConfigManager.configManager.getString("placeholder.cooldown.now") : tempVal9.getSellCooldownTimeDisplayName()),
-                    "buy-times-server",
-                    String.valueOf(tempVal10 == null ? "-" : tempVal10.getBuyUseTimes()),
-                    "sell-times-server",
-                    String.valueOf(tempVal10 == null ? "-" : tempVal10.getSellUseTimes()),
-                    "buy-refresh-server",
-                    String.valueOf(tempVal10 == null ? ConfigManager.configManager.getString("placeholder.refresh.never") : tempVal10.getBuyRefreshTimeDisplayName()),
-                    "sell-refresh-server",
-                    String.valueOf(tempVal10 == null ? ConfigManager.configManager.getString("placeholder.refresh.never") : tempVal10.getSellRefreshTimeDisplayName()),
-                    "buy-cooldown-server",
-                    String.valueOf(tempVal10 == null ? ConfigManager.configManager.getString("placeholder.cooldown.now") : tempVal10.getBuyCooldownTimeDisplayName()),
-                    "sell-cooldown-server",
-                    String.valueOf(tempVal10 == null ? ConfigManager.configManager.getString("placeholder.cooldown.now") : tempVal10.getSellCooldownTimeDisplayName()),
-                    "buy-click",
-                    getBuyClickPlaceholder(player, multi, item, clickType),
-                    "sell-click",
-                    getSellClickPlaceholder(player, multi, item, clickType),
-                    "amount",
-                    String.valueOf(multi)
-            );
+            if (tempVal9 != null && tempVal10 != null) {
+                addLore = CommonUtil.modifyList(addLore,
+                        "buy-price",
+                        ObjectPrices.getDisplayNameInLine(item.getBuyPrice().takeSingleThing(player.getInventory(), player, tempVal9.getBuyUseTimes(), multi, true).getResultMap(), item.getBuyPrice().getMode()),
+                        "sell-price",
+                        ObjectPrices.getDisplayNameInLine(item.getSellPrice().giveSingleThing(player, tempVal9.getBuyUseTimes(), multi).getResultMap(), item.getSellPrice().getMode()),
+                        "buy-limit-player",
+                        String.valueOf(item.getPlayerBuyLimit(player)),
+                        "sell-limit-player",
+                        String.valueOf(item.getPlayerSellLimit(player)),
+                        "buy-limit-server",
+                        String.valueOf(item.getServerBuyLimit(player)),
+                        "sell-limit-server",
+                        String.valueOf(item.getServerSellLimit(player)),
+                        "buy-times-player",
+                        String.valueOf(buyTimes),
+                        "sell-times-player",
+                        String.valueOf(sellTimes),
+                        "buy-refresh-player",
+                        String.valueOf(tempVal9.getBuyRefreshTimeDisplayName()),
+                        "sell-refresh-player",
+                        String.valueOf(tempVal9.getSellRefreshTimeDisplayName()),
+                        "buy-cooldown-player",
+                        String.valueOf(tempVal9.getBuyCooldownTimeDisplayName()),
+                        "sell-cooldown-player",
+                        String.valueOf(tempVal9.getSellCooldownTimeDisplayName()),
+                        "buy-times-server",
+                        String.valueOf(tempVal10.getBuyUseTimes()),
+                        "sell-times-server",
+                        String.valueOf(tempVal10.getSellUseTimes()),
+                        "buy-refresh-server",
+                        String.valueOf(tempVal10.getBuyRefreshTimeDisplayName()),
+                        "sell-refresh-server",
+                        String.valueOf(tempVal10.getSellRefreshTimeDisplayName()),
+                        "buy-cooldown-server",
+                        String.valueOf(tempVal10.getBuyCooldownTimeDisplayName()),
+                        "sell-cooldown-server",
+                        String.valueOf(tempVal10.getSellCooldownTimeDisplayName()),
+                        "buy-click",
+                        getBuyClickPlaceholder(player, multi, item, clickType),
+                        "sell-click",
+                        getSellClickPlaceholder(player, multi, item, clickType),
+                        "amount",
+                        String.valueOf(multi)
+                );
+            } else if (player.getOpenInventory().getType() == InventoryType.CHEST) {
+                player.closeInventory();
+                LanguageManager.languageManager.sendStringText(player, "plugin.reload-close-gui");
+            }
         }
         return addLore;
     }
@@ -352,7 +361,7 @@ public class ModifyDisplayItem {
             }
         }
         String s = "";
-        switch (BuyProductMethod.startBuy(item.getShop(), item.getProduct(), player, false, true, multi)) {
+        switch (BuyProductMethod.startBuy(item.getShop(), item.getProduct(), player, false, true, multi).getStatus()) {
             case ERROR:
                 s = ConfigManager.configManager.getString("placeholder.click.error", "",  "amount", String.valueOf(multi));
                 break;
@@ -393,7 +402,7 @@ public class ModifyDisplayItem {
             }
         }
         String s;
-        switch (SellProductMethod.startSell(item.getShop(), item.getProduct(), player, false, true, multi)) {
+        switch (SellProductMethod.startSell(item.getShop(), item.getProduct(), player, false, true, multi).getStatus()) {
             case ERROR :
                 s = ConfigManager.configManager.getString("placeholder.click.error", "",  "amount", String.valueOf(multi));
                 break;
