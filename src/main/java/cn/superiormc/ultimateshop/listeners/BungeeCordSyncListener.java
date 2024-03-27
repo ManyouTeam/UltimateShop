@@ -27,7 +27,6 @@ public class BungeeCordSyncListener implements PluginMessageListener {
         DataInputStream in = new DataInputStream(new ByteArrayInputStream(message));
         try {
             String subChannel = in.readUTF();
-            Bukkit.getConsoleSender().sendMessage(subChannel);
             if (!subChannel.equals("UltimateShop")) {
                 return;
             }

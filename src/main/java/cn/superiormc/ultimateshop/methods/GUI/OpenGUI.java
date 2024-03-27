@@ -30,27 +30,27 @@ public class OpenGUI {
         if (shop == null) {
             return;
         }
-        if (UltimateShop.useGeyser) {
-            if (FloodgateApi.getInstance().isFloodgatePlayer(player.getUniqueId())) {
-                FormShopGUI formShopGUI = new FormShopGUI(player, shop);
-                formShopGUI.openGUI();
-                return;
-            }
+        if (UltimateShop.useGeyser && FloodgateApi.getInstance().getPlayer(player.getUniqueId()) != null) {
+            FormShopGUI formShopGUI = new FormShopGUI(player, shop);
+            formShopGUI.openGUI();
+            formShopGUI.getMenu().doAction(player);
+            return;
         }
         ShopGUI gui = new ShopGUI(player, shop);
         gui.openGUI();
+        gui.getMenu().doAction(player);
     }
 
     public static void openCommonGUI(Player player, String fileName) {
-        if (UltimateShop.useGeyser) {
-            if (FloodgateApi.getInstance().isFloodgatePlayer(player.getUniqueId())) {
-                FormCommonGUI formCommonGUI = new FormCommonGUI(player, fileName);
-                formCommonGUI.openGUI();
-                return;
-            }
+        if (UltimateShop.useGeyser && FloodgateApi.getInstance().getPlayer(player.getUniqueId()) != null) {
+            FormCommonGUI formCommonGUI = new FormCommonGUI(player, fileName);
+            formCommonGUI.openGUI();
+            formCommonGUI.getMenu().doAction(player);
+            return;
         }
         CommonGUI gui = new CommonGUI(player, fileName);
         gui.openGUI();
+        gui.getMenu().doAction(player);
     }
 
     public static void openMoreGUI(Player player, ObjectItem item) {

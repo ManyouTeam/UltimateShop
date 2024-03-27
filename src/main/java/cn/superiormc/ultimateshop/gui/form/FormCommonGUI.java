@@ -6,7 +6,6 @@ import cn.superiormc.ultimateshop.objects.buttons.AbstractButton;
 import cn.superiormc.ultimateshop.objects.menus.ObjectMenu;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
 import cn.superiormc.ultimateshop.utils.TextUtil;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
@@ -14,13 +13,11 @@ import org.geysermc.cumulus.component.ButtonComponent;
 import org.geysermc.cumulus.form.SimpleForm;
 import org.geysermc.cumulus.util.FormImage;
 
-import java.util.Objects;
-
 public class FormCommonGUI extends FormGUI {
 
     private ObjectMenu commonMenu = null;
 
-    private String fileName;
+    private final String fileName;
 
     public FormCommonGUI(Player owner, String fileName) {
         super(owner);
@@ -71,6 +68,10 @@ public class FormCommonGUI extends FormGUI {
             menuButtons.get(menuItems.get(response.clickedButton())).clickEvent(ClickType.LEFT, owner);
         });
         form = tempVal2.build();
+    }
+
+    public ObjectMenu getMenu() {
+        return commonMenu;
     }
 
 }

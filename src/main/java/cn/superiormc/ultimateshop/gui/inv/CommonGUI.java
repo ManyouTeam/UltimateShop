@@ -2,11 +2,9 @@ package cn.superiormc.ultimateshop.gui.inv;
 
 import cn.superiormc.ultimateshop.gui.InvGUI;
 import cn.superiormc.ultimateshop.managers.LanguageManager;
-import cn.superiormc.ultimateshop.objects.menus.ObjectMenu;
 import cn.superiormc.ultimateshop.objects.buttons.AbstractButton;
+import cn.superiormc.ultimateshop.objects.menus.ObjectMenu;
 import cn.superiormc.ultimateshop.utils.InvUtil;
-import cn.superiormc.ultimateshop.utils.TextUtil;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.Inventory;
@@ -15,13 +13,12 @@ import org.bukkit.inventory.ItemStack;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 
 public class CommonGUI extends InvGUI {
 
     private ObjectMenu commonMenu = null;
 
-    private String fileName;
+    private final String fileName;
 
     public CommonGUI(Player owner, String fileName) {
         super(owner);
@@ -73,6 +70,10 @@ public class CommonGUI extends InvGUI {
             resultItems.put(i, tempVal1.get(i).getDisplayItem(player, 1));
         }
         return resultItems;
+    }
+
+    public ObjectMenu getMenu() {
+        return commonMenu;
     }
 
 }

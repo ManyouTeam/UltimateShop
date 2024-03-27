@@ -13,7 +13,6 @@ import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import cn.superiormc.ultimateshop.objects.caches.ObjectUseTimesCache;
 import cn.superiormc.ultimateshop.objects.menus.ObjectMenu;
 import cn.superiormc.ultimateshop.utils.InvUtil;
-import cn.superiormc.ultimateshop.utils.TextUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
@@ -25,11 +24,10 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 
 public class ShopGUI extends InvGUI {
 
-    private ObjectShop shop;
+    private final ObjectShop shop;
 
     private ObjectMenu shopMenu = null;
 
@@ -60,7 +58,7 @@ public class ShopGUI extends InvGUI {
             LanguageManager.languageManager.sendStringText(owner.getPlayer(),
                     "error.player-not-found",
                     "player",
-                    owner.getPlayer().getName());
+                    owner.getName());
             return;
         }
         if (shop.getShopMenu() == null) {
@@ -91,16 +89,14 @@ public class ShopGUI extends InvGUI {
             ObjectUseTimesCache tempVal3 = tempVal1.getUseTimesCache().get(tempVal5);
             if (tempVal3 != null && tempVal3.getBuyRefreshTime() != null && tempVal3.getBuyRefreshTime().isBefore(LocalDateTime.now())) {
                 if (ConfigManager.configManager.getBoolean("debug")) {
-                    Bukkit.getConsoleSender().sendMessage("" +
-                            "§x§9§8§F§B§9§8[UltimateShop] §bReset player buy data by GUI open check!");
+                    Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §bReset player buy data by GUI open check!");
                 }
                 tempVal1.getUseTimesCache().get(tempVal5).setBuyUseTimes(0);
                 tempVal1.getUseTimesCache().get(tempVal5).setLastBuyTime(null);
             }
             if (tempVal3 != null && tempVal3.getSellRefreshTime() != null && tempVal3.getSellRefreshTime().isBefore(LocalDateTime.now())) {
                 if (ConfigManager.configManager.getBoolean("debug")) {
-                    Bukkit.getConsoleSender().sendMessage("" +
-                            "§x§9§8§F§B§9§8[UltimateShop] §bReset player sell data by GUI open check!");
+                    Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §bReset player sell data by GUI open check!");
                 }
                 tempVal1.getUseTimesCache().get(tempVal5).setSellUseTimes(0);
                 tempVal1.getUseTimesCache().get(tempVal5).setLastSellTime(null);
@@ -108,16 +104,14 @@ public class ShopGUI extends InvGUI {
             ObjectUseTimesCache tempVal4 = tempVal2.getUseTimesCache().get(tempVal5);
             if (tempVal4 != null && tempVal4.getBuyRefreshTime() != null && tempVal4.getBuyRefreshTime().isBefore(LocalDateTime.now())) {
                 if (ConfigManager.configManager.getBoolean("debug")) {
-                    Bukkit.getConsoleSender().sendMessage("" +
-                            "§x§9§8§F§B§9§8[UltimateShop] §bReset server buy data by GUI open check!");
+                    Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §bReset server buy data by GUI open check!");
                 }
                 tempVal2.getUseTimesCache().get(tempVal5).setBuyUseTimes(0);
                 tempVal2.getUseTimesCache().get(tempVal5).setLastBuyTime(null);
             }
             if (tempVal4 != null && tempVal4.getSellRefreshTime() != null && tempVal4.getSellRefreshTime().isBefore(LocalDateTime.now())) {
                 if (ConfigManager.configManager.getBoolean("debug")) {
-                    Bukkit.getConsoleSender().sendMessage("" +
-                            "§x§9§8§F§B§9§8[UltimateShop] §bReset server sell data by GUI open check!");
+                    Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §bReset server sell data by GUI open check!");
                 }
                 tempVal2.getUseTimesCache().get(tempVal5).setSellUseTimes(0);
                 tempVal2.getUseTimesCache().get(tempVal5).setLastSellTime(null);
@@ -168,6 +162,10 @@ public class ShopGUI extends InvGUI {
             resultItems.put(i, tempVal1.get(i).getDisplayItem(player, 1));
         }
         return resultItems;
+    }
+
+    public ObjectMenu getMenu() {
+        return shopMenu;
     }
 
 }

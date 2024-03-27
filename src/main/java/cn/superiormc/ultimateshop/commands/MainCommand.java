@@ -2,20 +2,20 @@ package cn.superiormc.ultimateshop.commands;
 
 import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.cache.ServerCache;
+import cn.superiormc.ultimateshop.libs.xserieschanged.XItemStack;
 import cn.superiormc.ultimateshop.managers.CacheManager;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
+import cn.superiormc.ultimateshop.managers.ItemManager;
 import cn.superiormc.ultimateshop.managers.LanguageManager;
 import cn.superiormc.ultimateshop.methods.GUI.OpenGUI;
 import cn.superiormc.ultimateshop.methods.Product.BuyProductMethod;
 import cn.superiormc.ultimateshop.methods.Product.SellProductMethod;
 import cn.superiormc.ultimateshop.methods.ReloadPlugin;
-import cn.superiormc.ultimateshop.managers.ItemManager;
 import cn.superiormc.ultimateshop.methods.SellStickItem;
+import cn.superiormc.ultimateshop.objects.ObjectShop;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import cn.superiormc.ultimateshop.objects.caches.ObjectUseTimesCache;
 import cn.superiormc.ultimateshop.objects.menus.ObjectMenu;
-import cn.superiormc.ultimateshop.objects.ObjectShop;
-import cn.superiormc.ultimateshop.libs.xserieschanged.XItemStack;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -444,7 +444,7 @@ public class MainCommand implements CommandExecutor {
                         args[2]);
                 return;
             }
-            ServerCache tempVal3 = null;
+            ServerCache tempVal3;
             if (args[3].equals("global")) {
                 tempVal3 = ServerCache.serverCache;
             }
@@ -549,7 +549,7 @@ public class MainCommand implements CommandExecutor {
                         args[2]);
                 return;
             }
-            ServerCache tempVal3 = null;
+            ServerCache tempVal3;
             if (args[3].equals("global")) {
                 tempVal3 = ServerCache.serverCache;
             }

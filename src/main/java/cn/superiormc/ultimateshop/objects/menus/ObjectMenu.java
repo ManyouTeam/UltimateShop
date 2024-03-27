@@ -6,11 +6,13 @@ import cn.superiormc.ultimateshop.objects.ObjectShop;
 import cn.superiormc.ultimateshop.objects.buttons.AbstractButton;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectButton;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
+import cn.superiormc.ultimateshop.objects.items.ObjectAction;
 import cn.superiormc.ultimateshop.objects.items.ObjectCondition;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 
 import java.io.File;
 import java.util.*;
@@ -30,6 +32,8 @@ public class ObjectMenu {
     private ObjectShop shop = null;
 
     private ObjectCondition condition;
+
+    private ObjectAction action;
 
     public Configuration menuConfigs;
 
@@ -87,9 +91,11 @@ public class ObjectMenu {
         }
         if (menuConfigs == null) {
             this.condition = new ObjectCondition();
+            this.action = new ObjectAction();
         }
         else {
             this.condition = new ObjectCondition(menuConfigs.getStringList("conditions"));
+            this.action = new ObjectAction(menuConfigs.getStringList("open-actions"));
         }
     }
 
@@ -164,6 +170,12 @@ public class ObjectMenu {
 
     public ObjectCondition getCondition() {
         return condition;
+    }
+
+    public void doAction(Player player) {
+        if (action != null) {
+            action.doAction(player, 1, 1);
+        }
     }
 
 }

@@ -136,6 +136,9 @@ public class FormShopGUI extends FormGUI {
             menuButtons.get(menuItems.get(response.clickedButton())).clickEvent(ClickType.LEFT, owner);
         });
         form = tempVal5.build();
+    }
 
+    public ObjectMenu getMenu() {
+        return shopMenu;
     }
 }

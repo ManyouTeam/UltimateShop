@@ -21,7 +21,7 @@ public class CacheListener implements Listener {
             if (ConfigManager.configManager.getBoolean("bungeecord-sync.enabled") && ServerCache.serverCache != null) {
                 ServerCache.serverCache.initServerCache();
             }
-        }, 5L);
+        }, 7L);
     }
 
     @EventHandler
