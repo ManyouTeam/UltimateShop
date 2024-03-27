@@ -180,7 +180,7 @@ public class BuyProductMethod {
                         "item",
                         tempVal2.getDisplayName(player),
                         "price",
-                        ObjectPrices.getDisplayNameInLine(takeResult.getResultMap(), tempVal5.getMode()));
+                        ObjectPrices.getDisplayNameInLine(player, takeResult.getResultMap(), tempVal5.getMode()));
             }
             return ProductTradeStatus.NOT_ENOUGH;
         }
@@ -219,7 +219,7 @@ public class BuyProductMethod {
                     "item",
                     tempVal2.getDisplayName(player),
                     "price",
-                    ObjectPrices.getDisplayNameInLine(takeResult.getResultMap(), tempVal5.getMode()),
+                    ObjectPrices.getDisplayNameInLine(player, takeResult.getResultMap(), tempVal5.getMode()),
                     "amount",
                     String.valueOf(multi));
         }

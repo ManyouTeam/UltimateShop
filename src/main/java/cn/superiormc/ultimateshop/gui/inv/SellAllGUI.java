@@ -78,7 +78,7 @@ public class SellAllGUI extends InvGUI {
                 }
             }
             LanguageManager.languageManager.sendStringText(owner.getPlayer(), "start-sell-all", "amount", String.valueOf(nowAmount - afterAmount),
-                    "reward", ObjectPrices.getDisplayNameInLine(
+                    "reward", ObjectPrices.getDisplayNameInLine(owner,
                     result, ThingMode.ALL
             ));
         }

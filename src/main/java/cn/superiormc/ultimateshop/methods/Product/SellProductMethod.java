@@ -253,7 +253,7 @@ public class SellProductMethod {
                     "item",
                     tempVal2.getDisplayName(player),
                     "price",
-                    ObjectPrices.getDisplayNameInLine(giveResult.getResultMap(), tempVal2.getSellPrice().getMode()),
+                    ObjectPrices.getDisplayNameInLine(player, giveResult.getResultMap(), tempVal2.getSellPrice().getMode()),
                     "amount",
                     String.valueOf(multi));
         }

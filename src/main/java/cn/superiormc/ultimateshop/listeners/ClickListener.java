@@ -73,7 +73,7 @@ public class ClickListener implements Listener {
             }
             if (!result.isEmpty()) {
                 LanguageManager.languageManager.sendStringText(event.getPlayer(), "start-sell-stick",
-                        "reward", ObjectPrices.getDisplayNameInLine(
+                        "reward", ObjectPrices.getDisplayNameInLine(event.getPlayer(),
                         result, ThingMode.ALL
                 ));
                 SellStickItem.removeExtraSlotItemValue(event.getPlayer(), item);

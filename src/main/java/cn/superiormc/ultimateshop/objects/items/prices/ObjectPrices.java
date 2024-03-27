@@ -5,6 +5,8 @@ import cn.superiormc.ultimateshop.managers.ErrorManager;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import cn.superiormc.ultimateshop.objects.items.*;
 import cn.superiormc.ultimateshop.objects.items.shbobjects.ObjectDisplayPlaceholder;
+import cn.superiormc.ultimateshop.utils.CommonUtil;
+import cn.superiormc.ultimateshop.utils.TextUtil;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -256,7 +258,7 @@ public class ObjectPrices extends AbstractThings {
         return priceMaps;
     }
 
-    public static List<String> getDisplayName(Map<AbstractSingleThing, BigDecimal> result, ThingMode mode) {
+    public static List<String> getDisplayName(Player player, Map<AbstractSingleThing, BigDecimal> result, ThingMode mode) {
         Map<ObjectDisplayPlaceholder, BigDecimal> tempVal1 = new TreeMap<>();
         switch (mode) {
             case ANY: case CLASSIC_ANY:
@@ -283,13 +285,13 @@ public class ObjectPrices extends AbstractThings {
         }
         List<String> tempVal2 = new ArrayList<>();
         for (ObjectDisplayPlaceholder placeholder : tempVal1.keySet()) {
-            tempVal2.add(placeholder.getDisplayName(tempVal1.get(placeholder)));
+            tempVal2.add(TextUtil.withPAPI(placeholder.getDisplayName(tempVal1.get(placeholder)), player));
         }
         return tempVal2;
     }
 
-    public static String getDisplayNameInLine(Map<AbstractSingleThing, BigDecimal> result, ThingMode mode) {
-        List<String> text = getDisplayName(result, mode);
+    public static String getDisplayNameInLine(Player player, Map<AbstractSingleThing, BigDecimal> result, ThingMode mode) {
+        List<String> text = getDisplayName(player, result, mode);
         StringBuilder tempVal2 = new StringBuilder();
         switch (mode) {
             case ANY: case CLASSIC_ANY:

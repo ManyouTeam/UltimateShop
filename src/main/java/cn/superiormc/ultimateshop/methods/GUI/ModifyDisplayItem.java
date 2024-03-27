@@ -301,9 +301,9 @@ public class ModifyDisplayItem {
             if (tempVal9 != null && tempVal10 != null) {
                 addLore = CommonUtil.modifyList(addLore,
                         "buy-price",
-                        ObjectPrices.getDisplayNameInLine(item.getBuyPrice().takeSingleThing(player.getInventory(), player, tempVal9.getBuyUseTimes(), multi, true).getResultMap(), item.getBuyPrice().getMode()),
+                        ObjectPrices.getDisplayNameInLine(player, item.getBuyPrice().takeSingleThing(player.getInventory(), player, tempVal9.getBuyUseTimes(), multi, true).getResultMap(), item.getBuyPrice().getMode()),
                         "sell-price",
-                        ObjectPrices.getDisplayNameInLine(item.getSellPrice().giveSingleThing(player, tempVal9.getBuyUseTimes(), multi).getResultMap(), item.getSellPrice().getMode()),
+                        ObjectPrices.getDisplayNameInLine(player, item.getSellPrice().giveSingleThing(player, tempVal9.getBuyUseTimes(), multi).getResultMap(), item.getSellPrice().getMode()),
                         "buy-limit-player",
                         String.valueOf(item.getPlayerBuyLimit(player)),
                         "sell-limit-player",

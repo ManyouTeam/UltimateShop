@@ -22,7 +22,10 @@ import org.geysermc.cumulus.form.SimpleForm;
 import org.geysermc.cumulus.util.FormImage;
 
 import java.time.LocalDateTime;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Objects;
+import java.util.TreeMap;
 
 public class FormShopGUI extends FormGUI {
 
@@ -103,8 +106,19 @@ public class FormShopGUI extends FormGUI {
             }
         }
         SimpleForm.Builder tempVal5 = SimpleForm.builder();
+        Map<Integer, AbstractButton> tempVal8 = new LinkedHashMap<>();
+        Map<Integer, AbstractButton> tempVal7 = new LinkedHashMap<>();
         for (int slot : menuButtons.keySet()) {
             AbstractButton button = menuButtons.get(slot);
+            if (button instanceof ObjectItem) {
+                tempVal8.put(slot, button);
+            } else {
+                tempVal7.put(slot, button);
+            }
+        }
+        tempVal8.putAll(tempVal7);
+        for (int slot : tempVal8.keySet()) {
+            AbstractButton button = tempVal8.get(slot);
             ItemStack displayItem = button.getDisplayItem(owner, 1);
             if (CommonUtil.getItemNameWithoutVanilla(displayItem).trim().isEmpty() ||
                     button.getButtonConfig().getBoolean("bedrock.hide", false)) {
