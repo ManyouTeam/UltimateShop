@@ -123,10 +123,10 @@ editor:
         - '&7'
         - '&8Now value: {value}'
         - '&eClick to set'
-    send-message-after-buy:
-      name: '&bSend Message after buy'
+    hide-message:
+      name: '&bHide Message'
       lore:
-        - '&7Whether player will receive message'
+        - '&7Whether player will not receive message'
         - '&7after he try buy or sell product in'
         - '&7this shop?'
         - '&7'

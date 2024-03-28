@@ -69,11 +69,11 @@ public class EditShopGUI extends InvGUI {
         ItemStack sendMessageAfterBuyItem = new ItemStack(Material.VILLAGER_SPAWN_EGG);
         ItemMeta tempVal5 = shopNameItem.getItemMeta();
         tempVal5.setDisplayName(TextUtil.parse(LanguageManager.languageManager.getStringText("editor." +
-                "create-shop-gui.send-message-after-buy.name").replace("{shop}", config.getName())));
+                "create-shop-gui.hide-message.name").replace("{shop}", config.getName())));
         tempVal5.setLore(CommonUtil.modifyList(TextUtil.getListWithColor(LanguageManager.languageManager.getStringListText("editor." +
-                        "create-shop-gui.send-message-after-buy.lore")),
+                        "create-shop-gui.hide-message.lore")),
                 "value",
-                config.getString("settings.send-message-after-buy", "Unset, default to true")));
+                config.getString("settings.hide-message", "Unset, default to true")));
         sendMessageAfterBuyItem.setItemMeta(tempVal5);
         // product
         ItemStack createProductItem = new ItemStack(Material.EMERALD_BLOCK);
@@ -137,11 +137,11 @@ public class EditShopGUI extends InvGUI {
             owner.closeInventory();
         }
         if (slot == 3) {
-            if (config.getString("settings.send-message-after-buy") != null &&
-                    config.getString("settings.send-message-after-buy").equals("true")) {
-                config.set("settings.send-message-after-buy", "false");
+            if (config.getString("settings.hide-message") != null &&
+                    config.getString("settings.hide-message").equals("false")) {
+                config.set("settings.hide-message", "true");
             } else {
-                config.set("settings.send-message-after-buy", "true");
+                config.set("settings.hide-message", "false");
             }
             constructGUI();
         }

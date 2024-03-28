@@ -34,7 +34,7 @@ public class CreateShopGUI extends InvGUI {
 
     public boolean buyMore = true;
 
-    public boolean sendMessageAfterBuy = true;
+    public boolean hideMessage = false;
 
     public String menuID = "";
 
@@ -88,11 +88,11 @@ public class CreateShopGUI extends InvGUI {
         ItemStack sendMessageAfterBuyItem = new ItemStack(Material.VILLAGER_SPAWN_EGG);
         ItemMeta tempVal5 = shopNameItem.getItemMeta();
         tempVal5.setDisplayName(TextUtil.parse(LanguageManager.languageManager.getStringText("editor." +
-                "create-shop-gui.send-message-after-buy.name")));
+                "create-shop-gui.hide-message.name")));
         tempVal5.setLore(CommonUtil.modifyList(TextUtil.getListWithColor(LanguageManager.languageManager.getStringListText("editor." +
-                        "create-shop-gui.send-message-after-buy.lore")),
+                        "create-shop-gui.hide-message.lore")),
                 "value",
-                String.valueOf(sendMessageAfterBuy)));
+                String.valueOf(hideMessage)));
         sendMessageAfterBuyItem.setItemMeta(tempVal5);
         // finish
         ItemStack finishItem = new ItemStack(Material.GREEN_DYE);
@@ -149,10 +149,10 @@ public class CreateShopGUI extends InvGUI {
             owner.closeInventory();
         }
         if (slot == 4) {
-            if (sendMessageAfterBuy) {
-                sendMessageAfterBuy = false;
+            if (hideMessage) {
+                hideMessage = false;
             } else {
-                sendMessageAfterBuy = true;
+                hideMessage = true;
             }
             constructGUI();
         }
@@ -176,7 +176,7 @@ public class CreateShopGUI extends InvGUI {
                             data.put("menu", menuID);
                         }
                         data.put("buy-more", buyMore);
-                        data.put("send-messages-after-buy", sendMessageAfterBuy);
+                        data.put("hide-message", hideMessage);
                         data.put("shop-name", shopName);
                         for (String key : data.keySet()) {
                             settingsSection.set(key, data.get(key));

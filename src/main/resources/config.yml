@@ -22,6 +22,7 @@ menu:
   bedrock:
     # Support value: FLOODGATE, UUID
     check-method: FLOODGATE
+    not-auto-close: true
     buy-or-sell:
       title: 'Product Settings'
       buttons:

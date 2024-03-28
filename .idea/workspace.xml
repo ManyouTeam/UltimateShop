@@ -4,15 +4,22 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="5408d61d-1b79-4aac-a73e-7cb790e636f7" name="变更" comment="2.0.0">
+    <list default="true" id="5408d61d-1b79-4aac-a73e-7cb790e636f7" name="变更" comment="2.0.1">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/gui/form/FormShopGUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/gui/form/FormShopGUI.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/gui/inv/SellAllGUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/gui/inv/SellAllGUI.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/listeners/ClickListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/listeners/ClickListener.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/methods/GUI/ModifyDisplayItem.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/methods/GUI/ModifyDisplayItem.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/methods/Product/BuyProductMethod.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/methods/Product/BuyProductMethod.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/methods/Product/SellProductMethod.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/methods/Product/SellProductMethod.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/objects/items/prices/ObjectPrices.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/objects/items/prices/ObjectPrices.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/gui/form/FormBuyOrSellGUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/gui/form/FormBuyOrSellGUI.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/gui/inv/editor/CreateShopGUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/gui/inv/editor/CreateShopGUI.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/gui/inv/editor/EditShopGUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/gui/inv/editor/EditShopGUI.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/config.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/config.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/menus/buy-more.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/menus/buy-more.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/message.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/message.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/shops/baits.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/shops/baits.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/shops/blocks.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/shops/blocks.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/shops/crops.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/shops/crops.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/shops/crops1.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/shops/crops1.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/shops/drops.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/shops/drops.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/shops/logs.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/shops/logs.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/shops/ores.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/shops/ores.yml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -462,7 +469,7 @@
       <option name="project" value="LOCAL" />
       <updated>1699621585643</updated>
     </task>
-    <option name="localTasksCounter" value="158" />
+    <option name="localTasksCounter" value="159" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -477,7 +484,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="1.9.6" />
     <MESSAGE value="1.9.7" />
     <MESSAGE value="1.9.8" />
     <MESSAGE value="1.9.9" />
@@ -502,6 +508,7 @@
     <MESSAGE value="1.12.9" />
     <MESSAGE value="1.12.11" />
     <MESSAGE value="2.0.0" />
-    <option name="LAST_COMMIT_MESSAGE" value="2.0.0" />
+    <MESSAGE value="2.0.1" />
+    <option name="LAST_COMMIT_MESSAGE" value="2.0.1" />
   </component>
 </project>

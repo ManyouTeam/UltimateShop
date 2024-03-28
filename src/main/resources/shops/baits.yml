@@ -2,7 +2,7 @@ settings:
   menu: 'example-shop-menu'
   buy-more: true
   shop-name: 'Baits (Just an example shop)'
-  send-messages-after-buy: true
+  hide-message: false
 
 items:
   A:
