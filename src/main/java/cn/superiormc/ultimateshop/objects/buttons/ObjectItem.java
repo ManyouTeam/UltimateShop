@@ -290,12 +290,10 @@ public class ObjectItem extends AbstractButton {
 
     @Override
     public void clickEvent(ClickType type, Player player) {
-        if (UltimateShop.useGeyser) {
-            if (FloodgateApi.getInstance().isFloodgatePlayer(player.getUniqueId())) {
-                FormInfoGUI infoGUI = new FormInfoGUI(player, this);
-                infoGUI.openGUI();
-                return;
-            }
+        if (UltimateShop.useGeyser && CommonUtil.isBedrockPlayer(player)) {
+            FormInfoGUI infoGUI = new FormInfoGUI(player, this);
+            infoGUI.openGUI();
+            return;
         }
         boolean b = ConfigManager.configManager.getBoolean("placeholder.click.enabled");
         switch (ConfigManager.configManager.getClickAction(type)){
