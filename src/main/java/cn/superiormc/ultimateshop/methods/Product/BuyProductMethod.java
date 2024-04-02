@@ -51,8 +51,7 @@ public class BuyProductMethod {
             return ProductTradeStatus.ERROR;
         }
         boolean shouldSendMessage = inventory instanceof PlayerInventory && !test && (quick ||
-                tempVal1.getShopConfig().
-                        getBoolean("settings.send-messages-after-buy", true));
+                !tempVal1.getShopConfig().getBoolean("settings.hide-message", false));
         ObjectItem tempVal2 = tempVal1.getProduct(product);
         if (tempVal2 == null) {
             LanguageManager.languageManager.sendStringText(player,
@@ -61,14 +60,14 @@ public class BuyProductMethod {
                     product);
             return ProductTradeStatus.ERROR;
         }
-        if (shouldSendMessage) {
-            if (!tempVal2.getBuyCondition(player)) {
+        if (!tempVal2.getBuyCondition(player)) {
+            if (shouldSendMessage) {
                 LanguageManager.languageManager.sendStringText(player,
                         "buy-condition-not-meet",
                         "product",
                         product);
-                return ProductTradeStatus.PERMISSION;
             }
+            return ProductTradeStatus.PERMISSION;
         }
         if (tempVal2.getBuyPrice().empty) {
             return ProductTradeStatus.ERROR;
