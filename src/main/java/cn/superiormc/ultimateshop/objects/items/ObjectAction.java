@@ -1,6 +1,8 @@
 package cn.superiormc.ultimateshop.objects.items;
 
 import cn.superiormc.ultimateshop.UltimateShop;
+import cn.superiormc.ultimateshop.gui.AbstractGUI;
+import cn.superiormc.ultimateshop.gui.InvGUI;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.ErrorManager;
 import cn.superiormc.ultimateshop.methods.GUI.OpenGUI;
@@ -27,11 +29,13 @@ import java.util.regex.Pattern;
 
 public class ObjectAction {
 
-    private List<String> everyAction = new ArrayList<>();
+    private final List<String> everyAction = new ArrayList<>();
 
-    private List<String> onceAction = new ArrayList<>();
+    private final List<String> onceAction = new ArrayList<>();
 
     private ObjectShop shop = null;
+
+    public static List<Player> playerList = new ArrayList<>();
 
     public ObjectAction() {
         // Empty...
@@ -123,13 +127,21 @@ public class ObjectAction {
             } else if (singleAction.startsWith("message: ")) {
                 InvUtil.sendMessage(player, singleAction.substring(9));
             } else if (singleAction.startsWith("open_menu: ")) {
-                OpenGUI.openCommonGUI(player, singleAction.substring(11), false);
+                if (AbstractGUI.canReopenGUI(player)) {
+                    OpenGUI.openCommonGUI(player, singleAction.substring(11), false);
+                }
             } else if (singleAction.startsWith("open_bedrock_menu: ")) {
-                OpenGUI.openCommonGUI(player, singleAction.substring(19), true);
+                if (AbstractGUI.canReopenGUI(player)) {
+                    OpenGUI.openCommonGUI(player, singleAction.substring(19), true);
+                }
             } else if (singleAction.startsWith("shop_menu: ")) {
-                OpenGUI.openShopGUI(player, ConfigManager.configManager.getShop(singleAction.substring(11)), false);
+                if (AbstractGUI.canReopenGUI(player)) {
+                    OpenGUI.openShopGUI(player, ConfigManager.configManager.getShop(singleAction.substring(11)), false);
+                }
             } else if (singleAction.startsWith("shop_bedrock_menu: ")) {
-                OpenGUI.openShopGUI(player, ConfigManager.configManager.getShop(singleAction.substring(19)), true);
+                if (AbstractGUI.canReopenGUI(player)) {
+                    OpenGUI.openShopGUI(player, ConfigManager.configManager.getShop(singleAction.substring(19)), true);
+                }
             } else if (singleAction.startsWith("announcement: ")) {
                 Collection<? extends Player> players = Bukkit.getOnlinePlayers();
                 for (Player p : players) {

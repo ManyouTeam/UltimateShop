@@ -56,12 +56,14 @@ public abstract class InvGUI extends AbstractGUI {
         return;
     }
 
-    @Override
     public void openGUI() {
+        if (!super.canOpenGUI()) {
+            return;
+        }
         constructGUI();
         if (inv != null) {
-            owner.openInventory(inv);
-            guiCache.remove(owner);
+            player.openInventory(inv);
+            guiCache.remove(player);
             this.guiListener = new GUIListener(this);
             Bukkit.getPluginManager().registerEvents(guiListener, UltimateShop.instance);
         }

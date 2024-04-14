@@ -5,8 +5,6 @@ api-version: 1.13
 author:
   - PQguanfang
   - rzt1020
-libraries:
-  - cc.carm.lib:easysql-hikaricp:0.4.7
 softdepend:
   - MMOItems
   - MythicLib

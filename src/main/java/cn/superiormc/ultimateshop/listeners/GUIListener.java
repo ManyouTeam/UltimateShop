@@ -1,6 +1,7 @@
 package cn.superiormc.ultimateshop.listeners;
 
 import cn.superiormc.ultimateshop.UltimateShop;
+import cn.superiormc.ultimateshop.gui.AbstractGUI;
 import cn.superiormc.ultimateshop.gui.InvGUI;
 import cn.superiormc.ultimateshop.gui.inv.GUIMode;
 import org.bukkit.Bukkit;
@@ -17,12 +18,12 @@ import java.util.Objects;
 
 public class GUIListener implements Listener {
 
-    private Player player;
-    private InvGUI gui = null;
+    private final Player player;
+    private final InvGUI gui;
 
     public GUIListener(InvGUI gui) {
         this.gui = gui;
-        this.player = gui.getOwner();
+        this.player = gui.getPlayer();
     }
 
     @EventHandler
@@ -34,6 +35,12 @@ public class GUIListener implements Listener {
                         e.setCancelled(!gui.getChangeable());
                     }
                     return;
+                }
+                if (gui.getCooldown()) {
+                    e.setCancelled(true);
+                    return;
+                } else {
+                    gui.addCooldown();
                 }
                 if (gui.clickEventHandle(e.getClickedInventory(), e.getClick(), e.getSlot())) {
                     e.setCancelled(true);
@@ -67,13 +74,16 @@ public class GUIListener implements Listener {
             }
             HandlerList.unregisterAll(this);
             player.updateInventory();
+            if (AbstractGUI.playerList.containsKey(player)) {
+                gui.removeOpenGUIStatus();
+            }
             // 判定是否要打开上一页菜单
             if (gui.closeEventHandle(e.getInventory())) {
                 Bukkit.getScheduler().runTaskLater(UltimateShop.instance, () -> {
                     if (gui.previousGUI != null && gui.guiMode == GUIMode.NOT_EDITING) {
                         gui.previousGUI.openGUI();
                     }
-                }, 2L);
+                }, 4L);
             }
         }
     }

@@ -1,5 +1,6 @@
 package cn.superiormc.ultimateshop.gui.form;
 
+import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.cache.PlayerCache;
 import cn.superiormc.ultimateshop.cache.ServerCache;
 import cn.superiormc.ultimateshop.gui.FormGUI;
@@ -24,8 +25,6 @@ import org.geysermc.cumulus.util.FormImage;
 import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Objects;
-import java.util.TreeMap;
 
 public class FormShopGUI extends FormGUI {
 
@@ -41,17 +40,17 @@ public class FormShopGUI extends FormGUI {
 
     @Override
     protected void constructGUI() {
-        PlayerCache tempVal1 = CacheManager.cacheManager.getPlayerCache(owner.getPlayer());
+        PlayerCache tempVal1 = CacheManager.cacheManager.getPlayerCache(player.getPlayer());
         ServerCache tempVal2 = ServerCache.serverCache;
         if (tempVal1 == null) {
-            LanguageManager.languageManager.sendStringText(owner.getPlayer(),
+            LanguageManager.languageManager.sendStringText(player.getPlayer(),
                     "error.player-not-found",
                     "player",
-                    owner.getPlayer().getName());
+                    player.getPlayer().getName());
             return;
         }
         if (shop.getShopMenu() == null) {
-            LanguageManager.languageManager.sendStringText(owner.getPlayer(),
+            LanguageManager.languageManager.sendStringText(player.getPlayer(),
                     "error.shop-does-not-have-menu",
                     "shop",
                     shop.getShopName());
@@ -59,7 +58,7 @@ public class FormShopGUI extends FormGUI {
         }
         shopMenu = ObjectMenu.shopMenus.get(shop);
         if (shopMenu == null) {
-            LanguageManager.languageManager.sendStringText(owner.getPlayer(),
+            LanguageManager.languageManager.sendStringText(player.getPlayer(),
                     "error.shop-menu-not-found",
                     "shop",
                     shop.getShopName(),
@@ -119,12 +118,12 @@ public class FormShopGUI extends FormGUI {
         tempVal8.putAll(tempVal7);
         for (int slot : tempVal8.keySet()) {
             AbstractButton button = tempVal8.get(slot);
-            ItemStack displayItem = button.getDisplayItem(owner, 1);
+            ItemStack displayItem = button.getDisplayItem(player, 1);
             if (CommonUtil.getItemNameWithoutVanilla(displayItem).trim().isEmpty() ||
                     button.getButtonConfig().getBoolean("bedrock.hide", false)) {
                 continue;
             }
-            String tempVal3 = TextUtil.parse(CommonUtil.getItemName(displayItem), owner);
+            String tempVal3 = TextUtil.parse(CommonUtil.getItemName(displayItem), player);
             String icon = button.getButtonConfig().getString("bedrock.icon",
                     button.getButtonConfig().getString("bedrock-icon"));
             ButtonComponent tempVal6 = null;
@@ -147,7 +146,10 @@ public class FormShopGUI extends FormGUI {
         tempVal5.title(TextUtil.parse(shopMenu.getString("title", shop.getShopDisplayName())
                 .replace("{shop-name}", shop.getShopDisplayName())));
         tempVal5.validResultHandler(response -> {
-            menuButtons.get(menuItems.get(response.clickedButton())).clickEvent(ClickType.LEFT, owner);
+            menuButtons.get(menuItems.get(response.clickedButton())).clickEvent(ClickType.LEFT, player);
+        });
+        tempVal5.closedResultHandler(response -> {
+            removeOpenGUIStatus();
         });
         form = tempVal5.build();
     }

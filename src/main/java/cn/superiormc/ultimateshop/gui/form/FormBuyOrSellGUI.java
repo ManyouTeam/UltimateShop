@@ -9,7 +9,6 @@ import cn.superiormc.ultimateshop.methods.GUI.OpenGUI;
 import cn.superiormc.ultimateshop.methods.Product.BuyProductMethod;
 import cn.superiormc.ultimateshop.methods.Product.SellProductMethod;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
-import cn.superiormc.ultimateshop.objects.menus.ObjectMenu;
 import cn.superiormc.ultimateshop.utils.TextUtil;
 import org.bukkit.entity.Player;
 import org.geysermc.cumulus.form.CustomForm;
@@ -29,18 +28,18 @@ public class FormBuyOrSellGUI extends FormGUI {
 
     @Override
     protected void constructGUI() {
-        PlayerCache tempVal1 = CacheManager.cacheManager.getPlayerCache(owner.getPlayer());
+        PlayerCache tempVal1 = CacheManager.cacheManager.getPlayerCache(player.getPlayer());
         if (tempVal1 == null) {
-            LanguageManager.languageManager.sendStringText(owner.getPlayer(),
+            LanguageManager.languageManager.sendStringText(player.getPlayer(),
                     "error.player-not-found",
                     "player",
-                    owner.getPlayer().getName());
+                    player.getPlayer().getName());
             return;
         }
         CustomForm.Builder tempVal2 = CustomForm.builder();
 
         tempVal2.title(TextUtil.parse(ConfigManager.configManager.getString("menu.bedrock.buy-or-sell.title"))
-                .replace("{item-name}", item.getDisplayName(getOwner().getPlayer())));
+                .replace("{item-name}", item.getDisplayName(getPlayer().getPlayer())));
 
         tempVal2.input(TextUtil.parse(
                         ConfigManager.configManager.getString("menu.bedrock.buy-or-sell.buttons.amount.name")),
@@ -49,7 +48,7 @@ public class FormBuyOrSellGUI extends FormGUI {
         tempVal2.validResultHandler(response -> {
             doThing(response.next());
             if (ConfigManager.configManager.getBoolean("menu.bedrock.not-auto-close")) {
-                OpenGUI.openShopGUI(owner, item.getShopObject(), true);
+                OpenGUI.openShopGUI(player, item.getShopObject(), true);
             }
         });
         form = tempVal2.build();
@@ -75,7 +74,7 @@ public class FormBuyOrSellGUI extends FormGUI {
             if (!item.getSellPrice().empty) {
                 SellProductMethod.startSell(item.getShop(),
                         item.getProduct(),
-                        owner.getPlayer(),
+                        player.getPlayer(),
                         !b,
                         false,
                         true,
@@ -102,7 +101,7 @@ public class FormBuyOrSellGUI extends FormGUI {
             if (!item.getBuyPrice().empty) {
                 BuyProductMethod.startBuy(item.getShop(),
                         item.getProduct(),
-                        owner.getPlayer(),
+                        player.getPlayer(),
                         !b,
                         false,
                         realAmount);
@@ -112,7 +111,7 @@ public class FormBuyOrSellGUI extends FormGUI {
             if (!item.getSellPrice().empty) {
                 SellProductMethod.startSell(item.getShop(),
                         item.getProduct(),
-                        owner.getPlayer(),
+                        player.getPlayer(),
                         !b,
                         false,
                         realAmount);

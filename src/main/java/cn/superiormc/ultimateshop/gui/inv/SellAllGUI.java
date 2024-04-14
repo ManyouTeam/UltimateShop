@@ -31,7 +31,7 @@ public class SellAllGUI extends InvGUI {
     @Override
     protected void constructGUI() {
         if (Objects.isNull(inv)) {
-            inv = InvUtil.createNewInv(owner, ConfigManager.configManager.getInt
+            inv = InvUtil.createNewInv(player, ConfigManager.configManager.getInt
                             ("menu.sell-all.size", 54),
                    ConfigManager.configManager.getString("menu.sell-all.title"));
         }
@@ -44,7 +44,7 @@ public class SellAllGUI extends InvGUI {
 
     @Override
     public boolean closeEventHandle(Inventory inventory) {
-        if (owner == null) {
+        if (player == null) {
             return true;
         }
         int nowAmount = 0;
@@ -60,7 +60,7 @@ public class SellAllGUI extends InvGUI {
                 ProductTradeStatus status = SellProductMethod.startSell(inv,
                         shop,
                         products.getProduct(),
-                        owner.getPlayer(),
+                        player.getPlayer(),
                         false,
                         false,
                         ConfigManager.configManager.getBoolean("menu.sell-all.hide-message"),
@@ -77,19 +77,19 @@ public class SellAllGUI extends InvGUI {
                     afterAmount = afterAmount + item.getAmount();
                 }
             }
-            LanguageManager.languageManager.sendStringText(owner.getPlayer(), "start-sell-all", "amount", String.valueOf(nowAmount - afterAmount),
-                    "reward", ObjectPrices.getDisplayNameInLine(owner,
+            LanguageManager.languageManager.sendStringText(player.getPlayer(), "start-sell-all", "amount", String.valueOf(nowAmount - afterAmount),
+                    "reward", ObjectPrices.getDisplayNameInLine(player,
                     result, ThingMode.ALL
             ));
         }
         ItemStack[] storage = Arrays.stream(inv.getStorageContents()).filter(Objects::nonNull).toArray(ItemStack[]::new);
-        XItemStack.giveOrDrop(owner, storage);
-        return true;
+        XItemStack.giveOrDrop(player, storage);
+        return super.closeEventHandle(inventory);
     }
 
     @Override
     public boolean dragEventHandle(Map<Integer, ItemStack> newItems) {
-        owner.updateInventory();
+        player.updateInventory();
         for (int i : newItems.keySet()) {
             if (ConfigManager.configManager.getIntList("menu.sell-all.black-slots").contains(i)) {
                 return true;

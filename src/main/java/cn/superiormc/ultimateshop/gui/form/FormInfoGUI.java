@@ -1,5 +1,6 @@
 package cn.superiormc.ultimateshop.gui.form;
 
+import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.cache.PlayerCache;
 import cn.superiormc.ultimateshop.gui.FormGUI;
 import cn.superiormc.ultimateshop.managers.CacheManager;
@@ -10,6 +11,7 @@ import cn.superiormc.ultimateshop.methods.Product.BuyProductMethod;
 import cn.superiormc.ultimateshop.methods.Product.SellProductMethod;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import cn.superiormc.ultimateshop.utils.TextUtil;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.geysermc.cumulus.component.ButtonComponent;
 import org.geysermc.cumulus.form.SimpleForm;
@@ -28,19 +30,19 @@ public class FormInfoGUI extends FormGUI {
 
     @Override
     protected void constructGUI() {
-        PlayerCache tempVal1 = CacheManager.cacheManager.getPlayerCache(owner.getPlayer());
+        PlayerCache tempVal1 = CacheManager.cacheManager.getPlayerCache(player.getPlayer());
         if (tempVal1 == null) {
-            LanguageManager.languageManager.sendStringText(owner.getPlayer(),
+            LanguageManager.languageManager.sendStringText(player.getPlayer(),
                     "error.player-not-found",
                     "player",
-                    owner.getPlayer().getName());
+                    player.getPlayer().getName());
             return;
         }
         SimpleForm.Builder tempVal2 = SimpleForm.builder();
 
         tempVal2.title(TextUtil.parse(ConfigManager.configManager.getString("menu.bedrock.info.title"))
-                .replace("{item-name}", item.getDisplayName(getOwner().getPlayer())));
-        tempVal2.content(bedrockTransfer(ModifyDisplayItem.getModifiedLore(owner.getPlayer(),
+                .replace("{item-name}", item.getDisplayName(getPlayer().getPlayer())));
+        tempVal2.content(bedrockTransfer(ModifyDisplayItem.getModifiedLore(player.getPlayer(),
                 1,
                 item,
                 false,
@@ -50,11 +52,11 @@ public class FormInfoGUI extends FormGUI {
         // 购买
         ButtonComponent buy = ButtonComponent.of(TextUtil.parse(ConfigManager.configManager.getString(
                 "menu.bedrock.info.buttons.buy"))
-                .replace("{item-name}", item.getDisplayName(getOwner().getPlayer())));
+                .replace("{item-name}", item.getDisplayName(getPlayer().getPlayer())));
         // 回收
         ButtonComponent sell = ButtonComponent.of(TextUtil.parse(ConfigManager.configManager.getString(
                         "menu.bedrock.info.buttons.sell"))
-                .replace("{item-name}", item.getDisplayName(getOwner().getPlayer())));
+                .replace("{item-name}", item.getDisplayName(getPlayer().getPlayer())));
 
         if (!item.getBuyPrice().empty) {
             tempVal2.button(buy);
@@ -66,7 +68,7 @@ public class FormInfoGUI extends FormGUI {
         tempVal2.validResultHandler(response -> {
             if (response.clickedButton().equals(buy)) {
                 if (item.getBuyMore()) {
-                    FormBuyOrSellGUI buyOrSellGUI = new FormBuyOrSellGUI(owner, item, FormType.BUY);
+                    FormBuyOrSellGUI buyOrSellGUI = new FormBuyOrSellGUI(player, item, FormType.BUY);
                     buyOrSellGUI.openGUI();
                 }
                 else {
@@ -75,13 +77,16 @@ public class FormInfoGUI extends FormGUI {
             }
             else if (response.clickedButton().equals(sell)) {
                 if (item.getBuyMore()) {
-                    FormBuyOrSellGUI buyOrSellGUI = new FormBuyOrSellGUI(owner, item, FormType.SELL);
+                    FormBuyOrSellGUI buyOrSellGUI = new FormBuyOrSellGUI(player, item, FormType.SELL);
                     buyOrSellGUI.openGUI();
                 }
                 else {
                     doThing(false);
                 }
             }
+        });
+        tempVal2.closedResultHandler(response -> {
+            removeOpenGUIStatus();
         });
         form = tempVal2.build();
     }
@@ -100,7 +105,7 @@ public class FormInfoGUI extends FormGUI {
             if (!item.getBuyPrice().empty) {
                 BuyProductMethod.startBuy(item.getShop(),
                         item.getProduct(),
-                        owner.getPlayer(),
+                        player.getPlayer(),
                         !b,
                         false,
                         1);
@@ -110,7 +115,7 @@ public class FormInfoGUI extends FormGUI {
             if (!item.getSellPrice().empty) {
                 SellProductMethod.startSell(item.getShop(),
                         item.getProduct(),
-                        owner.getPlayer(),
+                        player.getPlayer(),
                         !b,
                         false,
                         1);

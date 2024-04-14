@@ -1,22 +1,48 @@
 package cn.superiormc.ultimateshop.managers;
 
-import cn.superiormc.ultimateshop.commands.MainCommand;
-import cn.superiormc.ultimateshop.commands.MainCommandTab;
+import cn.superiormc.ultimateshop.commands.*;
 import org.bukkit.Bukkit;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 public class CommandManager {
 
     public static CommandManager commandManager;
 
+    private Map<String, AbstractCommand> registeredCommands = new HashMap<>();
+
     public CommandManager(){
         commandManager = this;
-        registerCommands();
+        registerBukkitCommands();
+        registerObjectCommand();
     }
 
-    private void registerCommands(){
+    private void registerBukkitCommands(){
         Objects.requireNonNull(Bukkit.getPluginCommand("ultimateshop")).setExecutor(new MainCommand());
         Objects.requireNonNull(Bukkit.getPluginCommand("ultimateshop")).setTabCompleter(new MainCommandTab());
     }
+
+    private void registerObjectCommand() {
+       registerNewSubCommand(new SubSaveItem());
+       registerNewSubCommand(new SubMenu());
+       registerNewSubCommand(new SubQuickSell());
+       registerNewSubCommand(new SubQuickBuy());
+       registerNewSubCommand(new SubReload());
+       registerNewSubCommand(new SubGiveSellStick());
+       registerNewSubCommand(new SubSellAll());
+       registerNewSubCommand(new SubSetSellTimes());
+       registerNewSubCommand(new SubSetBuyTimes());
+       registerNewSubCommand(new SubHelp());
+    }
+
+    public Map<String, AbstractCommand> getSubCommandsMap() {
+        return registeredCommands;
+    }
+
+    public void registerNewSubCommand(AbstractCommand command) {
+        registeredCommands.put(command.getId(), command);
+    }
+
 }

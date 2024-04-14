@@ -1,114 +1,36 @@
 package cn.superiormc.ultimateshop.commands;
 
 import cn.superiormc.ultimateshop.UltimateShop;
-import cn.superiormc.ultimateshop.managers.ConfigManager;
-import cn.superiormc.ultimateshop.managers.LanguageManager;
-import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
-import cn.superiormc.ultimateshop.objects.menus.ObjectMenu;
-import cn.superiormc.ultimateshop.objects.ObjectShop;
-import org.bukkit.Bukkit;
+import cn.superiormc.ultimateshop.managers.CommandManager;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
-import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class MainCommandTab implements TabCompleter {
 
+    @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
         List<String> tempVal1 = new ArrayList<>();
-        switch (args.length) {
-            case 1 :
-                tempVal1.add("help");
-                if (sender.hasPermission("ultimateshop.editor") && !UltimateShop.freeVersion) {
-                    tempVal1.add("editor");
+        if (args.length == 1) {
+            for (AbstractCommand object : CommandManager.commandManager.getSubCommandsMap().values()) {
+                if (object.premiumOnly && UltimateShop.freeVersion) {
+                    continue;
                 }
-                if (sender.hasPermission("ultimateshop.quickbuy")) {
-                    tempVal1.add("quickbuy");
+                if (object.getRequiredPermission() != null && !object.getRequiredPermission().isEmpty()
+                        && !sender.hasPermission(object.getRequiredPermission())) {
+                    continue;
                 }
-                if (sender.hasPermission("ultimateshop.quicksell")) {
-                    tempVal1.add("quicksell");
-                }
-                if (sender.hasPermission("ultimateshop.menu")) {
-                    tempVal1.add("menu");
-                }
-                if (sender.hasPermission("ultimateshop.reload")) {
-                    tempVal1.add("reload");
-                }
-                if (sender.hasPermission("ultimateshop.sellall")) {
-                    tempVal1.add("sellall");
-                }
-                if (sender.hasPermission("ultimateshop.givesellstick") && !UltimateShop.freeVersion) {
-                    tempVal1.add("givesellstick");
-                }
-                if (sender.hasPermission("ultimateshop.setbuytimes")) {
-                    tempVal1.add("setbuytimes");
-                }
-                if (sender.hasPermission("ultimateshop.setselltimes")) {
-                    tempVal1.add("setselltimes");
-                }
-                if (sender.hasPermission("ultimateshop.saveitem")) {
-                    tempVal1.add("saveitem");
-                }
-                break;
-            case 2:
-                switch (args[0]) {
-                    case "quickbuy" : case "quicksell" : case "setbuytimes": case "setselltimes":
-                        for (ObjectShop tempVal2: ConfigManager.configManager.getShopList()) {
-                            tempVal1.add(tempVal2.getShopName());
-                        }
-                        break;
-                    case "menu":
-                        for (ObjectShop tempVal2: ConfigManager.configManager.getShopList()) {
-                            tempVal1.add(tempVal2.getShopName());
-                        }
-                        for (String tempVal4 : ObjectMenu.commonMenus.keySet()) {
-                            if (tempVal4.equals(ConfigManager.configManager.getString("menu.select-more.menu"))) {
-                                    continue;
-                            }
-                            tempVal1.add(tempVal4);
-                        }
-                        break;
-                }
-                break;
-            case 3:
-                switch (args[0]) {
-                    case "quickbuy": case "quicksell": case "setbuytimes": case "setselltimes":
-                        ObjectShop tempVal3 = ConfigManager.configManager.getShop(args[1]);
-                        if (tempVal3 == null) {
-                            tempVal1.add(LanguageManager.languageManager.getStringText("command-tab.unknown-shop"));
-                            break;
-                        }
-                        for (ObjectItem tempVal4 : tempVal3.getProductList()) {
-                            tempVal1.add(tempVal4.getItemConfig().getName());
-                        }
-                        break;
-                }
-                break;
-            case 4:
-                switch (args[0]) {
-                    case "setbuytimes": case "setselltimes":
-                        for (Player player : Bukkit.getOnlinePlayers()) {
-                            tempVal1.add(player.getName());
-                        }
-                        tempVal1.add("global");
-                        break;
-                    case "quickbuy": case "quicksell":
-                        tempVal1.add("1");
-                        tempVal1.add("5");
-                        break;
-                }
-                break;
-            case 5:
-                switch (args[0]) {
-                    case "setbuytimes": case "setselltimes":
-                        tempVal1.add("0");
-                        tempVal1.add("5");
-                        break;
-                }
-                break;
+                tempVal1.add(object.getId());
+            }
+        } else {
+            AbstractCommand tempVal2 = CommandManager.commandManager.getSubCommandsMap().get(args[0]);
+            if (tempVal2 != null && sender.hasPermission(tempVal2.getRequiredPermission())) {
+                AbstractCommand object = CommandManager.commandManager.getSubCommandsMap().get(args[0]);
+                tempVal1 = object.getTabResult(args);
+            }
         }
         return tempVal1;
     }

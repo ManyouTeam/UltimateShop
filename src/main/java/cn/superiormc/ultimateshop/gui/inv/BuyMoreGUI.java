@@ -8,8 +8,6 @@ import cn.superiormc.ultimateshop.methods.Product.SellProductMethod;
 import cn.superiormc.ultimateshop.objects.buttons.*;
 import cn.superiormc.ultimateshop.objects.menus.ObjectMoreMenu;
 import cn.superiormc.ultimateshop.utils.InvUtil;
-import cn.superiormc.ultimateshop.utils.TextUtil;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.Inventory;
@@ -41,12 +39,12 @@ public class BuyMoreGUI extends InvGUI {
         }
         // display item
         menuButtons = menu.getMenu();
-        menuItems = getMenuItems(owner.getPlayer());
+        menuItems = getMenuItems(player.getPlayer());
         int displaySlot = menu.getDisplayItemSlot();
         ItemStack tempVal1 = menuItems.get(displaySlot);
         tempVal1.setAmount(nowingAmount);
         if (Objects.isNull(inv)) {
-            inv = InvUtil.createNewInv(owner, menu.getInt("size", 54),
+            inv = InvUtil.createNewInv(player, menu.getInt("size", 54),
                     menu.getString("title", "Shop"));
         }
         inv.setItem(displaySlot, tempVal1);
@@ -99,7 +97,7 @@ public class BuyMoreGUI extends InvGUI {
                         if (!item.getBuyPrice().empty) {
                             BuyProductMethod.startBuy(item.getShop(),
                                     item.getProduct(),
-                                    owner.getPlayer(),
+                                    player.getPlayer(),
                                     !b,
                                     false,
                                     nowingAmount);
@@ -109,7 +107,7 @@ public class BuyMoreGUI extends InvGUI {
                         if (!item.getSellPrice().empty) {
                             SellProductMethod.startSell(item.getShop(),
                                     item.getProduct(),
-                                    owner.getPlayer(),
+                                    player.getPlayer(),
                                     !b,
                                     false,
                                     nowingAmount);
@@ -117,12 +115,12 @@ public class BuyMoreGUI extends InvGUI {
                         }
                     case "buy-or-sell" :
                         if (item.getBuyPrice().empty && !item.getSellPrice().empty) {
-                            SellProductMethod.startSell(item.getShop(), item.getProduct(), owner.getPlayer(), !b,
+                            SellProductMethod.startSell(item.getShop(), item.getProduct(), player.getPlayer(), !b,
                                     false,
                                     nowingAmount);
                         }
                         else {
-                            BuyProductMethod.startBuy(item.getShop(), item.getProduct(), owner.getPlayer(), !b,
+                            BuyProductMethod.startBuy(item.getShop(), item.getProduct(), player.getPlayer(), !b,
                                     false,
                                     nowingAmount);
                         }
@@ -131,7 +129,7 @@ public class BuyMoreGUI extends InvGUI {
                         if (!item.getSellPrice().empty) {
                             SellProductMethod.startSell(item.getShop(),
                                     item.getProduct(),
-                                    owner.getPlayer(),
+                                    player.getPlayer(),
                                     !b,
                                     false,
                                     true,
@@ -145,7 +143,7 @@ public class BuyMoreGUI extends InvGUI {
                 }
                 break;
             default:
-                menuButtons.get(slot).clickEvent(type, owner.getPlayer());
+                menuButtons.get(slot).clickEvent(type, player.getPlayer());
                 break;
         }
         constructGUI();

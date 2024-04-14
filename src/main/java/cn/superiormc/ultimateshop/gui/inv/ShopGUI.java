@@ -39,6 +39,9 @@ public class ShopGUI extends InvGUI {
     @Override
     public void openGUI() {
         super.openGUI();
+        if (!super.canOpenGUI()) {
+            return;
+        }
         if (ConfigManager.configManager.getBoolean("menu.shop.update")) {
             runTask = new BukkitRunnable() {
                 @Override
@@ -52,25 +55,25 @@ public class ShopGUI extends InvGUI {
 
     @Override
     protected void constructGUI() {
-        PlayerCache tempVal1 = CacheManager.cacheManager.getPlayerCache(owner.getPlayer());
+        PlayerCache tempVal1 = CacheManager.cacheManager.getPlayerCache(player.getPlayer());
         ServerCache tempVal2 = ServerCache.serverCache;
         if (tempVal1 == null) {
-            LanguageManager.languageManager.sendStringText(owner.getPlayer(),
+            LanguageManager.languageManager.sendStringText(player.getPlayer(),
                     "error.player-not-found",
                     "player",
-                    owner.getName());
+                    player.getName());
             return;
         }
         if (shop.getShopMenu() == null) {
-            LanguageManager.languageManager.sendStringText(owner.getPlayer(),
+            LanguageManager.languageManager.sendStringText(player.getPlayer(),
                     "error.shop-does-not-have-menu",
                     "shop",
                     shop.getShopName());
             return;
         }
         shopMenu = ObjectMenu.shopMenus.get(shop);
-        if (shopMenu == null) {
-            LanguageManager.languageManager.sendStringText(owner.getPlayer(),
+        if (shopMenu == null || shopMenu.menuConfigs == null) {
+            LanguageManager.languageManager.sendStringText(player.getPlayer(),
                     "error.shop-menu-not-found",
                     "shop",
                     shop.getShopName(),
@@ -78,8 +81,8 @@ public class ShopGUI extends InvGUI {
                     shop.getShopMenu());
             return;
         }
-        if (!shopMenu.getCondition().getBoolean(owner.getPlayer())) {
-            LanguageManager.languageManager.sendStringText(owner,
+        if (!shopMenu.getCondition().getBoolean(player.getPlayer())) {
+            LanguageManager.languageManager.sendStringText(player,
                     "menu-condition-not-meet",
                     "menu",
                     shop.getShopMenu());
@@ -123,10 +126,10 @@ public class ShopGUI extends InvGUI {
                 Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §fMenu Buttons: " + menuButtons.get(i));
             }
         }
-        menuItems = getMenuItems(owner.getPlayer());
+        menuItems = getMenuItems(player.getPlayer());
         if (Objects.isNull(inv)) {
             if (shopMenu != null) {
-                inv = InvUtil.createNewInv(owner, shopMenu.getInt("size", 54),
+                inv = InvUtil.createNewInv(player, shopMenu.getInt("size", 54),
                         shopMenu.getString("title", shop.getShopDisplayName())
                                 .replace("{shop-name}", shop.getShopDisplayName()));
             }
@@ -142,7 +145,7 @@ public class ShopGUI extends InvGUI {
         if (menuButtons.get(slot) == null) {
             return true;
         }
-        menuButtons.get(slot).clickEvent(type, owner.getPlayer());
+        menuButtons.get(slot).clickEvent(type, player.getPlayer());
         constructGUI();
         return true;
     }
@@ -152,7 +155,7 @@ public class ShopGUI extends InvGUI {
         if (runTask != null) {
             runTask.cancel();
         }
-        return true;
+        return super.closeEventHandle(inventory);
     }
 
     public Map<Integer, ItemStack> getMenuItems(Player player) {

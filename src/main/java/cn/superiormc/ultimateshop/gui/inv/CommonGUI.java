@@ -28,24 +28,24 @@ public class CommonGUI extends InvGUI {
     @Override
     protected void constructGUI() {
         commonMenu = ObjectMenu.commonMenus.get(fileName);
-        if (commonMenu == null) {
-            LanguageManager.languageManager.sendStringText(owner,
+        if (commonMenu == null || commonMenu.menuConfigs == null) {
+            LanguageManager.languageManager.sendStringText(player,
                     "error.menu-not-found",
                     "menu",
                     fileName);
             return;
         }
-        if (!commonMenu.getCondition().getBoolean(owner.getPlayer())) {
-            LanguageManager.languageManager.sendStringText(owner,
+        if (!commonMenu.getCondition().getBoolean(player.getPlayer())) {
+            LanguageManager.languageManager.sendStringText(player,
                     "menu-condition-not-meet",
                     "menu",
                     fileName);
             return;
         }
         menuButtons = commonMenu.getMenu();
-        menuItems = getMenuItems(owner.getPlayer());
+        menuItems = getMenuItems(player.getPlayer());
         if (Objects.isNull(inv)) {
-            inv = InvUtil.createNewInv(owner, commonMenu.getInt("size", 54),
+            inv = InvUtil.createNewInv(player, commonMenu.getInt("size", 54),
                     commonMenu.getString("title", "Shop"));
         }
         for (int slot : menuButtons.keySet()) {
@@ -58,7 +58,7 @@ public class CommonGUI extends InvGUI {
         if (menuButtons.get(slot) == null) {
             return true;
         }
-        menuButtons.get(slot).clickEvent(type, owner.getPlayer());
+        menuButtons.get(slot).clickEvent(type, player.getPlayer());
         constructGUI();
         return true;
     }

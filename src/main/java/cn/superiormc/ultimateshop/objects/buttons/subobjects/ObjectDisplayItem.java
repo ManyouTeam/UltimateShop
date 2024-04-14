@@ -16,9 +16,9 @@ import java.util.List;
 
 public class ObjectDisplayItem {
 
-    private ConfigurationSection section;
+    private final ConfigurationSection section;
 
-    private ConfigurationSection conditionSection;
+    private final ConfigurationSection conditionSection;
 
     private ObjectItem item;
 

@@ -1,11 +1,13 @@
 package cn.superiormc.ultimateshop.gui.form;
 
+import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.gui.FormGUI;
 import cn.superiormc.ultimateshop.managers.LanguageManager;
 import cn.superiormc.ultimateshop.objects.buttons.AbstractButton;
 import cn.superiormc.ultimateshop.objects.menus.ObjectMenu;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
 import cn.superiormc.ultimateshop.utils.TextUtil;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
@@ -29,7 +31,7 @@ public class FormCommonGUI extends FormGUI {
     protected void constructGUI() {
         commonMenu = ObjectMenu.commonMenus.get(fileName);
         if (commonMenu == null) {
-            LanguageManager.languageManager.sendStringText(owner,
+            LanguageManager.languageManager.sendStringText(player,
                     "error.menu-not-found",
                     "menu",
                     fileName);
@@ -39,14 +41,14 @@ public class FormCommonGUI extends FormGUI {
         SimpleForm.Builder tempVal2 = SimpleForm.builder();
         for (int slot : menuButtons.keySet()) {
             AbstractButton button = menuButtons.get(slot);
-            ItemStack displayItem = button.getDisplayItem(owner, 1);
+            ItemStack displayItem = button.getDisplayItem(player, 1);
             if (CommonUtil.getItemNameWithoutVanilla(displayItem).trim().isEmpty() ||
                     button.getButtonConfig().getBoolean("bedrock.hide", false)) {
                 continue;
             }
             String icon = button.getButtonConfig().getString("bedrock.icon",
                     button.getButtonConfig().getString("bedrock-icon"));
-            String tempVal3 = TextUtil.parse(CommonUtil.getItemName(displayItem), owner);
+            String tempVal3 = TextUtil.parse(CommonUtil.getItemName(displayItem), player);
             ButtonComponent tempVal1 = null;
             if (icon != null && icon.split(";;").length == 2) {
                 String type = icon.split(";;")[0].toLowerCase();
@@ -65,7 +67,10 @@ public class FormCommonGUI extends FormGUI {
         }
         tempVal2.title(TextUtil.parse(commonMenu.getString("title", "Shop")));
         tempVal2.validResultHandler(response -> {
-            menuButtons.get(menuItems.get(response.clickedButton())).clickEvent(ClickType.LEFT, owner);
+            menuButtons.get(menuItems.get(response.clickedButton())).clickEvent(ClickType.LEFT, player);
+        });
+        tempVal2.closedResultHandler(response -> {
+            removeOpenGUIStatus();
         });
         form = tempVal2.build();
     }

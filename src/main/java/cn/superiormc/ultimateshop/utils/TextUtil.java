@@ -62,7 +62,7 @@ public class TextUtil {
         List<String> resultList = new ArrayList<>();
         for (String s : inList) {
             if (CommonUtil.checkPluginLoad("PlaceholderAPI")) {
-                PlaceholderAPI.setPlaceholders(player, s);
+                s = PlaceholderAPI.setPlaceholders(player, s);
             }
             resultList.add(TextUtil.parse(s));
         }

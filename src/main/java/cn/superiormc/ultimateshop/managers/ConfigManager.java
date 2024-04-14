@@ -137,6 +137,10 @@ public class ConfigManager {
         return config.getInt(path, defaultValue);
     }
 
+    public long getLong(String path, long defaultValue) {
+        return config.getLong(path, defaultValue);
+    }
+
     public String getString(String path, String... args) {
         String s = config.getString(path);
         if (s == null) {

@@ -5,7 +5,6 @@ import org.bukkit.entity.Player;
 import org.geysermc.cumulus.component.ButtonComponent;
 import org.geysermc.cumulus.form.Form;
 import org.geysermc.floodgate.api.FloodgateApi;
-import org.geysermc.floodgate.api.player.FloodgatePlayer;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -23,10 +22,12 @@ public abstract class FormGUI extends AbstractGUI {
         super(owner);
     }
 
-    @Override
     public void openGUI() {
+        if (!super.canOpenGUI()) {
+            return;
+        }
         if (form != null) {
-            FloodgateApi.getInstance().sendForm(owner.getUniqueId(), form);
+            FloodgateApi.getInstance().sendForm(player.getUniqueId(), form);
         }
     }
 
