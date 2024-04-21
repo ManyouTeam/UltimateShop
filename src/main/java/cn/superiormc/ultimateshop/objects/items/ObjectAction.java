@@ -35,8 +35,6 @@ public class ObjectAction {
 
     private ObjectShop shop = null;
 
-    public static List<Player> playerList = new ArrayList<>();
-
     public ObjectAction() {
         // Empty...
     }
@@ -127,21 +125,13 @@ public class ObjectAction {
             } else if (singleAction.startsWith("message: ")) {
                 InvUtil.sendMessage(player, singleAction.substring(9));
             } else if (singleAction.startsWith("open_menu: ")) {
-                if (AbstractGUI.canReopenGUI(player)) {
-                    OpenGUI.openCommonGUI(player, singleAction.substring(11), false);
-                }
+                OpenGUI.openCommonGUI(player, singleAction.substring(11), false, true);
             } else if (singleAction.startsWith("open_bedrock_menu: ")) {
-                if (AbstractGUI.canReopenGUI(player)) {
-                    OpenGUI.openCommonGUI(player, singleAction.substring(19), true);
-                }
+                OpenGUI.openCommonGUI(player, singleAction.substring(19), true, true);
             } else if (singleAction.startsWith("shop_menu: ")) {
-                if (AbstractGUI.canReopenGUI(player)) {
-                    OpenGUI.openShopGUI(player, ConfigManager.configManager.getShop(singleAction.substring(11)), false);
-                }
+                OpenGUI.openShopGUI(player, ConfigManager.configManager.getShop(singleAction.substring(11)), false, true);
             } else if (singleAction.startsWith("shop_bedrock_menu: ")) {
-                if (AbstractGUI.canReopenGUI(player)) {
-                    OpenGUI.openShopGUI(player, ConfigManager.configManager.getShop(singleAction.substring(19)), true);
-                }
+                OpenGUI.openShopGUI(player, ConfigManager.configManager.getShop(singleAction.substring(19)), true, true);
             } else if (singleAction.startsWith("announcement: ")) {
                 Collection<? extends Player> players = Bukkit.getOnlinePlayers();
                 for (Player p : players) {

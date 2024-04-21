@@ -37,9 +37,9 @@ public class ShopGUI extends InvGUI {
     }
 
     @Override
-    public void openGUI() {
-        super.openGUI();
-        if (!super.canOpenGUI()) {
+    public void openGUI(boolean reopen) {
+        super.openGUI(reopen);
+        if (!super.canOpenGUI(reopen)) {
             return;
         }
         if (ConfigManager.configManager.getBoolean("menu.shop.update")) {

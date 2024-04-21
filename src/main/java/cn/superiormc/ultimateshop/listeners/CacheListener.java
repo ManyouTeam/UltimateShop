@@ -32,6 +32,5 @@ public class CacheListener implements Listener {
             ServerCache.serverCache.shutServerCache(false);
         }
         AbstractGUI.playerList.remove(event.getPlayer());
-        ObjectAction.playerList.remove(event.getPlayer());
     }
 }

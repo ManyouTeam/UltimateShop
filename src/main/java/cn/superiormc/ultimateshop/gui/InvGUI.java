@@ -56,8 +56,8 @@ public abstract class InvGUI extends AbstractGUI {
         return;
     }
 
-    public void openGUI() {
-        if (!super.canOpenGUI()) {
+    public void openGUI(boolean reopen) {
+        if (!super.canOpenGUI(reopen)) {
             return;
         }
         constructGUI();

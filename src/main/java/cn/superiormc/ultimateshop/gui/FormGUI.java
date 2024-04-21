@@ -22,8 +22,8 @@ public abstract class FormGUI extends AbstractGUI {
         super(owner);
     }
 
-    public void openGUI() {
-        if (!super.canOpenGUI()) {
+    public void openGUI(boolean reopen) {
+        if (!super.canOpenGUI(reopen)) {
             return;
         }
         if (form != null) {

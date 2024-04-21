@@ -2,6 +2,8 @@ package cn.superiormc.ultimateshop.gui;
 
 import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
+import cn.superiormc.ultimateshop.managers.LanguageManager;
+import cn.superiormc.ultimateshop.utils.CommonUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -11,11 +13,11 @@ import java.util.Map;
 
 public abstract class AbstractGUI {
 
-    public static Map<Player, Boolean> playerList = new HashMap<>();
+    public static Map<Player, GUIStatus> playerList = new HashMap<>();
+
+    private static boolean inClickCooldown = false;
 
     protected Player player;
-
-    private boolean inClickCooldown = false;
 
     public AbstractGUI(Player owner) {
         this.player = owner;
@@ -23,39 +25,27 @@ public abstract class AbstractGUI {
 
     protected abstract void constructGUI();
 
-    public boolean canOpenGUI() {
+    public boolean canOpenGUI(boolean reopen) {
         if (ConfigManager.configManager.getLong("menu.cooldown.reopen", 3L) <= 0L) {
             return true;
         }
         if (playerList.containsKey(player)) {
-            return false;
-        }
-        playerList.put(player, false);
-        return true;
-    }
-
-    public static boolean canReopenGUI(Player player) {
-        long time = ConfigManager.configManager.getLong("menu.cooldown.reopen", 3L);
-        if (time <= 0L) {
-            return true;
-        }
-        if (playerList.containsKey(player)) {
-            // 虽然包括了某个玩家，但是只要其不是二次触发，就允许通过
-            if (playerList.get(player)) {
+            if (reopen && playerList.get(player) != GUIStatus.ACTION_OPEN_MENU) {
+                playerList.replace(player, GUIStatus.ACTION_OPEN_MENU);
+            } else {
                 return false;
             }
-            playerList.replace(player, true);
-            Bukkit.getScheduler().runTaskLater(UltimateShop.instance, () -> {
-                playerList.remove(player);
-            }, time);
+        } else {
+            playerList.put(player, GUIStatus.CAN_REOPEN);
+            return true;
         }
         return true;
     }
 
     public void removeOpenGUIStatus() {
         long time = ConfigManager.configManager.getLong("menu.cooldown.reopen", 3L);
-        if (playerList.containsKey(player) && !playerList.get(player)) {
-            playerList.replace(player, true);
+        if (playerList.containsKey(player) && playerList.get(player) != GUIStatus.ALREADY_IN_COOLDOWN) {
+            playerList.replace(player, GUIStatus.ALREADY_IN_COOLDOWN);
             Bukkit.getScheduler().runTaskLater(UltimateShop.instance, () -> {
                 playerList.remove(player);
             }, time);
@@ -80,3 +70,4 @@ public abstract class AbstractGUI {
         return inClickCooldown;
     }
 }
+

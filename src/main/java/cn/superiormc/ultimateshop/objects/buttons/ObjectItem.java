@@ -292,7 +292,7 @@ public class ObjectItem extends AbstractButton {
     public void clickEvent(ClickType type, Player player) {
         if (UltimateShop.useGeyser && CommonUtil.isBedrockPlayer(player)) {
             FormInfoGUI infoGUI = new FormInfoGUI(player, this);
-            infoGUI.openGUI();
+            infoGUI.openGUI(true);
             return;
         }
         boolean b = ConfigManager.configManager.getBoolean("placeholder.click.enabled");

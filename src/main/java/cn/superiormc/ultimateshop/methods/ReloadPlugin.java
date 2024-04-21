@@ -3,6 +3,7 @@ package cn.superiormc.ultimateshop.methods;
 import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.cache.PlayerCache;
 import cn.superiormc.ultimateshop.cache.ServerCache;
+import cn.superiormc.ultimateshop.gui.AbstractGUI;
 import cn.superiormc.ultimateshop.managers.CacheManager;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.ItemManager;
@@ -23,6 +24,7 @@ public class ReloadPlugin {
         UltimateShop.instance.reloadConfig();
         for (Player player : Bukkit.getOnlinePlayers()) {
             CacheManager.cacheManager.savePlayerCacheOnDisable(player);
+            AbstractGUI.playerList.remove(player);
         }
         if (ServerCache.serverCache != null) {
             ServerCache.serverCache.shutServerCacheOnDisable();

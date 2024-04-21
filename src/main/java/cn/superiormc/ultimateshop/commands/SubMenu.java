@@ -30,10 +30,10 @@ public class SubMenu extends AbstractCommand {
             if (args[1].equals(ConfigManager.configManager.getString("menu.select-more.menu"))) {
                 return;
             }
-            OpenGUI.openCommonGUI(player, args[1], bypassBedrockCheck);
+            OpenGUI.openCommonGUI(player, args[1], bypassBedrockCheck, false);
         }
         else {
-            OpenGUI.openShopGUI(player, tempVal1, bypassBedrockCheck);
+            OpenGUI.openShopGUI(player, tempVal1, bypassBedrockCheck, false);
 
         }
     }
@@ -57,10 +57,10 @@ public class SubMenu extends AbstractCommand {
             if (args[1].equals(ConfigManager.configManager.getString("menu.select-more.menu"))) {
                 return;
             }
-            OpenGUI.openCommonGUI(player, args[1], bypassBedrockCheck);
+            OpenGUI.openCommonGUI(player, args[1], bypassBedrockCheck, false);
         }
         else {
-            OpenGUI.openShopGUI(player, tempVal1, bypassBedrockCheck);
+            OpenGUI.openShopGUI(player, tempVal1, bypassBedrockCheck, false);
         }
     }
 

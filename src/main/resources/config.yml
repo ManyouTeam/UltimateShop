@@ -8,8 +8,8 @@ use-component:
 
 menu:
   cooldown:
-    click: 5
-    reopen: 3
+    click: -1
+    reopen: -1
   shop:
     # Whether shop menu will refresh every 1 second.
     # This will refresh placeholder that displayed in display item lore.

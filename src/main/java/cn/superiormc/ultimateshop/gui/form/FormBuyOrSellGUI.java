@@ -1,5 +1,6 @@
 package cn.superiormc.ultimateshop.gui.form;
 
+import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.cache.PlayerCache;
 import cn.superiormc.ultimateshop.gui.FormGUI;
 import cn.superiormc.ultimateshop.managers.CacheManager;
@@ -10,14 +11,15 @@ import cn.superiormc.ultimateshop.methods.Product.BuyProductMethod;
 import cn.superiormc.ultimateshop.methods.Product.SellProductMethod;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import cn.superiormc.ultimateshop.utils.TextUtil;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.geysermc.cumulus.form.CustomForm;
 
 public class FormBuyOrSellGUI extends FormGUI {
 
-    private ObjectItem item;
+    private final ObjectItem item;
 
-    private FormType mode;
+    private final FormType mode;
 
     public FormBuyOrSellGUI(Player owner, ObjectItem item, FormType mode) {
         super(owner);
@@ -46,9 +48,10 @@ public class FormBuyOrSellGUI extends FormGUI {
                 getButtonTab());
 
         tempVal2.validResultHandler(response -> {
+            removeOpenGUIStatus();
             doThing(response.next());
             if (ConfigManager.configManager.getBoolean("menu.bedrock.not-auto-close")) {
-                OpenGUI.openShopGUI(player, item.getShopObject(), true);
+                OpenGUI.openShopGUI(player, item.getShopObject(), true, true);
             }
         });
         form = tempVal2.build();

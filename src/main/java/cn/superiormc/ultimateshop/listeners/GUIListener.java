@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
@@ -46,7 +47,7 @@ public class GUIListener implements Listener {
                     e.setCancelled(true);
                 }
                 gui.afterClickEventHandle(e.getCursor(), e.getCurrentItem(), e.getSlot());
-                if (e.getClick().toString().equals("SWAP_OFFHAND") && e.isCancelled()) {
+                if (e.getClick() == ClickType.SWAP_OFFHAND && e.isCancelled()) {
                     player.getInventory().setItemInOffHand(player.getInventory().getItemInOffHand());
                 }
             }
@@ -81,7 +82,7 @@ public class GUIListener implements Listener {
             if (gui.closeEventHandle(e.getInventory())) {
                 Bukkit.getScheduler().runTaskLater(UltimateShop.instance, () -> {
                     if (gui.previousGUI != null && gui.guiMode == GUIMode.NOT_EDITING) {
-                        gui.previousGUI.openGUI();
+                        gui.previousGUI.openGUI(true);
                     }
                 }, 4L);
             }

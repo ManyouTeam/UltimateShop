@@ -68,8 +68,6 @@ public class FormCommonGUI extends FormGUI {
         tempVal2.title(TextUtil.parse(commonMenu.getString("title", "Shop")));
         tempVal2.validResultHandler(response -> {
             menuButtons.get(menuItems.get(response.clickedButton())).clickEvent(ClickType.LEFT, player);
-        });
-        tempVal2.closedResultHandler(response -> {
             removeOpenGUIStatus();
         });
         form = tempVal2.build();

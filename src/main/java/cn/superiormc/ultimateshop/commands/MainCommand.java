@@ -26,11 +26,11 @@ public class MainCommand implements CommandExecutor {
                             LanguageManager.languageManager.sendStringText(sender, "error.args");
                         }
                         else {
-                            OpenGUI.openShopGUI((Player) sender, shop, false);
+                            OpenGUI.openShopGUI((Player) sender, shop, false, false);
                         }
                     }
                     else {
-                        OpenGUI.openCommonGUI((Player) sender, tempVal1, false);
+                        OpenGUI.openCommonGUI((Player) sender, tempVal1, false, false);
                     }
                 }
                 else {

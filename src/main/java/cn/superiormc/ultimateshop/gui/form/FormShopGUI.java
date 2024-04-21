@@ -146,10 +146,8 @@ public class FormShopGUI extends FormGUI {
         tempVal5.title(TextUtil.parse(shopMenu.getString("title", shop.getShopDisplayName())
                 .replace("{shop-name}", shop.getShopDisplayName())));
         tempVal5.validResultHandler(response -> {
-            menuButtons.get(menuItems.get(response.clickedButton())).clickEvent(ClickType.LEFT, player);
-        });
-        tempVal5.closedResultHandler(response -> {
             removeOpenGUIStatus();
+            menuButtons.get(menuItems.get(response.clickedButton())).clickEvent(ClickType.LEFT, player);
         });
         form = tempVal5.build();
     }

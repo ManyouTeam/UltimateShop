@@ -20,7 +20,7 @@ import java.util.List;
 
 public class FormInfoGUI extends FormGUI {
 
-    private ObjectItem item;
+    private final ObjectItem item;
 
     public FormInfoGUI(Player owner, ObjectItem item) {
         super(owner);
@@ -66,10 +66,11 @@ public class FormInfoGUI extends FormGUI {
         }
 
         tempVal2.validResultHandler(response -> {
+            removeOpenGUIStatus();
             if (response.clickedButton().equals(buy)) {
                 if (item.getBuyMore()) {
                     FormBuyOrSellGUI buyOrSellGUI = new FormBuyOrSellGUI(player, item, FormType.BUY);
-                    buyOrSellGUI.openGUI();
+                    buyOrSellGUI.openGUI(true);
                 }
                 else {
                     doThing(true);
@@ -78,15 +79,12 @@ public class FormInfoGUI extends FormGUI {
             else if (response.clickedButton().equals(sell)) {
                 if (item.getBuyMore()) {
                     FormBuyOrSellGUI buyOrSellGUI = new FormBuyOrSellGUI(player, item, FormType.SELL);
-                    buyOrSellGUI.openGUI();
+                    buyOrSellGUI.openGUI(true);
                 }
                 else {
                     doThing(false);
                 }
             }
-        });
-        tempVal2.closedResultHandler(response -> {
-            removeOpenGUIStatus();
         });
         form = tempVal2.build();
     }

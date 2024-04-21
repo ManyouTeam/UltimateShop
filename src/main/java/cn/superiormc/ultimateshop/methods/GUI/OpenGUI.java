@@ -17,32 +17,36 @@ import java.util.List;
 
 public class OpenGUI {
 
-    public static void openShopGUI(Player player, ObjectShop shop, boolean bypassBedrockCheck) {
+    public static void openShopGUI(Player player, ObjectShop shop, boolean bypassBedrockCheck, boolean reopen) {
         if (shop == null) {
             return;
         }
         if (UltimateShop.useGeyser && (bypassBedrockCheck || CommonUtil.isBedrockPlayer(player))) {
             FormShopGUI formShopGUI = new FormShopGUI(player, shop);
-            formShopGUI.openGUI();
-            formShopGUI.getMenu().doAction(player);
+            formShopGUI.openGUI(reopen);
+            if (formShopGUI.getMenu() != null) {
+                formShopGUI.getMenu().doAction(player);
+            }
             return;
         }
         ShopGUI gui = new ShopGUI(player, shop);
-        gui.openGUI();
+        gui.openGUI(reopen);
         if (gui.getMenu() != null) {
             gui.getMenu().doAction(player);
         }
     }
 
-    public static void openCommonGUI(Player player, String fileName, boolean bypassBedrockCheck) {
+    public static void openCommonGUI(Player player, String fileName, boolean bypassBedrockCheck, boolean reopen) {
         if (UltimateShop.useGeyser && (bypassBedrockCheck || CommonUtil.isBedrockPlayer(player))) {
             FormCommonGUI formCommonGUI = new FormCommonGUI(player, fileName);
-            formCommonGUI.openGUI();
-            formCommonGUI.getMenu().doAction(player);
+            formCommonGUI.openGUI(reopen);
+            if (formCommonGUI.getMenu() != null) {
+                formCommonGUI.getMenu().doAction(player);
+            }
             return;
         }
         CommonGUI gui = new CommonGUI(player, fileName);
-        gui.openGUI();
+        gui.openGUI(reopen);
         if (gui.getMenu() != null) {
             gui.getMenu().doAction(player);
         }
@@ -50,12 +54,12 @@ public class OpenGUI {
 
     public static void openMoreGUI(Player player, ObjectItem item) {
         BuyMoreGUI gui = new BuyMoreGUI(player, item);
-        gui.openGUI();
+        gui.openGUI(false);
     }
 
     public static void openSellAllGUI(Player player) {
         SellAllGUI gui = new SellAllGUI(player);
-        gui.openGUI();
+        gui.openGUI(false);
     }
 
 
