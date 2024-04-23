@@ -35,6 +35,7 @@ public class CommandManager {
        registerNewSubCommand(new SubSetSellTimes());
        registerNewSubCommand(new SubSetBuyTimes());
        registerNewSubCommand(new SubHelp());
+       registerNewSubCommand(new SubGenerateItemFormat());
     }
 
     public Map<String, AbstractCommand> getSubCommandsMap() {

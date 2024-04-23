@@ -18,7 +18,7 @@ public class SubSaveItem extends AbstractCommand {
         this.id = "saveitem";
         this.requiredPermission =  "ultimateshop." + id;
         this.onlyInGame = true;
-        this.requiredArgLength = new Integer[]{1};
+        this.requiredArgLength = new Integer[]{2};
     }
 
     @Override

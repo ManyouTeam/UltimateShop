@@ -54,6 +54,7 @@ public class GUIListener implements Listener {
         }
         catch (Exception ep) {
             ep.fillInStackTrace();
+            AbstractGUI.playerList.remove(player);
             e.setCancelled(true);
         }
     }

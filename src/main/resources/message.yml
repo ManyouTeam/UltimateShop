@@ -15,6 +15,7 @@ plugin:
   reloaded: "&#98FB98[UltimateShop] &fPlugin reloaded!"
   reload-close-gui: "&#98FB98[UltimateShop] &fYour GUI has been closed because the server admin is trying reload the plugin!"
   saved: "&#98FB98[UltimateShop] &fItem Saved!"
+  generated: "&#98FB98[UltimateShop] &fGenerated hold item's item format at plugin config folder, please copy them into your menu or shop configs!"
 
 placeholderapi:
   unknown-shop: "Unknown Shop"

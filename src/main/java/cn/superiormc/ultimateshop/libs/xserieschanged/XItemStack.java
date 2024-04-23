@@ -898,7 +898,7 @@ public final class XItemStack {
         if (enchantment != null) {
             for (String ench : enchantment.getKeys(false)) {
                 EnchantmentStorageMeta book = (EnchantmentStorageMeta) meta;
-                Enchantment vanillaEnchant = Enchantment.getByKey(NamespacedKey.minecraft(ench));
+                Enchantment vanillaEnchant = Enchantment.getByKey(NamespacedKey.minecraft(ench.toLowerCase()));
                 if (vanillaEnchant != null) {
                     book.addStoredEnchant(vanillaEnchant, enchantment.getInt(ench), true);
                 }

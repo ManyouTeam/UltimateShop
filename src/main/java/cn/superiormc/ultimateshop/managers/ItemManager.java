@@ -48,9 +48,9 @@ public class ItemManager {
         if (!dir.exists()) {
             dir.mkdir();
         }
-        YamlConfiguration briefcase = new YamlConfiguration();
-        briefcase.set("item", itemStack);
-        String yaml = briefcase.saveToString();
+        YamlConfiguration itemConfig = new YamlConfiguration();
+        itemConfig.set("item", itemStack);
+        String yaml = itemConfig.saveToString();
         Bukkit.getScheduler().runTaskAsynchronously(UltimateShop.instance,() -> {
             Path path = new File(dir.getPath(), key + ".yml").toPath();
             try {
