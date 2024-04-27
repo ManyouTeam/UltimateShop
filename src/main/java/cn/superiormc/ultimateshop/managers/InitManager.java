@@ -29,6 +29,9 @@ public class InitManager {
         resourceOutput("shops/drops.yml", false);
         resourceOutput("shops/logs.yml", false);
         resourceOutput("shops/ores.yml", false);
+        resourceOutput("shops/decorations.yml", false);
+        resourceOutput("shops/misc.yml", false);
+        resourceOutput("shops/spawners.yml", false);
         resourceOutput("menus/main.yml", false);
         resourceOutput("menus/buy-more.yml", false);
         resourceOutput("menus/example-shop-menu.yml", false);

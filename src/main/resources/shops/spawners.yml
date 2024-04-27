@@ -1,0 +1,159 @@
+settings:
+  menu: 'example-shop-menu'
+  buy-more: true
+  shop-name: 'Spawners'
+  hide-message: false
+
+items:
+  A:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: spawner
+        spawner: cow
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: 5000
+        placeholder: '&6{amount} Coins'
+        start-apply: 0
+    buy-limits:
+      global: 5
+      default: 1
+    buy-limits-reset-mode: 'TIMED'
+    buy-limits-reset-time: '00:00:00'
+  B:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: spawner
+        spawner: pig
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: 3000
+        placeholder: '&6{amount} Coins'
+        start-apply: 0
+    buy-limits:
+      global: 5
+      default: 1
+    buy-limits-reset-mode: 'TIMED'
+    buy-limits-reset-time: '00:00:00'
+  C:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: spawner
+        spawner: sheep
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: 3000
+        placeholder: '&6{amount} Coins'
+        start-apply: 0
+    buy-limits:
+      global: 5
+      default: 1
+    buy-limits-reset-mode: 'TIMED'
+    buy-limits-reset-time: '00:00:00'
+  D:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: spawner
+        spawner: chicken
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: 2000
+        placeholder: '&6{amount} Coins'
+        start-apply: 0
+    buy-limits:
+      global: 5
+      default: 1
+    buy-limits-reset-mode: 'TIMED'
+    buy-limits-reset-time: '00:00:00'
+  E:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: spawner
+        spawner: zombie
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: 3000
+        placeholder: '&6{amount} Coins'
+        start-apply: 0
+    buy-limits:
+      global: 5
+      default: 1
+    buy-limits-reset-mode: 'TIMED'
+    buy-limits-reset-time: '00:00:00'
+  F:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: spawner
+        spawner: skeleton
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: 7000
+        placeholder: '&6{amount} Coins'
+        start-apply: 0
+    buy-limits:
+      global: 5
+      default: 1
+    buy-limits-reset-mode: 'TIMED'
+    buy-limits-reset-time: '00:00:00'
+  G:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: spawner
+        spawner: spider
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: 3000
+        placeholder: '&6{amount} Coins'
+        start-apply: 0
+    buy-limits:
+      global: 5
+      default: 1
+    buy-limits-reset-mode: 'TIMED'
+    buy-limits-reset-time: '00:00:00'
+  H:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: spawner
+        spawner: creeper
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: 6000
+        placeholder: '&6{amount} Coins'
+        start-apply: 0
+    buy-limits:
+      global: 5
+      default: 1
+    buy-limits-reset-mode: 'TIMED'
+    buy-limits-reset-time: '00:00:00'

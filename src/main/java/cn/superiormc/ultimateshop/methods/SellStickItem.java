@@ -4,7 +4,7 @@ import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.ErrorManager;
 import cn.superiormc.ultimateshop.managers.LanguageManager;
-import cn.superiormc.ultimateshop.utils.ItemUtil;
+import cn.superiormc.ultimateshop.methods.Items.BuildItem;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.ConfigurationSection;
@@ -44,7 +44,7 @@ public class SellStickItem {
                     itemID);
             return null;
         }
-        ItemStack resultItem = ItemUtil.buildItemStack(player, section, 1);
+        ItemStack resultItem = BuildItem.buildItemStack(player, section, 1);
         resultItem.setAmount(amount);
         if (!resultItem.hasItemMeta()) {
             ItemMeta tempMeta = Bukkit.getItemFactory().getItemMeta(resultItem.getType());

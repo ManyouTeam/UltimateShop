@@ -3,10 +3,9 @@ package cn.superiormc.ultimateshop.objects.items;
 import cn.superiormc.ultimateshop.hooks.EconomyHook;
 import cn.superiormc.ultimateshop.hooks.PriceHook;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
-import cn.superiormc.ultimateshop.objects.items.prices.PriceMode;
+import cn.superiormc.ultimateshop.methods.Items.BuildItem;
 import cn.superiormc.ultimateshop.objects.items.shbobjects.ObjectDisplayPlaceholder;
-import cn.superiormc.ultimateshop.utils.ItemUtil;
-import cn.superiormc.ultimateshop.libs.xserieschanged.XItemStack;
+import cn.superiormc.ultimateshop.utils.CommonUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
@@ -27,7 +26,7 @@ public abstract class AbstractSingleThing implements Comparable<AbstractSingleTh
 
     public boolean empty;
 
-    private ObjectDisplayPlaceholder displayPlaceholder;
+    private final ObjectDisplayPlaceholder displayPlaceholder;
 
     private String id;
 
@@ -40,7 +39,7 @@ public abstract class AbstractSingleThing implements Comparable<AbstractSingleTh
     public AbstractSingleThing(String id, AbstractThings things) {
         this.id = id;
         this.singleSection = things.section.getConfigurationSection(id);
-        if (singleSection.contains("custom-type")) {
+        if (singleSection != null && singleSection.contains("custom-type")) {
             initType(ConfigManager.configManager.config.getConfigurationSection("prices." +
                     singleSection.getString("custom-type")));
         }
@@ -227,12 +226,12 @@ public abstract class AbstractSingleThing implements Comparable<AbstractSingleTh
             section = singleSection;
         }
         ItemStack itemStack;
-        itemStack = ItemUtil.buildItemStack(player, section, (int) cost);
+        itemStack = BuildItem.buildItemStack(player, section, (int) cost);
         if (itemStack == null) {
             return null;
         }
         if (give) {
-            XItemStack.giveOrDrop(player, itemStack);
+            CommonUtil.giveOrDrop(player, itemStack);
         }
         return itemStack;
     }

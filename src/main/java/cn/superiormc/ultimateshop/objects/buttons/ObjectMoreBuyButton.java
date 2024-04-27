@@ -1,7 +1,7 @@
 package cn.superiormc.ultimateshop.objects.buttons;
 
 import cn.superiormc.ultimateshop.methods.GUI.ModifyDisplayItem;
-import cn.superiormc.ultimateshop.utils.ItemUtil;
+import cn.superiormc.ultimateshop.methods.Items.BuildItem;
 import cn.superiormc.ultimateshop.utils.MathUtil;
 import cn.superiormc.ultimateshop.utils.TextUtil;
 import org.bukkit.Material;
@@ -27,7 +27,7 @@ public class ObjectMoreBuyButton extends AbstractButton {
             return new ItemStack(Material.STONE);
         }
         String amount = tempVal1.getString("amount", "1");
-        ItemStack addLoreDisplayItem = ItemUtil.buildItemStack(player, tempVal1,
+        ItemStack addLoreDisplayItem = BuildItem.buildItemStack(player, tempVal1,
                 MathUtil.doCalculate(TextUtil.withPAPI(amount, player)).intValue());
         return ModifyDisplayItem.modifyItem(player, multi, addLoreDisplayItem, item, true, getClickType());
     }

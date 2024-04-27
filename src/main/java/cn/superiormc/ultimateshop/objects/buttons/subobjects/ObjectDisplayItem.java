@@ -2,9 +2,9 @@ package cn.superiormc.ultimateshop.objects.buttons.subobjects;
 
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.methods.GUI.ModifyDisplayItem;
+import cn.superiormc.ultimateshop.methods.Items.BuildItem;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import cn.superiormc.ultimateshop.objects.items.ObjectCondition;
-import cn.superiormc.ultimateshop.utils.ItemUtil;
 import cn.superiormc.ultimateshop.utils.MathUtil;
 import cn.superiormc.ultimateshop.utils.TextUtil;
 import org.bukkit.Material;
@@ -45,7 +45,7 @@ public class ObjectDisplayItem {
             // 显示物品
             if (conditionSection == null) {
                 String amount = section.getString("amount", "1");
-                ItemStack displayItem = ItemUtil.buildItemStack(player, section,
+                ItemStack displayItem = BuildItem.buildItemStack(player, section,
                         MathUtil.doCalculate(TextUtil.withPAPI(amount, player)).intValue());
                 addLoreDisplayItem = displayItem.clone();
             }
@@ -56,7 +56,7 @@ public class ObjectDisplayItem {
                         ObjectCondition condition = new ObjectCondition(tempVal1);
                         if (condition.getBoolean(player)) {
                             String amount = section.getString("amount", "1");
-                            ItemStack displayItem = ItemUtil.buildItemStack(player,
+                            ItemStack displayItem = BuildItem.buildItemStack(player,
                                     section.getConfigurationSection(conditionID),
                                     MathUtil.doCalculate(TextUtil.withPAPI(amount, player)).intValue());
                             addLoreDisplayItem = displayItem.clone();

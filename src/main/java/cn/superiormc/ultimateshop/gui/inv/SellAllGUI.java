@@ -9,8 +9,8 @@ import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import cn.superiormc.ultimateshop.objects.items.AbstractSingleThing;
 import cn.superiormc.ultimateshop.objects.items.ThingMode;
 import cn.superiormc.ultimateshop.objects.items.prices.ObjectPrices;
+import cn.superiormc.ultimateshop.utils.CommonUtil;
 import cn.superiormc.ultimateshop.utils.InvUtil;
-import cn.superiormc.ultimateshop.libs.xserieschanged.XItemStack;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.Inventory;
@@ -83,7 +83,7 @@ public class SellAllGUI extends InvGUI {
             ));
         }
         ItemStack[] storage = Arrays.stream(inv.getStorageContents()).filter(Objects::nonNull).toArray(ItemStack[]::new);
-        XItemStack.giveOrDrop(player, storage);
+        CommonUtil.giveOrDrop(player, storage);
         return super.closeEventHandle(inventory);
     }
 

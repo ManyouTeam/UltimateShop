@@ -5,6 +5,7 @@ import cn.superiormc.ultimateshop.methods.GetDiscountValue;
 import cn.superiormc.ultimateshop.objects.caches.ObjectRandomPlaceholderCache;
 import cn.superiormc.ultimateshop.objects.items.shbobjects.ObjectRandomPlaceholder;
 import me.clip.placeholderapi.PlaceholderAPI;
+import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -21,6 +22,10 @@ public class TextUtil {
     }
 
     public static String parse(String text, Player player) {
+        return parse(withPAPI(text, player));
+    }
+
+    public static String parse(Player player, String text) {
         return parse(withPAPI(text, player));
     }
 
@@ -48,24 +53,5 @@ public class TextUtil {
         else {
             return text;
         }
-    }
-
-    public static List<String> getListWithColor(List<String> inList) {
-        List<String> resultList = new ArrayList<>();
-        for (String s : inList) {
-            resultList.add(TextUtil.parse(s));
-        }
-        return resultList;
-    }
-
-    public static List<String> getListWithColorAndPAPI(List<String> inList, Player player) {
-        List<String> resultList = new ArrayList<>();
-        for (String s : inList) {
-            if (CommonUtil.checkPluginLoad("PlaceholderAPI")) {
-                s = PlaceholderAPI.setPlaceholders(player, s);
-            }
-            resultList.add(TextUtil.parse(s));
-        }
-        return resultList;
     }
 }

@@ -1,0 +1,118 @@
+settings:
+  menu: 'example-shop-menu'
+  buy-more: true
+  shop-name: 'Decorations'
+  hide-message: false
+
+items:
+  A:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: blue_banner
+        patterns:
+          SQUARE_BOTTOM_LEFT: LIGHT_BLUE
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: 60
+        placeholder: '&6{amount} Coins'
+        start-apply: 0
+  B:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: AXOLOTL_BUCKET
+        color: WILD
+        amount: 1
+    buy-prices:
+      1:
+        economy-type: exp
+        amount: 60
+        placeholder: '&6{amount} Exps'
+        start-apply: 0
+  C:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: TROPICAL_FISH_BUCKET
+        amount: 1
+        pattern: KOB
+        pattern-color: ORANGE
+        color: WHITE
+    buy-prices:
+      1:
+        economy-type: exp
+        amount: 50
+        placeholder: '&6{amount} Exps'
+        start-apply: 0
+  D:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: PLAYER_HEAD
+        amount: 1
+        skull: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvN2YzZmVkMTZmZDU1MTkwOWZhNWUyOWNkZDY5N2VlMzQ2ZTYzMzkwYjM4M2E0MzAwYTY2MmE4MGI2NGQ5ZWIxNyJ9fX0=
+    buy-prices:
+      1:
+        economy-type: exp
+        amount: 5
+        placeholder: '&6{amount} Exps'
+        start-apply: 0
+  E:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: PLAYER_HEAD
+        amount: 1
+        skull: PQguanfang
+    buy-prices:
+      1:
+        economy-type: exp
+        amount: 0
+        placeholder: '&6{amount} Exps'
+        start-apply: 0
+  F:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: FIREWORK_ROCKET
+        amount: 1
+        power: 127
+        firework:
+          1:
+            flicker: true
+            trial: true
+            colors:
+              base:
+                - 0xff0000
+              fade:
+                - 666666
+            type: BALL
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: 155
+        placeholder: '&6{amount} Coins'
+        start-apply: 0
+  G:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: LEATHER_CHESTPLATE
+        amount: 1
+        color: 50, 50, 50
+    buy-prices:
+      1:
+        economy-type: exp
+        amount: 0
+        placeholder: '&6{amount} Exps'
+        start-apply: 0

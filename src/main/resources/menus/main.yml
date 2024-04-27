@@ -10,7 +10,7 @@ layout:
   - '000000000'
   - '000000000'
   - '00AB0CD00'
-  - '00E000F00'
+  - '00EFGHI00'
   - '000000000'
   - '000000000'
 
@@ -66,3 +66,27 @@ buttons:
         - '&7Click to open this shop!'
     actions:
       - 'shop_menu: ores'
+  G:
+    display-item:
+      material: spawner
+      name: '&dSpawners'
+      lore:
+        - '&7Click to open this shop!'
+    actions:
+      - 'shop_menu: spawners'
+  H:
+    display-item:
+      material: blue_banner
+      name: '&dDecorations'
+      lore:
+        - '&7Click to open this shop!'
+    actions:
+      - 'shop_menu: decorations'
+  I:
+    display-item:
+      material: book
+      name: '&dMisc'
+      lore:
+        - '&7Click to open this shop!'
+    actions:
+      - 'shop_menu: misc'

@@ -9,7 +9,9 @@ import io.lumine.xikage.mythicmobs.MythicMobs;
 import net.kyori.adventure.text.Component;
 import net.luckperms.api.LuckPermsProvider;
 import org.bukkit.Bukkit;
+import org.bukkit.Color;
 import org.bukkit.Location;
+import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.geysermc.floodgate.api.FloodgateApi;
@@ -19,6 +21,7 @@ import java.io.File;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class CommonUtil {
@@ -36,6 +39,33 @@ public class CommonUtil {
         else {
             return player.hasPermission(permission);
         }
+    }
+
+    public static boolean getMajorVersion(int version) {
+        String[] parts = Bukkit.getVersion().split("\\.");
+        if (parts.length >= 2) {
+            try {
+                return Integer.parseInt(parts[1]) >= version;
+            } catch (NumberFormatException e) {
+                return false;
+            }
+        }
+        return false;
+    }
+
+    public static boolean getMinorVersion(int majorVersion, int minorVersion) {
+        if (!getMajorVersion(majorVersion)) {
+            return false;
+        }
+        String[] parts = Bukkit.getVersion().split("\\.");
+        if (parts.length >= 3) {
+            try {
+                return Integer.parseInt(parts[2]) >= minorVersion;
+            } catch (NumberFormatException e) {
+                return false;
+            }
+        }
+        return false;
     }
 
     public static void dispatchCommand(String command){
@@ -193,6 +223,31 @@ public class CommonUtil {
             return FloodgateApi.getInstance().getPlayer(player.getUniqueId()) != null;
         } else {
             return player.getUniqueId().toString().startsWith("00000000-0000-0000-000");
+        }
+    }
+
+    public static NamespacedKey parseNamespacedKey(String key) {
+        String[] keySplit = key.split(":");
+        if (keySplit.length == 1) {
+            return NamespacedKey.minecraft(key.toLowerCase());
+        }
+        return NamespacedKey.fromString(key);
+    }
+
+    public static Color parseColor(String color) {
+        String[] keySplit = color.replace(" ", "").split(",");
+        if (keySplit.length == 3) {
+            return Color.fromRGB(Integer.parseInt(keySplit[0]), Integer.parseInt(keySplit[1]), Integer.parseInt(keySplit[2]));
+        }
+        return Color.fromRGB(Integer.parseInt(color));
+    }
+
+    public static void giveOrDrop(Player player, ItemStack... item) {
+        HashMap<Integer, ItemStack> result = player.getInventory().addItem(item);
+        if (!result.isEmpty()) {
+            for (int id : result.keySet()) {
+                player.getWorld().dropItem(player.getLocation(), result.get(id));
+            }
         }
     }
 }

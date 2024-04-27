@@ -1,9 +1,8 @@
 package cn.superiormc.ultimateshop.commands;
 
 import cn.superiormc.ultimateshop.UltimateShop;
-import cn.superiormc.ultimateshop.managers.ItemManager;
 import cn.superiormc.ultimateshop.managers.LanguageManager;
-import cn.superiormc.ultimateshop.utils.ItemUtil;
+import cn.superiormc.ultimateshop.methods.Items.DebuildItem;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -13,9 +12,6 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 public class SubGenerateItemFormat extends AbstractCommand {
 
@@ -29,10 +25,7 @@ public class SubGenerateItemFormat extends AbstractCommand {
     @Override
     public void executeCommandInGame(String[] args, Player player) {
         YamlConfiguration itemConfig = new YamlConfiguration();
-        Map<String, Object> tempVal2 = ItemUtil.debuildItem(player.getInventory().getItemInMainHand());
-        for (String key : tempVal2.keySet()) {
-            itemConfig.set(key, tempVal2.get(key));
-        }
+        DebuildItem.debuildItem(player.getInventory().getItemInMainHand(), itemConfig);
         String yaml = itemConfig.saveToString();
         Bukkit.getScheduler().runTaskAsynchronously(UltimateShop.instance,() -> {
             Path path = new File(UltimateShop.instance.getDataFolder(), "generated-item-format.yml").toPath();

@@ -1,8 +1,8 @@
 package cn.superiormc.ultimateshop.commands;
 
-import cn.superiormc.ultimateshop.libs.xserieschanged.XItemStack;
 import cn.superiormc.ultimateshop.managers.LanguageManager;
 import cn.superiormc.ultimateshop.methods.SellStickItem;
+import cn.superiormc.ultimateshop.utils.CommonUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -30,7 +30,7 @@ public class SubGiveSellStick extends AbstractCommand {
         switch (args.length) {
             // /shop givestick 物品名称 玩家名称 数量
             case 2: case 3:
-                XItemStack.giveOrDrop(givePlayer, SellStickItem.getExtraSlotItem(givePlayer, args[1], 1));
+                CommonUtil.giveOrDrop(givePlayer, SellStickItem.getExtraSlotItem(givePlayer, args[1], 1));
                 LanguageManager.languageManager.sendStringText(player,
                         "give-sell-stick",
                         "player",
@@ -41,7 +41,7 @@ public class SubGiveSellStick extends AbstractCommand {
                         "1");
                 break;
             case 4:
-                XItemStack.giveOrDrop(givePlayer, SellStickItem.getExtraSlotItem(givePlayer, args[1], Integer.parseInt(args[3])));
+                CommonUtil.giveOrDrop(givePlayer, SellStickItem.getExtraSlotItem(givePlayer, args[1], Integer.parseInt(args[3])));
                 LanguageManager.languageManager.sendStringText(player,
                         "give-sell-stick",
                         "player",
@@ -64,7 +64,7 @@ public class SubGiveSellStick extends AbstractCommand {
         switch (args.length) {
             // /shop givestick 物品名称 玩家名称 数量
             case 3:
-                XItemStack.giveOrDrop(givePlayer, SellStickItem.getExtraSlotItem(givePlayer, args[1], 1));
+                CommonUtil.giveOrDrop(givePlayer, SellStickItem.getExtraSlotItem(givePlayer, args[1], 1));
                 LanguageManager.languageManager.sendStringText("give-sell-stick",
                         "player",
                         givePlayer.getName(),
@@ -74,7 +74,7 @@ public class SubGiveSellStick extends AbstractCommand {
                         "1");
                 break;
             case 4:
-                XItemStack.giveOrDrop(givePlayer, SellStickItem.getExtraSlotItem(givePlayer, args[1], Integer.parseInt(args[3])));
+                CommonUtil.giveOrDrop(givePlayer, SellStickItem.getExtraSlotItem(givePlayer, args[1], Integer.parseInt(args[3])));
                 LanguageManager.languageManager.sendStringText("give-sell-stick",
                         "player",
                         givePlayer.getName(),
