@@ -49,6 +49,13 @@ public final class UltimateShop extends JavaPlugin {
             Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §fEnabled bedrock UI feature!");
             useGeyser = true;
         }
+        String[] parts = Bukkit.getVersion().split("\\.");
+        if (parts.length == 3) {
+            Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §fYour Minecraft version is: 1." + parts[1] +
+                    "." + parts[2].replace(")", "") + "!");
+        } else if (parts.length == 2) {
+            Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §fYour Minecraft version is: 1." + parts[1] + ".0!");
+        }
         new Metrics(this, 20783);
         Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §fPlugin is loaded. Author: PQguanfang.");
     }

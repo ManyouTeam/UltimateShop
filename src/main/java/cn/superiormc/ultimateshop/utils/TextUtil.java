@@ -2,14 +2,10 @@ package cn.superiormc.ultimateshop.utils;
 
 import cn.superiormc.ultimateshop.libs.easyplugin.ColorParser;
 import cn.superiormc.ultimateshop.methods.GetDiscountValue;
-import cn.superiormc.ultimateshop.objects.caches.ObjectRandomPlaceholderCache;
 import cn.superiormc.ultimateshop.objects.items.shbobjects.ObjectRandomPlaceholder;
 import me.clip.placeholderapi.PlaceholderAPI;
-import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 

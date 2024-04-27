@@ -1,6 +1,8 @@
 package cn.superiormc.ultimateshop.methods.Items;
 
+import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.hooks.CheckValidHook;
+import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.ErrorManager;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
 import com.google.common.collect.Multimap;
@@ -51,7 +53,11 @@ public class DebuildItem {
 
         // Custom Name
         if (meta.hasDisplayName()) {
-            section.set("name", meta.getDisplayName());
+            if (UltimateShop.isPaper && ConfigManager.configManager.getBoolean("use-component.item")) {
+                section.set("name", meta.displayName());
+            } else {
+                section.set("name", meta.getDisplayName());
+            }
         }
 
         // Item Name
@@ -63,7 +69,11 @@ public class DebuildItem {
 
         // Lore
         if (meta.hasLore()) {
-            section.set("lore", meta.getLore());
+            if (UltimateShop.isPaper && ConfigManager.configManager.getBoolean("use-component.item")) {
+                section.set("lore", meta.lore());
+            } else {
+                section.set("lore", meta.getLore());
+            }
         }
 
         // Custom Model Data
@@ -384,6 +394,15 @@ public class DebuildItem {
 
                 if (brushableBlock.getItem() != null && !brushableBlock.getItem().getType().isAir()) {
                     debuildItem(brushableBlock.getItem(), section.createSection("content"));
+                }
+            }
+        }
+
+        if (CommonUtil.getMinorVersion(20, 5)) {
+            if (meta instanceof OminousBottleMeta) {
+                OminousBottleMeta ominousBottleMeta = (OminousBottleMeta) meta;
+                if (ominousBottleMeta.hasAmplifier()) {
+                    section.set("power", ominousBottleMeta.getAmplifier());
                 }
             }
         }

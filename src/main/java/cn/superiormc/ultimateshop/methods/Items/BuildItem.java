@@ -52,10 +52,10 @@ public class BuildItem {
     }
 
     public static ItemStack editItemStack(ItemStack item,
-                                           Player player,
-                                           ConfigurationSection section,
-                                           int amount,
-                                           String... args) {
+                                          Player player,
+                                          ConfigurationSection section,
+                                          int amount,
+                                          String... args) {
 
         // Material
         String materialKey = section.getString("material");
@@ -98,18 +98,10 @@ public class BuildItem {
         // Custom Name
         String displayNameKey = section.getString("name", section.getString("display"));
         if (displayNameKey != null) {
-            if (displayNameKey.isEmpty()) {
-                if (UltimateShop.isPaper && ConfigManager.configManager.getBoolean("use-component.item")) {
-                    meta.displayName(Component.space());
-                } else {
-                    meta.setDisplayName(TextUtil.parse(player, CommonUtil.modifyString(displayNameKey, args)));
-                }
+            if (UltimateShop.isPaper && ConfigManager.configManager.getBoolean("use-component.item")) {
+                meta.displayName(MiniMessage.miniMessage().deserialize(TextUtil.withPAPI(displayNameKey, player)));
             } else {
-                if (UltimateShop.isPaper && ConfigManager.configManager.getBoolean("use-component.item")) {
-                    meta.displayName(MiniMessage.miniMessage().deserialize(TextUtil.withPAPI(displayNameKey, player)));
-                } else {
-                    meta.setDisplayName(TextUtil.parse(player, CommonUtil.modifyString(displayNameKey, args)));
-                }
+                meta.setDisplayName(TextUtil.parse(player, CommonUtil.modifyString(displayNameKey, args)));
             }
         }
 
@@ -126,46 +118,37 @@ public class BuildItem {
         }
 
         // Lore
-        List<String> newLore = new ArrayList<>();
-        List<Component> veryNewLore = new ArrayList<>();
         List<String> lores = section.getStringList("lore");
         if (!lores.isEmpty()) {
-
-            for (String lore : lores) {
-                if (lore.isEmpty()) {
-                    if (UltimateShop.isPaper && ConfigManager.configManager.getBoolean("use-component.item")) {
-                        veryNewLore.add(Component.space());
-                    } else {
-                        newLore.add(" ");
-                    }
-                    continue;
-                }
-
-                lore = CommonUtil.modifyString(lore, args);
-
-                for (String singleLore : lore.split("\n")) {
-                    if (singleLore.isEmpty()) {
-                        if (UltimateShop.isPaper && ConfigManager.configManager.getBoolean("use-component.item")) {
-                            veryNewLore.add(Component.space());
-                        } else {
-                            newLore.add(" ");
-                        }
-                        continue;
-                    }
-                    if (UltimateShop.isPaper && ConfigManager.configManager.getBoolean("use-component.item")) {
+            if (UltimateShop.isPaper && ConfigManager.configManager.getBoolean("use-component.item")) {
+                List<Component> veryNewLore = new ArrayList<>();
+                for (String lore : lores) {
+                    lore = CommonUtil.modifyString(lore, args);
+                    for (String singleLore : lore.split("\n")) {
                         veryNewLore.add(MiniMessage.miniMessage().deserialize(TextUtil.withPAPI(singleLore, player)));
-                    } else {
+                    }
+                }
+                if (!veryNewLore.isEmpty()) {
+                    meta.lore(veryNewLore);
+                }
+            } else {
+                List<String> newLore = new ArrayList<>();
+                for (String lore : lores) {
+                    lore = CommonUtil.modifyString(lore, args);
+                    for (String singleLore : lore.split("\n")) {
+                        if (singleLore.isEmpty()) {
+                            newLore.add(" ");
+                            continue;
+                        }
                         newLore.add(TextUtil.parse(singleLore, player));
                     }
                 }
-            }
-            if (!newLore.isEmpty()) {
-                meta.setLore(newLore);
-            }
-            if (!veryNewLore.isEmpty()) {
-                meta.lore(veryNewLore);
+                if (!newLore.isEmpty()) {
+                    meta.setLore(newLore);
+                }
             }
         }
+
 
         // Custom Model Data
         if (CommonUtil.getMajorVersion(14)) {
@@ -660,6 +643,16 @@ public class BuildItem {
                     brushableBlock.setItem(buildItemStack(player, brushableContentKey, brushableContentKey.getInt("amount"), args));
                 }
                 blockStateMeta.setBlockState(brushableBlock);
+            }
+        }
+
+        if (CommonUtil.getMinorVersion(20, 5)) {
+            if (meta instanceof OminousBottleMeta) {
+                OminousBottleMeta ominousBottleMeta = (OminousBottleMeta) meta;
+                int ominousPowerKey = section.getInt("power", -1);
+                if (ominousPowerKey > 0) {
+                    ominousBottleMeta.setAmplifier(ominousPowerKey);
+                }
             }
         }
 

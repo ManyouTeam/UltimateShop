@@ -6,7 +6,6 @@ import io.lumine.mythic.api.mobs.MythicMob;
 import io.lumine.mythic.bukkit.BukkitAdapter;
 import io.lumine.mythic.bukkit.MythicBukkit;
 import io.lumine.xikage.mythicmobs.MythicMobs;
-import net.kyori.adventure.text.Component;
 import net.luckperms.api.LuckPermsProvider;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
@@ -60,12 +59,12 @@ public class CommonUtil {
         String[] parts = Bukkit.getVersion().split("\\.");
         if (parts.length >= 3) {
             try {
-                return Integer.parseInt(parts[2]) >= minorVersion;
+                return Integer.parseInt(parts[2].replace(")", "")) >= minorVersion;
             } catch (NumberFormatException e) {
                 return false;
             }
         }
-        return false;
+        return 0 >= minorVersion;
     }
 
     public static void dispatchCommand(String command){
