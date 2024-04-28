@@ -10,6 +10,7 @@ import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
+import org.bukkit.Registry;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.block.BlockState;
@@ -77,10 +78,8 @@ public class DebuildItem {
         }
 
         // Custom Model Data
-        if (CommonUtil.getMajorVersion(14)) {
-            if (meta.hasCustomModelData()) {
-                section.set("custom-model-data", meta.getCustomModelData());
-            }
+        if (meta.hasCustomModelData()) {
+            section.set("custom-model-data", meta.getCustomModelData());
         }
 
         // Max Stack
@@ -107,10 +106,17 @@ public class DebuildItem {
             }
             List<String> effects = new ArrayList<>();
             for (FoodComponent.FoodEffect foodEffect : foodComponent.getEffects()) {
-                effects.add(foodEffect.getEffect().getType().getKey() + ", " + foodEffect.getEffect().getDuration() + ", " +
-                        foodEffect.getEffect().getAmplifier() + ", " + foodEffect.getEffect().isAmbient() + ", " +
-                        foodEffect.getEffect().hasParticles() + ", " + foodEffect.getEffect().hasIcon() + ", " +
-                        foodEffect.getProbability());
+                if (CommonUtil.getMajorVersion(18)) {
+                    effects.add(foodEffect.getEffect().getType().getKey() + ", " + foodEffect.getEffect().getDuration() + ", " +
+                            foodEffect.getEffect().getAmplifier() + ", " + foodEffect.getEffect().isAmbient() + ", " +
+                            foodEffect.getEffect().hasParticles() + ", " + foodEffect.getEffect().hasIcon() + ", " +
+                            foodEffect.getProbability());
+                } else {
+                    effects.add(foodEffect.getEffect().getType().getName() + ", " + foodEffect.getEffect().getDuration() + ", " +
+                            foodEffect.getEffect().getAmplifier() + ", " + foodEffect.getEffect().isAmbient() + ", " +
+                            foodEffect.getEffect().hasParticles() + ", " + foodEffect.getEffect().hasIcon() + ", " +
+                            foodEffect.getProbability());
+                }
             }
             if (!effects.isEmpty()) {
                 section.set("effects", effects);
@@ -127,6 +133,13 @@ public class DebuildItem {
         // Hide Tooltip
         if (CommonUtil.getMinorVersion(20, 5)) {
             if (meta.isHideTooltip()) {
+                section.set("hide-tool-tip", "true");
+            }
+        }
+
+        // Glow
+        if (CommonUtil.getMinorVersion(20, 5)) {
+            if (meta.hasEnchantmentGlintOverride()) {
                 section.set("hide-tool-tip", "true");
             }
         }
@@ -215,9 +228,15 @@ public class DebuildItem {
             PotionMeta potion = (PotionMeta) meta;
             List<String> effects = new ArrayList<>();
             for (PotionEffect effect : potion.getCustomEffects()) {
-                effects.add(effect.getType().getKey() + ", " + effect.getDuration() + ", " + effect.getAmplifier() + ", " +
-                        effect.getAmplifier() + ", " + effect.isAmbient() + ", " +
-                        effect.hasParticles() + ", " + effect.hasIcon());
+                if (CommonUtil.getMajorVersion(18)) {
+                    effects.add(effect.getType().getKey() + ", " + effect.getDuration() + ", " + effect.getAmplifier() + ", " +
+                            effect.getAmplifier() + ", " + effect.isAmbient() + ", " +
+                            effect.hasParticles() + ", " + effect.hasIcon());
+                } else {
+                    effects.add(effect.getType().getName() + ", " + effect.getDuration() + ", " + effect.getAmplifier() + ", " +
+                            effect.getAmplifier() + ", " + effect.isAmbient() + ", " +
+                            effect.hasParticles() + ", " + effect.hasIcon());
+                }
             }
             if (!effects.isEmpty()) {
                 section.set("effects", effects);
@@ -303,20 +322,19 @@ public class DebuildItem {
 
         // Firework
         if (meta instanceof FireworkMeta) {
-            FireworkMeta firework = (FireworkMeta) meta;
-            section.set("power", firework.getPower());
-            int i = 0;
+            FireworkMeta fireworkMeta = (FireworkMeta) meta;
+            section.set("power", fireworkMeta.getPower());
+            int i = 1;
 
-            for (FireworkEffect fw : firework.getEffects()) {
+            for (FireworkEffect fw : fireworkMeta.getEffects()) {
                 section.set("firework." + i + ".type", fw.getType().name());
-                ConfigurationSection fwc = section.getConfigurationSection("firework." + i);
-                fwc.set("flicker", fw.hasFlicker());
-                fwc.set("trail", fw.hasTrail());
+                section.set("firework." + i + ".flicker", fw.hasFlicker());
+                section.set("firework." + i + ".trail", fw.hasTrail());
 
                 List<Integer> baseColors = new ArrayList<>();
                 List<Integer> fadeColors = new ArrayList<>();
 
-                ConfigurationSection colors = fwc.createSection("colors");
+                ConfigurationSection colors = section.createSection("firework." + i + ".colors");
                 for (Color color : fw.getColors()) {
                     baseColors.add(color.asRGB());
                 }
@@ -330,18 +348,45 @@ public class DebuildItem {
             }
         }
 
-        // Suspicious Stew
-        if (CommonUtil.getMajorVersion(14)) {
-            if (meta instanceof SuspiciousStewMeta) {
-                SuspiciousStewMeta stew = (SuspiciousStewMeta) meta;
-                List<String> effects = new ArrayList<>();
+        // Firework Effect
+        if (meta instanceof FireworkEffectMeta) {
+            FireworkEffectMeta fireworkEffectMeta = (FireworkEffectMeta) meta;
+            if (fireworkEffectMeta.hasEffect()) {
+                FireworkEffect fireworkEffect = fireworkEffectMeta.getEffect();
+                section.set("firework.type", fireworkEffect.getType().name());
+                section.set("firework.flicker", fireworkEffect);
+                section.set("firework.trail", fireworkEffect.hasTrail());
 
-                for (PotionEffect effect : stew.getCustomEffects()) {
-                    effects.add(effect.getType().getKey() + ", " + effect.getDuration() + ", " + effect.getAmplifier());
+                List<Integer> baseColors = new ArrayList<>();
+                List<Integer> fadeColors = new ArrayList<>();
+
+                ConfigurationSection colors = section.createSection("firework.colors");
+                for (Color color : fireworkEffect.getColors()) {
+                    baseColors.add(color.asRGB());
                 }
+                colors.set("base", baseColors);
 
-                section.set("effects", effects);
+                for (Color color : fireworkEffect.getFadeColors()) {
+                    fadeColors.add(color.asRGB());
+                }
+                colors.set("fade", fadeColors);
             }
+        }
+
+        // Suspicious Stew
+        if (meta instanceof SuspiciousStewMeta) {
+            SuspiciousStewMeta stew = (SuspiciousStewMeta) meta;
+            List<String> effects = new ArrayList<>();
+
+            for (PotionEffect effect : stew.getCustomEffects()) {
+                if (CommonUtil.getMajorVersion(18)) {
+                    effects.add(effect.getType().getKey() + ", " + effect.getDuration() + ", " + effect.getAmplifier());
+                } else {
+                    effects.add(effect.getType().getName() + ", " + effect.getDuration() + ", " + effect.getAmplifier());
+                }
+            }
+
+            section.set("effects", effects);
         }
 
         // Bundle
@@ -398,11 +443,22 @@ public class DebuildItem {
             }
         }
 
+        // Ominous Bottle
         if (CommonUtil.getMinorVersion(20, 5)) {
             if (meta instanceof OminousBottleMeta) {
                 OminousBottleMeta ominousBottleMeta = (OminousBottleMeta) meta;
                 if (ominousBottleMeta.hasAmplifier()) {
                     section.set("power", ominousBottleMeta.getAmplifier());
+                }
+            }
+        }
+
+        // Music Instrument
+        if (CommonUtil.getMajorVersion(18)) {
+            if (meta instanceof MusicInstrumentMeta) {
+                MusicInstrumentMeta musicInstrumentMeta = (MusicInstrumentMeta) meta;
+                if (musicInstrumentMeta.getInstrument() != null) {
+                    section.set("music", musicInstrumentMeta.getInstrument().getKey().toString());
                 }
             }
         }

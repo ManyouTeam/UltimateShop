@@ -151,11 +151,9 @@ public class BuildItem {
 
 
         // Custom Model Data
-        if (CommonUtil.getMajorVersion(14)) {
-            int customModelDataKey = section.getInt("custom-model-data", section.getInt("cmd", -1));
-            if (customModelDataKey > 0) {
-                meta.setCustomModelData(customModelDataKey);
-            }
+        int customModelDataKey = section.getInt("custom-model-data", section.getInt("cmd", -1));
+        if (customModelDataKey > 0) {
+            meta.setCustomModelData(customModelDataKey);
         }
 
         // Max Stack
@@ -191,7 +189,12 @@ public class BuildItem {
                     if (effectParseResult.length < 4) {
                         continue;
                     }
-                    PotionEffectType potionEffectType = Registry.EFFECT.get(CommonUtil.parseNamespacedKey(effectParseResult[0]));
+                    PotionEffectType potionEffectType = null;
+                    if (CommonUtil.getMajorVersion(20)) {
+                        potionEffectType = Registry.POTION_EFFECT_TYPE.get(CommonUtil.parseNamespacedKey(effectParseResult[0]));
+                    } else {
+                        potionEffectType = PotionEffectType.getByName(effectParseResult[0]);
+                    }
                     if (potionEffectType != null) {
                         PotionEffect potionEffect = new PotionEffect(potionEffectType,
                                 Integer.parseInt(effectParseResult[1]),
@@ -216,6 +219,13 @@ public class BuildItem {
         if (CommonUtil.getMinorVersion(20, 5)) {
             if (section.get("hide-tool-tip") != null) {
                 meta.setHideTooltip(section.getBoolean("hide-tool-tip"));
+            }
+        }
+
+        // Glow
+        if (CommonUtil.getMinorVersion(20, 5)) {
+            if (section.get("glow") != null) {
+                meta.setEnchantmentGlintOverride(section.getBoolean("glow"));
             }
         }
 
@@ -381,10 +391,15 @@ public class BuildItem {
                 if (effectParseResult.length < 3) {
                     continue;
                 }
-                PotionEffectType potionEffectType = Registry.EFFECT.get(CommonUtil.parseNamespacedKey(effectParseResult[0]));
+                PotionEffectType potionEffectType = null;
+                if (CommonUtil.getMajorVersion(20)) {
+                    potionEffectType = Registry.POTION_EFFECT_TYPE.get(CommonUtil.parseNamespacedKey(effectParseResult[0]));
+                } else {
+                    potionEffectType = PotionEffectType.getByName(effectParseResult[0]);
+                }
                 if (potionEffectType != null) {
                     PotionEffect potionEffect = new PotionEffect(potionEffectType,
-                    Integer.parseInt(effectParseResult[1]),
+                            Integer.parseInt(effectParseResult[1]),
                             Integer.parseInt(effectParseResult[2]),
                             effectParseResult.length < 4 || Boolean.parseBoolean(effectParseResult[3]),
                             effectParseResult.length < 5 || Boolean.parseBoolean(effectParseResult[4]),
@@ -445,21 +460,19 @@ public class BuildItem {
         }
 
         // Tropical Fish Bucket
-        if (CommonUtil.getMajorVersion(14)) {
-            if (meta instanceof TropicalFishBucketMeta) {
-                TropicalFishBucketMeta tropical = (TropicalFishBucketMeta) meta;
-                String colorKey = section.getString("color");
-                String patternColorKey = section.getString("pattern-color");
-                String patternKey = section.getString("pattern");
-                if (colorKey != null && patternColorKey != null && patternKey != null) {
-                    DyeColor color = Enums.getIfPresent(DyeColor.class, colorKey).or(DyeColor.WHITE);
-                    DyeColor patternColor = Enums.getIfPresent(DyeColor.class, patternColorKey).or(DyeColor.WHITE);
-                    TropicalFish.Pattern pattern = Enums.getIfPresent(TropicalFish.Pattern.class, patternKey).or(TropicalFish.Pattern.BETTY);
+        if (meta instanceof TropicalFishBucketMeta) {
+            TropicalFishBucketMeta tropical = (TropicalFishBucketMeta) meta;
+            String colorKey = section.getString("color");
+            String patternColorKey = section.getString("pattern-color");
+            String patternKey = section.getString("pattern");
+            if (colorKey != null && patternColorKey != null && patternKey != null) {
+                DyeColor color = Enums.getIfPresent(DyeColor.class, colorKey).or(DyeColor.WHITE);
+                DyeColor patternColor = Enums.getIfPresent(DyeColor.class, patternColorKey).or(DyeColor.WHITE);
+                TropicalFish.Pattern pattern = Enums.getIfPresent(TropicalFish.Pattern.class, patternKey).or(TropicalFish.Pattern.BETTY);
 
-                    tropical.setBodyColor(color);
-                    tropical.setPatternColor(patternColor);
-                    tropical.setPattern(pattern);
-                }
+                tropical.setBodyColor(color);
+                tropical.setPatternColor(patternColor);
+                tropical.setPattern(pattern);
             }
         }
 
@@ -486,11 +499,11 @@ public class BuildItem {
 
         // Firework
         if (meta instanceof FireworkMeta) {
-            FireworkMeta firework = (FireworkMeta) meta;
+            FireworkMeta fireworkMeta = (FireworkMeta) meta;
 
             int power = section.getInt("power");
             if (power > 0 && power < 128) {
-                firework.setPower(power);
+                fireworkMeta.setPower(power);
             }
 
             ConfigurationSection fireworkKey = section.getConfigurationSection("firework");
@@ -521,32 +534,67 @@ public class BuildItem {
                                 colors.add(CommonUtil.parseColor(colorStr));
                             }
                             builder.withFade(colors);
-                            firework.addEffect(builder.build());
+                            fireworkMeta.addEffect(builder.build());
                         }
                     }
                 }
             }
         }
 
+        // Firework Effect
+        if (meta instanceof FireworkEffectMeta) {
+            FireworkEffectMeta fireworkEffectMeta = (FireworkEffectMeta) meta;
+
+            ConfigurationSection fireworkKey = section.getConfigurationSection("firework");
+            if (fireworkKey != null) {
+                FireworkEffect.Builder builder = FireworkEffect.builder();
+                builder.flicker(fireworkKey.getBoolean("flicker"));
+                builder.trail(fireworkKey.getBoolean("trail"));
+                String fireworkType = fireworkKey.getString("type");
+                if (fireworkType != null) {
+                    builder.with(Enums.getIfPresent(FireworkEffect.Type.class, fireworkType.toUpperCase())
+                            .or(FireworkEffect.Type.STAR));
+                }
+                ConfigurationSection colorsSection = fireworkKey.getConfigurationSection("colors");
+                if (colorsSection != null) {
+                    List<Color> colors = new ArrayList<>();
+                    for (String colorStr : colorsSection.getStringList("base")) {
+                        colors.add(CommonUtil.parseColor(colorStr));
+                    }
+                    builder.withColor(colors);
+
+                    colors = new ArrayList<>();
+                    for (String colorStr : colorsSection.getStringList("fade")) {
+                        colors.add(CommonUtil.parseColor(colorStr));
+                    }
+                    builder.withFade(colors);
+                    fireworkEffectMeta.setEffect(builder.build());
+                }
+            }
+        }
+
         // Suspicious Stew
-        if (CommonUtil.getMajorVersion(14)) {
-            if (meta instanceof SuspiciousStewMeta) {
-                SuspiciousStewMeta stewMeta = (SuspiciousStewMeta) meta;
-                for (String effects : section.getStringList("effects")) {
-                    String[] effectParseResult = effects.replace(" ", "").split(",");
-                    if (effectParseResult.length < 3) {
-                        continue;
-                    }
-                    PotionEffectType potionEffectType = Registry.EFFECT.get(CommonUtil.parseNamespacedKey(effectParseResult[0]));
-                    if (potionEffectType != null) {
-                        PotionEffect potionEffect = new PotionEffect(potionEffectType,
-                                Integer.parseInt(effectParseResult[1]),
-                                Integer.parseInt(effectParseResult[2]),
-                                effectParseResult.length < 4 || Boolean.parseBoolean(effectParseResult[3]),
-                                effectParseResult.length < 5 || Boolean.parseBoolean(effectParseResult[4]),
-                                effectParseResult.length < 6 || Boolean.parseBoolean(effectParseResult[5]));
-                        stewMeta.addCustomEffect(potionEffect, true);
-                    }
+        if (meta instanceof SuspiciousStewMeta) {
+            SuspiciousStewMeta stewMeta = (SuspiciousStewMeta) meta;
+            for (String effects : section.getStringList("effects")) {
+                String[] effectParseResult = effects.replace(" ", "").split(",");
+                if (effectParseResult.length < 3) {
+                    continue;
+                }
+                PotionEffectType potionEffectType = null;
+                if (CommonUtil.getMajorVersion(20)) {
+                    potionEffectType = Registry.POTION_EFFECT_TYPE.get(CommonUtil.parseNamespacedKey(effectParseResult[0]));
+                } else {
+                    potionEffectType = PotionEffectType.getByName(effectParseResult[0]);
+                }
+                if (potionEffectType != null) {
+                    PotionEffect potionEffect = new PotionEffect(potionEffectType,
+                            Integer.parseInt(effectParseResult[1]),
+                            Integer.parseInt(effectParseResult[2]),
+                            effectParseResult.length < 4 || Boolean.parseBoolean(effectParseResult[3]),
+                            effectParseResult.length < 5 || Boolean.parseBoolean(effectParseResult[4]),
+                            effectParseResult.length < 6 || Boolean.parseBoolean(effectParseResult[5]));
+                    stewMeta.addCustomEffect(potionEffect, true);
                 }
             }
         }
@@ -646,12 +694,33 @@ public class BuildItem {
             }
         }
 
+        // Ominous Bottle
         if (CommonUtil.getMinorVersion(20, 5)) {
             if (meta instanceof OminousBottleMeta) {
                 OminousBottleMeta ominousBottleMeta = (OminousBottleMeta) meta;
                 int ominousPowerKey = section.getInt("power", -1);
                 if (ominousPowerKey > 0) {
                     ominousBottleMeta.setAmplifier(ominousPowerKey);
+                }
+            }
+        }
+
+        // Music Instrument
+        if (CommonUtil.getMajorVersion(19)) {
+            if (meta instanceof MusicInstrumentMeta) {
+                MusicInstrumentMeta musicInstrumentMeta = (MusicInstrumentMeta) meta;
+                String musicKey = section.getString("music");
+                if (musicKey != null) {
+                    MusicInstrument musicInstrument = null;
+                    if (CommonUtil.getMinorVersion(20, 4)) {
+                        musicInstrument = Registry.INSTRUMENT.get(CommonUtil.parseNamespacedKey(musicKey));
+
+                    } else {
+                        musicInstrument = MusicInstrument.getByKey(CommonUtil.parseNamespacedKey(musicKey));
+                    }
+                    if (musicInstrument != null) {
+                        musicInstrumentMeta.setInstrument(musicInstrument);
+                    }
                 }
             }
         }
