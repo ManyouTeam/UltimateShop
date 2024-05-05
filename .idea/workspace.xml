@@ -5,11 +5,33 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="5408d61d-1b79-4aac-a73e-7cb790e636f7" name="变更" comment="2.2.1">
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/UltimateShop.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/UltimateShop.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/cache/PlayerCache.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/cache/PlayerCache.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/commands/SubGenerateItemFormat.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/commands/SubGenerateItemFormat.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/gui/AbstractGUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/gui/AbstractGUI.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/gui/form/FormCommonGUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/gui/form/FormCommonGUI.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/gui/form/FormShopGUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/gui/form/FormShopGUI.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/hooks/PriceHook.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/hooks/PriceHook.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/listeners/CacheListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/listeners/CacheListener.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/listeners/GUIListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/listeners/GUIListener.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/managers/InitManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/managers/InitManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/managers/ItemManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/managers/ItemManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/managers/LanguageManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/managers/LanguageManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/managers/TaskManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/managers/TaskManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/methods/GUI/ModifyDisplayItem.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/methods/GUI/ModifyDisplayItem.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/methods/GetDiscountValue.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/methods/GetDiscountValue.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/methods/Items/BuildItem.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/methods/Items/BuildItem.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/methods/Items/DebuildItem.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/methods/Items/DebuildItem.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/methods/ReloadPlugin.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/methods/ReloadPlugin.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/objects/buttons/ObjectItem.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/objects/buttons/ObjectItem.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/objects/items/AbstractSingleThing.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/objects/items/AbstractSingleThing.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/objects/items/AbstractThings.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/objects/items/AbstractThings.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/objects/items/ObjectAction.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/objects/items/ObjectAction.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/objects/items/prices/ObjectPrices.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/objects/items/prices/ObjectPrices.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/utils/CommonUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/utils/CommonUtil.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/config.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/config.yml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/plugin.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/plugin.yml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -32,6 +54,12 @@
   <component name="GitToolBoxStore">
     <option name="projectConfigVersion" value="5" />
   </component>
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/PQguanfang/UltimateShop",
+    "accountId": "89473943-8197-441d-8b40-9511be531a9d"
+  }
+}]]></component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
   </component>
@@ -47,21 +75,23 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
-    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/16869/IdeaProjects/MythicDungeons&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;项目&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.17&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.2237927&quot;,
-    &quot;run.code.analysis.last.selected.profile&quot;: &quot;pProject Default&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Maven.UltimateShop [clean,package].executor": "Run",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "git-widget-placeholder": "master",
+    "ignore.virus.scanning.warn.message": "true",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/Users/16869/IdeaProjects/MythicDungeons",
+    "project.structure.last.edited": "项目",
+    "project.structure.proportion": "0.17",
+    "project.structure.side.proportion": "0.2237927",
+    "run.code.analysis.last.selected.profile": "pProject Default",
+    "settings.editor.selected.configurable": "preferences.pluginManager"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\16869\IdeaProjects\UltimateShop\src\main\java\cn\superiormc\ultimateshop\methods\Items" />
@@ -94,6 +124,7 @@
                 <option value="package" />
               </list>
             </option>
+            <option name="multimoduleDir" />
             <option name="pomFileName" />
             <option name="profilesMap">
               <map />

@@ -18,17 +18,33 @@ public class PlayerCache extends ServerCache {
     }
 
     public void initPlayerCache() {
+        if (UltimateShop.isFolia) {
+            if (ConfigManager.configManager.getBoolean("database.enabled")) {
+                SQLDatabase.checkData(this);
+            } else {
+                YamlDatabase.checkData(this);
+            }
+            return;
+        }
         Bukkit.getScheduler().runTaskAsynchronously(UltimateShop.instance, () -> {
             if (ConfigManager.configManager.getBoolean("database.enabled")) {
                 SQLDatabase.checkData(this);
-            }
-            else {
+            } else {
                 YamlDatabase.checkData(this);
             }
         });
     }
 
     public void shutPlayerCache(boolean quitServer) {
+        if (UltimateShop.isFolia) {
+            if (ConfigManager.configManager.getBoolean("database.enabled")) {
+                SQLDatabase.updateData(this, quitServer);
+            }
+            else {
+                YamlDatabase.updateData(this, quitServer);
+            }
+            return;
+        }
         Bukkit.getScheduler().runTaskAsynchronously(UltimateShop.instance, () -> {
             if (ConfigManager.configManager.getBoolean("database.enabled")) {
                 SQLDatabase.updateData(this, quitServer);

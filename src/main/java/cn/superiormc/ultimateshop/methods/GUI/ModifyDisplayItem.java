@@ -10,7 +10,6 @@ import cn.superiormc.ultimateshop.objects.caches.ObjectUseTimesCache;
 import cn.superiormc.ultimateshop.objects.items.prices.ObjectPrices;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
 import cn.superiormc.ultimateshop.utils.TextUtil;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.ItemStack;
@@ -44,14 +43,12 @@ public class ModifyDisplayItem {
             return addLoreDisplayItem;
         }
         // 修改物品名称
-        if (buyMore || item.getItemConfig().getString("display-name") != null) {
-            String itemName = item.getDisplayName(player);
-            if (buyMore) {
-                itemName = TextUtil.parse(ConfigManager.configManager.getString("display-item.add-name").
-                        replace("{amount}", String.valueOf(multi))).replace("{item-name}", itemName);
-            }
-            tempVal2.setDisplayName(itemName);
-            addLoreDisplayItem.setItemMeta(tempVal2);
+        if (item.getItemConfig().getString("display-name") != null) {
+            tempVal2.setDisplayName(item.getDisplayName(player));
+        }
+        if (tempVal2.hasDisplayName()) {
+            tempVal2.setDisplayName(CommonUtil.modifyString(tempVal2.getDisplayName(), "amount", String.valueOf(multi),
+                    "item-name", item.getDisplayName(player)));
         }
         List<String> addLore = new ArrayList<>();
         if (tempVal2.hasLore()) {
@@ -60,8 +57,8 @@ public class ModifyDisplayItem {
         addLore.addAll(getModifiedLore(player, multi, item, buyMore, false, clickType));
         if (!addLore.isEmpty()) {
             tempVal2.setLore(addLore);
-            addLoreDisplayItem.setItemMeta(tempVal2);
         }
+        addLoreDisplayItem.setItemMeta(tempVal2);
         return addLoreDisplayItem;
     }
     
@@ -341,7 +338,9 @@ public class ModifyDisplayItem {
                         "sell-click",
                         getSellClickPlaceholder(player, multi, item, clickType),
                         "amount",
-                        String.valueOf(multi)
+                        String.valueOf(multi),
+                        "item-name",
+                        item.getDisplayName(player)
                 );
             } else if (player.getOpenInventory().getType() == InventoryType.CHEST) {
                 player.closeInventory();

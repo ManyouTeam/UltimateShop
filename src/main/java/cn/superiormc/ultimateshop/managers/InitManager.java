@@ -21,7 +21,8 @@ public class InitManager {
     }
 
     public void init() {
-        resourceOutput("message.yml", true);
+        resourceOutput("languages/en_US.yml", true);
+        resourceOutput("languages/zh_CN.yml", true);
         resourceOutput("shops/baits.yml", false);
         resourceOutput("shops/blocks.yml", false);
         resourceOutput("shops/crops.yml", false);

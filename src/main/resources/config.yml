@@ -1,10 +1,15 @@
 debug: false
 
+language: en_US
+
 # Paper only feature.
 use-component:
   menu-title: false
   message: false
   item: false
+
+# Support Value: Bukkit or ItemFormat.
+sell-mode: Bukkit
 
 menu:
   cooldown:
@@ -64,7 +69,6 @@ math:
 
 display-item:
   auto-set-first-product: true
-  add-name: '&f{item-name} x{amount}'
   # @+lower case means conditional lore, do not remove them here.
   # Otherwise, the line without this will always display it.
   add-lore:
@@ -197,6 +201,7 @@ sell-stick-items:
 
 auto-save:
   enabled: true
+  hide-message: false
   period-tick: 6000
 
 check-class:

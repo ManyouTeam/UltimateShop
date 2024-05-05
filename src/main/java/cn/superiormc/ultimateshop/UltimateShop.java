@@ -14,9 +14,11 @@ public final class UltimateShop extends JavaPlugin {
 
     public static JavaPlugin instance;
 
-    public static boolean freeVersion = true;
+    public static boolean freeVersion = false;
 
     public static boolean isPaper = false;
+
+    public static boolean isFolia = false;
 
     public static boolean useGeyser = false;
 
@@ -26,6 +28,16 @@ public final class UltimateShop extends JavaPlugin {
         new ErrorManager();
         new InitManager();
         new ConfigManager();
+        if (CommonUtil.getClass("com.destroystokyo.paper.PaperConfig")) {
+            Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §fPaper is found, enabled Paper only feature!");
+            isPaper = true;
+        }
+        if (CommonUtil.getClass("io.papermc.paper.threadedregions.RegionizedServerInitEvent")) {
+            Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §fFolia is found, enabled Folia compatibility feature!");
+            Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §6Warning: Folia support is not fully test, major bugs maybe found! " +
+                    "Please do not use in production environment!");
+            isFolia = true;
+        }
         new ItemManager();
         new LanguageManager();
         new CacheManager();
@@ -42,11 +54,8 @@ public final class UltimateShop extends JavaPlugin {
                 Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §fFinished hook!");
             }
         }
-        if (CommonUtil.getClass("com.destroystokyo.paper.PaperConfig")) {
-            isPaper = true;
-        }
         if (!UltimateShop.freeVersion && CommonUtil.getClass("org.geysermc.floodgate.api.FloodgateApi")) {
-            Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §fEnabled bedrock UI feature!");
+            Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §fHooking into Floodgate...");
             useGeyser = true;
         }
         String[] parts = Bukkit.getVersion().split("\\.");

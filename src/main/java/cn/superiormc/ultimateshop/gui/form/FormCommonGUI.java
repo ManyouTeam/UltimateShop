@@ -6,6 +6,7 @@ import cn.superiormc.ultimateshop.managers.LanguageManager;
 import cn.superiormc.ultimateshop.objects.buttons.AbstractButton;
 import cn.superiormc.ultimateshop.objects.menus.ObjectMenu;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
+import cn.superiormc.ultimateshop.utils.ItemUtil;
 import cn.superiormc.ultimateshop.utils.TextUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -42,13 +43,13 @@ public class FormCommonGUI extends FormGUI {
         for (int slot : menuButtons.keySet()) {
             AbstractButton button = menuButtons.get(slot);
             ItemStack displayItem = button.getDisplayItem(player, 1);
-            if (CommonUtil.getItemNameWithoutVanilla(displayItem).trim().isEmpty() ||
+            if (ItemUtil.getItemNameWithoutVanilla(displayItem).trim().isEmpty() ||
                     button.getButtonConfig().getBoolean("bedrock.hide", false)) {
                 continue;
             }
             String icon = button.getButtonConfig().getString("bedrock.icon",
                     button.getButtonConfig().getString("bedrock-icon"));
-            String tempVal3 = TextUtil.parse(CommonUtil.getItemName(displayItem), player);
+            String tempVal3 = TextUtil.parse(ItemUtil.getItemName(displayItem), player);
             ButtonComponent tempVal1 = null;
             if (icon != null && icon.split(";;").length == 2) {
                 String type = icon.split(";;")[0].toLowerCase();

@@ -139,7 +139,7 @@ public abstract class AbstractSingleThing implements Comparable<AbstractSingleTh
                     return 0;
                 }
                 itemStack.setAmount(1);
-                return PriceHook.getItemAmount(inventory, player, itemStack);
+                return PriceHook.getItemAmount(inventory, itemStack);
             case HOOK_ECONOMY:
                 return PriceHook.getEconomyAmount(player, section.getString("economy-plugin"),
                         section.getString("economy-type", "default"));

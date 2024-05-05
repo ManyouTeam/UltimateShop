@@ -1,8 +1,9 @@
 name: UltimateShop
-version: '${project.version}'
+version: 2.4.2
 main: cn.superiormc.ultimateshop.UltimateShop
 api-version: 1.14
-author:
+folia-supported: true
+authors:
   - PQguanfang
   - rzt1020
 softdepend:

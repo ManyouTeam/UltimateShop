@@ -179,7 +179,11 @@ public class ObjectAction {
                                 Double.parseDouble(singleAction.substring(10).split(";;")[3]),
                                 player.getLocation().getYaw(),
                                 player.getLocation().getPitch());
-                        player.teleport(loc);
+                        if (UltimateShop.isFolia) {
+                            player.teleportAsync(loc);
+                        } else {
+                            player.teleport(loc);
+                        }
                     }
                     else if (singleAction.split(";;").length == 6) {
                         Location loc = new Location(Bukkit.getWorld(singleAction.split(";;")[0]),
@@ -188,7 +192,11 @@ public class ObjectAction {
                                 Double.parseDouble(singleAction.substring(10).split(";;")[3]),
                                 Float.parseFloat(singleAction.substring(10).split(";;")[4]),
                                 Float.parseFloat(singleAction.substring(10).split(";;")[5]));
-                        player.teleport(loc);
+                        if (UltimateShop.isFolia) {
+                            player.teleportAsync(loc);
+                        } else {
+                            player.teleport(loc);
+                        }
                     }
                     else {
                         ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Your teleport action in shop configs can not being correctly load.");
@@ -245,9 +253,15 @@ public class ObjectAction {
             } else if (singleAction.startsWith("op_command: ")) {
                 CommonUtil.dispatchOpCommand(player, singleAction.substring(12));
             } else if (singleAction.equals("close")) {
-                Bukkit.getScheduler().runTaskLater(UltimateShop.instance, () -> {
-                    player.closeInventory();
-                }, 2L);
+                if (UltimateShop.isFolia) {
+                    Bukkit.getGlobalRegionScheduler().runDelayed(UltimateShop.instance, task -> {
+                        player.closeInventory();
+                    }, 2L);
+                } else {
+                    Bukkit.getScheduler().runTaskLater(UltimateShop.instance, () -> {
+                        player.closeInventory();
+                    }, 2L);
+                }
             } else if (singleAction.startsWith("buy: ")) {
                 try {
                     BuyProductMethod.startBuy(singleAction.substring(5).split(";;")[0],

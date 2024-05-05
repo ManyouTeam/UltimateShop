@@ -67,15 +67,41 @@ public class CommonUtil {
         return 0 >= minorVersion;
     }
 
-    public static void dispatchCommand(String command){
+    public static void dispatchCommand(String command) {
+        if (UltimateShop.isFolia) {
+            Bukkit.getGlobalRegionScheduler().run(UltimateShop.instance, task -> {
+                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command);
+            });
+            return;
+        }
         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command);
     }
 
-    public static void dispatchCommand(Player player, String command){
+    public static void dispatchCommand(Player player, String command) {
+        if (UltimateShop.isFolia) {
+            player.getScheduler().run(UltimateShop.instance, task -> {
+                Bukkit.dispatchCommand(player, command);
+            }, () -> {
+            });
+            return;
+        }
         Bukkit.dispatchCommand(player, command);
     }
 
-    public static void dispatchOpCommand(Player player, String command){
+    public static void dispatchOpCommand(Player player, String command) {
+        if (UltimateShop.isFolia) {
+            boolean playerIsOp = player.isOp();
+            try {
+                player.setOp(true);
+                player.getScheduler().run(UltimateShop.instance, task -> {
+                    Bukkit.dispatchCommand(player, command);
+                }, () -> {
+                });
+            } finally {
+                player.setOp(playerIsOp);
+            }
+            return;
+        }
         boolean playerIsOp = player.isOp();
         try {
             player.setOp(true);
@@ -181,37 +207,6 @@ public class CommonUtil {
         catch (ClassNotFoundException e) {
             return false;
         }
-    }
-
-    public static String getItemName(ItemStack displayItem) {
-        if (displayItem == null || displayItem.getItemMeta() == null) {
-            return "";
-        }
-        if (CommonUtil.checkPluginLoad("NeigeItems")) {
-            return ItemUtils.getItemName(displayItem);
-        }
-        return getItemNameWithoutVanilla(displayItem);
-    }
-
-    public static String getItemNameWithoutVanilla(ItemStack displayItem) {
-        if (displayItem == null || displayItem.getItemMeta() == null) {
-            return "";
-        }
-        if (displayItem.getItemMeta().hasDisplayName()) {
-            return displayItem.getItemMeta().getDisplayName();
-        }
-        if (displayItem.getItemMeta().hasDisplayName()) {
-            return displayItem.getItemMeta().getDisplayName();
-        }
-        StringBuilder result = new StringBuilder();
-        for (String word : displayItem.getType().name().toLowerCase().split("_")) {
-            if (!word.isEmpty()) {
-                char firstChar = Character.toUpperCase(word.charAt(0));
-                String restOfWord = word.substring(1);
-                result.append(firstChar).append(restOfWord).append(" ");
-            }
-        }
-        return result.toString();
     }
 
     public static boolean isBedrockPlayer(Player player) {

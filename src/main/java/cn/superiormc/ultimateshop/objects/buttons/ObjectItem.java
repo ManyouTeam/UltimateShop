@@ -11,25 +11,24 @@ import cn.superiormc.ultimateshop.objects.buttons.subobjects.ObjectDisplayItem;
 import cn.superiormc.ultimateshop.objects.items.ObjectAction;
 import cn.superiormc.ultimateshop.objects.items.ObjectCondition;
 import cn.superiormc.ultimateshop.objects.items.ObjectLimit;
-import cn.superiormc.ultimateshop.objects.items.ThingMode;
 import cn.superiormc.ultimateshop.objects.items.prices.ObjectPrices;
 import cn.superiormc.ultimateshop.objects.items.prices.PriceMode;
 import cn.superiormc.ultimateshop.objects.items.products.ObjectProducts;
 import cn.superiormc.ultimateshop.objects.menus.ObjectMoreMenu;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
+import cn.superiormc.ultimateshop.utils.ItemUtil;
 import cn.superiormc.ultimateshop.utils.TextUtil;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
-import org.geysermc.floodgate.api.FloodgateApi;
 
 import java.util.List;
 
 public class ObjectItem extends AbstractButton {
 
-    private ObjectShop shop;
+    private final ObjectShop shop;
 
     private ObjectDisplayItem displayItem;
 
@@ -90,15 +89,14 @@ public class ObjectItem extends AbstractButton {
         if (config.getConfigurationSection("buy-prices") == null) {
             if (config.getConfigurationSection("prices") == null) {
                 buyPrice = new ObjectPrices();
-                return;
             }
             else {
                 buyPrice = new ObjectPrices(config.getConfigurationSection("prices"),
                         config.getString("price-mode", "ANY"),
                         this,
                         PriceMode.BUY);
-                return;
             }
+            return;
         }
         buyPrice = new ObjectPrices(config.getConfigurationSection("buy-prices"),
                 config.getString("price-mode", "ANY"),
@@ -110,15 +108,14 @@ public class ObjectItem extends AbstractButton {
         if (config.getConfigurationSection("sell-prices") == null) {
             if (config.getConfigurationSection("prices") == null) {
                 sellPrice = new ObjectPrices();
-                return;
             }
             else {
                 sellPrice = new ObjectPrices(config.getConfigurationSection("prices"),
                         config.getString("price-mode", "ANY"),
                         this,
                         PriceMode.SELL);
-                return;
             }
+            return;
         }
         sellPrice = new ObjectPrices(config.getConfigurationSection("sell-prices"),
                 config.getString("price-mode", "ANY"),
@@ -146,14 +143,13 @@ public class ObjectItem extends AbstractButton {
         if (config.getConfigurationSection("limits") == null) {
             if (config.getConfigurationSection("buy-limits") == null) {
                 buyLimit = new ObjectLimit();
-                return;
             }
             else {
                 buyLimit = new ObjectLimit(config.getConfigurationSection("buy-limits"),
                         config.getConfigurationSection("buy-limits-conditions"),
                         this);
-                return;
             }
+            return;
         }
         buyLimit = new ObjectLimit(config.getConfigurationSection("limits"),
                 config.getConfigurationSection("limits-conditions"),
@@ -164,14 +160,13 @@ public class ObjectItem extends AbstractButton {
         if (config.getConfigurationSection("limits") == null) {
             if (config.getConfigurationSection("sell-limits") == null) {
                 sellLimit = new ObjectLimit();
-                return;
             }
             else {
                 sellLimit = new ObjectLimit(config.getConfigurationSection("sell-limits"),
                         config.getConfigurationSection("sell-limits-conditions"),
                         this);
-                return;
             }
+            return;
         }
         sellLimit = buyLimit;
     }
@@ -199,7 +194,7 @@ public class ObjectItem extends AbstractButton {
 
     public String getDisplayName(Player player) {
         if (config.getString("display-name") == null) {
-            return CommonUtil.getItemName(displayItem.getDisplayItem(player));
+            return ItemUtil.getItemName(displayItem.getDisplayItem(player));
         }
         return TextUtil.parse(config.getString("display-name"));
     }

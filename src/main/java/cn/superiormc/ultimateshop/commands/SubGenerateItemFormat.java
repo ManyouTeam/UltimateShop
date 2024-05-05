@@ -27,14 +27,23 @@ public class SubGenerateItemFormat extends AbstractCommand {
         YamlConfiguration itemConfig = new YamlConfiguration();
         DebuildItem.debuildItem(player.getInventory().getItemInMainHand(), itemConfig);
         String yaml = itemConfig.saveToString();
-        Bukkit.getScheduler().runTaskAsynchronously(UltimateShop.instance,() -> {
+        if (UltimateShop.isFolia) {
             Path path = new File(UltimateShop.instance.getDataFolder(), "generated-item-format.yml").toPath();
             try {
                 Files.write(path, yaml.getBytes(StandardCharsets.UTF_8));
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        });
+        } else {
+            Bukkit.getScheduler().runTaskAsynchronously(UltimateShop.instance, () -> {
+                Path path = new File(UltimateShop.instance.getDataFolder(), "generated-item-format.yml").toPath();
+                try {
+                    Files.write(path, yaml.getBytes(StandardCharsets.UTF_8));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            });
+        }
         LanguageManager.languageManager.sendStringText(player, "plugin.generated");
     }
 }

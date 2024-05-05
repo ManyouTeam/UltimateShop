@@ -51,6 +51,16 @@ public class ItemManager {
         YamlConfiguration itemConfig = new YamlConfiguration();
         itemConfig.set("item", itemStack);
         String yaml = itemConfig.saveToString();
+        savedItemMap.put(key, itemStack);
+        if (UltimateShop.isFolia) {
+            Path path = new File(dir.getPath(), key + ".yml").toPath();
+            try {
+                Files.write(path, yaml.getBytes(StandardCharsets.UTF_8));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return;
+        }
         Bukkit.getScheduler().runTaskAsynchronously(UltimateShop.instance,() -> {
             Path path = new File(dir.getPath(), key + ".yml").toPath();
             try {
@@ -59,7 +69,6 @@ public class ItemManager {
                 e.printStackTrace();
             }
         });
-        savedItemMap.put(key, itemStack);
     }
 
     public ItemStack getItemByKey(String key) {

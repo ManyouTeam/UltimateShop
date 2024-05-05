@@ -2,7 +2,9 @@ package cn.superiormc.ultimateshop.hooks;
 
 import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.managers.ErrorManager;
+import cn.superiormc.ultimateshop.methods.Items.DebuildItem;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
+import cn.superiormc.ultimateshop.utils.ItemUtil;
 import com.willfp.ecobits.currencies.Currencies;
 import com.willfp.ecobits.currencies.CurrencyUtils;
 import dev.unnm3d.rediseconomy.api.RedisEconomyAPI;
@@ -11,6 +13,8 @@ import me.TechsCode.UltraEconomy.UltraEconomyAPI;
 import me.qKing12.RoyaleEconomy.API.MultiCurrencyHandler;
 import net.milkbowl.vault.economy.Economy;
 import org.black_ixx.playerpoints.PlayerPoints;
+import org.bukkit.Bukkit;
+import org.bukkit.configuration.MemoryConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -189,8 +193,7 @@ public class PriceHook {
                             "maybe your are using old version, please try update it to newer version!");
                     return 0;
                 }
-                double balance = playerPoints.getAPI().look(player.getUniqueId());
-                return balance;
+                return playerPoints.getAPI().look(player.getUniqueId());
             case "Vault":
                 RegisteredServiceProvider<Economy> rsp = UltimateShop.instance.getServer().getServicesManager().getRegistration(Economy.class);
                 if (rsp == null) {
@@ -304,20 +307,20 @@ public class PriceHook {
         int amount = getItemAmount(inventory, pluginName, item);
         if (amount >= value) {
             if (take) {
-                for (int i = 0 ; i < storage.length ; i++) {
-                    if (storage[i] == null || storage[i].getType().isAir()) {
+                for (ItemStack itemStack : storage) {
+                    if (itemStack == null || itemStack.getType().isAir()) {
                         continue;
                     }
-                    ItemStack temItem = storage[i].clone();
+                    ItemStack temItem = itemStack.clone();
                     temItem.setAmount(1);
                     String tempVal10 = CheckValidHook.checkValid(pluginName, temItem);
                     if (tempVal10 != null && tempVal10.equals(item)) {
-                        if (storage[i].getAmount() >= value) {
-                            storage[i].setAmount(storage[i].getAmount() - value);
+                        if (itemStack.getAmount() >= value) {
+                            itemStack.setAmount(itemStack.getAmount() - value);
                             break;
                         } else {
-                            value -= storage[i].getAmount();
-                            storage[i].setAmount(0);
+                            value -= itemStack.getAmount();
+                            itemStack.setAmount(0);
                         }
                     }
                 }
@@ -360,22 +363,22 @@ public class PriceHook {
             return false;
         }
         ItemStack[] storage = inventory.getStorageContents();
-        int amount = getItemAmount(inventory, player, item);
+        int amount = getItemAmount(inventory, item);
         if (amount >= value) {
             if (take) {
-                for (int i = 0 ; i < storage.length ; i++) {
-                    if (storage[i] == null || storage[i].getType().isAir()) {
+                for (ItemStack itemStack : storage) {
+                    if (itemStack == null || itemStack.getType().isAir()) {
                         continue;
                     }
-                    ItemStack temItem = storage[i].clone();
+                    ItemStack temItem = itemStack.clone();
                     temItem.setAmount(1);
-                    if (temItem.equals(item)) {
-                        if (storage[i].getAmount() >= value) {
-                            storage[i].setAmount(storage[i].getAmount() - value);
+                    if (ItemUtil.isSameItem(temItem, item)) {
+                        if (itemStack.getAmount() >= value) {
+                            itemStack.setAmount(itemStack.getAmount() - value);
                             break;
                         } else {
-                            value -= storage[i].getAmount();
-                            storage[i].setAmount(0);
+                            value -= itemStack.getAmount();
+                            itemStack.setAmount(0);
                         }
                     }
                 }
@@ -393,7 +396,7 @@ public class PriceHook {
         }
     }
 
-    public static int getItemAmount(Inventory inventory, Player player, ItemStack item) {
+    public static int getItemAmount(Inventory inventory, ItemStack item) {
         if (item == null) {
             return 0;
         }
@@ -405,7 +408,7 @@ public class PriceHook {
             }
             ItemStack temItem = tempVal1.clone();
             temItem.setAmount(1);
-            if (temItem.equals(item)) {
+            if (ItemUtil.isSameItem(temItem, item)) {
                 amount += tempVal1.getAmount();
             }
         }

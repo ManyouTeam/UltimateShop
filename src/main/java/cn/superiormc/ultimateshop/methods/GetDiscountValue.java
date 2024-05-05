@@ -22,10 +22,7 @@ public class GetDiscountValue {
                 getConfigurationSection("placeholder.discount." + papiID);
         ConfigurationSection conditionSection = ConfigManager.configManager.config.
                 getConfigurationSection("placeholder.discount-conditions");
-        if (section == null) {
-            return 1D;
-        }
-        if (conditionSection == null) {
+        if (section == null || conditionSection == null) {
             return 1D;
         }
         Set<String> groupNameSet = conditionSection.getKeys(false);

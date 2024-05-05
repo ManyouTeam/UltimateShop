@@ -17,12 +17,21 @@ public class CacheListener implements Listener {
 
     @EventHandler
     public void onLogin(PlayerLoginEvent event) {
-        Bukkit.getScheduler().runTaskLater(UltimateShop.instance, () -> {
-            CacheManager.cacheManager.addPlayerCache(event.getPlayer());
-            if (ConfigManager.configManager.getBoolean("bungeecord-sync.enabled") && ServerCache.serverCache != null) {
-                ServerCache.serverCache.initServerCache();
-            }
-        }, 7L);
+        if (UltimateShop.isFolia) {
+            Bukkit.getGlobalRegionScheduler().runDelayed(UltimateShop.instance, task -> {
+                CacheManager.cacheManager.addPlayerCache(event.getPlayer());
+                if (ConfigManager.configManager.getBoolean("bungeecord-sync.enabled") && ServerCache.serverCache != null) {
+                    ServerCache.serverCache.initServerCache();
+                }
+            }, 7L);
+        } else {
+            Bukkit.getScheduler().runTaskLater(UltimateShop.instance, () -> {
+                CacheManager.cacheManager.addPlayerCache(event.getPlayer());
+                if (ConfigManager.configManager.getBoolean("bungeecord-sync.enabled") && ServerCache.serverCache != null) {
+                    ServerCache.serverCache.initServerCache();
+                }
+            }, 7L);
+        }
     }
 
     @EventHandler
