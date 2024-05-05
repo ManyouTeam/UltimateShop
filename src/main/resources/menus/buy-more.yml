@@ -64,14 +64,14 @@ confirm-items:
   D:
     display-item:
       material: PAPER
-      name: '&aConfirm'
+      name: '&aConfirm Buy &f{item-name} x{amount}'
       lore:
         - '&7Click to buy!'
     click-action: buy
   E:
     display-item:
       material: PAPER
-      name: '&aConfirm'
+      name: '&aConfirm Sell &f{item-name} x{amount}'
       lore:
         - '&7Click to sell!'
     click-action: sell
