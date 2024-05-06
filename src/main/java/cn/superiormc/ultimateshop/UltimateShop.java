@@ -2,6 +2,8 @@ package cn.superiormc.ultimateshop;
 
 import cn.superiormc.ultimateshop.cache.ServerCache;
 import cn.superiormc.ultimateshop.database.SQLDatabase;
+import cn.superiormc.ultimateshop.gui.InvGUI;
+import cn.superiormc.ultimateshop.gui.inv.GUIMode;
 import cn.superiormc.ultimateshop.managers.*;
 import cn.superiormc.ultimateshop.papi.PlaceholderAPIExpansion;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
@@ -12,7 +14,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public final class UltimateShop extends JavaPlugin {
 
-    public static JavaPlugin instance;
+    public static UltimateShop instance;
 
     public static boolean freeVersion = true;
 
@@ -82,6 +84,14 @@ public final class UltimateShop extends JavaPlugin {
             BungeeCordManager.bungeeCordManager.disable();
         }
         Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §fPlugin is disabled. Author: PQguanfang.");
+    }
+
+    public void closeInvForFolia(InvGUI gui) {
+        Bukkit.getGlobalRegionScheduler().runDelayed(UltimateShop.instance, task -> {
+            if (gui.previousGUI != null && gui.guiMode == GUIMode.NOT_EDITING) {
+                gui.previousGUI.openGUI(true);
+            }
+        }, 4);
     }
 
 }

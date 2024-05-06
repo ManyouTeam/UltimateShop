@@ -32,7 +32,7 @@ public class GUIListener implements Listener {
 
     @EventHandler
     public void onClick(InventoryClickEvent e) {
-        //try {
+        try {
             if (e.getWhoClicked().equals(player)) {
                 if (!Objects.equals(e.getClickedInventory(), gui.getInv())) {
                     if (e.getClick().isShiftClick()) {
@@ -54,16 +54,16 @@ public class GUIListener implements Listener {
                     player.getInventory().setItemInOffHand(player.getInventory().getItemInOffHand());
                 }
             }
-        //}
-        //catch (Throwable throwable) {
-        //    ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Your menu configs has wrong, error message: " +
-        //            throwable.getMessage());
-        //    if (ConfigManager.configManager.getBoolean("debug")) {
-        //        throwable.fillInStackTrace();
-        //    }
-        //    AbstractGUI.playerList.remove(player);
-        //    e.setCancelled(true);
-        //}
+        }
+        catch (Throwable throwable) {
+            ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Your menu configs has wrong, error message: " +
+                    throwable.getMessage());
+            if (ConfigManager.configManager.getBoolean("debug")) {
+                throwable.fillInStackTrace();
+            }
+            AbstractGUI.playerList.remove(player);
+            e.setCancelled(true);
+        }
     }
 
     @EventHandler
@@ -88,12 +88,9 @@ public class GUIListener implements Listener {
             }
             // 判定是否要打开上一页菜单
             if (gui.closeEventHandle(e.getInventory())) {
+                // F**k suit 1.19.4
                 if (UltimateShop.isFolia) {
-                    Bukkit.getGlobalRegionScheduler().runDelayed(UltimateShop.instance, task -> {
-                        if (gui.previousGUI != null && gui.guiMode == GUIMode.NOT_EDITING) {
-                            gui.previousGUI.openGUI(true);
-                        }
-                    }, 4);
+                    UltimateShop.instance.closeInvForFolia(gui);
                     return;
                 }
                 Bukkit.getScheduler().runTaskLater(UltimateShop.instance, () -> {
