@@ -90,16 +90,16 @@ public class CommonUtil {
 
     public static void dispatchOpCommand(Player player, String command) {
         if (UltimateShop.isFolia) {
-            boolean playerIsOp = player.isOp();
-            try {
-                player.setOp(true);
-                player.getScheduler().run(UltimateShop.instance, task -> {
+            player.getScheduler().run(UltimateShop.instance, task -> {
+                boolean playerIsOp = player.isOp();
+                try {
+                    player.setOp(true);
                     Bukkit.dispatchCommand(player, command);
-                }, () -> {
-                });
-            } finally {
-                player.setOp(playerIsOp);
-            }
+                } finally {
+                    player.setOp(playerIsOp);
+                }
+            }, () -> {
+            });
             return;
         }
         boolean playerIsOp = player.isOp();

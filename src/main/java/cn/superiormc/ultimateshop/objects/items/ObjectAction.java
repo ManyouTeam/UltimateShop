@@ -91,6 +91,7 @@ public class ObjectAction {
                 singleAction = singleAction.replaceAll("-\\d+$", "");
             }
             singleAction = replacePlaceholder(singleAction, player, multi);
+            String[] splits = singleAction.split(";;");
             if (singleAction.startsWith("none")) {
                 return;
             } else if (singleAction.startsWith("sound: ")) {
@@ -137,115 +138,116 @@ public class ObjectAction {
                 for (Player p : players) {
                     InvUtil.sendMessage(p, singleAction.substring(14));
                 }
-            } else if (singleAction.startsWith("effect: ")) {
-                try {
-                    if (PotionEffectType.getByName(singleAction.substring(8).split(";;")[0].toUpperCase()) == null) {
-                        ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Can not found potion effect: " +
-                                singleAction.split(";;")[0] + ".");
-                    }
-                    PotionEffect effect = new PotionEffect(PotionEffectType.getByName(singleAction.split(";;")[0].toUpperCase()),
-                            Integer.parseInt(singleAction.substring(8).split(";;")[2]),
-                            Integer.parseInt(singleAction.substring(8).split(";;")[1]) - 1,
-                            true,
-                            true,
-                            true);
-                    player.addPotionEffect(effect);
+            } else if (singleAction.startsWith("effect: ") && splits.length == 3) {
+                PotionEffectType potionEffectType = PotionEffectType.getByName(singleAction.substring(8).split(";;")[0].toUpperCase());
+                if (potionEffectType == null) {
+                    ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Can not found potion effect: " +
+                            singleAction.substring(8).split(";;")[0] + ".");
+                    continue;
                 }
-                catch (ArrayIndexOutOfBoundsException e) {
-                    ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Your effect action in shop configs can not being correctly load.");
-                }
+                PotionEffect effect = new PotionEffect(potionEffectType,
+                        Integer.parseInt(singleAction.substring(8).split(";;")[2]),
+                        Integer.parseInt(singleAction.substring(8).split(";;")[1]) - 1,
+                        true,
+                        true,
+                        true);
+                player.addPotionEffect(effect);
             } else if (singleAction.startsWith("entity_spawn: ")) {
                 if (singleAction.split(";;").length == 1) {
                     EntityType entity = EntityType.valueOf(singleAction.substring(14).split(";;")[0].toUpperCase());
-                    player.getLocation().getWorld().spawnEntity(player.getLocation(), entity);
+                    Location location = player.getLocation();
+                    if (UltimateShop.isFolia) {
+                        Bukkit.getRegionScheduler().run(UltimateShop.instance, location, task -> {
+                            location.getWorld().spawnEntity(location, entity);
+                        });
+                        continue;
+                    }
+                    location.getWorld().spawnEntity(player.getLocation(), entity);
                 } else if (singleAction.split(";;").length == 5) {
-                    World world = Bukkit.getWorld(singleAction.substring(18).split(";;")[1]);
+                    World world = Bukkit.getWorld(singleAction.substring(14).split(";;")[1]);
                     Location location = new Location(world,
-                            Double.parseDouble(singleAction.substring(18).split(";;")[2]),
-                            Double.parseDouble(singleAction.substring(18).split(";;")[3]),
-                            Double.parseDouble(singleAction.substring(18).split(";;")[4]));
+                            Double.parseDouble(singleAction.substring(14).split(";;")[2]),
+                            Double.parseDouble(singleAction.substring(14).split(";;")[3]),
+                            Double.parseDouble(singleAction.substring(14).split(";;")[4]));
                     EntityType entity = EntityType.valueOf(singleAction.substring(14).split(";;")[0].toUpperCase());
                     if (location.getWorld() == null) {
                         ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Your entity_spawn action in shop configs can not being correctly load.");
+                        continue;
+                    }
+                    if (UltimateShop.isFolia) {
+                        Bukkit.getRegionScheduler().run(UltimateShop.instance, location, task -> {
+                            location.getWorld().spawnEntity(location, entity);
+                        });
+                        continue;
                     }
                     location.getWorld().spawnEntity(location, entity);
                 }
             } else if (singleAction.startsWith("teleport: ")) {
-                try {
-                    if (singleAction.split(";;").length == 4) {
-                        Location loc = new Location(Bukkit.getWorld(singleAction.substring(10).split(";;")[0]),
-                                Double.parseDouble(singleAction.substring(10).split(";;")[1]),
-                                Double.parseDouble(singleAction.substring(10).split(";;")[2]),
-                                Double.parseDouble(singleAction.substring(10).split(";;")[3]),
-                                player.getLocation().getYaw(),
-                                player.getLocation().getPitch());
-                        if (UltimateShop.isFolia) {
-                            player.teleportAsync(loc);
-                        } else {
-                            player.teleport(loc);
-                        }
-                    }
-                    else if (singleAction.split(";;").length == 6) {
-                        Location loc = new Location(Bukkit.getWorld(singleAction.split(";;")[0]),
-                                Double.parseDouble(singleAction.substring(10).split(";;")[1]),
-                                Double.parseDouble(singleAction.substring(10).split(";;")[2]),
-                                Double.parseDouble(singleAction.substring(10).split(";;")[3]),
-                                Float.parseFloat(singleAction.substring(10).split(";;")[4]),
-                                Float.parseFloat(singleAction.substring(10).split(";;")[5]));
-                        if (UltimateShop.isFolia) {
-                            player.teleportAsync(loc);
-                        } else {
-                            player.teleport(loc);
-                        }
-                    }
-                    else {
-                        ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Your teleport action in shop configs can not being correctly load.");
+                if (singleAction.split(";;").length == 4) {
+                    Location loc = new Location(Bukkit.getWorld(singleAction.substring(10).split(";;")[0]),
+                            Double.parseDouble(singleAction.substring(10).split(";;")[1]),
+                            Double.parseDouble(singleAction.substring(10).split(";;")[2]),
+                            Double.parseDouble(singleAction.substring(10).split(";;")[3]),
+                            player.getLocation().getYaw(),
+                            player.getLocation().getPitch());
+                    if (UltimateShop.isFolia) {
+                        player.teleportAsync(loc);
+                    } else {
+                        player.teleport(loc);
                     }
                 }
-                catch (ArrayIndexOutOfBoundsException e) {
+                else if (singleAction.split(";;").length == 6) {
+                    Location loc = new Location(Bukkit.getWorld(singleAction.split(";;")[0]),
+                            Double.parseDouble(singleAction.substring(10).split(";;")[1]),
+                            Double.parseDouble(singleAction.substring(10).split(";;")[2]),
+                            Double.parseDouble(singleAction.substring(10).split(";;")[3]),
+                            Float.parseFloat(singleAction.substring(10).split(";;")[4]),
+                            Float.parseFloat(singleAction.substring(10).split(";;")[5]));
+                    if (UltimateShop.isFolia) {
+                        player.teleportAsync(loc);
+                    } else {
+                        player.teleport(loc);
+                    }
+                }
+                else {
                     ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Your teleport action in shop configs can not being correctly load.");
                 }
             } else if (CommonUtil.checkPluginLoad("MythicMobs") && singleAction.startsWith("mythicmobs_spawn: ")) {
-                 try {
-                     if (singleAction.substring(18).split(";;").length == 1) {
-                         CommonUtil.summonMythicMobs(player.getLocation(),
-                                 singleAction.substring(18).split(";;")[0],
-                                 1);
-                     }
-                     else if (singleAction.substring(18).split(";;").length == 2) {
-                         CommonUtil.summonMythicMobs(player.getLocation(),
-                                 singleAction.substring(18).split(";;")[0],
-                                 Integer.parseInt(singleAction.substring(18).split(";;")[1]));
-                     }
-                     else if (singleAction.substring(18).split(";;").length == 5) {
-                         World world = Bukkit.getWorld(singleAction.substring(18).split(";;")[1]);
-                         Location location = new Location(world,
-                                 Double.parseDouble(singleAction.substring(18).split(";;")[2]),
-                                 Double.parseDouble(singleAction.substring(18).split(";;")[3]),
-                                 Double.parseDouble(singleAction.substring(18).split(";;")[4])
-                         );
-                         CommonUtil.summonMythicMobs(location,
-                                 singleAction.substring(18).split(";;")[0],
-                                 1);
-                     }
-                     else if (singleAction.substring(18).split(";;").length == 6) {
-                         World world = Bukkit.getWorld(singleAction.substring(18).split(";;")[2]);
-                         Location location = new Location(world,
-                                 Double.parseDouble(singleAction.substring(18).split(";;")[3]),
-                                 Double.parseDouble(singleAction.substring(18).split(";;")[4]),
-                                 Double.parseDouble(singleAction.substring(18).split(";;")[5])
-                         );
-                         CommonUtil.summonMythicMobs(location,
-                                 singleAction.substring(18).split(";;")[0],
-                                 Integer.parseInt(singleAction.substring(18).split(";;")[1]));
-                     }
-                     else {
-                         ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Your mythicmobs_spawn action in shop configs can not being correctly load.");
-                     }
-                 }
-                 catch (ArrayIndexOutOfBoundsException e) {
-                     ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Your mythicmobs_spawn action in shop configs can not being correctly load.");
-                 }
+                if (singleAction.substring(18).split(";;").length == 1) {
+                    CommonUtil.summonMythicMobs(player.getLocation(),
+                            singleAction.substring(18).split(";;")[0],
+                            1);
+                }
+                else if (singleAction.substring(18).split(";;").length == 2) {
+                    CommonUtil.summonMythicMobs(player.getLocation(),
+                            singleAction.substring(18).split(";;")[0],
+                            Integer.parseInt(singleAction.substring(18).split(";;")[1]));
+                }
+                else if (singleAction.substring(18).split(";;").length == 5) {
+                    World world = Bukkit.getWorld(singleAction.substring(18).split(";;")[1]);
+                    Location location = new Location(world,
+                            Double.parseDouble(singleAction.substring(18).split(";;")[2]),
+                            Double.parseDouble(singleAction.substring(18).split(";;")[3]),
+                            Double.parseDouble(singleAction.substring(18).split(";;")[4])
+                    );
+                    CommonUtil.summonMythicMobs(location,
+                            singleAction.substring(18).split(";;")[0],
+                            1);
+                }
+                else if (singleAction.substring(18).split(";;").length == 6) {
+                    World world = Bukkit.getWorld(singleAction.substring(18).split(";;")[2]);
+                    Location location = new Location(world,
+                            Double.parseDouble(singleAction.substring(18).split(";;")[3]),
+                            Double.parseDouble(singleAction.substring(18).split(";;")[4]),
+                            Double.parseDouble(singleAction.substring(18).split(";;")[5])
+                    );
+                    CommonUtil.summonMythicMobs(location,
+                            singleAction.substring(18).split(";;")[0],
+                            Integer.parseInt(singleAction.substring(18).split(";;")[1]));
+                }
+                else {
+                    ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Your mythicmobs_spawn action in shop configs can not being correctly load.");
+                }
             } else if (singleAction.startsWith("console_command: ")) {
                 CommonUtil.dispatchCommand(singleAction.substring(17));
             } else if (singleAction.startsWith("player_command: ")) {
@@ -262,40 +264,28 @@ public class ObjectAction {
                         player.closeInventory();
                     }, 2L);
                 }
-            } else if (singleAction.startsWith("buy: ")) {
-                try {
-                    BuyProductMethod.startBuy(singleAction.substring(5).split(";;")[0],
-                            singleAction.substring(5).split(";;")[1],
-                            player,
-                            true,
-                            false,
-                            Integer.parseInt(singleAction.substring(5).split(";;")[2]));
-                } catch (ArrayIndexOutOfBoundsException e) {
-                    ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Your buy action in shop configs can not being correctly load.");
-                }
-            } else if (singleAction.startsWith("sell: ")) {
-                try {
-                    SellProductMethod.startSell(singleAction.substring(6).split(";;")[0],
-                            singleAction.substring(6).split(";;")[1],
-                            player,
-                            true,
-                            false,
-                            Integer.parseInt(singleAction.substring(5).split(";;")[2]));
-                } catch (ArrayIndexOutOfBoundsException e) {
-                    ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Your sell action in shop configs can not being correctly load.");
-                }
-            } else if (singleAction.startsWith("sellall: ")) {
-                try {
-                    SellProductMethod.startSell(singleAction.substring(9).split(";;")[0],
-                            singleAction.substring(9).split(";;")[1],
-                            player,
-                            true,
-                            false,
-                            true,
-                            1);
-                } catch (ArrayIndexOutOfBoundsException e) {
-                    ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Your sell action in shop configs can not being correctly load.");
-                }
+            } else if (singleAction.startsWith("buy: ") && splits.length == 3) {
+                BuyProductMethod.startBuy(singleAction.substring(5).split(";;")[0],
+                        singleAction.substring(5).split(";;")[1],
+                        player,
+                        true,
+                        false,
+                        Integer.parseInt(singleAction.substring(5).split(";;")[2]));
+            } else if (singleAction.startsWith("sell: ") && splits.length == 3) {
+                SellProductMethod.startSell(singleAction.substring(6).split(";;")[0],
+                        singleAction.substring(6).split(";;")[1],
+                        player,
+                        true,
+                        false,
+                        Integer.parseInt(singleAction.substring(5).split(";;")[2]));
+            } else if (singleAction.startsWith("sellall: ") && splits.length == 2) {
+                SellProductMethod.startSell(singleAction.substring(9).split(";;")[0],
+                        singleAction.substring(9).split(";;")[1],
+                        player,
+                        true,
+                        false,
+                        true,
+                        1);
             }
         }
     }
