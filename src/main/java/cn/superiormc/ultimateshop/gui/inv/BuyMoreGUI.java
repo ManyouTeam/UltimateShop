@@ -8,6 +8,7 @@ import cn.superiormc.ultimateshop.methods.Product.SellProductMethod;
 import cn.superiormc.ultimateshop.objects.buttons.*;
 import cn.superiormc.ultimateshop.objects.menus.ObjectMoreMenu;
 import cn.superiormc.ultimateshop.utils.InvUtil;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.Inventory;
@@ -52,7 +53,6 @@ public class BuyMoreGUI extends InvGUI {
         for (int slot : menuButtons.keySet()) {
             inv.setItem(slot, menuItems.get(slot));
         }
-        //setExtraSlots(glassPane);
     }
 
     @Override
@@ -92,7 +92,7 @@ public class BuyMoreGUI extends InvGUI {
                 if (((ObjectMoreBuyButton)button).getClickType() != null) {
                     clickType = ((ObjectMoreBuyButton)button).getClickType().toLowerCase();
                 }
-                switch (clickType){
+                switch (clickType) {
                     case "buy" :
                         if (!item.getBuyPrice().empty) {
                             BuyProductMethod.startBuy(item.getShop(),
@@ -101,8 +101,8 @@ public class BuyMoreGUI extends InvGUI {
                                     !b,
                                     false,
                                     nowingAmount);
-                            break;
                         }
+                        break;
                     case "sell" :
                         if (!item.getSellPrice().empty) {
                             SellProductMethod.startSell(item.getShop(),
@@ -111,8 +111,8 @@ public class BuyMoreGUI extends InvGUI {
                                     !b,
                                     false,
                                     nowingAmount);
-                            break;
                         }
+                        break;
                     case "buy-or-sell" :
                         if (item.getBuyPrice().empty && !item.getSellPrice().empty) {
                             SellProductMethod.startSell(item.getShop(), item.getProduct(), player.getPlayer(), !b,

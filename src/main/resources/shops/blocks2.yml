@@ -1,7 +1,7 @@
 settings:
   menu: 'example-shop-menu'
   buy-more: true
-  shop-name: 'Drops Shop'
+  shop-name: 'Blocks Shop'
   hide-message: false
 
 items:
@@ -10,69 +10,12 @@ items:
     product-mode: CLASSIC_ALL
     products:
       1:
-        material: STRING
+        material: MUD
         amount: 1
     buy-prices:
       1:
         economy-plugin: Vault
-        amount: '1.65'
-        placeholder: '&6{amount} Coins'
-        start-apply: 0
-    sell-prices:
-      1:
-        economy-plugin: Vault
-        amount: '1.62'
-        placeholder: '&6{amount} Coins'
-        start-apply: 0
-  B:
-    price-mode: CLASSIC_ALL
-    product-mode: CLASSIC_ALL
-    products:
-      1:
-        material: FEATHER
-        amount: 1
-    buy-prices:
-      1:
-        economy-plugin: Vault
-        amount: '0.55'
-        placeholder: '&6{amount} Coins'
-        start-apply: 0
-    sell-prices:
-      1:
-        economy-plugin: Vault
-        amount: '0.52'
-        placeholder: '&6{amount} Coins'
-        start-apply: 0
-  C:
-    price-mode: CLASSIC_ALL
-    product-mode: CLASSIC_ALL
-    products:
-      1:
-        material: GUNPOWDER
-        amount: 1
-    buy-prices:
-      1:
-        economy-plugin: Vault
-        amount: '11'
-        placeholder: '&6{amount} Coins'
-        start-apply: 0
-    sell-prices:
-      1:
-        economy-plugin: Vault
-        amount: '10.97'
-        placeholder: '&6{amount} Coins'
-        start-apply: 0
-  D:
-    price-mode: CLASSIC_ALL
-    product-mode: CLASSIC_ALL
-    products:
-      1:
-        material: FLINT
-        amount: 1
-    buy-prices:
-      1:
-        economy-plugin: Vault
-        amount: '0.55'
+        amount: '0.58'
         placeholder: '&6{amount} Coins'
         start-apply: 0
     sell-prices:
@@ -81,23 +24,80 @@ items:
         amount: '0.51'
         placeholder: '&6{amount} Coins'
         start-apply: 0
-  E:
+  B:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
     products:
       1:
-        material: BONE
+        material: BRICKS
         amount: 1
     buy-prices:
       1:
         economy-plugin: Vault
-        amount: '1.75'
+        amount: '15.99'
         placeholder: '&6{amount} Coins'
         start-apply: 0
     sell-prices:
       1:
         economy-plugin: Vault
-        amount: '1.72'
+        amount: '15.82'
+        placeholder: '&6{amount} Coins'
+        start-apply: 0
+  C:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: SPONGE
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: '12.71'
+        placeholder: '&6{amount} Coins'
+        start-apply: 0
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: '12.60'
+        placeholder: '&6{amount} Coins'
+        start-apply: 0
+  D:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: MOSS_BLOCK
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: '2.22'
+        placeholder: '&6{amount} Coins'
+        start-apply: 0
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: '2.10'
+        placeholder: '&6{amount} Coins'
+        start-apply: 0
+  E:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: CALCITE
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: '1.1'
+        placeholder: '&6{amount} Coins'
+        start-apply: 0
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: '0.8'
         placeholder: '&6{amount} Coins'
         start-apply: 0
   F:
@@ -105,42 +105,37 @@ items:
     product-mode: CLASSIC_ALL
     products:
       1:
-        material: GHAST_TEAR
+        material: BLACKSTONE
         amount: 1
     buy-prices:
       1:
         economy-plugin: Vault
-        amount: '82.5+{buy-times-server}*0.2-{sell-times-server}*0.1'
+        amount: '1.54'
         placeholder: '&6{amount} Coins'
         start-apply: 0
     sell-prices:
       1:
         economy-plugin: Vault
-        amount: '81.78+{buy-times-server}*0.2-{sell-times-server}*0.1'
+        amount: '1.48'
         placeholder: '&6{amount} Coins'
         start-apply: 0
-    buy-limits:
-      global: '{sell-times-server}' 
-
-    buy-limits-reset-mode: 'NEVER'
-    buy-limits-reset-time: '00:00:00' 
   G:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
     products:
       1:
-        material: INK_SAC
+        material: PURPUR_BLOCK
         amount: 1
     buy-prices:
       1:
         economy-plugin: Vault
-        amount: '3.3'
+        amount: '6.67'
         placeholder: '&6{amount} Coins'
         start-apply: 0
     sell-prices:
       1:
         economy-plugin: Vault
-        amount: '3.1'
+        amount: '6.57'
         placeholder: '&6{amount} Coins'
         start-apply: 0
   H:
@@ -148,56 +143,66 @@ items:
     product-mode: CLASSIC_ALL
     products:
       1:
-        material: GLOW_INK_SAC
+        material: SHROOMLIGHT
         amount: 1
     buy-prices:
       1:
         economy-plugin: Vault
-        amount: '3.55'
+        amount: '44.75+{buy-times-server}*0.2-{sell-times-server}*0.1'
         placeholder: '&6{amount} Coins'
         start-apply: 0
     sell-prices:
       1:
         economy-plugin: Vault
-        amount: '3.53'
+        amount: '44.68+{buy-times-server}*0.2-{sell-times-server}*0.1'
         placeholder: '&6{amount} Coins'
         start-apply: 0
+    buy-limits:
+      global: '{sell-times-server}' 
+
+    buy-limits-reset-mode: 'NEVER'
+    buy-limits-reset-time: '00:00:00' 
   I:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
     products:
       1:
-        material: SPIDER_EYE
+        material: AMETHYST_BLOCK
         amount: 1
     buy-prices:
       1:
         economy-plugin: Vault
-        amount: '3.3'
+        amount: '48.92+{buy-times-server}*0.2-{sell-times-server}*0.1'
         placeholder: '&6{amount} Coins'
         start-apply: 0
     sell-prices:
       1:
         economy-plugin: Vault
-        amount: '3.1'
+        amount: '48.75+{buy-times-server}*0.2-{sell-times-server}*0.1'
         placeholder: '&6{amount} Coins'
         start-apply: 0
+    buy-limits:
+      global: '{sell-times-server}' 
+
+    buy-limits-reset-mode: 'NEVER'
+    buy-limits-reset-time: '00:00:00' 
   J:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
     products:
       1:
-        material: ROTTEN_FLESH
+        material: TUBE_CORAL_BLOCK
         amount: 1
     buy-prices:
       1:
         economy-plugin: Vault
-        amount: '0.39'
+        amount: '3.43'
         placeholder: '&6{amount} Coins'
         start-apply: 0
     sell-prices:
       1:
         economy-plugin: Vault
-        amount: '0.36'
+        amount: '3.35'
         placeholder: '&6{amount} Coins'
         start-apply: 0
   K:
@@ -205,18 +210,18 @@ items:
     product-mode: CLASSIC_ALL
     products:
       1:
-        material: LEATHER
+        material: BRAIN_CORAL_BLOCK
         amount: 1
     buy-prices:
       1:
         economy-plugin: Vault
-        amount: '5.08'
+        amount: '3.43'
         placeholder: '&6{amount} Coins'
         start-apply: 0
     sell-prices:
       1:
         economy-plugin: Vault
-        amount: '5.05'
+        amount: '3.35'
         placeholder: '&6{amount} Coins'
         start-apply: 0
   L:
@@ -224,18 +229,18 @@ items:
     product-mode: CLASSIC_ALL
     products:
       1:
-        material: RABBIT_HIDE
+        material: BUBBLE_CORAL_BLOCK
         amount: 1
     buy-prices:
       1:
         economy-plugin: Vault
-        amount: '1.31'
+        amount: '3.43'
         placeholder: '&6{amount} Coins'
         start-apply: 0
     sell-prices:
       1:
         economy-plugin: Vault
-        amount: '1.29'
+        amount: '3.35'
         placeholder: '&6{amount} Coins'
         start-apply: 0
   M:
@@ -243,46 +248,37 @@ items:
     product-mode: CLASSIC_ALL
     products:
       1:
-        material: ENDER_PEARL
+        material: FIRE_CORAL_BLOCK
         amount: 1
     buy-prices:
       1:
         economy-plugin: Vault
-        amount: '55+{buy-times-server}*0.2-{sell-times-server}*0.1'
+        amount: '3.43'
         placeholder: '&6{amount} Coins'
-        max-amount: 85.5
-        min-amount: 45.50
         start-apply: 0
     sell-prices:
       1:
         economy-plugin: Vault
-        amount: '23.5+{buy-times-server}*0.2-{sell-times-server}*0.1'
-        max-amount: 23.5
-        min-amount: 1
+        amount: '3.35'
         placeholder: '&6{amount} Coins'
         start-apply: 0
-    buy-limits:
-      global: '{sell-times-server}' 
-
-    buy-limits-reset-mode: 'NEVER'
-    buy-limits-reset-time: '00:00:00' 
   N:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
     products:
       1:
-        material: SLIME_BALL
+        material: HORN_CORAL_BLOCK
         amount: 1
     buy-prices:
       1:
         economy-plugin: Vault
-        amount: '11'
+        amount: '3.43'
         placeholder: '&6{amount} Coins'
         start-apply: 0
     sell-prices:
       1:
         economy-plugin: Vault
-        amount: '10.79'
+        amount: '3.35'
         placeholder: '&6{amount} Coins'
         start-apply: 0
   O:
@@ -290,18 +286,18 @@ items:
     product-mode: CLASSIC_ALL
     products:
       1:
-        material: MAGMA_CREAM
+        material: SEA_LANTERN
         amount: 1
     buy-prices:
       1:
         economy-plugin: Vault
-        amount: '65.34+{buy-times-server}*0.2-{sell-times-server}*0.1'
+        amount: '58.25+{buy-times-server}*0.2-{sell-times-server}*0.1'
         placeholder: '&6{amount} Coins'
         start-apply: 0
     sell-prices:
       1:
         economy-plugin: Vault
-        amount: '65.21+{buy-times-server}*0.2-{sell-times-server}*0.1'
+        amount: '58.18+{buy-times-server}*0.2-{sell-times-server}*0.1'
         placeholder: '&6{amount} Coins'
         start-apply: 0
     buy-limits:
@@ -309,3 +305,117 @@ items:
 
     buy-limits-reset-mode: 'NEVER'
     buy-limits-reset-time: '00:00:00' 
+  P:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: MAGMA_BLOCK
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: '133.84+{buy-times-server}*0.2-{sell-times-server}*0.1'
+        placeholder: '&6{amount} Coins'
+        start-apply: 0
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: '133.75+{buy-times-server}*0.2-{sell-times-server}*0.1'
+        placeholder: '&6{amount} Coins'
+        start-apply: 0
+    buy-limits:
+      global: '{sell-times-server}' 
+
+    buy-limits-reset-mode: 'NEVER'
+    buy-limits-reset-time: '00:00:00' 
+  Q:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: TUFF
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: '0.26'
+        placeholder: '&6{amount} Coins'
+        start-apply: 0
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: '0.24'
+        placeholder: '&6{amount} Coins'
+        start-apply: 0
+  R:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: SAND
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: '0.55'
+        placeholder: '&6{amount} Coins'
+        start-apply: 0
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: '0.50'
+        placeholder: '&6{amount} Coins'
+        start-apply: 0
+  S:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: RED_SAND
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: '1.63'
+        placeholder: '&6{amount} Coins'
+        start-apply: 0
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: '1.59'
+        placeholder: '&6{amount} Coins'
+        start-apply: 0
+  T:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: PRISMARINE
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: '21.34+{buy-times-server}*0.2-{sell-times-server}*0.1'
+        placeholder: '&6{amount} Coins'
+        start-apply: 0
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: '20.98+{buy-times-server}*0.2-{sell-times-server}*0.1'
+        placeholder: '&6{amount} Coins'
+        start-apply: 0
+    buy-limits:
+      global: '{sell-times-server}' 
+
+    buy-limits-reset-mode: 'NEVER'
+    buy-limits-reset-time: '00:00:00' 
+    
+buttons:
+  a:
+    display-item:
+      material: player_head
+      skull: 'eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYmQ2OWUwNmU1ZGFkZmQ4NGU1ZjNkMWMyMTA2M2YyNTUzYjJmYTk0NWVlMWQ0ZDcxNTJmZGM1NDI1YmMxMmE5In19fQ'
+      name: '&c« Previous page'
+    actions:
+      - 'shop_menu: blocks'

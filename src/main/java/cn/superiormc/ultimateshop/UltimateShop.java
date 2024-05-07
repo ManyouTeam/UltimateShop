@@ -94,4 +94,13 @@ public final class UltimateShop extends JavaPlugin {
         }, 4);
     }
 
+    public void addCacheForFolia(Player player) {
+        Bukkit.getGlobalRegionScheduler().runDelayed(UltimateShop.instance, task -> {
+            CacheManager.cacheManager.addPlayerCache(player);
+            if (ConfigManager.configManager.getBoolean("bungeecord-sync.enabled") && ServerCache.serverCache != null) {
+                ServerCache.serverCache.initServerCache();
+            }
+        }, 7L);
+    }
+
 }

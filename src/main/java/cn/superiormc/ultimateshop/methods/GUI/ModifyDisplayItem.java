@@ -100,15 +100,11 @@ public class ModifyDisplayItem {
             tempVal10 = CacheManager.cacheManager.serverCache.getUseTimesCache().get(item);
         }
         for (String tempVal3 : item.getAddLore()) {
-            //String[] newArgs = new String[args.length + 1];
-            //newArgs[0] = tempVal3;
-            //System.arraycopy(args, 0, newArgs, 1, args.length);
-            //tempVal3 = CommonUtil.modifyString(newArgs);
             if (tempVal3.startsWith("@") && tempVal3.length() >= 2) {
                 String tempVal4 = tempVal3.substring(2);
                 switch (tempVal3.charAt(1)) {
                     case 'a':
-                        if (!item.getBuyPrice().empty && (clickType.equals("general") || clickType.equals("buy"))) {
+                        if (!item.getBuyPrice().empty && parseClickType(item, clickType, true)) {
                             if (tempVal3.endsWith("-b")) {
                                 if (bedrock) {
                                     continue;
@@ -121,7 +117,7 @@ public class ModifyDisplayItem {
                         }
                         break;
                     case 'b':
-                        if (!item.getSellPrice().empty && (clickType.equals("general") || clickType.equals("sell"))) {
+                        if (!item.getSellPrice().empty && parseClickType(item, clickType, false)) {
                             if (tempVal3.endsWith("-b")) {
                                 if (bedrock) {
                                     continue;
@@ -288,6 +284,20 @@ public class ModifyDisplayItem {
                             addLore.add(tempVal4);
                         }
                         break;
+                    case 'n':
+                        if ((!item.getBuyPrice().empty && parseClickType(item, clickType, true)) ||
+                                (!item.getSellPrice().empty && parseClickType(item, clickType, false))){
+                            if (tempVal3.endsWith("-b")) {
+                                if (bedrock) {
+                                    continue;
+                                }
+                                else {
+                                    tempVal4 = tempVal4.substring(0, tempVal4.length() - 2);
+                                }
+                            }
+                            addLore.add(tempVal4);
+                        }
+                        break;
                 }
             }
             else {
@@ -433,5 +443,27 @@ public class ModifyDisplayItem {
                 break;
         }
         return s;
+    }
+
+    private static boolean parseClickType(ObjectItem item, String clickType, boolean buyOrSell) {
+        if (clickType == null || clickType.equals("general")) {
+            return true;
+        }
+        switch (clickType) {
+            case "buy" :
+                return buyOrSell;
+            case "sell" :
+            case "sell-all" :
+                return !buyOrSell;
+            case "buy-or-sell" :
+                if (item.getBuyPrice().empty && !item.getSellPrice().empty) {
+                    return !buyOrSell;
+                }
+                else {
+                    return buyOrSell;
+                }
+            default:
+                return false;
+        }
     }
 }

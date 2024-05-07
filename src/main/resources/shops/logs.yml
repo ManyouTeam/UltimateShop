@@ -1,7 +1,7 @@
 settings:
   menu: 'example-shop-menu'
   buy-more: true
-  shop-name: 'Logs'
+  shop-name: 'Logs Shop'
   hide-message: false
 
 items:
@@ -10,18 +10,18 @@ items:
     product-mode: CLASSIC_ALL
     products:
       1:
-        material: oak_log
+        material: CHERRY_LOG
         amount: 1
     buy-prices:
       1:
         economy-plugin: Vault
-        amount: 5
+        amount: '10.42'
         placeholder: '&6{amount} Coins'
         start-apply: 0
     sell-prices:
       1:
         economy-plugin: Vault
-        amount: 3
+        amount: '10.35'
         placeholder: '&6{amount} Coins'
         start-apply: 0
     sell-limits:
@@ -38,18 +38,18 @@ items:
     product-mode: CLASSIC_ALL
     products:
       1:
-        material: spruce_log
+        material: OAK_LOG
         amount: 1
     buy-prices:
       1:
         economy-plugin: Vault
-        amount: 5
+        amount: '9.06'
         placeholder: '&6{amount} Coins'
         start-apply: 0
     sell-prices:
       1:
         economy-plugin: Vault
-        amount: 3
+        amount: '9.02'
         placeholder: '&6{amount} Coins'
         start-apply: 0
     sell-limits:
@@ -66,18 +66,18 @@ items:
     product-mode: CLASSIC_ALL
     products:
       1:
-        material: birch_log
+        material: SPRUCE_LOG
         amount: 1
     buy-prices:
       1:
         economy-plugin: Vault
-        amount: 5
+        amount: '9.06'
         placeholder: '&6{amount} Coins'
         start-apply: 0
     sell-prices:
       1:
         economy-plugin: Vault
-        amount: 3
+        amount: '9.02'
         placeholder: '&6{amount} Coins'
         start-apply: 0
     sell-limits:
@@ -94,18 +94,18 @@ items:
     product-mode: CLASSIC_ALL
     products:
       1:
-        material: jungle_log
+        material: BIRCH_LOG
         amount: 1
     buy-prices:
       1:
         economy-plugin: Vault
-        amount: 5
+        amount: '9.06'
         placeholder: '&6{amount} Coins'
         start-apply: 0
     sell-prices:
       1:
         economy-plugin: Vault
-        amount: 3
+        amount: '9.02'
         placeholder: '&6{amount} Coins'
         start-apply: 0
     sell-limits:
@@ -122,18 +122,18 @@ items:
     product-mode: CLASSIC_ALL
     products:
       1:
-        material: acacia_log
+        material: MANGROVE_LOG
         amount: 1
     buy-prices:
       1:
         economy-plugin: Vault
-        amount: 5
+        amount: '9.06'
         placeholder: '&6{amount} Coins'
         start-apply: 0
     sell-prices:
       1:
         economy-plugin: Vault
-        amount: 3
+        amount: '9.02'
         placeholder: '&6{amount} Coins'
         start-apply: 0
     sell-limits:
@@ -150,18 +150,18 @@ items:
     product-mode: CLASSIC_ALL
     products:
       1:
-        material: dark_oak_log
+        material: JUNGLE_LOG
         amount: 1
     buy-prices:
       1:
         economy-plugin: Vault
-        amount: 5
+        amount: '9.06'
         placeholder: '&6{amount} Coins'
         start-apply: 0
     sell-prices:
       1:
         economy-plugin: Vault
-        amount: 3
+        amount: '9.02'
         placeholder: '&6{amount} Coins'
         start-apply: 0
     sell-limits:
@@ -178,18 +178,18 @@ items:
     product-mode: CLASSIC_ALL
     products:
       1:
-        material: mangrove_log
+        material: ACACIA_LOG
         amount: 1
     buy-prices:
       1:
         economy-plugin: Vault
-        amount: 5
+        amount: '9.06'
         placeholder: '&6{amount} Coins'
         start-apply: 0
     sell-prices:
       1:
         economy-plugin: Vault
-        amount: 3
+        amount: '9.02'
         placeholder: '&6{amount} Coins'
         start-apply: 0
     sell-limits:
@@ -206,18 +206,18 @@ items:
     product-mode: CLASSIC_ALL
     products:
       1:
-        material: crimson_stem
+        material: DARK_OAK_LOG
         amount: 1
     buy-prices:
       1:
         economy-plugin: Vault
-        amount: 8
+        amount: '10.35'
         placeholder: '&6{amount} Coins'
         start-apply: 0
     sell-prices:
       1:
         economy-plugin: Vault
-        amount: 5
+        amount: '10.32'
         placeholder: '&6{amount} Coins'
         start-apply: 0
     sell-limits:
@@ -234,18 +234,18 @@ items:
     product-mode: CLASSIC_ALL
     products:
       1:
-        material: warped_stem
+        material: CHERRY_SAPLING
         amount: 1
     buy-prices:
       1:
         economy-plugin: Vault
-        amount: 8
+        amount: '1.8'
         placeholder: '&6{amount} Coins'
         start-apply: 0
     sell-prices:
       1:
         economy-plugin: Vault
-        amount: 5
+        amount: '1.5'
         placeholder: '&6{amount} Coins'
         start-apply: 0
     sell-limits:
@@ -262,18 +262,18 @@ items:
     product-mode: CLASSIC_ALL
     products:
       1:
-        material: bamboo
+        material: OAK_SAPLING
         amount: 1
     buy-prices:
       1:
         economy-plugin: Vault
-        amount: 1
+        amount: '1.8'
         placeholder: '&6{amount} Coins'
         start-apply: 0
     sell-prices:
       1:
         economy-plugin: Vault
-        amount: 0.1
+        amount: '1.6'
         placeholder: '&6{amount} Coins'
         start-apply: 0
     sell-limits:
@@ -290,18 +290,158 @@ items:
     product-mode: CLASSIC_ALL
     products:
       1:
-        material: chorus_fruit
+        material: SPRUCE_SAPLING
         amount: 1
     buy-prices:
       1:
         economy-plugin: Vault
-        amount: 10
+        amount: '1.8'
         placeholder: '&6{amount} Coins'
         start-apply: 0
     sell-prices:
       1:
         economy-plugin: Vault
-        amount: 5
+        amount: '1.5'
+        placeholder: '&6{amount} Coins'
+        start-apply: 0
+    sell-limits:
+      global: 640
+      default: 128
+      vip: 192
+    sell-limits-conditions:
+      vip:
+        - 'permission: group.vip'
+    sell-limits-reset-mode: 'TIMED'
+    sell-limits-reset-time: '00:00:00'
+  L:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: BIRCH_SAPLING
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: '1.8'
+        placeholder: '&6{amount} Coins'
+        start-apply: 0
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: '1.6'
+        placeholder: '&6{amount} Coins'
+        start-apply: 0
+    sell-limits:
+      global: 640
+      default: 128
+      vip: 192
+    sell-limits-conditions:
+      vip:
+        - 'permission: group.vip'
+    sell-limits-reset-mode: 'TIMED'
+    sell-limits-reset-time: '00:00:00'
+  M:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: MANGROVE_PROPAGULE
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: '1.8'
+        placeholder: '&6{amount} Coins'
+        start-apply: 0
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: '1.6'
+        placeholder: '&6{amount} Coins'
+        start-apply: 0
+    sell-limits:
+      global: 640
+      default: 128
+      vip: 192
+    sell-limits-conditions:
+      vip:
+        - 'permission: group.vip'
+    sell-limits-reset-mode: 'TIMED'
+    sell-limits-reset-time: '00:00:00'
+  N:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: JUNGLE_SAPLING
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: '1.8'
+        placeholder: '&6{amount} Coins'
+        start-apply: 0
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: '1.6'
+        placeholder: '&6{amount} Coins'
+        start-apply: 0
+    sell-limits:
+      global: 640
+      default: 128
+      vip: 192
+    sell-limits-conditions:
+      vip:
+        - 'permission: group.vip'
+    sell-limits-reset-mode: 'TIMED'
+    sell-limits-reset-time: '00:00:00'
+  O:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: ACACIA_SAPLING
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: '1.8'
+        placeholder: '&6{amount} Coins'
+        start-apply: 0
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: '1.6'
+        placeholder: '&6{amount} Coins'
+        start-apply: 0
+    sell-limits:
+      global: 640
+      default: 128
+      vip: 192
+    sell-limits-conditions:
+      vip:
+        - 'permission: group.vip'
+    sell-limits-reset-mode: 'TIMED'
+    sell-limits-reset-time: '00:00:00'
+  O:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: DARK_OAK_SAPLING
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: '1.8'
+        placeholder: '&6{amount} Coins'
+        start-apply: 0
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: '1.6'
         placeholder: '&6{amount} Coins'
         start-apply: 0
     sell-limits:

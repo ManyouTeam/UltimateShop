@@ -1,7 +1,7 @@
 settings:
   menu: 'example-shop-menu'
   buy-more: true
-  shop-name: 'Crops page.1'
+  shop-name: 'Farming Shop'
   hide-message: false
 
 items:
@@ -10,18 +10,18 @@ items:
     product-mode: CLASSIC_ALL
     products:
       1:
-        material: wheat
+        material: WHEAT_SEEDS
         amount: 1
     buy-prices:
       1:
         economy-plugin: Vault
-        amount: 2
+        amount: '1.1'
         placeholder: '&6{amount} Coins'
-        start-apply: 0  
+        start-apply: 0
     sell-prices:
       1:
         economy-plugin: Vault
-        amount: 1
+        amount: '0.8'
         placeholder: '&6{amount} Coins'
         start-apply: 0
     sell-limits:
@@ -38,20 +38,20 @@ items:
     product-mode: CLASSIC_ALL
     products:
       1:
-        material: carrot
+        material: PUMPKIN_SEEDS
         amount: 1
     buy-prices:
       1:
         economy-plugin: Vault
-        amount: 2
+        amount: '4.5'
         placeholder: '&6{amount} Coins'
-        start-apply: 0  
+        start-apply: 0
     sell-prices:
       1:
         economy-plugin: Vault
-        amount: 1
+        amount: '3.2'
         placeholder: '&6{amount} Coins'
-        start-apply: 0
+        start-apply: 0 
     sell-limits:
       global: 640
       default: 128
@@ -66,18 +66,18 @@ items:
     product-mode: CLASSIC_ALL
     products:
       1:
-        material: potato
+        material: BEETROOT_SEEDS
         amount: 1
     buy-prices:
       1:
         economy-plugin: Vault
-        amount: 2
+        amount: '0.22'
         placeholder: '&6{amount} Coins'
-        start-apply: 0  
+        start-apply: 0
     sell-prices:
       1:
         economy-plugin: Vault
-        amount: 1
+        amount: '0.15'
         placeholder: '&6{amount} Coins'
         start-apply: 0
     sell-limits:
@@ -94,18 +94,18 @@ items:
     product-mode: CLASSIC_ALL
     products:
       1:
-        material: melon_slice
+        material: MELON_SEEDS
         amount: 1
     buy-prices:
       1:
         economy-plugin: Vault
-        amount: 2
+        amount: '4.5'
         placeholder: '&6{amount} Coins'
-        start-apply: 0  
+        start-apply: 0
     sell-prices:
       1:
         economy-plugin: Vault
-        amount: 1
+        amount: '3.60'
         placeholder: '&6{amount} Coins'
         start-apply: 0
     sell-limits:
@@ -122,18 +122,18 @@ items:
     product-mode: CLASSIC_ALL
     products:
       1:
-        material: pumpkin
+        material: WHEAT
         amount: 1
     buy-prices:
       1:
         economy-plugin: Vault
-        amount: 2
+        amount: '3.3'
         placeholder: '&6{amount} Coins'
-        start-apply: 0  
+        start-apply: 0
     sell-prices:
       1:
         economy-plugin: Vault
-        amount: 1
+        amount: '2.90'
         placeholder: '&6{amount} Coins'
         start-apply: 0
     sell-limits:
@@ -150,20 +150,24 @@ items:
     product-mode: CLASSIC_ALL
     products:
       1:
-        material: beetroot
+        material: PUMPKIN
         amount: 1
     buy-prices:
       1:
         economy-plugin: Vault
-        amount: 2
+        amount: '30'
         placeholder: '&6{amount} Coins'
-        start-apply: 0  
+        start-apply: 0
     sell-prices:
       1:
         economy-plugin: Vault
-        amount: 1
+        amount: '27'
         placeholder: '&6{amount} Coins'
         start-apply: 0
+    buy-limits:
+      global: '{sell-times-server}' 
+    buy-limits-reset-mode: 'NEVER'
+    buy-limits-reset-time: '00:00:00' 
     sell-limits:
       global: 640
       default: 128
@@ -178,18 +182,18 @@ items:
     product-mode: CLASSIC_ALL
     products:
       1:
-        material: sugar_cane
+        material: MELON_SLICE
         amount: 1
     buy-prices:
       1:
         economy-plugin: Vault
-        amount: 1
+        amount: '4.65'
         placeholder: '&6{amount} Coins'
-        start-apply: 0  
+        start-apply: 0
     sell-prices:
       1:
         economy-plugin: Vault
-        amount: 0.5
+        amount: '4'
         placeholder: '&6{amount} Coins'
         start-apply: 0
     sell-limits:
@@ -202,6 +206,230 @@ items:
     sell-limits-reset-mode: 'TIMED'
     sell-limits-reset-time: '00:00:00'  
   H:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: BEETROOT
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: '0.66'
+        placeholder: '&6{amount} Coins'
+        start-apply: 0
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: '0.52'
+        placeholder: '&6{amount} Coins'
+        start-apply: 0 
+    sell-limits:
+      global: 640
+      default: 128
+      vip: 192
+    sell-limits-conditions:
+      vip:
+        - 'permission: group.vip'
+    sell-limits-reset-mode: 'TIMED'
+    sell-limits-reset-time: '00:00:00'  
+  I:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: POTATO
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: '0.55'
+        placeholder: '&6{amount} Coins'
+        start-apply: 0
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: '0.49'
+        placeholder: '&6{amount} Coins'
+        start-apply: 0
+    sell-limits:
+      global: 640
+      default: 128
+      vip: 192
+    sell-limits-conditions:
+      vip:
+        - 'permission: group.vip'
+    sell-limits-reset-mode: 'TIMED'
+    sell-limits-reset-time: '00:00:00'  
+  J:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: SUGAR_CANE
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: '1.22'
+        placeholder: '&6{amount} Coins'
+        start-apply: 0
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: '1.19'
+        placeholder: '&6{amount} Coins'
+        start-apply: 0
+    sell-limits:
+      global: 640
+      default: 128
+      vip: 192
+    sell-limits-conditions:
+      vip:
+        - 'permission: group.vip'
+    sell-limits-reset-mode: 'TIMED'
+    sell-limits-reset-time: '00:00:00'  
+  K:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: KELP
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: '3.13'
+        placeholder: '&6{amount} Coins'
+        start-apply: 0
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: '2.85'
+        placeholder: '&6{amount} Coins'
+        start-apply: 0
+    sell-limits:
+      global: 640
+      default: 128
+      vip: 192
+    sell-limits-conditions:
+      vip:
+        - 'permission: group.vip'
+    sell-limits-reset-mode: 'TIMED'
+    sell-limits-reset-time: '00:00:00'  
+  L:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: VINE
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: '5.5'
+        placeholder: '&6{amount} Coins'
+        start-apply: 0
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: '5.14'
+        placeholder: '&6{amount} Coins'
+        start-apply: 0
+    sell-limits:
+      global: 640
+      default: 128
+      vip: 192
+    sell-limits-conditions:
+      vip:
+        - 'permission: group.vip'
+    sell-limits-reset-mode: 'TIMED'
+    sell-limits-reset-time: '00:00:00'  
+  M:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: CARROT
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: '0.83'
+        placeholder: '&6{amount} Coins'
+        start-apply: 0
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: '0.76'
+        placeholder: '&6{amount} Coins'
+        start-apply: 0
+    sell-limits:
+      global: 640
+      default: 128
+      vip: 192
+    sell-limits-conditions:
+      vip:
+        - 'permission: group.vip'
+    sell-limits-reset-mode: 'TIMED'
+    sell-limits-reset-time: '00:00:00'  
+  N:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: NETHER_WART
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: '16.5'
+        placeholder: '&6{amount} Coins'
+        start-apply: 0
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: '15.85'
+        placeholder: '&6{amount} Coins'
+        start-apply: 0
+    sell-limits:
+      global: 640
+      default: 128
+      vip: 192
+    sell-limits-conditions:
+      vip:
+        - 'permission: group.vip'
+    sell-limits-reset-mode: 'TIMED'
+    sell-limits-reset-time: '00:00:00'  
+  O:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: LILY_PAD
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: '3.3'
+        placeholder: '&6{amount} Coins'
+        start-apply: 0
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: '2.85'
+        placeholder: '&6{amount} Coins'
+        start-apply: 0
+    sell-limits:
+      global: 640
+      default: 128
+      vip: 192
+    sell-limits-conditions:
+      vip:
+        - 'permission: group.vip'
+    sell-limits-reset-mode: 'TIMED'
+    sell-limits-reset-time: '00:00:00'  
+  P:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
     products:
@@ -229,7 +457,7 @@ items:
         - 'permission: group.vip'
     sell-limits-reset-mode: 'TIMED'
     sell-limits-reset-time: '00:00:00'  
-  I:
+  Q:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
     products:
@@ -257,41 +485,3 @@ items:
         - 'permission: group.vip'
     sell-limits-reset-mode: 'TIMED'
     sell-limits-reset-time: '00:00:00' 
-  J:
-    price-mode: CLASSIC_ALL
-    product-mode: CLASSIC_ALL
-    products:
-      1:
-        material: kelp
-        amount: 1
-    buy-prices:
-      1:
-        economy-plugin: Vault
-        amount: 0.2
-        placeholder: '&6{amount} Coins'
-        start-apply: 0  
-    sell-prices:
-      1:
-        economy-plugin: Vault
-        amount: 0.1
-        placeholder: '&6{amount} Coins'
-        start-apply: 0
-    sell-limits:
-      global: 640
-      default: 128
-      vip: 192
-    sell-limits-conditions:
-      vip:
-        - 'permission: group.vip'
-    sell-limits-reset-mode: 'TIMED'
-    sell-limits-reset-time: '00:00:00'
-
-buttons:
-  b:
-    display-item:
-      material: arrow
-      name: '&cNext page'
-      lore:
-        - '&7Click to view next page!'
-    actions:
-      - 'shop_menu: crops1'

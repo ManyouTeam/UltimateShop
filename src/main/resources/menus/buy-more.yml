@@ -1,12 +1,12 @@
-title: 'Select Amount'
+title: 'Select Quantity'
 
 layout:
   - '000000000'
   - '012304560'
-  - '0000B0000'
   - '000000000'
-  - '000D0E000'
-  - '00000000A'
+  - '0000B0000'
+  - '00D0F0E00'
+  - 'A00000000'
 
 amount-items:
   1:
@@ -14,7 +14,7 @@ amount-items:
       material: GREEN_WOOL
       name: '&a+1'
       lore:
-        - '&7Click to add 1 amount.'
+        - '&7Click to add 1 more.'
     add-amount: 1
   2:
     display-item:
@@ -22,7 +22,7 @@ amount-items:
       amount: 10
       name: '&a+10'
       lore:
-        - '&7Click to add 10 amount.'
+        - '&7Click to add 10 more.'
     add-amount: 10
   3:
     display-item:
@@ -30,14 +30,14 @@ amount-items:
       amount: 32
       name: '&a+32'
       lore:
-        - '&7Click to add 32 amount.'
+        - '&7Click to add 32 more.'
     add-amount: 32
   4:
     display-item:
       material: RED_WOOL
       name: '&c-1'
       lore:
-        - '&7Click to remove 1 amount.'
+        - '&7Click to add 1 more.'
     add-amount: -1
   5:
     display-item:
@@ -45,7 +45,7 @@ amount-items:
       amount: 10
       name: '&c-10'
       lore:
-        - '&7Click to remove 10 amount.'
+        - '&7Click to add 10 more.'
     add-amount: -10
   6:
     display-item:
@@ -53,7 +53,7 @@ amount-items:
       amount: 32
       name: '&c-32'
       lore:
-        - '&7Click to remove 32 amount.'
+        - '&7Click to add 32 more.'
     add-amount: -32
     # Support replace add-amount option to set-amount.
     # set-amount: 32
@@ -64,30 +64,26 @@ confirm-items:
   D:
     display-item:
       material: PAPER
-      name: '&aConfirm Buy &f{item-name} x{amount}'
+      name: '&a&lCLICK TO BUY'
       lore:
-        - '&7Click to buy!'
+        - '&aClick to confirm and purchase'
+        - '&athe quantity you have selected.'
+    # You can remove click-action option, then confirm button can do all things, like buy, sell, sell all.
+    # If this option exists, then this confirm button can only do the thing.
     click-action: buy
   E:
     display-item:
       material: PAPER
-      name: '&aConfirm Sell &f{item-name} x{amount}'
+      name: '&c&lCLICK TO SELL'
       lore:
-        - '&7Click to sell!'
+        - '&cClick to confirm and sell'
+        - '&cthe quantity you have selected.'
     click-action: sell
-  #F:
-  #  display-item:
-  #    material: PAPER
-  #    name: '&aConfirm'
-  #    lore:
-  #      - '&7Click to confirm trade!'
 
 buttons:
   A:
     display-item:
       material: ARROW
-      name: '&cBack'
-      lore:
-        - '&7Click to back shop!'
+      name: '&c« Go back'
     actions:
       - 'shop_menu: {shop}'

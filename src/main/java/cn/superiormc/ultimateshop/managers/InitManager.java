@@ -23,16 +23,21 @@ public class InitManager {
     public void init() {
         resourceOutput("languages/en_US.yml", true);
         resourceOutput("languages/zh_CN.yml", true);
-        resourceOutput("shops/baits.yml", false);
+        resourceOutput("shops/concretes.yml", false);
         resourceOutput("shops/blocks.yml", false);
-        resourceOutput("shops/crops.yml", false);
-        resourceOutput("shops/crops1.yml", false);
+        resourceOutput("shops/blocks2.yml", false);
+        resourceOutput("shops/farming.yml", false);
+        resourceOutput("shops/flowers.yml", false);
+        resourceOutput("shops/glass.yml", false);
         resourceOutput("shops/drops.yml", false);
+        resourceOutput("shops/minerals.yml", false);
         resourceOutput("shops/logs.yml", false);
-        resourceOutput("shops/ores.yml", false);
-        resourceOutput("shops/decorations.yml", false);
-        resourceOutput("shops/misc.yml", false);
-        resourceOutput("shops/spawners.yml", false);
+        resourceOutput("shops/redstone.yml", false);
+        resourceOutput("shops/terracottas.yml", false);
+        resourceOutput("shops/special.yml", false);
+        resourceOutput("shops/transport.yml", false);
+        resourceOutput("shops/wools.yml", false);
+        resourceOutput("shops/example.yml", false);
         resourceOutput("menus/main.yml", false);
         resourceOutput("menus/buy-more.yml", false);
         resourceOutput("menus/example-shop-menu.yml", false);

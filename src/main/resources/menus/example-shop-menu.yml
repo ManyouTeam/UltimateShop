@@ -1,26 +1,21 @@
-# DO NOT USE THIS FILE AS YOUR REAL SHOP MENU CONFIGS! COPY NEW ONE PLEASE!!
-# OTHERWISE IT WILL MAKE BUGS!!!
-# For example, if you delete buttons section here, plugin will try read their
-# default value in example-shop-menu.yml that saved in jar file, so do not use this file as real
-# shop menu configs!
-
 title: '{shop-name}'
 size: 54
+
+open-actions:
+  - 'sound: item.book.page_turn;;1;;1'
 
 layout:
   - '000000000'
   - '0ABCDEFG0'
   - '0HIJKLMN0'
   - '0OPQRSTU0'
-  - 'aVWXYZ12b'
-  - '000030000'
+  - '000000000'
+  - 'a0003000b'
 
 buttons:
   3:
     display-item:
       material: arrow
-      name: '&cBack'
-      lore:
-        - '&7Click to return main menu!'
+      name: '&c« Go back'
     actions:
       - 'open_menu: main'

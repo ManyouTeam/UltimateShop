@@ -1,92 +1,138 @@
-# DO NOT USE THIS FILE AS YOUR REAL MENU CONFIGS! COPY NEW ONE PLEASE!!
-# OTHERWISE IT WILL MAKE BUGS!!!
-# For example, if you delete buttons section here, plugin will try read their
-# default value in main.yml that saved in jar file, so do not use this file as real
-# menu configs!
+title: 'Items Shop'
+size: 54
 
-title: 'Shop'
+open-actions:
+  - 'sound: block.note_block.pling;;1;;1'
 
 layout:
   - '000000000'
+  - '00BCDEF00'
+  - '00IJKLM00'
+  - '000AHG000'
   - '000000000'
-  - '00AB0CD00'
-  - '00EFGHI00'
-  - '000000000'
-  - '000000000'
+  - '0000Z0000'
 
 buttons:
   A:
     display-item:
       material: wheat
-      name: '&dCrops'
+      name: '&a&lFARMING'
       lore:
-        - '&7Click to open this shop!'
+        - '&7Sell and buy various items'
+        - '&7such as seeds.'
     actions:
-      - 'shop_menu: crops'
+      - 'shop_menu: farming'
   B:
     display-item:
       material: bone
-      name: '&dDrops'
+      name: '&b&lDROPS'
       lore:
-        - '&7Click to open this shop!'
+        - '&7Sell and buy related items'
+        - '&7to mob drops as strings.'
     actions:
       - 'shop_menu: drops'
   C:
     display-item:
-      material: bricks
-      name: '&dBlocks'
+      material: ORANGE_CONCRETE
+      name: '&a&lCONCRETES'
       lore:
-        - '&7Click to open this shop!'
+        - '&7Sell and buy blocks of concrete'
+        - '&7and all their color variants.'
     actions:
-      - 'shop_menu: blocks'
+      - 'shop_menu: concretes'
   D:
     display-item:
-      material: fishing_rod
-      name: '&dBaits'
+      material: LILAC
+      name: '&a&lFLOWERS'
       lore:
-        - '&cThis is an example for ItemsAdder and'
-        - '&ccommand shop, not for real use!'
-        - ''
-        - '&7Click to open this shop!'
+        - '&7Sell and buy many types of'
+        - '&7flowers in this section.'
     actions:
-      - 'shop_menu: baits'
+      - 'shop_menu: flowers'
   E:
     display-item:
       material: oak_log
-      name: '&dLogs'
+      name: '&a&lLOGS AND SAPLING'
       lore:
-        - '&7Click to open this shop!'
+        - '&7Sell and buy all variants of overworld'
+        - '&7logs and their saplings.'
     actions:
       - 'shop_menu: logs'
   F:
     display-item:
-      material: diamond_ore
-      name: '&dOres'
+      material: diamond
+      name: '&a&lMINERALS'
       lore:
-        - '&7Click to open this shop!'
+        - '&7Sell and buy different minerals'
+        - '&7such as diamond, iron and more.'
     actions:
-      - 'shop_menu: ores'
+      - 'shop_menu: minerals'
   G:
     display-item:
-      material: spawner
-      name: '&dSpawners'
+      material: GRASS_BLOCK
+      name: '&a&lBLOCKS'
       lore:
-        - '&7Click to open this shop!'
+        - '&7Sell and buy different types'
+        - '&7of varied blocks.'
     actions:
-      - 'shop_menu: spawners'
+      - 'shop_menu: blocks'
   H:
     display-item:
-      material: blue_banner
-      name: '&dDecorations'
+      material: LIME_TERRACOTTA
+      name: '&a&lTERRACOTTA'
       lore:
-        - '&7Click to open this shop!'
+        - '&7Sell and buy blocks of terracotta'
+        - '&7and all their color variants.'
     actions:
-      - 'shop_menu: decorations'
+      - 'shop_menu: terracottas'
   I:
     display-item:
-      material: book
-      name: '&dMisc'
+      material: GLASS
+      name: '&7&lGLASS'
       lore:
-        - '&7Click to open this shop!'
+        - '&7Sell and buy blocks of glass and panels'
+        - '&7and all their color variants.'
     actions:
-      - 'shop_menu: misc'
+      - 'shop_menu: glass'
+  J:
+    display-item:
+      material: LIME_WOOL
+      name: '&a&lWOOL'
+      lore:
+        - '&7Sell and buy blocks of wools'
+        - '&7and all their color variants.'
+    actions:
+      - 'shop_menu: wools'
+  K:
+    display-item:
+      material: EXPERIENCE_BOTTLE
+      name: '&d&lSPECIAL ITEMS'
+      lore:
+        - '&7Sell and buy some special'
+        - '&7or rare items.'
+    actions:
+      - 'shop_menu: special'
+  L:
+    display-item:
+      material: REDSTONE
+      name: '&c&lREDSTONE'
+      lore:
+        - '&7Sell and buy everything related'
+        - '&7to redstone as comparators.'
+    actions:
+      - 'shop_menu: redstone'
+  M:
+    display-item:
+      material: RAIL
+      name: '&a&lTRANSPORTS'
+      lore:
+        - '&7Some things related to'
+        - '&7transport like rails.'
+    actions:
+      - 'shop_menu: transport'
+  Z:
+    display-item:
+      material: barrier
+      name: '&cClose this menu'
+    actions:
+      - 'close'

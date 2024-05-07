@@ -72,7 +72,7 @@ display-item:
   # @+lower case means conditional lore, do not remove them here.
   # Otherwise, the line without this will always display it.
   add-lore:
-    - ''
+    - '@n '
     - '@a&ePurchase: {buy-price}'
     - '@b&eSell: {sell-price}'
     - '@c&#FF7777Player Buy Stock: {buy-times-player}/{buy-limit-player}'
@@ -91,7 +91,7 @@ display-item:
     - '@j'
     - '@j&#ff3300Can not sell more for server!'
     - '@j&8Refresh Time: {sell-refresh-server}'
-    - ' '
+    - '@n '
     - '@a{buy-click}-b'
     - '@b{sell-click}-b'
     - '@k&#FFFACDRight-Shift click to pick amount!-b'
