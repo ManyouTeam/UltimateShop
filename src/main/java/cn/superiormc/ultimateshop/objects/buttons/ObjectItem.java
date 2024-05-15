@@ -172,8 +172,12 @@ public class ObjectItem extends AbstractButton {
     }
 
     private void initBuyMoreMenu() {
-        new ObjectMoreMenu(ConfigManager.configManager.getString("menu.select-more.menu"),
-                this);
+        ConfigurationSection buyMoreSection = config.getConfigurationSection("buy-more-menu");
+        if (buyMoreSection == null) {
+            new ObjectMoreMenu(ConfigManager.configManager.getSection("menu.select-more"), this);
+        } else {
+            new ObjectMoreMenu(buyMoreSection, this);
+        }
     }
 
     private void initBuyCondition() {

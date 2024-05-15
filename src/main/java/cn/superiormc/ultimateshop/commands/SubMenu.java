@@ -4,7 +4,6 @@ import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.LanguageManager;
 import cn.superiormc.ultimateshop.methods.GUI.OpenGUI;
 import cn.superiormc.ultimateshop.objects.ObjectShop;
-import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import cn.superiormc.ultimateshop.objects.menus.ObjectMenu;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -27,7 +26,7 @@ public class SubMenu extends AbstractCommand {
         boolean bypassBedrockCheck = args[args.length - 1].equals("-b");
         ObjectShop tempVal1 = ConfigManager.configManager.getShop(args[1]);
         if (tempVal1 == null) {
-            if (args[1].equals(ConfigManager.configManager.getString("menu.select-more.menu"))) {
+            if (ObjectMenu.buyMoreMenuNames.contains(args[1])) {
                 return;
             }
             OpenGUI.openCommonGUI(player, args[1], bypassBedrockCheck, false);
@@ -54,7 +53,7 @@ public class SubMenu extends AbstractCommand {
         }
         ObjectShop tempVal1 = ConfigManager.configManager.getShop(args[1]);
         if (tempVal1 == null) {
-            if (args[1].equals(ConfigManager.configManager.getString("menu.select-more.menu"))) {
+            if (ObjectMenu.buyMoreMenuNames.contains(args[1])) {
                 return;
             }
             OpenGUI.openCommonGUI(player, args[1], bypassBedrockCheck, false);
@@ -73,7 +72,7 @@ public class SubMenu extends AbstractCommand {
                     tempVal1.add(tempVal2.getShopName());
                 }
                 for (String tempVal4 : ObjectMenu.commonMenus.keySet()) {
-                    if (tempVal4.equals(ConfigManager.configManager.getString("menu.select-more.menu"))) {
+                    if (ObjectMenu.buyMoreMenuNames.contains(tempVal4)) {
                         continue;
                     }
                     tempVal1.add(tempVal4);

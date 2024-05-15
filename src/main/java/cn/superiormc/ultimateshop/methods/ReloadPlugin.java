@@ -6,6 +6,7 @@ import cn.superiormc.ultimateshop.cache.ServerCache;
 import cn.superiormc.ultimateshop.gui.AbstractGUI;
 import cn.superiormc.ultimateshop.managers.*;
 import cn.superiormc.ultimateshop.objects.caches.ObjectUseTimesCache;
+import cn.superiormc.ultimateshop.objects.menus.ObjectMenu;
 import cn.superiormc.ultimateshop.utils.MathUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -27,6 +28,10 @@ public class ReloadPlugin {
             ServerCache.serverCache.shutServerCacheOnDisable();
         }
         TaskManager.taskManager.cancelTask();
+        ObjectMenu.buyMoreMenuNames.clear();
+        ObjectMenu.commonMenus.clear();
+        ObjectMenu.shopMenuNames.clear();
+        ObjectMenu.shopMenus.clear();
         new ConfigManager();
         new ItemManager();
         new LanguageManager();

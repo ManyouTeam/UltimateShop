@@ -27,6 +27,8 @@ public class ObjectMenu {
 
     public static List<String> shopMenuNames = new ArrayList<>();
 
+    public static List<String> buyMoreMenuNames = new ArrayList<>();
+
     public String fileName;
 
     private ObjectShop shop = null;

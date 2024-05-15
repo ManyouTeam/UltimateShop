@@ -80,8 +80,8 @@ public class BuyMoreGUI extends InvGUI {
                 if (nowingAmount < 1) {
                     nowingAmount = 1;
                 }
-                if (nowingAmount >= ConfigManager.configManager.getInt("menu.select-more.max-amount", 64)) {
-                    nowingAmount = ConfigManager.configManager.getInt("menu.select-more.max-amount", 64);
+                if (nowingAmount >= menu.getSection().getInt("amount", 64)) {
+                    nowingAmount = menu.getSection().getInt("amount", 64);
                 }
                 break;
             case DISPLAY:

@@ -10,6 +10,7 @@ import cn.superiormc.ultimateshop.methods.GUI.OpenGUI;
 import cn.superiormc.ultimateshop.methods.Product.BuyProductMethod;
 import cn.superiormc.ultimateshop.methods.Product.SellProductMethod;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
+import cn.superiormc.ultimateshop.objects.menus.ObjectMoreMenu;
 import cn.superiormc.ultimateshop.utils.TextUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -21,10 +22,13 @@ public class FormBuyOrSellGUI extends FormGUI {
 
     private final FormType mode;
 
+    private final ObjectMoreMenu menu;
+
     public FormBuyOrSellGUI(Player owner, ObjectItem item, FormType mode) {
         super(owner);
         this.item = item;
         this.mode = mode;
+        this.menu = ObjectMoreMenu.moreMenus.get(item);
         constructGUI();
     }
 
@@ -81,7 +85,7 @@ public class FormBuyOrSellGUI extends FormGUI {
                         !b,
                         false,
                         true,
-                        ConfigManager.configManager.getInt("menu.select-more.max-amount", 64));
+                        menu.getSection().getInt("amount", 64));
             }
             return;
         }
@@ -91,10 +95,8 @@ public class FormBuyOrSellGUI extends FormGUI {
             if (realAmount < 1) {
                 realAmount = 1;
             }
-            else if (realAmount > ConfigManager.configManager.getInt
-                    ("menu.select-more.max-amount", 64)) {
-                realAmount = ConfigManager.configManager.getInt
-                        ("menu.select-more.max-amount", 64);
+            else if (realAmount > menu.getSection().getInt("amount", 64)) {
+                realAmount = menu.getSection().getInt("amount", 64);
             }
         }
         catch (Exception e) {

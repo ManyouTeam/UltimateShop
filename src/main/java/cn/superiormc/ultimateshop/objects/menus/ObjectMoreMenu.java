@@ -1,6 +1,5 @@
 package cn.superiormc.ultimateshop.objects.menus;
 
-import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.objects.buttons.*;
 import org.bukkit.configuration.ConfigurationSection;
 
@@ -15,12 +14,15 @@ public class ObjectMoreMenu extends ObjectMenu {
 
     private int displayItemSlot = -1;
 
+    private ConfigurationSection section;
 
-    public ObjectMoreMenu(String fileName, ObjectItem item) {
-        super(fileName, item);
+    public ObjectMoreMenu(ConfigurationSection section, ObjectItem item) {
+        super(section.getString("menu", "buy-more"), item);
         this.item = item;
         this.type = MenuType.More;
+        this.section = section;
         moreMenus.put(item, this);
+        ObjectMenu.buyMoreMenuNames.add(section.getString("menu", "buy-more"));
         initDisplayItem();
         initConfirmItem();
         initSelectAmountItem();
@@ -104,5 +106,9 @@ public class ObjectMoreMenu extends ObjectMenu {
 
     public int getDisplayItemSlot() {
         return displayItemSlot;
+    }
+
+    public ConfigurationSection getSection() {
+        return section;
     }
 }

@@ -73,7 +73,7 @@ public class ConfigManager {
                 if (ObjectMenu.shopMenuNames.contains(substring)) {
                     continue;
                 }
-                if (substring.equals(ConfigManager.configManager.getString("menu.select-more.menu"))) {
+                if (ObjectMenu.buyMoreMenuNames.contains(substring)) {
                     continue;
                 }
                 new ObjectMenu(substring);
@@ -139,6 +139,10 @@ public class ConfigManager {
 
     public long getLong(String path, long defaultValue) {
         return config.getLong(path, defaultValue);
+    }
+
+    public ConfigurationSection getSection(String path) {
+        return config.getConfigurationSection(path);
     }
 
     public String getString(String path, String... args) {
