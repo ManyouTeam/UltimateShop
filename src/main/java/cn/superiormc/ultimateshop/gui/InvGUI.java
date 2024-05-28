@@ -4,6 +4,7 @@ import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.gui.inv.GUIMode;
 import cn.superiormc.ultimateshop.listeners.GUIListener;
 import cn.superiormc.ultimateshop.objects.buttons.AbstractButton;
+import cn.superiormc.ultimateshop.objects.menus.ObjectMenu;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
@@ -25,8 +26,6 @@ public abstract class InvGUI extends AbstractGUI {
     public Map<Integer, AbstractButton> menuButtons = new HashMap<>();
 
     public Map<Integer, ItemStack> menuItems = new HashMap<>();
-
-    public InvGUI previousGUI;
 
     public Listener guiListener;
 
@@ -77,6 +76,10 @@ public abstract class InvGUI extends AbstractGUI {
     }
 
     public ConfigurationSection getSection() {
+        return null;
+    }
+
+    public ObjectMenu getMenu() {
         return null;
     }
 }

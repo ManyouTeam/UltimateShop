@@ -372,7 +372,7 @@ public class ObjectItem extends AbstractButton {
     public List<String> getAddLore() {
         List<String> resultString = config.getStringList("add-lore");
         if (resultString.isEmpty()) {
-            return ConfigManager.configManager.getListWithColor("display-item.add-lore");
+            return ConfigManager.configManager.getStringListWithColor("display-item.add-lore");
         } else {
             return resultString;
         }

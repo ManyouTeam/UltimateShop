@@ -39,7 +39,7 @@ public class FormBuyOrSellGUI extends FormGUI {
             LanguageManager.languageManager.sendStringText(player.getPlayer(),
                     "error.player-not-found",
                     "player",
-                    player.getPlayer().getName());
+                    player.getName());
             return;
         }
         CustomForm.Builder tempVal2 = CustomForm.builder();
@@ -85,7 +85,7 @@ public class FormBuyOrSellGUI extends FormGUI {
                         !b,
                         false,
                         true,
-                        menu.getSection().getInt("amount", 64));
+                        menu.getSection().getInt("max-amount", 64));
             }
             return;
         }
@@ -95,8 +95,8 @@ public class FormBuyOrSellGUI extends FormGUI {
             if (realAmount < 1) {
                 realAmount = 1;
             }
-            else if (realAmount > menu.getSection().getInt("amount", 64)) {
-                realAmount = menu.getSection().getInt("amount", 64);
+            else if (realAmount > menu.getSection().getInt("max-amount", 64)) {
+                realAmount = menu.getSection().getInt("max-amount", 64);
             }
         }
         catch (Exception e) {

@@ -8,7 +8,6 @@ import cn.superiormc.ultimateshop.methods.Product.SellProductMethod;
 import cn.superiormc.ultimateshop.objects.buttons.*;
 import cn.superiormc.ultimateshop.objects.menus.ObjectMoreMenu;
 import cn.superiormc.ultimateshop.utils.InvUtil;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.Inventory;
@@ -80,8 +79,8 @@ public class BuyMoreGUI extends InvGUI {
                 if (nowingAmount < 1) {
                     nowingAmount = 1;
                 }
-                if (nowingAmount >= menu.getSection().getInt("amount", 64)) {
-                    nowingAmount = menu.getSection().getInt("amount", 64);
+                if (nowingAmount >= menu.getSection().getInt("max-amount", 64)) {
+                    nowingAmount = menu.getSection().getInt("max-amount", 64);
                 }
                 break;
             case DISPLAY:

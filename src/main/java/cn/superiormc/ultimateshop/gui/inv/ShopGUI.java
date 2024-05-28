@@ -137,7 +137,6 @@ public class ShopGUI extends InvGUI {
         for (int slot : menuButtons.keySet()) {
             inv.setItem(slot, menuItems.get(slot));
         }
-        //setExtraSlots(glassPane);
     }
 
     @Override
@@ -167,6 +166,7 @@ public class ShopGUI extends InvGUI {
         return resultItems;
     }
 
+    @Override
     public ObjectMenu getMenu() {
         return shopMenu;
     }

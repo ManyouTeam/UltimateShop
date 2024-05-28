@@ -72,6 +72,7 @@ public class CommonGUI extends InvGUI {
         return resultItems;
     }
 
+    @Override
     public ObjectMenu getMenu() {
         return commonMenu;
     }

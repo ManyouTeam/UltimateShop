@@ -57,6 +57,9 @@ public class SellAllGUI extends InvGUI {
         Map<AbstractSingleThing, BigDecimal> result = new HashMap<>();
         for (String shop : ConfigManager.configManager.shopConfigs.keySet()) {
             for (ObjectItem products : ConfigManager.configManager.getShop(shop).getProductList()) {
+                if (ConfigManager.configManager.getStringList("menu.sell-all.ignore-items").contains(shop + ";;" + products.getProduct())) {
+                    continue;
+                }
                 ProductTradeStatus status = SellProductMethod.startSell(inv,
                         shop,
                         products.getProduct(),

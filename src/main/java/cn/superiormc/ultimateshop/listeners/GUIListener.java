@@ -7,6 +7,7 @@ import cn.superiormc.ultimateshop.gui.inv.GUIMode;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.ErrorManager;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
+import cn.superiormc.ultimateshop.utils.FoliaUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -88,16 +89,17 @@ public class GUIListener implements Listener {
             }
             // 判定是否要打开上一页菜单
             if (gui.closeEventHandle(e.getInventory())) {
-                // F**k suit 1.19.4
-                if (UltimateShop.isFolia) {
-                    UltimateShop.instance.closeInvForFolia(gui);
-                    return;
-                }
-                Bukkit.getScheduler().runTaskLater(UltimateShop.instance, () -> {
-                    if (gui.previousGUI != null && gui.guiMode == GUIMode.NOT_EDITING) {
-                        gui.previousGUI.openGUI(true);
+                if (gui.getMenu() != null) {
+                    if (UltimateShop.isFolia) {
+                        FoliaUtil.closeInvForFolia(gui);
+                        return;
                     }
-                }, 4L);
+                    Bukkit.getScheduler().runTaskLater(UltimateShop.instance, () -> {
+                        if (gui.guiMode == GUIMode.NOT_EDITING) {
+                            gui.getMenu().doCloseAction(player);
+                        }
+                    }, 4L);
+                }
             }
         }
     }

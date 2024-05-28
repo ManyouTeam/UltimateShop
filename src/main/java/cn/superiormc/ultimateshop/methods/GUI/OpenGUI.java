@@ -12,9 +12,6 @@ import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class OpenGUI {
 
     public static void openShopGUI(Player player, ObjectShop shop, boolean bypassBedrockCheck, boolean reopen) {
@@ -25,14 +22,14 @@ public class OpenGUI {
             FormShopGUI formShopGUI = new FormShopGUI(player, shop);
             formShopGUI.openGUI(reopen);
             if (formShopGUI.getMenu() != null) {
-                formShopGUI.getMenu().doAction(player);
+                formShopGUI.getMenu().doOpenAction(player);
             }
             return;
         }
         ShopGUI gui = new ShopGUI(player, shop);
         gui.openGUI(reopen);
         if (gui.getMenu() != null) {
-            gui.getMenu().doAction(player);
+            gui.getMenu().doOpenAction(player);
         }
     }
 
@@ -41,14 +38,14 @@ public class OpenGUI {
             FormCommonGUI formCommonGUI = new FormCommonGUI(player, fileName);
             formCommonGUI.openGUI(reopen);
             if (formCommonGUI.getMenu() != null) {
-                formCommonGUI.getMenu().doAction(player);
+                formCommonGUI.getMenu().doOpenAction(player);
             }
             return;
         }
         CommonGUI gui = new CommonGUI(player, fileName);
         gui.openGUI(reopen);
         if (gui.getMenu() != null) {
-            gui.getMenu().doAction(player);
+            gui.getMenu().doOpenAction(player);
         }
     }
 

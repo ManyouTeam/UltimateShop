@@ -108,7 +108,7 @@ public class ConfigManager {
         return randomPlaceholders.get(id);
     }
 
-    public List<String> getListWithColor(String... args) {
+    public List<String> getStringListWithColor(String... args) {
         List<String> resultList = new ArrayList<>();
         for (String s : config.getStringList(args[0])) {
             for (int i = 1 ; i < args.length ; i += 2) {
@@ -123,6 +123,10 @@ public class ConfigManager {
             resultList.add(TextUtil.parse(s));
         }
         return resultList;
+    }
+
+    public List<String> getStringList(String path) {
+        return config.getStringList(path);
     }
 
     public List<Integer> getIntList(String path) {

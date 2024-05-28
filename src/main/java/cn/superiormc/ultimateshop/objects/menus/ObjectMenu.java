@@ -1,7 +1,6 @@
 package cn.superiormc.ultimateshop.objects.menus;
 
 import cn.superiormc.ultimateshop.UltimateShop;
-import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.objects.ObjectShop;
 import cn.superiormc.ultimateshop.objects.buttons.AbstractButton;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectButton;
@@ -35,7 +34,9 @@ public class ObjectMenu {
 
     private ObjectCondition condition;
 
-    private ObjectAction action;
+    private ObjectAction openAction;
+
+    private ObjectAction closeAction;
 
     public Configuration menuConfigs;
 
@@ -93,11 +94,13 @@ public class ObjectMenu {
         }
         if (menuConfigs == null) {
             this.condition = new ObjectCondition();
-            this.action = new ObjectAction();
+            this.openAction = new ObjectAction();
+            this.closeAction = new ObjectAction();
         }
         else {
             this.condition = new ObjectCondition(menuConfigs.getStringList("conditions"));
-            this.action = new ObjectAction(menuConfigs.getStringList("open-actions"));
+            this.openAction = new ObjectAction(menuConfigs.getStringList("open-actions"));
+            this.closeAction = new ObjectAction(menuConfigs.getStringList("close-actions"));
         }
     }
 
@@ -174,9 +177,15 @@ public class ObjectMenu {
         return condition;
     }
 
-    public void doAction(Player player) {
-        if (action != null) {
-            action.doAction(player, 1, 1);
+    public void doOpenAction(Player player) {
+        if (openAction != null) {
+            openAction.doAction(player, 1, 1);
+        }
+    }
+
+    public void doCloseAction(Player player) {
+        if (closeAction != null) {
+            closeAction.doAction(player, 1, 1);
         }
     }
 

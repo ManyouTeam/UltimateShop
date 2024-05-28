@@ -7,6 +7,7 @@ import cn.superiormc.ultimateshop.managers.CacheManager;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.methods.GUI.OpenGUI;
 import cn.superiormc.ultimateshop.objects.items.ObjectAction;
+import cn.superiormc.ultimateshop.utils.FoliaUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -18,7 +19,7 @@ public class CacheListener implements Listener {
     @EventHandler
     public void onLogin(PlayerLoginEvent event) {
         if (UltimateShop.isFolia) {
-            UltimateShop.instance.addCacheForFolia(event.getPlayer());
+            FoliaUtil.addCacheForFolia(event.getPlayer());
         } else {
             Bukkit.getScheduler().runTaskLater(UltimateShop.instance, () -> {
                 CacheManager.cacheManager.addPlayerCache(event.getPlayer());

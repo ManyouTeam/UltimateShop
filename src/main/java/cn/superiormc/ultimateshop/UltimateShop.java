@@ -86,21 +86,4 @@ public final class UltimateShop extends JavaPlugin {
         Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §fPlugin is disabled. Author: PQguanfang.");
     }
 
-    public void closeInvForFolia(InvGUI gui) {
-        Bukkit.getGlobalRegionScheduler().runDelayed(UltimateShop.instance, task -> {
-            if (gui.previousGUI != null && gui.guiMode == GUIMode.NOT_EDITING) {
-                gui.previousGUI.openGUI(true);
-            }
-        }, 4);
-    }
-
-    public void addCacheForFolia(Player player) {
-        Bukkit.getGlobalRegionScheduler().runDelayed(UltimateShop.instance, task -> {
-            CacheManager.cacheManager.addPlayerCache(player);
-            if (ConfigManager.configManager.getBoolean("bungeecord-sync.enabled") && ServerCache.serverCache != null) {
-                ServerCache.serverCache.initServerCache();
-            }
-        }, 7L);
-    }
-
 }
