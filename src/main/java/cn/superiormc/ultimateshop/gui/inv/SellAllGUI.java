@@ -55,6 +55,7 @@ public class SellAllGUI extends InvGUI {
             }
         }
         Map<AbstractSingleThing, BigDecimal> result = new HashMap<>();
+        boolean firstSell = false;
         for (String shop : ConfigManager.configManager.shopConfigs.keySet()) {
             for (ObjectItem products : ConfigManager.configManager.getShop(shop).getProductList()) {
                 if (ConfigManager.configManager.getStringList("menu.sell-all.ignore-items").contains(shop + ";;" + products.getProduct())) {
@@ -68,9 +69,13 @@ public class SellAllGUI extends InvGUI {
                         false,
                         ConfigManager.configManager.getBoolean("menu.sell-all.hide-message"),
                         true,
+                        firstSell,
                         1);
                 if (status.getStatus() == ProductTradeStatus.Status.DONE && status.getGiveResult() != null) {
                     result.putAll(status.getGiveResult().getResultMap());
+                }
+                if (!products.getSellAction().isEmpty()) {
+                    firstSell = true;
                 }
             }
         }

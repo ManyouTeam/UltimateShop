@@ -179,13 +179,13 @@ public class ObjectMenu {
 
     public void doOpenAction(Player player) {
         if (openAction != null) {
-            openAction.doAction(player, 1, 1);
+            openAction.doAction(player, 1, 1, false);
         }
     }
 
     public void doCloseAction(Player player) {
         if (closeAction != null) {
-            closeAction.doAction(player, 1, 1);
+            closeAction.doAction(player, 1, 1, false);
         }
     }
 

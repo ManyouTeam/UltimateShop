@@ -62,7 +62,7 @@ public class ObjectButton extends AbstractButton {
             return;
         }
         if (action != null) {
-            action.doAction(player, 1, 1);
+            action.doAction(player, 1, 1, false);
         }
     }
 

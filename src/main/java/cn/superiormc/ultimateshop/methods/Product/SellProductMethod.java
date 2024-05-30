@@ -43,7 +43,7 @@ public class SellProductMethod {
                                                                    boolean ableMaxSell,
                                                                    int multi) {
         return startSell(player.getInventory(),
-                shop, product, player, quick, test, false, ableMaxSell, multi);
+                shop, product, player, quick, test, false, ableMaxSell, false, multi);
     }
 
     public static ProductTradeStatus startSell(Inventory inventory,
@@ -54,6 +54,7 @@ public class SellProductMethod {
                                                                    boolean test,
                                                                    boolean hide,
                                                                    boolean ableMaxSell,
+                                                                   boolean sellAll,
                                                                    int multi) {
         ObjectShop tempVal1 = ConfigManager.configManager.getShop(shop);
         if (tempVal1 == null) {
@@ -226,7 +227,7 @@ public class SellProductMethod {
         // 扣的是奖励中的东西
         tempVal5.takeThing(inventory, player, takeResult.getResultMap());
         // 执行动作
-        tempVal2.getSellAction().doAction(player, playerUseTimes, multi);
+        tempVal2.getSellAction().doAction(player, playerUseTimes, multi, sellAll);
         // limit+1
         if (tempVal9 != null) {
             if (ConfigManager.configManager.getBoolean("debug")) {

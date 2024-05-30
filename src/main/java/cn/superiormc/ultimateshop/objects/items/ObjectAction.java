@@ -35,16 +35,18 @@ public class ObjectAction {
 
     private ObjectShop shop = null;
 
+    private boolean isEmpty = false;
+
     public ObjectAction() {
-        // Empty...
+        this.isEmpty = true;
     }
 
     public ObjectAction(List<String> action) {
+        this.isEmpty = action.isEmpty();
         for (String s : action) {
             // Means this action will be active only once.
             if (s.endsWith("-o")) {
-                s = s.substring(0, s.length() - 3);
-                onceAction.add(s);
+                onceAction.add(s.substring(0, s.length() - 2));
             }
             else {
                 everyAction.add(s);
@@ -53,10 +55,10 @@ public class ObjectAction {
     }
 
     public ObjectAction(List<String> action, ObjectShop shop) {
+        this.isEmpty = action.isEmpty();
         for (String s : action) {
             if (s.endsWith("-o")) {
-                s = s.substring(0, s.length() - 3);
-                onceAction.add(s);
+                onceAction.add(s.substring(0, s.length() - 2));
             }
             else {
                 everyAction.add(s);
@@ -65,17 +67,17 @@ public class ObjectAction {
         this.shop = shop;
     }
 
-    public void doAction(Player player, int times, int multi){
+    public void doAction(Player player, int times, int multi, boolean sellAll){
         if (everyAction.isEmpty() && onceAction.isEmpty()) {
             return;
         }
-        checkAction(player, onceAction, times, multi);
+        checkAction(player, onceAction, times, multi, sellAll);
         for (int i = 0 ; i < multi ; i ++) {
-            checkAction(player, everyAction, times, multi);
+            checkAction(player, everyAction, times, multi, sellAll);
         }
     }
 
-    private void checkAction(Player player, List<String> actions, int times, int multi) {
+    private void checkAction(Player player, List<String> actions, int times, int multi, boolean sellAll) {
         if (player == null) {
             return;
         }
@@ -89,6 +91,12 @@ public class ObjectAction {
                     continue;
                 }
                 singleAction = singleAction.replaceAll("-\\d+$", "");
+            }
+            if (singleAction.endsWith("-b")) {
+                singleAction = singleAction.substring(0, singleAction.length() - 2);
+                if (sellAll) {
+                    continue;
+                }
             }
             singleAction = replacePlaceholder(singleAction, player, multi);
             String[] splits = singleAction.split(";;");
@@ -307,5 +315,9 @@ public class ObjectAction {
                     .replace("{shop-name}", shop.getShopDisplayName()));
         }
         return str;
+    }
+
+    public boolean isEmpty() {
+        return isEmpty;
     }
 }

@@ -55,6 +55,7 @@ public class ClickListener implements Listener {
                 return;
             }
             Map<AbstractSingleThing, BigDecimal> result = new HashMap<>();
+            boolean firstSell = false;
             for (String shop : ConfigManager.configManager.shopConfigs.keySet()) {
                 for (ObjectItem products : ConfigManager.configManager.getShop(shop).getProductList()) {
                     ProductTradeStatus status = SellProductMethod.startSell(inventory,
@@ -65,9 +66,13 @@ public class ClickListener implements Listener {
                             false,
                             ConfigManager.configManager.getBoolean("menu.sell-all.hide-message"),
                             true,
+                            firstSell,
                             1);
                     if (status.getStatus() == ProductTradeStatus.Status.DONE && status.getGiveResult() != null) {
                         result.putAll(status.getGiveResult().getResultMap());
+                    }
+                    if (!products.getSellAction().isEmpty()) {
+                        firstSell = true;
                     }
                 }
             }

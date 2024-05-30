@@ -192,7 +192,7 @@ public class BuyProductMethod {
         // 扣钱
         tempVal5.takeThing(inventory, player, takeResult.getResultMap());
         // 执行动作
-        tempVal2.getBuyAction().doAction(player, playerUseTimes, multi);
+【[]        tempVal2.getBuyAction().doAction(player, playerUseTimes, multi, false);
         // limit+1
         if (tempVal9 != null) {
             if (ConfigManager.configManager.getBoolean("debug")) {
