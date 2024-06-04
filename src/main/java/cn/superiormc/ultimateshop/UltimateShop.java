@@ -16,7 +16,7 @@ public final class UltimateShop extends JavaPlugin {
 
     public static UltimateShop instance;
 
-    public static boolean freeVersion = false;
+    public static boolean freeVersion = true;
 
     public static boolean isPaper = false;
 

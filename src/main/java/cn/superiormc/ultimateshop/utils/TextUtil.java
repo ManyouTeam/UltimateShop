@@ -43,6 +43,13 @@ public class TextUtil {
             text = text.replace("{random_" + placeholder + "}",
                     ObjectRandomPlaceholder.getNowValue(placeholder));
         }
+        Pattern pattern3 = Pattern.compile("\\{random-times_(.*?)\\}");
+        Matcher matcher3 = pattern3.matcher(text);
+        while (matcher3.find()) {
+            String placeholder = matcher3.group(1);
+            text = text.replace("{random-times_" + placeholder + "}",
+                    ObjectRandomPlaceholder.getRefreshDoneTime(placeholder));
+        }
         if (text.contains("%") && CommonUtil.checkPluginLoad("PlaceholderAPI")) {
             return PlaceholderAPI.setPlaceholders(player, text);
         }

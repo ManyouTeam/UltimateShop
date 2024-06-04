@@ -1,10 +1,10 @@
 package cn.superiormc.ultimateshop.objects.items.shbobjects;
 
 import cn.superiormc.ultimateshop.UltimateShop;
-import cn.superiormc.ultimateshop.cache.ServerCache;
 import cn.superiormc.ultimateshop.managers.CacheManager;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.objects.caches.ObjectRandomPlaceholderCache;
+import cn.superiormc.ultimateshop.utils.CommonUtil;
 import cn.superiormc.ultimateshop.utils.RandomUtil;
 import org.bukkit.configuration.ConfigurationSection;
 
@@ -62,5 +62,21 @@ public class ObjectRandomPlaceholder {
             tempVal2 = CacheManager.cacheManager.serverCache.getRandomPlaceholderCache().get(tempVal1);
         }
         return tempVal2.getNowValue();
+    }
+
+    public static String getRefreshDoneTime(String id) {
+        if (UltimateShop.freeVersion) {
+            return "";
+        }
+        ObjectRandomPlaceholder tempVal1 = ConfigManager.configManager.getRandomPlaceholder(id);
+        if (tempVal1 == null) {
+            return "";
+        }
+        ObjectRandomPlaceholderCache tempVal2 = CacheManager.cacheManager.serverCache.getRandomPlaceholderCache().get(tempVal1);
+        if (tempVal2 == null) {
+            CacheManager.cacheManager.serverCache.addRandomPlaceholderCache(tempVal1);
+            tempVal2 = CacheManager.cacheManager.serverCache.getRandomPlaceholderCache().get(tempVal1);
+        }
+        return CommonUtil.timeToString(tempVal2.getRefreshDoneTime(), ConfigManager.configManager.getString("placeholder.cooldown.format"));
     }
 }

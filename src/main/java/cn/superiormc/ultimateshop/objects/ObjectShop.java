@@ -63,10 +63,16 @@ public class ObjectShop {
     }
 
     public AbstractButton getButton(String buttonID) {
+        if (buttonID == null) {
+            return null;
+        }
         return buttonItems.get(buttonID);
     }
 
     public ObjectItem getProduct(String productID) {
+        if (productID == null) {
+            return null;
+        }
         return items.get(productID);
     }
 
