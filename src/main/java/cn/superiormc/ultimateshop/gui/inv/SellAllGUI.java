@@ -58,7 +58,8 @@ public class SellAllGUI extends InvGUI {
         boolean firstSell = false;
         for (String shop : ConfigManager.configManager.shopConfigs.keySet()) {
             for (ObjectItem products : ConfigManager.configManager.getShop(shop).getProductList()) {
-                if (ConfigManager.configManager.getStringList("menu.sell-all.ignore-items").contains(shop + ";;" + products.getProduct())) {
+                if (ConfigManager.configManager.getStringListOrDefault("menu.sell-all.ignore-items",
+                        "sell.sell-all.ignore-items").contains(shop + ";;" + products.getProduct())) {
                     continue;
                 }
                 ProductTradeStatus status = SellProductMethod.startSell(inv,
@@ -67,7 +68,8 @@ public class SellAllGUI extends InvGUI {
                         player.getPlayer(),
                         false,
                         false,
-                        ConfigManager.configManager.getBoolean("menu.sell-all.hide-message"),
+                        ConfigManager.configManager.getBooleanOrDefault(
+                                "menu.sell-all.hide-message", "sell.sell-all.hide-message"),
                         true,
                         firstSell,
                         1);

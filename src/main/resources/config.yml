@@ -12,31 +12,40 @@ use-component:
   message: false
   item: false
 
-# Support Value: Bukkit or ItemFormat.
-sell-mode: Bukkit
+sell:
+  # Support Value: Bukkit or ItemFormat.
+  sell-method: Bukkit
+  sell-all:
+    ignore-items:
+      # Format: Shop ID;;Item ID
+      - 'hideshop;;A'
+    hide-message: true
+  sell-stick:
+    cooldown: 5
+    hide-message: true
+  max-amount: 128
 
 menu:
+  # Recommend use when you are running big server, it will make player no longer quickly click
+  # and reopen shop menu to make sure UltimateShop not lag your server.
+  # In ticks.
   cooldown:
     click: -1
     reopen: -1
   shop:
     # Whether shop menu will refresh every 1 second.
     # This will refresh placeholder that displayed in display item lore.
-    # But maybe lead to server lag if you have much online players and they are all opening shop GUI.
+    # But maybe lead to server lag if you have much online players, and they are all opening shop GUI.
     update: false
   sell-all:
     size: 54
     title: '&fSell All &7- Esc to confirm sell!'
     black-slots: []
-    ignore-items:
-      # Format: Shop ID;;Item ID
-      - 'hideshop;;A'
-    max-amount: 128
-    hide-message: true
   # Premium version only
   bedrock:
     # Support value: FLOODGATE, UUID
     check-method: FLOODGATE
+    # If enabled, we will try to reopen shop menu after player successfully buy or sell products.
     not-auto-close: true
     buy-or-sell:
       title: 'Product Settings'
@@ -50,7 +59,7 @@ menu:
       buttons:
         buy: 'Buy'
         sell: 'Sell'
-  select-more:
+  buy-more:
     menu: buy-more
     max-amount: 64
   auto-open:
@@ -132,6 +141,8 @@ placeholder:
         - 'B'
         - 'C'
   data:
+    # If your server never use dynamic value in prices or similar things, you can set this option to false.
+    # This will improve little plugin performance.
     can-used-in-amount: true
   refresh:
     format: "yyyy-MM-dd HH:mm:ss"
@@ -147,6 +158,8 @@ placeholder:
     unknown-price-type: "Unknown Price Type"
     empty: "Price is empty!"
   click:
+    # If enabled, {buy-click} and {sell-stick} will display different value according to product status.
+    # But, it will maybe make server lag if you are running big server and have many products in your shop.
     enabled: false
     buy: '&#FFFACDLeft-click to buy!'
     sell: '&#FFFACDRight-click to sell!'
@@ -163,6 +176,9 @@ placeholder:
     sell-condition-not-meet: '&#ff3300Not meet the sell condition!'
     buy-in-cooldown: '&#ff3300In cooldown!'
     sell-in-cooldown: '&#ff3300In cooldown!'
+  # Premium version only.
+  sell-stick:
+    infinite: "&cInfinite"
 
 database:
   enabled: false
@@ -191,7 +207,7 @@ prices:
 sell-stick-items:
   A:
     material: STICK
-    name: '&dSell stick &7(5 times)'
+    name: '&dSell Stick &7(5 times)'
     lore:
       - '&fClick a chest to use this item!'
       - ''
@@ -199,12 +215,20 @@ sell-stick-items:
     usage-times: 5
   B:
     material: STICK
-    name: '&dAdvanced Sell stick &7(50 times)'
+    name: '&dAdvanced Sell Stick &7(50 times)'
     lore:
       - '&fClick a chest to use this item!'
       - ''
       - '&cLeft usages: {times}'
     usage-times: 50
+  C:
+    material: STICK
+    name: '&5Epic Sell Stick'
+    lore:
+      - '&fClick a chest to use this item!'
+      - ''
+      - '&cLeft usages: {times}'
+    usage-times: -1
 
 auto-save:
   enabled: true

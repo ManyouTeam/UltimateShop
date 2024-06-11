@@ -73,7 +73,7 @@ items:
       1:
         economy-plugin: Vault
         amount: '30.35'
-        placeholder: '2{amount}'
+        placeholder: '&6{amount} Coins'
         start-apply: 0
     sell-prices:
       1:
@@ -97,7 +97,7 @@ items:
     sell-prices:
       1:
         economy-plugin: Vault
-        amount: '52.56{buy-times-server}*0.4-{sell-times-server}*0.3'
+        amount: '52.56+{buy-times-server}*0.4-{sell-times-server}*0.3'
         placeholder: '&6{amount} Coins'
         start-apply: 0
   F:
@@ -173,6 +173,6 @@ items:
     sell-prices:
       1:
         economy-plugin: Vault
-        amount: '34.26{buy-times-server}*0.4-{sell-times-server}*0.3'
+        amount: '34.26+{buy-times-server}*0.4-{sell-times-server}*0.3'
         placeholder: '&6{amount} Coins'
         start-apply: 0

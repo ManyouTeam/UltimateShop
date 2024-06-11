@@ -42,7 +42,7 @@ public class ItemUtil {
     }
 
     public static boolean isSameItem(ItemStack item1, ItemStack item2) {
-        if (ConfigManager.configManager.getString("sell-mode", "Bukkit").equals("Bukkit")) {
+        if (ConfigManager.configManager.getStringOrDefault("sell-mode", "sell.sell-method", "Bukkit").equals("Bukkit")) {
             return item1.equals(item2);
         }
         Map<String, Object> item1Result = DebuildItem.debuildItem(item1, new MemoryConfiguration()).getValues(true);

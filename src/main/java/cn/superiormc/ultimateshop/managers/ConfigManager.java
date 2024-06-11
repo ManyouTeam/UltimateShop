@@ -129,6 +129,13 @@ public class ConfigManager {
         return config.getStringList(path);
     }
 
+    public List<String> getStringListOrDefault(String originalPath, String newPath) {
+        if (config.getStringList(originalPath).isEmpty()) {
+            return config.getStringList(newPath);
+        }
+        return config.getStringList(originalPath);
+    }
+
     public List<Integer> getIntList(String path) {
         return config.getIntegerList(path);
     }
@@ -137,8 +144,16 @@ public class ConfigManager {
         return config.getBoolean(path, false);
     }
 
+    public boolean getBooleanOrDefault(String originalPath, String newPath) {
+        return config.getBoolean(originalPath, config.getBoolean(newPath, false));
+    }
+
     public int getInt(String path, int defaultValue) {
         return config.getInt(path, defaultValue);
+    }
+
+    public int getIntOrDefault(String originalPath, String newPath, int defaultValue) {
+        return config.getInt(originalPath, config.getInt(newPath, defaultValue));
     }
 
     public long getLong(String path, long defaultValue) {
@@ -147,6 +162,14 @@ public class ConfigManager {
 
     public ConfigurationSection getSection(String path) {
         return config.getConfigurationSection(path);
+    }
+
+    public ConfigurationSection getSectionOrDefault(String originalPath, String newPath) {
+        ConfigurationSection tempVal1 = config.getConfigurationSection(originalPath);
+        if (tempVal1 == null) {
+            return config.getConfigurationSection(newPath);
+        }
+        return tempVal1;
     }
 
     public String getString(String path, String... args) {
@@ -167,6 +190,10 @@ public class ConfigManager {
             }
         }
         return s.replace("{plugin_folder}", String.valueOf(UltimateShop.instance.getDataFolder()));
+    }
+
+    public String getStringOrDefault(String originalPath, String newPath, String defaultValue) {
+        return config.getString(originalPath, config.getString(newPath, defaultValue));
     }
 
     public String getClickAction(ClickType type) {

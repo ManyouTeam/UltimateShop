@@ -4,6 +4,7 @@ import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.cache.PlayerCache;
 import cn.superiormc.ultimateshop.cache.ServerCache;
 import cn.superiormc.ultimateshop.gui.AbstractGUI;
+import cn.superiormc.ultimateshop.listeners.ClickListener;
 import cn.superiormc.ultimateshop.managers.*;
 import cn.superiormc.ultimateshop.objects.caches.ObjectUseTimesCache;
 import cn.superiormc.ultimateshop.objects.menus.ObjectMenu;
@@ -23,6 +24,9 @@ public class ReloadPlugin {
         for (Player player : Bukkit.getOnlinePlayers()) {
             CacheManager.cacheManager.savePlayerCacheOnDisable(player);
             AbstractGUI.playerList.remove(player);
+            if (!UltimateShop.freeVersion) {
+                ClickListener.playerList.remove(player);
+            }
         }
         if (ServerCache.serverCache != null) {
             ServerCache.serverCache.shutServerCacheOnDisable();

@@ -144,8 +144,10 @@ public class SellProductMethod {
                     tempVal2.getPlayerSellLimit(player) - playerUseTimes > 0) {
                 multi = tempVal2.getPlayerSellLimit(player) - playerUseTimes;
             }
-            if (multi >= ConfigManager.configManager.getInt("menu.sell-all.max-amount", 128)) {
-                multi = ConfigManager.configManager.getInt("menu.sell-all.max-amount", 128);
+            int maxAmount = ConfigManager.configManager.getIntOrDefault("menu.sell-all.max-amount",
+                    "sell.max-amount", 128);
+            if (maxAmount >= 0 && multi >= maxAmount) {
+                multi = maxAmount;
             }
         }
 

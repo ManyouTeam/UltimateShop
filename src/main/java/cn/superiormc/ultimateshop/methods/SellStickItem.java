@@ -5,6 +5,7 @@ import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.ErrorManager;
 import cn.superiormc.ultimateshop.managers.LanguageManager;
 import cn.superiormc.ultimateshop.methods.Items.BuildItem;
+import cn.superiormc.ultimateshop.utils.TextUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.ConfigurationSection;
@@ -20,8 +21,9 @@ public class SellStickItem {
 
     public static final NamespacedKey SELL_STICK_TIMES = new NamespacedKey(UltimateShop.instance, "sell_stick_usage");
     public static final NamespacedKey SELL_STICK_ID = new NamespacedKey(UltimateShop.instance, "sell_stick_id");
+    public static final NamespacedKey SELL_STICK_INFINITE = new NamespacedKey(UltimateShop.instance, "sell_stick_infinite");
 
-    public static ItemStack getExtraSlotItem(Player player, String itemID, int amount) {
+    public static ItemStack getSellStick(Player player, String itemID, int amount) {
         ConfigurationSection section = ConfigManager.configManager.config.getConfigurationSection(
                 "sell-stick-items." + itemID
         );
@@ -31,10 +33,11 @@ public class SellStickItem {
                     itemID);
             return null;
         }
-        return getExtraSlotItem(player, itemID, amount, section.getInt("usage-times"));
+        int times = section.getInt("usage-times", -1);
+        return getSellStick(player, itemID, amount, times, times <= 0);
     }
 
-    public static ItemStack getExtraSlotItem(Player player, String itemID, int amount, int times) {
+    public static ItemStack getSellStick(Player player, String itemID, int amount, int times, boolean infinite) {
         ConfigurationSection section = ConfigManager.configManager.config.getConfigurationSection(
                 "sell-stick-items." + itemID
         );
@@ -42,6 +45,9 @@ public class SellStickItem {
             LanguageManager.languageManager.sendStringText("error-item-not-found",
                     "item",
                     itemID);
+            return null;
+        }
+        if (times <= 0 && !infinite) {
             return null;
         }
         ItemStack resultItem = BuildItem.buildItemStack(player, section, 1);
@@ -54,7 +60,11 @@ public class SellStickItem {
         List<String> newLore = new ArrayList<>();
         if (meta.hasLore()) {
             for (String str : meta.getLore()) {
-                str = str.replace("{times}", String.valueOf(times));
+                if (!infinite) {
+                    str = str.replace("{times}", String.valueOf(times));
+                } else {
+                    str = str.replace("{times}", TextUtil.parse(ConfigManager.configManager.getString("placeholder.sell-stick.infinite")));
+                }
                 newLore.add(str);
             }
             meta.setLore(newLore);
@@ -64,14 +74,20 @@ public class SellStickItem {
         meta.getPersistentDataContainer().set(SELL_STICK_ID,
                 PersistentDataType.STRING,
                 itemID);
-        meta.getPersistentDataContainer().set(SELL_STICK_TIMES,
-                PersistentDataType.INTEGER,
-                times);
+        if (!infinite) {
+            meta.getPersistentDataContainer().set(SELL_STICK_TIMES,
+                    PersistentDataType.INTEGER,
+                    times);
+        } else {
+            meta.getPersistentDataContainer().set(SELL_STICK_INFINITE,
+                    PersistentDataType.BOOLEAN,
+                    true);
+        }
         resultItem.setItemMeta(meta);
         return resultItem;
     }
 
-    public static String getExtraSlotItemID(ItemStack item) {
+    public static String getSellStickID(ItemStack item) {
         if (!item.hasItemMeta()) {
             return null;
         }
@@ -82,34 +98,48 @@ public class SellStickItem {
         return meta.getPersistentDataContainer().get(SELL_STICK_ID, PersistentDataType.STRING);
     }
 
-    public static int getExtraSlotItemValue(ItemStack item) {
+    public static int getSellStickValue(ItemStack item) {
         if (!item.hasItemMeta()) {
             return 0;
         }
         ItemMeta meta = item.getItemMeta();
+        if (sellStickIsInfinite(item)) {
+            return 1;
+        }
         if (!meta.getPersistentDataContainer().has(SELL_STICK_TIMES, PersistentDataType.INTEGER)) {
             return 0;
         }
         return meta.getPersistentDataContainer().get(SELL_STICK_TIMES, PersistentDataType.INTEGER);
     }
 
-    public static void removeExtraSlotItemValue(Player player, ItemStack item) {
+    public static void removeSellStickValue(Player player, ItemStack item) {
         if (!item.hasItemMeta()) {
             return;
         }
-        int nowValue = getExtraSlotItemValue(item);
-        String id = getExtraSlotItemID(item);
+        if (sellStickIsInfinite(item)) {
+            return;
+        }
+        int nowValue = getSellStickValue(item);
+        String id = getSellStickID(item);
         if (id == null) {
             ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Can not found sell stick item ID");
         }
         else {
             item.setAmount(item.getAmount() - 1);
             if (nowValue - 1 > 0) {
-                ItemStack tempItem = getExtraSlotItem(player, id, 1, nowValue - 1);
+                ItemStack tempItem = getSellStick(player, id, 1, nowValue - 1, false);
                 if (tempItem != null) {
                     player.getInventory().addItem(tempItem);
                 }
             }
         }
+    }
+
+    public static boolean sellStickIsInfinite(ItemStack item) {
+        if (!item.hasItemMeta()) {
+            return false;
+        }
+        ItemMeta meta = item.getItemMeta();
+        return meta.getPersistentDataContainer().has(SELL_STICK_INFINITE, PersistentDataType.BOOLEAN) && meta.getPersistentDataContainer().get(SELL_STICK_INFINITE, PersistentDataType.BOOLEAN);
     }
 }
