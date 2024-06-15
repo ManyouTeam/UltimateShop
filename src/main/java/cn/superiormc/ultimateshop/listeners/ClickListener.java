@@ -14,6 +14,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Container;
+import org.bukkit.block.EnderChest;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
@@ -22,7 +23,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -39,24 +39,38 @@ public class ClickListener implements Listener {
         if (!EquipmentSlot.HAND.equals(event.getHand())) {
             return;
         }
-        if (event.useInteractedBlock() == Event.Result.DENY) {
-            return;
-        }
-        ItemStack item = event.getItem();
-        if (item == null) {
-            return;
-        }
-        int times = SellStickItem.getSellStickValue(item);
+        int times = SellStickItem.getSellStickValue(event.getItem());
         if (times <= 0) {
             return;
         }
+        if (!event.getAction().isRightClick() && ConfigManager.configManager.getString("sell.sell-stick.click-type", "RIGHT").equals("RIGHT")) {
+            return;
+        } else if (!event.getAction().isLeftClick() && ConfigManager.configManager.getString("sell.sell-stick.click-type", "RIGHT").equals("LEFT")) {
+            return;
+        }
+        if (UltimateShop.isFolia) {
+            Bukkit.getGlobalRegionScheduler().runDelayed(UltimateShop.instance, task -> startSell(event), 2L);
+        } else {
+            Bukkit.getScheduler().runTaskLater(UltimateShop.instance, () -> startSell(event), 2L);
+        }
+    }
+
+    private void startSell(PlayerInteractEvent event) {
         Block block = event.getClickedBlock();
         if (block == null) {
             return;
         }
+        if (event.useInteractedBlock() == Event.Result.DENY || event.useItemInHand() == Event.Result.DENY) {
+            return;
+        }
         BlockState state = block.getState();
+        Inventory inventory = null;
         if (state instanceof Container) {
-            Inventory inventory = ((Container)state).getInventory();
+            inventory = ((Container) state).getInventory();
+        } else if (state instanceof EnderChest) {
+            inventory = event.getPlayer().getEnderChest();
+        }
+        if (inventory != null) {
             if (inventory.isEmpty()) {
                 return;
             }
@@ -69,14 +83,10 @@ public class ClickListener implements Listener {
                 }
                 playerList.add(event.getPlayer());
                 if (UltimateShop.isFolia) {
-                    Bukkit.getGlobalRegionScheduler().runDelayed(UltimateShop.instance, task -> {
-                        playerList.remove(event.getPlayer());
-                    }, cooldown);
+                    Bukkit.getGlobalRegionScheduler().runDelayed(UltimateShop.instance, task -> playerList.remove(event.getPlayer()), cooldown);
                     return;
                 } else {
-                    Bukkit.getScheduler().runTaskLater(UltimateShop.instance, () -> {
-                        playerList.remove(event.getPlayer());
-                    }, cooldown);
+                    Bukkit.getScheduler().runTaskLater(UltimateShop.instance, () -> playerList.remove(event.getPlayer()), cooldown);
                 }
             }
             for (String shop : ConfigManager.configManager.shopConfigs.keySet()) {
@@ -107,9 +117,9 @@ public class ClickListener implements Listener {
             if (!result.isEmpty()) {
                 LanguageManager.languageManager.sendStringText(event.getPlayer(), "start-sell-stick",
                         "reward", ObjectPrices.getDisplayNameInLine(event.getPlayer(),
-                        result, ThingMode.ALL
-                ));
-                SellStickItem.removeSellStickValue(event.getPlayer(), item);
+                                result, ThingMode.ALL
+                        ));
+                SellStickItem.removeSellStickValue(event.getPlayer(), event.getItem());
             }
         }
     }

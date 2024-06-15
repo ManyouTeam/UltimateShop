@@ -28,13 +28,13 @@ command-tab:
 # All messages also support multi lines, just do it like this!
 help:
   main: |
-    &#98FB98&lUltimateShop &7Made by @rzt1020 / @PQguanfang
+    &#98FB98&lUltimateShop &7Made by @PQguanfang
     &f/shop help &7- View help.
     &f/shop menu <menuName> &7- Open specified common menu.
     &f/shop menu <shopName> &7- Open specified shop menu.
     &f/shop sellall &7- Open sell all menu.
   main-admin: |
-    &#98FB98&lUltimateShop &7Made by @rzt1020 / @PQguanfang
+    &#98FB98&lUltimateShop &7Made by @PQguanfang
     &f/shop help &7- View help.
     &f/shop menu <menuName> &7- Open specified common menu.
     &f/shop menu <shopName> &7- Open specified shop menu.
@@ -44,7 +44,7 @@ help:
     &f/shop setbuytimes <shopName> <itemName> <playerName> [amount] &7- Set buy times.
     &f/shop setselltimes <shopName> <itemName> <playerName> [amount] &7- Set sell times.
   main-console: |
-    &#98FB98&lUltimateShop &7Made by @rzt1020 / @PQguanfang
+    &#98FB98&lUltimateShop &7Made by @PQguanfang
     &f/shop help &7- View help.
     &f/shop menu <menuName> <playerName> &7- Force open specified common menu.
     &f/shop menu <shopName> <playerName> &7- Force open specified shop menu.

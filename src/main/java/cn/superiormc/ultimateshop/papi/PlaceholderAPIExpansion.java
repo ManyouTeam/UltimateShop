@@ -4,7 +4,7 @@ import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.managers.CacheManager;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.LanguageManager;
-import cn.superiormc.ultimateshop.methods.GetDiscountValue;
+import cn.superiormc.ultimateshop.methods.StaticPlaceholder;
 import cn.superiormc.ultimateshop.objects.ObjectShop;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import cn.superiormc.ultimateshop.objects.caches.ObjectUseTimesCache;
@@ -71,7 +71,7 @@ public class PlaceholderAPIExpansion extends PlaceholderExpansion {
             while (matcher1.find()) {
                 String discount = matcher1.group(1);
                 result = result.replace("{discount_" + discount + "}",
-                        String.valueOf(GetDiscountValue.getDiscountLimits(discount, player)));
+                        String.valueOf(StaticPlaceholder.getDiscountValue(discount, player)));
             }
             Pattern pattern2 = Pattern.compile("\\{random_(.*?)\\}");
             Matcher matcher2 = pattern2.matcher(result);

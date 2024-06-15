@@ -99,7 +99,7 @@ public class ModifyDisplayItem {
                     null);
             tempVal10 = CacheManager.cacheManager.serverCache.getUseTimesCache().get(item);
         }
-        for (String tempVal3 : item.getAddLore()) {
+        for (String tempVal3 : item.getAddLore(player)) {
             if (tempVal3.startsWith("@") && tempVal3.length() >= 2) {
                 String tempVal4 = tempVal3.substring(2);
                 switch (tempVal3.charAt(1)) {

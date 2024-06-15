@@ -1,11 +1,12 @@
 package cn.superiormc.ultimateshop.utils;
 
 import cn.superiormc.ultimateshop.libs.easyplugin.ColorParser;
-import cn.superiormc.ultimateshop.methods.GetDiscountValue;
+import cn.superiormc.ultimateshop.methods.StaticPlaceholder;
 import cn.superiormc.ultimateshop.objects.items.shbobjects.ObjectRandomPlaceholder;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.entity.Player;
 
+import java.math.BigDecimal;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -34,7 +35,7 @@ public class TextUtil {
         while (matcher1.find()) {
             String discount = matcher1.group(1);
             text = text.replace("{discount_" + discount + "}",
-                    String.valueOf(GetDiscountValue.getDiscountLimits(discount, player)));
+                    String.valueOf(StaticPlaceholder.getDiscountValue(discount, player)));
         }
         Pattern pattern2 = Pattern.compile("\\{random_(.*?)\\}");
         Matcher matcher2 = pattern2.matcher(text);
@@ -49,6 +50,14 @@ public class TextUtil {
             String placeholder = matcher3.group(1);
             text = text.replace("{random-times_" + placeholder + "}",
                     ObjectRandomPlaceholder.getRefreshDoneTime(placeholder));
+        }
+        Pattern pattern4 = Pattern.compile("\\{compare_([\\d.]+)_([\\d.]+)\\}");
+        Matcher matcher4 = pattern4.matcher(text);
+        while (matcher4.find()) {
+            String compareNumber = matcher4.group(1);
+            String baseNumber = matcher4.group(2);
+            text = text.replace("{compare_" + compareNumber + "_" + baseNumber + "}",
+                    StaticPlaceholder.getCompareValue(new BigDecimal(baseNumber), new BigDecimal(compareNumber)));
         }
         if (text.contains("%") && CommonUtil.checkPluginLoad("PlaceholderAPI")) {
             return PlaceholderAPI.setPlaceholders(player, text);

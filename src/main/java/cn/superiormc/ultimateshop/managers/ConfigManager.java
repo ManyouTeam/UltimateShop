@@ -9,6 +9,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 
 import java.io.File;
@@ -108,7 +109,7 @@ public class ConfigManager {
         return randomPlaceholders.get(id);
     }
 
-    public List<String> getStringListWithColor(String... args) {
+    public List<String> getStringListWithPAPI(Player player, String... args) {
         List<String> resultList = new ArrayList<>();
         for (String s : config.getStringList(args[0])) {
             for (int i = 1 ; i < args.length ; i += 2) {
@@ -120,7 +121,7 @@ public class ConfigManager {
                     s = s.replace(var, args[i + 1]);
                 }
             }
-            resultList.add(TextUtil.parse(s));
+            resultList.add(TextUtil.withPAPI(s, player));
         }
         return resultList;
     }

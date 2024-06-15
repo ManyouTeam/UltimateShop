@@ -3,25 +3,41 @@ package cn.superiormc.ultimateshop.methods;
 import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.objects.items.ObjectCondition;
-import org.bukkit.Bukkit;
+import cn.superiormc.ultimateshop.utils.TextUtil;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-public class GetDiscountValue {
+public class StaticPlaceholder {
 
-    public static double getDiscountLimits(String papiID, Player player) {
+    public static String getCompareValue(BigDecimal baseValue, BigDecimal compareValue) {
+        if (UltimateShop.freeVersion) {
+            return "";
+        }
+        ConfigurationSection section = ConfigManager.configManager.getSection("placeholder.compare");
+        if (section == null) {
+            return "";
+        }
+        if (compareValue.compareTo(baseValue) > 0) {
+            return TextUtil.parse(ConfigManager.configManager.getString("placeholder.compare.up", "↑"));
+        } else if (compareValue.compareTo(baseValue) == 0) {
+            return TextUtil.parse(ConfigManager.configManager.getString("placeholder.compare.same", "-"));
+        } else {
+            return TextUtil.parse(ConfigManager.configManager.getString("placeholder.compare.down", "↓"));
+        }
+    }
+
+    public static double getDiscountValue(String papiID, Player player) {
         if (UltimateShop.freeVersion) {
             return 1D;
         }
-        ConfigurationSection section = ConfigManager.configManager.config.
-                getConfigurationSection("placeholder.discount." + papiID);
-        ConfigurationSection conditionSection = ConfigManager.configManager.config.
-                getConfigurationSection("placeholder.discount-conditions");
+        ConfigurationSection section = ConfigManager.configManager.getSection("placeholder.discount." + papiID);
+        ConfigurationSection conditionSection = ConfigManager.configManager.getSection("placeholder.discount-conditions");
         if (section == null || conditionSection == null) {
             return 1D;
         }

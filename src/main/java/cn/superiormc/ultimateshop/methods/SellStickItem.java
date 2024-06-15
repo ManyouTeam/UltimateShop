@@ -99,6 +99,9 @@ public class SellStickItem {
     }
 
     public static int getSellStickValue(ItemStack item) {
+        if (item == null) {
+            return 0;
+        }
         if (!item.hasItemMeta()) {
             return 0;
         }
@@ -113,6 +116,9 @@ public class SellStickItem {
     }
 
     public static void removeSellStickValue(Player player, ItemStack item) {
+        if (item == null) {
+            return;
+        }
         if (!item.hasItemMeta()) {
             return;
         }

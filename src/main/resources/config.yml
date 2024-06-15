@@ -23,6 +23,9 @@ sell:
   sell-stick:
     cooldown: 5
     hide-message: true
+    # Support value: LEFT, RIGHT and LEFT;;RIGHT
+    # Do not change this value unless you are know what you are doing!
+    click-type: RIGHT
   max-amount: 128
 
 menu:
@@ -114,6 +117,23 @@ display-item:
     - '@b&#FFFACDDrop (Q key) to sell all!-b'
 
 placeholder:
+  auto-settings:
+    # If enabled, we will auto add discount placeholder at all price amount.
+    # This can avoid the need to add the discount option in the amount options for each price.
+    add-discount-in-all-price-amount:
+      enabled: false
+      buy-placeholder: buy
+      sell-placeholder: sell
+      black-dynamic-price: true
+    # We will try adds dynamic up or down symbol for all dynamic price placeholder.
+    # Please note that in your dynamic price amount option, first number must be the base price.
+    # If you made the dynamic price according to the Wiki's instructions, then there is no problem at all.
+    add-status-in-dynamic-price-placeholder:
+      enabled: true
+    # If enabled, we will try change {amount} in price placeholder option to the value you set here.
+    change-amount-in-all-price-placeholder:
+      enabled: false
+      replace-value: '%formatter_number_format_{amount}%'
   # Premium version only.
   discount:
     buy:
@@ -140,6 +160,11 @@ placeholder:
         - 'A'
         - 'B'
         - 'C'
+  # Premium version only
+  compare:
+    up: '↑'
+    down: '↓'
+    same: '-'
   data:
     # If your server never use dynamic value in prices or similar things, you can set this option to false.
     # This will improve little plugin performance.
@@ -209,7 +234,7 @@ sell-stick-items:
     material: STICK
     name: '&dSell Stick &7(5 times)'
     lore:
-      - '&fClick a chest to use this item!'
+      - '&fRight click a chest to use this item!'
       - ''
       - '&cLeft usages: {times}'
     usage-times: 5
@@ -217,7 +242,7 @@ sell-stick-items:
     material: STICK
     name: '&dAdvanced Sell Stick &7(50 times)'
     lore:
-      - '&fClick a chest to use this item!'
+      - '&fRight click a chest to use this item!'
       - ''
       - '&cLeft usages: {times}'
     usage-times: 50
@@ -225,7 +250,7 @@ sell-stick-items:
     material: STICK
     name: '&5Epic Sell Stick'
     lore:
-      - '&fClick a chest to use this item!'
+      - '&fRight click a chest to use this item!'
       - ''
       - '&cLeft usages: {times}'
     usage-times: -1

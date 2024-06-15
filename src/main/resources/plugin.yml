@@ -5,7 +5,6 @@ api-version: 1.14
 folia-supported: true
 authors:
   - PQguanfang
-  - rzt1020
 softdepend:
   - MMOItems
   - MythicLib
@@ -33,3 +32,24 @@ commands:
       - "shop"
     usage: "/ultimateshop"
     description: "UltimateShop Main Command."
+permissions:
+  ultimateshop.generateitemformat:
+    default: op
+  ultimateshop.givesellstick:
+    default: op
+  ultimateshop.menu:
+    default: true
+  ultimateshop.quickbuy:
+    default: op
+  ultimateshop.quicksell:
+    default: op
+  ultimateshop.reload:
+    default: op
+  ultimateshop.saveitem:
+    default: op
+  ultimateshop.sellall:
+    default: true
+  ultimateshop.setbuytimes:
+    default: op
+  ultimateshop.setselltimes:
+    default: op

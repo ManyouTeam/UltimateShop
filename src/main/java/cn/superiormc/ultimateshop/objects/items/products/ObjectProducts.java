@@ -6,6 +6,7 @@ import cn.superiormc.ultimateshop.objects.items.AbstractSingleThing;
 import cn.superiormc.ultimateshop.objects.items.AbstractThings;
 import cn.superiormc.ultimateshop.objects.items.GiveResult;
 import cn.superiormc.ultimateshop.objects.items.TakeResult;
+import cn.superiormc.ultimateshop.objects.items.prices.ObjectSinglePrice;
 import cn.superiormc.ultimateshop.utils.RandomUtil;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;

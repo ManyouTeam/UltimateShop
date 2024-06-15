@@ -258,6 +258,10 @@ public class ObjectPrices extends AbstractThings {
         return priceMaps;
     }
 
+    public PriceMode getPriceMode() {
+        return priceMode;
+    }
+
     public static List<String> getDisplayName(Player player, Map<AbstractSingleThing, BigDecimal> result, ThingMode mode) {
         Map<ObjectDisplayPlaceholder, BigDecimal> tempVal1 = new TreeMap<>();
         switch (mode) {
@@ -315,10 +319,6 @@ public class ObjectPrices extends AbstractThings {
                 break;
         }
         return tempVal2.toString().replace(";;", ConfigManager.configManager.getString("placeholder.price.replace-new-line-symbol"));
-    }
-
-    public PriceMode getPriceMode() {
-        return priceMode;
     }
 
 }
