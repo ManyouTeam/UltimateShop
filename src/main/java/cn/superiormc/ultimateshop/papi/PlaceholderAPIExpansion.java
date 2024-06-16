@@ -101,9 +101,15 @@ public class PlaceholderAPIExpansion extends PlaceholderExpansion {
             ObjectUseTimesCache serverTimesCache = CacheManager.cacheManager.serverCache.getUseTimesCache().get(item);
             switch (args[2]) {
                 case "{buy-price}":
-                    return TextUtil.parse(ObjectPrices.getDisplayNameInLine(player, item.getBuyPrice().takeSingleThing(player.getInventory(), player, playerTimesCache.getBuyUseTimes(), 1, true).getResultMap(), item.getBuyPrice().getMode()));
+                    return TextUtil.parse(ObjectPrices.getDisplayNameInLine(player,
+                            item.getBuyPrice().takeSingleThing(player.getInventory(), player, playerTimesCache.getBuyUseTimes(), 1, true).getResultMap(),
+                            item.getBuyPrice().getMode(),
+                            !ConfigManager.configManager.getBoolean("placeholder.status.can-used-everywhere")));
                 case "{sell-price}":
-                    return TextUtil.parse(ObjectPrices.getDisplayNameInLine(player, item.getSellPrice().giveSingleThing(player, playerTimesCache.getBuyUseTimes(), 1).getResultMap(), item.getSellPrice().getMode()));
+                    return TextUtil.parse(ObjectPrices.getDisplayNameInLine(player,
+                            item.getSellPrice().giveSingleThing(player, playerTimesCache.getBuyUseTimes(), 1).getResultMap(),
+                            item.getSellPrice().getMode(),
+                            !ConfigManager.configManager.getBoolean("placeholder.status.can-used-everywhere")));
                 case "{buy-limit-player}":
                     return String.valueOf(item.getPlayerBuyLimit(player));
                 case "{sell-limit-player}":

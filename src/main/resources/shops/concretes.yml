@@ -15,13 +15,13 @@ items:
     buy-prices:
       1:
         economy-plugin: Vault
-        amount: '0.58+{buy-times-server}*0.2-{sell-times-server}*0.1'
+        amount: '0.58'
         placeholder: '{amount}$'
         start-apply: 0
     sell-prices:
       1:
         economy-plugin: Vault
-        amount: '0.52+{buy-times-server}*0.2-{sell-times-server}*0.1'
+        amount: '0.52'
         placeholder: '{amount}$'
         start-apply: 0
   B:
@@ -34,13 +34,13 @@ items:
     buy-prices:
       1:
         economy-plugin: Vault
-        amount: '0.73+{buy-times-server}*0.2-{sell-times-server}*0.1'
+        amount: '0.73'
         placeholder: '{amount}$'
         start-apply: 0
     sell-prices:
       1:
         economy-plugin: Vault
-        amount: '0.69+{buy-times-server}*0.2-{sell-times-server}*0.1'
+        amount: '0.69'
         placeholder: '{amount}$'
         start-apply: 0
   C:
@@ -53,13 +53,13 @@ items:
     buy-prices:
       1:
         economy-plugin: Vault
-        amount: '0.66+{buy-times-server}*0.2-{sell-times-server}*0.1'
+        amount: '0.66'
         placeholder: '{amount}$'
         start-apply: 0
     sell-prices:
       1:
         economy-plugin: Vault
-        amount: '0.62+{buy-times-server}*0.2-{sell-times-server}*0.1'
+        amount: '0.62'
         placeholder: '{amount}$'
         start-apply: 0
   D:
@@ -72,13 +72,13 @@ items:
     buy-prices:
       1:
         economy-plugin: Vault
-        amount: '0.93+{buy-times-server}*0.2-{sell-times-server}*0.1'
+        amount: '0.93'
         placeholder: '{amount}$'
         start-apply: 0
     sell-prices:
       1:
         economy-plugin: Vault
-        amount: '0.89+{buy-times-server}*0.2-{sell-times-server}*0.1'
+        amount: '0.89'
         placeholder: '{amount}$'
         start-apply: 0
   E:
@@ -91,13 +91,13 @@ items:
     buy-prices:
       1:
         economy-plugin: Vault
-        amount: '1.3+{buy-times-server}*0.2-{sell-times-server}*0.1'
+        amount: '1.3'
         placeholder: '{amount}$'
         start-apply: 0
     sell-prices:
       1:
         economy-plugin: Vault
-        amount: '1.1+{buy-times-server}*0.2-{sell-times-server}*0.1'
+        amount: '1.1'
         placeholder: '{amount}$'
         start-apply: 0
   F:
@@ -110,13 +110,13 @@ items:
     buy-prices:
       1:
         economy-plugin: Vault
-        amount: '0.73+{buy-times-server}*0.2-{sell-times-server}*0.1'
+        amount: '0.73'
         placeholder: '{amount}$'
         start-apply: 0
     sell-prices:
       1:
         economy-plugin: Vault
-        amount: '0.69+{buy-times-server}*0.2-{sell-times-server}*0.1'
+        amount: '0.69'
         placeholder: '{amount}$'
         start-apply: 0
   G:
@@ -129,13 +129,13 @@ items:
     buy-prices:
       1:
         economy-plugin: Vault
-        amount: '1.65+{buy-times-server}*0.2-{sell-times-server}*0.1'
+        amount: '1.65'
         placeholder: '{amount}$'
         start-apply: 0
     sell-prices:
       1:
         economy-plugin: Vault
-        amount: '1.60+{buy-times-server}*0.2-{sell-times-server}*0.1'
+        amount: '1.60'
         placeholder: '{amount}$'
         start-apply: 0
   H:
@@ -148,13 +148,13 @@ items:
     buy-prices:
       1:
         economy-plugin: Vault
-        amount: '2.03+{buy-times-server}*0.2-{sell-times-server}*0.1'
+        amount: '2.03'
         placeholder: '{amount}$'
         start-apply: 0
     sell-prices:
       1:
         economy-plugin: Vault
-        amount: '1.98+{buy-times-server}*0.2-{sell-times-server}*0.1'
+        amount: '1.98'
         placeholder: '{amount}$'
         start-apply: 0
   I:
@@ -167,13 +167,13 @@ items:
     buy-prices:
       1:
         economy-plugin: Vault
-        amount: '1.3+{buy-times-server}*0.2-{sell-times-server}*0.1'
+        amount: '1.3'
         placeholder: '{amount}$'
         start-apply: 0
     sell-prices:
       1:
         economy-plugin: Vault
-        amount: '1.1+{buy-times-server}*0.2-{sell-times-server}*0.1'
+        amount: '1.1'
         placeholder: '{amount}$'
         start-apply: 0
   J:
@@ -186,13 +186,13 @@ items:
     buy-prices:
       1:
         economy-plugin: Vault
-        amount: '1.14+{buy-times-server}*0.2-{sell-times-server}*0.1'
+        amount: '1.14'
         placeholder: '{amount}$'
         start-apply: 0
     sell-prices:
       1:
         economy-plugin: Vault
-        amount: '1.11+{buy-times-server}*0.2-{sell-times-server}*0.1'
+        amount: '1.11'
         placeholder: '{amount}$'
         start-apply: 0
   K:
@@ -205,13 +205,13 @@ items:
     buy-prices:
       1:
         economy-plugin: Vault
-        amount: '0.63+{buy-times-server}*0.2-{sell-times-server}*0.1'
+        amount: '0.63'
         placeholder: '{amount}$'
         start-apply: 0
     sell-prices:
       1:
         economy-plugin: Vault
-        amount: '0.59+{buy-times-server}*0.2-{sell-times-server}*0.1'
+        amount: '0.59'
         placeholder: '{amount}$'
         start-apply: 0
   L:
@@ -224,13 +224,13 @@ items:
     buy-prices:
       1:
         economy-plugin: Vault
-        amount: '1.03+{buy-times-server}*0.2-{sell-times-server}*0.1'
+        amount: '1.03'
         placeholder: '{amount}$'
         start-apply: 0
     sell-prices:
       1:
         economy-plugin: Vault
-        amount: '0.98+{buy-times-server}*0.2-{sell-times-server}*0.1'
+        amount: '0.98'
         placeholder: '{amount}$'
         start-apply: 0
   M:
@@ -243,13 +243,13 @@ items:
     buy-prices:
       1:
         economy-plugin: Vault
-        amount: '0.89+{buy-times-server}*0.2-{sell-times-server}*0.1'
+        amount: '0.89'
         placeholder: '{amount}$'
         start-apply: 0
     sell-prices:
       1:
         economy-plugin: Vault
-        amount: '0.84+{buy-times-server}*0.2-{sell-times-server}*0.1'
+        amount: '0.84'
         placeholder: '{amount}$'
         start-apply: 0
   N:
@@ -262,13 +262,13 @@ items:
     buy-prices:
       1:
         economy-plugin: Vault
-        amount: '0.73+{buy-times-server}*0.2-{sell-times-server}*0.1'
+        amount: '0.73'
         placeholder: '{amount}$'
         start-apply: 0
     sell-prices:
       1:
         economy-plugin: Vault
-        amount: '0.69+{buy-times-server}*0.2-{sell-times-server}*0.1'
+        amount: '0.69'
         placeholder: '{amount}$'
         start-apply: 0
   O:
@@ -281,13 +281,13 @@ items:
     buy-prices:
       1:
         economy-plugin: Vault
-        amount: '0.73+{buy-times-server}*0.2-{sell-times-server}*0.1'
+        amount: '0.73'
         placeholder: '{amount}$'
         start-apply: 0
     sell-prices:
       1:
         economy-plugin: Vault
-        amount: '0.69+{buy-times-server}*0.2-{sell-times-server}*0.1'
+        amount: '0.69'
         placeholder: '{amount}$'
         start-apply: 0
   P:
@@ -300,12 +300,12 @@ items:
     buy-prices:
       1:
         economy-plugin: Vault
-        amount: '0.57+{buy-times-server}*0.2-{sell-times-server}*0.1'
+        amount: '0.57'
         placeholder: '{amount}$'
         start-apply: 0
     sell-prices:
       1:
         economy-plugin: Vault
-        amount: '0.54+{buy-times-server}*0.2-{sell-times-server}*0.1'
+        amount: '0.54'
         placeholder: '{amount}$'
         start-apply: 0

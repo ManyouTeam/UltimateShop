@@ -179,7 +179,8 @@ public class ObjectSinglePrice extends AbstractSingleThing {
         return cost.setScale(MathUtil.scale, RoundingMode.HALF_UP);
     }
 
-    public String getDisplayName(BigDecimal amount) {
+    @Override
+    public String getDisplayName(BigDecimal amount, boolean alwaysStatic) {
         if (empty) {
             return ConfigManager.configManager.getString("placeholder.price.empty");
         }
@@ -195,7 +196,7 @@ public class ObjectSinglePrice extends AbstractSingleThing {
         } else {
             tempVal2 = singleSection.getString("placeholder", tempVal1);
         }
-        if (!tempVal2.contains("{status}") && !isStatic && ConfigManager.configManager.getBoolean("placeholder.auto-settings.add-status-in-dynamic-price-placeholder.enabled")) {
+        if (!alwaysStatic && !tempVal2.contains("{status}") && !isStatic && ConfigManager.configManager.getBoolean("placeholder.auto-settings.add-status-in-dynamic-price-placeholder.enabled")) {
             tempVal2 = tempVal2 + " " + StaticPlaceholder.getCompareValue(baseAmount, amount);
         }
         if (tempVal2.contains("{amount}") && ConfigManager.configManager.getBoolean("placeholder.auto-settings.change-amount-in-all-price-placeholder.enabled")) {
@@ -205,7 +206,7 @@ public class ObjectSinglePrice extends AbstractSingleThing {
                         "amount",
                         String.valueOf(amount),
                         "status",
-                        StaticPlaceholder.getCompareValue(baseAmount, amount));
+                        alwaysStatic ? "" : StaticPlaceholder.getCompareValue(baseAmount, amount));
     }
 
     public int getStartApply() {

@@ -28,8 +28,8 @@ public class ObjectDisplayPlaceholder implements Comparable<ObjectDisplayPlaceho
         }
     }
 
-    public String getDisplayName(BigDecimal amount) {
-        return thing.getDisplayName(amount);
+    public String getDisplayName(BigDecimal amount, boolean alwaysStatic) {
+        return thing.getDisplayName(amount, alwaysStatic);
     }
 
     @Override

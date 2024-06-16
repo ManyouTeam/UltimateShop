@@ -179,7 +179,10 @@ public class BuyProductMethod {
                         "item",
                         tempVal2.getDisplayName(player),
                         "price",
-                        ObjectPrices.getDisplayNameInLine(player, takeResult.getResultMap(), tempVal5.getMode()));
+                        ObjectPrices.getDisplayNameInLine(player,
+                                takeResult.getResultMap(),
+                                tempVal5.getMode(),
+                                !ConfigManager.configManager.getBoolean("placeholder.status.can-used-everywhere")));
             }
             return ProductTradeStatus.NOT_ENOUGH;
         }
@@ -218,7 +221,10 @@ public class BuyProductMethod {
                     "item",
                     tempVal2.getDisplayName(player),
                     "price",
-                    ObjectPrices.getDisplayNameInLine(player, takeResult.getResultMap(), tempVal5.getMode()),
+                    ObjectPrices.getDisplayNameInLine(player,
+                            takeResult.getResultMap(),
+                            tempVal5.getMode(),
+                            !ConfigManager.configManager.getBoolean("placeholder.status.can-used-everywhere")),
                     "amount",
                     String.valueOf(multi));
         }
