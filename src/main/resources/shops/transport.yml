@@ -16,13 +16,13 @@ items:
       1:
         economy-plugin: Vault
         amount: '6.58'
-        placeholder: '&6{amount} Coins'
+        placeholder: '{amount}$'
         start-apply: 0
     sell-prices:
       1:
         economy-plugin: Vault
         amount: '6.54'
-        placeholder: '&6{amount} Coins'
+        placeholder: '{amount}$'
         start-apply: 0
   B:
     price-mode: CLASSIC_ALL
@@ -35,14 +35,14 @@ items:
       1:
         economy-plugin: Vault
         amount: '55.47'
-        placeholder: '&6{amount} Coins'
+        placeholder: '{amount}$'
         start-apply: 0
     sell-prices:
       1:
         economy-plugin: Vault
         amount: '55.42'
-        placeholder: '&6{amount} Coins'
-        start-apply: 0 
+        placeholder: '{amount}$'
+        start-apply: 0
   C:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
@@ -54,13 +54,13 @@ items:
       1:
         economy-plugin: Vault
         amount: '18.05'
-        placeholder: '&6{amount} Coins'
+        placeholder: '{amount}$'
         start-apply: 0
     sell-prices:
       1:
         economy-plugin: Vault
         amount: '18.02'
-        placeholder: '&6{amount} Coins'
+        placeholder: '{amount}$'
         start-apply: 0
   D:
     price-mode: CLASSIC_ALL
@@ -73,13 +73,13 @@ items:
       1:
         economy-plugin: Vault
         amount: '18.12'
-        placeholder: '&6{amount} Coins'
+        placeholder: '{amount}$'
         start-apply: 0
     sell-prices:
       1:
         economy-plugin: Vault
         amount: '18.09'
-        placeholder: '&6{amount} Coins'
+        placeholder: '{amount}$'
         start-apply: 0
   E:
     price-mode: CLASSIC_ALL
@@ -92,13 +92,15 @@ items:
       1:
         economy-plugin: Vault
         amount: '88.7'
-        placeholder: '&6{amount} Coins'
+        placeholder: '{amount}$'
         start-apply: 0
     sell-prices:
       1:
         economy-plugin: Vault
+        max-amount: 88.4
+        min-amount: 20.1
         amount: '88.4+{buy-times-server}*0.4-{sell-times-server}*0.3'
-        placeholder: '&6{amount} Coins'
+        placeholder: '{amount}$'
         start-apply: 0
   F:
     price-mode: CLASSIC_ALL
@@ -111,13 +113,13 @@ items:
       1:
         economy-plugin: Vault
         amount: '104.53'
-        placeholder: '&6{amount} Coins'
+        placeholder: '{amount}$'
         start-apply: 0
     sell-prices:
       1:
         economy-plugin: Vault
         amount: '103'
-        placeholder: '&6{amount} Coins'
+        placeholder: '{amount}$'
         start-apply: 0
   G:
     price-mode: CLASSIC_ALL
@@ -130,13 +132,13 @@ items:
       1:
         economy-plugin: Vault
         amount: '95.91'
-        placeholder: '&6{amount} Coins'
+        placeholder: '{amount}$'
         start-apply: 0
     sell-prices:
       1:
         economy-plugin: Vault
         amount: '95.85'
-        placeholder: '&6{amount} Coins'
+        placeholder: '{amount}$'
         start-apply: 0
   H:
     price-mode: CLASSIC_ALL
@@ -149,14 +151,14 @@ items:
       1:
         economy-plugin: Vault
         amount: '190.6'
-        placeholder: '&6{amount} Coins'
+        placeholder: '{amount}$'
         start-apply: 0
     sell-prices:
       1:
         economy-plugin: Vault
         amount: '188'
-        placeholder: '&6{amount} Coins'
-        start-apply: 0 
+        placeholder: '{amount}$'
+        start-apply: 0
   I:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
@@ -168,11 +170,11 @@ items:
       1:
         economy-plugin: Vault
         amount: '139.91'
-        placeholder: '&6{amount} Coins'
+        placeholder: '{amount}$'
         start-apply: 0
     sell-prices:
       1:
         economy-plugin: Vault
         amount: '138'
-        placeholder: '&6{amount} Coins'
+        placeholder: '{amount}$'
         start-apply: 0

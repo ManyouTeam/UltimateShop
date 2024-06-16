@@ -126,17 +126,15 @@ public class SellStickItem {
             return;
         }
         int nowValue = getSellStickValue(item);
+        item.setAmount(item.getAmount() - 1);
         String id = getSellStickID(item);
         if (id == null) {
             ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Can not found sell stick item ID");
         }
-        else {
-            item.setAmount(item.getAmount() - 1);
-            if (nowValue - 1 > 0) {
-                ItemStack tempItem = getSellStick(player, id, 1, nowValue - 1, false);
-                if (tempItem != null) {
-                    player.getInventory().addItem(tempItem);
-                }
+        else if (nowValue - 1 > 0) {
+            ItemStack tempItem = getSellStick(player, id, 1, nowValue - 1, false);
+            if (tempItem != null) {
+                player.getInventory().addItem(tempItem);
             }
         }
     }

@@ -1,7 +1,7 @@
 settings:
   menu: 'example-shop-menu'
   buy-more: true
-  shop-name: 'Redstone Shop'
+  shop-name: 'Fish shop'
   hide-message: false
 
 items:
@@ -10,18 +10,18 @@ items:
     product-mode: CLASSIC_ALL
     products:
       1:
-        material: DISPENSER
+        material: COD
         amount: 1
     buy-prices:
       1:
         economy-plugin: Vault
-        amount: '17.38'
+        amount: '14.25'
         placeholder: '{amount}$'
         start-apply: 0
     sell-prices:
       1:
         economy-plugin: Vault
-        amount: '17.34'
+        amount: '12.15'
         placeholder: '{amount}$'
         start-apply: 0
   B:
@@ -29,37 +29,37 @@ items:
     product-mode: CLASSIC_ALL
     products:
       1:
-        material: NOTE_BLOCK
+        material: COOKED_COD
         amount: 1
     buy-prices:
       1:
         economy-plugin: Vault
-        amount: '19.74'
+        amount: '19.21'
         placeholder: '{amount}$'
         start-apply: 0
     sell-prices:
       1:
         economy-plugin: Vault
-        amount: '19.62'
+        amount: '18.48'
         placeholder: '{amount}$'
-        start-apply: 0 
+        start-apply: 0
   C:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
     products:
       1:
-        material: STICKY_PISTON
+        material: SALMON
         amount: 1
     buy-prices:
       1:
         economy-plugin: Vault
-        amount: '40.94'
+        amount: '17.26'
         placeholder: '{amount}$'
         start-apply: 0
     sell-prices:
       1:
         economy-plugin: Vault
-        amount: '40.86'
+        amount: '16.58'
         placeholder: '{amount}$'
         start-apply: 0
   D:
@@ -67,18 +67,18 @@ items:
     product-mode: CLASSIC_ALL
     products:
       1:
-        material: PISTON
+        material: COOKED_SALMON
         amount: 1
     buy-prices:
       1:
         economy-plugin: Vault
-        amount: '30.35'
+        amount: '21.26'
         placeholder: '{amount}$'
         start-apply: 0
     sell-prices:
       1:
         economy-plugin: Vault
-        amount: '30.27'
+        amount: '19.98'
         placeholder: '{amount}$'
         start-apply: 0
   E:
@@ -86,20 +86,18 @@ items:
     product-mode: CLASSIC_ALL
     products:
       1:
-        material: TNT
+        material: TROPICAL_FISH
         amount: 1
     buy-prices:
       1:
         economy-plugin: Vault
-        amount: '52.62'
+        amount: '16.25'
         placeholder: '{amount}$'
         start-apply: 0
     sell-prices:
       1:
         economy-plugin: Vault
-        amount: '52.5+{buy-times-server}*0.4-{sell-times-server}*0.3'
-        max-amount: 52.5
-        min-amount: 34.3
+        amount: '15.86'
         placeholder: '{amount}$'
         start-apply: 0
   F:
@@ -107,76 +105,17 @@ items:
     product-mode: CLASSIC_ALL
     products:
       1:
-        material: DROPPER
+        material: PUFFERFISH
         amount: 1
     buy-prices:
       1:
         economy-plugin: Vault
-        amount: '10.23'
+        amount: '23.51'
         placeholder: '{amount}$'
         start-apply: 0
     sell-prices:
       1:
         economy-plugin: Vault
-        amount: '10.19'
-        placeholder: '{amount}$'
-        start-apply: 0
-  G:
-    price-mode: CLASSIC_ALL
-    product-mode: CLASSIC_ALL
-    products:
-      1:
-        material: OBSERVER
-        amount: 1
-    buy-prices:
-      1:
-        economy-plugin: Vault
-        amount: '29.85'
-        placeholder: '{amount}$'
-        start-apply: 0
-    sell-prices:
-      1:
-        economy-plugin: Vault
-        amount: '29.79'
-        placeholder: '{amount}$'
-        start-apply: 0
-  H:
-    price-mode: CLASSIC_ALL
-    product-mode: CLASSIC_ALL
-    products:
-      1:
-        material: REPEATER
-        amount: 1
-    buy-prices:
-      1:
-        economy-plugin: Vault
-        amount: '15.39'
-        placeholder: '{amount}$'
-        start-apply: 0
-    sell-prices:
-      1:
-        economy-plugin: Vault
-        amount: '15.32'
-        placeholder: '{amount}$'
-        start-apply: 0 
-  I:
-    price-mode: CLASSIC_ALL
-    product-mode: CLASSIC_ALL
-    products:
-      1:
-        material: COMPARATOR
-        amount: 1
-    buy-prices:
-      1:
-        economy-plugin: Vault
-        amount: '34.34'
-        placeholder: '{amount}$'
-        start-apply: 0
-    sell-prices:
-      1:
-        economy-plugin: Vault
-        amount: '34.2+{buy-times-server}*0.4-{sell-times-server}*0.3'
-        max-amount: 34.2
-        min-amount: 14
+        amount: '22.45'
         placeholder: '{amount}$'
         start-apply: 0

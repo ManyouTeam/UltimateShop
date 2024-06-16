@@ -18,7 +18,7 @@ items:
         amount: '550+{buy-times-server}*0.2-{sell-times-server}*0.1'
         max-amount: 5500
         min-amount: 325
-        placeholder: '&6{amount} Coins'
+        placeholder: '{amount}$'
         start-apply: 0
     sell-prices:
       1:
@@ -26,7 +26,7 @@ items:
         amount: '455+{buy-times-server}*0.2-{sell-times-server}*0.1'
         max-amount: 455
         min-amount: 1
-        placeholder: '&6{amount} Coins'
+        placeholder: '{amount}$'
         start-apply: 0
     buy-limits:
       global: '{sell-times-server}' 
@@ -52,13 +52,13 @@ items:
       1:
         economy-plugin: Vault
         amount: '58.91+{buy-times-server}*0.2-{sell-times-server}*0.1'
-        placeholder: '&6{amount} Coins'
+        placeholder: '{amount}$'
         start-apply: 0
     sell-prices:
       1:
         economy-plugin: Vault
         amount: '58.86+{buy-times-server}*0.2-{sell-times-server}*0.1'
-        placeholder: '&6{amount} Coins'
+        placeholder: '{amount}$'
         start-apply: 0
     buy-limits:
       global: '{sell-times-server}' 
@@ -85,13 +85,13 @@ items:
       1:
         economy-plugin: Vault
         amount: '18.48+{buy-times-server}*0.2-{sell-times-server}*0.1'
-        placeholder: '&6{amount} Coins'
+        placeholder: '{amount}$'
         start-apply: 0
     sell-prices:
       1:
         economy-plugin: Vault
         amount: '18.40+{buy-times-server}*0.2-{sell-times-server}*0.1'
-        placeholder: '&6{amount} Coins'
+        placeholder: '{amount}$'
         start-apply: 0
     buy-limits:
       global: '{sell-times-server}' 
@@ -118,13 +118,13 @@ items:
       1:
         economy-plugin: Vault
         amount: '13.25+{buy-times-server}*0.2-{sell-times-server}*0.1'
-        placeholder: '&6{amount} Coins'
+        placeholder: '{amount}$'
         start-apply: 0
     sell-prices:
       1:
         economy-plugin: Vault
         amount: '12.22+{buy-times-server}*0.2-{sell-times-server}*0.1'
-        placeholder: '&6{amount} Coins'
+        placeholder: '{amount}$'
         start-apply: 0
     buy-limits:
       global: '{sell-times-server}' 
@@ -151,13 +151,13 @@ items:
       1:
         economy-plugin: Vault
         amount: '3.3+{buy-times-server}*0.2-{sell-times-server}*0.1'
-        placeholder: '&6{amount} Coins'
+        placeholder: '{amount}$'
         start-apply: 0
     sell-prices:
       1:
         economy-plugin: Vault
         amount: '3.1+{buy-times-server}*0.2-{sell-times-server}*0.1'
-        placeholder: '&6{amount} Coins'
+        placeholder: '{amount}$'
         start-apply: 0
     buy-limits:
       global: '{sell-times-server}' 
@@ -183,13 +183,13 @@ items:
       1:
         economy-plugin: Vault
         amount: '8.8+{buy-times-server}*0.2-{sell-times-server}*0.1'
-        placeholder: '&6{amount} Coins'
+        placeholder: '{amount}$'
         start-apply: 0
     sell-prices:
       1:
         economy-plugin: Vault
         amount: '8.5+{buy-times-server}*0.2-{sell-times-server}*0.1'
-        placeholder: '&6{amount} Coins'
+        placeholder: '{amount}$'
         start-apply: 0
     buy-limits:
       global: '{sell-times-server}' 
@@ -215,13 +215,13 @@ items:
       1:
         economy-plugin: Vault
         amount: '9.0+{buy-times-server}*0.2-{sell-times-server}*0.1'
-        placeholder: '&6{amount} Coins'
+        placeholder: '{amount}$'
         start-apply: 0
     sell-prices:
       1:
         economy-plugin: Vault
         amount: '8.94+{buy-times-server}*0.2-{sell-times-server}*0.1'
-        placeholder: '&6{amount} Coins'
+        placeholder: '{amount}$'
         start-apply: 0
     buy-limits:
       global: '{sell-times-server}' 
@@ -250,7 +250,7 @@ items:
         amount: '968+{buy-times-server}*0.2-{sell-times-server}*0.1'
         max-amount: 1357
         min-amount: 827
-        placeholder: '&6{amount} Coins'
+        placeholder: '{amount}$'
         start-apply: 0
     sell-prices:
       1:
@@ -258,7 +258,7 @@ items:
         amount: '785+{buy-times-server}*0.2-{sell-times-server}*0.1'
         max-amount: 785
         min-amount: 1
-        placeholder: '&6{amount} Coins'
+        placeholder: '{amount}$'
         start-apply: 0
     buy-limits:
       global: '{sell-times-server}' 
@@ -284,13 +284,17 @@ items:
       1:
         economy-plugin: Vault
         amount: '19.25+{buy-times-server}*0.2-{sell-times-server}*0.1'
-        placeholder: '&6{amount} Coins'
+        max-amount: 24.98
+        min-amount: 24.81
+        placeholder: '{amount}$'
         start-apply: 0
     sell-prices:
       1:
         economy-plugin: Vault
         amount: '19.18+{buy-times-server}*0.2-{sell-times-server}*0.1'
-        placeholder: '&6{amount} Coins'
+        max-amount: 22.87
+        min-amount: 1.98
+        placeholder: '{amount}$'
         start-apply: 0
     buy-limits:
       global: '{sell-times-server}' 
@@ -317,13 +321,13 @@ items:
       1:
         economy-plugin: Vault
         amount: '12.83'
-        placeholder: '&6{amount} Coins'
+        placeholder: '{amount}$'
         start-apply: 0
     sell-prices:
       1:
         economy-plugin: Vault
         amount: '11.75'
-        placeholder: '&6{amount} Coins'
+        placeholder: '{amount}$'
         start-apply: 0
     sell-limits:
       global: 640

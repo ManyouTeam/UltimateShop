@@ -16,13 +16,13 @@ items:
       1:
         economy-plugin: Vault
         amount: '1.1'
-        placeholder: '&6{amount} Coins'
+        placeholder: '{amount}$'
         start-apply: 0
     sell-prices:
       1:
         economy-plugin: Vault
         amount: '0.8'
-        placeholder: '&6{amount} Coins'
+        placeholder: '{amount}$'
         start-apply: 0
     sell-limits:
       global: 640
@@ -44,13 +44,13 @@ items:
       1:
         economy-plugin: Vault
         amount: '4.5'
-        placeholder: '&6{amount} Coins'
+        placeholder: '{amount}$'
         start-apply: 0
     sell-prices:
       1:
         economy-plugin: Vault
         amount: '3.2'
-        placeholder: '&6{amount} Coins'
+        placeholder: '{amount}$'
         start-apply: 0 
     sell-limits:
       global: 640
@@ -72,13 +72,13 @@ items:
       1:
         economy-plugin: Vault
         amount: '0.22'
-        placeholder: '&6{amount} Coins'
+        placeholder: '{amount}$'
         start-apply: 0
     sell-prices:
       1:
         economy-plugin: Vault
         amount: '0.15'
-        placeholder: '&6{amount} Coins'
+        placeholder: '{amount}$'
         start-apply: 0
     sell-limits:
       global: 640
@@ -100,13 +100,13 @@ items:
       1:
         economy-plugin: Vault
         amount: '4.5'
-        placeholder: '&6{amount} Coins'
+        placeholder: '{amount}$'
         start-apply: 0
     sell-prices:
       1:
         economy-plugin: Vault
         amount: '3.60'
-        placeholder: '&6{amount} Coins'
+        placeholder: '{amount}$'
         start-apply: 0
     sell-limits:
       global: 640
@@ -128,13 +128,13 @@ items:
       1:
         economy-plugin: Vault
         amount: '3.3'
-        placeholder: '&6{amount} Coins'
+        placeholder: '{amount}$'
         start-apply: 0
     sell-prices:
       1:
         economy-plugin: Vault
         amount: '2.90'
-        placeholder: '&6{amount} Coins'
+        placeholder: '{amount}$'
         start-apply: 0
     sell-limits:
       global: 640
@@ -156,13 +156,13 @@ items:
       1:
         economy-plugin: Vault
         amount: '30'
-        placeholder: '&6{amount} Coins'
+        placeholder: '{amount}$'
         start-apply: 0
     sell-prices:
       1:
         economy-plugin: Vault
         amount: '27'
-        placeholder: '&6{amount} Coins'
+        placeholder: '{amount}$'
         start-apply: 0
     buy-limits:
       global: '{sell-times-server}' 
@@ -188,13 +188,13 @@ items:
       1:
         economy-plugin: Vault
         amount: '4.65'
-        placeholder: '&6{amount} Coins'
+        placeholder: '{amount}$'
         start-apply: 0
     sell-prices:
       1:
         economy-plugin: Vault
         amount: '4'
-        placeholder: '&6{amount} Coins'
+        placeholder: '{amount}$'
         start-apply: 0
     sell-limits:
       global: 640
@@ -216,13 +216,13 @@ items:
       1:
         economy-plugin: Vault
         amount: '0.66'
-        placeholder: '&6{amount} Coins'
+        placeholder: '{amount}$'
         start-apply: 0
     sell-prices:
       1:
         economy-plugin: Vault
         amount: '0.52'
-        placeholder: '&6{amount} Coins'
+        placeholder: '{amount}$'
         start-apply: 0 
     sell-limits:
       global: 640
@@ -244,13 +244,13 @@ items:
       1:
         economy-plugin: Vault
         amount: '0.55'
-        placeholder: '&6{amount} Coins'
+        placeholder: '{amount}$'
         start-apply: 0
     sell-prices:
       1:
         economy-plugin: Vault
         amount: '0.49'
-        placeholder: '&6{amount} Coins'
+        placeholder: '{amount}$'
         start-apply: 0
     sell-limits:
       global: 640
@@ -272,13 +272,13 @@ items:
       1:
         economy-plugin: Vault
         amount: '1.22'
-        placeholder: '&6{amount} Coins'
+        placeholder: '{amount}$'
         start-apply: 0
     sell-prices:
       1:
         economy-plugin: Vault
         amount: '1.19'
-        placeholder: '&6{amount} Coins'
+        placeholder: '{amount}$'
         start-apply: 0
     sell-limits:
       global: 640
@@ -300,13 +300,13 @@ items:
       1:
         economy-plugin: Vault
         amount: '3.13'
-        placeholder: '&6{amount} Coins'
+        placeholder: '{amount}$'
         start-apply: 0
     sell-prices:
       1:
         economy-plugin: Vault
         amount: '2.85'
-        placeholder: '&6{amount} Coins'
+        placeholder: '{amount}$'
         start-apply: 0
     sell-limits:
       global: 640
@@ -328,13 +328,13 @@ items:
       1:
         economy-plugin: Vault
         amount: '5.5'
-        placeholder: '&6{amount} Coins'
+        placeholder: '{amount}$'
         start-apply: 0
     sell-prices:
       1:
         economy-plugin: Vault
         amount: '5.14'
-        placeholder: '&6{amount} Coins'
+        placeholder: '{amount}$'
         start-apply: 0
     sell-limits:
       global: 640
@@ -356,13 +356,13 @@ items:
       1:
         economy-plugin: Vault
         amount: '0.83'
-        placeholder: '&6{amount} Coins'
+        placeholder: '{amount}$'
         start-apply: 0
     sell-prices:
       1:
         economy-plugin: Vault
         amount: '0.76'
-        placeholder: '&6{amount} Coins'
+        placeholder: '{amount}$'
         start-apply: 0
     sell-limits:
       global: 640
@@ -384,13 +384,13 @@ items:
       1:
         economy-plugin: Vault
         amount: '16.5'
-        placeholder: '&6{amount} Coins'
+        placeholder: '{amount}$'
         start-apply: 0
     sell-prices:
       1:
         economy-plugin: Vault
         amount: '15.85'
-        placeholder: '&6{amount} Coins'
+        placeholder: '{amount}$'
         start-apply: 0
     sell-limits:
       global: 640
@@ -412,13 +412,13 @@ items:
       1:
         economy-plugin: Vault
         amount: '3.3'
-        placeholder: '&6{amount} Coins'
+        placeholder: '{amount}$'
         start-apply: 0
     sell-prices:
       1:
         economy-plugin: Vault
         amount: '2.85'
-        placeholder: '&6{amount} Coins'
+        placeholder: '{amount}$'
         start-apply: 0
     sell-limits:
       global: 640
@@ -440,13 +440,13 @@ items:
       1:
         economy-plugin: Vault
         amount: 4
-        placeholder: '&6{amount} Coins'
+        placeholder: '{amount}$'
         start-apply: 0  
     sell-prices:
       1:
         economy-plugin: Vault
         amount: 2
-        placeholder: '&6{amount} Coins'
+        placeholder: '{amount}$'
         start-apply: 0
     sell-limits:
       global: 640
@@ -468,13 +468,13 @@ items:
       1:
         economy-plugin: Vault
         amount: 4
-        placeholder: '&6{amount} Coins'
+        placeholder: '{amount}$'
         start-apply: 0  
     sell-prices:
       1:
         economy-plugin: Vault
         amount: 2
-        placeholder: '&6{amount} Coins'
+        placeholder: '{amount}$'
         start-apply: 0
     sell-limits:
       global: 640

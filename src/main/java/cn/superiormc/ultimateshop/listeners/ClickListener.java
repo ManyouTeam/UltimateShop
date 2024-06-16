@@ -77,17 +77,18 @@ public class ClickListener implements Listener {
             Map<AbstractSingleThing, BigDecimal> result = new HashMap<>();
             boolean firstSell = false;
             int cooldown = ConfigManager.configManager.getInt("sell.sell-stick.cooldown", -1);
-            if (cooldown > 0) {
-                if (playerList.contains(event.getPlayer())) {
-                    return;
-                }
-                playerList.add(event.getPlayer());
-                if (UltimateShop.isFolia) {
-                    Bukkit.getGlobalRegionScheduler().runDelayed(UltimateShop.instance, task -> playerList.remove(event.getPlayer()), cooldown);
-                    return;
-                } else {
-                    Bukkit.getScheduler().runTaskLater(UltimateShop.instance, () -> playerList.remove(event.getPlayer()), cooldown);
-                }
+            if (cooldown < 5) {
+                cooldown = 5;
+            }
+            if (playerList.contains(event.getPlayer())) {
+                return;
+            }
+            playerList.add(event.getPlayer());
+            if (UltimateShop.isFolia) {
+                Bukkit.getGlobalRegionScheduler().runDelayed(UltimateShop.instance, task -> playerList.remove(event.getPlayer()), cooldown);
+                return;
+            } else {
+                Bukkit.getScheduler().runTaskLater(UltimateShop.instance, () -> playerList.remove(event.getPlayer()), cooldown);
             }
             for (String shop : ConfigManager.configManager.shopConfigs.keySet()) {
                 for (ObjectItem products : ConfigManager.configManager.getShop(shop).getProductList()) {

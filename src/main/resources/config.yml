@@ -21,6 +21,8 @@ sell:
       - 'hideshop;;A'
     hide-message: true
   sell-stick:
+    # The min value here is 5, if you set value less than 5, we will auto set the cooldown to 5 tick.
+    # In ticks.
     cooldown: 5
     hide-message: true
     # Support value: LEFT, RIGHT and LEFT;;RIGHT

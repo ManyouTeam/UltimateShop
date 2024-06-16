@@ -6,9 +6,9 @@ open-actions:
 
 layout:
   - '000000000'
-  - '00BCDEF00'
-  - '00IJKLM00'
-  - '000AHG000'
+  - '0ABCDEF00'
+  - '0GHIJKL00'
+  - '0MN000000'
   - '000000000'
   - '0000Z0000'
 
@@ -122,6 +122,15 @@ buttons:
     actions:
       - 'shop_menu: redstone'
   M:
+    display-item:
+      material: FISHING_ROD
+      name: '&9&lFISH SHOP'
+      lore:
+        - '&7Sell ​​or buy different raw'
+        - '&7or cooked fish.'
+    actions:
+      - 'shop_menu: fish'
+  N:
     display-item:
       material: RAIL
       name: '&a&lTRANSPORTS'
