@@ -26,7 +26,7 @@ public abstract class AbstractGUI {
     protected abstract void constructGUI();
 
     public boolean canOpenGUI(boolean reopen) {
-        if (ConfigManager.configManager.getLong("menu.cooldown.reopen", 3L) <= 0L) {
+        if (ConfigManager.configManager.getLong("menu.cooldown.reopen", -1L) <= 0L) {
             return true;
         }
         if (playerList.containsKey(player)) {

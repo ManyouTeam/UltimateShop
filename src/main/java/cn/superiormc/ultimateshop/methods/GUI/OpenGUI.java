@@ -51,12 +51,12 @@ public class OpenGUI {
 
     public static void openMoreGUI(Player player, ObjectItem item) {
         BuyMoreGUI gui = new BuyMoreGUI(player, item);
-        gui.openGUI(false);
+        gui.openGUI(true);
     }
 
     public static void openSellAllGUI(Player player) {
         SellAllGUI gui = new SellAllGUI(player);
-        gui.openGUI(false);
+        gui.openGUI(true);
     }
 
 
