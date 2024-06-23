@@ -31,6 +31,8 @@ import org.bukkit.entity.TropicalFish;
 import org.bukkit.inventory.*;
 import org.bukkit.inventory.meta.*;
 import org.bukkit.inventory.meta.components.FoodComponent;
+import org.bukkit.inventory.meta.components.JukeboxPlayableComponent;
+import org.bukkit.inventory.meta.components.ToolComponent;
 import org.bukkit.inventory.meta.trim.ArmorTrim;
 import org.bukkit.inventory.meta.trim.TrimMaterial;
 import org.bukkit.inventory.meta.trim.TrimPattern;
@@ -184,7 +186,11 @@ public class BuildItem {
                 if (foodSaturation > 0) {
                     foodComponent.setSaturation((float) foodSaturation);
                 }
-                for (String effects : section.getStringList("effects")) {
+                ConfigurationSection convertItem = section.getConfigurationSection("convert");
+                if (CommonUtil.getMajorVersion(21) && convertItem != null) {
+                    foodComponent.setUsingConvertsTo(buildItemStack(player, convertItem, convertItem.getInt("amount"), args));
+                }
+                for (String effects : foodKey.getStringList("effects")) {
                     String[] effectParseResult = effects.replace(" ", "").split(",");
                     if (effectParseResult.length < 4) {
                         continue;
@@ -205,6 +211,54 @@ public class BuildItem {
                         foodComponent.addEffect(potionEffect, Float.parseFloat(effectParseResult[effectParseResult.length - 1]));
                     }
                 }
+                meta.setFood(foodComponent);
+            }
+        }
+
+        if (CommonUtil.getMajorVersion(21)) {
+            ConfigurationSection toolKey = section.getConfigurationSection("tool");
+            ToolComponent toolComponent = meta.getTool();
+            if (toolKey != null) {
+                int damagePerBlock = toolKey.getInt("damage-per-block", -1);
+                if (damagePerBlock >= 0) {
+                    toolComponent.setDamagePerBlock(damagePerBlock);
+                }
+                double miningSpeed = toolKey.getDouble("mining-speed", -1);
+                if (miningSpeed > 0) {
+                    toolComponent.setDefaultMiningSpeed((float) miningSpeed);
+                }
+                for (String rules : toolKey.getStringList("rules")) {
+                    String[] ruleParseResult = rules.replace(" ", "").split(",");
+                    if (ruleParseResult.length < 3) {
+                        continue;
+                    }
+                    Collection<Material> materials = new ArrayList<>();
+                    int i = 0;
+                    for (String singleMaterial : ruleParseResult) {
+                        Material material = Material.getMaterial(singleMaterial.toUpperCase());
+                        if (material == null) {
+                            break;
+                        }
+                        materials.add(material);
+                        i ++;
+                    }
+                    float speed = Float.parseFloat(ruleParseResult[i]);
+                    boolean correctForDrop = Boolean.parseBoolean(ruleParseResult[i + 1]);
+                    toolComponent.addRule(materials, speed, correctForDrop);
+                }
+                meta.setTool(toolComponent);
+            }
+        }
+
+        if (CommonUtil.getMajorVersion(21)) {
+            JukeboxPlayableComponent jukeboxPlayableComponent = meta.getJukeboxPlayable();
+            String song = section.getString("song");
+            if (song != null) {
+                jukeboxPlayableComponent.setSongKey(CommonUtil.parseNamespacedKey(song));
+                if (section.contains("show-song")) {
+                    jukeboxPlayableComponent.setShowInTooltip(section.getBoolean("show-song"));
+                }
+                meta.setJukeboxPlayable(jukeboxPlayableComponent);
             }
         }
 
@@ -297,13 +351,23 @@ public class BuildItem {
                     }
 
                     if (attribName != null && attribOperation != null) {
-                        AttributeModifier modifier = new AttributeModifier(
-                                id,
-                                attribName,
-                                attribAmount,
-                                Enums.getIfPresent(AttributeModifier.Operation.class, attribOperation)
-                                        .or(AttributeModifier.Operation.ADD_NUMBER),
-                                slot);
+                        AttributeModifier modifier;
+                        if (CommonUtil.getMajorVersion(21)) {
+                            modifier = new AttributeModifier(
+                                    CommonUtil.parseNamespacedKey(attribName),
+                                    attribAmount,
+                                    Enums.getIfPresent(AttributeModifier.Operation.class, attribOperation)
+                                            .or(AttributeModifier.Operation.ADD_NUMBER),
+                                    slot);
+                        } else {
+                            modifier = new AttributeModifier(
+                                    id,
+                                    attribName,
+                                    attribAmount,
+                                    Enums.getIfPresent(AttributeModifier.Operation.class, attribOperation)
+                                            .or(AttributeModifier.Operation.ADD_NUMBER),
+                                    slot);
+                        }
 
                         meta.addAttributeModifier(attributeInst, modifier);
                     }

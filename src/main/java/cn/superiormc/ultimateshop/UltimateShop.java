@@ -22,6 +22,10 @@ public final class UltimateShop extends JavaPlugin {
 
     public static boolean useGeyser = false;
 
+    public static int majorVersion;
+
+    public static int miniorVersion;
+
     @Override
     public void onEnable() {
         instance = this;
@@ -58,12 +62,13 @@ public final class UltimateShop extends JavaPlugin {
             Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §fHooking into Floodgate...");
             useGeyser = true;
         }
-        String[] parts = Bukkit.getVersion().split("\\.");
-        if (parts.length == 3) {
-            Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §fYour Minecraft version is: 1." + parts[1] +
-                    "." + parts[2].replace(")", "") + "!");
-        } else if (parts.length == 2) {
-            Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §fYour Minecraft version is: 1." + parts[1] + ".0!");
+        try {
+            String[] versionParts = Bukkit.getBukkitVersion().split("-")[0].split("\\.");
+            majorVersion = versionParts.length > 1 ? Integer.parseInt(versionParts[1]) : 0;
+            miniorVersion = versionParts.length > 2 ? Integer.parseInt(versionParts[2]) : 0;
+            Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §fYour Minecraft version is: 1." + majorVersion + "." + miniorVersion + "!");
+        } catch (Throwable throwable) {
+            Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Can not get your Minecraft version! Default set to 1.0.0.");
         }
         new Metrics(this, 20783);
         Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §fPlugin is loaded. Author: PQguanfang.");

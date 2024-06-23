@@ -14,7 +14,6 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.geysermc.floodgate.api.FloodgateApi;
-import pers.neige.neigeitems.utils.ItemUtils;
 
 import java.io.File;
 import java.time.LocalDateTime;
@@ -41,30 +40,12 @@ public class CommonUtil {
     }
 
     public static boolean getMajorVersion(int version) {
-        String[] parts = Bukkit.getVersion().split("\\.");
-        if (parts.length >= 2) {
-            try {
-                return Integer.parseInt(parts[1]) >= version;
-            } catch (NumberFormatException e) {
-                return false;
-            }
-        }
-        return false;
+        return UltimateShop.majorVersion >= version;
     }
 
     public static boolean getMinorVersion(int majorVersion, int minorVersion) {
-        if (!getMajorVersion(majorVersion)) {
-            return false;
-        }
-        String[] parts = Bukkit.getVersion().split("\\.");
-        if (parts.length >= 3) {
-            try {
-                return Integer.parseInt(parts[2].replace(")", "")) >= minorVersion;
-            } catch (NumberFormatException e) {
-                return false;
-            }
-        }
-        return 0 >= minorVersion;
+        return UltimateShop.majorVersion > majorVersion || (UltimateShop.majorVersion == majorVersion &&
+                UltimateShop.miniorVersion >= minorVersion);
     }
 
     public static void dispatchCommand(String command) {

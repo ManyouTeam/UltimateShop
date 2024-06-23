@@ -10,7 +10,7 @@ import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
-import org.bukkit.Registry;
+import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.block.BlockState;
@@ -24,6 +24,8 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.*;
 import org.bukkit.inventory.meta.components.FoodComponent;
+import org.bukkit.inventory.meta.components.JukeboxPlayableComponent;
+import org.bukkit.inventory.meta.components.ToolComponent;
 import org.bukkit.inventory.meta.trim.ArmorTrim;
 import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionEffect;
@@ -99,10 +101,13 @@ public class DebuildItem {
                 section.set("food.can-alawys-eat", true);
             }
             if (foodComponent.getNutrition() > 0) {
-                section.set("nutrition", foodComponent.getNutrition());
+                section.set("food.nutrition", foodComponent.getNutrition());
             }
             if (foodComponent.getSaturation() > 0) {
-                section.set("saturation", foodComponent.getSaturation());
+                section.set("food.saturation", foodComponent.getSaturation());
+            }
+            if (CommonUtil.getMajorVersion(21) && foodComponent.getUsingConvertsTo() != null) {
+                debuildItem(foodComponent.getUsingConvertsTo(), section.createSection("food.convert"));
             }
             List<String> effects = new ArrayList<>();
             for (FoodComponent.FoodEffect foodEffect : foodComponent.getEffects()) {
@@ -120,6 +125,45 @@ public class DebuildItem {
             }
             if (!effects.isEmpty()) {
                 section.set("effects", effects);
+            }
+        }
+
+        // Tool
+        if (CommonUtil.getMajorVersion(21)) {
+            ToolComponent toolComponent = meta.getTool();
+            if (toolComponent.getDamagePerBlock() != 1) {
+                section.set("tool.damage-per-block", toolComponent.getDamagePerBlock());
+            }
+            if (toolComponent.getDefaultMiningSpeed() != 1) {
+                section.set("tool.mining-speed", toolComponent.getDefaultMiningSpeed());
+            }
+            List<String> toolRules = new ArrayList<>();
+            for (ToolComponent.ToolRule toolRule : toolComponent.getRules()) {
+                if (toolRule.getBlocks().isEmpty()) {
+                    continue;
+                }
+                StringBuilder materials = new StringBuilder();
+                for (Material material : toolRule.getBlocks()) {
+                    if (materials.toString().isEmpty()) {
+                        materials.append(material.name());
+                    } else {
+                        materials.append(", ").append(material.name());
+                    }
+                }
+                materials.append(", ").append(toolRule.getSpeed()).append(", ").append(toolRule.isCorrectForDrops());
+                toolRules.add(materials.toString());
+            }
+            if (!toolRules.isEmpty()) {
+                section.set("tool.rules", toolRules);
+            }
+        }
+
+        // Jukebox Playable
+        if (CommonUtil.getMajorVersion(21)) {
+            JukeboxPlayableComponent jukeboxPlayableComponent = meta.getJukeboxPlayable();
+            section.set("show-song", jukeboxPlayableComponent.isShowInTooltip());
+            if (jukeboxPlayableComponent.getSongKey() != null) {
+                section.set("song", jukeboxPlayableComponent.getSongKey().toString());
             }
         }
 
@@ -179,7 +223,9 @@ public class DebuildItem {
                 String path = "attributes." + attribute.getKey().name() + '.';
                 AttributeModifier modifier = attribute.getValue();
 
-                section.set(path + "id", modifier.getUniqueId().toString());
+                if (!CommonUtil.getMajorVersion(21)) {
+                    section.set(path + "id", modifier.getUniqueId().toString());
+                }
                 section.set(path + "name", modifier.getName());
                 section.set(path + "amount", modifier.getAmount());
                 section.set(path + "operation", modifier.getOperation().name());
