@@ -36,7 +36,8 @@ public class GUIListener implements Listener {
         try {
             if (e.getWhoClicked().equals(player)) {
                 if (!Objects.equals(e.getClickedInventory(), gui.getInv())) {
-                    if (e.getClick().isShiftClick()) {
+                    if (e.getClick().isShiftClick() || e.getClick() == ClickType.DOUBLE_CLICK ||
+                    ConfigManager.configManager.getBoolean("menu.ignore-click-outside")) {
                         e.setCancelled(!gui.getChangeable());
                     }
                     return;

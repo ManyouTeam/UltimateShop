@@ -37,6 +37,7 @@ menu:
   cooldown:
     click: -1
     reopen: -1
+  ignore-click-outside: false
   shop:
     # Whether shop menu will refresh every 1 second.
     # This will refresh placeholder that displayed in display item lore.
