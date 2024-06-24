@@ -101,8 +101,8 @@ items:
         placeholder: '{amount}$'
         start-apply: 0
   F:
-    price-mode: CLASSIC_ALL
-    product-mode: CLASSIC_ALL
+    price-mode: ALL
+    product-mode: ALL
     products:
       1:
         material: GHAST_TEAR
@@ -239,8 +239,8 @@ items:
         placeholder: '{amount}$'
         start-apply: 0
   M:
-    price-mode: CLASSIC_ALL
-    product-mode: CLASSIC_ALL
+    price-mode: ALL
+    product-mode: ALL
     products:
       1:
         material: ENDER_PEARL
@@ -286,8 +286,8 @@ items:
         placeholder: '{amount}$'
         start-apply: 0
   O:
-    price-mode: CLASSIC_ALL
-    product-mode: CLASSIC_ALL
+    price-mode: ALL
+    product-mode: ALL
     products:
       1:
         material: MAGMA_CREAM

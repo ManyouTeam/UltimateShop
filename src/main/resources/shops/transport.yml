@@ -82,7 +82,7 @@ items:
         placeholder: '{amount}$'
         start-apply: 0
   E:
-    price-mode: CLASSIC_ALL
+    price-mode: ALL
     product-mode: CLASSIC_ALL
     products:
       1:

@@ -1,7 +1,7 @@
 settings:
   menu: 'example-shop-menu'
   buy-more: true
-  shop-name: 'Fish shop'
+  shop-name: 'Fish Shop'
   hide-message: false
 
 items:

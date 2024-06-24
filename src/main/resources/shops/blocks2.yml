@@ -158,8 +158,7 @@ items:
         placeholder: '{amount}$'
         start-apply: 0
     buy-limits:
-      global: '{sell-times-server}' 
-
+      global: '{sell-times-server}'
     buy-limits-reset-mode: 'NEVER'
     buy-limits-reset-time: '00:00:00' 
   I:
@@ -182,8 +181,7 @@ items:
         placeholder: '{amount}$'
         start-apply: 0
     buy-limits:
-      global: '{sell-times-server}' 
-
+      global: '{sell-times-server}'
     buy-limits-reset-mode: 'NEVER'
     buy-limits-reset-time: '00:00:00' 
   J:
@@ -301,8 +299,7 @@ items:
         placeholder: '{amount}$'
         start-apply: 0
     buy-limits:
-      global: '{sell-times-server}' 
-
+      global: '{sell-times-server}'
     buy-limits-reset-mode: 'NEVER'
     buy-limits-reset-time: '00:00:00' 
   P:
@@ -325,8 +322,7 @@ items:
         placeholder: '{amount}$'
         start-apply: 0
     buy-limits:
-      global: '{sell-times-server}' 
-
+      global: '{sell-times-server}'
     buy-limits-reset-mode: 'NEVER'
     buy-limits-reset-time: '00:00:00' 
   Q:
@@ -406,8 +402,7 @@ items:
         placeholder: '{amount}$'
         start-apply: 0
     buy-limits:
-      global: '{sell-times-server}' 
-
+      global: '{sell-times-server}'
     buy-limits-reset-mode: 'NEVER'
     buy-limits-reset-time: '00:00:00' 
     
