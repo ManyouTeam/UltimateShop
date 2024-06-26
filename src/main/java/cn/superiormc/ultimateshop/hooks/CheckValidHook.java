@@ -117,7 +117,7 @@ public class CheckValidHook {
         if (CommonUtil.checkPluginLoad("ItemsAdder")) {
             CustomStack customStack = CustomStack.byItemStack(itemStack);
             if (customStack != null) {
-                return new String[]{"ItemsAdder", customStack.getId()};
+                return new String[]{"ItemsAdder", customStack.getNamespacedID()};
             }
         }
         if (CommonUtil.checkPluginLoad("Oraxen")) {

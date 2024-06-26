@@ -48,7 +48,10 @@ public class ItemUtil {
         Map<String, Object> item1Result = DebuildItem.debuildItem(item1, new MemoryConfiguration()).getValues(true);
         Map<String, Object> item2Result = DebuildItem.debuildItem(item2, new MemoryConfiguration()).getValues(true);
         for (String key : item1Result.keySet()) {
-            if (!item2Result.get(key).equals(item1Result.get(key))) {
+            if (ConfigManager.configManager.getStringList("sell.ignore-item-format-key").contains(key)) {
+                continue;
+            }
+            if (item2Result.get(key) == null || !item2Result.get(key).equals(item1Result.get(key))) {
                 return false;
             }
         }

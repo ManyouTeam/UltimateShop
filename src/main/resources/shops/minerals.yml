@@ -7,7 +7,7 @@ settings:
 items:
   A:
     price-mode: ALL
-    product-mode: ALL
+    product-mode: CLASSIC_ALL
     products:
       1:
         material: diamond
@@ -43,7 +43,7 @@ items:
     sell-limits-reset-time: '00:00:00'  
   B:
     price-mode: ALL
-    product-mode: ALL
+    product-mode: CLASSIC_ALL
     products:
       1:
         material: GOLD_INGOT
@@ -80,7 +80,7 @@ items:
     sell-limits-reset-time: '00:00:00'  
   C:
     price-mode: ALL
-    product-mode: ALL
+    product-mode: CLASSIC_ALL
     products:
       1:
         material: IRON_INGOT
@@ -117,7 +117,7 @@ items:
     sell-limits-reset-time: '00:00:00'  
   D:
     price-mode: ALL
-    product-mode: ALL
+    product-mode: CLASSIC_ALL
     products:
       1:
         material: LAPIS_LAZULI
@@ -154,7 +154,7 @@ items:
     sell-limits-reset-time: '00:00:00'  
   E:
     price-mode: ALL
-    product-mode: ALL
+    product-mode: CLASSIC_ALL
     products:
       1:
         material: REDSTONE
@@ -190,7 +190,7 @@ items:
     sell-limits-reset-time: '00:00:00'  
   F:
     price-mode: ALL
-    product-mode: ALL
+    product-mode: CLASSIC_ALL
     products:
       1:
         material: COAL
@@ -226,7 +226,7 @@ items:
     sell-limits-reset-time: '00:00:00'  
   G:
     price-mode: ALL
-    product-mode: ALL
+    product-mode: CLASSIC_ALL
     products:
       1:
         material: AMETHYST_SHARD
@@ -259,7 +259,7 @@ items:
     sell-limits-reset-time: '00:00:00'  
   H:
     price-mode: ALL
-    product-mode: ALL
+    product-mode: CLASSIC_ALL
     products:
       1:
         material: ANCIENT_DEBRIS
@@ -295,7 +295,7 @@ items:
     sell-limits-reset-time: '00:00:00'  
   I:
     price-mode: ALL
-    product-mode: ALL
+    product-mode: CLASSIC_ALL
     products:
       1:
         material: QUARTZ

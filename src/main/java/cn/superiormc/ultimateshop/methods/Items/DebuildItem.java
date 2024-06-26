@@ -94,7 +94,7 @@ public class DebuildItem {
         // Food
         if (CommonUtil.getMinorVersion(20, 5)) {
             FoodComponent foodComponent = meta.getFood();
-            if (foodComponent.getEatSeconds() != 1.6) {
+            if (foodComponent.getEatSeconds() != 1.6F) {
                 section.set("food.eat-seconds", foodComponent.getEatSeconds());
             }
             if (foodComponent.canAlwaysEat()) {
@@ -131,7 +131,7 @@ public class DebuildItem {
         // Tool
         if (CommonUtil.getMajorVersion(21)) {
             ToolComponent toolComponent = meta.getTool();
-            if (toolComponent.getDamagePerBlock() != 1) {
+            if (toolComponent.getDamagePerBlock() != 0) {
                 section.set("tool.damage-per-block", toolComponent.getDamagePerBlock());
             }
             if (toolComponent.getDefaultMiningSpeed() != 1) {
@@ -161,8 +161,10 @@ public class DebuildItem {
         // Jukebox Playable
         if (CommonUtil.getMajorVersion(21)) {
             JukeboxPlayableComponent jukeboxPlayableComponent = meta.getJukeboxPlayable();
-            section.set("show-song", jukeboxPlayableComponent.isShowInTooltip());
-            if (jukeboxPlayableComponent.getSongKey() != null) {
+            if (!jukeboxPlayableComponent.isShowInTooltip()) {
+                section.set("show-song", jukeboxPlayableComponent.isShowInTooltip());
+            }
+            if (!jukeboxPlayableComponent.getSongKey().toString().equals("minecraft:13")) {
                 section.set("song", jukeboxPlayableComponent.getSongKey().toString());
             }
         }

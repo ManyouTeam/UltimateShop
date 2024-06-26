@@ -15,6 +15,11 @@ use-component:
 sell:
   # Support Value: Bukkit or ItemFormat.
   sell-method: Bukkit
+  # Only support ItemFormat sell method.
+  ignore-item-format-key:
+    - 'lore'
+    - 'damage'
+    - 'tool.damage-per-block'
   sell-all:
     ignore-items:
       # Format: Shop ID;;Item ID
@@ -43,6 +48,10 @@ menu:
     # This will refresh placeholder that displayed in display item lore.
     # But maybe lead to server lag if you have much online players, and they are all opening shop GUI.
     update: false
+    # Whether shop menu will refresh every click in it.
+    # This will refresh placeholder that displayed in display item lore.
+    # But maybe lead to server lag if you have much online players, and they are all opening shop GUI.
+    click-update: false
   sell-all:
     size: 54
     title: '&fSell All &7- Esc to confirm sell!'

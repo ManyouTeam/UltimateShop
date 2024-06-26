@@ -14,6 +14,7 @@ import cn.superiormc.ultimateshop.objects.caches.ObjectUseTimesCache;
 import cn.superiormc.ultimateshop.objects.menus.ObjectMenu;
 import cn.superiormc.ultimateshop.utils.InvUtil;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.Inventory;
@@ -145,7 +146,12 @@ public class ShopGUI extends InvGUI {
             return true;
         }
         menuButtons.get(slot).clickEvent(type, player.getPlayer());
-        constructGUI();
+        if (ConfigManager.configManager.getBoolean("menu.shop.click-update")) {
+            constructGUI();
+        } else {
+            menuItems.put(slot, getMenuItem(player, slot));
+            inv.setItem(slot, menuItems.get(slot));
+        }
         return true;
     }
 
@@ -155,15 +161,6 @@ public class ShopGUI extends InvGUI {
             runTask.cancel();
         }
         return super.closeEventHandle(inventory);
-    }
-
-    public Map<Integer, ItemStack> getMenuItems(Player player) {
-        Map<Integer, AbstractButton> tempVal1 = menuButtons;
-        Map<Integer, ItemStack> resultItems = new HashMap<>();
-        for (int i : tempVal1.keySet()) {
-            resultItems.put(i, tempVal1.get(i).getDisplayItem(player, 1));
-        }
-        return resultItems;
     }
 
     @Override

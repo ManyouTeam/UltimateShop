@@ -6,6 +6,7 @@ import cn.superiormc.ultimateshop.listeners.GUIListener;
 import cn.superiormc.ultimateshop.objects.buttons.AbstractButton;
 import cn.superiormc.ultimateshop.objects.menus.ObjectMenu;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
@@ -81,5 +82,23 @@ public abstract class InvGUI extends AbstractGUI {
 
     public ObjectMenu getMenu() {
         return null;
+    }
+
+    public Map<Integer, ItemStack> getMenuItems(Player player) {
+        Map<Integer, AbstractButton> tempVal1 = menuButtons;
+        Map<Integer, ItemStack> resultItems = new HashMap<>();
+        for (int i : tempVal1.keySet()) {
+            resultItems.put(i, tempVal1.get(i).getDisplayItem(player, 1));
+        }
+        return resultItems;
+    }
+
+    public ItemStack getMenuItem(Player player, int slot) {
+        Map<Integer, AbstractButton> tempVal1 = menuButtons;
+        AbstractButton button = tempVal1.get(slot);
+        if (button == null) {
+            return new ItemStack(Material.STONE);
+        }
+        return button.getDisplayItem(player, 1);
     }
 }
