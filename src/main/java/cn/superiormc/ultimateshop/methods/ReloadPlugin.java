@@ -16,10 +16,7 @@ import org.bukkit.entity.Player;
 public class ReloadPlugin {
 
     public static void reload(CommandSender sender) {
-        sender.sendMessage("§x§9§8§F§B§9§8[UltimateShop] §fTrying reload the plugin, server may have TPS " +
-                "drop or even crash if you have much shop products and online players because we are trying save" +
-                "their data in server main thread. We recommend you restart the server instead of reload plugin" +
-                "to keep the data save.");
+        LanguageManager.languageManager.sendStringText(sender, "plugin.reloading");
         UltimateShop.instance.reloadConfig();
         for (Player player : Bukkit.getOnlinePlayers()) {
             CacheManager.cacheManager.savePlayerCacheOnDisable(player);
@@ -45,6 +42,7 @@ public class ReloadPlugin {
             CacheManager.cacheManager.addPlayerCache(player);
         }
         MathUtil.scale = ConfigManager.configManager.getInt("math.scale", 2);
+        Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §fUsing " + ConfigManager.configManager.getStringOrDefault("sell-mode", "sell.sell-method", "Bukkit") + " sell method!");
         LanguageManager.languageManager.sendStringText(sender, "plugin.reloaded");
     }
 }

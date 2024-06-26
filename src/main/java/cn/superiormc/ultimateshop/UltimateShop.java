@@ -14,7 +14,7 @@ public final class UltimateShop extends JavaPlugin {
 
     public static UltimateShop instance;
 
-    public static boolean freeVersion = true;
+    public static boolean freeVersion = false;
 
     public static boolean isPaper = false;
 
@@ -70,6 +70,7 @@ public final class UltimateShop extends JavaPlugin {
         } catch (Throwable throwable) {
             Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Can not get your Minecraft version! Default set to 1.0.0.");
         }
+        Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §fUsing " + ConfigManager.configManager.getStringOrDefault("sell-mode", "sell.sell-method", "Bukkit") + " sell method!");
         new Metrics(this, 20783);
         Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §fPlugin is loaded. Author: PQguanfang.");
     }

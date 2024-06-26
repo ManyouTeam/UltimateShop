@@ -12,6 +12,7 @@ error:
   length-only-one: '&#98FB98[UltimateShop] &c商品ID长度必须为1个字符!'
 
 plugin:
+  reloading: "&#98FB98[UltimateShop] &f插件重启中，您的服务器卡能会有卡顿. 除非特殊情况，我们建议您重启服务器，而不是重启插件，这样能保证数据储存安全."
   reloaded: '&#98FB98[UltimateShop] &f插件已重启!'
   saved: '&#98FB98[UltimateShop] &f物品已保存!'
   reload-close-gui: '&#98FB98[UltimateShop] &f插件正在重启中，您打开的GUI已强制关闭!'
@@ -55,6 +56,7 @@ help:
 start-sell-all: '&#98FB98[UltimateShop] &f您的所有 {amount}x 件物品已经回收，获得了 {reward}!'
 start-sell-stick: '&#98FB98[UltimateShop] &f您的所有可回收物品都已回收，获得了 {reward}!'
 give-sell-stick: '&#98FB98[UltimateShop] &f给予 {player} 回收棒 {item} x{amount}!'
+add-times: "&#98FB98[UltimateShop] &f添加 {times} 次数到玩家 {player} 的 {item} 次数!"
 set-times: '&#98FB98[UltimateShop] &f设置 {player} 的 {item} 次数为 {times}!'
 success-buy: '&#98FB98[UltimateShop] &f成功购买 {item}，&f花费 {price}!'
 success-sell: '&#98FB98[UltimateShop] &f成功出售 {item}，&f获得 {price}!'

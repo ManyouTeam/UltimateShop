@@ -4,12 +4,22 @@ import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.cache.ServerCache;
 import cn.superiormc.ultimateshop.gui.InvGUI;
 import cn.superiormc.ultimateshop.gui.inv.GUIMode;
+import cn.superiormc.ultimateshop.listeners.ClickListener;
 import cn.superiormc.ultimateshop.managers.CacheManager;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerInteractEvent;
 
 public class FoliaUtil {
+
+    public static void startUseSellStickForFolia(ClickListener clickListener, PlayerInteractEvent event) {
+        Bukkit.getGlobalRegionScheduler().runDelayed(UltimateShop.instance, task -> clickListener.startSell(event), 2L);
+    }
+
+    public static void removeSellStoclCooldownForFolia(Player player, int cooldown) {
+        Bukkit.getGlobalRegionScheduler().runDelayed(UltimateShop.instance, task -> ClickListener.playerList.remove(player), cooldown);
+    }
 
     public static void closeInvForFolia(InvGUI gui) {
         Bukkit.getGlobalRegionScheduler().runDelayed(UltimateShop.instance, task -> {

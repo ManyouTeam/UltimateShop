@@ -10,6 +10,7 @@ import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import cn.superiormc.ultimateshop.objects.items.AbstractSingleThing;
 import cn.superiormc.ultimateshop.objects.items.ThingMode;
 import cn.superiormc.ultimateshop.objects.items.prices.ObjectPrices;
+import cn.superiormc.ultimateshop.utils.FoliaUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
@@ -49,13 +50,13 @@ public class ClickListener implements Listener {
             return;
         }
         if (UltimateShop.isFolia) {
-            Bukkit.getGlobalRegionScheduler().runDelayed(UltimateShop.instance, task -> startSell(event), 2L);
+            FoliaUtil.startUseSellStickForFolia(this, event);
         } else {
             Bukkit.getScheduler().runTaskLater(UltimateShop.instance, () -> startSell(event), 2L);
         }
     }
 
-    private void startSell(PlayerInteractEvent event) {
+    public void startSell(PlayerInteractEvent event) {
         Block block = event.getClickedBlock();
         if (block == null) {
             return;
@@ -85,8 +86,7 @@ public class ClickListener implements Listener {
             }
             playerList.add(event.getPlayer());
             if (UltimateShop.isFolia) {
-                Bukkit.getGlobalRegionScheduler().runDelayed(UltimateShop.instance, task -> playerList.remove(event.getPlayer()), cooldown);
-                return;
+                FoliaUtil.removeSellStoclCooldownForFolia(event.getPlayer(), cooldown);
             } else {
                 Bukkit.getScheduler().runTaskLater(UltimateShop.instance, () -> playerList.remove(event.getPlayer()), cooldown);
             }
