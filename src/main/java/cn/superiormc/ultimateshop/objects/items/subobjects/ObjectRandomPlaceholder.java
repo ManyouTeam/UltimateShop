@@ -1,4 +1,4 @@
-package cn.superiormc.ultimateshop.objects.items.shbobjects;
+package cn.superiormc.ultimateshop.objects.items.subobjects;
 
 import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.managers.CacheManager;

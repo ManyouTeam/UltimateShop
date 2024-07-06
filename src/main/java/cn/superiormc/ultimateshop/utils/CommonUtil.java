@@ -7,10 +7,7 @@ import io.lumine.mythic.bukkit.BukkitAdapter;
 import io.lumine.mythic.bukkit.MythicBukkit;
 import io.lumine.xikage.mythicmobs.MythicMobs;
 import net.luckperms.api.LuckPermsProvider;
-import org.bukkit.Bukkit;
-import org.bukkit.Color;
-import org.bukkit.Location;
-import org.bukkit.NamespacedKey;
+import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.geysermc.floodgate.api.FloodgateApi;
@@ -216,6 +213,10 @@ public class CommonUtil {
             return Color.fromRGB(Integer.parseInt(keySplit[0]), Integer.parseInt(keySplit[1]), Integer.parseInt(keySplit[2]));
         }
         return Color.fromRGB(Integer.parseInt(color));
+    }
+
+    public void playSound(Player player, String sound) {
+        player.playSound(player.getLocation(), sound, 1, 1);
     }
 
     public static void giveOrDrop(Player player, ItemStack... item) {

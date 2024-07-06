@@ -1,10 +1,9 @@
-package cn.superiormc.ultimateshop.objects.items.shbobjects;
+package cn.superiormc.ultimateshop.objects.items.subobjects;
 
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.objects.items.AbstractSingleThing;
 import cn.superiormc.ultimateshop.objects.items.ThingType;
 import cn.superiormc.ultimateshop.objects.items.prices.ObjectSinglePrice;
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.NotNull;
 

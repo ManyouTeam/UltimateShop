@@ -67,7 +67,7 @@ public class ObjectAction {
         this.shop = shop;
     }
 
-    public void doAction(Player player, int times, int multi, boolean sellAll){
+    public void doAction(Player player, int times, int multi, boolean sellAll) {
         if (everyAction.isEmpty() && onceAction.isEmpty()) {
             return;
         }

@@ -2,7 +2,7 @@ package cn.superiormc.ultimateshop.utils;
 
 import cn.superiormc.ultimateshop.libs.easyplugin.ColorParser;
 import cn.superiormc.ultimateshop.methods.StaticPlaceholder;
-import cn.superiormc.ultimateshop.objects.items.shbobjects.ObjectRandomPlaceholder;
+import cn.superiormc.ultimateshop.objects.items.subobjects.ObjectRandomPlaceholder;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.entity.Player;
 
