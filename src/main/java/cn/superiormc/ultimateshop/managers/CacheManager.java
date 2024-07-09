@@ -4,6 +4,7 @@ import cn.superiormc.ultimateshop.cache.PlayerCache;
 import cn.superiormc.ultimateshop.cache.ServerCache;
 import cn.superiormc.ultimateshop.database.SQLDatabase;
 import cn.superiormc.ultimateshop.objects.caches.ObjectRandomPlaceholderCache;
+import cn.superiormc.ultimateshop.objects.items.subobjects.ObjectRandomPlaceholder;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -26,6 +27,13 @@ public class CacheManager {
             SQLDatabase.initSQL();
         }
         serverCache = new ServerCache();
+        initRandomPlaceholderElements();
+    }
+
+    private void initRandomPlaceholderElements() {
+        for (ObjectRandomPlaceholder randomPlaceholder : ConfigManager.configManager.randomPlaceholders.values()) {
+            randomPlaceholder.initElements(false);
+        }
     }
 
     public void addPlayerCache(Player player) {

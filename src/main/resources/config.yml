@@ -172,6 +172,13 @@ placeholder:
         - 'A'
         - 'B'
         - 'C'
+    daily-shop:
+      reset-mode: TIMED
+      reset-time: '00:00:00'
+      elements:
+        - 'rotate' # This means this placeholder will include all rotate placeholder elements.
+      not-same-as:
+        - daily
   # Premium version only
   compare:
     up: '↑'

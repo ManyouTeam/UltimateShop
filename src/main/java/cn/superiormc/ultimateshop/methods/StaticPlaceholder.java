@@ -17,11 +17,11 @@ public class StaticPlaceholder {
 
     public static String getCompareValue(BigDecimal baseValue, BigDecimal compareValue) {
         if (UltimateShop.freeVersion) {
-            return "";
+            return "ERROR: Free Version";
         }
         ConfigurationSection section = ConfigManager.configManager.getSection("placeholder.compare");
         if (section == null) {
-            return "";
+            return "ERROR: Unknown Placeholder";
         }
         if (compareValue.compareTo(baseValue) > 0) {
             return TextUtil.parse(ConfigManager.configManager.getString("placeholder.compare.up", "↑"));

@@ -6,8 +6,12 @@ import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.objects.caches.ObjectRandomPlaceholderCache;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
 import cn.superiormc.ultimateshop.utils.RandomUtil;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.Random;
 
 public class ObjectRandomPlaceholder {
@@ -16,17 +20,55 @@ public class ObjectRandomPlaceholder {
 
     private final ConfigurationSection section;
 
+    private final List<String> elements = new ArrayList<>();
+
+    private final Collection<ObjectRandomPlaceholder> notSameAs = new ArrayList<>();
+
     public ObjectRandomPlaceholder(String id, ConfigurationSection section) {
         this.id = id;
         this.section = section;
+        initElements(true);
+    }
+
+    public void initElements(boolean firstLoad) {
+        elements.addAll(section.getStringList("elements"));
+        for (int i = 0; i < elements.size(); i++) {
+            ObjectRandomPlaceholder tempVal2 = ConfigManager.configManager.getRandomPlaceholder(elements.get(i));
+            if (tempVal2 != null && !tempVal2.equals(this)) {
+                if (!tempVal2.getElements().isEmpty()) {
+                    elements.remove(elements.get(i));
+                    elements.addAll(tempVal2.getElements());
+                }
+            }
+        }
+        if (!firstLoad) {
+            for (String removeElement : section.getStringList("not-same-as")) {
+                ObjectRandomPlaceholder tempVal2 = ConfigManager.configManager.getRandomPlaceholder(removeElement);
+                if (tempVal2 != null && !tempVal2.equals(this)) {
+                    elements.remove(tempVal2.getNowValue());
+                    notSameAs.add(tempVal2);
+                }
+            }
+        }
+    }
+
+    public Collection<ObjectRandomPlaceholder> getNotSameAs() {
+        return notSameAs;
     }
 
     public String getID() {
         return id;
     }
 
+    public List<String> getElements() {
+        return elements;
+    }
+
     public String getNewValue() {
-        String[] element = RandomUtil.getRandomElement(section.getStringList("elements")).split("~");
+        if (elements.isEmpty()) {
+            return "ERROR: Value Empty";
+        }
+        String[] element = RandomUtil.getRandomElement(elements).split("~");
         if (element.length == 1) {
             return element[0];
         }
@@ -48,13 +90,30 @@ public class ObjectRandomPlaceholder {
         return tempVal1.toUpperCase();
     }
 
+    public String getNowValue() {
+        ObjectRandomPlaceholderCache tempVal1 = CacheManager.cacheManager.serverCache.getRandomPlaceholderCache().get(this);
+        if (tempVal1 == null) {
+            CacheManager.cacheManager.serverCache.addRandomPlaceholderCache(this);
+            tempVal1 = CacheManager.cacheManager.serverCache.getRandomPlaceholderCache().get(this);
+        }
+        return tempVal1.getNowValue(false);
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (object instanceof ObjectRandomPlaceholder) {
+            return ((ObjectRandomPlaceholder) object).getID().equals(getID());
+        }
+        return false;
+    }
+
     public static String getNowValue(String id) {
         if (UltimateShop.freeVersion) {
-            return "";
+            return "ERROR: Free Version";
         }
         ObjectRandomPlaceholder tempVal1 = ConfigManager.configManager.getRandomPlaceholder(id);
         if (tempVal1 == null) {
-            return "";
+            return "Error: Unknown Placeholder";
         }
         ObjectRandomPlaceholderCache tempVal2 = CacheManager.cacheManager.serverCache.getRandomPlaceholderCache().get(tempVal1);
         if (tempVal2 == null) {
@@ -66,11 +125,11 @@ public class ObjectRandomPlaceholder {
 
     public static String getRefreshDoneTime(String id) {
         if (UltimateShop.freeVersion) {
-            return "";
+            return "ERROR: Free Version";
         }
         ObjectRandomPlaceholder tempVal1 = ConfigManager.configManager.getRandomPlaceholder(id);
         if (tempVal1 == null) {
-            return "";
+            return "ERROR: Unknown Placeholder";
         }
         ObjectRandomPlaceholderCache tempVal2 = CacheManager.cacheManager.serverCache.getRandomPlaceholderCache().get(tempVal1);
         if (tempVal2 == null) {

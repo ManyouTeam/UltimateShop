@@ -3,6 +3,8 @@ package cn.superiormc.ultimateshop.hooks;
 import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.managers.ErrorManager;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
+import com.bencodez.votingplugin.VotingPluginMain;
+import com.bencodez.votingplugin.user.VotingPluginUser;
 import com.willfp.ecobits.currencies.Currencies;
 import com.willfp.ecobits.currencies.CurrencyUtils;
 import dev.unnm3d.rediseconomy.api.RedisEconomyAPI;
@@ -114,6 +116,15 @@ public class EconomyHook {
                     return;
                 }
                 reCurrency.addAmount(player.getUniqueId().toString(), value);
+            case "VotingPlugin":
+                VotingPluginUser user = VotingPluginMain.getPlugin().getVotingPluginUserManager().getVotingPluginUser(player);
+                if (user == null) {
+                    ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cCan not find find user data " +
+                            player.getName() + " in VotingPlugin plugin!");
+                    return;
+                }
+                user.addPoints((int) value);
+                return;
         }
         ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: You set hook plugin to "
                 + pluginName + " in shop config, however for now UltimateShop does not support it!");

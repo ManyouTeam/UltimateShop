@@ -5,6 +5,8 @@ import cn.superiormc.ultimateshop.managers.ErrorManager;
 import cn.superiormc.ultimateshop.methods.Items.DebuildItem;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
 import cn.superiormc.ultimateshop.utils.ItemUtil;
+import com.bencodez.votingplugin.VotingPluginMain;
+import com.bencodez.votingplugin.user.VotingPluginUser;
 import com.willfp.ecobits.currencies.Currencies;
 import com.willfp.ecobits.currencies.CurrencyUtils;
 import dev.unnm3d.rediseconomy.api.RedisEconomyAPI;
@@ -173,6 +175,20 @@ public class PriceHook {
                 else {
                     return false;
                 }
+            case "VotingPlugin":
+                VotingPluginUser user = VotingPluginMain.getPlugin().getVotingPluginUserManager().getVotingPluginUser(player);
+                if (user == null) {
+                    ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cCan not find find user data " +
+                            player.getName() + " in VotingPlugin plugin!");
+                    return false;
+                }
+                if (user.getPoints() >= (int) value) {
+                    if (take) {
+                        user.removePoints((int) value);
+                    }
+                    return true;
+                }
+                return false;
         }
         ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: You set hook plugin to "
                 + pluginName + " in shop config, however for now UltimateShop does not support it!");

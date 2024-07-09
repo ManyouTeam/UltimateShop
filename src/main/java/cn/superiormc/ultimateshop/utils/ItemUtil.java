@@ -12,7 +12,7 @@ public class ItemUtil {
 
     public static String getItemName(ItemStack displayItem) {
         if (displayItem == null || displayItem.getItemMeta() == null) {
-            return "";
+            return "ERROR: Unknown Item";
         }
         if (CommonUtil.checkPluginLoad("NeigeItems")) {
             return ItemUtils.getItemName(displayItem);
@@ -22,7 +22,7 @@ public class ItemUtil {
 
     public static String getItemNameWithoutVanilla(ItemStack displayItem) {
         if (displayItem == null || displayItem.getItemMeta() == null) {
-            return "";
+            return "ERROR: Unknown Item";
         }
         if (displayItem.getItemMeta().hasDisplayName()) {
             return displayItem.getItemMeta().getDisplayName();

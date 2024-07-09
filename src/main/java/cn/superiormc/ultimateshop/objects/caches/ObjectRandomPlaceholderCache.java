@@ -39,7 +39,13 @@ public class ObjectRandomPlaceholderCache {
     }
 
     public String getNowValue() {
-        setNewValue();
+        return getNowValue(true);
+    }
+
+    public String getNowValue(boolean needRefresh) {
+        if (needRefresh) {
+            setNewValue();
+        }
         return nowValue;
     }
 
@@ -60,7 +66,16 @@ public class ObjectRandomPlaceholderCache {
             setPlaceholder(notUseBungee);
             return;
         }
-        if (nowValue == null || refreshDoneTime == null || !refreshDoneTime.isAfter(LocalDateTime.now())) {
+        boolean needRefresh = nowValue == null || refreshDoneTime == null || !refreshDoneTime.isAfter(LocalDateTime.now());
+        for (ObjectRandomPlaceholder tempVal1 : placeholder.getNotSameAs()) {
+            if (tempVal1.equals(getPlaceholder())) {
+                continue;
+            }
+            if (tempVal1.getNowValue().equals(nowValue)) {
+                needRefresh = true;
+            }
+        }
+        if (needRefresh) {
             if (mode.equals("TIMED")) {
                 refreshDoneTime = getTimedRefreshTime(time);
                 setPlaceholder(notUseBungee);
