@@ -31,12 +31,14 @@ public class ObjectSingleProduct extends AbstractSingleThing {
     public ObjectSingleProduct(String id, ObjectProducts products) {
         super(id, products);
         this.item = products.getItem();
+        this.things = products;
         this.isStatic = singleSection.getString("amount", "1").matches("-?\\d+(\\.\\d+)?");
         Pattern pattern = Pattern.compile("-?\\d+(\\.\\d+)?");
         Matcher matcher = pattern.matcher(singleSection.getString("amount", "1"));
         if (matcher.find()) {
             this.baseAmount = new BigDecimal(matcher.group());
         }
+        initCondition();
     }
 
     @Override

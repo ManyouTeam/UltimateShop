@@ -45,6 +45,7 @@ public class ObjectSinglePrice extends AbstractSingleThing {
         super(id, prices);
         this.item = prices.getItem();
         this.priceMode = prices.getPriceMode();
+        this.things = prices;
         this.amountOption = singleSection.getString("amount", "1");
         String tempVal1 = ConfigManager.configManager.getString("prices." + singleSection.getString("custom-type") + ".amount", "1");
         if (singleSection.getString("custom-type") != null && tempVal1 != null) {
@@ -71,6 +72,7 @@ public class ObjectSinglePrice extends AbstractSingleThing {
         }
         initCustomMode();
         initApplyCostMap();
+        initCondition();
     }
 
     private void initCustomMode() {

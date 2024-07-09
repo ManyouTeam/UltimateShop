@@ -4,6 +4,10 @@ import cn.superiormc.ultimateshop.hooks.EconomyHook;
 import cn.superiormc.ultimateshop.hooks.PriceHook;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.methods.Items.BuildItem;
+import cn.superiormc.ultimateshop.objects.items.prices.ObjectPrices;
+import cn.superiormc.ultimateshop.objects.items.prices.ObjectSinglePrice;
+import cn.superiormc.ultimateshop.objects.items.prices.PriceMode;
+import cn.superiormc.ultimateshop.objects.items.products.ObjectSingleProduct;
 import cn.superiormc.ultimateshop.objects.items.subobjects.ObjectDisplayPlaceholder;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
 import org.bukkit.Bukkit;
@@ -30,6 +34,8 @@ public abstract class AbstractSingleThing implements Comparable<AbstractSingleTh
 
     private String id;
 
+    public AbstractThings things;
+
     public AbstractSingleThing() {
         initType(null);
         this.empty = true;
@@ -46,7 +52,6 @@ public abstract class AbstractSingleThing implements Comparable<AbstractSingleTh
         else {
             initType(singleSection);
         }
-        initCondition();
         this.empty = false;
         this.displayPlaceholder = new ObjectDisplayPlaceholder(this);
     }
@@ -67,8 +72,21 @@ public abstract class AbstractSingleThing implements Comparable<AbstractSingleTh
         }
     }
 
-    private void initCondition() {
-        List<String> conditions = singleSection.getStringList("conditions");
+    protected void initCondition() {
+        List<String> conditions = null;
+        if (this instanceof ObjectSinglePrice) {
+            ObjectPrices objectPrices = (ObjectPrices) this.things;
+            if (objectPrices.getPriceMode() == PriceMode.BUY) {
+                conditions = things.section.getStringList("buy-prices-conditions." + id);
+            } else {
+                conditions = things.section.getStringList("sell-prices-conditions." + id);
+            }
+        } else if (this instanceof ObjectSingleProduct) {
+            conditions = things.section.getStringList("products-conditions." + id);
+        }
+        if (conditions == null || conditions.isEmpty()) {
+            conditions = singleSection.getStringList("conditions");
+        }
         if (conditions.isEmpty()) {
             condition = new ObjectCondition();
         }

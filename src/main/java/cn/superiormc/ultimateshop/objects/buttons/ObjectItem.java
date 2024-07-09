@@ -8,6 +8,7 @@ import cn.superiormc.ultimateshop.methods.Product.BuyProductMethod;
 import cn.superiormc.ultimateshop.methods.Product.SellProductMethod;
 import cn.superiormc.ultimateshop.objects.ObjectShop;
 import cn.superiormc.ultimateshop.objects.buttons.subobjects.ObjectDisplayItem;
+import cn.superiormc.ultimateshop.objects.buttons.subobjects.ObjectItemConfig;
 import cn.superiormc.ultimateshop.objects.items.ObjectAction;
 import cn.superiormc.ultimateshop.objects.items.ObjectCondition;
 import cn.superiormc.ultimateshop.objects.items.ObjectLimit;
@@ -50,10 +51,13 @@ public class ObjectItem extends AbstractButton {
 
     private ObjectLimit sellLimit;
 
-    public ObjectItem(ObjectShop shop, ConfigurationSection config) {
-        super(config);
+    private final ObjectItemConfig itemConfig;
+
+    public ObjectItem(ObjectShop shop, ConfigurationSection originalConfig) {
+        super(originalConfig);
         this.shop = shop;
         this.type = ButtonType.SHOP;
+        this.itemConfig = new ObjectItemConfig(this, originalConfig);
         initReward();
         initBuyPrice();
         initSellPrice();
@@ -70,100 +74,100 @@ public class ObjectItem extends AbstractButton {
     }
 
     private void initDisplayItem() {
-        displayItem = new ObjectDisplayItem(config.getConfigurationSection("display-item"),
-                config.getConfigurationSection("display-item-conditions"),
+        displayItem = new ObjectDisplayItem(itemConfig.getConfigurationSection("display-item"),
+                itemConfig.getConfigurationSection("display-item-conditions"),
                 this);
     }
 
     private void initReward() {
-        if (config.getConfigurationSection("products") == null) {
+        if (itemConfig.getConfigurationSection("products") == null) {
             reward = new ObjectProducts();
             return;
         }
-        reward = new ObjectProducts(config.getConfigurationSection("products"),
-                config.getString("product-mode", "ANY"),
+        reward = new ObjectProducts(itemConfig.getConfigurationSection("products"),
+                itemConfig.getString("product-mode", "ANY"),
                 this);
     }
 
     private void initBuyPrice() {
-        if (config.getConfigurationSection("buy-prices") == null) {
-            if (config.getConfigurationSection("prices") == null) {
+        if (itemConfig.getConfigurationSection("buy-prices") == null) {
+            if (itemConfig.getConfigurationSection("prices") == null) {
                 buyPrice = new ObjectPrices();
             }
             else {
-                buyPrice = new ObjectPrices(config.getConfigurationSection("prices"),
-                        config.getString("price-mode", "ANY"),
+                buyPrice = new ObjectPrices(itemConfig.getConfigurationSection("prices"),
+                        itemConfig.getString("price-mode", "ANY"),
                         this,
                         PriceMode.BUY);
             }
             return;
         }
-        buyPrice = new ObjectPrices(config.getConfigurationSection("buy-prices"),
-                config.getString("price-mode", "ANY"),
+        buyPrice = new ObjectPrices(itemConfig.getConfigurationSection("buy-prices"),
+                itemConfig.getString("price-mode", "ANY"),
                 this,
                 PriceMode.BUY);
     }
 
     private void initSellPrice() {
-        if (config.getConfigurationSection("sell-prices") == null) {
-            if (config.getConfigurationSection("prices") == null) {
+        if (itemConfig.getConfigurationSection("sell-prices") == null) {
+            if (itemConfig.getConfigurationSection("prices") == null) {
                 sellPrice = new ObjectPrices();
             }
             else {
-                sellPrice = new ObjectPrices(config.getConfigurationSection("prices"),
-                        config.getString("price-mode", "ANY"),
+                sellPrice = new ObjectPrices(itemConfig.getConfigurationSection("prices"),
+                        itemConfig.getString("price-mode", "ANY"),
                         this,
                         PriceMode.SELL);
             }
             return;
         }
-        sellPrice = new ObjectPrices(config.getConfigurationSection("sell-prices"),
-                config.getString("price-mode", "ANY"),
+        sellPrice = new ObjectPrices(itemConfig.getConfigurationSection("sell-prices"),
+                itemConfig.getString("price-mode", "ANY"),
                 this,
                 PriceMode.SELL);
     }
 
     private void initBuyAction() {
-        if (config.getStringList("buy-actions").isEmpty()) {
+        if (itemConfig.getStringList("buy-actions").isEmpty()) {
             buyAction = new ObjectAction();
             return;
         }
-        buyAction = new ObjectAction(config.getStringList("buy-actions"));
+        buyAction = new ObjectAction(itemConfig.getStringList("buy-actions"));
     }
 
     private void initSellAction() {
-        if (config.getStringList("sell-actions").isEmpty()) {
+        if (itemConfig.getStringList("sell-actions").isEmpty()) {
             sellAction = new ObjectAction();
             return;
         }
-        sellAction = new ObjectAction(config.getStringList("sell-actions"));
+        sellAction = new ObjectAction(itemConfig.getStringList("sell-actions"));
     }
 
     private void initBuyLimit() {
-        if (config.getConfigurationSection("limits") == null) {
-            if (config.getConfigurationSection("buy-limits") == null) {
+        if (itemConfig.getConfigurationSection("limits") == null) {
+            if (itemConfig.getConfigurationSection("buy-limits") == null) {
                 buyLimit = new ObjectLimit();
             }
             else {
-                buyLimit = new ObjectLimit(config.getConfigurationSection("buy-limits"),
-                        config.getConfigurationSection("buy-limits-conditions"),
+                buyLimit = new ObjectLimit(itemConfig.getConfigurationSection("buy-limits"),
+                        itemConfig.getConfigurationSection("buy-limits-conditions"),
                         this);
             }
             return;
         }
-        buyLimit = new ObjectLimit(config.getConfigurationSection("limits"),
-                config.getConfigurationSection("limits-conditions"),
+        buyLimit = new ObjectLimit(itemConfig.getConfigurationSection("limits"),
+                itemConfig.getConfigurationSection("limits-conditions"),
                 this);
     }
 
     private void initSellLimit() {
-        if (config.getConfigurationSection("limits") == null) {
-            if (config.getConfigurationSection("sell-limits") == null) {
+        if (itemConfig.getConfigurationSection("limits") == null) {
+            if (itemConfig.getConfigurationSection("sell-limits") == null) {
                 sellLimit = new ObjectLimit();
             }
             else {
-                sellLimit = new ObjectLimit(config.getConfigurationSection("sell-limits"),
-                        config.getConfigurationSection("sell-limits-conditions"),
+                sellLimit = new ObjectLimit(itemConfig.getConfigurationSection("sell-limits"),
+                        itemConfig.getConfigurationSection("sell-limits-conditions"),
                         this);
             }
             return;
@@ -172,7 +176,7 @@ public class ObjectItem extends AbstractButton {
     }
 
     private void initBuyMoreMenu() {
-        ConfigurationSection buyMoreSection = config.getConfigurationSection("buy-more-menu");
+        ConfigurationSection buyMoreSection = itemConfig.getConfigurationSection("buy-more-menu");
         if (buyMoreSection == null) {
             new ObjectMoreMenu(ConfigManager.configManager.getSectionOrDefault(
                     "menu.select-more", "menu.buy-more"), this);
@@ -182,26 +186,26 @@ public class ObjectItem extends AbstractButton {
     }
 
     private void initBuyCondition() {
-        List<String> section = config.getStringList("conditions");
+        List<String> section = itemConfig.getStringList("conditions");
         if (section.isEmpty()) {
-            section = config.getStringList("buy-conditions");
+            section = itemConfig.getStringList("buy-conditions");
         }
         buyCondition = new ObjectCondition(section);
     }
 
     private void initSellCondition() {
-        List<String> section = config.getStringList("conditions");
+        List<String> section = itemConfig.getStringList("conditions");
         if (section.isEmpty()) {
-            section = config.getStringList("sell-conditions");
+            section = itemConfig.getStringList("sell-conditions");
         }
         sellCondition = new ObjectCondition(section);
     }
 
     public String getDisplayName(Player player) {
-        if (config.getString("display-name") == null) {
+        if (itemConfig.getString("display-name") == null) {
             return ItemUtil.getItemName(displayItem.getDisplayItem(player));
         }
-        return TextUtil.parse(config.getString("display-name"));
+        return TextUtil.parse(itemConfig.getString("display-name"));
     }
 
     public ObjectPrices getBuyPrice() {
@@ -273,11 +277,11 @@ public class ObjectItem extends AbstractButton {
     }
 
     public ConfigurationSection getItemConfig() {
-        return config;
+        return itemConfig.getSection();
     }
 
     public String getProduct() {
-        return config.getName();
+        return itemConfig.getSection().getName();
     }
 
     public String getShop() {
@@ -366,12 +370,12 @@ public class ObjectItem extends AbstractButton {
     }
 
     public boolean getBuyMore() {
-        return config.getBoolean("buy-more",
+        return itemConfig.getBoolean("buy-more",
                 shop.getShopConfig().getBoolean("settings.buy-more", true));
     }
 
     public List<String> getAddLore(Player player) {
-        List<String> resultString = config.getStringList("add-lore");
+        List<String> resultString = itemConfig.getStringList("add-lore");
         if (resultString.isEmpty()) {
             return ConfigManager.configManager.getStringListWithPAPI(player, "display-item.add-lore");
         } else {
@@ -381,6 +385,6 @@ public class ObjectItem extends AbstractButton {
 
     @Override
     public String toString() {
-        return "Shop: " + shop.getShopName() + " Product: " + config.getName();
+        return "Shop: " + shop.getShopName() + " Product: " + itemConfig.getSection().getName();
     }
 }
