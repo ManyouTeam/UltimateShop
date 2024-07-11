@@ -4,7 +4,15 @@
 
 debug: false
 
-language: en_US
+config-files:
+  language: en_US
+  # Premium version only.
+  minecraft-locate-file:
+    # After enable, we will autoload Minecraft locate file when we need know an item's locate name.
+    # It will make server little lag when loading this file because this file is very large.
+    enabled: true
+    generate-new-one: false
+    file: 'zh_cn.json'
 
 # Paper only feature.
 use-component:

@@ -6,7 +6,7 @@
 
     <groupId>cn.superiormc</groupId>
     <artifactId>UltimateShop</artifactId>
-    <version>2.4.1</version>
+    <version>2.4.2</version>
     <packaging>jar</packaging>
 
     <name>UltimateShop</name>
@@ -349,6 +349,25 @@
             <artifactId>votingplugin</artifactId>
             <version>6.16.3</version>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.ssomar.score</groupId>
+            <artifactId>SCore</artifactId>
+            <version>5.24.7.8</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/SCore-5.24.7.9.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>com.ssomar.score</groupId>
+            <artifactId>ExecutableItems</artifactId>
+            <version>7.24.7.9</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/ExecutableItems-7.24.7.9.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>20210307</version>
         </dependency>
     </dependencies>
 </project>

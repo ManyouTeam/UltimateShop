@@ -3,6 +3,8 @@ package cn.superiormc.ultimateshop.hooks;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.ErrorManager;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
+import com.ssomar.executableitems.executableitems.manager.ExecutableItemsManager;
+import com.ssomar.score.api.executableitems.config.ExecutableItemInterface;
 import com.willfp.eco.core.items.Items;
 import com.willfp.ecoarmor.sets.ArmorSet;
 import com.willfp.ecoarmor.sets.ArmorSets;
@@ -18,6 +20,8 @@ import net.Indyuce.mmoitems.MMOItems;
 import org.bukkit.Bukkit;
 import org.bukkit.inventory.ItemStack;
 import pers.neige.neigeitems.manager.ItemManager;
+
+import java.util.Optional;
 
 public class ItemsHook {
 
@@ -128,6 +132,9 @@ public class ItemsHook {
                 return Items.lookup(itemID).getItem();
             case "NeigeItems":
                 return ItemManager.INSTANCE.getItemStack(itemID);
+            case "ExecutableItems":
+                Optional<ExecutableItemInterface> itemInterface = ExecutableItemsManager.getInstance().getExecutableItem(itemID);
+                return itemInterface.map(executableItemInterface -> executableItemInterface.buildItem(1, Optional.empty())).orElse(null);
         }
         ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: You set hook plugin to "
                 + pluginName + " in shop config, however for now UltimateShop is not support it!");

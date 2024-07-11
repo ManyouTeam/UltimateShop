@@ -14,7 +14,7 @@ public final class UltimateShop extends JavaPlugin {
 
     public static UltimateShop instance;
 
-    public static boolean freeVersion = false;
+    public static boolean freeVersion = true;
 
     public static boolean isPaper = false;
 
@@ -29,6 +29,13 @@ public final class UltimateShop extends JavaPlugin {
     @Override
     public void onEnable() {
         instance = this;
+        try {
+            String[] versionParts = Bukkit.getBukkitVersion().split("-")[0].split("\\.");
+            majorVersion = versionParts.length > 1 ? Integer.parseInt(versionParts[1]) : 0;
+            miniorVersion = versionParts.length > 2 ? Integer.parseInt(versionParts[2]) : 0;
+        } catch (Throwable throwable) {
+            Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Can not get your Minecraft version! Default set to 1.0.0.");
+        }
         new ErrorManager();
         new InitManager();
         new ConfigManager();
@@ -48,6 +55,9 @@ public final class UltimateShop extends JavaPlugin {
         new CommandManager();
         new ListenerManager();
         new TaskManager();
+        if (LocateManager.enableThis()) {
+            new LocateManager();
+        }
         if (BungeeCordManager.enableThis()) {
             new BungeeCordManager();
         }
@@ -62,15 +72,7 @@ public final class UltimateShop extends JavaPlugin {
             Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §fHooking into Floodgate...");
             useGeyser = true;
         }
-        try {
-            String[] versionParts = Bukkit.getBukkitVersion().split("-")[0].split("\\.");
-            majorVersion = versionParts.length > 1 ? Integer.parseInt(versionParts[1]) : 0;
-            miniorVersion = versionParts.length > 2 ? Integer.parseInt(versionParts[2]) : 0;
-            Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §fYour Minecraft version is: 1." + majorVersion + "." + miniorVersion + "!");
-        } catch (Throwable throwable) {
-            Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Can not get your Minecraft version! Default set to 1.0.0.");
-        }
-        Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §fUsing " + ConfigManager.configManager.getStringOrDefault("sell-mode", "sell.sell-method", "Bukkit") + " sell method!");
+        Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §fYour Minecraft version is: 1." + majorVersion + "." + miniorVersion + "!");
         new Metrics(this, 20783);
         Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §fPlugin is loaded. Author: PQguanfang.");
     }

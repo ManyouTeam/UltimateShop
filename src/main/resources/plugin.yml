@@ -27,6 +27,7 @@ softdepend:
   - NeigeItems
   - floodgate
   - VotingPlugin
+  - ExecutableItems
 commands:
   ultimateshop:
     aliases:

@@ -1,6 +1,7 @@
 package cn.superiormc.ultimateshop.utils;
 
 import cn.superiormc.ultimateshop.managers.ConfigManager;
+import cn.superiormc.ultimateshop.managers.LocateManager;
 import cn.superiormc.ultimateshop.methods.Items.DebuildItem;
 import org.bukkit.configuration.MemoryConfiguration;
 import org.bukkit.inventory.ItemStack;
@@ -14,6 +15,9 @@ public class ItemUtil {
         if (displayItem == null || displayItem.getItemMeta() == null) {
             return "ERROR: Unknown Item";
         }
+        if (LocateManager.enableThis() && LocateManager.locateManager != null) {
+            return LocateManager.locateManager.getLocateName(displayItem);
+        }
         if (CommonUtil.checkPluginLoad("NeigeItems")) {
             return ItemUtils.getItemName(displayItem);
         }
@@ -23,9 +27,6 @@ public class ItemUtil {
     public static String getItemNameWithoutVanilla(ItemStack displayItem) {
         if (displayItem == null || displayItem.getItemMeta() == null) {
             return "ERROR: Unknown Item";
-        }
-        if (displayItem.getItemMeta().hasDisplayName()) {
-            return displayItem.getItemMeta().getDisplayName();
         }
         if (displayItem.getItemMeta().hasDisplayName()) {
             return displayItem.getItemMeta().getDisplayName();

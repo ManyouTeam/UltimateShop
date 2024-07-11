@@ -2,9 +2,8 @@ package cn.superiormc.ultimateshop.managers;
 
 import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
-import org.bukkit.Bukkit;
 
-import java.io.File;
+import java.io.*;
 
 public class InitManager {
     public static InitManager initManager;
@@ -43,6 +42,7 @@ public class InitManager {
         resourceOutput("menus/buy-more.yml", false);
         resourceOutput("menus/example-shop-menu.yml", false);
     }
+
     private void resourceOutput(String fileName, boolean fix) {
         File tempVal1 = new File(UltimateShop.instance.getDataFolder(), fileName);
         if (!tempVal1.exists()) {
@@ -55,5 +55,9 @@ public class InitManager {
             }
             UltimateShop.instance.saveResource(tempVal2.getPath(), false);
         }
+    }
+
+    public boolean isFirstLoad() {
+        return firstLoad;
     }
 }

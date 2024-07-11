@@ -7,9 +7,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +30,7 @@ public class LanguageManager {
     }
 
     private void initLanguage() {
-        this.file = new File(UltimateShop.instance.getDataFolder() + "/languages/" + ConfigManager.configManager.getString("language", "en_US") + ".yml");
+        this.file = new File(UltimateShop.instance.getDataFolder() + "/languages/" + ConfigManager.configManager.getStringOrDefault("language", "config-files.language", "en_US") + ".yml");
         if (!file.exists()){
             this.file = new File(UltimateShop.instance.getDataFolder(), "message.yml");
             if (!file.exists()) {

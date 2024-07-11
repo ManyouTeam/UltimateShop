@@ -3,6 +3,7 @@ package cn.superiormc.ultimateshop.hooks;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.ErrorManager;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
+import com.ssomar.executableitems.executableitems.manager.ExecutableItemsManager;
 import com.willfp.eco.core.items.Items;
 import com.willfp.ecoarmor.sets.ArmorSet;
 import com.willfp.ecoarmor.sets.ArmorSlot;
@@ -41,13 +42,7 @@ public class CheckValidHook {
             }
         }
         else if (pluginName.equals("Oraxen")) {
-            String tempVal1 = OraxenItems.getIdByItem(itemStack);
-            if (tempVal1 == null) {
-                return null;
-            }
-            else {
-                return tempVal1;
-            }
+            return OraxenItems.getIdByItem(itemStack);
         }
         else if (pluginName.equals("MMOItems")) {
             String tempVal1 = MMOItems.getID(itemStack);
@@ -82,7 +77,7 @@ public class CheckValidHook {
                 if (tempVal3 == null) {
                     return null;
                 }
-                return tempVal2 + ";;" + tempVal3.toString();
+                return tempVal2 + ";;" + tempVal3;
             }
         }
         else if (pluginName.equals("eco")) {
@@ -93,18 +88,19 @@ public class CheckValidHook {
         }
         else if (pluginName.equals("MythicMobs")) {
             String tempVal1 = MythicBukkit.inst().getItemManager().getMythicTypeFromItem(itemStack);
-            if (tempVal1 == null) {
-                return null;
-            }
-            else {
-                return tempVal1;
-            }
+            return tempVal1;
         }
         else if (pluginName.equals("NeigeItems")) {
             if (ItemManager.INSTANCE.isNiItem(itemStack) == null) {
                 return null;
             }
             return ItemManager.INSTANCE.isNiItem(itemStack).getId();
+        }
+        else if (pluginName.equals("ExecutableItems")) {
+            if (ExecutableItemsManager.getInstance().getObject(itemStack).isPresent()) {
+                return ExecutableItemsManager.getInstance().getObject(itemStack).get().getId();
+            }
+            return null;
         }
         else {
             ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: You set hook plugin to "
@@ -143,7 +139,7 @@ public class CheckValidHook {
             ArmorSet tempVal1 = ArmorUtils.getSetOnItem(itemStack);
             ArmorSlot tempVal2 = ArmorSlot.getSlot(itemStack);
             if (tempVal1 != null && tempVal2 != null) {
-                return new String[]{"EcoArmor", tempVal1.getId() + tempVal2.toString()};
+                return new String[]{"EcoArmor", tempVal1.getId() + tempVal2};
             }
         }
         if (CommonUtil.checkPluginLoad("eco")) {
@@ -160,6 +156,11 @@ public class CheckValidHook {
         if (CommonUtil.checkPluginLoad("NeigeItems")) {
             if (ItemManager.INSTANCE.isNiItem(itemStack) != null) {
                 return new String[]{"NeigeItems", ItemManager.INSTANCE.isNiItem(itemStack).getId()};
+            }
+        }
+        if (CommonUtil.checkPluginLoad("ExecutableItems")) {
+            if (ExecutableItemsManager.getInstance().getObject(itemStack).isPresent()) {
+                return new String[]{"ExecutableItems", ExecutableItemsManager.getInstance().getObject(itemStack).get().getId()};
             }
         }
         return null;
