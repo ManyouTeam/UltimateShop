@@ -7,6 +7,7 @@ error:
   in-game: "&#98FB98[UltimateShop] &cYou have to use this command in game!"
   miss-permission: "&#98FB98[UltimateShop] &cYou don't have permission to use this command!"
   menu-not-found: "&#98FB98[UltimateShop] &cWe can't find menu: {menu}!"
+  buy-more-menu-direct-open: "&#98FB98[UltimateShop] &cThis menu is buy more menu and can not open directly!"
   shop-menu-not-found: "&#98FB98[UltimateShop] &cWe can't find shop {shop}'s menu: {menu}!"
   shop-does-not-have-menu: "&#98FB98[UltimateShop] &cShop {shop} does not have valid menu!"
   length-only-one: "&#98FB98[UltimateShop] &cProduct ID length must be 1 char!"

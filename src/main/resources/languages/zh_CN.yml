@@ -7,12 +7,13 @@ error:
   in-game: '&#98FB98[UltimateShop] &c你必须在游戏中使用该命令!'
   miss-permission: '&#98FB98[UltimateShop] &c你没有权限使用该命令!'
   menu-not-found: '&#98FB98[UltimateShop] &c找不到菜单：{menu}!'
+  buy-more-menu-direct-open: "&#98FB98[UltimateShop] &c这是增量购买菜单，无法直接打开!"
   shop-menu-not-found: '&#98FB98[UltimateShop] &c找不到商店{shop}的菜单：{menu}!'
   shop-does-not-have-menu: '&#98FB98[UltimateShop] &c商店{shop}没有有效的菜单!'
   length-only-one: '&#98FB98[UltimateShop] &c商品ID长度必须为1个字符!'
 
 plugin:
-  reloading: "&#98FB98[UltimateShop] &f插件重启中，您的服务器卡能会有卡顿. 除非特殊情况，我们建议您重启服务器，而不是重启插件，这样能保证数据储存安全."
+  reloading: "&#98FB98[UltimateShop] &f插件重启中，您的服务器可会有卡顿. 除非特殊情况，我们建议您重启服务器，而不是重启插件，这样能保证数据储存安全."
   reloaded: '&#98FB98[UltimateShop] &f插件已重启!'
   saved: '&#98FB98[UltimateShop] &f物品已保存!'
   reload-close-gui: '&#98FB98[UltimateShop] &f插件正在重启中，您打开的GUI已强制关闭!'

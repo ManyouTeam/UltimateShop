@@ -10,7 +10,7 @@ import cn.superiormc.ultimateshop.objects.items.AbstractSingleThing;
 import cn.superiormc.ultimateshop.objects.items.ThingMode;
 import cn.superiormc.ultimateshop.objects.items.prices.ObjectPrices;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
-import cn.superiormc.ultimateshop.utils.InvUtil;
+import cn.superiormc.ultimateshop.utils.PaperUtil;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.Inventory;
@@ -31,7 +31,7 @@ public class SellAllGUI extends InvGUI {
     @Override
     protected void constructGUI() {
         if (Objects.isNull(inv)) {
-            inv = InvUtil.createNewInv(player, ConfigManager.configManager.getInt
+            inv = PaperUtil.createNewInv(player, ConfigManager.configManager.getInt
                             ("menu.sell-all.size", 54),
                    ConfigManager.configManager.getString("menu.sell-all.title"));
         }

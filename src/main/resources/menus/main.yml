@@ -6,9 +6,9 @@ open-actions:
 
 layout:
   - '000000000'
-  - '0ABCDEF00'
-  - '0GHIJKL00'
-  - '0MN000000'
+  - '0ABCDEFG0'
+  - '0HIJKLMN0'
+  - '000000000'
   - '000000000'
   - '0000Z0000'
 
@@ -141,7 +141,7 @@ buttons:
       - 'shop_menu: transport'
   Z:
     display-item:
-      material: barrier
+      material: BARRIER
       name: '&cClose this menu'
     actions:
       - 'close'

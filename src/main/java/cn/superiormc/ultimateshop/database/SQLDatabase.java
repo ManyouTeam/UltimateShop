@@ -144,9 +144,9 @@ public class SQLDatabase {
         for (ObjectItem tempVal2 : tempVal1.keySet()) {
             try {
                 sqlManager.createDelete("ultimateshop_useTimes").
-                        setConditions("playerUUID = '" + playerUUID + "'").
-                        setConditions("shop = '" + tempVal2.getShop() + "'").
-                        setConditions("product = '" + tempVal2.getProduct() + "'").build().execute();
+                        addCondition("playerUUID = '" + playerUUID + "'").
+                        addCondition("shop = '" + tempVal2.getShop() + "'").
+                        addCondition("product = '" + tempVal2.getProduct() + "'").build().execute();
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }

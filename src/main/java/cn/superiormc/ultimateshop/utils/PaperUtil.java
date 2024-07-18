@@ -7,7 +7,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 
-public class InvUtil {
+public class PaperUtil {
 
     public static Inventory createNewInv(Player player, int size, String text) {
         if (UltimateShop.isPaper && ConfigManager.configManager.getBoolean("use-component.menu-title")) {

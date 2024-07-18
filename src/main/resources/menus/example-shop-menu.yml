@@ -15,7 +15,7 @@ layout:
 buttons:
   3:
     display-item:
-      material: arrow
+      material: ARROW
       name: '&c« Go back'
     actions:
       - 'open_menu: main'

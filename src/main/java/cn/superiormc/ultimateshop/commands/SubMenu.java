@@ -27,6 +27,7 @@ public class SubMenu extends AbstractCommand {
         ObjectShop tempVal1 = ConfigManager.configManager.getShop(args[1]);
         if (tempVal1 == null) {
             if (ObjectMenu.buyMoreMenuNames.contains(args[1])) {
+                LanguageManager.languageManager.sendStringText(player, "error.buy-more-menu-direct-open");
                 return;
             }
             OpenGUI.openCommonGUI(player, args[1], bypassBedrockCheck, false);
@@ -54,6 +55,7 @@ public class SubMenu extends AbstractCommand {
         ObjectShop tempVal1 = ConfigManager.configManager.getShop(args[1]);
         if (tempVal1 == null) {
             if (ObjectMenu.buyMoreMenuNames.contains(args[1])) {
+                LanguageManager.languageManager.sendStringText("error.buy-more-menu-direct-open");
                 return;
             }
             OpenGUI.openCommonGUI(player, args[1], bypassBedrockCheck, false);

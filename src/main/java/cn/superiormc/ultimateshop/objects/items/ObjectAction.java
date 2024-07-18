@@ -1,8 +1,6 @@
 package cn.superiormc.ultimateshop.objects.items;
 
 import cn.superiormc.ultimateshop.UltimateShop;
-import cn.superiormc.ultimateshop.gui.AbstractGUI;
-import cn.superiormc.ultimateshop.gui.InvGUI;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.ErrorManager;
 import cn.superiormc.ultimateshop.methods.GUI.OpenGUI;
@@ -10,8 +8,7 @@ import cn.superiormc.ultimateshop.methods.Product.BuyProductMethod;
 import cn.superiormc.ultimateshop.methods.Product.SellProductMethod;
 import cn.superiormc.ultimateshop.objects.ObjectShop;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
-import cn.superiormc.ultimateshop.utils.InvUtil;
-import cn.superiormc.ultimateshop.utils.TextUtil;
+import cn.superiormc.ultimateshop.utils.PaperUtil;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -132,7 +129,7 @@ public class ObjectAction {
                     ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Invalid sound action format.");
                 }
             } else if (singleAction.startsWith("message: ")) {
-                InvUtil.sendMessage(player, singleAction.substring(9));
+                PaperUtil.sendMessage(player, singleAction.substring(9));
             } else if (singleAction.startsWith("open_menu: ")) {
                 OpenGUI.openCommonGUI(player, singleAction.substring(11), false, true);
             } else if (singleAction.startsWith("open_bedrock_menu: ")) {
@@ -144,7 +141,7 @@ public class ObjectAction {
             } else if (singleAction.startsWith("announcement: ")) {
                 Collection<? extends Player> players = Bukkit.getOnlinePlayers();
                 for (Player p : players) {
-                    InvUtil.sendMessage(p, singleAction.substring(14));
+                    PaperUtil.sendMessage(p, singleAction.substring(14));
                 }
             } else if (singleAction.startsWith("effect: ") && splits.length == 3) {
                 PotionEffectType potionEffectType = PotionEffectType.getByName(singleAction.substring(8).split(";;")[0].toUpperCase());

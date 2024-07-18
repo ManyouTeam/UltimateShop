@@ -3,17 +3,12 @@ package cn.superiormc.ultimateshop.gui.inv;
 import cn.superiormc.ultimateshop.gui.InvGUI;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.LanguageManager;
-import cn.superiormc.ultimateshop.objects.buttons.AbstractButton;
 import cn.superiormc.ultimateshop.objects.menus.ObjectMenu;
-import cn.superiormc.ultimateshop.utils.InvUtil;
-import org.bukkit.Material;
+import cn.superiormc.ultimateshop.utils.PaperUtil;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 
 public class CommonGUI extends InvGUI {
@@ -47,7 +42,7 @@ public class CommonGUI extends InvGUI {
         menuButtons = commonMenu.getMenu();
         menuItems = getMenuItems(player.getPlayer());
         if (Objects.isNull(inv)) {
-            inv = InvUtil.createNewInv(player, commonMenu.getInt("size", 54),
+            inv = PaperUtil.createNewInv(player, commonMenu.getInt("size", 54),
                     commonMenu.getString("title", "Shop"));
         }
         for (int slot : menuButtons.keySet()) {

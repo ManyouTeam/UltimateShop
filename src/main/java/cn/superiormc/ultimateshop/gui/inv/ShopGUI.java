@@ -8,22 +8,17 @@ import cn.superiormc.ultimateshop.managers.CacheManager;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.LanguageManager;
 import cn.superiormc.ultimateshop.objects.ObjectShop;
-import cn.superiormc.ultimateshop.objects.buttons.AbstractButton;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import cn.superiormc.ultimateshop.objects.caches.ObjectUseTimesCache;
 import cn.superiormc.ultimateshop.objects.menus.ObjectMenu;
-import cn.superiormc.ultimateshop.utils.InvUtil;
+import cn.superiormc.ultimateshop.utils.PaperUtil;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 
 public class ShopGUI extends InvGUI {
@@ -130,7 +125,7 @@ public class ShopGUI extends InvGUI {
         menuItems = getMenuItems(player.getPlayer());
         if (Objects.isNull(inv)) {
             if (shopMenu != null) {
-                inv = InvUtil.createNewInv(player, shopMenu.getInt("size", 54),
+                inv = PaperUtil.createNewInv(player, shopMenu.getInt("size", 54),
                         shopMenu.getString("title", shop.getShopDisplayName())
                                 .replace("{shop-name}", shop.getShopDisplayName()));
             }

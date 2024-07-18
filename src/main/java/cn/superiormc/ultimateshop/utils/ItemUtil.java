@@ -15,6 +15,9 @@ public class ItemUtil {
         if (displayItem == null || displayItem.getItemMeta() == null) {
             return "ERROR: Unknown Item";
         }
+        if (displayItem.getItemMeta().hasDisplayName()) {
+            return displayItem.getItemMeta().getDisplayName();
+        }
         if (LocateManager.enableThis() && LocateManager.locateManager != null) {
             return LocateManager.locateManager.getLocateName(displayItem);
         }
