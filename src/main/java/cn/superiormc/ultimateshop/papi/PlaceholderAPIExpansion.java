@@ -10,12 +10,14 @@ import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import cn.superiormc.ultimateshop.objects.caches.ObjectUseTimesCache;
 import cn.superiormc.ultimateshop.objects.items.prices.ObjectPrices;
 import cn.superiormc.ultimateshop.objects.items.subobjects.ObjectRandomPlaceholder;
+import cn.superiormc.ultimateshop.utils.MathUtil;
 import cn.superiormc.ultimateshop.utils.TextUtil;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
+import java.math.BigDecimal;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -86,6 +88,21 @@ public class PlaceholderAPIExpansion extends PlaceholderExpansion {
                 String placeholder = matcher3.group(1);
                 result = result.replace("{random-times_" + placeholder + "}",
                         ObjectRandomPlaceholder.getRefreshDoneTime(placeholder));
+            }
+            Pattern pattern4 = Pattern.compile("\\{compare_([\\d.]+)_([\\d.]+)\\}");
+            Matcher matcher4 = pattern4.matcher(result);
+            while (matcher4.find()) {
+                String compareNumber = matcher4.group(1);
+                String baseNumber = matcher4.group(2);
+                result = result.replace("{compare_" + compareNumber + "_" + baseNumber + "}",
+                        StaticPlaceholder.getCompareValue(new BigDecimal(baseNumber), new BigDecimal(compareNumber)));
+            }
+            Pattern pattern5 = Pattern.compile("\\{math_(.*?)\\}");
+            Matcher matcher5 = pattern5.matcher(result);
+            while (matcher5.find()) {
+                String placeholder = matcher5.group(1);
+                result = result.replace("{math_" + placeholder + "}",
+                        MathUtil.doCalculate(placeholder, ConfigManager.configManager.getInt("placeholder.math.scale", 0)).toString());
             }
             return result;
         } else {

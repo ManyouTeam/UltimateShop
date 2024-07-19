@@ -1,6 +1,7 @@
 package cn.superiormc.ultimateshop.utils;
 
 import cn.superiormc.ultimateshop.libs.easyplugin.ColorParser;
+import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.methods.StaticPlaceholder;
 import cn.superiormc.ultimateshop.objects.items.subobjects.ObjectRandomPlaceholder;
 import me.clip.placeholderapi.PlaceholderAPI;
@@ -58,6 +59,13 @@ public class TextUtil {
             String baseNumber = matcher4.group(2);
             text = text.replace("{compare_" + compareNumber + "_" + baseNumber + "}",
                     StaticPlaceholder.getCompareValue(new BigDecimal(baseNumber), new BigDecimal(compareNumber)));
+        }
+        Pattern pattern5 = Pattern.compile("\\{math_(.*?)\\}");
+        Matcher matcher5 = pattern5.matcher(text);
+        while (matcher5.find()) {
+            String placeholder = matcher5.group(1);
+            text = text.replace("{math_" + placeholder + "}",
+                    MathUtil.doCalculate(placeholder, ConfigManager.configManager.getInt("placeholder.math.scale", 0)).toString());
         }
         if (text.contains("%") && CommonUtil.checkPluginLoad("PlaceholderAPI")) {
             return PlaceholderAPI.setPlaceholders(player, text);

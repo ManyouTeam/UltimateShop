@@ -196,6 +196,8 @@ placeholder:
   status:
     # If disabled, status placeholder will only display in shop GUI.
     can-used-everywhere: false
+  math:
+    scale: 0
   data:
     # If your server never use dynamic value in prices or similar things, you can set this option to false.
     # This will improve little plugin performance.

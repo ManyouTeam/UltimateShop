@@ -375,7 +375,7 @@ public class ObjectItem extends AbstractButton {
     }
 
     public List<String> getAddLore(Player player) {
-        List<String> resultString = itemConfig.getStringList("add-lore");
+        List<String> resultString = itemConfig.getStringListWithPAPI(player, "add-lore");
         if (resultString.isEmpty()) {
             return ConfigManager.configManager.getStringListWithPAPI(player, "display-item.add-lore");
         } else {

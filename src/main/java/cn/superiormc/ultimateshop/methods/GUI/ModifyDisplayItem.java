@@ -301,7 +301,7 @@ public class ModifyDisplayItem {
                 }
             }
             else {
-                addLore.add(TextUtil.parse(tempVal3, player));
+                addLore.add(tempVal3);
             }
         }
         if (!addLore.isEmpty()) {
