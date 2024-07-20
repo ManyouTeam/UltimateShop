@@ -66,23 +66,6 @@ public class ObjectItemConfig {
         return tempVal1;
     }
 
-    public List<String> getStringListWithPAPI(Player player, String... args) {
-        List<String> resultList = new ArrayList<>();
-        for (String s : section.getStringList(args[0])) {
-            for (int i = 1 ; i < args.length ; i += 2) {
-                String var = "{" + args[i] + "}";
-                if (args[i + 1] == null) {
-                    s = s.replace(var, "");
-                }
-                else {
-                    s = s.replace(var, args[i + 1]);
-                }
-            }
-            resultList.add(TextUtil.withPAPI(s, player));
-        }
-        return resultList;
-    }
-
     public boolean getBoolean(String path, boolean defaultValue) {
         if (shopSection == null) {
             return section.getBoolean(path, defaultValue);

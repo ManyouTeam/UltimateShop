@@ -374,10 +374,10 @@ public class ObjectItem extends AbstractButton {
                 shop.getShopConfig().getBoolean("settings.buy-more", true));
     }
 
-    public List<String> getAddLore(Player player) {
-        List<String> resultString = itemConfig.getStringListWithPAPI(player, "add-lore");
+    public List<String> getAddLore() {
+        List<String> resultString = itemConfig.getStringList("add-lore");
         if (resultString.isEmpty()) {
-            return ConfigManager.configManager.getStringListWithPAPI(player, "display-item.add-lore");
+            return ConfigManager.configManager.getStringList("display-item.add-lore");
         } else {
             return resultString;
         }

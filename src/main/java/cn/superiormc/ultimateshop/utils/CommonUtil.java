@@ -123,7 +123,7 @@ public class CommonUtil {
         return text;
     }
 
-    public static List<String> modifyList(List<String> config, String... args) {
+    public static List<String> modifyList(Player player, List<String> config, String... args) {
         List<String> resultList = new ArrayList<>();
         for (String s : config) {
             for (int i = 0 ; i < args.length ; i += 2) {
@@ -138,11 +138,11 @@ public class CommonUtil {
             String[] tempVal1 = s.split(";;");
             if (tempVal1.length > 1) {
                 for (String string : tempVal1) {
-                    resultList.add(TextUtil.parse(string));
+                    resultList.add(TextUtil.parse(string, player));
                 }
                 continue;
             }
-            resultList.add(TextUtil.parse(s));
+            resultList.add(TextUtil.parse(s, player));
         }
         return resultList;
     }

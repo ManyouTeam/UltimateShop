@@ -99,7 +99,7 @@ public class ModifyDisplayItem {
                     null);
             tempVal10 = CacheManager.cacheManager.serverCache.getUseTimesCache().get(item);
         }
-        for (String tempVal3 : item.getAddLore(player)) {
+        for (String tempVal3 : item.getAddLore()) {
             if (tempVal3.startsWith("@") && tempVal3.length() >= 2) {
                 String tempVal4 = tempVal3.substring(2);
                 switch (tempVal3.charAt(1)) {
@@ -306,7 +306,7 @@ public class ModifyDisplayItem {
         }
         if (!addLore.isEmpty()) {
             if (tempVal9 != null && tempVal10 != null) {
-                addLore = CommonUtil.modifyList(addLore,
+                addLore = CommonUtil.modifyList(player, addLore,
                         "buy-price",
                         ObjectPrices.getDisplayNameInLine(player,
                                 item.getBuyPrice().takeSingleThing(player.getInventory(), player, tempVal9.getBuyUseTimes(), multi, true).getResultMap(),

@@ -59,6 +59,8 @@ start-sell-stick: '&#98FB98[UltimateShop] &f您的所有可回收物品都已回
 give-sell-stick: '&#98FB98[UltimateShop] &f给予 {player} 回收棒 {item} x{amount}!'
 add-times: "&#98FB98[UltimateShop] &f添加 {times} 次数到玩家 {player} 的 {item} 次数!"
 set-times: '&#98FB98[UltimateShop] &f设置 {player} 的 {item} 次数为 {times}!'
+add-times-shop: "&#98FB98[UltimateShop] &fAdd {times} to {player}'s all {shop}'s product use times!"
+set-times-shop: "&#98FB98[UltimateShop] &fSet {player}'s all {shop}'s product use times to {times}!"
 success-buy: '&#98FB98[UltimateShop] &f成功购买 {item}，&f花费 {price}!'
 success-sell: '&#98FB98[UltimateShop] &f成功出售 {item}，&f获得 {price}!'
 menu-condition-not-meet: '&#98FB98[UltimateShop] &c你目前不能打开该菜单!'

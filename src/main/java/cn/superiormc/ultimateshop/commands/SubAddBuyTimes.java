@@ -1,5 +1,6 @@
 package cn.superiormc.ultimateshop.commands;
 
+import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.cache.ServerCache;
 import cn.superiormc.ultimateshop.managers.CacheManager;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
@@ -31,13 +32,6 @@ public class SubAddBuyTimes extends AbstractCommand {
                     args[1]);
             return;
         }
-        ObjectItem tempVal2 = tempVal1.getProduct(args[2]);
-        if (tempVal2 == null) {
-            LanguageManager.languageManager.sendStringText(player, "error.product-not-found",
-                    "product",
-                    args[2]);
-            return;
-        }
         ServerCache tempVal3;
         if (args[3].equals("global")) {
             tempVal3 = ServerCache.serverCache;
@@ -58,6 +52,56 @@ public class SubAddBuyTimes extends AbstractCommand {
                             "error.player-not-found",
                             "player",
                             args[3]);
+            return;
+        }
+        if (args[2].equals("*") && !UltimateShop.freeVersion) {
+            for (ObjectItem item : tempVal1.getProductList()) {
+                ObjectUseTimesCache tempVal4 = tempVal3.getUseTimesCache().get(item);
+                switch (args.length) {
+                    case 4:
+                        if (tempVal4 == null) {
+                            tempVal3.setUseTimesCache(tempVal1.getShopName(),
+                                    item.getProduct(),
+                                    0,
+                                    0,
+                                    null,
+                                    null,
+                                    null,
+                                    null);
+                        } else {
+                            tempVal4.setBuyUseTimes(0);
+                        }
+                        break;
+                    case 5:
+                        if (tempVal4 == null) {
+                            tempVal3.setUseTimesCache(tempVal1.getShopName(),
+                                    item.getProduct(),
+                                    Integer.parseInt(args[4]),
+                                    0,
+                                    null,
+                                    null,
+                                    null,
+                                    null);
+                        } else {
+                            tempVal4.setBuyUseTimes(Integer.parseInt(args[4]) + tempVal4.getBuyUseTimes());
+                        }
+                }
+            }
+            LanguageManager.languageManager.sendStringText(player,
+                    "add-times-shop",
+                    "player",
+                    args[3],
+                    "shop",
+                    args[1],
+                    "times",
+                    args.length > 4 ? args[4] : "0");
+            return;
+        }
+        ObjectItem tempVal2 = tempVal1.getProduct(args[2]);
+        if (tempVal2 == null) {
+            LanguageManager.languageManager.sendStringText(player, "error.product-not-found",
+                    "product",
+                    args[2]);
             return;
         }
         ObjectUseTimesCache tempVal4 = tempVal3.getUseTimesCache().get(tempVal2);
@@ -92,13 +136,6 @@ public class SubAddBuyTimes extends AbstractCommand {
                     args[1]);
             return;
         }
-        ObjectItem tempVal2 = tempVal1.getProduct(args[2]);
-        if (tempVal2 == null) {
-            LanguageManager.languageManager.sendStringText("error.product-not-found",
-                    "product",
-                    args[2]);
-            return;
-        }
         ServerCache tempVal3;
         if (args[3].equals("global")) {
             tempVal3 = ServerCache.serverCache;
@@ -117,6 +154,56 @@ public class SubAddBuyTimes extends AbstractCommand {
             LanguageManager.languageManager.sendStringText("error.player-not-found",
                     "player",
                     args[3]);
+            return;
+        }
+        if (args[2].equals("*") && !UltimateShop.freeVersion) {
+            for (ObjectItem item : tempVal1.getProductList()) {
+                ObjectUseTimesCache tempVal4 = tempVal3.getUseTimesCache().get(item);
+                switch (args.length) {
+                    case 4:
+                        if (tempVal4 == null) {
+                            tempVal3.setUseTimesCache(tempVal1.getShopName(),
+                                    item.getProduct(),
+                                    0,
+                                    0,
+                                    null,
+                                    null,
+                                    null,
+                                    null);
+                        } else {
+                            tempVal4.setBuyUseTimes(0);
+                        }
+                        break;
+                    case 5:
+                        if (tempVal4 == null) {
+                            tempVal3.setUseTimesCache(tempVal1.getShopName(),
+                                    item.getProduct(),
+                                    Integer.parseInt(args[4]),
+                                    0,
+                                    null,
+                                    null,
+                                    null,
+                                    null);
+                        } else {
+                            tempVal4.setBuyUseTimes(Integer.parseInt(args[4]) + tempVal4.getBuyUseTimes());
+                        }
+                }
+            }
+            LanguageManager.languageManager.sendStringText(
+                    "add-times-shop",
+                    "player",
+                    args[3],
+                    "shop",
+                    args[1],
+                    "times",
+                    args.length > 4 ? args[4] : "0");
+            return;
+        }
+        ObjectItem tempVal2 = tempVal1.getProduct(args[2]);
+        if (tempVal2 == null) {
+            LanguageManager.languageManager.sendStringText( "error.product-not-found",
+                    "product",
+                    args[2]);
             return;
         }
         ObjectUseTimesCache tempVal4 = tempVal3.getUseTimesCache().get(tempVal2);
@@ -158,6 +245,9 @@ public class SubAddBuyTimes extends AbstractCommand {
                 }
                 for (ObjectItem tempVal4 : tempVal3.getProductList()) {
                     tempVal1.add(tempVal4.getItemConfig().getName());
+                }
+                if (!UltimateShop.freeVersion) {
+                    tempVal1.add("*");
                 }
                 break;
             case 4:
