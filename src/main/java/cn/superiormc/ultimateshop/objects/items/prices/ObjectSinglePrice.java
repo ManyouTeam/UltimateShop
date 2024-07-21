@@ -1,5 +1,6 @@
 package cn.superiormc.ultimateshop.objects.items.prices;
 
+import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.managers.CacheManager;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.methods.StaticPlaceholder;
@@ -196,7 +197,8 @@ public class ObjectSinglePrice extends AbstractSingleThing {
         } else {
             tempVal2 = singleSection.getString("placeholder", tempVal1);
         }
-        if (!alwaysStatic && !tempVal2.contains("{status}") && !isStatic && ConfigManager.configManager.getBoolean("placeholder.auto-settings.add-status-in-dynamic-price-placeholder.enabled")) {
+        if (!alwaysStatic && !tempVal2.contains("{status}") && !isStatic && !UltimateShop.freeVersion &&
+                ConfigManager.configManager.getBoolean("placeholder.auto-settings.add-status-in-dynamic-price-placeholder.enabled")) {
             tempVal2 = tempVal2 + " " + StaticPlaceholder.getCompareValue(baseAmount, amount);
         }
         if (tempVal2.contains("{amount}") && ConfigManager.configManager.getBoolean("placeholder.auto-settings.change-amount-in-all-price-placeholder.enabled")) {

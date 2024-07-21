@@ -38,6 +38,9 @@ public class CommandManager {
        registerNewSubCommand(new SubSetBuyTimes());
        registerNewSubCommand(new SubHelp());
        registerNewSubCommand(new SubGenerateItemFormat());
+       registerNewSubCommand(new SubGetPlaceholderValue());
+       registerNewSubCommand(new SubResetRandomPlaceholder());
+       registerNewSubCommand(new SubSetRandomPlaceholder());
     }
 
     public Map<String, AbstractCommand> getSubCommandsMap() {

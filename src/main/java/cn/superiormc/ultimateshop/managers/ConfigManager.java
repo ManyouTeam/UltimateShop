@@ -4,12 +4,10 @@ import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.objects.ObjectShop;
 import cn.superiormc.ultimateshop.objects.items.subobjects.ObjectRandomPlaceholder;
 import cn.superiormc.ultimateshop.objects.menus.ObjectMenu;
-import cn.superiormc.ultimateshop.utils.TextUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 
 import java.io.File;
@@ -95,6 +93,10 @@ public class ConfigManager {
 
     public ObjectShop getShop(String fileName) {
         return shopConfigs.get(fileName);
+    }
+
+    public Collection<ObjectShop> getShops() {
+        return shopConfigs.values();
     }
 
     public List<ObjectShop> getShopList() {
@@ -193,6 +195,18 @@ public class ConfigManager {
             }
         }
         return "none";
+    }
+
+    public Collection<ObjectRandomPlaceholder> getRandomPlaceholders() {
+        return randomPlaceholders.values();
+    }
+
+    public Collection<String> getDiscountPlaceholderIDs() {
+        ConfigurationSection section = config.getConfigurationSection("placeholder.random");
+        if (section == null) {
+            return new ArrayList<>();
+        }
+        return section.getKeys(false);
     }
 
 }

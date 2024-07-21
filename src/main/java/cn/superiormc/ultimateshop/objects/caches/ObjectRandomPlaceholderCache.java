@@ -19,7 +19,7 @@ public class ObjectRandomPlaceholderCache {
 
     public ObjectRandomPlaceholderCache(ObjectRandomPlaceholder placeholder) {
         this.placeholder = placeholder;
-        setNewValue();
+        setRefreshTime();
     }
 
     public ObjectRandomPlaceholderCache(ObjectRandomPlaceholder placeholder,
@@ -38,22 +38,26 @@ public class ObjectRandomPlaceholderCache {
         return refreshDoneTime;
     }
 
+    public void removeRefreshDoneTime() {
+        refreshDoneTime = null;
+    }
+
     public String getNowValue() {
         return getNowValue(true);
     }
 
     public String getNowValue(boolean needRefresh) {
         if (needRefresh) {
-            setNewValue();
+            setRefreshTime();
         }
         return nowValue;
     }
 
-    public void setNewValue() {
-        setNewValue(false);
+    public void setRefreshTime() {
+        setRefreshTime(false);
     }
 
-    public void setNewValue(boolean notUseBungee) {
+    public void setRefreshTime(boolean notUseBungee) {
         String mode = placeholder.getMode();
         String time = placeholder.getConfig().getString("reset-time");
         if (mode == null || time == null) {
@@ -87,8 +91,12 @@ public class ObjectRandomPlaceholderCache {
         }
     }
 
-    private void setPlaceholder(boolean notUseBungee) {
-        nowValue = placeholder.getNewValue();
+    public void setPlaceholder(boolean notUseBungee) {
+        setPlaceholder(placeholder.getNewValue(), notUseBungee);
+    }
+
+    public void setPlaceholder(String element, boolean notUseBungee) {
+        nowValue = element;
         if (placeholder.getMode().equals("TIMED") || placeholder.getMode().equals("TIMER")) {
             ServerCache.serverCache.setRandomPlaceholderCache(placeholder.getID(), CommonUtil.timeToString(refreshDoneTime), nowValue);
         }

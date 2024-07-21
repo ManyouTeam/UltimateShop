@@ -284,7 +284,7 @@ public class SubSetSellTimes extends AbstractCommand {
         List<String> tempVal1 = new ArrayList<>();
         switch (args.length) {
             case 2:
-                for (ObjectShop tempVal2: ConfigManager.configManager.getShopList()) {
+                for (ObjectShop tempVal2: ConfigManager.configManager.getShops()) {
                     tempVal1.add(tempVal2.getShopName());
                 }
                 break;
