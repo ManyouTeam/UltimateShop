@@ -6,6 +6,7 @@ import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.methods.GUI.OpenGUI;
 import cn.superiormc.ultimateshop.methods.Product.BuyProductMethod;
 import cn.superiormc.ultimateshop.methods.Product.SellProductMethod;
+import cn.superiormc.ultimateshop.methods.ProductTradeStatus;
 import cn.superiormc.ultimateshop.objects.ObjectShop;
 import cn.superiormc.ultimateshop.objects.buttons.subobjects.ObjectDisplayItem;
 import cn.superiormc.ultimateshop.objects.buttons.subobjects.ObjectItemConfig;
@@ -19,6 +20,7 @@ import cn.superiormc.ultimateshop.objects.menus.ObjectMoreMenu;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
 import cn.superiormc.ultimateshop.utils.ItemUtil;
 import cn.superiormc.ultimateshop.utils.TextUtil;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
@@ -43,6 +45,8 @@ public class ObjectItem extends AbstractButton {
 
     private ObjectAction sellAction;
 
+    private ObjectAction failAction;
+
     private ObjectCondition buyCondition;
 
     private ObjectCondition sellCondition;
@@ -63,6 +67,7 @@ public class ObjectItem extends AbstractButton {
         initSellPrice();
         initBuyAction();
         initSellAction();
+        initFailAction();
         initBuyCondition();
         initSellCondition();
         initBuyLimit();
@@ -128,19 +133,27 @@ public class ObjectItem extends AbstractButton {
     }
 
     private void initBuyAction() {
-        if (itemConfig.getStringList("buy-actions").isEmpty()) {
+        if (itemConfig.getStringListAndMerge("buy-actions").isEmpty()) {
             buyAction = new ObjectAction();
             return;
         }
-        buyAction = new ObjectAction(itemConfig.getStringList("buy-actions"));
+        buyAction = new ObjectAction(itemConfig.getStringListAndMerge("buy-actions"), this);
     }
 
     private void initSellAction() {
-        if (itemConfig.getStringList("sell-actions").isEmpty()) {
+        if (itemConfig.getStringListAndMerge("sell-actions").isEmpty()) {
             sellAction = new ObjectAction();
             return;
         }
-        sellAction = new ObjectAction(itemConfig.getStringList("sell-actions"));
+        sellAction = new ObjectAction(itemConfig.getStringListAndMerge("sell-actions"), this);
+    }
+
+    private void initFailAction() {
+        if (itemConfig.getStringListAndMerge("fail-actions").isEmpty()) {
+            failAction = new ObjectAction();
+            return;
+        }
+        failAction = new ObjectAction(itemConfig.getStringListAndMerge("fail-actions"), this);
     }
 
     private void initBuyLimit() {
@@ -300,57 +313,70 @@ public class ObjectItem extends AbstractButton {
             return;
         }
         boolean b = ConfigManager.configManager.getBoolean("placeholder.click.enabled");
-        switch (ConfigManager.configManager.getClickAction(type)){
+        String tempVal1 = ConfigManager.configManager.getClickAction(type);
+        switch (tempVal1){
             case "buy" :
-                if (!buyPrice.empty) {
-                    BuyProductMethod.startBuy(getShop(), getProduct(), player, !b);
+                if (!buyPrice.empty &&
+                        BuyProductMethod.startBuy(getShop(), getProduct(), player, !b).getStatus() != ProductTradeStatus.Status.DONE) {
+                    failAction.doAction(player, 1, 1, false, type);
                 }
-                break;
+                return;
             case "sell" :
-                if (!sellPrice.empty) {
-                    SellProductMethod.startSell(getShop(), getProduct(), player, !b);
+                if (!sellPrice.empty &&
+                        SellProductMethod.startSell(getShop(), getProduct(), player, !b).getStatus() != ProductTradeStatus.Status.DONE) {
+                    failAction.doAction(player, 1, 1, false, type);
                 }
-                break;
+                return;
             case "buy-or-sell" :
                 if (buyPrice.empty && !sellPrice.empty) {
-                    SellProductMethod.startSell(getShop(), getProduct(), player, !b);
+                    if (SellProductMethod.startSell(getShop(), getProduct(), player, !b).getStatus() != ProductTradeStatus.Status.DONE) {
+                        failAction.doAction(player, 1, 1, false, type);
+                    }
                 }
-                else if (!buyPrice.empty) {
-                    BuyProductMethod.startBuy(getShop(), getProduct(), player, !b);
+                else if (!buyPrice.empty && BuyProductMethod.startBuy(getShop(), getProduct(), player, !b).getStatus() != ProductTradeStatus.Status.DONE) {
+                    failAction.doAction(player, 1, 1, false, type);
                 }
-                break;
+                return;
             case "sell-all" :
-                if (!sellPrice.empty) {
-                    SellProductMethod.startSell(getShop(),
-                            getProduct(),
-                            player,
-                            !b,
-                            false,
-                            true,
-                            1);
+                if (!sellPrice.empty && SellProductMethod.startSell(getShop(),
+                        getProduct(),
+                        player,
+                        !b,
+                        false,
+                        true,
+                        1).getStatus() != ProductTradeStatus.Status.DONE) {
+                    failAction.doAction(player, 1, 1, false, type);;
                 }
-                break;
+                return;
             case "select-amount" :
                 if (getBuyMore()) {
                     OpenGUI.openMoreGUI(player, this);
                 }
-                break;
-            default:
-                break;
+                return;
+        }
+        if (!UltimateShop.freeVersion) {
+            ObjectAction action = new ObjectAction(
+                    ConfigManager.configManager.getStringList("menu.click-event-actions." + tempVal1),
+                    this);
+            action.doAction(player, 1, 1, false, type);
+            if (action.getLastTradeStatus() != null &&
+                    action.getLastTradeStatus().getStatus() != ProductTradeStatus.Status.DONE) {
+                failAction.doAction(player, 1, 1, false, type);
+            }
         }
     }
 
     @Override
     public ItemStack getDisplayItem(Player player, int multi) {
         if (displayItem == null) {
-            return new ItemStack(Material.STONE);
+            return new ItemStack(Material.AIR);
         }
         return displayItem.getDisplayItem(player, multi);
     }
 
     public ItemStack getDisplayItem(Player player) {
         if (displayItem == null) {
-            return new ItemStack(Material.STONE);
+            return new ItemStack(Material.AIR);
         }
         return displayItem.getDisplayItem(player);
     }

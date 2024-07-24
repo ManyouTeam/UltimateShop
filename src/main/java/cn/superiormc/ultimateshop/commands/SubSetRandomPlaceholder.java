@@ -6,10 +6,12 @@ import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.LanguageManager;
 import cn.superiormc.ultimateshop.objects.caches.ObjectRandomPlaceholderCache;
 import cn.superiormc.ultimateshop.objects.items.subobjects.ObjectRandomPlaceholder;
+import cn.superiormc.ultimateshop.utils.RandomUtil;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class SubSetRandomPlaceholder extends AbstractCommand {
 
@@ -18,11 +20,12 @@ public class SubSetRandomPlaceholder extends AbstractCommand {
         this.requiredPermission =  "ultimateshop." + id;
         this.onlyInGame = false;
         this.premiumOnly = true;
-        this.requiredArgLength = new Integer[]{2, 3};
+        this.requiredArgLength = new Integer[]{2, 3, 4};
     }
 
     @Override
     public void executeCommandInGame(String[] args, Player player) {
+        boolean bypassElementCheck = args[args.length - 1].equals("-b");
         ObjectRandomPlaceholder placeholder = ConfigManager.configManager.getRandomPlaceholder(args[1]);
         if (placeholder == null) {
             LanguageManager.languageManager.sendStringText(player, "error.random-placeholder-not-found", "placeholder", args[1]);
@@ -34,11 +37,19 @@ public class SubSetRandomPlaceholder extends AbstractCommand {
             cache = ServerCache.serverCache.getRandomPlaceholderCache().get(placeholder);
         }
         if (args.length > 2) {
-            if (!placeholder.getElements().contains(args[2])) {
+            if (!placeholder.getElements().contains(args[2]) && !bypassElementCheck) {
                 LanguageManager.languageManager.sendStringText(player, "error.random-placeholder-element-not-found", "placeholder", args[1], "element", args[2]);
                 return;
             }
-            cache.setPlaceholder(args[2], false);
+            String[] element = args[2].split("~");
+            if (element.length == 1) {
+                cache.setPlaceholder(args[2], false);
+            } else {
+                int min = Integer.parseInt(element[0]);
+                int max = Integer.parseInt(element[1]);
+                Random random = new Random();
+                cache.setPlaceholder(String.valueOf(random.nextInt(max - min + 1) + min), false);
+            }
         } else {
             cache.setPlaceholder(false);
         }
@@ -47,6 +58,7 @@ public class SubSetRandomPlaceholder extends AbstractCommand {
 
     @Override
     public void executeCommandInConsole(String[] args) {
+        boolean bypassElementCheck = args[args.length - 1].equals("-b");
         ObjectRandomPlaceholder placeholder = ConfigManager.configManager.getRandomPlaceholder(args[1]);
         if (placeholder == null) {
             LanguageManager.languageManager.sendStringText("error.random-placeholder-not-found", "placeholder", args[1]);
@@ -58,11 +70,20 @@ public class SubSetRandomPlaceholder extends AbstractCommand {
             cache = ServerCache.serverCache.getRandomPlaceholderCache().get(placeholder);
         }
         if (args.length > 2) {
-            if (!placeholder.getElements().contains(args[2])) {
+            if (!placeholder.getElements().contains(args[2]) && !bypassElementCheck) {
                 LanguageManager.languageManager.sendStringText("error.random-placeholder-element-not-found", "placeholder", args[1], "element", args[2]);
                 return;
             }
-            cache.setPlaceholder(args[2], false);
+            String[] element = args[2].split("~");
+            if (element.length == 1) {
+                cache.setPlaceholder(args[2], false);
+            }
+            else {
+                int min = Integer.parseInt(element[0]);
+                int max = Integer.parseInt(element[1]);
+                Random random = new Random();
+                cache.setPlaceholder(String.valueOf(random.nextInt(max - min + 1) + min), false);
+            }
         } else {
             cache.setPlaceholder(false);
         }

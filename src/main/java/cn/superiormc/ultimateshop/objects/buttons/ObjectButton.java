@@ -17,6 +17,8 @@ public class ObjectButton extends AbstractButton {
 
     private ObjectAction action;
 
+    private ObjectAction failAction;
+
     private ObjectCondition condition;
 
     private ObjectDisplayItem displayItem;
@@ -47,9 +49,11 @@ public class ObjectButton extends AbstractButton {
     private void initButton() {
         if (shop == null) {
             action = new ObjectAction(config.getStringList("actions"));
+            failAction = new ObjectAction(config.getStringList("fail-actions"));
         }
         else {
             action = new ObjectAction(config.getStringList("actions"), shop);
+            failAction = new ObjectAction(config.getStringList("fail-actions"), shop);
         }
         condition = new ObjectCondition(config.getStringList("conditions"));
         displayItem = new ObjectDisplayItem(config.getConfigurationSection("display-item"),
@@ -59,17 +63,18 @@ public class ObjectButton extends AbstractButton {
     @Override
     public void clickEvent(ClickType type, Player player) {
         if (condition != null && !condition.getBoolean(player)) {
+            failAction.doAction(player, 1, 1, false, type);
             return;
         }
         if (action != null) {
-            action.doAction(player, 1, 1, false);
+            action.doAction(player, 1, 1, false, type);
         }
     }
 
     @Override
     public ItemStack getDisplayItem(Player player, int unUsed) {
         if (displayItem == null) {
-            return new ItemStack(Material.STONE);
+            return new ItemStack(Material.AIR);
         }
         return displayItem.getDisplayItem(player);
     }

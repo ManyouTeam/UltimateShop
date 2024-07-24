@@ -67,7 +67,7 @@ public class ObjectDisplayItem {
             }
         }
         if (addLoreDisplayItem == null) {
-            addLoreDisplayItem = new ItemStack(Material.STONE);
+            addLoreDisplayItem = new ItemStack(Material.AIR);
         }
         return addLoreDisplayItem;
     }

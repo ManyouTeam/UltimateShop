@@ -21,7 +21,7 @@ public abstract class AbstractButton {
     }
 
     public ItemStack getDisplayItem(Player player, int multi) {
-        return new ItemStack(Material.STONE);
+        return new ItemStack(Material.AIR);
     }
 
     public void clickEvent(ClickType type, Player player) {

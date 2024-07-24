@@ -88,7 +88,7 @@ menu:
   auto-open:
     enabled: true
     menu: main
-  # Support value: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/event/inventory/ClickType.htm
+  # Support value: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/event/inventory/ClickType.html
   # Support use ;; symbol to make multi click type.
   click-event:
     buy: 'SHIFT_LEFT'
@@ -97,6 +97,12 @@ menu:
     # If you want to disable select-amount feature, set this to NEVER.
     select-amount: 'SHIFT_RIGHT;;SWAP_OFFHAND'
     sell-all: 'DROP'
+    # buy-one-stack: 'SWAP_OFFHAND'
+  # Custom click actions for shop menu.
+  # Premium version only.
+  click-event-actions:
+    buy-one-stack:
+      - 'buy: {shop};;{item};;64'
 
 use-times:
   default-reset-mode: 'NEVER'

@@ -1,9 +1,7 @@
 package cn.superiormc.ultimateshop.objects.buttons.subobjects;
 
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
-import cn.superiormc.ultimateshop.utils.TextUtil;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,12 +10,12 @@ public class ObjectItemConfig {
 
     private ObjectItem item;
 
-    private ConfigurationSection section;
+    private final ConfigurationSection section;
 
-    private ConfigurationSection shopSection;
+    private final ConfigurationSection shopSection;
 
     public ObjectItemConfig(ObjectItem objectItem, ConfigurationSection section) {
-        this.item = item;
+        this.item = objectItem;
         this.section = section;
         this.shopSection = objectItem.getShopObject().getShopConfig().getConfigurationSection("general-configs");
     }
@@ -64,6 +62,15 @@ public class ObjectItemConfig {
             return shopSection.getStringList(path);
         }
         return tempVal1;
+    }
+
+    public List<String> getStringListAndMerge(String path) {
+        List<String> result = new ArrayList<>();
+        result.addAll(section.getStringList(path));
+        if (shopSection != null) {
+            result.addAll(shopSection.getStringList(path));
+        }
+        return result;
     }
 
     public boolean getBoolean(String path, boolean defaultValue) {

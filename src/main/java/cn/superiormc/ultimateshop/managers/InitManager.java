@@ -27,6 +27,7 @@ public class InitManager {
         resourceOutput("shops/blocks.yml", false);
         resourceOutput("shops/blocks2.yml", false);
         resourceOutput("shops/farming.yml", false);
+        resourceOutput("shops/fish.yml", false);
         resourceOutput("shops/flowers.yml", false);
         resourceOutput("shops/glass.yml", false);
         resourceOutput("shops/drops.yml", false);

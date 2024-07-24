@@ -97,7 +97,7 @@ public abstract class InvGUI extends AbstractGUI {
         Map<Integer, AbstractButton> tempVal1 = menuButtons;
         AbstractButton button = tempVal1.get(slot);
         if (button == null) {
-            return new ItemStack(Material.STONE);
+            return new ItemStack(Material.AIR);
         }
         return button.getDisplayItem(player, 1);
     }

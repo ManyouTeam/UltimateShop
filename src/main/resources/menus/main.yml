@@ -126,7 +126,7 @@ buttons:
       material: FISHING_ROD
       name: '&9&lFISH SHOP'
       lore:
-        - '&7Sell ​​or buy different raw'
+        - '&7Sell or buy different raw'
         - '&7or cooked fish.'
     actions:
       - 'shop_menu: fish'

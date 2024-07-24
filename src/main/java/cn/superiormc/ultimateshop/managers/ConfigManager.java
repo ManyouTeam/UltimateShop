@@ -35,7 +35,6 @@ public class ConfigManager {
     }
 
     private void initShopConfigs() {
-        this.shopConfigs = new HashMap<>();
         File dir = new File(UltimateShop.instance.getDataFolder(), "shops");
         if (!dir.exists()) {
             dir.mkdir();
@@ -81,7 +80,6 @@ public class ConfigManager {
     }
 
     private void initRandomPlaceholder() {
-        this.randomPlaceholders = new HashMap<>();
         ConfigurationSection tempVal1 = config.getConfigurationSection("placeholder.random");
         if (tempVal1 == null) {
             return;

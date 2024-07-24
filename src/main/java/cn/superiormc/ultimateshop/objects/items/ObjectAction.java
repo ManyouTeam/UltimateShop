@@ -6,7 +6,9 @@ import cn.superiormc.ultimateshop.managers.ErrorManager;
 import cn.superiormc.ultimateshop.methods.GUI.OpenGUI;
 import cn.superiormc.ultimateshop.methods.Product.BuyProductMethod;
 import cn.superiormc.ultimateshop.methods.Product.SellProductMethod;
+import cn.superiormc.ultimateshop.methods.ProductTradeStatus;
 import cn.superiormc.ultimateshop.objects.ObjectShop;
+import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
 import cn.superiormc.ultimateshop.utils.PaperUtil;
 import me.clip.placeholderapi.PlaceholderAPI;
@@ -15,6 +17,7 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.ClickType;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -32,7 +35,11 @@ public class ObjectAction {
 
     private ObjectShop shop = null;
 
+    private ObjectItem item = null;
+
     private boolean isEmpty = false;
+
+    private ProductTradeStatus lastTradeStatus = null;
 
     public ObjectAction() {
         this.isEmpty = true;
@@ -64,17 +71,35 @@ public class ObjectAction {
         this.shop = shop;
     }
 
+    public ObjectAction(List<String> action, ObjectItem item) {
+        this.isEmpty = action.isEmpty();
+        for (String s : action) {
+            if (s.endsWith("-o")) {
+                onceAction.add(s.substring(0, s.length() - 2));
+            }
+            else {
+                everyAction.add(s);
+            }
+        }
+        this.shop = item.getShopObject();
+        this.item = item;
+    }
+
     public void doAction(Player player, int times, int multi, boolean sellAll) {
+        doAction(player, times, multi, sellAll, null);
+    }
+
+    public void doAction(Player player, int times, int multi, boolean sellAll, ClickType type) {
         if (everyAction.isEmpty() && onceAction.isEmpty()) {
             return;
         }
-        checkAction(player, onceAction, times, multi, sellAll);
+        checkAction(player, onceAction, times, multi, sellAll, type);
         for (int i = 0 ; i < multi ; i ++) {
-            checkAction(player, everyAction, times, multi, sellAll);
+            checkAction(player, everyAction, times, multi, sellAll, type);
         }
     }
 
-    private void checkAction(Player player, List<String> actions, int times, int multi, boolean sellAll) {
+    private void checkAction(Player player, List<String> actions, int times, int multi, boolean sellAll, ClickType type) {
         if (player == null) {
             return;
         }
@@ -94,6 +119,13 @@ public class ObjectAction {
                 if (sellAll) {
                     continue;
                 }
+            }
+            if (singleAction.startsWith("@") && type != null) {
+                String clickType = singleAction.split("@")[1];
+                if (!clickType.equals(type.name())) {
+                    continue;
+                }
+                singleAction = singleAction.substring(2 + clickType.length());
             }
             singleAction = replacePlaceholder(singleAction, player, multi);
             String[] splits = singleAction.split(";;");
@@ -270,21 +302,21 @@ public class ObjectAction {
                     }, 2L);
                 }
             } else if (singleAction.startsWith("buy: ") && splits.length == 3) {
-                BuyProductMethod.startBuy(singleAction.substring(5).split(";;")[0],
+                lastTradeStatus = BuyProductMethod.startBuy(singleAction.substring(5).split(";;")[0],
                         singleAction.substring(5).split(";;")[1],
                         player,
                         true,
                         false,
                         Integer.parseInt(singleAction.substring(5).split(";;")[2]));
             } else if (singleAction.startsWith("sell: ") && splits.length == 3) {
-                SellProductMethod.startSell(singleAction.substring(6).split(";;")[0],
+                lastTradeStatus = SellProductMethod.startSell(singleAction.substring(6).split(";;")[0],
                         singleAction.substring(6).split(";;")[1],
                         player,
                         true,
                         false,
                         Integer.parseInt(singleAction.substring(5).split(";;")[2]));
             } else if (singleAction.startsWith("sellall: ") && splits.length == 2) {
-                SellProductMethod.startSell(singleAction.substring(9).split(";;")[0],
+                lastTradeStatus = SellProductMethod.startSell(singleAction.substring(9).split(";;")[0],
                         singleAction.substring(9).split(";;")[1],
                         player,
                         true,
@@ -294,7 +326,12 @@ public class ObjectAction {
             }
         }
     }
-    private String replacePlaceholder(String str, Player player, int multi){
+
+    public ProductTradeStatus getLastTradeStatus() {
+        return lastTradeStatus;
+    }
+
+    private String replacePlaceholder(String str, Player player, int multi) {
         str = str.replace("{world}", player.getWorld().getName())
                 .replace("{amount}", String.valueOf(multi))
                 .replace("{player_x}", String.valueOf(player.getLocation().getX()))
@@ -310,6 +347,10 @@ public class ObjectAction {
             str = str.replace("{shop-menu}", shop.getShopMenu())
                     .replace("{shop}", shop.getShopName()
                     .replace("{shop-name}", shop.getShopDisplayName()));
+        }
+        if (item != null) {
+            str = str.replace("{item}", item.getProduct())
+                    .replace("{item-name}", item.getDisplayName(player));
         }
         return str;
     }
