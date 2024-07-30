@@ -195,6 +195,14 @@ public class ConfigManager {
         return "none";
     }
 
+    public boolean containsClickAction(String clickEvent) {
+        ConfigurationSection clickEventSection = ConfigManager.configManager.getSection("menu.click-event");
+        if (clickEventSection == null) {
+            return false;
+        }
+        return clickEventSection.contains(clickEvent);
+    }
+
     public Collection<ObjectRandomPlaceholder> getRandomPlaceholders() {
         return randomPlaceholders.values();
     }

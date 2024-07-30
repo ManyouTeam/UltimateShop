@@ -71,17 +71,17 @@ menu:
     # If enabled, we will try to reopen shop menu after player successfully buy or sell products.
     not-auto-close: true
     buy-or-sell:
-      title: 'Product Settings'
+      title: 'Select Amount: {item-name}'
       buttons:
         amount:
           name: 'Amount'
-          buy-tip: 'Type amount you want to buy!'
-          sell-tip: 'Type all to sell all!'
+          tip: 'Type amount here! Type all to sell all!'
     info:
-      title: 'Product Info'
+      title: 'Product Info: {item-name}'
       buttons:
         buy: 'Buy'
         sell: 'Sell'
+        buy-more: 'Select Amount'
   buy-more:
     menu: buy-more
     max-amount: 64

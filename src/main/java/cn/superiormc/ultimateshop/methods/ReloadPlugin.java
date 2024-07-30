@@ -1,12 +1,10 @@
 package cn.superiormc.ultimateshop.methods;
 
 import cn.superiormc.ultimateshop.UltimateShop;
-import cn.superiormc.ultimateshop.cache.PlayerCache;
 import cn.superiormc.ultimateshop.cache.ServerCache;
 import cn.superiormc.ultimateshop.gui.AbstractGUI;
 import cn.superiormc.ultimateshop.listeners.ClickListener;
 import cn.superiormc.ultimateshop.managers.*;
-import cn.superiormc.ultimateshop.objects.caches.ObjectUseTimesCache;
 import cn.superiormc.ultimateshop.objects.menus.ObjectMenu;
 import cn.superiormc.ultimateshop.utils.MathUtil;
 import org.bukkit.Bukkit;
@@ -42,7 +40,6 @@ public class ReloadPlugin {
             CacheManager.cacheManager.addPlayerCache(player);
         }
         MathUtil.scale = ConfigManager.configManager.getInt("math.scale", 2);
-        Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §fUsing " + ConfigManager.configManager.getStringOrDefault("sell-mode", "sell.sell-method", "Bukkit") + " sell method!");
         LanguageManager.languageManager.sendStringText(sender, "plugin.reloaded");
     }
 }

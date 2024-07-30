@@ -502,7 +502,7 @@ public class DebuildItem {
         }
 
         // Music Instrument
-        if (CommonUtil.getMajorVersion(18)) {
+        if (CommonUtil.getMajorVersion(19)) {
             if (meta instanceof MusicInstrumentMeta) {
                 MusicInstrumentMeta musicInstrumentMeta = (MusicInstrumentMeta) meta;
                 if (musicInstrumentMeta.getInstrument() != null) {

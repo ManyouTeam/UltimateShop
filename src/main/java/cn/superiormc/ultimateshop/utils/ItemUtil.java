@@ -13,7 +13,7 @@ public class ItemUtil {
 
     public static String getItemName(ItemStack displayItem) {
         if (displayItem == null || displayItem.getItemMeta() == null) {
-            return "ERROR: Unknown Item";
+            return "";
         }
         if (displayItem.getItemMeta().hasDisplayName()) {
             return displayItem.getItemMeta().getDisplayName();
@@ -29,7 +29,7 @@ public class ItemUtil {
 
     public static String getItemNameWithoutVanilla(ItemStack displayItem) {
         if (displayItem == null || displayItem.getItemMeta() == null) {
-            return "ERROR: Unknown Item";
+            return "";
         }
         if (displayItem.getItemMeta().hasDisplayName()) {
             return displayItem.getItemMeta().getDisplayName();
