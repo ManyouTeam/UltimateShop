@@ -141,6 +141,9 @@ display-item:
     - '@b{sell-click}-b'
     - '@k&#FFFACDRight-Shift click to pick amount!-b'
     - '@b&#FFFACDDrop (Q key) to sell all!-b'
+    - '@n&c&l:( Can not do this-i'
+    - '@a&cThis item can not be selled-i-m'
+    - '@b&cThis item can not be purcahsed-i-m'
 
 placeholder:
   auto-settings:

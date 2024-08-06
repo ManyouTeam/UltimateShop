@@ -215,6 +215,7 @@ public class BuildItem {
             }
         }
 
+        // Tool
         if (CommonUtil.getMajorVersion(21)) {
             ConfigurationSection toolKey = section.getConfigurationSection("tool");
             ToolComponent toolComponent = meta.getTool();

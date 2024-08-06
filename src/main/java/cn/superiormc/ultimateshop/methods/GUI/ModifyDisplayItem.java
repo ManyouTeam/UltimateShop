@@ -99,84 +99,94 @@ public class ModifyDisplayItem {
             tempVal10 = CacheManager.cacheManager.serverCache.getUseTimesCache().get(item);
         }
         for (String tempVal3 : item.getAddLore()) {
-            if (tempVal3.startsWith("@") && tempVal3.length() >= 2) {
-                String tempVal4 = tempVal3.substring(2);
+            String tempVal4 = tempVal3;
+            boolean not = false;
+            if (tempVal4.endsWith("-b")) {
+                if (bedrock) {
+                    continue;
+                }
+                else {
+                    tempVal4 = tempVal4.substring(0, tempVal4.length() - 2);
+                }
+            }
+            if (tempVal4.endsWith("-m")) {
+                if (!buyMore) {
+                    continue;
+                }
+                else {
+                    tempVal4 = tempVal4.substring(0, tempVal4.length() - 2);
+                }
+            }
+            if (tempVal4.endsWith("-i")) {
+                not = true;
+                tempVal4 = tempVal4.substring(0, tempVal4.length() - 2);
+            }
+            if (tempVal3.startsWith("@") && tempVal4.length() >= 2) {
+                tempVal4 = tempVal4.substring(2);
                 switch (tempVal3.charAt(1)) {
                     case 'a':
-                        if (!item.getBuyPrice().empty && parseClickType(item, clickType, true)) {
-                            if (tempVal3.endsWith("-b")) {
-                                if (bedrock) {
-                                    continue;
-                                }
-                                else {
-                                    tempVal4 = tempVal4.substring(0, tempVal4.length() - 2);
-                                }
+                        if (!parseClickType(item, clickType, true)) {
+                            continue;
+                        }
+                        if (!item.getBuyPrice().empty) {
+                            if (not) {
+                                continue;
                             }
+                            addLore.add(tempVal4);
+                        } else if (not) {
                             addLore.add(tempVal4);
                         }
                         break;
                     case 'b':
-                        if (!item.getSellPrice().empty && parseClickType(item, clickType, false)) {
-                            if (tempVal3.endsWith("-b")) {
-                                if (bedrock) {
-                                    continue;
-                                }
-                                else {
-                                    tempVal4 = tempVal4.substring(0, tempVal4.length() - 2);
-                                }
+                        if (!parseClickType(item, clickType, false)) {
+                            continue;
+                        }
+                        if (!item.getSellPrice().empty) {
+                            if (not) {
+                                continue;
                             }
+                            addLore.add(tempVal4);
+                        } else if (not) {
                             addLore.add(tempVal4);
                         }
                         break;
                     case 'c':
                         if (item.getPlayerBuyLimit(player) != -1) {
-                            if (tempVal3.endsWith("-b")) {
-                                if (bedrock) {
-                                    continue;
-                                }
-                                else {
-                                    tempVal4 = tempVal4.substring(0, tempVal4.length() - 2);
-                                }
+                            if (not) {
+                                continue;
                             }
+                            addLore.add(tempVal4);
+                        } else if (not) {
                             addLore.add(tempVal4);
                         }
                         break;
                     case 'd':
                         if (item.getServerBuyLimit(player) != -1) {
-                            if (tempVal3.endsWith("-b")) {
-                                if (bedrock) {
-                                    continue;
-                                }
-                                else {
-                                    tempVal4 = tempVal4.substring(0, tempVal4.length() - 2);
-                                }
+                            if (not) {
+                                continue;
                             }
+                            addLore.add(tempVal4);
+                        } else if (not) {
                             addLore.add(tempVal4);
                         }
                         break;
                     case 'e':
                         if (item.getPlayerSellLimit(player) != -1) {
-                            if (tempVal3.endsWith("-b")) {
-                                if (bedrock) {
-                                    continue;
-                                }
-                                else {
-                                    tempVal4 = tempVal4.substring(0, tempVal4.length() - 2);
-                                }
+                            if (not) {
+                                continue;
                             }
+                            addLore.add(tempVal4);
+                        } else if (not) {
                             addLore.add(tempVal4);
                         }
                         break;
                     case 'f':
                         if (item.getServerSellLimit(player) != -1) {
-                            if (tempVal3.endsWith("-b")) {
-                                if (bedrock) {
-                                    continue;
-                                }
-                                else {
-                                    tempVal4 = tempVal4.substring(0, tempVal4.length() - 2);
-                                }
+                            if (not) {
+                                continue;
                             }
+                            addLore.add(tempVal4);
+                        } else if (not) {
                             addLore.add(tempVal4);
                         }
                         break;
@@ -184,14 +194,11 @@ public class ModifyDisplayItem {
                         if (tempVal9 != null &&
                                 item.getPlayerBuyLimit(player) > 0 &&
                                 tempVal9.getBuyUseTimes() >= item.getPlayerBuyLimit(player)) {
-                            if (tempVal3.endsWith("-b")) {
-                                if (bedrock) {
-                                    continue;
-                                }
-                                else {
-                                    tempVal4 = tempVal4.substring(0, tempVal4.length() - 2);
-                                }
+                            if (not) {
+                                continue;
                             }
+                            addLore.add(tempVal4);
+                        } else if (not) {
                             addLore.add(tempVal4);
                         }
                         break;
@@ -199,14 +206,11 @@ public class ModifyDisplayItem {
                         if (tempVal9 != null &&
                                 item.getPlayerSellLimit(player) > 0 &&
                                 tempVal9.getSellUseTimes() >= item.getPlayerSellLimit(player)) {
-                            if (tempVal3.endsWith("-b")) {
-                                if (bedrock) {
-                                    continue;
-                                }
-                                else {
-                                    tempVal4 = tempVal4.substring(0, tempVal4.length() - 2);
-                                }
+                            if (not) {
+                                continue;
                             }
+                            addLore.add(tempVal4);
+                        } else if (not) {
                             addLore.add(tempVal4);
                         }
                         break;
@@ -214,14 +218,11 @@ public class ModifyDisplayItem {
                         if (tempVal10 != null &&
                                 item.getServerBuyLimit(player) > 0 &&
                                 tempVal10.getBuyUseTimes() >= item.getServerBuyLimit(player)) {
-                            if (tempVal3.endsWith("-b")) {
-                                if (bedrock) {
-                                    continue;
-                                }
-                                else {
-                                    tempVal4 = tempVal4.substring(0, tempVal4.length() - 2);
-                                }
+                            if (not) {
+                                continue;
                             }
+                            addLore.add(tempVal4);
+                        } else if (not) {
                             addLore.add(tempVal4);
                         }
                         break;
@@ -229,27 +230,21 @@ public class ModifyDisplayItem {
                         if (tempVal10 != null &&
                                 item.getServerSellLimit(player) > 0 &&
                                 tempVal10.getSellUseTimes() >= item.getServerSellLimit(player)) {
-                            if (tempVal3.endsWith("-b")) {
-                                if (bedrock) {
-                                    continue;
-                                }
-                                else {
-                                    tempVal4 = tempVal4.substring(0, tempVal4.length() - 2);
-                                }
+                            if (not) {
+                                continue;
                             }
+                            addLore.add(tempVal4);
+                        } else if (not) {
                             addLore.add(tempVal4);
                         }
                         break;
                     case 'k':
                         if (!buyMore) {
-                            if (tempVal3.endsWith("-b")) {
-                                if (bedrock) {
-                                    continue;
-                                }
-                                else {
-                                    tempVal4 = tempVal4.substring(0, tempVal4.length() - 2);
-                                }
+                            if (not) {
+                                continue;
                             }
+                            addLore.add(tempVal4);
+                        } else if (not) {
                             addLore.add(tempVal4);
                         }
                         break;
@@ -257,14 +252,11 @@ public class ModifyDisplayItem {
                         if (tempVal9 != null &&
                                 tempVal9.getCooldownBuyRefreshTime() != null &&
                                 tempVal9.getCooldownBuyRefreshTime().isAfter(LocalDateTime.now())) {
-                            if (tempVal3.endsWith("-b")) {
-                                if (bedrock) {
-                                    continue;
-                                }
-                                else {
-                                    tempVal4 = tempVal4.substring(0, tempVal4.length() - 2);
-                                }
+                            if (not) {
+                                continue;
                             }
+                            addLore.add(tempVal4);
+                        } else if (not) {
                             addLore.add(tempVal4);
                         }
                         break;
@@ -272,28 +264,22 @@ public class ModifyDisplayItem {
                         if (tempVal10 != null &&
                                 tempVal10.getCooldownBuyRefreshTime() != null &&
                                 tempVal10.getCooldownBuyRefreshTime().isAfter(LocalDateTime.now())) {
-                            if (tempVal3.endsWith("-b")) {
-                                if (bedrock) {
-                                    continue;
-                                }
-                                else {
-                                    tempVal4 = tempVal4.substring(0, tempVal4.length() - 2);
-                                }
+                            if (not) {
+                                continue;
                             }
+                            addLore.add(tempVal4);
+                        } else if (not) {
                             addLore.add(tempVal4);
                         }
                         break;
                     case 'n':
                         if ((!item.getBuyPrice().empty && parseClickType(item, clickType, true)) ||
                                 (!item.getSellPrice().empty && parseClickType(item, clickType, false))){
-                            if (tempVal3.endsWith("-b")) {
-                                if (bedrock) {
-                                    continue;
-                                }
-                                else {
-                                    tempVal4 = tempVal4.substring(0, tempVal4.length() - 2);
-                                }
+                            if (not) {
+                                continue;
                             }
+                            addLore.add(tempVal4);
+                        } else if (not) {
                             addLore.add(tempVal4);
                         }
                         break;

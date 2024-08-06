@@ -116,66 +116,70 @@ public class PlaceholderAPIExpansion extends PlaceholderExpansion {
             }
             ObjectUseTimesCache playerTimesCache = CacheManager.cacheManager.getPlayerCache(player).getUseTimesCache().get(item);
             ObjectUseTimesCache serverTimesCache = CacheManager.cacheManager.serverCache.getUseTimesCache().get(item);
-            switch (args[2]) {
-                case "{buy-price}":
+            String tempVal1 = args[2];
+            if (tempVal1.startsWith("{") && tempVal1.endsWith("}")) {
+                tempVal1 = tempVal1.substring(1, tempVal1.length() -2);
+            }
+            switch (tempVal1) {
+                case "buy-price":
                     return TextUtil.parse(ObjectPrices.getDisplayNameInLine(player,
                             item.getBuyPrice().takeSingleThing(player.getInventory(), player, playerTimesCache.getBuyUseTimes(), 1, true).getResultMap(),
                             item.getBuyPrice().getMode(),
                             !ConfigManager.configManager.getBoolean("placeholder.status.can-used-everywhere")));
-                case "{sell-price}":
+                case "sell-price":
                     return TextUtil.parse(ObjectPrices.getDisplayNameInLine(player,
                             item.getSellPrice().giveSingleThing(player, playerTimesCache.getBuyUseTimes(), 1).getResultMap(),
                             item.getSellPrice().getMode(),
                             !ConfigManager.configManager.getBoolean("placeholder.status.can-used-everywhere")));
-                case "{buy-limit-player}":
+                case "buy-limit-player":
                     return String.valueOf(item.getPlayerBuyLimit(player));
-                case "{sell-limit-player}":
+                case "sell-limit-player":
                     return String.valueOf(item.getPlayerSellLimit(player));
-                case "{buy-limit-server}":
-                    return String.valueOf(item.getServerSellLimit(player));
-                case "{sell-limit-server}":
+                case "buy-limit-server":
                     return String.valueOf(item.getServerBuyLimit(player));
-                case "{buy-times-player}":
+                case "sell-limit-server":
+                    return String.valueOf(item.getServerSellLimit(player));
+                case "buy-times-player":
                     return String.valueOf(playerTimesCache == null ? "0" :
                             playerTimesCache.getBuyUseTimes());
-                case "{sell-times-player}":
+                case "sell-times-player":
                     return String.valueOf(playerTimesCache == null ? "0" :
                             playerTimesCache.getSellUseTimes());
-                case "{buy-refresh-player}":
+                case "buy-refresh-player":
                     return String.valueOf(playerTimesCache == null ? "" :
                             playerTimesCache.getBuyRefreshTimeDisplayName());
-                case "{sell-refresh-player}":
+                case "sell-refresh-player":
                     return String.valueOf(playerTimesCache == null ? "" :
                             playerTimesCache.getSellRefreshTimeDisplayName());
-                case "{buy-cooldown-player}":
+                case "buy-cooldown-player":
                     return String.valueOf(playerTimesCache == null ? ConfigManager.configManager.
                             getString("placeholder.cooldown.now") :
                             playerTimesCache.getBuyCooldownTimeDisplayName());
-                case "{sell-cooldown-player}":
+                case "sell-cooldown-player":
                     return String.valueOf(playerTimesCache == null ? ConfigManager.configManager.
                             getString("placeholder.cooldown.now") :
                             playerTimesCache.getSellCooldownTimeDisplayName());
-                case "{buy-times-server}":
+                case "buy-times-server":
                     return String.valueOf(serverTimesCache == null ? "0" :
                             serverTimesCache.getBuyUseTimes());
-                case "{sell-times-server}":
+                case "sell-times-server":
                     return String.valueOf(serverTimesCache == null ? "0" :
                             serverTimesCache.getSellUseTimes());
-                case "{buy-refresh-server}":
+                case "buy-refresh-server":
                     return String.valueOf(serverTimesCache == null ? "" :
                             serverTimesCache.getBuyRefreshTimeDisplayName());
-                case "{sell-refresh-server}":
+                case "sell-refresh-server":
                     return String.valueOf(serverTimesCache == null ? "" :
                             serverTimesCache.getSellRefreshTimeDisplayName());
-                case "{buy-cooldown-server}":
+                case "buy-cooldown-server":
                     return String.valueOf(serverTimesCache == null ? ConfigManager.configManager.
                             getString("placeholder.cooldown.now") :
                             serverTimesCache.getBuyCooldownTimeDisplayName());
-                case "{sell-cooldown-server}":
+                case "sell-cooldown-server":
                     return String.valueOf(serverTimesCache == null ? ConfigManager.configManager.
                             getString("placeholder.cooldown.now") :
                             serverTimesCache.getSellCooldownTimeDisplayName());
-                case "{item-name}":
+                case "item-name":
                     return item.getDisplayName(player);
             }
         }

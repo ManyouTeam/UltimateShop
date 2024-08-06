@@ -1,8 +1,11 @@
 package cn.superiormc.ultimateshop.methods;
 
+import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.objects.items.GiveResult;
 import cn.superiormc.ultimateshop.objects.items.TakeResult;
+import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 
@@ -25,12 +28,15 @@ public class ProductTradeStatus {
     private TakeResult takeResult = null;
 
     private Status status;
-    public ProductTradeStatus(Status status, TakeResult takeResult) {
+    public ProductTradeStatus(Status status,
+                              TakeResult takeResult) {
         this.status = status;
         this.takeResult = takeResult;
     }
 
-    public ProductTradeStatus(Status status, TakeResult takeResult, GiveResult giveResult) {
+    public ProductTradeStatus(Status status,
+                              TakeResult takeResult,
+                              GiveResult giveResult) {
         this.status = status;
         this.takeResult = takeResult;
         this.giveResult = giveResult;
@@ -40,6 +46,7 @@ public class ProductTradeStatus {
         this.status = status;
     }
 
+    @NotNull
     public Status getStatus() {
         return status;
     }
@@ -52,6 +59,7 @@ public class ProductTradeStatus {
         return takeResult;
     }
 
+    @Nullable
     public GiveResult getGiveResult() {
         return giveResult;
     }
