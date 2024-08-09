@@ -13,6 +13,7 @@ import cn.superiormc.ultimateshop.objects.items.subobjects.ObjectRandomPlacehold
 import cn.superiormc.ultimateshop.utils.MathUtil;
 import cn.superiormc.ultimateshop.utils.TextUtil;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
+import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -118,7 +119,7 @@ public class PlaceholderAPIExpansion extends PlaceholderExpansion {
             ObjectUseTimesCache serverTimesCache = CacheManager.cacheManager.serverCache.getUseTimesCache().get(item);
             String tempVal1 = args[2];
             if (tempVal1.startsWith("{") && tempVal1.endsWith("}")) {
-                tempVal1 = tempVal1.substring(1, tempVal1.length() -2);
+                tempVal1 = tempVal1.substring(1, tempVal1.length() - 1);
             }
             switch (tempVal1) {
                 case "buy-price":
