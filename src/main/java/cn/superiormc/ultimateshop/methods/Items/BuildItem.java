@@ -428,9 +428,14 @@ public class BuildItem {
 
             if (bannerPatternsKey != null) {
                 for (String pattern : bannerPatternsKey.getKeys(false)) {
-                    PatternType type = Enums.getIfPresent(PatternType.class, pattern.toUpperCase()).or(PatternType.BASE);
+                    PatternType type = null;
+                    if (CommonUtil.getMajorVersion(21)) {
+                        type = Registry.BANNER_PATTERN.get(CommonUtil.parseNamespacedKey(pattern));
+                    } else {
+                        type = Enums.getIfPresent(PatternType.class, pattern.toUpperCase()).or(PatternType.BASE);
+                    }
                     String bannerColor = bannerPatternsKey.getString(pattern);
-                    if (bannerColor != null) {
+                    if (type != null && bannerColor != null) {
                         DyeColor color = Enums.getIfPresent(DyeColor.class, bannerColor.toUpperCase()).or(DyeColor.WHITE);
                         banner.addPattern(new Pattern(color, type));
                     }
