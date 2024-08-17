@@ -20,7 +20,6 @@ import cn.superiormc.ultimateshop.objects.menus.ObjectMoreMenu;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
 import cn.superiormc.ultimateshop.utils.ItemUtil;
 import cn.superiormc.ultimateshop.utils.TextUtil;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;

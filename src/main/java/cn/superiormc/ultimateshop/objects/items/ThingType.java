@@ -7,5 +7,6 @@ public enum ThingType {
     HOOK_ITEM,
     VANILLA_ECONOMY,
     UNKNOWN,
+    MATCH_ITEM,
     FREE
 }

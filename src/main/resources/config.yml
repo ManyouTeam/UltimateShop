@@ -22,6 +22,7 @@ use-component:
 
 sell:
   # Support Value: Bukkit or ItemFormat.
+  # For each product, you can add match-item section to make custom sell match method, for more info, please view Wiki.
   sell-method: Bukkit
   # Only support ItemFormat sell method.
   ignore-item-format-key:

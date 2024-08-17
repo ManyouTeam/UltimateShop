@@ -1,8 +1,8 @@
 package cn.superiormc.ultimateshop.hooks;
 
+import cn.superiormc.mythicchanger.manager.MatchItemManager;
 import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.managers.ErrorManager;
-import cn.superiormc.ultimateshop.methods.Items.DebuildItem;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
 import cn.superiormc.ultimateshop.utils.ItemUtil;
 import com.bencodez.votingplugin.VotingPluginMain;
@@ -15,8 +15,7 @@ import me.TechsCode.UltraEconomy.UltraEconomyAPI;
 import me.qKing12.RoyaleEconomy.API.MultiCurrencyHandler;
 import net.milkbowl.vault.economy.Economy;
 import org.black_ixx.playerpoints.PlayerPoints;
-import org.bukkit.Bukkit;
-import org.bukkit.configuration.MemoryConfiguration;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -389,6 +388,63 @@ public class PriceHook {
                     ItemStack temItem = itemStack.clone();
                     temItem.setAmount(1);
                     if (ItemUtil.isSameItem(temItem, item)) {
+                        if (itemStack.getAmount() >= value) {
+                            itemStack.setAmount(itemStack.getAmount() - value);
+                            break;
+                        } else {
+                            value -= itemStack.getAmount();
+                            itemStack.setAmount(0);
+                        }
+                    }
+                }
+                if (inventory instanceof PlayerInventory) {
+                    player.getInventory().setStorageContents(storage);
+                }
+                else {
+                    inventory.setStorageContents(storage);
+                }
+            }
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    public static int getItemAmount(Inventory inventory, ConfigurationSection section) {
+        if (section == null) {
+            return 0;
+        }
+        ItemStack[] storage = inventory.getStorageContents();
+        int amount = 0;
+        for (ItemStack tempVal1 : storage) {
+            if (tempVal1 == null || tempVal1.getType().isAir()) {
+                continue;
+            }
+            ItemStack temItem = tempVal1.clone();
+            temItem.setAmount(1);
+            if (MatchItemManager.matchItemManager.getMatch(section.getConfigurationSection("match-item"), tempVal1)) {
+                amount += tempVal1.getAmount();
+            }
+        }
+        return amount;
+    }
+
+    public static boolean getPrice(Inventory inventory, Player player, ConfigurationSection section, int value, boolean take) {
+        if (value < 0) {
+            return false;
+        }
+        ItemStack[] storage = inventory.getStorageContents();
+        int amount = getItemAmount(inventory, section);
+        if (amount >= value) {
+            if (take) {
+                for (ItemStack itemStack : storage) {
+                    if (itemStack == null || itemStack.getType().isAir()) {
+                        continue;
+                    }
+                    ItemStack temItem = itemStack.clone();
+                    temItem.setAmount(1);
+                    if (MatchItemManager.matchItemManager.getMatch(section.getConfigurationSection("match-item"), temItem)) {
                         if (itemStack.getAmount() >= value) {
                             itemStack.setAmount(itemStack.getAmount() - value);
                             break;

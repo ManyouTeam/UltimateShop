@@ -1,5 +1,6 @@
 package cn.superiormc.ultimateshop.objects.items;
 
+import cn.superiormc.mythicchanger.manager.MatchItemManager;
 import cn.superiormc.ultimateshop.hooks.EconomyHook;
 import cn.superiormc.ultimateshop.hooks.PriceHook;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
@@ -61,13 +62,15 @@ public abstract class AbstractSingleThing implements Comparable<AbstractSingleTh
             type = ThingType.UNKNOWN;
         } else if (section.contains("hook-plugin") && section.contains("hook-item")) {
             type = ThingType.HOOK_ITEM;
+        } else if (section.contains("match-item") && CommonUtil.checkPluginLoad("MythicChanger")) {
+            type = ThingType.MATCH_ITEM;
         } else if (section.contains("material")) {
             type = ThingType.VANILLA_ITEM;
         } else if (section.contains("economy-plugin")) {
             type = ThingType.HOOK_ECONOMY;
         } else if (section.contains("economy-type") && !section.contains("economy-plugin")) {
             type = ThingType.VANILLA_ECONOMY;
-        } else {
+        }  else {
             type = ThingType.FREE;
         }
     }
@@ -101,7 +104,7 @@ public abstract class AbstractSingleThing implements Comparable<AbstractSingleTh
             return;
         }
         switch (type) {
-            case VANILLA_ITEM:  case HOOK_ITEM:
+            case VANILLA_ITEM:  case HOOK_ITEM: case MATCH_ITEM:
                 if (getItemThing(singleSection,
                         player,
                         true,
@@ -152,12 +155,14 @@ public abstract class AbstractSingleThing implements Comparable<AbstractSingleTh
                         pluginName,
                         itemID);
             case VANILLA_ITEM:
-                ItemStack itemStack = getItemThing(section, player, false, 1);
-                if (itemStack == null) {
+                ItemStack tempVal1 = getItemThing(section, player, false, 1);
+                if (tempVal1 == null) {
                     return 0;
                 }
-                itemStack.setAmount(1);
-                return PriceHook.getItemAmount(inventory, itemStack);
+                tempVal1.setAmount(1);
+                return PriceHook.getItemAmount(inventory, tempVal1);
+            case MATCH_ITEM:
+                return PriceHook.getItemAmount(inventory, section);
             case HOOK_ECONOMY:
                 return PriceHook.getEconomyAmount(player, section.getString("economy-plugin"),
                         section.getString("economy-type", "default"));
@@ -216,6 +221,8 @@ public abstract class AbstractSingleThing implements Comparable<AbstractSingleTh
                 }
                 itemStack.setAmount(1);
                 return PriceHook.getPrice(inventory, player, itemStack, (int) cost, take);
+            case MATCH_ITEM:
+                return PriceHook.getPrice(inventory, player, section, (int) cost, take);
             case HOOK_ECONOMY:
                 return PriceHook.getPrice(player,
                         section.getString("economy-plugin"),
