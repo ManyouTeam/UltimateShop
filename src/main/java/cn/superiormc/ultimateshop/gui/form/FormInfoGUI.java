@@ -55,7 +55,7 @@ public class FormInfoGUI extends FormGUI {
         }
         SimpleForm.Builder tempVal2 = SimpleForm.builder();
 
-        tempVal2.title(TextUtil.parse(ConfigManager.configManager.getString("menu.bedrock.info.title"))
+        tempVal2.title(TextUtil.parse(player, ConfigManager.configManager.getString("menu.bedrock.info.title"))
                 .replace("{item-name}", item.getDisplayName(getPlayer().getPlayer())));
         List<String> content = new ArrayList<>();
         if (item.getDisplayItem(player).hasItemMeta() && item.getDisplayItem(player).getItemMeta().hasLore()) {
@@ -71,14 +71,14 @@ public class FormInfoGUI extends FormGUI {
         ));
         tempVal2.content(bedrockTransfer(content));
         // 购买
-        ButtonComponent buy = ButtonComponent.of(TextUtil.parse(ConfigManager.configManager.getString(
+        ButtonComponent buy = ButtonComponent.of(TextUtil.parse(player, ConfigManager.configManager.getString(
                 "menu.bedrock.info.buttons.buy"))
                 .replace("{item-name}", item.getDisplayName(getPlayer().getPlayer())));
         // 回收
-        ButtonComponent sell = ButtonComponent.of(TextUtil.parse(ConfigManager.configManager.getString(
+        ButtonComponent sell = ButtonComponent.of(TextUtil.parse(player, ConfigManager.configManager.getString(
                         "menu.bedrock.info.buttons.sell"))
                 .replace("{item-name}", item.getDisplayName(getPlayer().getPlayer())));
-        ButtonComponent buyMore = ButtonComponent.of(TextUtil.parse(ConfigManager.configManager.getString(
+        ButtonComponent buyMore = ButtonComponent.of(TextUtil.parse(player, ConfigManager.configManager.getString(
                         "menu.bedrock.info.buttons.buy-more"))
                 .replace("{item-name}", item.getDisplayName(getPlayer().getPlayer())));
         if (!item.getBuyPrice().empty) {

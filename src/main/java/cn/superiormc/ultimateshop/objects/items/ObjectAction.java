@@ -194,9 +194,7 @@ public class ObjectAction {
                     EntityType entity = EntityType.valueOf(singleAction.substring(14).split(";;")[0].toUpperCase());
                     Location location = player.getLocation();
                     if (UltimateShop.isFolia) {
-                        Bukkit.getRegionScheduler().run(UltimateShop.instance, location, task -> {
-                            location.getWorld().spawnEntity(location, entity);
-                        });
+                        Bukkit.getRegionScheduler().run(UltimateShop.instance, location, task -> location.getWorld().spawnEntity(location, entity));
                         continue;
                     }
                     location.getWorld().spawnEntity(player.getLocation(), entity);
@@ -212,9 +210,7 @@ public class ObjectAction {
                         continue;
                     }
                     if (UltimateShop.isFolia) {
-                        Bukkit.getRegionScheduler().run(UltimateShop.instance, location, task -> {
-                            location.getWorld().spawnEntity(location, entity);
-                        });
+                        Bukkit.getRegionScheduler().run(UltimateShop.instance, location, task -> location.getWorld().spawnEntity(location, entity));
                         continue;
                     }
                     location.getWorld().spawnEntity(location, entity);
@@ -293,13 +289,9 @@ public class ObjectAction {
                 CommonUtil.dispatchOpCommand(player, singleAction.substring(12));
             } else if (singleAction.equals("close")) {
                 if (UltimateShop.isFolia) {
-                    Bukkit.getGlobalRegionScheduler().runDelayed(UltimateShop.instance, task -> {
-                        player.closeInventory();
-                    }, 2L);
+                    Bukkit.getGlobalRegionScheduler().runDelayed(UltimateShop.instance, task -> player.closeInventory(), 2L);
                 } else {
-                    Bukkit.getScheduler().runTaskLater(UltimateShop.instance, () -> {
-                        player.closeInventory();
-                    }, 2L);
+                    Bukkit.getScheduler().runTaskLater(UltimateShop.instance, () -> player.closeInventory(), 2L);
                 }
             } else if (singleAction.startsWith("buy: ") && splits.length == 3) {
                 lastTradeStatus = BuyProductMethod.startBuy(singleAction.substring(5).split(";;")[0],

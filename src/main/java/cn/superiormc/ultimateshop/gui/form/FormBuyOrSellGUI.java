@@ -32,10 +32,10 @@ public class FormBuyOrSellGUI extends FormGUI {
         }
         CustomForm.Builder tempVal2 = CustomForm.builder();
 
-        tempVal2.title(TextUtil.parse(ConfigManager.configManager.getString("menu.bedrock.buy-or-sell.title"))
+        tempVal2.title(TextUtil.parse(player, ConfigManager.configManager.getString("menu.bedrock.buy-or-sell.title"))
                 .replace("{item-name}", item.getDisplayName(getPlayer().getPlayer())));
 
-        tempVal2.input(TextUtil.parse(
+        tempVal2.input(TextUtil.parse(player,
                         ConfigManager.configManager.getString("menu.bedrock.buy-or-sell.buttons.amount.name")),
                 getButtonTab());
 
@@ -47,7 +47,7 @@ public class FormBuyOrSellGUI extends FormGUI {
     }
 
     private String getButtonTab() {
-        return TextUtil.parse(ConfigManager.configManager.getStringOrDefault("menu.bedrock.buy-or-sell.buttons.amount.buy-tip",
+        return TextUtil.parse(player, ConfigManager.configManager.getStringOrDefault("menu.bedrock.buy-or-sell.buttons.amount.buy-tip",
                 "menu.bedrock.buy-or-sell.buttons.amount.tip", ""));
     }
 }

@@ -28,6 +28,9 @@ public class TextUtil {
     }
 
     public static String withPAPI(String text, Player player) {
+        if (player == null) {
+            return text;
+        }
         if (text.matches("[0-9]+")) {
             return text;
         }

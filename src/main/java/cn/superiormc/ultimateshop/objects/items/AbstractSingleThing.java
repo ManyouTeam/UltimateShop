@@ -1,6 +1,5 @@
 package cn.superiormc.ultimateshop.objects.items;
 
-import cn.superiormc.mythicchanger.manager.MatchItemManager;
 import cn.superiormc.ultimateshop.hooks.EconomyHook;
 import cn.superiormc.ultimateshop.hooks.PriceHook;
 import cn.superiormc.ultimateshop.managers.ConfigManager;

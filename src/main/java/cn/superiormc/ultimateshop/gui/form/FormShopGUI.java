@@ -1,6 +1,5 @@
 package cn.superiormc.ultimateshop.gui.form;
 
-import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.cache.PlayerCache;
 import cn.superiormc.ultimateshop.cache.ServerCache;
 import cn.superiormc.ultimateshop.gui.FormGUI;
@@ -12,7 +11,6 @@ import cn.superiormc.ultimateshop.objects.buttons.AbstractButton;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import cn.superiormc.ultimateshop.objects.caches.ObjectUseTimesCache;
 import cn.superiormc.ultimateshop.objects.menus.ObjectMenu;
-import cn.superiormc.ultimateshop.utils.CommonUtil;
 import cn.superiormc.ultimateshop.utils.ItemUtil;
 import cn.superiormc.ultimateshop.utils.TextUtil;
 import org.bukkit.Bukkit;
@@ -29,7 +27,7 @@ import java.util.Map;
 
 public class FormShopGUI extends FormGUI {
 
-    private ObjectShop shop;
+    private final ObjectShop shop;
 
     private ObjectMenu shopMenu = null;
 
@@ -47,7 +45,7 @@ public class FormShopGUI extends FormGUI {
             LanguageManager.languageManager.sendStringText(player.getPlayer(),
                     "error.player-not-found",
                     "player",
-                    player.getPlayer().getName());
+                    player.getName());
             return;
         }
         if (shop.getShopMenu() == null) {
@@ -144,7 +142,7 @@ public class FormShopGUI extends FormGUI {
             menuItems.put(tempVal6, slot);
         }
 
-        tempVal5.title(TextUtil.parse(shopMenu.getString("title", shop.getShopDisplayName())
+        tempVal5.title(TextUtil.parse(player, shopMenu.getString("title", shop.getShopDisplayName())
                 .replace("{shop-name}", shop.getShopDisplayName())));
         tempVal5.validResultHandler(response -> {
             removeOpenGUIStatus();

@@ -1,7 +1,5 @@
 package cn.superiormc.ultimateshop.objects.items;
 
-import cn.superiormc.ultimateshop.objects.items.AbstractSingleThing;
-
 import java.math.BigDecimal;
 import java.util.Map;
 

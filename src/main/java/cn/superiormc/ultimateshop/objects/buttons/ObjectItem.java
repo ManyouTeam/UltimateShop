@@ -217,7 +217,7 @@ public class ObjectItem extends AbstractButton {
         if (itemConfig.getString("display-name") == null) {
             return ItemUtil.getItemName(displayItem.getDisplayItem(player));
         }
-        return TextUtil.parse(itemConfig.getString("display-name"));
+        return TextUtil.parse(player, itemConfig.getString("display-name"));
     }
 
     public ObjectPrices getBuyPrice() {

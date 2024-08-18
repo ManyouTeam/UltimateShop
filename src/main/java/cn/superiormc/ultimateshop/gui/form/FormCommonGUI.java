@@ -63,7 +63,7 @@ public class FormCommonGUI extends FormGUI {
             }
             menuItems.put(tempVal1, slot);
         }
-        tempVal2.title(TextUtil.parse(commonMenu.getString("title", "Shop")));
+        tempVal2.title(TextUtil.parse(player, commonMenu.getString("title", "Shop")));
         tempVal2.validResultHandler(response -> {
             menuButtons.get(menuItems.get(response.clickedButton())).clickEvent(ClickType.LEFT, player);
             removeOpenGUIStatus();
