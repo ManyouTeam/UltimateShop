@@ -5,9 +5,10 @@ import cn.superiormc.ultimateshop.objects.buttons.AbstractButton;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectButton;
 import cn.superiormc.ultimateshop.objects.menus.ObjectMenu;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,6 +24,8 @@ public class ObjectShop {
     public Map<String, AbstractButton> buttonItems = new HashMap<>();
 
     private String shopName;
+
+    private ObjectMenu menu;
 
     public ObjectShop(String fileName, YamlConfiguration config) {
         this.shopName = fileName;
@@ -45,7 +48,9 @@ public class ObjectShop {
     }
 
     private void initMenus() {
-        new ObjectMenu(getShopMenu(), this);
+        if (config.getString("settings.menu") != null) {
+            this.menu = new ObjectMenu(config.getString("settings.menu"), this);
+        }
     }
 
     public void initButtonItems() {
@@ -89,11 +94,23 @@ public class ObjectShop {
     }
 
     public String getShopMenu() {
-        return config.getString("settings.menu");
+        if (menu == null) {
+            return "";
+        }
+        return menu.getName();
+    }
+
+    @Nullable
+    public ObjectMenu getShopMenuObject() {
+        return menu;
     }
 
     public String getShopDisplayName() {
-        return config.getString("settings.shop-name", getShopName());
+        return config.getString("settings.shop-name", menu == null ? "" : menu.getName());
+    }
+
+    public YamlConfiguration getConfig() {
+        return config;
     }
 
     @Override

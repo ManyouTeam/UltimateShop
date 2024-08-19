@@ -14,35 +14,35 @@ import org.bukkit.entity.Player;
 
 public class OpenGUI {
 
-    public static void openShopGUI(Player player, ObjectShop shop, boolean bypassBedrockCheck, boolean reopen) {
+    public static void openShopGUI(Player player, ObjectShop shop, boolean bypass, boolean reopen) {
         if (shop == null) {
             return;
         }
-        if (UltimateShop.useGeyser && (bypassBedrockCheck || CommonUtil.isBedrockPlayer(player))) {
-            FormShopGUI formShopGUI = new FormShopGUI(player, shop);
+        if (UltimateShop.useGeyser && CommonUtil.isBedrockPlayer(player)) {
+            FormShopGUI formShopGUI = new FormShopGUI(player, shop, bypass);
             formShopGUI.openGUI(reopen);
             if (formShopGUI.getMenu() != null) {
                 formShopGUI.getMenu().doOpenAction(player);
             }
             return;
         }
-        ShopGUI gui = new ShopGUI(player, shop);
+        ShopGUI gui = new ShopGUI(player, shop, bypass);
         gui.openGUI(reopen);
         if (gui.getMenu() != null) {
             gui.getMenu().doOpenAction(player);
         }
     }
 
-    public static void openCommonGUI(Player player, String fileName, boolean bypassBedrockCheck, boolean reopen) {
-        if (UltimateShop.useGeyser && (bypassBedrockCheck || CommonUtil.isBedrockPlayer(player))) {
-            FormCommonGUI formCommonGUI = new FormCommonGUI(player, fileName);
+    public static void openCommonGUI(Player player, String fileName, boolean bypass, boolean reopen) {
+        if (UltimateShop.useGeyser && CommonUtil.isBedrockPlayer(player)) {
+            FormCommonGUI formCommonGUI = new FormCommonGUI(player, fileName, bypass);
             formCommonGUI.openGUI(reopen);
             if (formCommonGUI.getMenu() != null) {
                 formCommonGUI.getMenu().doOpenAction(player);
             }
             return;
         }
-        CommonGUI gui = new CommonGUI(player, fileName);
+        CommonGUI gui = new CommonGUI(player, fileName, bypass);
         gui.openGUI(reopen);
         if (gui.getMenu() != null) {
             gui.getMenu().doOpenAction(player);

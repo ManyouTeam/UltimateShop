@@ -25,11 +25,12 @@ public class ShopGUI extends InvGUI {
 
     private final ObjectShop shop;
 
-    private ObjectMenu shopMenu = null;
+    private final boolean bypass;
 
-    public ShopGUI(Player owner, ObjectShop shop) {
+    public ShopGUI(Player owner, ObjectShop shop, boolean bypass) {
         super(owner);
         this.shop = shop;
+        this.bypass = bypass;
     }
 
     @Override
@@ -60,15 +61,14 @@ public class ShopGUI extends InvGUI {
                     player.getName());
             return;
         }
-        if (shop.getShopMenu() == null) {
+        if (shop.getShopMenuObject() == null) {
             LanguageManager.languageManager.sendStringText(player.getPlayer(),
                     "error.shop-does-not-have-menu",
                     "shop",
                     shop.getShopName());
             return;
         }
-        shopMenu = ObjectMenu.shopMenus.get(shop);
-        if (shopMenu == null || shopMenu.menuConfigs == null) {
+        if (shop.getShopMenuObject().menuConfigs == null) {
             LanguageManager.languageManager.sendStringText(player.getPlayer(),
                     "error.shop-menu-not-found",
                     "shop",
@@ -77,7 +77,7 @@ public class ShopGUI extends InvGUI {
                     shop.getShopMenu());
             return;
         }
-        if (!shopMenu.getCondition().getBoolean(player.getPlayer())) {
+        if (!bypass && !shop.getShopMenuObject().getCondition().getBoolean(player.getPlayer())) {
             LanguageManager.languageManager.sendStringText(player,
                     "menu-condition-not-meet",
                     "menu",
@@ -116,7 +116,7 @@ public class ShopGUI extends InvGUI {
                 tempVal2.getUseTimesCache().get(tempVal5).setLastSellTime(null);
             }
         }
-        menuButtons = shopMenu.getMenu();
+        menuButtons = shop.getShopMenuObject().getMenu();
         if (ConfigManager.configManager.getBoolean("debug")) {
             for (Integer i : menuButtons.keySet()) {
                 Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §fMenu Buttons: " + menuButtons.get(i));
@@ -124,9 +124,9 @@ public class ShopGUI extends InvGUI {
         }
         menuItems = getMenuItems(player.getPlayer());
         if (Objects.isNull(inv)) {
-            if (shopMenu != null) {
-                inv = PaperUtil.createNewInv(player, shopMenu.getInt("size", 54),
-                        shopMenu.getString("title", shop.getShopDisplayName())
+            if (shop.getShopMenuObject() != null) {
+                inv = PaperUtil.createNewInv(player, shop.getShopMenuObject().getInt("size", 54),
+                        shop.getShopMenuObject().getString("title", shop.getShopDisplayName())
                                 .replace("{shop-name}", shop.getShopDisplayName()));
             }
         }
@@ -160,7 +160,7 @@ public class ShopGUI extends InvGUI {
 
     @Override
     public ObjectMenu getMenu() {
-        return shopMenu;
+        return shop.getShopMenuObject();
     }
 
 }

@@ -2,6 +2,7 @@ package cn.superiormc.ultimateshop.utils;
 
 import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
+import cn.superiormc.ultimateshop.managers.ErrorManager;
 import io.lumine.mythic.api.mobs.MythicMob;
 import io.lumine.mythic.bukkit.BukkitAdapter;
 import io.lumine.mythic.bukkit.MythicBukkit;
@@ -13,9 +14,7 @@ import org.bukkit.inventory.ItemStack;
 import org.geysermc.floodgate.api.FloodgateApi;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.time.LocalDateTime;
@@ -245,6 +244,15 @@ public class CommonUtil {
                 response.append(line);
             }
             return new JSONObject(response.toString());
+        }
+    }
+
+    public static void logFile(String filePath, String textToAppend) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(UltimateShop.instance.getDataFolder() + "/" + filePath, true))) {
+            writer.write(textToAppend);
+            writer.newLine();
+        } catch (IOException e) {
+            ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Can not write log file: " + filePath);
         }
     }
 }

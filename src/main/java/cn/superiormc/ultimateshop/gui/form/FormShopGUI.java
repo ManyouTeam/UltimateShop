@@ -29,11 +29,12 @@ public class FormShopGUI extends FormGUI {
 
     private final ObjectShop shop;
 
-    private ObjectMenu shopMenu = null;
+    private final boolean bypass;
 
-    public FormShopGUI(Player owner, ObjectShop shop) {
+    public FormShopGUI(Player owner, ObjectShop shop, boolean bypass) {
         super(owner);
         this.shop = shop;
+        this.bypass = bypass;
         constructGUI();
     }
 
@@ -48,19 +49,25 @@ public class FormShopGUI extends FormGUI {
                     player.getName());
             return;
         }
-        if (shop.getShopMenu() == null) {
+        if (shop.getShopMenuObject() == null) {
             LanguageManager.languageManager.sendStringText(player.getPlayer(),
                     "error.shop-does-not-have-menu",
                     "shop",
                     shop.getShopName());
             return;
         }
-        shopMenu = ObjectMenu.shopMenus.get(shop);
-        if (shopMenu == null) {
+        if (shop.getShopMenuObject().menuConfigs == null) {
             LanguageManager.languageManager.sendStringText(player.getPlayer(),
                     "error.shop-menu-not-found",
                     "shop",
                     shop.getShopName(),
+                    "menu",
+                    shop.getShopMenu());
+            return;
+        }
+        if (!bypass && !shop.getShopMenuObject().getCondition().getBoolean(player.getPlayer())) {
+            LanguageManager.languageManager.sendStringText(player,
+                    "menu-condition-not-meet",
                     "menu",
                     shop.getShopMenu());
             return;
@@ -97,7 +104,7 @@ public class FormShopGUI extends FormGUI {
                 tempVal2.getUseTimesCache().get(tempVal5).setLastSellTime(null);
             }
         }
-        menuButtons = shopMenu.getMenu();
+        menuButtons = shop.getShopMenuObject().getMenu();
         if (ConfigManager.configManager.getBoolean("debug")) {
             for (Integer i : menuButtons.keySet()) {
                 Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §fMenu Buttons: " + menuButtons.get(i));
@@ -142,7 +149,7 @@ public class FormShopGUI extends FormGUI {
             menuItems.put(tempVal6, slot);
         }
 
-        tempVal5.title(TextUtil.parse(player, shopMenu.getString("title", shop.getShopDisplayName())
+        tempVal5.title(TextUtil.parse(player, shop.getShopMenuObject().getString("title", shop.getShopDisplayName())
                 .replace("{shop-name}", shop.getShopDisplayName())));
         tempVal5.validResultHandler(response -> {
             removeOpenGUIStatus();
@@ -152,6 +159,6 @@ public class FormShopGUI extends FormGUI {
     }
 
     public ObjectMenu getMenu() {
-        return shopMenu;
+        return shop.getShopMenuObject();
     }
 }

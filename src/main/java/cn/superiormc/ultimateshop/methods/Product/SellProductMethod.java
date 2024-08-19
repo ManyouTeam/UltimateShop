@@ -1,5 +1,6 @@
 package cn.superiormc.ultimateshop.methods.Product;
 
+import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.cache.PlayerCache;
 import cn.superiormc.ultimateshop.cache.ServerCache;
 import cn.superiormc.ultimateshop.managers.CacheManager;
@@ -13,6 +14,7 @@ import cn.superiormc.ultimateshop.objects.items.GiveResult;
 import cn.superiormc.ultimateshop.objects.items.TakeResult;
 import cn.superiormc.ultimateshop.objects.items.prices.ObjectPrices;
 import cn.superiormc.ultimateshop.objects.items.products.ObjectProducts;
+import cn.superiormc.ultimateshop.utils.CommonUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -261,6 +263,29 @@ public class SellProductMethod {
                             !ConfigManager.configManager.getBoolean("placeholder.status.can-used-everywhere")),
                     "amount",
                     String.valueOf(multi));
+        }
+        if (ConfigManager.configManager.getBoolean("log-transaction.enabled") && !UltimateShop.freeVersion) {
+            String log = CommonUtil.modifyString(ConfigManager.configManager.getString("log-transaction.format"),
+                    "player", player.getName(),
+                    "player-uuid", player.getUniqueId().toString(),
+                    "shop", shop,
+                    "shop-name", tempVal1.getShopDisplayName(),
+                    "item", product,
+                    "item-name", tempVal2.getDisplayName(player),
+                    "amount", String.valueOf(multi),
+                    "price", ObjectPrices.getDisplayNameInLine(player,
+                            giveResult.getResultMap(),
+                            tempVal2.getSellPrice().getMode(),
+                            !ConfigManager.configManager.getBoolean("placeholder.status.can-used-everywhere")),
+                    "buy-or-sell", "SELL");
+            String filePath = ConfigManager.configManager.getString("log-transaction.file");
+            if (filePath.isEmpty()) {
+                Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §fLog: " + log);
+            } else if (UltimateShop.isFolia) {
+                CommonUtil.logFile(filePath, log);
+            } else {
+                Bukkit.getScheduler().runTaskAsynchronously(UltimateShop.instance, () -> CommonUtil.logFile(filePath, log));
+            }
         }
         return new ProductTradeStatus(ProductTradeStatus.Status.DONE, takeResult, giveResult);
     }

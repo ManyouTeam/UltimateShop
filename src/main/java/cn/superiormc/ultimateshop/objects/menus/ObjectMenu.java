@@ -189,4 +189,8 @@ public class ObjectMenu {
         }
     }
 
+    public String getName() {
+        return fileName;
+    }
+
 }

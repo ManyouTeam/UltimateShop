@@ -113,6 +113,14 @@ math:
   enabled: true
   scale: 2
 
+# Premium version only.
+log-transaction:
+  # It will cost extra performance cost.
+  enabled: false
+  # If set to empty value, we will just print the log into console.
+  file: 'log.txt'
+  format: '{player} | {shop} | {buy-or-sell} | {item-name}x{amount} | {price}'
+
 display-item:
   auto-set-first-product: true
   # @+lower case means conditional lore, do not remove them here.

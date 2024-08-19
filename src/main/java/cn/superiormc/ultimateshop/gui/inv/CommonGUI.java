@@ -17,9 +17,12 @@ public class CommonGUI extends InvGUI {
 
     private final String fileName;
 
-    public CommonGUI(Player owner, String fileName) {
+    private final boolean bypass;
+
+    public CommonGUI(Player owner, String fileName, boolean bypass) {
         super(owner);
         this.fileName = fileName;
+        this.bypass = bypass;
     }
 
     @Override
@@ -32,7 +35,7 @@ public class CommonGUI extends InvGUI {
                     fileName);
             return;
         }
-        if (!commonMenu.getCondition().getBoolean(player.getPlayer())) {
+        if (!bypass && !commonMenu.getCondition().getBoolean(player.getPlayer())) {
             LanguageManager.languageManager.sendStringText(player,
                     "menu-condition-not-meet",
                     "menu",

@@ -1,5 +1,6 @@
 package cn.superiormc.ultimateshop.commands;
 
+import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.LanguageManager;
 import cn.superiormc.ultimateshop.methods.GUI.OpenGUI;
@@ -23,24 +24,24 @@ public class SubMenu extends AbstractCommand {
 
     @Override
     public void executeCommandInGame(String[] args, Player player) {
-        boolean bypassBedrockCheck = args[args.length - 1].equals("-b");
+        boolean bypass = args[args.length - 1].equals("-b") && player.hasPermission(requiredPermission + ".admin") && !UltimateShop.freeVersion;
         ObjectShop tempVal1 = ConfigManager.configManager.getShop(args[1]);
         if (tempVal1 == null) {
             if (ObjectMenu.buyMoreMenuNames.contains(args[1])) {
                 LanguageManager.languageManager.sendStringText(player, "error.buy-more-menu-direct-open");
                 return;
             }
-            OpenGUI.openCommonGUI(player, args[1], bypassBedrockCheck, false);
+            OpenGUI.openCommonGUI(player, args[1], bypass, false);
         }
         else {
-            OpenGUI.openShopGUI(player, tempVal1, bypassBedrockCheck, false);
+            OpenGUI.openShopGUI(player, tempVal1, bypass, false);
 
         }
     }
 
     @Override
     public void executeCommandInConsole(String[] args) {
-        boolean bypassBedrockCheck = false;
+        boolean bypass = false;
         Player player = Bukkit.getPlayer(args[2]);
         if (player == null) {
             LanguageManager.languageManager.sendStringText
@@ -49,8 +50,8 @@ public class SubMenu extends AbstractCommand {
                             args[2]);
             return;
         }
-        if (args[args.length - 1].equals("-b")) {
-            bypassBedrockCheck = true;
+        if (args[args.length - 1].equals("-b") && !UltimateShop.freeVersion) {
+            bypass = true;
         }
         ObjectShop tempVal1 = ConfigManager.configManager.getShop(args[1]);
         if (tempVal1 == null) {
@@ -58,10 +59,10 @@ public class SubMenu extends AbstractCommand {
                 LanguageManager.languageManager.sendStringText("error.buy-more-menu-direct-open");
                 return;
             }
-            OpenGUI.openCommonGUI(player, args[1], bypassBedrockCheck, false);
+            OpenGUI.openCommonGUI(player, args[1], bypass, false);
         }
         else {
-            OpenGUI.openShopGUI(player, tempVal1, bypassBedrockCheck, false);
+            OpenGUI.openShopGUI(player, tempVal1, bypass, false);
         }
     }
 

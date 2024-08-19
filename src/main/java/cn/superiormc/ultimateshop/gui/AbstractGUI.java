@@ -2,8 +2,6 @@ package cn.superiormc.ultimateshop.gui;
 
 import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
-import cn.superiormc.ultimateshop.managers.LanguageManager;
-import cn.superiormc.ultimateshop.utils.CommonUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -47,14 +45,10 @@ public abstract class AbstractGUI {
         if (playerList.containsKey(player) && playerList.get(player) != GUIStatus.ALREADY_IN_COOLDOWN) {
             playerList.replace(player, GUIStatus.ALREADY_IN_COOLDOWN);
             if (UltimateShop.isFolia) {
-                Bukkit.getGlobalRegionScheduler().runDelayed(UltimateShop.instance, task -> {
-                    playerList.remove(player);
-                }, time);
+                Bukkit.getGlobalRegionScheduler().runDelayed(UltimateShop.instance, task -> playerList.remove(player), time);
                 return;
             }
-            Bukkit.getScheduler().runTaskLater(UltimateShop.instance, () -> {
-                playerList.remove(player);
-            }, time);
+            Bukkit.getScheduler().runTaskLater(UltimateShop.instance, () -> playerList.remove(player), time);
         }
     }
 
@@ -67,14 +61,10 @@ public abstract class AbstractGUI {
         if (!inClickCooldown && setValue > 0L) {
             inClickCooldown = true;
             if (UltimateShop.isFolia) {
-                Bukkit.getGlobalRegionScheduler().runDelayed(UltimateShop.instance, task -> {
-                    inClickCooldown = false;
-                }, setValue);
+                Bukkit.getGlobalRegionScheduler().runDelayed(UltimateShop.instance, task -> inClickCooldown = false, setValue);
                 return;
             }
-            Bukkit.getScheduler().runTaskLater(UltimateShop.instance, () -> {
-                inClickCooldown = false;
-            }, setValue);
+            Bukkit.getScheduler().runTaskLater(UltimateShop.instance, () -> inClickCooldown = false, setValue);
         }
     }
 

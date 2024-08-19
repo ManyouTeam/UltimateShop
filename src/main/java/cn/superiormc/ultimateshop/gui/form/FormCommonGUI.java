@@ -19,18 +19,28 @@ public class FormCommonGUI extends FormGUI {
 
     private final String fileName;
 
-    public FormCommonGUI(Player owner, String fileName) {
+    private final boolean bypass;
+
+    public FormCommonGUI(Player owner, String fileName, boolean bypass) {
         super(owner);
         this.fileName = fileName;
+        this.bypass = bypass;
         constructGUI();
     }
 
     @Override
     protected void constructGUI() {
         commonMenu = ObjectMenu.commonMenus.get(fileName);
-        if (commonMenu == null) {
+        if (commonMenu == null || commonMenu.menuConfigs == null) {
             LanguageManager.languageManager.sendStringText(player,
                     "error.menu-not-found",
+                    "menu",
+                    fileName);
+            return;
+        }
+        if (!bypass && !commonMenu.getCondition().getBoolean(player.getPlayer())) {
+            LanguageManager.languageManager.sendStringText(player,
+                    "menu-condition-not-meet",
                     "menu",
                     fileName);
             return;
