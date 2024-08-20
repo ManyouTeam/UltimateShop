@@ -5,6 +5,7 @@ import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.ErrorManager;
 import cn.superiormc.ultimateshop.managers.LanguageManager;
 import cn.superiormc.ultimateshop.methods.Items.BuildItem;
+import cn.superiormc.ultimateshop.utils.CommonUtil;
 import cn.superiormc.ultimateshop.utils.TextUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
@@ -88,11 +89,8 @@ public class SellStickItem {
     }
 
     public static String getSellStickID(ItemStack item) {
-        if (!item.hasItemMeta()) {
-            return null;
-        }
         ItemMeta meta = item.getItemMeta();
-        if (!meta.getPersistentDataContainer().has(SELL_STICK_ID, PersistentDataType.STRING)) {
+        if (meta == null || !meta.getPersistentDataContainer().has(SELL_STICK_ID, PersistentDataType.STRING)) {
             return null;
         }
         return meta.getPersistentDataContainer().get(SELL_STICK_ID, PersistentDataType.STRING);
@@ -126,15 +124,15 @@ public class SellStickItem {
             return;
         }
         int nowValue = getSellStickValue(item);
-        item.setAmount(item.getAmount() - 1);
         String id = getSellStickID(item);
+        item.setAmount(item.getAmount() - 1);
         if (id == null) {
             ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Can not found sell stick item ID");
         }
         else if (nowValue - 1 > 0) {
             ItemStack tempItem = getSellStick(player, id, 1, nowValue - 1, false);
             if (tempItem != null) {
-                player.getInventory().addItem(tempItem);
+                CommonUtil.giveOrDrop(player, tempItem);
             }
         }
     }

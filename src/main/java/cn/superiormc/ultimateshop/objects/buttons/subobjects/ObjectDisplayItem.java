@@ -78,7 +78,7 @@ public class ObjectDisplayItem {
             if (section != null && !section.getBoolean("modify-lore", true)) {
                 return addLoreDisplayItem;
             }
-            return ModifyDisplayItem.modifyItem(player, multi, addLoreDisplayItem, item, !item.getBuyMore());
+            return ModifyDisplayItem.modifyItem(player, multi, addLoreDisplayItem, item, false);
         }
         return addLoreDisplayItem;
     }

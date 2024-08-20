@@ -151,8 +151,8 @@ display-item:
     - '@k&#FFFACDRight-Shift click to pick amount!-b'
     - '@b&#FFFACDDrop (Q key) to sell all!-b'
     - '@n&c&l:( Can not do this-i'
-    - '@a&cThis item can not be selled-i-m'
-    - '@b&cThis item can not be purcahsed-i-m'
+    - '@a&cThis item can not be sold-i-m'
+    - '@b&cThis item can not be purchased-i-m'
 
 placeholder:
   auto-settings:
@@ -244,7 +244,7 @@ placeholder:
     buy-max-limit-player: '&#ff3300You can not buy more!'
     buy-max-limit-server: '&#ff3300SOLD OUT!'
     sell-max-limit-player: '&#ff3300Can not sell more!'
-    sell-max-limit-server: '&#ff3300THIS ITEM CAN NOT BE SELLED!'
+    sell-max-limit-server: '&#ff3300THIS ITEM CAN NOT BE SOLD!'
     buy-price-not-enough: '&#ff3300Do not have enough money to buy!'
     sell-price-not-enough: '&#ff3300Do not have enough item to sell!'
     error: '&#ff3300Error!'

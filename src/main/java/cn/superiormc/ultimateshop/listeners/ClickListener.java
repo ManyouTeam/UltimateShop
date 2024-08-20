@@ -85,11 +85,6 @@ public class ClickListener implements Listener {
                 return;
             }
             playerList.add(event.getPlayer());
-            if (UltimateShop.isFolia) {
-                FoliaUtil.removeSellStoclCooldownForFolia(event.getPlayer(), cooldown);
-            } else {
-                Bukkit.getScheduler().runTaskLater(UltimateShop.instance, () -> playerList.remove(event.getPlayer()), cooldown);
-            }
             for (String shop : ConfigManager.configManager.shopConfigs.keySet()) {
                 for (ObjectItem products : ConfigManager.configManager.getShop(shop).getProductList()) {
                     if (ConfigManager.configManager.getStringListOrDefault("menu.sell-all.ignore-items",
@@ -121,6 +116,11 @@ public class ClickListener implements Listener {
                                 result, ThingMode.ALL, !ConfigManager.configManager.getBoolean("placeholder.status.can-used-everywhere")
                         ));
                 SellStickItem.removeSellStickValue(event.getPlayer(), event.getItem());
+            }
+            if (UltimateShop.isFolia) {
+                FoliaUtil.removeSellStoclCooldownForFolia(event.getPlayer(), cooldown);
+            } else {
+                Bukkit.getScheduler().runTaskLater(UltimateShop.instance, () -> playerList.remove(event.getPlayer()), cooldown);
             }
         }
     }

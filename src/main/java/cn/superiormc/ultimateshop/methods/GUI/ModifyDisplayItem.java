@@ -239,7 +239,7 @@ public class ModifyDisplayItem {
                         }
                         break;
                     case 'k':
-                        if (!buyMore) {
+                        if (!buyMore && item.getBuyMore()) {
                             if (not) {
                                 continue;
                             }
