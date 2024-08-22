@@ -42,7 +42,7 @@ public class ObjectSingleProduct extends AbstractSingleThing {
     }
 
     @Override
-    public String getDisplayName(BigDecimal amount, boolean alwaysStatic) {
+    public String getDisplayName(int multi, BigDecimal amount, boolean alwaysStatic) {
         if (singleSection == null) {
             return ConfigManager.configManager.getString("placeholder.price.unknown");
         }
@@ -52,7 +52,7 @@ public class ObjectSingleProduct extends AbstractSingleThing {
                 "amount",
                 String.valueOf(amount),
                 "status",
-                alwaysStatic ? "" : StaticPlaceholder.getCompareValue(baseAmount, amount));
+                alwaysStatic ? "" : StaticPlaceholder.getCompareValue(baseAmount.multiply(new BigDecimal(multi)), amount));
     }
 
     public boolean isStatic() {

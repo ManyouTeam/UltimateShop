@@ -124,11 +124,13 @@ public class PlaceholderAPIExpansion extends PlaceholderExpansion {
             switch (tempVal1) {
                 case "buy-price":
                     return TextUtil.parse(ObjectPrices.getDisplayNameInLine(player,
+                            1,
                             item.getBuyPrice().takeSingleThing(player.getInventory(), player, playerTimesCache.getBuyUseTimes(), 1, true).getResultMap(),
                             item.getBuyPrice().getMode(),
                             !ConfigManager.configManager.getBoolean("placeholder.status.can-used-everywhere")));
                 case "sell-price":
                     return TextUtil.parse(ObjectPrices.getDisplayNameInLine(player,
+                            1,
                             item.getSellPrice().giveSingleThing(player, playerTimesCache.getBuyUseTimes(), 1).getResultMap(),
                             item.getSellPrice().getMode(),
                             !ConfigManager.configManager.getBoolean("placeholder.status.can-used-everywhere")));

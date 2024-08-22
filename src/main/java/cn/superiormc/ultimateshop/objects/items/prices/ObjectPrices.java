@@ -262,6 +262,7 @@ public class ObjectPrices extends AbstractThings {
     }
 
     public static List<String> getDisplayName(Player player,
+                                              int multi,
                                               Map<AbstractSingleThing, BigDecimal> result,
                                               ThingMode mode,
                                               boolean alwaysStatic) {
@@ -291,16 +292,17 @@ public class ObjectPrices extends AbstractThings {
         }
         List<String> tempVal2 = new ArrayList<>();
         for (ObjectDisplayPlaceholder placeholder : tempVal1.keySet()) {
-            tempVal2.add(TextUtil.withPAPI(placeholder.getDisplayName(tempVal1.get(placeholder), alwaysStatic), player));
+            tempVal2.add(TextUtil.withPAPI(placeholder.getDisplayName(multi, tempVal1.get(placeholder), alwaysStatic), player));
         }
         return tempVal2;
     }
 
     public static String getDisplayNameInLine(Player player,
+                                              int multi,
                                               Map<AbstractSingleThing, BigDecimal> result,
                                               ThingMode mode,
                                               boolean alwaysStatic) {
-        List<String> text = getDisplayName(player, result, mode, alwaysStatic);
+        List<String> text = getDisplayName(player, multi, result, mode, alwaysStatic);
         StringBuilder tempVal2 = new StringBuilder();
         switch (mode) {
             case ANY: case CLASSIC_ANY:

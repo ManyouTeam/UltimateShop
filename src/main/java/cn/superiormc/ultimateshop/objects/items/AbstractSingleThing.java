@@ -260,7 +260,7 @@ public abstract class AbstractSingleThing implements Comparable<AbstractSingleTh
         return itemStack;
     }
 
-    public abstract String getDisplayName(BigDecimal amount, boolean alwaysStatic);
+    public abstract String getDisplayName(int multi, BigDecimal amount, boolean alwaysStatic);
 
     public String getId() {
         return id;

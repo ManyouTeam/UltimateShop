@@ -213,6 +213,8 @@ placeholder:
   # Premium version only
   status:
     # If disabled, status placeholder will only display in shop GUI.
+    # For sell all, sell stick etc. still can not use status placeholder because it will sell not only 1 type product
+    # and we can not know whether total price is cheaper or higher.
     can-used-everywhere: false
   math:
     scale: 0

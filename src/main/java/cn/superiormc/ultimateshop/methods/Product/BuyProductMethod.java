@@ -182,6 +182,7 @@ public class BuyProductMethod {
                         tempVal2.getDisplayName(player),
                         "price",
                         ObjectPrices.getDisplayNameInLine(player,
+                                multi,
                                 takeResult.getResultMap(),
                                 tempVal5.getMode(),
                                 !ConfigManager.configManager.getBoolean("placeholder.status.can-used-everywhere")));
@@ -224,6 +225,7 @@ public class BuyProductMethod {
                     tempVal2.getDisplayName(player),
                     "price",
                     ObjectPrices.getDisplayNameInLine(player,
+                            multi,
                             takeResult.getResultMap(),
                             tempVal5.getMode(),
                             !ConfigManager.configManager.getBoolean("placeholder.status.can-used-everywhere")),
@@ -240,6 +242,7 @@ public class BuyProductMethod {
                     "item-name", tempVal2.getDisplayName(player),
                     "amount", String.valueOf(multi),
                     "price", ObjectPrices.getDisplayNameInLine(player,
+                            multi,
                             takeResult.getResultMap(),
                             tempVal5.getMode(),
                             !ConfigManager.configManager.getBoolean("placeholder.status.can-used-everywhere")),
@@ -253,6 +256,6 @@ public class BuyProductMethod {
                 Bukkit.getScheduler().runTaskAsynchronously(UltimateShop.instance, () -> CommonUtil.logFile(filePath, log));
             }
         }
-        return new ProductTradeStatus(ProductTradeStatus.Status.DONE, takeResult, giveResult);
+        return new ProductTradeStatus(ProductTradeStatus.Status.DONE, takeResult, giveResult, multi);
     }
 }

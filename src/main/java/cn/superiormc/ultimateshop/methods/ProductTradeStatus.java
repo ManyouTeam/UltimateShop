@@ -27,6 +27,8 @@ public class ProductTradeStatus {
 
     private TakeResult takeResult = null;
 
+    private int multi;
+
     private Status status;
     public ProductTradeStatus(Status status,
                               TakeResult takeResult) {
@@ -36,10 +38,12 @@ public class ProductTradeStatus {
 
     public ProductTradeStatus(Status status,
                               TakeResult takeResult,
-                              GiveResult giveResult) {
+                              GiveResult giveResult,
+                              int multi) {
         this.status = status;
         this.takeResult = takeResult;
         this.giveResult = giveResult;
+        this.multi = multi;
     }
 
     public ProductTradeStatus(Status status) {
@@ -62,6 +66,10 @@ public class ProductTradeStatus {
     @Nullable
     public GiveResult getGiveResult() {
         return giveResult;
+    }
+
+    public int getAmount() {
+        return multi;
     }
 
     public enum Status {

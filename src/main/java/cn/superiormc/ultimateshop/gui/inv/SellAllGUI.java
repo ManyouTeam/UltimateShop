@@ -88,8 +88,8 @@ public class SellAllGUI extends InvGUI {
                 }
             }
             LanguageManager.languageManager.sendStringText(player.getPlayer(), "start-sell-all", "amount", String.valueOf(nowAmount - afterAmount),
-                    "reward", ObjectPrices.getDisplayNameInLine(player,
-                    result, ThingMode.ALL, !ConfigManager.configManager.getBoolean("placeholder.status.can-used-everywhere")
+                    "reward", ObjectPrices.getDisplayNameInLine(player, 1,
+                    result, ThingMode.ALL, false
             ));
         }
         ItemStack[] storage = Arrays.stream(inv.getStorageContents()).filter(Objects::nonNull).toArray(ItemStack[]::new);

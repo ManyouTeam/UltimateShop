@@ -3,6 +3,7 @@ package cn.superiormc.ultimateshop.methods;
 import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.objects.items.ObjectCondition;
+import cn.superiormc.ultimateshop.utils.CommonUtil;
 import cn.superiormc.ultimateshop.utils.TextUtil;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
@@ -24,11 +25,14 @@ public class StaticPlaceholder {
             return "ERROR: Unknown Placeholder";
         }
         if (compareValue.compareTo(baseValue) > 0) {
-            return TextUtil.parse(ConfigManager.configManager.getString("placeholder.compare.up", "↑"));
+            return TextUtil.parse(CommonUtil.modifyString(ConfigManager.configManager.getString("placeholder.compare.up", "↑"),
+                    "base", baseValue.toString(), "compare", compareValue.toString()));
         } else if (compareValue.compareTo(baseValue) == 0) {
-            return TextUtil.parse(ConfigManager.configManager.getString("placeholder.compare.same", "-"));
+            return TextUtil.parse(CommonUtil.modifyString(ConfigManager.configManager.getString("placeholder.compare.same", "-"),
+                    "base", baseValue.toString(), "compare", compareValue.toString()));
         } else {
-            return TextUtil.parse(ConfigManager.configManager.getString("placeholder.compare.down", "↓"));
+            return TextUtil.parse(CommonUtil.modifyString(ConfigManager.configManager.getString("placeholder.compare.down", "↓"),
+                    "base", baseValue.toString(), "compare", compareValue.toString()));
         }
     }
 
