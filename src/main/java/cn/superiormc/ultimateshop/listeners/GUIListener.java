@@ -33,7 +33,7 @@ public class GUIListener implements Listener {
 
     @EventHandler
     public void onClick(InventoryClickEvent e) {
-        //try {
+        try {
             if (e.getWhoClicked().equals(player)) {
                 if (!Objects.equals(e.getClickedInventory(), gui.getInv())) {
                     if (e.getClick().isShiftClick() || e.getClick() == ClickType.DOUBLE_CLICK ||
@@ -56,13 +56,13 @@ public class GUIListener implements Listener {
                     player.getInventory().setItemInOffHand(player.getInventory().getItemInOffHand());
                 }
             }
-        //}
-        //catch (Throwable throwable) {
-        //    ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Your menu configs has wrong, error message: " + throwable.getMessage());
-        //    throwable.fillInStackTrace();
-        //    AbstractGUI.playerList.remove(player);
-        //    e.setCancelled(true);
-        //}
+        }
+        catch (Throwable throwable) {
+            ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Your menu configs has wrong, error message: " + throwable.getMessage());
+            throwable.fillInStackTrace();
+            AbstractGUI.playerList.remove(player);
+            e.setCancelled(true);
+        }
     }
 
     @EventHandler

@@ -10,7 +10,6 @@ import cn.superiormc.ultimateshop.objects.items.products.ObjectSingleProduct;
 import cn.superiormc.ultimateshop.objects.items.subobjects.ObjectDisplayPlaceholder;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -106,7 +105,7 @@ public abstract class AbstractSingleThing implements Comparable<AbstractSingleTh
         }
         switch (type) {
             case VANILLA_ITEM:  case HOOK_ITEM: case MATCH_ITEM:
-                if (ConfigManager.configManager.getString("give-item.give-method", "BUKKIT").equals("BUKKIT")) {
+                if (ConfigManager.configManager.getString("give-item.give-method", "BUKKIT").equalsIgnoreCase("BUKKIT")) {
                     return getItemThing(singleSection,
                             player,
                             cost, true);
@@ -259,10 +258,12 @@ public abstract class AbstractSingleThing implements Comparable<AbstractSingleTh
                 emptySlots ++;
             } else if (item.isSimilar(targetItem)) {
                 leftAmount = leftAmount + targetItem.getMaxStackSize() - item.getAmount();
+                if (leftAmount < 0) {
+                    leftAmount = 0;
+                }
             }
         }
         int requiredSlots = 0;
-        Bukkit.getConsoleSender().sendMessage(" " + amount + "--" + leftAmount + "--");
         if (amount > leftAmount) {
             requiredSlots = (int) Math.ceil((double) (amount - leftAmount) / targetItem.getMaxStackSize());
             boolean first = true;
