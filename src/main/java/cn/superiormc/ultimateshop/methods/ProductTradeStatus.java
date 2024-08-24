@@ -1,9 +1,7 @@
 package cn.superiormc.ultimateshop.methods;
 
-import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.objects.items.GiveResult;
 import cn.superiormc.ultimateshop.objects.items.TakeResult;
-import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -23,13 +21,16 @@ public class ProductTradeStatus {
 
     public static ProductTradeStatus IN_COOLDOWN = new ProductTradeStatus(Status.IN_COOLDOWN);
 
+    public static ProductTradeStatus INVENTORY_FULL = new ProductTradeStatus(Status.INVENTORY_FULL);
+
     private GiveResult giveResult = null;
 
     private TakeResult takeResult = null;
 
     private int multi;
 
-    private Status status;
+    private final Status status;
+
     public ProductTradeStatus(Status status,
                               TakeResult takeResult) {
         this.status = status;
@@ -79,6 +80,7 @@ public class ProductTradeStatus {
         SERVER_MAX,
         NOT_ENOUGH,
         IN_COOLDOWN,
+        INVENTORY_FULL,
         DONE
     }
 }

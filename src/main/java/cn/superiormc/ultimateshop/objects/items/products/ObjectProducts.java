@@ -187,7 +187,6 @@ public class ObjectProducts extends AbstractThings {
 
     public ItemStack getDisplayItem(ConfigurationSection section,
                                     Player player,
-                                    boolean give,
                                     int times,
                                     int classic_multi) {
         for (ObjectSingleProduct tempVal1 : singleProducts) {
@@ -196,7 +195,7 @@ public class ObjectProducts extends AbstractThings {
             }
             // 商品的 times 是没用的，因为商品没有 apply 选项
             double cost = getAmount(player, times, classic_multi, true).get(tempVal1).doubleValue();
-            ItemStack tempVal2 = tempVal1.getItemThing(section, player, give, cost);
+            ItemStack tempVal2 = tempVal1.getItemThing(section, player, cost, true).getDisplayItem();
             if (tempVal2 != null) {
                 return tempVal2;
             }

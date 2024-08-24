@@ -72,6 +72,7 @@ help:
     &f/shop getplaceholdervalue <text> &7- Parse input text. &c(Premium)
     &f/shop givesellstick <itemID> <playerID> [amount] &7- Give sell stick item. &c(Premium)
 
+inventory-full: "&#98FB98[UltimateShop] &f这次交易未能成功完成，因为在交易完成后，您的背包将会满掉!"
 start-sell-all: '&#98FB98[UltimateShop] &f您的所有 {amount}x 件物品已经回收，获得了 {reward}!'
 start-sell-stick: '&#98FB98[UltimateShop] &f您的所有可回收物品都已回收，获得了 {reward}!'
 give-sell-stick: '&#98FB98[UltimateShop] &f给予 {player} 回收棒 {item} x{amount}!'

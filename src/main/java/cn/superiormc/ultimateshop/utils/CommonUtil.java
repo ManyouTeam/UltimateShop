@@ -20,12 +20,16 @@ import java.net.URL;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
 public class CommonUtil {
 
-    public static boolean checkPluginLoad(String pluginName){
+    public static boolean checkPluginLoad(String pluginName) {
+        if (pluginName == null) {
+            return false;
+        }
         return UltimateShop.instance.getServer().getPluginManager().isPluginEnabled(pluginName);
     }
 
@@ -217,10 +221,6 @@ public class CommonUtil {
             return Color.fromRGB(Integer.parseInt(keySplit[0]), Integer.parseInt(keySplit[1]), Integer.parseInt(keySplit[2]));
         }
         return Color.fromRGB(Integer.parseInt(color));
-    }
-
-    public void playSound(Player player, String sound) {
-        player.playSound(player.getLocation(), sound, 1, 1);
     }
 
     public static void giveOrDrop(Player player, ItemStack... item) {

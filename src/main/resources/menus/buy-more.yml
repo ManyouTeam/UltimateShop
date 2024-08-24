@@ -64,7 +64,7 @@ confirm-items:
   D:
     display-item:
       material: PAPER
-      name: '&a&lCLICK TO BUY'
+      name: '&a&lCLICK TO BUY x{amount}'
       lore:
         - '&aClick to confirm and purchase'
         - '&athe quantity you have selected.'
@@ -74,7 +74,7 @@ confirm-items:
   E:
     display-item:
       material: PAPER
-      name: '&c&lCLICK TO SELL'
+      name: '&c&lCLICK TO SELL x{amount}'
       lore:
         - '&cClick to confirm and sell'
         - '&cthe quantity you have selected.'

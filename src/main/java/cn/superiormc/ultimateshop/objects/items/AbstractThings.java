@@ -6,6 +6,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Map;
 
 
@@ -37,10 +39,23 @@ public abstract class AbstractThings {
 
     public abstract GiveResult giveSingleThing(Player player, int times, int amount);
 
-    public void giveThing(Player player, Map<AbstractSingleThing, BigDecimal> result) {
+    public boolean giveThing(Player player, Map<AbstractSingleThing, BigDecimal> result) {
+        boolean resultBoolean = true;
+        Collection<GiveItemStack> giveItemStacks = new ArrayList<>();
         for (AbstractSingleThing singleThing: result.keySet()) {
-            singleThing.playerGive(player, result.get(singleThing).doubleValue());
+            GiveItemStack giveItemStack = singleThing.playerCanGive(player, result.get(singleThing).doubleValue());
+            giveItemStacks.add(giveItemStack);
+            if (!giveItemStack.isCanGive()) {
+                resultBoolean = false;
+            }
         }
+        if (!resultBoolean) {
+            return false;
+        }
+        for (GiveItemStack giveItemStack : giveItemStacks) {
+            giveItemStack.giveToPlayer(player);
+        }
+        return true;
     }
 
     public abstract TakeResult takeSingleThing(Inventory inventory, Player player, int times, int amount, boolean test);

@@ -44,6 +44,13 @@ sell:
     click-type: RIGHT
   max-amount: 128
 
+give-item:
+  # Support value: BUKKIT, SMART
+  # SMART will cost more server performance but will follow the vanilla max stack to give player item, also support check full.
+  give-method: BUKKIT
+  # Only support SMART give method.
+  check-full: false
+
 menu:
   # Recommend use when you are running big server, it will make player no longer quickly click
   # and reopen shop menu to make sure UltimateShop not lag your server.

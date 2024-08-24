@@ -1,6 +1,5 @@
 package cn.superiormc.ultimateshop.objects.items;
 
-import cn.superiormc.ultimateshop.hooks.EconomyHook;
 import cn.superiormc.ultimateshop.hooks.PriceHook;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.methods.Items.BuildItem;
@@ -11,6 +10,7 @@ import cn.superiormc.ultimateshop.objects.items.products.ObjectSingleProduct;
 import cn.superiormc.ultimateshop.objects.items.subobjects.ObjectDisplayPlaceholder;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -18,6 +18,8 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public abstract class AbstractSingleThing implements Comparable<AbstractSingleThing> {
@@ -97,33 +99,24 @@ public abstract class AbstractSingleThing implements Comparable<AbstractSingleTh
         }
     }
 
-    public void playerGive(Player player,
-                           double cost) {
+    public GiveItemStack playerCanGive(Player player,
+                              double cost) {
         if (singleSection == null) {
-            return;
+            return new GiveItemStack(this);
         }
         switch (type) {
             case VANILLA_ITEM:  case HOOK_ITEM: case MATCH_ITEM:
-                if (getItemThing(singleSection,
-                        player,
-                        true,
-                        cost) == null) {
-                    return;
+                if (ConfigManager.configManager.getString("give-item.give-method", "BUKKIT").equals("BUKKIT")) {
+                    return getItemThing(singleSection,
+                            player,
+                            cost, true);
+                } else {
+                    return getItemThing(singleSection, player, cost, false);
                 }
-                return;
-            case HOOK_ECONOMY :
-                EconomyHook.giveEconomy(singleSection.getString("economy-plugin"),
-                        singleSection.getString("economy-type", "Unknown"),
-                        player,
-                        cost);
-
-                return;
-            case VANILLA_ECONOMY:
-                EconomyHook.giveEconomy(singleSection.getString("economy-type"),
-                        player,
-                        (int) cost);
-                return;
+            case HOOK_ECONOMY : case VANILLA_ECONOMY:
+                return new GiveItemStack(cost, this);
         }
+        return new GiveItemStack(this);
     }
 
     public boolean getCondition(Player player) {
@@ -154,11 +147,10 @@ public abstract class AbstractSingleThing implements Comparable<AbstractSingleTh
                         pluginName,
                         itemID);
             case VANILLA_ITEM:
-                ItemStack tempVal1 = getItemThing(section, player, false, 1);
+                ItemStack tempVal1 = getItemThing(section, player, 1, true).getTargetItem();
                 if (tempVal1 == null) {
                     return 0;
                 }
-                tempVal1.setAmount(1);
                 return PriceHook.getItemAmount(inventory, tempVal1);
             case MATCH_ITEM:
                 return PriceHook.getItemAmount(inventory, section);
@@ -214,11 +206,10 @@ public abstract class AbstractSingleThing implements Comparable<AbstractSingleTh
                         itemID,
                         (int) cost, take);
             case VANILLA_ITEM:
-                ItemStack itemStack = getItemThing(section, player, false, 1);
+                ItemStack itemStack = getItemThing(section, player,1, true).getTargetItem();
                 if (itemStack == null) {
                     return false;
                 }
-                itemStack.setAmount(1);
                 return PriceHook.getPrice(inventory, player, itemStack, (int) cost, take);
             case MATCH_ITEM:
                 return PriceHook.getPrice(inventory, player, section, (int) cost, take);
@@ -239,25 +230,58 @@ public abstract class AbstractSingleThing implements Comparable<AbstractSingleTh
         return false;
     }
 
-    public ItemStack getItemThing(ConfigurationSection section,
-                                  Player player,
-                                  boolean give,
-                                  double cost) {
+    public GiveItemStack getItemThing(ConfigurationSection section,
+                                   Player player,
+                                   double cost,
+                                   boolean displayOnly) {
         if (section == null) {
             if (singleSection == null) {
-                return null;
+                return new GiveItemStack(this);
             }
             section = singleSection;
         }
-        ItemStack itemStack;
-        itemStack = BuildItem.buildItemStack(player, section, (int) cost);
-        if (itemStack == null) {
-            return null;
+        int amount = (int) cost;
+        ItemStack targetItem = BuildItem.buildItemStack(player, section, 1);
+        if (targetItem == null) {
+            return new GiveItemStack(this);
         }
-        if (give) {
-            CommonUtil.giveOrDrop(player, itemStack);
+        ItemStack displayItem = targetItem.clone();
+        displayItem.setAmount((int) cost);
+        if (displayOnly) {
+            return new GiveItemStack(targetItem, displayItem, this);
         }
-        return itemStack;
+        Collection<ItemStack> result = new ArrayList<>();
+        int leftAmount = 0;
+        // leftAmount 代表物品玩家当前背包可以重复利用的堆叠数量
+        int emptySlots = 0;
+        for (ItemStack item : player.getInventory().getStorageContents()) {
+            if (item == null || item.getType().isAir()) {
+                emptySlots ++;
+            } else if (item.isSimilar(targetItem)) {
+                leftAmount = leftAmount + targetItem.getMaxStackSize() - item.getAmount();
+            }
+        }
+        int requiredSlots = 0;
+        Bukkit.getConsoleSender().sendMessage(" " + amount + "--" + leftAmount + "--");
+        if (amount > leftAmount) {
+            requiredSlots = (int) Math.ceil((double) (amount - leftAmount) / targetItem.getMaxStackSize());
+            boolean first = true;
+            for (int i = 0 ; i < requiredSlots ; i ++) {
+                if (first) {
+                    ItemStack tempVal1 = targetItem.clone();
+                    tempVal1.setAmount((int) cost - (requiredSlots - 1) * targetItem.getMaxStackSize());
+                    result.add(tempVal1);
+                    first = false;
+                    continue;
+                }
+                ItemStack tempVal1 = targetItem.clone();
+                tempVal1.setAmount(targetItem.getMaxStackSize());
+                result.add(tempVal1);
+            }
+        } else {
+            result.add(displayItem);
+        }
+        return new GiveItemStack(result, targetItem, displayItem, emptySlots >= requiredSlots, this);
     }
 
     public abstract String getDisplayName(int multi, BigDecimal amount, boolean alwaysStatic);

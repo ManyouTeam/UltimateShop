@@ -194,7 +194,12 @@ public class BuyProductMethod {
         }
         GiveResult giveResult = tempVal2.getReward().giveSingleThing(player, playerUseTimes, multi);
         // 尝试给物品
-        tempVal2.getReward().giveThing(player, giveResult.getResultMap());
+        if (!tempVal2.getReward().giveThing(player, giveResult.getResultMap())) {
+            if (shouldSendMessage) {
+                LanguageManager.languageManager.sendStringText(player, "inventory-full");
+            }
+            return ProductTradeStatus.INVENTORY_FULL;
+        }
         // 扣钱
         tempVal5.takeThing(inventory, player, takeResult.getResultMap());
         // 执行动作
