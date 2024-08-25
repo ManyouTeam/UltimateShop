@@ -197,7 +197,7 @@ public class ObjectSinglePrice extends AbstractSingleThing {
         } else {
             tempVal2 = singleSection.getString("placeholder", tempVal1);
         }
-        if (!alwaysStatic && !tempVal2.contains("{status}") && !isStatic && !UltimateShop.freeVersion &&
+        if (!alwaysStatic && !tempVal2.contains("{status}") && !isStatic && baseAmount != null && !UltimateShop.freeVersion &&
                 ConfigManager.configManager.getBoolean("placeholder.auto-settings.add-status-in-dynamic-price-placeholder.enabled")) {
             tempVal2 = tempVal2 + " " + StaticPlaceholder.getCompareValue(baseAmount.multiply(new BigDecimal(multi)), amount);
         }
@@ -208,7 +208,7 @@ public class ObjectSinglePrice extends AbstractSingleThing {
                         "amount",
                         String.valueOf(amount),
                         "status",
-                        alwaysStatic ? "" : StaticPlaceholder.getCompareValue(baseAmount.multiply(new BigDecimal(multi)), amount));
+                        alwaysStatic || baseAmount == null ? "" : StaticPlaceholder.getCompareValue(baseAmount.multiply(new BigDecimal(multi)), amount));
     }
 
     public int getStartApply() {

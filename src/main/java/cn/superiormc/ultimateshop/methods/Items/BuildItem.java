@@ -1,5 +1,7 @@
 package cn.superiormc.ultimateshop.methods.Items;
 
+import cn.superiormc.mythicchanger.manager.ChangesManager;
+import cn.superiormc.mythicchanger.objects.ObjectAction;
 import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.hooks.ItemsHook;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
@@ -801,14 +803,17 @@ public class BuildItem {
 
         // Plugin Enchantments
         ConfigurationSection pluginEnchantsKey = section.getConfigurationSection("plugin-enchants");
-        if (!UltimateShop.freeVersion && pluginEnchantsKey != null) {
-            if (CommonUtil.checkPluginLoad("AdvancedEnchantments")) {
-                for (String enchantName : pluginEnchantsKey.getKeys(false)) {
-                    item = AEAPI.applyEnchant(enchantName, pluginEnchantsKey.getInt(enchantName), item);
-                }
+        if (!UltimateShop.freeVersion && pluginEnchantsKey != null && CommonUtil.checkPluginLoad("AdvancedEnchantments")) {
+            for (String enchantName : pluginEnchantsKey.getKeys(false)) {
+                item = AEAPI.applyEnchant(enchantName, pluginEnchantsKey.getInt(enchantName), item);
             }
         }
 
+        // MythicChanger Changes
+        ConfigurationSection changeSection = section.getConfigurationSection("change-item");
+        if (changeSection != null && CommonUtil.checkPluginLoad("MythicChanger")) {
+            ChangesManager.changesManager.setRealChange(new ObjectAction(), changeSection, item.clone(), item, player);
+        }
         return item;
     }
 }
