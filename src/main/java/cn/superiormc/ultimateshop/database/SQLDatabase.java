@@ -204,7 +204,7 @@ public class SQLDatabase {
         }
     }
 
-    public static void updateDataNoAsync(ServerCache cache) {
+    public static void updateDataOnDisable(ServerCache cache, boolean disable) {
         String playerUUID;
         if (cache.server) {
             playerUUID = "Global-Server";
@@ -258,7 +258,7 @@ public class SQLDatabase {
             Collection<ObjectRandomPlaceholderCache> tempVal3 = cache.getRandomPlaceholderCache().values();
             for (ObjectRandomPlaceholderCache tempVal4 : tempVal3) {
                 String placeholderID = tempVal4.getPlaceholder().getID();
-                String nowValue = tempVal4.getNowValue();
+                String nowValue = tempVal4.getNowValue(disable);
                 String refreshDoneTime = CommonUtil.timeToString(tempVal4.getRefreshDoneTime());
                 try {
                     sqlManager.createReplace("ultimateshop_randomPlaceholder")

@@ -17,14 +17,14 @@ public class ReloadPlugin {
         LanguageManager.languageManager.sendStringText(sender, "plugin.reloading");
         UltimateShop.instance.reloadConfig();
         for (Player player : Bukkit.getOnlinePlayers()) {
-            CacheManager.cacheManager.savePlayerCacheOnDisable(player);
+            CacheManager.cacheManager.savePlayerCacheOnDisable(player, false);
             AbstractGUI.playerList.remove(player);
             if (!UltimateShop.freeVersion) {
                 ClickListener.playerList.remove(player);
             }
         }
         if (ServerCache.serverCache != null) {
-            ServerCache.serverCache.shutServerCacheOnDisable();
+            ServerCache.serverCache.shutServerCacheOnDisable(false);
         }
         TaskManager.taskManager.cancelTask();
         ObjectMenu.buyMoreMenuNames.clear();

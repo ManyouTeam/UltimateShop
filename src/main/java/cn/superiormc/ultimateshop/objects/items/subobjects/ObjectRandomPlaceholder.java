@@ -96,7 +96,7 @@ public class ObjectRandomPlaceholder {
             CacheManager.cacheManager.serverCache.addRandomPlaceholderCache(this);
             tempVal1 = CacheManager.cacheManager.serverCache.getRandomPlaceholderCache().get(this);
         }
-        return tempVal1.getNowValue(false);
+        return tempVal1.getNowValue(false, false);
     }
 
     @Override

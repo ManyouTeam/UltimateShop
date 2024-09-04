@@ -165,7 +165,7 @@ public class YamlDatabase {
                 }
                 if (tempVal8.getPlaceholder().getMode().equals("TIMED") ||
                         tempVal8.getPlaceholder().getMode().equals("TIMER")) {
-                    data.put("nowValue", tempVal8.getNowValue());
+                    data.put("nowValue", tempVal8.getNowValue(true));
                     data.put("refreshDoneTime", CommonUtil.timeToString(tempVal8.getRefreshDoneTime()));
                 }
                 for (String key : data.keySet()) {

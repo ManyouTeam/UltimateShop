@@ -55,9 +55,9 @@ public class ServerCache {
         }
     }
 
-    public void shutServerCacheOnDisable() {
+    public void shutServerCacheOnDisable(boolean disable) {
         if (ConfigManager.configManager.getBoolean("database.enabled")) {
-            SQLDatabase.updateDataNoAsync(this);
+            SQLDatabase.updateDataOnDisable(this, disable);
         }
         else {
             YamlDatabase.updateData(this, true);

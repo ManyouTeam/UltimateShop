@@ -6,7 +6,7 @@
 
     <groupId>cn.superiormc</groupId>
     <artifactId>UltimateShop</artifactId>
-    <version>2.7.1</version>
+    <version>2.7.3</version>
     <packaging>jar</packaging>
 
     <name>UltimateShop</name>
@@ -144,6 +144,7 @@
 
     <dependencies>
         <dependency>
+            <!-- To other developers: ManyouItems already built-in this project, so you can simply remove this dependency. -->
             <groupId>cn.superiormc</groupId>
             <artifactId>ManyouItems</artifactId>
             <version>1.0.0</version>

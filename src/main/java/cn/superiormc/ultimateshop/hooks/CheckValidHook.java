@@ -84,7 +84,7 @@ public class CheckValidHook {
             if (Items.getCustomItem(itemStack) == null) {
                 return null;
             }
-            return ItemManager.INSTANCE.isNiItem(itemStack).getId();
+            return Items.getCustomItem(itemStack).getKey().toString();
         }
         else if (pluginName.equals("MythicMobs")) {
             String tempVal1 = MythicBukkit.inst().getItemManager().getMythicTypeFromItem(itemStack);
@@ -144,7 +144,7 @@ public class CheckValidHook {
         }
         if (CommonUtil.checkPluginLoad("eco")) {
             if (Items.getCustomItem(itemStack) != null) {
-                return new String[]{"eco", Items.getCustomItem(itemStack).getKey().getKey()};
+                return new String[]{"eco", Items.getCustomItem(itemStack).getKey().toString()};
             }
         }
         if (CommonUtil.checkPluginLoad("MythicMobs")) {

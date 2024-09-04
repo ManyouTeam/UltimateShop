@@ -80,10 +80,10 @@ public final class UltimateShop extends JavaPlugin {
     @Override
     public void onDisable() {
         if (ServerCache.serverCache != null) {
-            ServerCache.serverCache.shutServerCacheOnDisable();
+            ServerCache.serverCache.shutServerCacheOnDisable(true);
         }
         for (Player player : Bukkit.getOnlinePlayers()) {
-            CacheManager.cacheManager.savePlayerCacheOnDisable(player);
+            CacheManager.cacheManager.savePlayerCacheOnDisable(player, true);
         }
         SQLDatabase.closeSQL();
         if (BungeeCordManager.enableThis()) {

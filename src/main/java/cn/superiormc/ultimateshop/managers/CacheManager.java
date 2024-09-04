@@ -59,13 +59,13 @@ public class CacheManager {
         playerCacheMap.get(player).shutPlayerCache(true);
     }
 
-    public void savePlayerCacheOnDisable(Player player) {
+    public void savePlayerCacheOnDisable(Player player, boolean disable) {
         if (playerCacheMap.get(player) == null) {
             Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §cCan not save player data: " + player.getName() + "! " +
                     "This is usually because this player joined the server before server fully started, ask him rejoin the server.");
             return;
         }
-        playerCacheMap.get(player).shutPlayerCacheOnDisable();
+        playerCacheMap.get(player).shutPlayerCacheOnDisable(disable);
     }
 
     public void removePlayerCache(Player player) {

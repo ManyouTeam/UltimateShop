@@ -43,12 +43,16 @@ public class ObjectRandomPlaceholderCache {
     }
 
     public String getNowValue() {
-        return getNowValue(true);
+        return getNowValue(true, false);
     }
 
-    public String getNowValue(boolean needRefresh) {
+    public String getNowValue(boolean disable) {
+        return getNowValue(true, disable);
+    }
+
+    public String getNowValue(boolean needRefresh, boolean disable) {
         if (needRefresh) {
-            setRefreshTime();
+            setRefreshTime(disable);
         }
         return nowValue;
     }
