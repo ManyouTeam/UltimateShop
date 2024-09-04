@@ -40,7 +40,7 @@ ObjectItem item = shop.getProduct("TEST");
 List<ObjectItem> items = shop.getProductList();
 ```
 
-### Stat buy a product
+### Start buy a product
 ```java
 BuyProductMethod.startBuy(Inventory inventory, String shop, String product, Player player, boolean quick, boolean test, int multi);
 ```
