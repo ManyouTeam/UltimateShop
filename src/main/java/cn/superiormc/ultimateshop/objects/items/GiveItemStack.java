@@ -3,6 +3,7 @@ package cn.superiormc.ultimateshop.objects.items;
 import cn.superiormc.ultimateshop.hooks.EconomyHook;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -63,17 +64,22 @@ public class GiveItemStack {
         return displayItem;
     }
 
-    public void giveToPlayer(Player player) {
+    public void giveToPlayer(int times, Player player) {
         if (thing.singleSection == null) {
             return;
         }
         switch (thing.type) {
-            case VANILLA_ITEM:  case HOOK_ITEM: case MATCH_ITEM:
+            case VANILLA_ITEM:
+            case HOOK_ITEM:
+            case MATCH_ITEM:
+                if (items == null) {
+                    break;
+                }
                 for (ItemStack tempVal1 : items) {
                     CommonUtil.giveOrDrop(player, tempVal1);
                 }
                 break;
-            case HOOK_ECONOMY :
+            case HOOK_ECONOMY:
                 EconomyHook.giveEconomy(thing.singleSection.getString("economy-plugin"),
                         thing.singleSection.getString("economy-type", "Unknown"),
                         player,
@@ -85,6 +91,7 @@ public class GiveItemStack {
                         (int) cost);
                 break;
         }
+        thing.giveAction.doAction(player, times, cost);
     }
 
     public void setCanGive(boolean canGive) {

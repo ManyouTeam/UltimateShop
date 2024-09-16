@@ -8,5 +8,6 @@ public enum ThingType {
     VANILLA_ECONOMY,
     UNKNOWN,
     MATCH_ITEM,
+    CUSTOM,
     FREE
 }

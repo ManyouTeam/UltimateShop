@@ -23,6 +23,7 @@ public class SellStickItem {
     public static final NamespacedKey SELL_STICK_TIMES = new NamespacedKey(UltimateShop.instance, "sell_stick_usage");
     public static final NamespacedKey SELL_STICK_ID = new NamespacedKey(UltimateShop.instance, "sell_stick_id");
     public static final NamespacedKey SELL_STICK_INFINITE = new NamespacedKey(UltimateShop.instance, "sell_stick_infinite");
+    public static byte b = 1;
 
     public static ItemStack getSellStick(Player player, String itemID, int amount) {
         ConfigurationSection section = ConfigManager.configManager.config.getConfigurationSection(
@@ -80,9 +81,15 @@ public class SellStickItem {
                     PersistentDataType.INTEGER,
                     times);
         } else {
-            meta.getPersistentDataContainer().set(SELL_STICK_INFINITE,
-                    PersistentDataType.BOOLEAN,
-                    true);
+            if (CommonUtil.getMajorVersion(19)) {
+                meta.getPersistentDataContainer().set(SELL_STICK_INFINITE,
+                        PersistentDataType.BOOLEAN,
+                        true);
+            } else {
+                meta.getPersistentDataContainer().set(SELL_STICK_INFINITE,
+                        PersistentDataType.BYTE,
+                        b);
+            }
         }
         resultItem.setItemMeta(meta);
         return resultItem;
@@ -142,6 +149,10 @@ public class SellStickItem {
             return false;
         }
         ItemMeta meta = item.getItemMeta();
-        return meta.getPersistentDataContainer().has(SELL_STICK_INFINITE, PersistentDataType.BOOLEAN) && meta.getPersistentDataContainer().get(SELL_STICK_INFINITE, PersistentDataType.BOOLEAN);
+        if (CommonUtil.getMajorVersion(19)) {
+            return meta.getPersistentDataContainer().has(SELL_STICK_INFINITE, PersistentDataType.BOOLEAN) && meta.getPersistentDataContainer().get(SELL_STICK_INFINITE, PersistentDataType.BOOLEAN);
+        } else {
+            return meta.getPersistentDataContainer().has(SELL_STICK_INFINITE, PersistentDataType.BYTE) && meta.getPersistentDataContainer().get(SELL_STICK_INFINITE, PersistentDataType.BYTE) == b;
+        }
     }
 }

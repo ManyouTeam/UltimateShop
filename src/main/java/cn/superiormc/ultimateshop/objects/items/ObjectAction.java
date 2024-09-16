@@ -85,6 +85,14 @@ public class ObjectAction {
         this.item = item;
     }
 
+    public void doAction(Player player, int times, double amount) {
+        if (everyAction.isEmpty() && onceAction.isEmpty()) {
+            return;
+        }
+        checkAction(player, onceAction, times, amount, false, null);
+        checkAction(player, everyAction, times, amount, false, null);
+    }
+
     public void doAction(Player player, int times, int multi, boolean sellAll) {
         doAction(player, times, multi, sellAll, null);
     }
@@ -99,7 +107,7 @@ public class ObjectAction {
         }
     }
 
-    private void checkAction(Player player, List<String> actions, int times, int multi, boolean sellAll, ClickType type) {
+    private void checkAction(Player player, List<String> actions, int times, double multi, boolean sellAll, ClickType type) {
         if (player == null) {
             return;
         }
@@ -319,7 +327,7 @@ public class ObjectAction {
         return lastTradeStatus;
     }
 
-    private String replacePlaceholder(String str, Player player, int multi) {
+    private String replacePlaceholder(String str, Player player, double multi) {
         str = str.replace("{world}", player.getWorld().getName())
                 .replace("{amount}", String.valueOf(multi))
                 .replace("{player_x}", String.valueOf(player.getLocation().getX()))

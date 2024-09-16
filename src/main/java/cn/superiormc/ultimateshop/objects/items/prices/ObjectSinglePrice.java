@@ -74,6 +74,7 @@ public class ObjectSinglePrice extends AbstractSingleThing {
         initCustomMode();
         initApplyCostMap();
         initCondition();
+        initAction();
     }
 
     private void initCustomMode() {
@@ -243,6 +244,10 @@ public class ObjectSinglePrice extends AbstractSingleThing {
             return String.valueOf(baseAmount + offsetAmount);
         }
         return String.valueOf(baseAmount);
+    }
+
+    public ObjectItem getItem() {
+        return item;
     }
 
     @Override

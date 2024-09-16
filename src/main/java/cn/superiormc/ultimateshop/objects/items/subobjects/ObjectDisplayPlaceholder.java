@@ -51,7 +51,7 @@ public class ObjectDisplayPlaceholder implements Comparable<ObjectDisplayPlaceho
 
             result = 31 * result + (hookPlugin != null ? hookPlugin.hashCode() : 0);
             result = 31 * result + (hookType != null ? hookType.hashCode() : 0);
-        } else if (thing.type == ThingType.VANILLA_ITEM || thing.type == ThingType.MATCH_ITEM) {
+        } else if (thing.type == ThingType.VANILLA_ITEM || thing.type == ThingType.MATCH_ITEM || thing.type == ThingType.CUSTOM) {
             result = 31 * result + convertConfigurationSection(singleSection).hashCode();
         }
 
@@ -109,7 +109,7 @@ public class ObjectDisplayPlaceholder implements Comparable<ObjectDisplayPlaceho
             }
         }
 
-        if (thing.type == ThingType.VANILLA_ITEM || thing.type == ThingType.MATCH_ITEM) {
+        if (thing.type == ThingType.VANILLA_ITEM || thing.type == ThingType.MATCH_ITEM  || thing.type == ThingType.CUSTOM) {
             return areConfigurationSectionsEqual(singleSection, otherPrice.singleSection);
         }
 

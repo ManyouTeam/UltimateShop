@@ -10,6 +10,7 @@ import cn.superiormc.ultimateshop.managers.ItemManager;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
 import cn.superiormc.ultimateshop.utils.TextUtil;
 import com.google.common.base.Enums;
+import com.google.common.collect.MultimapBuilder;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import net.advancedplugins.ae.api.AEAPI;
@@ -307,6 +308,9 @@ public class BuildItem {
                 ItemFlag itemFlag = Enums.getIfPresent(ItemFlag.class, flag).orNull();
                 if (itemFlag != null) {
                     meta.addItemFlags(itemFlag);
+                }
+                if (CommonUtil.getMinorVersion(20, 6) && itemFlag == ItemFlag.HIDE_ATTRIBUTES && meta.getAttributeModifiers() == null) {
+                    meta.setAttributeModifiers(MultimapBuilder.hashKeys().hashSetValues().build());
                 }
             }
         }

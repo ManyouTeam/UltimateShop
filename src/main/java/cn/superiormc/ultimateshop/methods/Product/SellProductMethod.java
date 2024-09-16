@@ -227,7 +227,7 @@ public class SellProductMethod {
         // 回收的价格就是给的
         GiveResult giveResult = tempVal2.getSellPrice().giveSingleThing(player, playerUseTimes, multi);
         // 尝试给物品
-        if (!tempVal2.getSellPrice().giveThing(player, giveResult.getResultMap())) {
+        if (!tempVal2.getSellPrice().giveThing(playerUseTimes, player, giveResult.getResultMap())) {
             if (shouldSendMessage) {
                 LanguageManager.languageManager.sendStringText(player, "inventory-full");
             }

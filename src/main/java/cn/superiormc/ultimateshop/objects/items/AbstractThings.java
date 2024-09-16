@@ -39,7 +39,7 @@ public abstract class AbstractThings {
 
     public abstract GiveResult giveSingleThing(Player player, int times, int amount);
 
-    public boolean giveThing(Player player, Map<AbstractSingleThing, BigDecimal> result) {
+    public boolean giveThing(int times, Player player, Map<AbstractSingleThing, BigDecimal> result) {
         boolean resultBoolean = true;
         Collection<GiveItemStack> giveItemStacks = new ArrayList<>();
         for (AbstractSingleThing singleThing: result.keySet()) {
@@ -53,7 +53,7 @@ public abstract class AbstractThings {
             return false;
         }
         for (GiveItemStack giveItemStack : giveItemStacks) {
-            giveItemStack.giveToPlayer(player);
+            giveItemStack.giveToPlayer(times, player);
         }
         return true;
     }

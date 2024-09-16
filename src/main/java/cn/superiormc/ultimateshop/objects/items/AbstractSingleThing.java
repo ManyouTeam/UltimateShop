@@ -1,5 +1,6 @@
 package cn.superiormc.ultimateshop.objects.items;
 
+import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.hooks.PriceHook;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.methods.Items.BuildItem;
@@ -9,6 +10,7 @@ import cn.superiormc.ultimateshop.objects.items.prices.PriceMode;
 import cn.superiormc.ultimateshop.objects.items.products.ObjectSingleProduct;
 import cn.superiormc.ultimateshop.objects.items.subobjects.ObjectDisplayPlaceholder;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
+import cn.superiormc.ultimateshop.utils.TextUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
@@ -26,6 +28,8 @@ public abstract class AbstractSingleThing implements Comparable<AbstractSingleTh
     public ThingType type;
 
     public ConfigurationSection singleSection;
+
+    public ObjectAction giveAction;
 
     public ObjectCondition condition;
 
@@ -64,13 +68,15 @@ public abstract class AbstractSingleThing implements Comparable<AbstractSingleTh
             type = ThingType.HOOK_ITEM;
         } else if (section.contains("match-item") && CommonUtil.checkPluginLoad("MythicChanger")) {
             type = ThingType.MATCH_ITEM;
-        } else if (section.contains("material")) {
-            type = ThingType.VANILLA_ITEM;
+        } else if (section.contains("match-placeholder") && !UltimateShop.freeVersion) {
+            type = ThingType.CUSTOM;
         } else if (section.contains("economy-plugin")) {
             type = ThingType.HOOK_ECONOMY;
         } else if (section.contains("economy-type") && !section.contains("economy-plugin")) {
             type = ThingType.VANILLA_ECONOMY;
-        }  else {
+        } else if (section.contains("material")) {
+            type = ThingType.VANILLA_ITEM;
+        } else {
             type = ThingType.FREE;
         }
     }
@@ -98,6 +104,16 @@ public abstract class AbstractSingleThing implements Comparable<AbstractSingleTh
         }
     }
 
+    protected void initAction() {
+        List<String> actions = singleSection.getStringList("give-actions");
+        if (actions.isEmpty()) {
+            giveAction = new ObjectAction();
+        }
+        else {
+            giveAction = new ObjectAction(actions, things.getItem());
+        }
+    }
+
     public GiveItemStack playerCanGive(Player player,
                               double cost) {
         if (singleSection == null) {
@@ -112,7 +128,7 @@ public abstract class AbstractSingleThing implements Comparable<AbstractSingleTh
                 } else {
                     return getItemThing(singleSection, player, cost, false);
                 }
-            case HOOK_ECONOMY : case VANILLA_ECONOMY:
+            case HOOK_ECONOMY : case VANILLA_ECONOMY: case CUSTOM:
                 return new GiveItemStack(cost, this);
         }
         return new GiveItemStack(this);
@@ -159,6 +175,8 @@ public abstract class AbstractSingleThing implements Comparable<AbstractSingleTh
             case VANILLA_ECONOMY:
                 return PriceHook.getEconomyAmount(player,
                         section.getString("economy-type"));
+            case CUSTOM:
+                return Double.parseDouble(TextUtil.parse(player, section.getString("match-placeholder", "0")));
             case UNKNOWN:
                 Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §c" +
                         "There is something wrong in your shop configs!");
@@ -221,6 +239,10 @@ public abstract class AbstractSingleThing implements Comparable<AbstractSingleTh
                 return PriceHook.getPrice(player,
                         section.getString("economy-type"),
                         (int) cost, take);
+            case CUSTOM:
+                return Double.parseDouble(TextUtil.parse(player, section.getString("match-placeholder", "0"))) >= cost;
+            case FREE:
+                return true;
             case UNKNOWN:
                 Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §c" +
                         "There is something wrong in your shop configs!");
@@ -238,6 +260,9 @@ public abstract class AbstractSingleThing implements Comparable<AbstractSingleTh
                 return new GiveItemStack(this);
             }
             section = singleSection;
+        }
+        if (!section.getBoolean("give-item", true) || (!section.contains("material") && !section.contains("hook-item"))) {
+            return new GiveItemStack(this);
         }
         int amount = (int) cost;
         ItemStack targetItem = BuildItem.buildItemStack(player, section, 1);

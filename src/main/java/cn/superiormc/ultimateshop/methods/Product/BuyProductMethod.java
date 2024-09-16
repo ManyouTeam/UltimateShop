@@ -194,7 +194,7 @@ public class BuyProductMethod {
         }
         GiveResult giveResult = tempVal2.getReward().giveSingleThing(player, playerUseTimes, multi);
         // 尝试给物品
-        if (!tempVal2.getReward().giveThing(player, giveResult.getResultMap())) {
+        if (!tempVal2.getReward().giveThing(playerUseTimes, player, giveResult.getResultMap())) {
             if (shouldSendMessage) {
                 LanguageManager.languageManager.sendStringText(player, "inventory-full");
             }
