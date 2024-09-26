@@ -15,6 +15,7 @@ import org.geysermc.floodgate.api.FloodgateApi;
 import org.json.JSONObject;
 
 import java.io.*;
+import java.lang.reflect.Method;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.time.LocalDateTime;
@@ -192,6 +193,23 @@ public class CommonUtil {
             return true;
         }
         catch (ClassNotFoundException e) {
+            return false;
+        }
+    }
+
+    public static boolean checkClass(String className, String methodName) {
+        try {
+            Class<?> targetClass = Class.forName(className);
+            Method[] methods = targetClass.getDeclaredMethods();
+
+            for (Method method : methods) {
+                if (method.getName().equals(methodName)) {
+                    return true;
+                }
+            }
+
+            return false;
+        } catch (ClassNotFoundException e) {
             return false;
         }
     }

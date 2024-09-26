@@ -99,7 +99,7 @@ items:
         economy-plugin: Vault
         max-amount: 88.4
         min-amount: 20.1
-        amount: '88.4+{buy-times-server}*0.4-{sell-times-server}*0.3'
+        amount: '88.4'
         placeholder: '{amount}$'
         start-apply: 0
   F:

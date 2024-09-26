@@ -19,6 +19,8 @@ use-component:
   menu-title: false
   message: false
   item: false
+  # For paper users, enable this option can use their API to directly get the skull, have the performance improve.
+  skull: false
 
 sell:
   # Support Value: Bukkit or ItemFormat.

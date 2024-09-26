@@ -97,7 +97,7 @@ items:
     sell-prices:
       1:
         economy-plugin: Vault
-        amount: '52.5+{buy-times-server}*0.4-{sell-times-server}*0.3'
+        amount: '52.5'
         max-amount: 52.5
         min-amount: 34.3
         placeholder: '{amount}$'
@@ -175,7 +175,7 @@ items:
     sell-prices:
       1:
         economy-plugin: Vault
-        amount: '34.2+{buy-times-server}*0.4-{sell-times-server}*0.3'
+        amount: '34.2'
         max-amount: 34.2
         min-amount: 14
         placeholder: '{amount}$'
