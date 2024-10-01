@@ -19,7 +19,7 @@ public abstract class AbstractThings {
 
     public boolean empty;
 
-    private ObjectItem item;
+    protected ObjectItem item;
 
     public AbstractThings() {
         this.mode = ThingMode.UNKNOWN;

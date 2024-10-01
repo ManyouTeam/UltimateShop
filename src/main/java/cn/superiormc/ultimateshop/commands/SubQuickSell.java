@@ -1,5 +1,6 @@
 package cn.superiormc.ultimateshop.commands;
 
+import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.LanguageManager;
 import cn.superiormc.ultimateshop.methods.Product.SellProductMethod;
@@ -28,12 +29,14 @@ public class SubQuickSell extends AbstractCommand {
                 SellProductMethod.startSell(args[1], args[2], player, true);
                 break;
             case 4:
+                boolean sellAll = args[args.length - 1].equals("*") && !UltimateShop.freeVersion;
                 SellProductMethod.startSell(args[1],
                         args[2],
                         player,
                         true,
                         false,
-                        Integer.parseInt(args[3]));
+                        sellAll,
+                        sellAll ? 1 : Integer.parseInt(args[3]));
                 break;
         }
     }
@@ -52,12 +55,14 @@ public class SubQuickSell extends AbstractCommand {
                 SellProductMethod.startSell(args[1], args[2], player, true);
                 break;
             case 5:
+                boolean sellAll = args[args.length - 1].equals("*") && !UltimateShop.freeVersion;
                 SellProductMethod.startSell(args[1],
                         args[2],
                         player,
                         true,
                         false,
-                        Integer.parseInt(args[3]));
+                        sellAll,
+                        sellAll ? 1 : Integer.parseInt(args[3]));
                 break;
         }
     }
@@ -84,6 +89,9 @@ public class SubQuickSell extends AbstractCommand {
             case 4:
                 tempVal1.add("1");
                 tempVal1.add("5");
+                if (!UltimateShop.freeVersion) {
+                    tempVal1.add("*");
+                }
                 break;
         }
         return tempVal1;

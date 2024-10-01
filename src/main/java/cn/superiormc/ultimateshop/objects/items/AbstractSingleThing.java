@@ -31,8 +31,6 @@ public abstract class AbstractSingleThing implements Comparable<AbstractSingleTh
 
     public ObjectAction giveAction;
 
-    public ObjectAction takeAction;
-
     public ObjectCondition condition;
 
     public boolean empty;
@@ -113,13 +111,6 @@ public abstract class AbstractSingleThing implements Comparable<AbstractSingleTh
         }
         else {
             giveAction = new ObjectAction(actions, things.getItem());
-        }
-        List<String> takeActions = singleSection.getStringList("take-actions");
-        if (takeActions.isEmpty()) {
-            takeAction = new ObjectAction();
-        }
-        else {
-            takeAction = new ObjectAction(takeActions, things.getItem());
         }
     }
 

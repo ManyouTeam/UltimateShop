@@ -312,7 +312,7 @@ public class BuildItem {
                 if (itemFlag != null) {
                     meta.addItemFlags(itemFlag);
                 }
-                if (itemFlag == ItemFlag.HIDE_ATTRIBUTES && meta.getAttributeModifiers() == null) {
+                if (CommonUtil.getMinorVersion(20, 6) && itemFlag == ItemFlag.HIDE_ATTRIBUTES && meta.getAttributeModifiers() == null) {
                     meta.setAttributeModifiers(MultimapBuilder.hashKeys().hashSetValues().build());
                 }
             }
@@ -571,7 +571,7 @@ public class BuildItem {
                         if (UltimateShop.newSkullMethod) {
                             try {
                                 Class<?> profileClass = Class.forName("net.minecraft.world.item.component.ResolvableProfile");
-                                Constructor constroctor = profileClass.getConstructor(GameProfile.class);
+                                Constructor<?> constroctor = profileClass.getConstructor(GameProfile.class);
                                 GameProfile profile = new GameProfile(UUID.randomUUID(), "");
                                 profile.getProperties().put("textures", new Property("textures", skullTextureNameKey));
                                 try {

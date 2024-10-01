@@ -172,6 +172,9 @@ public class ObjectProducts extends AbstractThings {
             case ALL:
             case CLASSIC_ALL:
                 for (ObjectSingleProduct tempVal1 : singleProducts) {
+                    if (!tempVal1.getCondition(player)) {
+                        continue;
+                    }
                     double cost = getAmount(player, times, 1, false).get(tempVal1).doubleValue();
                     int tempVal2 = (int) (tempVal1.playerHasAmount(inventory, player) / cost);
                     if (maxAmount == -1 || tempVal2 < maxAmount) {
