@@ -77,8 +77,7 @@ public class ModifyDisplayItem {
             sellTimes = tempVal9.getSellUseTimes();
         }
         else {
-            CacheManager.cacheManager.getPlayerCache(player).setUseTimesCache(item.getShop(),
-                    item.getProduct(),
+            CacheManager.cacheManager.getPlayerCache(player).setUseTimesCache(item,
                     0,
                     0,
                     null,
@@ -88,8 +87,7 @@ public class ModifyDisplayItem {
             tempVal9 = CacheManager.cacheManager.getPlayerCache(player).getUseTimesCache().get(item);
         }
         if (tempVal10 == null) {
-            CacheManager.cacheManager.serverCache.setUseTimesCache(item.getShop(),
-                    item.getProduct(),
+            CacheManager.cacheManager.serverCache.setUseTimesCache(item,
                     0,
                     0,
                     null,

@@ -102,7 +102,7 @@ public class ObjectRandomPlaceholderCache {
     public void setPlaceholder(String element, boolean notUseBungee) {
         nowValue = element;
         if (placeholder.getMode().equals("TIMED") || placeholder.getMode().equals("TIMER")) {
-            ServerCache.serverCache.setRandomPlaceholderCache(placeholder.getID(), CommonUtil.timeToString(refreshDoneTime), nowValue);
+            ServerCache.serverCache.setRandomPlaceholderCache(placeholder, CommonUtil.timeToString(refreshDoneTime), nowValue);
         }
         if (!notUseBungee && BungeeCordManager.bungeeCordManager != null) {
             BungeeCordManager.bungeeCordManager.sendToOtherServer(

@@ -60,8 +60,7 @@ public class SubSetSellTimes extends AbstractCommand {
                 switch (args.length) {
                     case 4:
                         if (tempVal4 == null) {
-                            tempVal3.setUseTimesCache(tempVal1.getShopName(),
-                                    item.getProduct(),
+                            tempVal3.setUseTimesCache(item,
                                     0,
                                     0,
                                     null,
@@ -74,8 +73,7 @@ public class SubSetSellTimes extends AbstractCommand {
                         break;
                     case 5:
                         if (tempVal4 == null) {
-                            tempVal3.setUseTimesCache(tempVal1.getShopName(),
-                                    item.getProduct(),
+                            tempVal3.setUseTimesCache(item,
                                     0,
                                     Integer.parseInt(args[4]),
                                     null,
@@ -108,8 +106,7 @@ public class SubSetSellTimes extends AbstractCommand {
         switch (args.length) {
             case 4:
                 if (tempVal4 == null) {
-                    tempVal3.setUseTimesCache(tempVal1.getShopName(),
-                            tempVal2.getProduct(),
+                    tempVal3.setUseTimesCache(tempVal2,
                             0,
                             0,
                             null,
@@ -130,8 +127,7 @@ public class SubSetSellTimes extends AbstractCommand {
                 break;
             case 5:
                 if (tempVal4 == null) {
-                    tempVal3.setUseTimesCache(tempVal1.getShopName(),
-                            tempVal2.getProduct(),
+                    tempVal3.setUseTimesCache(tempVal2,
                             0,
                             Integer.parseInt(args[4]),
                             null,
@@ -188,8 +184,7 @@ public class SubSetSellTimes extends AbstractCommand {
                 switch (args.length) {
                     case 4:
                         if (tempVal4 == null) {
-                            tempVal3.setUseTimesCache(tempVal1.getShopName(),
-                                    item.getProduct(),
+                            tempVal3.setUseTimesCache(item,
                                     0,
                                     0,
                                     null,
@@ -202,8 +197,7 @@ public class SubSetSellTimes extends AbstractCommand {
                         break;
                     case 5:
                         if (tempVal4 == null) {
-                            tempVal3.setUseTimesCache(tempVal1.getShopName(),
-                                    item.getProduct(),
+                            tempVal3.setUseTimesCache(item,
                                     0,
                                     Integer.parseInt(args[4]),
                                     null,
@@ -236,8 +230,7 @@ public class SubSetSellTimes extends AbstractCommand {
         switch (args.length) {
             case 4:
                 if (tempVal4 == null) {
-                    tempVal3.setUseTimesCache(tempVal1.getShopName(),
-                            tempVal2.getProduct(),
+                    tempVal3.setUseTimesCache(tempVal2,
                             0,
                             0,
                             null,
@@ -257,8 +250,7 @@ public class SubSetSellTimes extends AbstractCommand {
                 break;
             case 5:
                 if (tempVal4 == null) {
-                    tempVal3.setUseTimesCache(tempVal1.getShopName(),
-                            tempVal2.getProduct(),
+                    tempVal3.setUseTimesCache(tempVal2,
                             0,
                             Integer.parseInt(args[4]),
                             null,

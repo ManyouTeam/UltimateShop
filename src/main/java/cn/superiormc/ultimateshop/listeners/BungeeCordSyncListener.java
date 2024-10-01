@@ -42,7 +42,7 @@ public class BungeeCordSyncListener implements PluginMessageListener {
                 } else {
                     String nowValue = msgin.readUTF();
                     String refreshDoneTime = msgin.readUTF();
-                    CacheManager.cacheManager.serverCache.setRandomPlaceholderCache(tempVal3.getID(), refreshDoneTime, nowValue);
+                    CacheManager.cacheManager.serverCache.setRandomPlaceholderCache(tempVal3, refreshDoneTime, nowValue);
                     return;
                 }
             }
@@ -53,8 +53,7 @@ public class BungeeCordSyncListener implements PluginMessageListener {
             }
             ObjectUseTimesCache useTimesCache = CacheManager.cacheManager.serverCache.getUseTimesCache().get(tempVal2);
             if (useTimesCache == null) {
-                CacheManager.cacheManager.serverCache.setUseTimesCache(shop,
-                        product,
+                CacheManager.cacheManager.serverCache.setUseTimesCache(tempVal2,
                         0,
                         0,
                         null,

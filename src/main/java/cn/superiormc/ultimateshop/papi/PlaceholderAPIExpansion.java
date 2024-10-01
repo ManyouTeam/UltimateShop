@@ -1,6 +1,7 @@
 package cn.superiormc.ultimateshop.papi;
 
 import cn.superiormc.ultimateshop.UltimateShop;
+import cn.superiormc.ultimateshop.cache.PlayerCache;
 import cn.superiormc.ultimateshop.managers.CacheManager;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.LanguageManager;
@@ -13,7 +14,6 @@ import cn.superiormc.ultimateshop.objects.items.subobjects.ObjectRandomPlacehold
 import cn.superiormc.ultimateshop.utils.MathUtil;
 import cn.superiormc.ultimateshop.utils.TextUtil;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
-import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -69,28 +69,28 @@ public class PlaceholderAPIExpansion extends PlaceholderExpansion {
             return null;
         } else if (args[0].startsWith("{")) {
             String result = params;
-            Pattern pattern1 = Pattern.compile("\\{discount_(.*?)\\}");
+            Pattern pattern1 = Pattern.compile("\\{discount_(.*?)}");
             Matcher matcher1 = pattern1.matcher(result);
             while (matcher1.find()) {
                 String discount = matcher1.group(1);
                 result = result.replace("{discount_" + discount + "}",
                         String.valueOf(StaticPlaceholder.getDiscountValue(discount, player)));
             }
-            Pattern pattern2 = Pattern.compile("\\{random_(.*?)\\}");
+            Pattern pattern2 = Pattern.compile("\\{random_(.*?)}");
             Matcher matcher2 = pattern2.matcher(result);
             while (matcher2.find()) {
                 String placeholder = matcher2.group(1);
                 result = result.replace("{random_" + placeholder + "}",
                         ObjectRandomPlaceholder.getNowValue(placeholder));
             }
-            Pattern pattern3 = Pattern.compile("\\{random-times_(.*?)\\}");
+            Pattern pattern3 = Pattern.compile("\\{random-times_(.*?)}");
             Matcher matcher3 = pattern3.matcher(result);
             while (matcher3.find()) {
                 String placeholder = matcher3.group(1);
                 result = result.replace("{random-times_" + placeholder + "}",
                         ObjectRandomPlaceholder.getRefreshDoneTime(placeholder));
             }
-            Pattern pattern4 = Pattern.compile("\\{compare_([\\d.]+)_([\\d.]+)\\}");
+            Pattern pattern4 = Pattern.compile("\\{compare_([\\d.]+)_([\\d.]+)}");
             Matcher matcher4 = pattern4.matcher(result);
             while (matcher4.find()) {
                 String compareNumber = matcher4.group(1);
@@ -98,7 +98,7 @@ public class PlaceholderAPIExpansion extends PlaceholderExpansion {
                 result = result.replace("{compare_" + compareNumber + "_" + baseNumber + "}",
                         StaticPlaceholder.getCompareValue(new BigDecimal(baseNumber), new BigDecimal(compareNumber)));
             }
-            Pattern pattern5 = Pattern.compile("\\{math_(.*?)\\}");
+            Pattern pattern5 = Pattern.compile("\\{math_(.*?)}");
             Matcher matcher5 = pattern5.matcher(result);
             while (matcher5.find()) {
                 String placeholder = matcher5.group(1);
@@ -115,7 +115,21 @@ public class PlaceholderAPIExpansion extends PlaceholderExpansion {
             if (item == null) {
                 return LanguageManager.languageManager.getStringText("placeholderapi.unknown-product");
             }
-            ObjectUseTimesCache playerTimesCache = CacheManager.cacheManager.getPlayerCache(player).getUseTimesCache().get(item);
+            PlayerCache playerCache = CacheManager.cacheManager.getPlayerCache(player);
+            ObjectUseTimesCache playerTimesCache = playerCache.getUseTimesCache().get(item);
+            if (playerTimesCache == null) {
+                playerCache.setUseTimesCache(item,
+                        0,
+                        0,
+                        null,
+                        null,
+                        null,
+                        null);
+                playerTimesCache = playerCache.getUseTimesCache().get(item);
+                if (playerTimesCache == null) {
+                    return "ERROR: Can not load cache, restart the server.";
+                }
+            }
             ObjectUseTimesCache serverTimesCache = CacheManager.cacheManager.serverCache.getUseTimesCache().get(item);
             String tempVal1 = args[2];
             if (tempVal1.startsWith("{") && tempVal1.endsWith("}")) {

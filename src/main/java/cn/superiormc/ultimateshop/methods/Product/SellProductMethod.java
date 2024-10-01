@@ -125,8 +125,7 @@ public class SellProductMethod {
             playerUseTimes = tempVal9.getSellUseTimes();
         }
         else {
-            tempVal3.setUseTimesCache(shop,
-                    product,
+            tempVal3.setUseTimesCache(tempVal2,
                     0,
                     0,
                     null,
@@ -183,8 +182,7 @@ public class SellProductMethod {
             serverUseTimes = ServerCache.serverCache.getUseTimesCache().get(tempVal2).getSellUseTimes();
         }
         else {
-            tempVal11.setUseTimesCache(shop,
-                    product,
+            tempVal11.setUseTimesCache(tempVal2,
                     0,
                     0,
                     null,

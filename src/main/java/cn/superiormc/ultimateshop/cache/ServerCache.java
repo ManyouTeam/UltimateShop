@@ -64,6 +64,27 @@ public class ServerCache {
         }
     }
 
+    public void setUseTimesCache(ObjectItem product,
+                                 int buyUseTimes,
+                                 int sellUseTimes,
+                                 String lastBuyTime,
+                                 String lastSellTime,
+                                 String cooldownBuyTime,
+                                 String cooldownSellTime
+    ) {
+        if (product == null) {
+            return;
+        }
+        useTimesCache.put(product, new ObjectUseTimesCache(this,
+                buyUseTimes,
+                sellUseTimes,
+                lastBuyTime,
+                lastSellTime,
+                cooldownBuyTime,
+                cooldownSellTime,
+                product));
+    }
+
     public void setUseTimesCache(String shop,
                                  String product,
                                  int buyUseTimes,
@@ -91,6 +112,15 @@ public class ServerCache {
                 tempVal2));
     }
 
+    public void setRandomPlaceholderCache(ObjectRandomPlaceholder placeholder,
+                                          String refreshDoneTime,
+                                          String nowValue) {
+        if (placeholder == null) {
+            return;
+        }
+        randomPlaceholderCache.put(placeholder, new ObjectRandomPlaceholderCache(placeholder, nowValue, CommonUtil.stringToTime(refreshDoneTime)));
+    }
+
     public void setRandomPlaceholderCache(String id,
                                           String refreshDoneTime,
                                           String nowValue) {
@@ -101,15 +131,18 @@ public class ServerCache {
         randomPlaceholderCache.put(tempVal1, new ObjectRandomPlaceholderCache(tempVal1, nowValue, CommonUtil.stringToTime(refreshDoneTime)));
     }
 
-    public Map<ObjectItem, ObjectUseTimesCache> getUseTimesCache() {
-        return useTimesCache;
-    }
-
     public void addRandomPlaceholderCache(ObjectRandomPlaceholder placeholder) {
+        if (placeholder == null) {
+            return;
+        }
         randomPlaceholderCache.put(placeholder, new ObjectRandomPlaceholderCache(placeholder));
     }
 
     public Map<ObjectRandomPlaceholder, ObjectRandomPlaceholderCache> getRandomPlaceholderCache() {
         return randomPlaceholderCache;
+    }
+
+    public Map<ObjectItem, ObjectUseTimesCache> getUseTimesCache() {
+        return useTimesCache;
     }
 }

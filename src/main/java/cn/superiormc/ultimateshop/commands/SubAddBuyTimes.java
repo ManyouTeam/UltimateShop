@@ -60,8 +60,7 @@ public class SubAddBuyTimes extends AbstractCommand {
                 switch (args.length) {
                     case 4:
                         if (tempVal4 == null) {
-                            tempVal3.setUseTimesCache(tempVal1.getShopName(),
-                                    item.getProduct(),
+                            tempVal3.setUseTimesCache(item,
                                     0,
                                     0,
                                     null,
@@ -74,8 +73,7 @@ public class SubAddBuyTimes extends AbstractCommand {
                         break;
                     case 5:
                         if (tempVal4 == null) {
-                            tempVal3.setUseTimesCache(tempVal1.getShopName(),
-                                    item.getProduct(),
+                            tempVal3.setUseTimesCache(item,
                                     Integer.parseInt(args[4]),
                                     0,
                                     null,
@@ -106,8 +104,7 @@ public class SubAddBuyTimes extends AbstractCommand {
         }
         ObjectUseTimesCache tempVal4 = tempVal3.getUseTimesCache().get(tempVal2);
         if (tempVal4 == null) {
-            tempVal3.setUseTimesCache(tempVal1.getShopName(),
-                    tempVal2.getProduct(),
+            tempVal3.setUseTimesCache(tempVal2,
                     Integer.parseInt(args[4]),
                     0,
                     null,
@@ -162,8 +159,7 @@ public class SubAddBuyTimes extends AbstractCommand {
                 switch (args.length) {
                     case 4:
                         if (tempVal4 == null) {
-                            tempVal3.setUseTimesCache(tempVal1.getShopName(),
-                                    item.getProduct(),
+                            tempVal3.setUseTimesCache(item,
                                     0,
                                     0,
                                     null,
@@ -176,8 +172,7 @@ public class SubAddBuyTimes extends AbstractCommand {
                         break;
                     case 5:
                         if (tempVal4 == null) {
-                            tempVal3.setUseTimesCache(tempVal1.getShopName(),
-                                    item.getProduct(),
+                            tempVal3.setUseTimesCache(item,
                                     Integer.parseInt(args[4]),
                                     0,
                                     null,
@@ -208,8 +203,7 @@ public class SubAddBuyTimes extends AbstractCommand {
         }
         ObjectUseTimesCache tempVal4 = tempVal3.getUseTimesCache().get(tempVal2);
         if (tempVal4 == null) {
-            tempVal3.setUseTimesCache(tempVal1.getShopName(),
-                    tempVal2.getProduct(),
+            tempVal3.setUseTimesCache(tempVal2,
                     Integer.parseInt(args[4]),
                     0,
                     null,
