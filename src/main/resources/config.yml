@@ -15,12 +15,14 @@ config-files:
     file: 'zh_cn.json'
 
 # Paper only feature.
-use-component:
-  menu-title: false
-  message: false
-  item: false
+paper-api:
+  save-item: true
   # For paper users, enable this option can use their API to directly get the skull, have the performance improve.
-  skull: false
+  skull: true
+  use-component:
+    menu-title: false
+    message: false
+    item: false
 
 sell:
   # Support Value: Bukkit or ItemFormat.

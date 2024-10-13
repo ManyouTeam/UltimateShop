@@ -31,6 +31,7 @@ public class CommandManager {
        registerNewSubCommand(new SubQuickBuy());
        registerNewSubCommand(new SubReload());
        registerNewSubCommand(new SubGiveSellStick());
+       registerNewSubCommand(new SubGiveSaveItem());
        registerNewSubCommand(new SubSellAll());
        registerNewSubCommand(new SubAddBuyTimes());
        registerNewSubCommand(new SubAddSellTimes());

@@ -58,7 +58,7 @@ public class DebuildItem {
 
         // Custom Name
         if (meta.hasDisplayName()) {
-            if (UltimateShop.isPaper && ConfigManager.configManager.getBoolean("use-component.item")) {
+            if (UltimateShop.isPaper && ConfigManager.configManager.getBoolean("paper-api.use-component.item")) {
                 section.set("name", meta.displayName());
             } else {
                 section.set("name", meta.getDisplayName());
@@ -74,7 +74,7 @@ public class DebuildItem {
 
         // Lore
         if (meta.hasLore()) {
-            if (UltimateShop.isPaper && ConfigManager.configManager.getBoolean("use-component.item")) {
+            if (UltimateShop.isPaper && ConfigManager.configManager.getBoolean("paper-api.use-component.item")) {
                 section.set("lore", meta.lore());
             } else {
                 section.set("lore", meta.getLore());

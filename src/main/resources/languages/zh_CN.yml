@@ -3,6 +3,7 @@ error:
   shop-not-found: '&#98FB98[UltimateShop] &c找不到商店 {shop}!'
   player-not-found: '&#98FB98[UltimateShop] &c找不到玩家 {player}!'
   item-not-found: '&#98FB98[UltimateShop] &c找不到物品 {item}!'
+  save-item-not-found: "&#98FB98[UltimateShop] &c找不到保存物品 {item}!"
   args: '&#98FB98[UltimateShop] &c命令用法错误，请使用/shop help获取帮助!'
   in-game: '&#98FB98[UltimateShop] &c你必须在游戏中使用该命令!'
   miss-permission: '&#98FB98[UltimateShop] &c你没有权限使用该命令!'
@@ -76,6 +77,7 @@ inventory-full: "&#98FB98[UltimateShop] &f这次交易未能成功完成，因�
 start-sell-all: '&#98FB98[UltimateShop] &f您的所有 {amount}x 件物品已经回收，获得了 {reward}!'
 start-sell-stick: '&#98FB98[UltimateShop] &f您的所有可回收物品都已回收，获得了 {reward}!'
 give-sell-stick: '&#98FB98[UltimateShop] &f给予 {player} 回收棒 {item} x{amount}!'
+give-save-item: "&#98FB98[UltimateShop] &f给予 {player} 保存物品 {item} x{amount}!"
 add-times: "&#98FB98[UltimateShop] &f添加 {times} 次数到玩家 {player} 的 {item} 次数!"
 set-times: '&#98FB98[UltimateShop] &f设置 {player} 的 {item} 次数为 {times}!'
 add-times-shop: "&#98FB98[UltimateShop] &fAdd {times} to {player}'s all {shop}'s product use times!"

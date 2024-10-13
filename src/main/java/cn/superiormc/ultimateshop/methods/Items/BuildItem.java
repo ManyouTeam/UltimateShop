@@ -106,7 +106,7 @@ public class BuildItem {
         // Custom Name
         String displayNameKey = section.getString("name", section.getString("display"));
         if (displayNameKey != null) {
-            if (UltimateShop.isPaper && ConfigManager.configManager.getBoolean("use-component.item")) {
+            if (UltimateShop.isPaper && ConfigManager.configManager.getBoolean("paper-api.use-component.item")) {
                 meta.displayName(MiniMessage.miniMessage().deserialize(TextUtil.withPAPI(displayNameKey, player)));
             } else {
                 meta.setDisplayName(TextUtil.parse(player, CommonUtil.modifyString(displayNameKey, args)));
@@ -128,7 +128,7 @@ public class BuildItem {
         // Lore
         List<String> lores = section.getStringList("lore");
         if (!lores.isEmpty()) {
-            if (UltimateShop.isPaper && ConfigManager.configManager.getBoolean("use-component.item")) {
+            if (UltimateShop.isPaper && ConfigManager.configManager.getBoolean("paper-api.use-component.item")) {
                 List<Component> veryNewLore = new ArrayList<>();
                 for (String lore : lores) {
                     lore = CommonUtil.modifyString(lore, args);
@@ -563,7 +563,7 @@ public class BuildItem {
             String skullTextureNameKey = section.getString("skull-meta", section.getString("skull"));
             if (skullTextureNameKey != null) {
                 if (skullTextureNameKey.length() > 16) {
-                    if (UltimateShop.isPaper && ConfigManager.configManager.getBoolean("use-component.skull")) {
+                    if (UltimateShop.isPaper && ConfigManager.configManager.getBoolean("paper-api.skull")) {
                         PlayerProfile profile = Bukkit.createProfile(UUID.randomUUID(), "");
                         profile.setProperty(new ProfileProperty("textures", skullTextureNameKey));
                         skullMeta.setPlayerProfile(profile);

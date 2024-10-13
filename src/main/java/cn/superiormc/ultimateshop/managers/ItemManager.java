@@ -1,6 +1,7 @@
 package cn.superiormc.ultimateshop.managers;
 
 import cn.superiormc.ultimateshop.UltimateShop;
+import cn.superiormc.ultimateshop.utils.CommonUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -34,10 +35,15 @@ public class ItemManager {
         File[] tempList = dir.listFiles();
         for (File file : tempList) {
             if (file.getName().endsWith(".yml")) {
-                ItemStack itemStack = YamlConfiguration.loadConfiguration(file).getItemStack("item");
+                YamlConfiguration section = YamlConfiguration.loadConfiguration(file);
                 String key = file.getName();
                 key = key.substring(0, key.length() - 4);
-                savedItemMap.put(key, itemStack);
+                Object object = section.get("item");
+                if (object instanceof ItemStack) {
+                    savedItemMap.put(key, (ItemStack) object);
+                } else {
+                    savedItemMap.put(key, ItemStack.deserializeBytes((byte[]) object));
+                }
             }
         }
     }
@@ -48,19 +54,13 @@ public class ItemManager {
         if (!dir.exists()) {
             dir.mkdir();
         }
-        YamlConfiguration itemConfig = new YamlConfiguration();
-        itemConfig.set("item", itemStack);
-        String yaml = itemConfig.saveToString();
-        savedItemMap.put(key, itemStack);
-        if (UltimateShop.isFolia) {
-            Path path = new File(dir.getPath(), key + ".yml").toPath();
-            try {
-                Files.write(path, yaml.getBytes(StandardCharsets.UTF_8));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return;
+        YamlConfiguration briefcase = new YamlConfiguration();
+        if (UltimateShop.isPaper && CommonUtil.getMajorVersion(15) && ConfigManager.configManager.getBoolean("paper-api.save-item")) {
+            briefcase.set("item", itemStack.serializeAsBytes());
+        } else {
+            briefcase.set("item", itemStack);
         }
+        String yaml = briefcase.saveToString();
         Bukkit.getScheduler().runTaskAsynchronously(UltimateShop.instance,() -> {
             Path path = new File(dir.getPath(), key + ".yml").toPath();
             try {
@@ -69,6 +69,7 @@ public class ItemManager {
                 e.printStackTrace();
             }
         });
+        savedItemMap.put(key, itemStack);
     }
 
     public ItemStack getItemByKey(String key) {
@@ -76,5 +77,9 @@ public class ItemManager {
             return savedItemMap.get(key).clone();
         }
         return null;
+    }
+
+    public Map<String, ItemStack> getSavedItemMap() {
+        return savedItemMap;
     }
 }
