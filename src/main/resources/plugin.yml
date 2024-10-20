@@ -56,3 +56,5 @@ permissions:
     default: op
   ultimateshop.setselltimes:
     default: op
+  ultimateshop.bypassprice:
+    default: false

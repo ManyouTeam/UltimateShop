@@ -2,6 +2,7 @@ package cn.superiormc.ultimateshop.objects.buttons;
 
 import cn.superiormc.ultimateshop.managers.ErrorManager;
 import cn.superiormc.ultimateshop.objects.ObjectShop;
+import cn.superiormc.ultimateshop.objects.ObjectThingRun;
 import cn.superiormc.ultimateshop.objects.buttons.subobjects.ObjectDisplayItem;
 import cn.superiormc.ultimateshop.objects.items.ObjectAction;
 import cn.superiormc.ultimateshop.objects.items.ObjectCondition;
@@ -48,26 +49,25 @@ public class ObjectButton extends AbstractButton {
 
     private void initButton() {
         if (shop == null) {
-            action = new ObjectAction(config.getStringList("actions"));
-            failAction = new ObjectAction(config.getStringList("fail-actions"));
+            action = new ObjectAction(config.getConfigurationSection("actions"));
+            failAction = new ObjectAction(config.getConfigurationSection("fail-actions"));
+        } else {
+            action = new ObjectAction(config.getConfigurationSection("actions"), shop);
+            failAction = new ObjectAction(config.getConfigurationSection("fail-actions"), shop);
         }
-        else {
-            action = new ObjectAction(config.getStringList("actions"), shop);
-            failAction = new ObjectAction(config.getStringList("fail-actions"), shop);
-        }
-        condition = new ObjectCondition(config.getStringList("conditions"));
+        condition = new ObjectCondition(config.getConfigurationSection("conditions"));
         displayItem = new ObjectDisplayItem(config.getConfigurationSection("display-item"),
                 config.getConfigurationSection("display-item-conditions"));
     }
 
     @Override
     public void clickEvent(ClickType type, Player player) {
-        if (condition != null && !condition.getBoolean(player)) {
-            failAction.doAction(player, 1, 1, false, type);
+        if (condition != null && !condition.getAllBoolean(new ObjectThingRun(player, type))) {
+            failAction.runAllActions(new ObjectThingRun(player, type));
             return;
         }
         if (action != null) {
-            action.doAction(player, 1, 1, false, type);
+            action.runAllActions(new ObjectThingRun(player, type));
         }
     }
 

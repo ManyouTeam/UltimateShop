@@ -1,126 +1,93 @@
 package cn.superiormc.ultimateshop.objects.items;
 
-import cn.superiormc.ultimateshop.managers.ErrorManager;
-import cn.superiormc.ultimateshop.utils.TextUtil;
-import org.bukkit.entity.Player;
+import cn.superiormc.ultimateshop.objects.ObjectShop;
+import cn.superiormc.ultimateshop.objects.ObjectThingRun;
+import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
+import cn.superiormc.ultimateshop.objects.conditions.ObjectSingleCondition;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.MemoryConfiguration;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class ObjectCondition {
 
-    private final List<String> condition;
+    private ConfigurationSection section;
+
+    private boolean isEmpty = false;
+
+    private ObjectShop shop = null;
+
+    private ObjectItem item = null;
+
+    private final List<ObjectSingleCondition> conditions = new ArrayList<>();
 
     public ObjectCondition() {
-        this.condition = new ArrayList<>();
-        condition.add("none");
+        this.section = new MemoryConfiguration();
     }
 
-    public ObjectCondition(List<String> condition) {
-        this.condition = condition;
+    public ObjectCondition(ConfigurationSection section) {
+        this.section = section;
+        initCondition();
     }
 
-    public boolean getBoolean(Player player) {
-        if (player == null) {
+    public ObjectCondition(ConfigurationSection section, ObjectShop shop) {
+        this.section = section;
+        this.shop = shop;
+        initCondition();
+    }
+
+    public ObjectCondition(ConfigurationSection section, ObjectItem item) {
+        this.section = section;
+        this.item = item;
+        initCondition();
+    }
+
+    private void initCondition() {
+        if (section == null) {
+            this.isEmpty = true;
+            this.section = new MemoryConfiguration();
+            return;
+        }
+        for (String key : section.getKeys(false)) {
+            ConfigurationSection singleActionSection = section.getConfigurationSection(key);
+            if (singleActionSection == null) {
+                continue;
+            }
+            ObjectSingleCondition singleAction;
+            if (item != null) {
+                singleAction = new ObjectSingleCondition(this, singleActionSection, item);
+            } else if (shop != null) {
+                singleAction = new ObjectSingleCondition(this, singleActionSection, shop);
+            } else  {
+                singleAction = new ObjectSingleCondition(this, singleActionSection);
+            }
+            conditions.add(singleAction);
+        }
+        this.isEmpty = conditions.isEmpty();
+    }
+
+    public boolean getAllBoolean(ObjectThingRun thingRun) {
+        if (thingRun.getPlayer() == null) {
             return false;
         }
-        boolean conditionTrueOrFasle = true;
-        for (String singleCondition : condition){
-            if (singleCondition.equals("none")) {
-                return true;
-            } else if (singleCondition.startsWith("world: ")) {
-                int i = 0;
-                for (String str : singleCondition.substring(7).split(";;")){
-                    if (str.equals(player.getWorld().getName())){
-                        break;
-                    }
-                    i ++;
-                }
-                if (i == singleCondition.substring(7).split(";;").length){
-                    conditionTrueOrFasle = false;
-                    break;
-                }
-            } else if (singleCondition.startsWith("permission: ")) {
-                for (String str : singleCondition.substring(12).split(";;")) {
-                    if (!player.hasPermission(str)) {
-                        conditionTrueOrFasle = false;
-                        break;
-                    }
-                }
-            } else if (singleCondition.startsWith("placeholder: ")) {
-                try {
-                    if (singleCondition.split(";;").length == 3) {
-                        String[] conditionString = singleCondition.substring(13).split(";;");
-                        String placeholder = TextUtil.withPAPI(conditionString[0], player);
-                        //Bukkit.getConsoleSender().sendMessage(placeholder);
-                        String conditionValue = conditionString[1];
-                        String value = conditionString[2];
-                        if (conditionValue.equals("==")) {
-                            if (!placeholder.equals(value)) {
-                                conditionTrueOrFasle = false;
-                                break;
-                            }
-                        }
-                        if (conditionValue.equals("!=")) {
-                            if (placeholder.equals(value)) {
-                                conditionTrueOrFasle = false;
-                                break;
-                            }
-                        }
-                        if (conditionValue.equals("*=")) {
-                            if (!placeholder.contains(value)) {
-                                conditionTrueOrFasle = false;
-                                break;
-                            }
-                        }
-                        if (conditionValue.equals("!*=")) {
-                            if (placeholder.contains(value)) {
-                                conditionTrueOrFasle = false;
-                                break;
-                            }
-                        }
-                        if (conditionValue.equals(">=")) {
-                            if (!(Double.parseDouble(placeholder) >= Double.parseDouble(value))) {
-                                conditionTrueOrFasle = false;
-                                break;
-                            }
-                        }
-                        if (conditionValue.equals(">")) {
-                            if (!(Double.parseDouble(placeholder) > Double.parseDouble(value))) {
-                                conditionTrueOrFasle = false;
-                                break;
-                            }
-                        }
-                        if (conditionValue.equals("<=")) {
-                            if (!(Double.parseDouble(placeholder) <= Double.parseDouble(value))) {
-                                conditionTrueOrFasle = false;
-                                break;
-                            }
-                        }
-                        if (conditionValue.equals("<")) {
-                            if (!(Double.parseDouble(placeholder) < Double.parseDouble(value))) {
-                                conditionTrueOrFasle = false;
-                                break;
-                            }
-                        }
-                        if (conditionValue.equals("=")) {
-                            if (!(Double.parseDouble(placeholder) == Double.parseDouble(value))) {
-                                conditionTrueOrFasle = false;
-                                break;
-                            }
-                        }
-                    }
-                    else {
-                        ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Your placeholder condition in totem configs can not being correctly load.");
-                        return false;
-                    }
-                }
-                catch (ArrayIndexOutOfBoundsException e) {
-                    ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Your placeholder condition in totem configs can not being correctly load.");
-                    return false;
-                }
+        for (ObjectSingleCondition singleCondition : conditions){
+            if (!singleCondition.checkBoolean(thingRun)) {
+                return false;
             }
         }
-        return conditionTrueOrFasle;
+        return true;
+    }
+
+    public boolean getAnyBoolean(ObjectThingRun thingRun) {
+        if (thingRun.getPlayer() == null) {
+            return false;
+        }
+        for (ObjectSingleCondition singleCondition : conditions){
+            if (singleCondition.checkBoolean(thingRun)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

@@ -8,6 +8,7 @@ import cn.superiormc.ultimateshop.managers.CacheManager;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.LanguageManager;
 import cn.superiormc.ultimateshop.objects.ObjectShop;
+import cn.superiormc.ultimateshop.objects.ObjectThingRun;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import cn.superiormc.ultimateshop.objects.caches.ObjectUseTimesCache;
 import cn.superiormc.ultimateshop.objects.menus.ObjectMenu;
@@ -77,7 +78,7 @@ public class ShopGUI extends InvGUI {
                     shop.getShopMenu());
             return;
         }
-        if (!bypass && !shop.getShopMenuObject().getCondition().getBoolean(player.getPlayer())) {
+        if (!bypass && !shop.getShopMenuObject().getCondition().getAllBoolean(new ObjectThingRun(player))) {
             LanguageManager.languageManager.sendStringText(player,
                     "menu-condition-not-meet",
                     "menu",

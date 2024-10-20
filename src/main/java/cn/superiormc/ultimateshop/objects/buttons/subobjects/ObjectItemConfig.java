@@ -3,12 +3,12 @@ package cn.superiormc.ultimateshop.objects.buttons.subobjects;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import org.bukkit.configuration.ConfigurationSection;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class ObjectItemConfig {
 
-    private ObjectItem item;
+    private final ObjectItem item;
 
     private final ConfigurationSection section;
 
@@ -64,13 +64,27 @@ public class ObjectItemConfig {
         return tempVal1;
     }
 
-    public List<String> getStringListAndMerge(String path) {
-        List<String> result = new ArrayList<>();
-        result.addAll(section.getStringList(path));
-        if (shopSection != null) {
-            result.addAll(shopSection.getStringList(path));
+    public Map<String, ConfigurationSection> mergeCache;
+
+    public ConfigurationSection getActionOrConditionSection(String path) {
+        ConfigurationSection tempVal1 = section.getConfigurationSection(path);
+        if (shopSection == null) {
+            return tempVal1;
         }
-        return result;
+        ConfigurationSection tempVal2 = shopSection.getConfigurationSection(path);
+        if (tempVal1 != null) {
+            if (tempVal2 == null) {
+                return tempVal1;
+            }
+            if (mergeCache.containsKey(path)) {
+                return mergeCache.get(path);
+            }
+            for (String key : tempVal1.getKeys(true)) {
+                tempVal2.set(key, tempVal1.get(key));
+            }
+            mergeCache.put(path, tempVal2);
+        }
+        return tempVal2;
     }
 
     public boolean getBoolean(String path, boolean defaultValue) {
@@ -85,6 +99,10 @@ public class ObjectItemConfig {
 
     public ConfigurationSection getSection() {
         return section;
+    }
+
+    public ObjectItem getItem() {
+        return item;
     }
 
 }

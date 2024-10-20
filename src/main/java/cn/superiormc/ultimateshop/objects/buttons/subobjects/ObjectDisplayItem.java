@@ -3,6 +3,7 @@ package cn.superiormc.ultimateshop.objects.buttons.subobjects;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.methods.GUI.ModifyDisplayItem;
 import cn.superiormc.ultimateshop.methods.Items.BuildItem;
+import cn.superiormc.ultimateshop.objects.ObjectThingRun;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import cn.superiormc.ultimateshop.objects.items.ObjectCondition;
 import cn.superiormc.ultimateshop.utils.MathUtil;
@@ -51,10 +52,10 @@ public class ObjectDisplayItem {
             }
             else {
                 for (String conditionID : section.getKeys(false)) {
-                    List<String> tempVal1 = conditionSection.getStringList(conditionID);
-                    if (!tempVal1.isEmpty() && section.getConfigurationSection(conditionID) != null) {
+                    ConfigurationSection tempVal1 = conditionSection.getConfigurationSection(conditionID);
+                    if (tempVal1 != null) {
                         ObjectCondition condition = new ObjectCondition(tempVal1);
-                        if (condition.getBoolean(player)) {
+                        if (condition.getAllBoolean(new ObjectThingRun(player))) {
                             String amount = section.getString("amount", "1");
                             ItemStack displayItem = BuildItem.buildItemStack(player,
                                     section.getConfigurationSection(conditionID),

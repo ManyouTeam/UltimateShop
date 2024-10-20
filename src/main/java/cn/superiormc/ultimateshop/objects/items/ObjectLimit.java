@@ -2,6 +2,7 @@ package cn.superiormc.ultimateshop.objects.items;
 
 import cn.superiormc.ultimateshop.managers.CacheManager;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
+import cn.superiormc.ultimateshop.objects.ObjectThingRun;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import cn.superiormc.ultimateshop.objects.caches.ObjectUseTimesCache;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
@@ -64,21 +65,8 @@ public class ObjectLimit {
     }
 
     private boolean checkLimitsCondition(String conditionName, Player player) {
-        List<String> condition;
-        if (!conditionsSection.getStringList(conditionName).isEmpty()) {
-            condition = conditionsSection.getStringList(conditionName);
-            ObjectCondition tempVal1;
-            if (condition.isEmpty()) {
-                tempVal1 = new ObjectCondition();
-            }
-            else {
-                tempVal1 = new ObjectCondition(condition);
-            }
-            return tempVal1.getBoolean(player);
-        }
-        else {
-            return false;
-        }
+        ObjectCondition tempVal1 = new ObjectCondition(conditionsSection.getConfigurationSection(conditionName));
+        return tempVal1.getAllBoolean(new ObjectThingRun(player));
     }
 
     private int checkLimitValue(Player player, String path) {

@@ -114,7 +114,10 @@ menu:
   # Premium version only.
   click-event-actions:
     buy-one-stack:
-      - 'buy: {shop};;{item};;64'
+      type: buy
+      shop: {shop}
+      item: {item}
+      amount: 64
 
 use-times:
   default-reset-mode: 'NEVER'
@@ -197,9 +200,11 @@ placeholder:
       mvp: 2
   discount-conditions:
     vip:
-      - 'permission: group.vip'
+      type: permission
+      permission: 'group.vip'
     mvp:
-      - 'permission: group.mvp'
+      type: permission
+      permission: 'group.mvp'
   # Premium version only.
   random:
     rotate:

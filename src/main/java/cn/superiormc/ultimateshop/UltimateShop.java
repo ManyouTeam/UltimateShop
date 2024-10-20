@@ -40,6 +40,8 @@ public final class UltimateShop extends JavaPlugin {
         }
         new ErrorManager();
         new InitManager();
+        new HookManager();
+        new ActionManager();
         new ConfigManager();
         if (CommonUtil.getClass("com.destroystokyo.paper.PaperConfig")) {
             Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §fPaper is found, enabled Paper only feature!");

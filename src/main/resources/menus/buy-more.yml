@@ -86,4 +86,6 @@ buttons:
       material: ARROW
       name: '&c« Go back'
     actions:
-      - 'shop_menu: {shop}'
+      1:
+        type: shop_menu
+        menu: '{shop}'

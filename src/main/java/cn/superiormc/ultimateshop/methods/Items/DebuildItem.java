@@ -1,14 +1,13 @@
 package cn.superiormc.ultimateshop.methods.Items;
 
 import cn.superiormc.ultimateshop.UltimateShop;
-import cn.superiormc.ultimateshop.hooks.CheckValidHook;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.ErrorManager;
+import cn.superiormc.ultimateshop.managers.HookManager;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
 import com.google.common.collect.Multimap;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
-import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
 import org.bukkit.Material;
@@ -33,16 +32,16 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionType;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.util.*;
 
 public class DebuildItem {
 
     public static ConfigurationSection debuildItem(ItemStack itemStack, ConfigurationSection section) {
 
-        if (CheckValidHook.checkValid(itemStack) != null) {
-            section.set("hook-plugin", CheckValidHook.checkValid(itemStack)[0]);
-            section.set("hook-item", CheckValidHook.checkValid(itemStack)[1]);
+        String[] tempVal1 = HookManager.hookManager.getHookItemPluginAndID(itemStack);
+        if (tempVal1 != null) {
+            section.set("hook-plugin", tempVal1[0]);
+            section.set("hook-item", tempVal1[1]);
         } else {
             // Material
             section.set("material", itemStack.getType().name());

@@ -3,9 +3,9 @@ package cn.superiormc.ultimateshop.methods.Items;
 import cn.superiormc.mythicchanger.manager.ChangesManager;
 import cn.superiormc.mythicchanger.objects.ObjectAction;
 import cn.superiormc.ultimateshop.UltimateShop;
-import cn.superiormc.ultimateshop.hooks.ItemsHook;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.ErrorManager;
+import cn.superiormc.ultimateshop.managers.HookManager;
 import cn.superiormc.ultimateshop.managers.ItemManager;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
 import cn.superiormc.ultimateshop.utils.TextUtil;
@@ -86,7 +86,7 @@ public class BuildItem {
                 } else if (pluginName.equals("EcoArmor") && !itemID.contains(";;")) {
                     itemID = itemID + ";;" + section.getString("hook-item-type");
                 }
-                ItemStack hookItem = ItemsHook.getHookItem(pluginName, itemID);
+                ItemStack hookItem = HookManager.hookManager.getHookItem(player, pluginName, itemID);
                 if (hookItem != null) {
                     item = hookItem;
                 }

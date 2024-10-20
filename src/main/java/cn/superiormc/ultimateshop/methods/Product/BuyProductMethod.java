@@ -7,6 +7,7 @@ import cn.superiormc.ultimateshop.managers.CacheManager;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.LanguageManager;
 import cn.superiormc.ultimateshop.methods.ProductTradeStatus;
+import cn.superiormc.ultimateshop.objects.ObjectThingRun;
 import cn.superiormc.ultimateshop.objects.caches.ObjectUseTimesCache;
 import cn.superiormc.ultimateshop.objects.items.GiveResult;
 import cn.superiormc.ultimateshop.objects.items.prices.ObjectPrices;
@@ -201,7 +202,7 @@ public class BuyProductMethod {
         // 扣钱
         tempVal5.takeThing(inventory, player, takeResult.getResultMap());
         // 执行动作
-        tempVal2.getBuyAction().doAction(player, playerUseTimes, multi, false);
+        tempVal2.getBuyAction().runAllActions(new ObjectThingRun(player, playerUseTimes, multi));
         // limit+1
         if (tempVal9 != null) {
             if (ConfigManager.configManager.getBoolean("debug")) {

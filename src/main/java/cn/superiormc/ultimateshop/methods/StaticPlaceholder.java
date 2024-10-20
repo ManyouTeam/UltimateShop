@@ -2,6 +2,7 @@ package cn.superiormc.ultimateshop.methods;
 
 import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
+import cn.superiormc.ultimateshop.objects.ObjectThingRun;
 import cn.superiormc.ultimateshop.objects.items.ObjectCondition;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
 import cn.superiormc.ultimateshop.utils.TextUtil;
@@ -48,8 +49,8 @@ public class StaticPlaceholder {
         Set<String> groupNameSet = conditionSection.getKeys(false);
         List<Double> result = new ArrayList<>();
         for (String groupName : groupNameSet) {
-            ObjectCondition condition = new ObjectCondition(conditionSection.getStringList(groupName));
-            if (condition.getBoolean(player)) {
+            ObjectCondition condition = new ObjectCondition(conditionSection.getConfigurationSection(groupName));
+            if (condition.getAllBoolean(new ObjectThingRun(player))) {
                 result.add(section.getDouble(groupName));
             }
             else {

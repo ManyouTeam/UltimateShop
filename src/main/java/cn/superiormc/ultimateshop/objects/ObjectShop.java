@@ -7,7 +7,6 @@ import cn.superiormc.ultimateshop.objects.menus.ObjectMenu;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -17,13 +16,13 @@ import java.util.Map;
 
 public class ObjectShop {
 
-    private YamlConfiguration config;
+    private final YamlConfiguration config;
 
-    private Map<String, ObjectItem> items = new HashMap<>();
+    private final Map<String, ObjectItem> items = new HashMap<>();
 
     public Map<String, AbstractButton> buttonItems = new HashMap<>();
 
-    private String shopName;
+    private final String shopName;
 
     private ObjectMenu menu;
 

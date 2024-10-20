@@ -6,7 +6,7 @@
 
     <groupId>cn.superiormc</groupId>
     <artifactId>UltimateShop</artifactId>
-    <version>2.8.6</version>
+    <version>3.0.0</version>
     <packaging>jar</packaging>
 
     <name>UltimateShop</name>
@@ -33,10 +33,6 @@
                 <version>3.4.1</version>
                 <configuration>
                     <relocations>
-                        <relocation>
-                            <pattern>cn.superiormc.ultimateshop.libs.xserieschanged</pattern>
-                            <shadedPattern>cn.superiormc.ultimateshop.libs</shadedPattern>
-                        </relocation>
                         <relocation>
                             <pattern>org.bstats</pattern>
                             <shadedPattern>cn.superiormc.ultimateshop.bstats</shadedPattern>

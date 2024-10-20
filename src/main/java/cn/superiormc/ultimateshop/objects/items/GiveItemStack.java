@@ -1,9 +1,9 @@
 package cn.superiormc.ultimateshop.objects.items;
 
-import cn.superiormc.ultimateshop.hooks.EconomyHook;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
+import cn.superiormc.ultimateshop.managers.HookManager;
+import cn.superiormc.ultimateshop.objects.ObjectThingRun;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -22,7 +22,7 @@ public class GiveItemStack {
 
     private boolean canGive;
 
-    private AbstractSingleThing thing;
+    private final AbstractSingleThing thing;
 
     public GiveItemStack(Collection<ItemStack> items, ItemStack targetItem, ItemStack displayItem, boolean canGive, AbstractSingleThing thing) {
         this.displayItem = displayItem;
@@ -80,18 +80,18 @@ public class GiveItemStack {
                 }
                 break;
             case HOOK_ECONOMY:
-                EconomyHook.giveEconomy(thing.singleSection.getString("economy-plugin"),
+                HookManager.hookManager.giveEconomy(thing.singleSection.getString("economy-plugin"),
                         thing.singleSection.getString("economy-type", "Unknown"),
                         player,
                         cost);
                 break;
             case VANILLA_ECONOMY:
-                EconomyHook.giveEconomy(thing.singleSection.getString("economy-type"),
+                HookManager.hookManager.giveEconomy(thing.singleSection.getString("economy-type"),
                         player,
                         (int) cost);
                 break;
         }
-        thing.giveAction.doAction(player, times, cost);
+        thing.giveAction.runAllActions(new ObjectThingRun(player, times, cost));
     }
 
     public void setCanGive(boolean canGive) {

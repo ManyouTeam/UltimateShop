@@ -2,6 +2,7 @@ package cn.superiormc.ultimateshop.gui.form;
 
 import cn.superiormc.ultimateshop.gui.FormGUI;
 import cn.superiormc.ultimateshop.managers.LanguageManager;
+import cn.superiormc.ultimateshop.objects.ObjectThingRun;
 import cn.superiormc.ultimateshop.objects.buttons.AbstractButton;
 import cn.superiormc.ultimateshop.objects.menus.ObjectMenu;
 import cn.superiormc.ultimateshop.utils.ItemUtil;
@@ -38,7 +39,7 @@ public class FormCommonGUI extends FormGUI {
                     fileName);
             return;
         }
-        if (!bypass && !commonMenu.getCondition().getBoolean(player.getPlayer())) {
+        if (!bypass && !commonMenu.getCondition().getAllBoolean(new ObjectThingRun(player))) {
             LanguageManager.languageManager.sendStringText(player,
                     "menu-condition-not-meet",
                     "menu",

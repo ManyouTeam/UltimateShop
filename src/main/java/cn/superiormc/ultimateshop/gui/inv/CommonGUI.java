@@ -3,6 +3,7 @@ package cn.superiormc.ultimateshop.gui.inv;
 import cn.superiormc.ultimateshop.gui.InvGUI;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.LanguageManager;
+import cn.superiormc.ultimateshop.objects.ObjectThingRun;
 import cn.superiormc.ultimateshop.objects.menus.ObjectMenu;
 import cn.superiormc.ultimateshop.utils.PaperUtil;
 import org.bukkit.entity.Player;
@@ -35,7 +36,7 @@ public class CommonGUI extends InvGUI {
                     fileName);
             return;
         }
-        if (!bypass && !commonMenu.getCondition().getBoolean(player.getPlayer())) {
+        if (!bypass && !commonMenu.getCondition().getAllBoolean(new ObjectThingRun(player))) {
             LanguageManager.languageManager.sendStringText(player,
                     "menu-condition-not-meet",
                     "menu",

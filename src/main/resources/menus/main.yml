@@ -21,7 +21,9 @@ buttons:
         - '&7Sell and buy various items'
         - '&7such as seeds.'
     actions:
-      - 'shop_menu: farming'
+      1:
+        type: shop_menu
+        shop: farming
   B:
     display-item:
       material: bone
@@ -30,7 +32,9 @@ buttons:
         - '&7Sell and buy related items'
         - '&7to mob drops as strings.'
     actions:
-      - 'shop_menu: drops'
+      1:
+        type: shop_menu
+        shop: drops
   C:
     display-item:
       material: ORANGE_CONCRETE
@@ -39,7 +43,9 @@ buttons:
         - '&7Sell and buy blocks of concrete'
         - '&7and all their color variants.'
     actions:
-      - 'shop_menu: concretes'
+      1:
+        type: shop_menu
+        shop: concretes
   D:
     display-item:
       material: LILAC
@@ -48,7 +54,9 @@ buttons:
         - '&7Sell and buy many types of'
         - '&7flowers in this section.'
     actions:
-      - 'shop_menu: flowers'
+      1:
+        type: shop_menu
+        shop: flowers
   E:
     display-item:
       material: oak_log
@@ -57,7 +65,9 @@ buttons:
         - '&7Sell and buy all variants of overworld'
         - '&7logs and their saplings.'
     actions:
-      - 'shop_menu: logs'
+      1:
+        type: shop_menu
+        shop: logs
   F:
     display-item:
       material: diamond
@@ -66,7 +76,9 @@ buttons:
         - '&7Sell and buy different minerals'
         - '&7such as diamond, iron and more.'
     actions:
-      - 'shop_menu: minerals'
+      1:
+        type: shop_menu
+        shop: minerals
   G:
     display-item:
       material: GRASS_BLOCK
@@ -75,7 +87,9 @@ buttons:
         - '&7Sell and buy different types'
         - '&7of varied blocks.'
     actions:
-      - 'shop_menu: blocks'
+      1:
+        type: shop_menu
+        shop: blocks
   H:
     display-item:
       material: LIME_TERRACOTTA
@@ -84,7 +98,9 @@ buttons:
         - '&7Sell and buy blocks of terracotta'
         - '&7and all their color variants.'
     actions:
-      - 'shop_menu: terracottas'
+      1:
+        type: shop_menu
+        shop: terracottas
   I:
     display-item:
       material: GLASS
@@ -93,7 +109,9 @@ buttons:
         - '&7Sell and buy blocks of glass and panels'
         - '&7and all their color variants.'
     actions:
-      - 'shop_menu: glass'
+      1:
+        type: shop_menu
+        shop: glass
   J:
     display-item:
       material: LIME_WOOL
@@ -102,7 +120,9 @@ buttons:
         - '&7Sell and buy blocks of wools'
         - '&7and all their color variants.'
     actions:
-      - 'shop_menu: wools'
+      1:
+        type: shop_menu
+        shop: wools
   K:
     display-item:
       material: EXPERIENCE_BOTTLE
@@ -111,7 +131,9 @@ buttons:
         - '&7Sell and buy some special'
         - '&7or rare items.'
     actions:
-      - 'shop_menu: special'
+      1:
+        type: shop_menu
+        shop: special
   L:
     display-item:
       material: REDSTONE
@@ -120,7 +142,9 @@ buttons:
         - '&7Sell and buy everything related'
         - '&7to redstone as comparators.'
     actions:
-      - 'shop_menu: redstone'
+      1:
+        type: shop_menu
+        shop: redstone
   M:
     display-item:
       material: FISHING_ROD
@@ -129,7 +153,9 @@ buttons:
         - '&7Sell or buy different raw'
         - '&7or cooked fish.'
     actions:
-      - 'shop_menu: fish'
+      1:
+        type: shop_menu
+        shop: fish
   N:
     display-item:
       material: RAIL
@@ -138,10 +164,13 @@ buttons:
         - '&7Some things related to'
         - '&7transport like rails.'
     actions:
-      - 'shop_menu: transport'
+      1:
+        type: shop_menu
+        shop: transport
   Z:
     display-item:
       material: BARRIER
       name: '&cClose this menu'
     actions:
-      - 'close'
+      1:
+        type: close

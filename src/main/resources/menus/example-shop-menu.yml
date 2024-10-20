@@ -18,4 +18,6 @@ buttons:
       material: ARROW
       name: '&c« Go back'
     actions:
-      - 'open_menu: main'
+      1:
+        type: open_menu
+        menu: main

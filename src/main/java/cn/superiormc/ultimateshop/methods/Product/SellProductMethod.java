@@ -7,6 +7,7 @@ import cn.superiormc.ultimateshop.managers.CacheManager;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.LanguageManager;
 import cn.superiormc.ultimateshop.methods.ProductTradeStatus;
+import cn.superiormc.ultimateshop.objects.ObjectThingRun;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import cn.superiormc.ultimateshop.objects.ObjectShop;
 import cn.superiormc.ultimateshop.objects.caches.ObjectUseTimesCache;
@@ -235,7 +236,7 @@ public class SellProductMethod {
         // 扣的是奖励中的东西
         tempVal5.takeThing(inventory, player, takeResult.getResultMap());
         // 执行动作
-        tempVal2.getSellAction().doAction(player, playerUseTimes, multi, sellAll);
+        tempVal2.getSellAction().runAllActions(new ObjectThingRun(player, playerUseTimes, multi, sellAll));
         // limit+1
         if (tempVal9 != null) {
             if (ConfigManager.configManager.getBoolean("debug")) {

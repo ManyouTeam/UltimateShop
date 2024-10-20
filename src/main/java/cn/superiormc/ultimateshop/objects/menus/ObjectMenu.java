@@ -2,6 +2,7 @@ package cn.superiormc.ultimateshop.objects.menus;
 
 import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.objects.ObjectShop;
+import cn.superiormc.ultimateshop.objects.ObjectThingRun;
 import cn.superiormc.ultimateshop.objects.buttons.AbstractButton;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectButton;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
@@ -75,8 +76,7 @@ public class ObjectMenu {
     public void initMenu() {
         if (type == MenuType.Common) {
             commonMenus.put(fileName, this);
-        }
-        else {
+        } else {
             shopMenus.put(shop, this);
             shopMenuNames.add(fileName);
         }
@@ -84,8 +84,7 @@ public class ObjectMenu {
         if (!file.exists()){
             Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: We can not found your menu file: " +
                     fileName + ".yml!");
-        }
-        else {
+        } else {
             if (type == MenuType.Common) {
                 Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §fLoaded menu: " +
                         fileName + ".yml!");
@@ -96,11 +95,14 @@ public class ObjectMenu {
             this.condition = new ObjectCondition();
             this.openAction = new ObjectAction();
             this.closeAction = new ObjectAction();
-        }
-        else {
-            this.condition = new ObjectCondition(menuConfigs.getStringList("conditions"));
-            this.openAction = new ObjectAction(menuConfigs.getStringList("open-actions"));
-            this.closeAction = new ObjectAction(menuConfigs.getStringList("close-actions"));
+        } else if (shop != null) {
+            this.condition = new ObjectCondition(menuConfigs.getConfigurationSection("conditions"));
+            this.openAction = new ObjectAction(menuConfigs.getConfigurationSection("open-actions"), shop);
+            this.closeAction = new ObjectAction(menuConfigs.getConfigurationSection("close-actions"));
+        } else {
+            this.condition = new ObjectCondition(menuConfigs.getConfigurationSection("conditions"), shop);
+            this.openAction = new ObjectAction(menuConfigs.getConfigurationSection("open-actions"));
+            this.closeAction = new ObjectAction(menuConfigs.getConfigurationSection("close-actions"));
         }
     }
 
@@ -179,13 +181,13 @@ public class ObjectMenu {
 
     public void doOpenAction(Player player) {
         if (openAction != null) {
-            openAction.doAction(player, 1, 1, false);
+            openAction.runAllActions(new ObjectThingRun(player));
         }
     }
 
     public void doCloseAction(Player player) {
         if (closeAction != null) {
-            closeAction.doAction(player, 1, 1, false);
+            closeAction.runAllActions(new ObjectThingRun(player));
         }
     }
 

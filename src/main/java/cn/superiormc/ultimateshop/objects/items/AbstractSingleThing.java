@@ -1,9 +1,11 @@
 package cn.superiormc.ultimateshop.objects.items;
 
 import cn.superiormc.ultimateshop.UltimateShop;
-import cn.superiormc.ultimateshop.hooks.PriceHook;
+import cn.superiormc.ultimateshop.hooks.ItemPriceUtil;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
+import cn.superiormc.ultimateshop.managers.HookManager;
 import cn.superiormc.ultimateshop.methods.Items.BuildItem;
+import cn.superiormc.ultimateshop.objects.ObjectThingRun;
 import cn.superiormc.ultimateshop.objects.items.prices.ObjectPrices;
 import cn.superiormc.ultimateshop.objects.items.prices.ObjectSinglePrice;
 import cn.superiormc.ultimateshop.objects.items.prices.PriceMode;
@@ -21,7 +23,6 @@ import org.jetbrains.annotations.NotNull;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 public abstract class AbstractSingleThing implements Comparable<AbstractSingleThing> {
 
@@ -82,36 +83,25 @@ public abstract class AbstractSingleThing implements Comparable<AbstractSingleTh
     }
 
     protected void initCondition() {
-        List<String> conditions = null;
+        ConfigurationSection conditions = null;
         if (this instanceof ObjectSinglePrice) {
             ObjectPrices objectPrices = (ObjectPrices) this.things;
             if (objectPrices.getPriceMode() == PriceMode.BUY) {
-                conditions = things.section.getStringList("buy-prices-conditions." + id);
+                conditions = things.section.getConfigurationSection("buy-prices-conditions." + id);
             } else {
-                conditions = things.section.getStringList("sell-prices-conditions." + id);
+                conditions = things.section.getConfigurationSection("sell-prices-conditions." + id);
             }
         } else if (this instanceof ObjectSingleProduct) {
-            conditions = things.section.getStringList("products-conditions." + id);
+            conditions = things.section.getConfigurationSection("products-conditions." + id);
         }
-        if (conditions == null || conditions.isEmpty()) {
-            conditions = singleSection.getStringList("conditions");
+        if (conditions == null) {
+            conditions = singleSection.getConfigurationSection("conditions");
         }
-        if (conditions.isEmpty()) {
-            condition = new ObjectCondition();
-        }
-        else {
-            condition = new ObjectCondition(conditions);
-        }
+        condition = new ObjectCondition(conditions);
     }
 
     protected void initAction() {
-        List<String> actions = singleSection.getStringList("give-actions");
-        if (actions.isEmpty()) {
-            giveAction = new ObjectAction();
-        }
-        else {
-            giveAction = new ObjectAction(actions, things.getItem());
-        }
+        giveAction = new ObjectAction(singleSection.getConfigurationSection("give-actions"), things.getItem());
     }
 
     public GiveItemStack playerCanGive(Player player,
@@ -138,7 +128,7 @@ public abstract class AbstractSingleThing implements Comparable<AbstractSingleTh
         if (condition == null) {
             return true;
         }
-        return condition.getBoolean(player);
+        return condition.getAllBoolean(new ObjectThingRun(player));
     }
 
     public double playerHasAmount(Inventory inventory, Player player) {
@@ -158,7 +148,7 @@ public abstract class AbstractSingleThing implements Comparable<AbstractSingleTh
                 } else if (pluginName.equals("EcoArmor") && !itemID.contains(";;")) {
                     itemID = itemID + ";;" + section.getString("hook-item-type");
                 }
-                return PriceHook.getItemAmount(inventory,
+                return ItemPriceUtil.getItemAmount(inventory,
                         pluginName,
                         itemID);
             case VANILLA_ITEM:
@@ -166,14 +156,14 @@ public abstract class AbstractSingleThing implements Comparable<AbstractSingleTh
                 if (tempVal1 == null) {
                     return 0;
                 }
-                return PriceHook.getItemAmount(inventory, tempVal1);
+                return ItemPriceUtil.getItemAmount(inventory, tempVal1);
             case MATCH_ITEM:
-                return PriceHook.getItemAmount(inventory, section);
+                return ItemPriceUtil.getItemAmount(inventory, section);
             case HOOK_ECONOMY:
-                return PriceHook.getEconomyAmount(player, section.getString("economy-plugin"),
+                return HookManager.hookManager.getEconomyAmount(player, section.getString("economy-plugin"),
                         section.getString("economy-type", "default"));
             case VANILLA_ECONOMY:
-                return PriceHook.getEconomyAmount(player,
+                return HookManager.hookManager.getEconomyAmount(player,
                         section.getString("economy-type"));
             case CUSTOM:
                 return Double.parseDouble(TextUtil.parse(player, section.getString("match-placeholder", "0")));
@@ -217,7 +207,7 @@ public abstract class AbstractSingleThing implements Comparable<AbstractSingleTh
                 } else if (pluginName.equals("EcoArmor") && !itemID.contains(";;")) {
                     itemID = itemID + ";;" + section.getString("hook-item-type");
                 }
-                return PriceHook.getPrice(inventory,
+                return ItemPriceUtil.getPrice(inventory,
                         player,
                         pluginName,
                         itemID,
@@ -227,16 +217,16 @@ public abstract class AbstractSingleThing implements Comparable<AbstractSingleTh
                 if (itemStack == null) {
                     return false;
                 }
-                return PriceHook.getPrice(inventory, player, itemStack, (int) cost, take);
+                return ItemPriceUtil.getPrice(inventory, player, itemStack, (int) cost, take);
             case MATCH_ITEM:
-                return PriceHook.getPrice(inventory, player, section, (int) cost, take);
+                return ItemPriceUtil.getPrice(inventory, player, section, (int) cost, take);
             case HOOK_ECONOMY:
-                return PriceHook.getPrice(player,
+                return HookManager.hookManager.getPrice(player,
                         section.getString("economy-plugin"),
                         section.getString("economy-type", "default"),
                         cost, take);
             case VANILLA_ECONOMY:
-                return PriceHook.getPrice(player,
+                return HookManager.hookManager.getPrice(player,
                         section.getString("economy-type"),
                         (int) cost, take);
             case CUSTOM:
