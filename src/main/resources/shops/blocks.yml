@@ -441,4 +441,6 @@ buttons:
       skull: 'eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMTliZjMyOTJlMTI2YTEwNWI1NGViYTcxM2FhMWIxNTJkNTQxYTFkODkzODgyOWM1NjM2NGQxNzhlZDIyYmYifX19'
       name: '&cNext page »'
     actions:
-      - 'shop_menu: blocks2'
+      1:
+        type: shop_menu
+        menu: 'blocks2'
