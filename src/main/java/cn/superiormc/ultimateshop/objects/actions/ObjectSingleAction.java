@@ -7,6 +7,7 @@ import cn.superiormc.ultimateshop.objects.ObjectThingRun;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import cn.superiormc.ultimateshop.objects.items.ObjectAction;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
+import cn.superiormc.ultimateshop.utils.TextUtil;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
@@ -132,9 +133,7 @@ public class ObjectSingleAction {
                 ,"player_pitch", String.valueOf(player.getLocation().getPitch())
                 ,"player_yaw", String.valueOf(player.getLocation().getYaw())
                 ,"player", player.getName());
-        if (CommonUtil.checkPluginLoad("PlaceholderAPI")) {
-            content = PlaceholderAPI.setPlaceholders(player, content);
-        }
+        content = TextUtil.parse(player, content);
         if (shop != null) {
             content = CommonUtil.modifyString(content, "shop-menu", shop.getShopMenu(),
                     "shop", shop.getShopName(),

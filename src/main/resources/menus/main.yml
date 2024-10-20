@@ -2,7 +2,9 @@ title: 'Items Shop'
 size: 54
 
 open-actions:
-  - 'sound: block.note_block.pling;;1;;1'
+  1:
+    type: sound
+    sound: block.note_block.pling
 
 layout:
   - '000000000'
