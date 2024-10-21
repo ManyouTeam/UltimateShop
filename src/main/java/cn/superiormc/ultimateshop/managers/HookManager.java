@@ -1,8 +1,11 @@
 package cn.superiormc.ultimateshop.managers;
 
+import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.hooks.economy.*;
 import cn.superiormc.ultimateshop.hooks.items.*;
+import cn.superiormc.ultimateshop.papi.PlaceholderAPIExpansion;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -19,8 +22,23 @@ public class HookManager {
 
     public HookManager() {
         hookManager = this;
+        initNormalHook();
         initEconomyHook();
         initItemHook();
+    }
+
+    private void initNormalHook() {
+        if (CommonUtil.checkPluginLoad("PlaceholderAPI")) {
+            PlaceholderAPIExpansion.papi = new PlaceholderAPIExpansion(UltimateShop.instance);
+            Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §fHooking into PlaceholderAPI...");
+            if (PlaceholderAPIExpansion.papi.register()){
+                Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §fFinished hook!");
+            }
+        }
+        if (!UltimateShop.freeVersion && CommonUtil.getClass("org.geysermc.floodgate.api.FloodgateApi")) {
+            Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §fHooking into Floodgate...");
+            UltimateShop.useGeyser = true;
+        }
     }
 
     private void initEconomyHook() {

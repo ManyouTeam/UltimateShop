@@ -18,7 +18,7 @@ public class ActionChance extends AbstractRunAction {
         if (UltimateShop.freeVersion) {
             return;
         }
-        ConfigurationSection chanceSection = singleAction.getActionSection().getConfigurationSection("actions");
+        ConfigurationSection chanceSection = singleAction.getSection().getConfigurationSection("actions");
         if (chanceSection == null) {
             return;
         }

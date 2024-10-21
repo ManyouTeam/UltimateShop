@@ -17,10 +17,10 @@ public class ActionSound extends AbstractRunAction {
         String soundName = singleAction.getString("sound");
         float volume = 1.0f;
         float pitch = 1.0f;
-        if (singleAction.getActionSection().contains("volume")) {
+        if (singleAction.getSection().contains("volume")) {
             volume = Float.parseFloat(singleAction.getString("volume"));
         }
-        if (singleAction.getActionSection().contains("pitch")) {
+        if (singleAction.getSection().contains("pitch")) {
             pitch = Float.parseFloat(singleAction.getString("pitch"));
         }
         Location location = player.getLocation();

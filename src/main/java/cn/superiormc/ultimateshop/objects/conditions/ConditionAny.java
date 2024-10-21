@@ -17,7 +17,7 @@ public class ConditionAny extends AbstractCheckCondition {
         if (UltimateShop.freeVersion) {
             return true;
         }
-        ConfigurationSection anySection = singleCondition.getConditionSection().getConfigurationSection("conditions");
+        ConfigurationSection anySection = singleCondition.getSection().getConfigurationSection("conditions");
         if (anySection == null) {
             return true;
         }

@@ -14,7 +14,7 @@ public final class UltimateShop extends JavaPlugin {
 
     public static UltimateShop instance;
 
-    public static final boolean freeVersion = false;
+    public static final boolean freeVersion = true;
 
     public static boolean isPaper = false;
 
@@ -40,9 +40,10 @@ public final class UltimateShop extends JavaPlugin {
         }
         new ErrorManager();
         new InitManager();
-        new HookManager();
         new ActionManager();
+        new ConditionManager();
         new ConfigManager();
+        new HookManager();
         if (CommonUtil.getClass("com.destroystokyo.paper.PaperConfig")) {
             Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §fPaper is found, enabled Paper only feature!");
             isPaper = true;
@@ -64,17 +65,6 @@ public final class UltimateShop extends JavaPlugin {
         }
         if (BungeeCordManager.enableThis()) {
             new BungeeCordManager();
-        }
-        if (CommonUtil.checkPluginLoad("PlaceholderAPI")) {
-            PlaceholderAPIExpansion.papi = new PlaceholderAPIExpansion(this);
-            Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §fHooking into PlaceholderAPI...");
-            if (PlaceholderAPIExpansion.papi.register()){
-                Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §fFinished hook!");
-            }
-        }
-        if (!UltimateShop.freeVersion && CommonUtil.getClass("org.geysermc.floodgate.api.FloodgateApi")) {
-            Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §fHooking into Floodgate...");
-            useGeyser = true;
         }
         if (!CommonUtil.checkClass("com.mojang.authlib.properties.Property", "getValue") && CommonUtil.getMinorVersion(21, 1)) {
             newSkullMethod = true;

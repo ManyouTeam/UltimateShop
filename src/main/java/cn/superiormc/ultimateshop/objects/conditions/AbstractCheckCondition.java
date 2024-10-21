@@ -19,7 +19,7 @@ public abstract class AbstractCheckCondition {
 
     public boolean checkCondition(ObjectSingleCondition singleCondition, ObjectThingRun thingRun) {
         for (String arg : requiredArgs) {
-            if (!singleCondition.getConditionSection().contains(arg)) {
+            if (!singleCondition.getSection().contains(arg)) {
                 ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Your condition missing required arg: " + arg + ".");
                 return true;
             }

@@ -18,11 +18,11 @@ public class ActionDelay extends AbstractRunAction {
         if (UltimateShop.freeVersion) {
             return;
         }
-        ConfigurationSection chanceSection = singleAction.getActionSection().getConfigurationSection("actions");
+        ConfigurationSection chanceSection = singleAction.getSection().getConfigurationSection("actions");
         if (chanceSection == null) {
             return;
         }
-        long time = singleAction.getActionSection().getLong("time");
+        long time = singleAction.getSection().getLong("time");
         ObjectAction action = new ObjectAction(chanceSection);
         if (UltimateShop.isFolia) {
             Bukkit.getGlobalRegionScheduler().runDelayed(UltimateShop.instance, work -> action.runAllActions(thingRun), time);
