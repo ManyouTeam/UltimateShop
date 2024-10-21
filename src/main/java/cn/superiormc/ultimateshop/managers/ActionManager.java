@@ -1,8 +1,8 @@
 package cn.superiormc.ultimateshop.managers;
 
+import cn.superiormc.ultimateshop.objects.actions.AbstractRunAction;
 import cn.superiormc.ultimateshop.objects.ObjectThingRun;
 import cn.superiormc.ultimateshop.objects.actions.*;
-import org.bukkit.entity.Player;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -34,6 +34,7 @@ public class ActionManager {
         registerNewAction("open_menu", new ActionOpenMenu());
         registerNewAction("shop_menu", new ActionShopMenu());
         registerNewAction("buy", new ActionBuy());
+        registerNewAction("sell", new ActionSell());
         registerNewAction("chance", new ActionChance());
         registerNewAction("delay", new ActionDelay());
         registerNewAction("any", new ActionAny());
