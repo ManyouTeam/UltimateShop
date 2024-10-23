@@ -1,5 +1,6 @@
 package cn.superiormc.ultimateshop.objects;
 
+import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
 import cn.superiormc.ultimateshop.utils.TextUtil;
@@ -71,7 +72,7 @@ public abstract class AbstractSingleRun {
                 ,"player_pitch", String.valueOf(player.getLocation().getPitch())
                 ,"player_yaw", String.valueOf(player.getLocation().getYaw())
                 ,"player", player.getName());
-        content = TextUtil.withPAPI(content, player);
+        content = TextUtil.parse(content, player);
         if (shop != null) {
             content = CommonUtil.modifyString(content, "shop-menu", shop.getShopMenu(),
                     "shop", shop.getShopName(),

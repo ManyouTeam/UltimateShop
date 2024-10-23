@@ -3,7 +3,6 @@ package cn.superiormc.ultimateshop;
 import cn.superiormc.ultimateshop.cache.ServerCache;
 import cn.superiormc.ultimateshop.database.SQLDatabase;
 import cn.superiormc.ultimateshop.managers.*;
-import cn.superiormc.ultimateshop.papi.PlaceholderAPIExpansion;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
@@ -14,7 +13,7 @@ public final class UltimateShop extends JavaPlugin {
 
     public static UltimateShop instance;
 
-    public static final boolean freeVersion = false;
+    public static final boolean freeVersion = true;
 
     public static boolean isPaper = false;
 
