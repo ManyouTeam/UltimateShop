@@ -88,4 +88,4 @@ buttons:
     actions:
       1:
         type: shop_menu
-        menu: '{shop}'
+        shop: '{shop}'
