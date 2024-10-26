@@ -3,6 +3,7 @@ package cn.superiormc.ultimateshop.hooks;
 import cn.superiormc.mythicchanger.manager.MatchItemManager;
 import cn.superiormc.ultimateshop.managers.HookManager;
 import cn.superiormc.ultimateshop.utils.ItemUtil;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -16,16 +17,13 @@ public class ItemPriceUtil {
             return false;
         }
         ItemStack[] storage = inventory.getStorageContents();
-        int amount = getItemAmount(inventory, pluginName, item);
-        if (amount >= value) {
+        if (take || getItemAmount(inventory, pluginName, item) >= value) {
             if (take) {
                 for (ItemStack itemStack : storage) {
                     if (itemStack == null || itemStack.getType().isAir()) {
                         continue;
                     }
-                    ItemStack temItem = itemStack.clone();
-                    temItem.setAmount(1);
-                    String tempVal10 = HookManager.hookManager.getHookItemID(pluginName, temItem);
+                    String tempVal10 = HookManager.hookManager.getHookItemID(pluginName, itemStack);
                     if (tempVal10 != null && tempVal10.equals(item)) {
                         if (itemStack.getAmount() >= value) {
                             itemStack.setAmount(itemStack.getAmount() - value);
@@ -60,9 +58,7 @@ public class ItemPriceUtil {
             if (tempVal1 == null || tempVal1.getType().isAir()) {
                 continue;
             }
-            ItemStack temItem = tempVal1.clone();
-            temItem.setAmount(1);
-            String tempVal10 = HookManager.hookManager.getHookItemID(pluginName, temItem);
+            String tempVal10 = HookManager.hookManager.getHookItemID(pluginName, tempVal1);
             if (tempVal10 != null && tempVal10.equals(item)) {
                 amount += tempVal1.getAmount();
             }
@@ -75,16 +71,13 @@ public class ItemPriceUtil {
             return false;
         }
         ItemStack[] storage = inventory.getStorageContents();
-        int amount = getItemAmount(inventory, item);
-        if (amount >= value) {
+        if (take || getItemAmount(inventory, item) >= value) {
             if (take) {
                 for (ItemStack itemStack : storage) {
                     if (itemStack == null || itemStack.getType().isAir()) {
                         continue;
                     }
-                    ItemStack temItem = itemStack.clone();
-                    temItem.setAmount(1);
-                    if (ItemUtil.isSameItem(temItem, item)) {
+                    if (ItemUtil.isSameItem(itemStack, item)) {
                         if (itemStack.getAmount() >= value) {
                             itemStack.setAmount(itemStack.getAmount() - value);
                             break;
@@ -118,8 +111,6 @@ public class ItemPriceUtil {
             if (tempVal1 == null || tempVal1.getType().isAir()) {
                 continue;
             }
-            ItemStack temItem = tempVal1.clone();
-            temItem.setAmount(1);
             if (MatchItemManager.matchItemManager.getMatch(section.getConfigurationSection("match-item"), tempVal1)) {
                 amount += tempVal1.getAmount();
             }
@@ -132,16 +123,13 @@ public class ItemPriceUtil {
             return false;
         }
         ItemStack[] storage = inventory.getStorageContents();
-        int amount = getItemAmount(inventory, section);
-        if (amount >= value) {
+        if (take || getItemAmount(inventory, section) >= value) {
             if (take) {
                 for (ItemStack itemStack : storage) {
                     if (itemStack == null || itemStack.getType().isAir()) {
                         continue;
                     }
-                    ItemStack temItem = itemStack.clone();
-                    temItem.setAmount(1);
-                    if (MatchItemManager.matchItemManager.getMatch(section.getConfigurationSection("match-item"), temItem)) {
+                    if (MatchItemManager.matchItemManager.getMatch(section.getConfigurationSection("match-item"), itemStack)) {
                         if (itemStack.getAmount() >= value) {
                             itemStack.setAmount(itemStack.getAmount() - value);
                             break;
@@ -175,9 +163,7 @@ public class ItemPriceUtil {
             if (tempVal1 == null || tempVal1.getType().isAir()) {
                 continue;
             }
-            ItemStack temItem = tempVal1.clone();
-            temItem.setAmount(1);
-            if (ItemUtil.isSameItem(temItem, item)) {
+            if (ItemUtil.isSameItem(tempVal1, item)) {
                 amount += tempVal1.getAmount();
             }
         }

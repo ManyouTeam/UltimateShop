@@ -213,7 +213,7 @@ public abstract class AbstractSingleThing implements Comparable<AbstractSingleTh
                         itemID,
                         (int) cost, take);
             case VANILLA_ITEM:
-                ItemStack itemStack = getItemThing(section, player,1, true).getTargetItem();
+                ItemStack itemStack = getItemThing(section, player, 1, true).getTargetItem();
                 if (itemStack == null) {
                     return false;
                 }

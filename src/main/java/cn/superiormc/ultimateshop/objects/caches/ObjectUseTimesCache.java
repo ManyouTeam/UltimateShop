@@ -276,11 +276,9 @@ public class ObjectUseTimesCache {
                 ConfigManager.configManager.getString("use-times.default-reset-time"));
         if (mode.equals("TIMED")) {
             return getTimedSellRefreshTime(tempVal1);
-        }
-        else if (mode.equals("TIMER")) {
+        } else if (mode.equals("TIMER")) {
             return getTimerSellRefreshTime(tempVal1);
-        }
-        else {
+        } else {
             return LocalDateTime.now().withYear(2999);
         }
     }

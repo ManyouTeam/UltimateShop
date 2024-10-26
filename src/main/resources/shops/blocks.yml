@@ -443,4 +443,4 @@ buttons:
     actions:
       1:
         type: shop_menu
-        menu: 'blocks2'
+        shop: 'blocks2'

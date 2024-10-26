@@ -91,6 +91,8 @@ public class ObjectRandomPlaceholderCache {
             else if (mode.equals("TIMER")) {
                 refreshDoneTime = getTimerRefreshTime(time);
                 setPlaceholder(notUseBungee);
+            } else {
+                refreshDoneTime = LocalDateTime.now().withYear(2999);
             }
         }
     }

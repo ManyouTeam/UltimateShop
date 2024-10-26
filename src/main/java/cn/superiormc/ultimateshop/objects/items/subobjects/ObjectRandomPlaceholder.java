@@ -9,6 +9,7 @@ import cn.superiormc.ultimateshop.utils.RandomUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -113,14 +114,18 @@ public class ObjectRandomPlaceholder {
         }
         ObjectRandomPlaceholder tempVal1 = ConfigManager.configManager.getRandomPlaceholder(id);
         if (tempVal1 == null) {
-            return "Error: Unknown Placeholder";
+            return "ERROR: Unknown Placeholder";
         }
         ObjectRandomPlaceholderCache tempVal2 = CacheManager.cacheManager.serverCache.getRandomPlaceholderCache().get(tempVal1);
         if (tempVal2 == null) {
             CacheManager.cacheManager.serverCache.addRandomPlaceholderCache(tempVal1);
             tempVal2 = CacheManager.cacheManager.serverCache.getRandomPlaceholderCache().get(tempVal1);
         }
-        return tempVal2.getNowValue();
+        String tempVal3 = tempVal2.getNowValue();
+        if (tempVal3 == null) {
+            return "";
+        }
+        return tempVal3;
     }
 
     public static String getRefreshDoneTime(String id) {
@@ -136,6 +141,10 @@ public class ObjectRandomPlaceholder {
             CacheManager.cacheManager.serverCache.addRandomPlaceholderCache(tempVal1);
             tempVal2 = CacheManager.cacheManager.serverCache.getRandomPlaceholderCache().get(tempVal1);
         }
-        return CommonUtil.timeToString(tempVal2.getRefreshDoneTime(), ConfigManager.configManager.getString("placeholder.cooldown.format"));
+        LocalDateTime tempVal3 = tempVal2.getRefreshDoneTime();
+        if (tempVal3 == null || tempVal3.getYear() == 2999) {
+            return ConfigManager.configManager.getString("placeholder.refresh.never");
+        }
+        return CommonUtil.timeToString(tempVal3, ConfigManager.configManager.getString("placeholder.cooldown.format"));
     }
 }

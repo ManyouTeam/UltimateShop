@@ -13,8 +13,6 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.List;
-
 public class ObjectDisplayItem {
 
     private final ConfigurationSection section;

@@ -16,7 +16,7 @@ public class EconomyRedisEconomyHook extends AbstractEconomyHook {
 
     @Override
     public double getEconomy(Player player, String currencyID) {
-        Currency redisCurrency = api.getCurrencyByName("vault");
+        Currency redisCurrency = api.getCurrencyByName(currencyID);
         if (redisCurrency == null) {
             ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cCan not find currency " +
                     currencyID + " in RedisEconomy plugin!");
@@ -27,7 +27,7 @@ public class EconomyRedisEconomyHook extends AbstractEconomyHook {
 
     @Override
     public void takeEconomy(Player player, double value, String currencyID) {
-        Currency redisCurrency = api.getCurrencyByName("vault");
+        Currency redisCurrency = api.getCurrencyByName(currencyID);
         if (redisCurrency == null) {
             ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cCan not find currency " +
                     currencyID + " in RedisEconomy plugin!");
@@ -38,7 +38,7 @@ public class EconomyRedisEconomyHook extends AbstractEconomyHook {
 
     @Override
     public void giveEconomy(Player player, double value, String currencyID) {
-        Currency redisCurrency = api.getCurrencyByName("vault");
+        Currency redisCurrency = api.getCurrencyByName(currencyID);
         if (redisCurrency == null) {
             ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cCan not find currency " +
                     currencyID + " in RedisEconomy plugin!");
