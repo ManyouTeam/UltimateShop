@@ -80,8 +80,14 @@ public class PlaceholderAPIExpansion extends PlaceholderExpansion {
             Matcher matcher2 = pattern2.matcher(result);
             while (matcher2.find()) {
                 String placeholder = matcher2.group(1);
+                String[] tempVal1 = placeholder.split(";;");
+                int number = 1;
+                if (tempVal1.length > 1) {
+                    placeholder = tempVal1[0];
+                    number = Integer.parseInt(tempVal1[1]);
+                }
                 result = result.replace("{random_" + placeholder + "}",
-                        ObjectRandomPlaceholder.getNowValue(placeholder));
+                        ObjectRandomPlaceholder.getNowValue(placeholder, number));
             }
             Pattern pattern3 = Pattern.compile("\\{random-times_(.*?)}");
             Matcher matcher3 = pattern3.matcher(result);

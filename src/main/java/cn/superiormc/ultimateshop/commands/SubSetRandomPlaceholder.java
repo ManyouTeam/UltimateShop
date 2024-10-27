@@ -6,7 +6,7 @@ import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.LanguageManager;
 import cn.superiormc.ultimateshop.objects.caches.ObjectRandomPlaceholderCache;
 import cn.superiormc.ultimateshop.objects.items.subobjects.ObjectRandomPlaceholder;
-import cn.superiormc.ultimateshop.utils.RandomUtil;
+import cn.superiormc.ultimateshop.utils.CommonUtil;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -37,23 +37,29 @@ public class SubSetRandomPlaceholder extends AbstractCommand {
             cache = ServerCache.serverCache.getRandomPlaceholderCache().get(placeholder);
         }
         if (args.length > 2) {
-            if (!placeholder.getElements().contains(args[2]) && !bypassElementCheck) {
+            if (!placeholder.getConfigElements().contains(args[2]) && !bypassElementCheck) {
                 LanguageManager.languageManager.sendStringText(player, "error.random-placeholder-element-not-found", "placeholder", args[1], "element", args[2]);
                 return;
             }
             String[] element = args[2].split("~");
             if (element.length == 1) {
-                cache.setPlaceholder(args[2], false);
+                cache.setPlaceholder(CommonUtil.translateString(args[2]), false);
             } else {
                 int min = Integer.parseInt(element[0]);
                 int max = Integer.parseInt(element[1]);
                 Random random = new Random();
-                cache.setPlaceholder(String.valueOf(random.nextInt(max - min + 1) + min), false);
+                cache.setPlaceholder(CommonUtil.translateString(String.valueOf(random.nextInt(max - min + 1) + min)),
+                        false);
             }
         } else {
             cache.setPlaceholder(false);
         }
-        LanguageManager.languageManager.sendStringText(player, "set-random-placeholder", "placeholder", args[1], "value", cache.getNowValue());
+        LanguageManager.languageManager.sendStringText(player,
+                "set-random-placeholder",
+                "placeholder",
+                args[1],
+                "value",
+                CommonUtil.translateStringList(cache.getNowValue()));
     }
 
     @Override
@@ -70,24 +76,29 @@ public class SubSetRandomPlaceholder extends AbstractCommand {
             cache = ServerCache.serverCache.getRandomPlaceholderCache().get(placeholder);
         }
         if (args.length > 2) {
-            if (!placeholder.getElements().contains(args[2]) && !bypassElementCheck) {
+            if (!placeholder.getConfigElements().contains(args[2]) && !bypassElementCheck) {
                 LanguageManager.languageManager.sendStringText("error.random-placeholder-element-not-found", "placeholder", args[1], "element", args[2]);
                 return;
             }
             String[] element = args[2].split("~");
             if (element.length == 1) {
-                cache.setPlaceholder(args[2], false);
+                cache.setPlaceholder(CommonUtil.translateString(args[2]), false);
             }
             else {
                 int min = Integer.parseInt(element[0]);
                 int max = Integer.parseInt(element[1]);
                 Random random = new Random();
-                cache.setPlaceholder(String.valueOf(random.nextInt(max - min + 1) + min), false);
+                cache.setPlaceholder(CommonUtil.translateString(String.valueOf(random.nextInt(max - min + 1) + min)),
+                        false);
             }
         } else {
             cache.setPlaceholder(false);
         }
-        LanguageManager.languageManager.sendStringText("set-random-placeholder", "placeholder", args[1], "value", cache.getNowValue());
+        LanguageManager.languageManager.sendStringText("set-random-placeholder",
+                "placeholder",
+                args[1],
+                "value",
+                CommonUtil.translateStringList(cache.getNowValue()));
     }
 
     @Override
@@ -104,7 +115,7 @@ public class SubSetRandomPlaceholder extends AbstractCommand {
                 if (tempVal3 == null) {
                     tempVal1.add(LanguageManager.languageManager.getStringText("command-tab.unknown-random-placeholder"));
                 } else {
-                    tempVal1.addAll(tempVal3.getElements());
+                    tempVal1.addAll(tempVal3.getConfigElements());
                 }
         }
         return tempVal1;

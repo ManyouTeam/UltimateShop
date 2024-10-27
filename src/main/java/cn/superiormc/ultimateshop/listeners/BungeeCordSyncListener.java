@@ -42,7 +42,8 @@ public class BungeeCordSyncListener implements PluginMessageListener {
                 } else {
                     String nowValue = msgin.readUTF();
                     String refreshDoneTime = msgin.readUTF();
-                    CacheManager.cacheManager.serverCache.setRandomPlaceholderCache(tempVal3, refreshDoneTime, nowValue);
+                    CacheManager.cacheManager.serverCache.setRandomPlaceholderCache(tempVal3,
+                            refreshDoneTime, CommonUtil.translateString(nowValue));
                     return;
                 }
             }

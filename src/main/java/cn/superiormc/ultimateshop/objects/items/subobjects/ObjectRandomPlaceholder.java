@@ -5,15 +5,10 @@ import cn.superiormc.ultimateshop.managers.CacheManager;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.objects.caches.ObjectRandomPlaceholderCache;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
-import cn.superiormc.ultimateshop.utils.RandomUtil;
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public class ObjectRandomPlaceholder {
 
@@ -21,33 +16,29 @@ public class ObjectRandomPlaceholder {
 
     private final ConfigurationSection section;
 
-    private final List<String> elements = new ArrayList<>();
+    private final List<String> configElements = new ArrayList<>();
+
+    private List<String> realElements = new ArrayList<>();
 
     private final Collection<ObjectRandomPlaceholder> notSameAs = new ArrayList<>();
+
+    private final int elementAmount;
 
     public ObjectRandomPlaceholder(String id, ConfigurationSection section) {
         this.id = id;
         this.section = section;
-        initElements(true);
+        this.elementAmount = section.getInt("element-amount", 1);
+        this.configElements.addAll(section.getStringList("elements"));
     }
 
-    public void initElements(boolean firstLoad) {
-        elements.addAll(section.getStringList("elements"));
-        for (int i = 0; i < elements.size(); i++) {
-            ObjectRandomPlaceholder tempVal2 = ConfigManager.configManager.getRandomPlaceholder(elements.get(i));
+    public void initElements() {
+        realElements = new ArrayList<>(configElements);
+        for (String configElement : configElements) {
+            ObjectRandomPlaceholder tempVal2 = ConfigManager.configManager.getRandomPlaceholder(configElement);
             if (tempVal2 != null && !tempVal2.equals(this)) {
-                if (!tempVal2.getElements().isEmpty()) {
-                    elements.remove(elements.get(i));
-                    elements.addAll(tempVal2.getElements());
-                }
-            }
-        }
-        if (!firstLoad) {
-            for (String removeElement : section.getStringList("not-same-as")) {
-                ObjectRandomPlaceholder tempVal2 = ConfigManager.configManager.getRandomPlaceholder(removeElement);
-                if (tempVal2 != null && !tempVal2.equals(this)) {
-                    elements.remove(tempVal2.getNowValue());
-                    notSameAs.add(tempVal2);
+                if (!tempVal2.getConfigElements().isEmpty()) {
+                    realElements.remove(configElement);
+                    realElements.addAll(tempVal2.getConfigElements());
                 }
             }
         }
@@ -61,22 +52,29 @@ public class ObjectRandomPlaceholder {
         return id;
     }
 
-    public List<String> getElements() {
-        return elements;
+    public List<String> getConfigElements() {
+        return configElements;
     }
 
-    public String getNewValue() {
-        if (elements.isEmpty()) {
-            return "ERROR: Value Empty";
+    public List<String> getNewValue() {
+        List<String> result = new ArrayList<>();
+        if (realElements.isEmpty()) {
+            result.add("ERROR: Value Empty");
         }
-        String[] element = RandomUtil.getRandomElement(elements).split("~");
-        if (element.length == 1) {
-            return element[0];
+        Collections.shuffle(realElements);
+        for (int i = 0; i < Math.min(elementAmount, configElements.size()); i++) {
+            String tempVal1 = realElements.get(i);
+            String[] element = tempVal1.split("~");
+            if (element.length == 1) {
+                result.add(tempVal1);
+                continue;
+            }
+            int min = Integer.parseInt(element[0]);
+            int max = Integer.parseInt(element[1]);
+            Random random = new Random();
+            result.add(String.valueOf(random.nextInt(max - min + 1) + min));
         }
-        int min = Integer.parseInt(element[0]);
-        int max = Integer.parseInt(element[1]);
-        Random random = new Random();
-        return String.valueOf(random.nextInt(max - min + 1) + min);
+        return result;
     }
 
     public ConfigurationSection getConfig() {
@@ -91,7 +89,7 @@ public class ObjectRandomPlaceholder {
         return tempVal1.toUpperCase();
     }
 
-    public String getNowValue() {
+    public List<String> getNowValue() {
         ObjectRandomPlaceholderCache tempVal1 = CacheManager.cacheManager.serverCache.getRandomPlaceholderCache().get(this);
         if (tempVal1 == null) {
             CacheManager.cacheManager.serverCache.addRandomPlaceholderCache(this);
@@ -108,24 +106,24 @@ public class ObjectRandomPlaceholder {
         return false;
     }
 
-    public static String getNowValue(String id) {
+    public static String getNowValue(String id, int x) {
         if (UltimateShop.freeVersion) {
             return "ERROR: Free Version";
         }
         ObjectRandomPlaceholder tempVal1 = ConfigManager.configManager.getRandomPlaceholder(id);
         if (tempVal1 == null) {
-            return "ERROR: Unknown Placeholder";
+            return "Error: Unknown Placeholder";
         }
         ObjectRandomPlaceholderCache tempVal2 = CacheManager.cacheManager.serverCache.getRandomPlaceholderCache().get(tempVal1);
         if (tempVal2 == null) {
             CacheManager.cacheManager.serverCache.addRandomPlaceholderCache(tempVal1);
             tempVal2 = CacheManager.cacheManager.serverCache.getRandomPlaceholderCache().get(tempVal1);
         }
-        String tempVal3 = tempVal2.getNowValue();
-        if (tempVal3 == null) {
-            return "";
+        List<String> tempVal3 = tempVal2.getNowValue();
+        if (x > tempVal3.size()) {
+            x = tempVal3.size();
         }
-        return tempVal3;
+        return tempVal3.get(x - 1);
     }
 
     public static String getRefreshDoneTime(String id) {

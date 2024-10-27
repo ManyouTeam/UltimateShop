@@ -3,12 +3,10 @@ package cn.superiormc.ultimateshop.managers;
 import cn.superiormc.ultimateshop.cache.PlayerCache;
 import cn.superiormc.ultimateshop.cache.ServerCache;
 import cn.superiormc.ultimateshop.database.SQLDatabase;
-import cn.superiormc.ultimateshop.objects.caches.ObjectRandomPlaceholderCache;
 import cn.superiormc.ultimateshop.objects.items.subobjects.ObjectRandomPlaceholder;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -16,7 +14,7 @@ public class CacheManager {
 
     public static CacheManager cacheManager;
 
-    private Map<Player, PlayerCache> playerCacheMap = new ConcurrentHashMap<>();
+    private final Map<Player, PlayerCache> playerCacheMap = new ConcurrentHashMap<>();
 
     public ServerCache serverCache;
 
@@ -32,7 +30,7 @@ public class CacheManager {
 
     private void initRandomPlaceholderElements() {
         for (ObjectRandomPlaceholder randomPlaceholder : ConfigManager.configManager.randomPlaceholders.values()) {
-            randomPlaceholder.initElements(false);
+            randomPlaceholder.initElements();
         }
     }
 

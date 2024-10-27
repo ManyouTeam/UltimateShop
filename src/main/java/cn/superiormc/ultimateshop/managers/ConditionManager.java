@@ -26,6 +26,7 @@ public class ConditionManager {
         registerNewCondition("placeholder", new ConditionPlaceholder());
         registerNewCondition("world", new ConditionWorld());
         registerNewCondition("any", new ConditionAny());
+        registerNewCondition("not", new ConditionNot());
     }
 
     public void registerNewCondition(String actionID,

@@ -12,6 +12,7 @@ import cn.superiormc.ultimateshop.utils.CommonUtil;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class ServerCache {
@@ -114,8 +115,11 @@ public class ServerCache {
 
     public void setRandomPlaceholderCache(ObjectRandomPlaceholder placeholder,
                                           String refreshDoneTime,
-                                          String nowValue) {
+                                          List<String> nowValue) {
         if (placeholder == null) {
+            return;
+        }
+        if (nowValue == null) {
             return;
         }
         randomPlaceholderCache.put(placeholder, new ObjectRandomPlaceholderCache(placeholder, nowValue, CommonUtil.stringToTime(refreshDoneTime)));
@@ -123,7 +127,10 @@ public class ServerCache {
 
     public void setRandomPlaceholderCache(String id,
                                           String refreshDoneTime,
-                                          String nowValue) {
+                                          List<String> nowValue) {
+        if (nowValue == null) {
+            return;
+        }
         ObjectRandomPlaceholder tempVal1 = ConfigManager.configManager.getRandomPlaceholder(id);
         if (tempVal1 == null) {
             return;

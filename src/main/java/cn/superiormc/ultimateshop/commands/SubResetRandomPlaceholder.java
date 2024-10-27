@@ -6,6 +6,7 @@ import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.LanguageManager;
 import cn.superiormc.ultimateshop.objects.caches.ObjectRandomPlaceholderCache;
 import cn.superiormc.ultimateshop.objects.items.subobjects.ObjectRandomPlaceholder;
+import cn.superiormc.ultimateshop.utils.CommonUtil;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -35,7 +36,12 @@ public class SubResetRandomPlaceholder extends AbstractCommand {
         }
         cache.removeRefreshDoneTime();
         cache.setRefreshTime();
-        LanguageManager.languageManager.sendStringText(player, "reset-random-placeholder", "placeholder", args[1], "value", cache.getNowValue());
+        LanguageManager.languageManager.sendStringText(player,
+                "reset-random-placeholder",
+                "placeholder",
+                args[1],
+                "value",
+                CommonUtil.translateStringList(cache.getNowValue()));
     }
 
     @Override
@@ -52,7 +58,11 @@ public class SubResetRandomPlaceholder extends AbstractCommand {
         }
         cache.removeRefreshDoneTime();
         cache.setRefreshTime();
-        LanguageManager.languageManager.sendStringText("reset-random-placeholder", "placeholder", args[1], "value", cache.getNowValue());
+        LanguageManager.languageManager.sendStringText("reset-random-placeholder",
+                "placeholder",
+                args[1],
+                "value",
+                CommonUtil.translateStringList(cache.getNowValue()));
     }
 
     @Override

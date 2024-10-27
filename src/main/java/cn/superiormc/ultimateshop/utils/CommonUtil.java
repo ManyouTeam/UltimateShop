@@ -3,7 +3,6 @@ package cn.superiormc.ultimateshop.utils;
 import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.ErrorManager;
-import io.lumine.mythic.api.mobs.MythicMob;
 import io.lumine.mythic.bukkit.BukkitAdapter;
 import io.lumine.mythic.bukkit.MythicBukkit;
 import io.lumine.xikage.mythicmobs.MythicMobs;
@@ -20,10 +19,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 public class CommonUtil {
 
@@ -56,9 +52,7 @@ public class CommonUtil {
 
     public static void dispatchCommand(String command) {
         if (UltimateShop.isFolia) {
-            Bukkit.getGlobalRegionScheduler().run(UltimateShop.instance, task -> {
-                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command);
-            });
+            Bukkit.getGlobalRegionScheduler().run(UltimateShop.instance, task -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command));
             return;
         }
         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command);
@@ -66,9 +60,7 @@ public class CommonUtil {
 
     public static void dispatchCommand(Player player, String command) {
         if (UltimateShop.isFolia) {
-            player.getScheduler().run(UltimateShop.instance, task -> {
-                Bukkit.dispatchCommand(player, command);
-            }, () -> {
+            player.getScheduler().run(UltimateShop.instance, task -> Bukkit.dispatchCommand(player, command), () -> {
             });
             return;
         }
@@ -100,10 +92,7 @@ public class CommonUtil {
 
     public static void summonMythicMobs(Location location, String mobID, int level) {
         try {
-            MythicMob mob = MythicBukkit.inst().getMobManager().getMythicMob(mobID).orElse(null);
-            if (mob != null) {
-                mob.spawn(BukkitAdapter.adapt(location), level);
-            }
+            MythicBukkit.inst().getMobManager().getMythicMob(mobID).ifPresent(mob -> mob.spawn(BukkitAdapter.adapt(location), level));
         }
         catch (NoClassDefFoundError ep) {
             io.lumine.xikage.mythicmobs.mobs.MythicMob mob = MythicMobs.inst().getMobManager().getMythicMob(mobID);
@@ -272,5 +261,25 @@ public class CommonUtil {
         } catch (IOException e) {
             ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Can not write log file: " + filePath);
         }
+    }
+
+    public static String translateStringList(List<String> list) {
+        StringBuilder builder = new StringBuilder();
+        boolean first = true;
+        for (String tempVal1 : list) {
+            if (!first) {
+                builder.append(";;");
+            }
+            builder.append(tempVal1);
+            first = false;
+        }
+        return builder.toString();
+    }
+
+    public static List<String> translateString(String string) {
+        if (string == null) {
+            return null;
+        }
+        return new ArrayList<>(Arrays.asList(string.split(";;")));
     }
 }

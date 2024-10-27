@@ -16,6 +16,7 @@ import org.bukkit.Bukkit;
 
 import java.sql.SQLException;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -125,9 +126,11 @@ public class SQLDatabase {
         queryAction2.executeAsync((result) -> {
             while (result.getResultSet().next()) {
                 String placeholderID = result.getResultSet().getString("placeholderID");
-                String nowValue = result.getResultSet().getString("nowValue");
+                List<String> nowValue = CommonUtil.translateString(result.getResultSet().getString("nowValue"));
                 String refreshDoneTime = result.getResultSet().getString("refreshDoneTime");
-                cache.setRandomPlaceholderCache(placeholderID, refreshDoneTime, nowValue);
+                if (nowValue != null && refreshDoneTime != null) {
+                    cache.setRandomPlaceholderCache(placeholderID, refreshDoneTime, nowValue);
+                }
             }
         });
     }
@@ -189,8 +192,11 @@ public class SQLDatabase {
         if (cache.server && !UltimateShop.freeVersion) {
             Collection<ObjectRandomPlaceholderCache> tempVal3 = cache.getRandomPlaceholderCache().values();
             for (ObjectRandomPlaceholderCache tempVal4 : tempVal3) {
+                if (tempVal4.getPlaceholder().getMode().equals("ONCE")) {
+                    continue;
+                }
                 String placeholderID = tempVal4.getPlaceholder().getID();
-                String nowValue = tempVal4.getNowValue();
+                String nowValue = CommonUtil.translateStringList(tempVal4.getNowValue());
                 String refreshDoneTime = CommonUtil.timeToString(tempVal4.getRefreshDoneTime());
                 sqlManager.createReplace("ultimateshop_randomPlaceholder")
                         .setColumnNames("placeholderID", "nowValue",
@@ -257,8 +263,11 @@ public class SQLDatabase {
         if (cache.server && !UltimateShop.freeVersion) {
             Collection<ObjectRandomPlaceholderCache> tempVal3 = cache.getRandomPlaceholderCache().values();
             for (ObjectRandomPlaceholderCache tempVal4 : tempVal3) {
+                if (tempVal4.getPlaceholder().getMode().equals("ONCE")) {
+                    continue;
+                }
                 String placeholderID = tempVal4.getPlaceholder().getID();
-                String nowValue = tempVal4.getNowValue(disable);
+                String nowValue = CommonUtil.translateStringList(tempVal4.getNowValue(disable));
                 String refreshDoneTime = CommonUtil.timeToString(tempVal4.getRefreshDoneTime());
                 try {
                     sqlManager.createReplace("ultimateshop_randomPlaceholder")

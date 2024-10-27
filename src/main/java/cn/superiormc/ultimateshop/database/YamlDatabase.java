@@ -24,7 +24,7 @@ public class YamlDatabase {
         if (!dir.exists()) {
             dir.mkdir();
         }
-        File file = null;
+        File file;
         if (!cache.server) {
             file = new File(dir, cache.player.getUniqueId() + ".yml");
             if (!file.exists()) {
@@ -67,6 +67,9 @@ public class YamlDatabase {
                 ConfigurationSection tempVal3 = useTimeSection.getConfigurationSection(shopID);
                 for (String productID : tempVal3.getKeys(false)) {
                     ConfigurationSection tempVal4 = tempVal3.getConfigurationSection(productID);
+                    if (tempVal4 == null) {
+                        continue;
+                    }
                     int buyUseTimes = tempVal4.getInt("buyUseTimes", 0);
                     int sellUseTimes = tempVal4.getInt("sellUseTimes", 0);
                     String lastPurchaseTime = tempVal4.getString("lastBuyTime", null);
@@ -86,9 +89,14 @@ public class YamlDatabase {
             if (randomPlaceholderSection != null && !UltimateShop.freeVersion) {
                 for (String placeholderID : randomPlaceholderSection.getKeys(false)) {
                     ConfigurationSection tempVal3 = randomPlaceholderSection.getConfigurationSection(placeholderID);
+                    if (tempVal3 == null) {
+                        continue;
+                    }
                     String refreshDoneTime = tempVal3.getString("refreshDoneTime", null);
                     String nowValue = tempVal3.getString("nowValue", null);
-                    cache.setRandomPlaceholderCache(placeholderID, refreshDoneTime, nowValue);
+                    if (refreshDoneTime != null && nowValue != null) {
+                        cache.setRandomPlaceholderCache(placeholderID, refreshDoneTime, CommonUtil.translateString(nowValue));
+                    }
                 }
             }
         }
@@ -100,7 +108,7 @@ public class YamlDatabase {
         if (!dir.exists()) {
             dir.mkdir();
         }
-        File file = null;
+        File file;
         Map<String, Object> data = new HashMap<>();
         if (cache.server) {
             data.put("playerName", "global");
@@ -159,15 +167,15 @@ public class YamlDatabase {
             Collection<ObjectRandomPlaceholderCache> tempVal7 = cache.getRandomPlaceholderCache().values();
             for (ObjectRandomPlaceholderCache tempVal8 : tempVal7) {
                 data.clear();
+                if (tempVal8.getPlaceholder().getMode().equals("ONCE")) {
+                    continue;
+                }
                 ConfigurationSection tempVal9 = randomPlaceholderSection.getConfigurationSection(tempVal8.getPlaceholder().getID());
                 if (tempVal9 == null) {
                     tempVal9 = randomPlaceholderSection.createSection(tempVal8.getPlaceholder().getID());
                 }
-                if (tempVal8.getPlaceholder().getMode().equals("TIMED") ||
-                        tempVal8.getPlaceholder().getMode().equals("TIMER")) {
-                    data.put("nowValue", tempVal8.getNowValue(true));
-                    data.put("refreshDoneTime", CommonUtil.timeToString(tempVal8.getRefreshDoneTime()));
-                }
+                data.put("nowValue", CommonUtil.translateStringList(tempVal8.getNowValue(true)));
+                data.put("refreshDoneTime", CommonUtil.timeToString(tempVal8.getRefreshDoneTime()));
                 for (String key : data.keySet()) {
                     if (!UltimateShop.freeVersion) {
                         tempVal9.set(key, data.get(key));

@@ -8,10 +8,11 @@ import cn.superiormc.ultimateshop.utils.CommonUtil;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 public class ObjectRandomPlaceholderCache {
 
-    private String nowValue = null;
+    private List<String> nowValue = null;
 
     private LocalDateTime refreshDoneTime = null;
 
@@ -23,7 +24,7 @@ public class ObjectRandomPlaceholderCache {
     }
 
     public ObjectRandomPlaceholderCache(ObjectRandomPlaceholder placeholder,
-                                        String nowValue,
+                                        List<String> nowValue,
                                         LocalDateTime refreshDoneTime) {
         this.placeholder = placeholder;
         this.nowValue = nowValue;
@@ -42,15 +43,15 @@ public class ObjectRandomPlaceholderCache {
         refreshDoneTime = null;
     }
 
-    public String getNowValue() {
+    public List<String> getNowValue() {
         return getNowValue(true, false);
     }
 
-    public String getNowValue(boolean disable) {
+    public List<String> getNowValue(boolean disable) {
         return getNowValue(true, disable);
     }
 
-    public String getNowValue(boolean needRefresh, boolean disable) {
+    public List<String> getNowValue(boolean needRefresh, boolean disable) {
         if (needRefresh) {
             setRefreshTime(disable);
         }
@@ -86,14 +87,12 @@ public class ObjectRandomPlaceholderCache {
         if (needRefresh) {
             if (mode.equals("TIMED")) {
                 refreshDoneTime = getTimedRefreshTime(time);
-                setPlaceholder(notUseBungee);
-            }
-            else if (mode.equals("TIMER")) {
+            } else if (mode.equals("TIMER")) {
                 refreshDoneTime = getTimerRefreshTime(time);
-                setPlaceholder(notUseBungee);
             } else {
                 refreshDoneTime = LocalDateTime.now().withYear(2999);
             }
+            setPlaceholder(notUseBungee);
         }
     }
 
@@ -101,15 +100,18 @@ public class ObjectRandomPlaceholderCache {
         setPlaceholder(placeholder.getNewValue(), notUseBungee);
     }
 
-    public void setPlaceholder(String element, boolean notUseBungee) {
+    public void setPlaceholder(List<String> element, boolean notUseBungee) {
+        if (element == null) {
+            return;
+        }
         nowValue = element;
-        if (placeholder.getMode().equals("TIMED") || placeholder.getMode().equals("TIMER")) {
+        if (!placeholder.getMode().equals("ONCE")) {
             ServerCache.serverCache.setRandomPlaceholderCache(placeholder, CommonUtil.timeToString(refreshDoneTime), nowValue);
         }
         if (!notUseBungee && BungeeCordManager.bungeeCordManager != null) {
             BungeeCordManager.bungeeCordManager.sendToOtherServer(
                     placeholder.getID(),
-                    nowValue,
+                    CommonUtil.translateStringList(nowValue),
                     CommonUtil.timeToString(refreshDoneTime));
         }
     }
