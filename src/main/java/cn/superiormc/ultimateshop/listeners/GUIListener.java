@@ -59,7 +59,7 @@ public class GUIListener implements Listener {
         }
         catch (Throwable throwable) {
             ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Your menu configs has wrong, error message: " + throwable.getMessage());
-            throwable.fillInStackTrace();
+            throwable.printStackTrace();
             AbstractGUI.playerList.remove(player);
             e.setCancelled(true);
         }

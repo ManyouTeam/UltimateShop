@@ -26,6 +26,7 @@ import org.bukkit.inventory.meta.*;
 import org.bukkit.inventory.meta.components.FoodComponent;
 import org.bukkit.inventory.meta.components.JukeboxPlayableComponent;
 import org.bukkit.inventory.meta.components.ToolComponent;
+import org.bukkit.inventory.meta.components.UseCooldownComponent;
 import org.bukkit.inventory.meta.trim.ArmorTrim;
 import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionEffect;
@@ -95,9 +96,6 @@ public class DebuildItem {
         // Food
         if (CommonUtil.getMinorVersion(20, 5)) {
             FoodComponent foodComponent = meta.getFood();
-            if (foodComponent.getEatSeconds() != 1.6F) {
-                section.set("food.eat-seconds", foodComponent.getEatSeconds());
-            }
             if (foodComponent.canAlwaysEat()) {
                 section.set("food.can-alawys-eat", true);
             }
@@ -107,25 +105,30 @@ public class DebuildItem {
             if (foodComponent.getSaturation() > 0) {
                 section.set("food.saturation", foodComponent.getSaturation());
             }
-            if (CommonUtil.getMajorVersion(21) && foodComponent.getUsingConvertsTo() != null) {
-                debuildItem(foodComponent.getUsingConvertsTo(), section.createSection("food.convert"));
-            }
-            List<String> effects = new ArrayList<>();
-            for (FoodComponent.FoodEffect foodEffect : foodComponent.getEffects()) {
-                if (CommonUtil.getMajorVersion(18)) {
-                    effects.add(foodEffect.getEffect().getType().getKey() + ", " + foodEffect.getEffect().getDuration() + ", " +
-                            foodEffect.getEffect().getAmplifier() + ", " + foodEffect.getEffect().isAmbient() + ", " +
-                            foodEffect.getEffect().hasParticles() + ", " + foodEffect.getEffect().hasIcon() + ", " +
-                            foodEffect.getProbability());
-                } else {
-                    effects.add(foodEffect.getEffect().getType().getName() + ", " + foodEffect.getEffect().getDuration() + ", " +
-                            foodEffect.getEffect().getAmplifier() + ", " + foodEffect.getEffect().isAmbient() + ", " +
-                            foodEffect.getEffect().hasParticles() + ", " + foodEffect.getEffect().hasIcon() + ", " +
-                            foodEffect.getProbability());
+            if (!CommonUtil.getMinorVersion(21, 2)) {
+                if (foodComponent.getEatSeconds() != 1.6F) {
+                    section.set("food.eat-seconds", foodComponent.getEatSeconds());
                 }
-            }
-            if (!effects.isEmpty()) {
-                section.set("effects", effects);
+                if (CommonUtil.getMajorVersion(21) && foodComponent.getUsingConvertsTo() != null) {
+                    debuildItem(foodComponent.getUsingConvertsTo(), section.createSection("food.convert"));
+                }
+                List<String> effects = new ArrayList<>();
+                for (FoodComponent.FoodEffect foodEffect : foodComponent.getEffects()) {
+                    if (CommonUtil.getMajorVersion(18)) {
+                        effects.add(foodEffect.getEffect().getType().getKey() + ", " + foodEffect.getEffect().getDuration() + ", " +
+                                foodEffect.getEffect().getAmplifier() + ", " + foodEffect.getEffect().isAmbient() + ", " +
+                                foodEffect.getEffect().hasParticles() + ", " + foodEffect.getEffect().hasIcon() + ", " +
+                                foodEffect.getProbability());
+                    } else {
+                        effects.add(foodEffect.getEffect().getType().getName() + ", " + foodEffect.getEffect().getDuration() + ", " +
+                                foodEffect.getEffect().getAmplifier() + ", " + foodEffect.getEffect().isAmbient() + ", " +
+                                foodEffect.getEffect().hasParticles() + ", " + foodEffect.getEffect().hasIcon() + ", " +
+                                foodEffect.getProbability());
+                    }
+                }
+                if (!effects.isEmpty()) {
+                    section.set("effects", effects);
+                }
             }
         }
 
@@ -525,6 +528,43 @@ public class DebuildItem {
                 if (musicInstrumentMeta.getInstrument() != null) {
                     section.set("music", musicInstrumentMeta.getInstrument().getKey().toString());
                 }
+            }
+        }
+
+        // Repairable
+        if (meta instanceof Repairable) {
+            Repairable repairableMeta = (Repairable) meta;
+            if (repairableMeta.hasRepairCost()) {
+                section.set("repair-cost", repairableMeta.getRepairCost());
+            }
+        }
+
+        if (CommonUtil.getMinorVersion(21, 2)) {
+            // Enchantable
+            if (meta.hasEnchantable()) {
+                section.set("enchantable", meta.getEnchantable());
+            }
+
+            // Glider
+            if (meta.isGlider()) {
+                section.set("glider", meta.isGlider());
+            }
+
+            // Item Model
+            if (meta.hasItemModel()) {
+                section.set("item-model", meta.getItemModel());
+            }
+
+            // Tooltip Style
+            if (meta.hasTooltipStyle()) {
+                section.set("tooltip-style", meta.getTooltipStyle());
+            }
+
+            // Item Cooldown
+            if (meta.hasUseCooldown()) {
+                UseCooldownComponent useCooldownComponent = meta.getUseCooldown();
+                section.set("use-cooldown.cooldown-group", useCooldownComponent.getCooldownGroup());
+                section.set("use-cooldown.cooldown-seconds", useCooldownComponent.getCooldownSeconds());
             }
         }
 

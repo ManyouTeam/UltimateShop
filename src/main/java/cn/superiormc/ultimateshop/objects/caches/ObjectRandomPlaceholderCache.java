@@ -105,7 +105,7 @@ public class ObjectRandomPlaceholderCache {
             return;
         }
         nowValue = element;
-        if (!placeholder.getMode().equals("ONCE")) {
+        if (!placeholder.getMode().equals("ONCE") && refreshDoneTime != null) {
             ServerCache.serverCache.setRandomPlaceholderCache(placeholder, CommonUtil.timeToString(refreshDoneTime), nowValue);
         }
         if (!notUseBungee && BungeeCordManager.bungeeCordManager != null) {
@@ -120,7 +120,7 @@ public class ObjectRandomPlaceholderCache {
         String tempVal1 = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
         tempVal1 = tempVal1 + " " + time;
         LocalDateTime refreshResult = CommonUtil.stringToTime(tempVal1);
-        if (LocalDateTime.now().isAfter(refreshResult)) {
+        if (LocalDateTime.now().isAfter(refreshResult) && refreshResult != null) {
             refreshResult = refreshResult.plusDays(1L);
         }
         return refreshResult;

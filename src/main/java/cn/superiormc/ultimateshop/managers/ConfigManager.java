@@ -208,7 +208,7 @@ public class ConfigManager {
     }
 
     public Collection<String> getDiscountPlaceholderIDs() {
-        ConfigurationSection section = config.getConfigurationSection("placeholder.random");
+        ConfigurationSection section = config.getConfigurationSection("placeholder.discount");
         if (section == null) {
             return new ArrayList<>();
         }

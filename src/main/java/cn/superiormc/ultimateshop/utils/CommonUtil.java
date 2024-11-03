@@ -105,7 +105,7 @@ public class CommonUtil {
     public static String modifyString(String text, String... args) {
         for (int i = 0 ; i < args.length ; i += 2) {
             String var1 = "{" + args[i] + "}";
-            String var2 = "{" + args[i] + "}";
+            String var2 = "%" + args[i] + "%";
             if (args[i + 1] == null) {
                 text = text.replace(var1, "").replace(var2, "");
             }

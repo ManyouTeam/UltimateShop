@@ -226,7 +226,6 @@ public class HookManager {
         }
         ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: You set economy type to "
                 + vanillaType + " in shop config, however for now UltimateShop does not support it!");
-        return;
     }
 
     public void takeEconomy(String pluginName, String currencyName, Player player, double value) {

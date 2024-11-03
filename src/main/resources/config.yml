@@ -214,7 +214,7 @@ placeholder:
         - 'A'
         - 'B'
         - 'C'
-    daily-shop:
+    daily:
       reset-mode: TIMED
       reset-time: '00:00:00'
       element-amount: 2
