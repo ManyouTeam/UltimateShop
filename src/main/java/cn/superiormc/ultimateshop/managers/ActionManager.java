@@ -38,6 +38,7 @@ public class ActionManager {
         registerNewAction("chance", new ActionChance());
         registerNewAction("delay", new ActionDelay());
         registerNewAction("any", new ActionAny());
+        registerNewAction("conditional", new ActionConditional());
     }
 
     public void registerNewAction(String actionID,

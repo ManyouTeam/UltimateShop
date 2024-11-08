@@ -15,10 +15,6 @@ I am the copyright owner of this project, and the prerequisite for granting you 
 - 任何人都可以自由的分享此插件的完整副本，但前提是您不能分享到我认为不合时宜的地方，例如盗版网站、泄露网站等，以及/或者它们的联系群 Discord，QQ，Telegram，除非这种网站不带有盈利性质，只要网站有广告、付费会员等内容，我就认为它是盈利性质的。
 - UltimateShop 的作者是PQguanfang，您在分发副本时，必须在显著位置提示 **此** 版权信息: UltimateShop 的作者是PQguanfang，我不是该插件作者，但此分发版本的一切问题都需要找我联系，原作者对于分发版本不负任何责任。
 
-Jsem vlastníkem autorských práv tohoto projektu a podmínkou pro udělení bezplatné licence GPL v3 je, že jste splnili následující kroky:
-- Každý může volně sdílet kompletní kopii tohoto pluginu, pokud ji nešíří na nevhodných místech, jako jsou pirátské webové stránky, weby s úniky informací apod., a/nebo jejich kontaktní skupiny, jako Discord, QQ, Telegram, pokud tyto weby nejsou ziskové. Pokud má web reklamu, placené členství a další podobný obsah, považuji ho za ziskový.
-- Autorem UltimateShop je PQguanfang. Při distribuci kopií musíte viditelně uvést TUTO informaci o autorských právech: Autorem UltimateShop je PQguanfang a já nejsem autorem tohoto pluginu. Veškeré problémy s touto distribuční verzí je třeba řešit se mnou, původní autor není za distribuční verzi zodpovědný.
-
 ## Update Plan
 - Sell All click action (DONE)
 - /shop save command to make mainhand item as product (DONE)

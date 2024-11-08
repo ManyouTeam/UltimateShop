@@ -24,6 +24,7 @@ public class InitManager {
         resourceOutput("languages/en_US.yml", true);
         resourceOutput("languages/zh_CN.yml", true);
         resourceOutput("languages/cs_CZ.yml", true);
+        resourceOutput("languages/sk_SK.yml", true);
         resourceOutput("shops/concretes.yml", false);
         resourceOutput("shops/blocks.yml", false);
         resourceOutput("shops/blocks2.yml", false);
