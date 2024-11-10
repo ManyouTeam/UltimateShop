@@ -123,7 +123,7 @@ public class ShopGUI extends InvGUI {
                 Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §fMenu Buttons: " + menuButtons.get(i));
             }
         }
-        menuItems = getMenuItems(player.getPlayer());
+        menuItems = getMenuItems(player);
         if (Objects.isNull(inv)) {
             if (shop.getShopMenuObject() != null) {
                 inv = PaperUtil.createNewInv(player, shop.getShopMenuObject().getInt("size", 54),

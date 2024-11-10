@@ -25,12 +25,12 @@ public class FormInfoGUI extends FormGUI {
 
     private final ObjectMoreMenu menu;
 
-    private String amount;
+    private final String amount;
 
     public FormInfoGUI(Player owner, ObjectItem item) {
         super(owner);
         this.item = item;
-        this.menu = ObjectMoreMenu.moreMenus.get(item);
+        this.menu = item.getBuyMoreMenu();
         this.amount = "1";
         constructGUI();
     }
@@ -38,7 +38,7 @@ public class FormInfoGUI extends FormGUI {
     public FormInfoGUI(Player owner, ObjectItem item, String amount) {
         super(owner);
         this.item = item;
-        this.menu = ObjectMoreMenu.moreMenus.get(item);
+        this.menu = item.getBuyMoreMenu();
         this.amount = amount;
         constructGUI();
     }

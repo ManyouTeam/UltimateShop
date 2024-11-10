@@ -94,9 +94,16 @@ menu:
         buy: 'Buy'
         sell: 'Sell'
         buy-more: 'Select Amount'
-  buy-more:
-    menu: buy-more
-    max-amount: 64
+  buy-more-menu:
+    default:
+      menu: buy-more
+      max-amount: 64
+    only-buy:
+      menu: buy-more-buy
+      max-amount: 64
+    only-sell:
+      menu: buy-more-sell
+      max-amount: 64
   auto-open:
     enabled: true
     menu: main

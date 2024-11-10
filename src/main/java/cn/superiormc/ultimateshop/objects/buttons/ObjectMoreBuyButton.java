@@ -11,8 +11,7 @@ import org.bukkit.inventory.ItemStack;
 
 public class ObjectMoreBuyButton extends AbstractButton {
 
-    private ObjectItem item;
-
+    private final ObjectItem item;
 
     public ObjectMoreBuyButton(ConfigurationSection config, ObjectItem item) {
         super(config);

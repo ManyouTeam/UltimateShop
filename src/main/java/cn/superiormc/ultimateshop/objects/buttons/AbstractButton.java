@@ -1,10 +1,10 @@
 package cn.superiormc.ultimateshop.objects.buttons;
 
-import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
+import org.geysermc.cumulus.component.ButtonComponent;
 
 public abstract class AbstractButton {
 
@@ -20,9 +20,9 @@ public abstract class AbstractButton {
         // Empty...
     }
 
-    public ItemStack getDisplayItem(Player player, int multi) {
-        return new ItemStack(Material.AIR);
-    }
+    public abstract ItemStack getDisplayItem(Player player, int multi);
+
+    //public abstract ButtonComponent getBedrockButton(Player player, int multi);
 
     public void clickEvent(ClickType type, Player player) {
         return;

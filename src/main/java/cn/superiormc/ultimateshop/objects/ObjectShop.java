@@ -1,10 +1,13 @@
 package cn.superiormc.ultimateshop.objects;
 
+import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.ErrorManager;
 import cn.superiormc.ultimateshop.objects.buttons.AbstractButton;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectButton;
+import cn.superiormc.ultimateshop.objects.buttons.ObjectCopyItem;
 import cn.superiormc.ultimateshop.objects.menus.ObjectMenu;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.Nullable;
@@ -20,6 +23,8 @@ public class ObjectShop {
 
     private final Map<String, ObjectItem> items = new HashMap<>();
 
+    private final Map<String, ObjectCopyItem> copyItems = new HashMap<>();
+
     public Map<String, AbstractButton> buttonItems = new HashMap<>();
 
     private final String shopName;
@@ -31,9 +36,6 @@ public class ObjectShop {
         this.config = config;
         initProducts();
         initButtonItems();
-        if (config.getString("settings.menu") != null) {
-            initMenus();
-        }
     }
 
     private void initProducts() {
@@ -42,17 +44,59 @@ public class ObjectShop {
             return;
         }
         for (String s : config.getConfigurationSection("items").getKeys(false)) {
-            items.put(s, new ObjectItem(this, config.getConfigurationSection("items." + s)));
+            ConfigurationSection itemSection = config.getConfigurationSection("items." + s);
+            if (itemSection == null) {
+                continue;
+            }
+            String tempVal1 = itemSection.getString("as-sub-button");
+            if (tempVal1 != null) {
+                copyItems.put(s, null);
+                continue;
+            }
+            items.put(s, new ObjectItem(this, itemSection));
         }
     }
 
-    private void initMenus() {
+    public void initCopyProducts() {
+        for (String s : copyItems.keySet()) {
+            if (items.containsKey(s)) {
+                copyItems.remove(s);
+                continue;
+            }
+            ConfigurationSection itemSection = config.getConfigurationSection("items." + s);
+            if (itemSection == null) {
+                continue;
+            }
+            String tempVal1 = itemSection.getString("as-sub-button");
+            if (tempVal1 != null) {
+                String[] tempVal2 = tempVal1.split(";;");
+                if (tempVal2.length >= 2) {
+                    ObjectShop shop = ConfigManager.configManager.getShop(tempVal2[0]);
+                    if (shop != null) {
+                        ObjectItem item = shop.getProduct(tempVal2[1]);
+                        if (item != null) {
+                            items.put(s, item);
+                            copyItems.put(s, new ObjectCopyItem(itemSection, item));
+                        }
+                    }
+                } else {
+                    ObjectItem item = items.get(tempVal1);
+                    if (item != null) {
+                        items.put(s, item);
+                        copyItems.put(s, new ObjectCopyItem(itemSection, item));
+                    }
+                }
+            }
+        }
+    }
+
+    public void initMenus() {
         if (config.getString("settings.menu") != null) {
             this.menu = new ObjectMenu(config.getString("settings.menu"), this);
         }
     }
 
-    public void initButtonItems() {
+    private void initButtonItems() {
         ConfigurationSection tempVal1 = config.getConfigurationSection("buttons");
         if (tempVal1 == null) {
             return;
@@ -78,6 +122,13 @@ public class ObjectShop {
             return null;
         }
         return items.get(productID);
+    }
+
+    public ObjectCopyItem getCopyItem(String itemID) {
+        if (itemID == null) {
+            return null;
+        }
+        return copyItems.get(itemID);
     }
 
     public List<ObjectItem> getProductList() {

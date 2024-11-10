@@ -28,6 +28,7 @@ public class ConfigManager {
         UltimateShop.instance.saveDefaultConfig();
         this.config = UltimateShop.instance.getConfig();
         initShopConfigs();
+        loadShopConfigs();
         initMenuConfigs();
         if (!UltimateShop.freeVersion) {
             initRandomPlaceholder();
@@ -52,6 +53,13 @@ public class ConfigManager {
                 Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §fLoaded shop: " +
                         fileName + "!");
             }
+        }
+    }
+
+    private void loadShopConfigs() {
+        for (ObjectShop shop : shopConfigs.values()) {
+            shop.initCopyProducts();
+            shop.initMenus();
         }
     }
 

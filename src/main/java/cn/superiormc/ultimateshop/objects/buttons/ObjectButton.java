@@ -6,11 +6,15 @@ import cn.superiormc.ultimateshop.objects.ObjectThingRun;
 import cn.superiormc.ultimateshop.objects.buttons.subobjects.ObjectDisplayItem;
 import cn.superiormc.ultimateshop.objects.items.ObjectAction;
 import cn.superiormc.ultimateshop.objects.items.ObjectCondition;
+import cn.superiormc.ultimateshop.utils.ItemUtil;
+import cn.superiormc.ultimateshop.utils.TextUtil;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
+import org.geysermc.cumulus.component.ButtonComponent;
+import org.geysermc.cumulus.util.FormImage;
 
 public class ObjectButton extends AbstractButton {
 
@@ -78,4 +82,30 @@ public class ObjectButton extends AbstractButton {
         }
         return displayItem.getDisplayItem(player);
     }
+
+    /*@Override
+    public ButtonComponent getBedrockButton(Player player, int multi) {
+        String icon = config.getString("bedrock.icon", config.getString("bedrock-icon"));
+        ItemStack displayItem = getDisplayItem(player, multi);
+        if (ItemUtil.getItemNameWithoutVanilla(displayItem).trim().isEmpty() ||
+                config.getBoolean("bedrock.hide", false)) {
+            return null;
+        }
+        String tempVal3 = TextUtil.parse(ItemUtil.getItemName(displayItem), player);
+        ButtonComponent tempVal1 = null;
+        if (icon != null && icon.split(";;").length == 2) {
+            String type = icon.split(";;")[0].toLowerCase();
+            if (type.equals("url")) {
+                tempVal1 = ButtonComponent.of(tempVal3, FormImage.Type.URL, icon.split(";;")[1]);
+            } else if (type.equals("path")) {
+                tempVal1 = ButtonComponent.of(tempVal3, FormImage.Type.PATH, icon.split(";;")[1]);
+            }
+        } else {
+            tempVal1 = ButtonComponent.of(tempVal3);
+        }
+        return tempVal1;
+    }
+     */
+
+
 }

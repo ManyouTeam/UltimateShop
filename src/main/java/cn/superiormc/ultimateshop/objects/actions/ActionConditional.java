@@ -18,7 +18,7 @@ public class ActionConditional extends AbstractRunAction {
         if (UltimateShop.freeVersion) {
             return;
         }
-        ConfigurationSection conditionSection = singleAction.getSection().getConfigurationSection("actions");
+        ConfigurationSection conditionSection = singleAction.getSection().getConfigurationSection("conditions");
         if (conditionSection == null) {
             return;
         }

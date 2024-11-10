@@ -23,8 +23,6 @@ public class ObjectMenu {
 
     public static Map<String, ObjectMenu> commonMenus = new HashMap<>();
 
-    public static Map<ObjectShop, ObjectMenu> shopMenus = new HashMap<>();
-
     public static List<String> shopMenuNames = new ArrayList<>();
 
     public static List<String> buyMoreMenuNames = new ArrayList<>();
@@ -77,7 +75,6 @@ public class ObjectMenu {
         if (type == MenuType.Common) {
             commonMenus.put(fileName, this);
         } else {
-            shopMenus.put(shop, this);
             shopMenuNames.add(fileName);
         }
         File file = new File(UltimateShop.instance.getDataFolder() + "/menus/" + fileName + ".yml");
@@ -116,15 +113,18 @@ public class ObjectMenu {
                 char itemChar = singleLine.charAt(c);
                 int slot = i;
                 i ++;
-                if (shop.getProduct(String.valueOf(itemChar)) == null) {
-                    if (shop.getButton(String.valueOf(itemChar)) == null) {
-                        continue;
-                    }
+                if (shop.getCopyItem(String.valueOf(itemChar))!= null) {
+                    menuItems.put(slot, shop.getCopyItem(String.valueOf(itemChar)));
+                    continue;
+                }
+                if (shop.getButton(String.valueOf(itemChar)) != null) {
                     menuItems.put(slot, shop.getButton(String.valueOf(itemChar)));
                     continue;
                 }
-                menuItems.put(slot, shop.
-                        getProduct(String.valueOf(itemChar)));
+                if (shop.getProduct(String.valueOf(itemChar)) != null) {
+                    menuItems.put(slot, shop.getProduct(String.valueOf(itemChar)));
+                    continue;
+                }
             }
         }
     }

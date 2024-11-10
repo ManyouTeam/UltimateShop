@@ -43,6 +43,8 @@ public class InitManager {
         resourceOutput("shops/example.yml", false);
         resourceOutput("menus/main.yml", false);
         resourceOutput("menus/buy-more.yml", false);
+        resourceOutput("menus/buy-more-buy.yml", false);
+        resourceOutput("menus/buy-more-sell.yml", false);
         resourceOutput("menus/example-shop-menu.yml", false);
     }
 

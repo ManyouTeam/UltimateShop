@@ -19,7 +19,7 @@ import java.util.Objects;
 
 public class BuyMoreGUI extends InvGUI {
 
-    private ObjectItem item;
+    private final ObjectItem item;
 
     private ObjectMoreMenu menu;
 
@@ -33,7 +33,7 @@ public class BuyMoreGUI extends InvGUI {
 
     @Override
     protected void constructGUI() {
-        menu = ObjectMoreMenu.moreMenus.get(item);
+        menu = item.getBuyMoreMenu();
         if (menu == null) {
             return;
         }
@@ -155,12 +155,12 @@ public class BuyMoreGUI extends InvGUI {
         for (int i : tempVal1.keySet()) {
             AbstractButton tempVal2 = tempVal1.get(i);
             if (tempVal2.type == ButtonType.DISPLAY) {
-                ObjectMoreDisplayButton tempVal3 = null;
+                ObjectMoreDisplayButton tempVal3;
                 tempVal3 = (ObjectMoreDisplayButton) tempVal2;
                 resultItems.put(i, tempVal3.getDisplayItem(player, nowingAmount));
             }
             else if (tempVal2.type == ButtonType.CONFIRM) {
-                ObjectMoreBuyButton tempVal4 = null;
+                ObjectMoreBuyButton tempVal4;
                 tempVal4 = (ObjectMoreBuyButton) tempVal2;
                 resultItems.put(i, tempVal4.getDisplayItem(player, nowingAmount));
             }

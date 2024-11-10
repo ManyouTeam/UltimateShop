@@ -3,25 +3,19 @@ package cn.superiormc.ultimateshop.objects.menus;
 import cn.superiormc.ultimateshop.objects.buttons.*;
 import org.bukkit.configuration.ConfigurationSection;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class ObjectMoreMenu extends ObjectMenu {
 
-    public static Map<ObjectItem, ObjectMoreMenu> moreMenus = new HashMap<>();
-
-    private ObjectItem item;
+    private final ObjectItem item;
 
     private int displayItemSlot = -1;
 
-    private ConfigurationSection section;
+    private final ConfigurationSection section;
 
     public ObjectMoreMenu(ConfigurationSection section, ObjectItem item) {
         super(section.getString("menu", "buy-more"), item);
         this.item = item;
         this.type = MenuType.More;
         this.section = section;
-        moreMenus.put(item, this);
         ObjectMenu.buyMoreMenuNames.add(section.getString("menu", "buy-more"));
         initDisplayItem();
         initConfirmItem();

@@ -21,7 +21,6 @@ import cn.superiormc.ultimateshop.objects.menus.ObjectMoreMenu;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
 import cn.superiormc.ultimateshop.utils.ItemUtil;
 import cn.superiormc.ultimateshop.utils.TextUtil;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
@@ -56,6 +55,10 @@ public class ObjectItem extends AbstractButton {
 
     private ObjectLimit sellLimit;
 
+    private ObjectMoreMenu buyMoreMenu;
+
+    private boolean buyMore;
+
     private final ObjectItemConfig itemConfig;
 
     public ObjectItem(ObjectShop shop, ConfigurationSection originalConfig) {
@@ -73,6 +76,7 @@ public class ObjectItem extends AbstractButton {
         initSellCondition();
         initBuyLimit();
         initSellLimit();
+        initBuyMore();
         if (getBuyMore()) {
             initBuyMoreMenu();
         }
@@ -177,13 +181,30 @@ public class ObjectItem extends AbstractButton {
         sellLimit = buyLimit;
     }
 
+    private void initBuyMore() {
+        buyMore = itemConfig.getBoolean("buy-more",
+                shop.getShopConfig().getBoolean("settings.buy-more", true));
+    }
+
     private void initBuyMoreMenu() {
         ConfigurationSection buyMoreSection = itemConfig.getConfigurationSection("buy-more-menu");
         if (buyMoreSection == null) {
-            new ObjectMoreMenu(ConfigManager.configManager.getSectionOrDefault(
-                    "menu.select-more", "menu.buy-more"), this);
+            if (buyPrice.empty) {
+                if (!sellPrice.empty) {
+                    buyMoreMenu = new ObjectMoreMenu(ConfigManager.configManager.getSectionOrDefault(
+                            "menu.buy-more", "menu.buy-more-menu.only-sell"), this);
+                } else {
+                    buyMore = false;
+                }
+            } else if (sellPrice.empty) {
+                buyMoreMenu = new ObjectMoreMenu(ConfigManager.configManager.getSectionOrDefault(
+                        "menu.buy-more", "menu.buy-more-menu.only-buy"), this);
+            } else {
+                buyMoreMenu = new ObjectMoreMenu(ConfigManager.configManager.getSectionOrDefault(
+                        "menu.buy-more", "menu.buy-more-menu.default"), this);
+            }
         } else {
-            new ObjectMoreMenu(buyMoreSection, this);
+            buyMoreMenu = new ObjectMoreMenu(buyMoreSection, this);
         }
     }
 
@@ -240,7 +261,6 @@ public class ObjectItem extends AbstractButton {
     public ObjectAction getSellAction() {
         return sellAction;
     }
-
 
     public int getPlayerBuyLimit(Player player) {
         ObjectLimit tempVal1 = buyLimit;
@@ -366,6 +386,10 @@ public class ObjectItem extends AbstractButton {
         return displayItem.getDisplayItem(player);
     }
 
+    public ObjectDisplayItem getDisplayItemObject() {
+        return displayItem;
+    }
+
     public boolean getBuyCondition(Player player) {
         if (buyCondition == null) {
             return true;
@@ -381,8 +405,11 @@ public class ObjectItem extends AbstractButton {
     }
 
     public boolean getBuyMore() {
-        return itemConfig.getBoolean("buy-more",
-                shop.getShopConfig().getBoolean("settings.buy-more", true));
+        return buyMore;
+    }
+
+    public ObjectMoreMenu getBuyMoreMenu() {
+        return buyMoreMenu;
     }
 
     public List<String> getAddLore() {

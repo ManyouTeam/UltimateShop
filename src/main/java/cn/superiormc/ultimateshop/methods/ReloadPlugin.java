@@ -30,7 +30,6 @@ public class ReloadPlugin {
         ObjectMenu.buyMoreMenuNames.clear();
         ObjectMenu.commonMenus.clear();
         ObjectMenu.shopMenuNames.clear();
-        ObjectMenu.shopMenus.clear();
         new ConfigManager();
         new ItemManager();
         new LanguageManager();
