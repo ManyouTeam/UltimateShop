@@ -80,7 +80,7 @@ public class ObjectAction {
 
     public void runAllActions(ObjectThingRun thingRun) {
         runAllOnceActions(thingRun);
-        for (int i = 0 ; i < thingRun.getAmount() ; i ++) {
+        for (int i = 0 ; i < thingRun.getMulti() ; i ++) {
             runAllEveryActions(thingRun);
         }
     }
@@ -99,7 +99,7 @@ public class ObjectAction {
 
     public void runAnyActions(ObjectThingRun thingRun, int amount) {
         runRandomOnceActions(thingRun, amount);
-        for (int i = 0 ; i < thingRun.getAmount() ; i ++) {
+        for (int i = 0 ; i < thingRun.getMulti() ; i ++) {
             runRandomEveryActions(thingRun, amount);
         }
     }
@@ -128,5 +128,9 @@ public class ObjectAction {
 
     public boolean isEmpty() {
         return isEmpty;
+    }
+
+    public ConfigurationSection getSection() {
+        return section;
     }
 }

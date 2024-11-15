@@ -11,6 +11,8 @@ public class ObjectThingRun {
 
     private final double amount;
 
+    private final int multi;
+
     private final boolean sellAll;
 
     private final ClickType type;
@@ -19,6 +21,7 @@ public class ObjectThingRun {
         this.player = player;
         this.times = 1;
         this.amount = 1;
+        this.multi = 1;
         this.sellAll = false;
         this.type = null;
     }
@@ -27,6 +30,7 @@ public class ObjectThingRun {
         this.player = player;
         this.times = 1;
         this.amount = 1;
+        this.multi = 1;
         this.sellAll = false;
         this.type = type;
     }
@@ -35,6 +39,7 @@ public class ObjectThingRun {
         this.player = player;
         this.times = times;
         this.amount = amount;
+        this.multi = 1;
         this.sellAll = false;
         this.type = null;
     }
@@ -43,20 +48,9 @@ public class ObjectThingRun {
         this.player = player;
         this.times = times;
         this.amount = amount;
+        this.multi = (int) amount;
         this.sellAll = sellAll;
         this.type = null;
-    }
-
-    public ObjectThingRun(Player player,
-                          int times,
-                          double amount,
-                          boolean sellAll,
-                          ClickType type) {
-        this.player = player;
-        this.times = times;
-        this.amount = amount;
-        this.sellAll = sellAll;
-        this.type = type;
     }
 
     public Player getPlayer() {
@@ -83,5 +77,12 @@ public class ObjectThingRun {
             return 0;
         }
         return amount;
+    }
+
+    public int getMulti() {
+        if (multi < 1) {
+            return 1;
+        }
+        return multi;
     }
 }

@@ -1,10 +1,13 @@
 package cn.superiormc.ultimateshop.objects.buttons.subobjects;
 
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class ObjectItemConfig {
 
@@ -103,6 +106,10 @@ public class ObjectItemConfig {
 
     public ObjectItem getItem() {
         return item;
+    }
+
+    public Set<String> getKeys(boolean deep) {
+        return section.getKeys(deep);
     }
 
 }

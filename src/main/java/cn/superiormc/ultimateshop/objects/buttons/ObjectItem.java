@@ -61,6 +61,8 @@ public class ObjectItem extends AbstractButton {
 
     private final ObjectItemConfig itemConfig;
 
+    public final boolean empty;
+
     public ObjectItem(ObjectShop shop, ConfigurationSection originalConfig) {
         super(originalConfig);
         this.shop = shop;
@@ -81,6 +83,7 @@ public class ObjectItem extends AbstractButton {
             initBuyMoreMenu();
         }
         initDisplayItem();
+        this.empty = reward.empty && buyPrice.empty && sellPrice.empty;
     }
 
     private void initDisplayItem() {
@@ -312,6 +315,9 @@ public class ObjectItem extends AbstractButton {
 
     @Override
     public void clickEvent(ClickType type, Player player) {
+        if (empty) {
+            return;
+        }
         if (UltimateShop.useGeyser && CommonUtil.isBedrockPlayer(player)) {
             FormInfoGUI infoGUI = new FormInfoGUI(player, this);
             infoGUI.openGUI(true);

@@ -37,6 +37,7 @@ public class ObjectProducts extends AbstractThings {
                 singleProducts.add(new ObjectSingleProduct(s, this));
             }
         }
+        empty = singleProducts.isEmpty();
     }
 
     @Override
@@ -100,11 +101,11 @@ public class ObjectProducts extends AbstractThings {
                         continue;
                     }
                     cost = getAmount(player, times, amount, false).get(tempVal1);
-                    resultObject.addResultMapElement(tempVal1, cost);
                     if (!test && tempVal1.playerHasEnough(inventory, player, false, cost.doubleValue())) {
+                        resultObject.addResultMapElement(tempVal1, cost);
                         resultObject.setResultBoolean();
+                        return resultObject;
                     }
-                    return resultObject;
                 }
                 return resultObject;
             case ALL:

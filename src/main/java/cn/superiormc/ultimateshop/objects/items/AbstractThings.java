@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 
-
 public abstract class AbstractThings {
 
     public ThingMode mode;
@@ -29,7 +28,6 @@ public abstract class AbstractThings {
     public AbstractThings(ConfigurationSection section, String mode, ObjectItem item) {
         initThingMode(mode);
         this.section = section;
-        this.empty = false;
         this.item = item;
     }
 

@@ -244,6 +244,20 @@ public class BuildItem {
                     Collection<Material> materials = new ArrayList<>();
                     int i = 0;
                     for (String singleMaterial : ruleParseResult) {
+                        Tag<Material> tempVal1 = Bukkit.getTag(Tag.REGISTRY_ITEMS, CommonUtil.parseNamespacedKey(singleMaterial), Material.class);
+                        if (tempVal1 != null) {
+                            float speed = Float.parseFloat(ruleParseResult[1]);
+                            boolean correctForDrop = Boolean.parseBoolean(ruleParseResult[2]);
+                            toolComponent.addRule(tempVal1, speed, correctForDrop);
+                            continue;
+                        }
+                        Tag<Material> tempVal2 = Bukkit.getTag(Tag.REGISTRY_BLOCKS, CommonUtil.parseNamespacedKey(singleMaterial), Material.class);
+                        if (tempVal2 != null) {
+                            float speed = Float.parseFloat(ruleParseResult[1]);
+                            boolean correctForDrop = Boolean.parseBoolean(ruleParseResult[2]);
+                            toolComponent.addRule(tempVal2, speed, correctForDrop);
+                            continue;
+                        }
                         Material material = Material.getMaterial(singleMaterial.toUpperCase());
                         if (material == null) {
                             break;
@@ -251,9 +265,11 @@ public class BuildItem {
                         materials.add(material);
                         i ++;
                     }
-                    float speed = Float.parseFloat(ruleParseResult[i]);
-                    boolean correctForDrop = Boolean.parseBoolean(ruleParseResult[i + 1]);
-                    toolComponent.addRule(materials, speed, correctForDrop);
+                    if (!materials.isEmpty()) {
+                        float speed = Float.parseFloat(ruleParseResult[i]);
+                        boolean correctForDrop = Boolean.parseBoolean(ruleParseResult[i + 1]);
+                        toolComponent.addRule(materials, speed, correctForDrop);
+                    }
                 }
                 meta.setTool(toolComponent);
             }

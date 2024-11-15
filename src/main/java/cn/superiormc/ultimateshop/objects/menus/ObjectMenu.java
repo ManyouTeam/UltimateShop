@@ -113,7 +113,7 @@ public class ObjectMenu {
                 char itemChar = singleLine.charAt(c);
                 int slot = i;
                 i ++;
-                if (shop.getCopyItem(String.valueOf(itemChar))!= null) {
+                if (!UltimateShop.freeVersion && shop.getCopyItem(String.valueOf(itemChar))!= null) {
                     menuItems.put(slot, shop.getCopyItem(String.valueOf(itemChar)));
                     continue;
                 }

@@ -34,6 +34,8 @@ public class ObjectSinglePrice extends AbstractSingleThing {
 
     private boolean isStatic;
 
+    private boolean isAlwaysApply = false;
+
     private BigDecimal baseAmount;
 
     private String amountOption;
@@ -82,7 +84,9 @@ public class ObjectSinglePrice extends AbstractSingleThing {
     }
 
     private void initApplyCostMap() {
-        if (Objects.isNull(singleSection) || singleSection.getInt("start-apply", -1) != -1) {
+        if (Objects.isNull(singleSection) || (singleSection.getInt("start-apply", -1) != -1
+                && singleSection.getInt("end-apply", -1) != -1)) {
+            isAlwaysApply = true;
             return;
         }
         List<Integer> apply = singleSection.getIntegerList("apply");
@@ -213,21 +217,23 @@ public class ObjectSinglePrice extends AbstractSingleThing {
     }
 
     public int getStartApply() {
-        if (singleSection == null) {
+        if (isAlwaysApply || singleSection == null) {
             return -1;
-        }
-        else {
+        } else {
             return singleSection.getInt("start-apply", -1);
         }
     }
 
     public int getEndApply() {
-        if (singleSection == null) {
+        if (isAlwaysApply || singleSection == null) {
             return Integer.MAX_VALUE;
-        }
-        else {
+        } else {
             return singleSection.getInt("end-apply", Integer.MAX_VALUE);
         }
+    }
+
+    public boolean isAlwaysApply() {
+        return isAlwaysApply;
     }
 
     public Map<Integer, BigDecimal> getApplyCostMap() {
