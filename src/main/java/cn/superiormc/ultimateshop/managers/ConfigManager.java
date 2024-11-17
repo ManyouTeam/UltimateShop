@@ -76,10 +76,10 @@ public class ConfigManager {
             String fileName = file.getName();
             if (fileName.endsWith(".yml")) {
                 String substring = fileName.substring(0, fileName.length() - 4);
-                if (ObjectMenu.shopMenuNames.contains(substring)) {
+                if (ObjectMenu.notCommonMenuNames.contains(substring)) {
                     continue;
                 }
-                if (ObjectMenu.buyMoreMenuNames.contains(substring)) {
+                if (ObjectMenu.commonMenus.containsKey(substring)) {
                     continue;
                 }
                 new ObjectMenu(substring);

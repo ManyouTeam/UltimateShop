@@ -16,31 +16,21 @@ public class CommonGUI extends InvGUI {
 
     private ObjectMenu commonMenu = null;
 
-    private final String fileName;
-
     private final boolean bypass;
 
-    public CommonGUI(Player owner, String fileName, boolean bypass) {
+    public CommonGUI(Player owner, ObjectMenu menu, boolean bypass) {
         super(owner);
-        this.fileName = fileName;
+        this.commonMenu = menu;
         this.bypass = bypass;
     }
 
     @Override
     protected void constructGUI() {
-        commonMenu = ObjectMenu.commonMenus.get(fileName);
-        if (commonMenu == null || commonMenu.menuConfigs == null) {
-            LanguageManager.languageManager.sendStringText(player,
-                    "error.menu-not-found",
-                    "menu",
-                    fileName);
-            return;
-        }
         if (!bypass && !commonMenu.getCondition().getAllBoolean(new ObjectThingRun(player))) {
             LanguageManager.languageManager.sendStringText(player,
                     "menu-condition-not-meet",
                     "menu",
-                    fileName);
+                    commonMenu.getName());
             return;
         }
         menuButtons = commonMenu.getMenu();

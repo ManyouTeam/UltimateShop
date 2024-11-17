@@ -9,9 +9,12 @@ public class TakeResult {
 
     private boolean resultBoolean;
 
+    public boolean empty;
+
     public TakeResult(Map<AbstractSingleThing, BigDecimal> resultMap) {
         this.resultMap = resultMap;
         this.resultBoolean = false;
+        this.empty = resultMap.isEmpty();
     }
 
     public void setResultBoolean() {

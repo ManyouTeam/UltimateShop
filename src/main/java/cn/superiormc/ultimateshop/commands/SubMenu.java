@@ -5,6 +5,7 @@ import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.LanguageManager;
 import cn.superiormc.ultimateshop.methods.GUI.OpenGUI;
 import cn.superiormc.ultimateshop.objects.ObjectShop;
+import cn.superiormc.ultimateshop.objects.menus.MenuType;
 import cn.superiormc.ultimateshop.objects.menus.ObjectMenu;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -27,15 +28,10 @@ public class SubMenu extends AbstractCommand {
         boolean bypass = args[args.length - 1].equals("-b") && player.hasPermission(requiredPermission + ".admin") && !UltimateShop.freeVersion;
         ObjectShop tempVal1 = ConfigManager.configManager.getShop(args[1]);
         if (tempVal1 == null) {
-            if (ObjectMenu.buyMoreMenuNames.contains(args[1])) {
-                LanguageManager.languageManager.sendStringText(player, "error.buy-more-menu-direct-open");
-                return;
-            }
             OpenGUI.openCommonGUI(player, args[1], bypass, false);
         }
         else {
             OpenGUI.openShopGUI(player, tempVal1, bypass, false);
-
         }
     }
 
@@ -55,10 +51,6 @@ public class SubMenu extends AbstractCommand {
         }
         ObjectShop tempVal1 = ConfigManager.configManager.getShop(args[1]);
         if (tempVal1 == null) {
-            if (ObjectMenu.buyMoreMenuNames.contains(args[1])) {
-                LanguageManager.languageManager.sendStringText("error.buy-more-menu-direct-open");
-                return;
-            }
             OpenGUI.openCommonGUI(player, args[1], bypass, false);
         }
         else {
@@ -74,11 +66,11 @@ public class SubMenu extends AbstractCommand {
                 for (ObjectShop tempVal2: ConfigManager.configManager.getShops()) {
                     tempVal1.add(tempVal2.getShopName());
                 }
-                for (String tempVal4 : ObjectMenu.commonMenus.keySet()) {
-                    if (ObjectMenu.buyMoreMenuNames.contains(tempVal4)) {
+                for (ObjectMenu tempVal4 : ObjectMenu.commonMenus.values()) {
+                    if (!tempVal4.getType().equals(MenuType.Common)) {
                         continue;
                     }
-                    tempVal1.add(tempVal4);
+                    tempVal1.add(tempVal4.getName());
                 }
                 break;
         }

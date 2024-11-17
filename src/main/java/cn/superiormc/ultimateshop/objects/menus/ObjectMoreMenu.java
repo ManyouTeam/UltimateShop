@@ -16,7 +16,6 @@ public class ObjectMoreMenu extends ObjectMenu {
         this.item = item;
         this.type = MenuType.More;
         this.section = section;
-        ObjectMenu.buyMoreMenuNames.add(section.getString("menu", "buy-more"));
         initDisplayItem();
         initConfirmItem();
         initSelectAmountItem();

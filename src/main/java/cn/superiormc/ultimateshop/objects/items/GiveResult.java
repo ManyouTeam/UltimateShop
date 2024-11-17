@@ -7,9 +7,11 @@ public class GiveResult {
 
     private final Map<AbstractSingleThing, BigDecimal> resultMap;
 
+    public boolean empty;
 
     public GiveResult(Map<AbstractSingleThing, BigDecimal> resultMap) {
         this.resultMap = resultMap;
+        this.empty = resultMap.isEmpty();
     }
 
     public void addResultMapElement(AbstractSingleThing thing, BigDecimal amount) {

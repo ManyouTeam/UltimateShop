@@ -23,9 +23,7 @@ public class ObjectMenu {
 
     public static Map<String, ObjectMenu> commonMenus = new HashMap<>();
 
-    public static List<String> shopMenuNames = new ArrayList<>();
-
-    public static List<String> buyMoreMenuNames = new ArrayList<>();
+    public static Collection<String> notCommonMenuNames = new HashSet<>();
 
     public String fileName;
 
@@ -75,7 +73,7 @@ public class ObjectMenu {
         if (type == MenuType.Common) {
             commonMenus.put(fileName, this);
         } else {
-            shopMenuNames.add(fileName);
+            notCommonMenuNames.add(fileName);
         }
         File file = new File(UltimateShop.instance.getDataFolder() + "/menus/" + fileName + ".yml");
         if (!file.exists()){
@@ -83,8 +81,7 @@ public class ObjectMenu {
                     fileName + ".yml!");
         } else {
             if (type == MenuType.Common) {
-                Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §fLoaded menu: " +
-                        fileName + ".yml!");
+                Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §fLoaded menu: " + fileName + ".yml!");
             }
             this.menuConfigs = YamlConfiguration.loadConfiguration(file);
         }

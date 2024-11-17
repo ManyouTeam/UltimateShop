@@ -27,9 +27,8 @@ public class ReloadPlugin {
             ServerCache.serverCache.shutServerCacheOnDisable(false);
         }
         TaskManager.taskManager.cancelTask();
-        ObjectMenu.buyMoreMenuNames.clear();
         ObjectMenu.commonMenus.clear();
-        ObjectMenu.shopMenuNames.clear();
+        ObjectMenu.notCommonMenuNames.clear();
         new ConfigManager();
         new ItemManager();
         new LanguageManager();

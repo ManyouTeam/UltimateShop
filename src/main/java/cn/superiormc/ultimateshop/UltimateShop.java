@@ -23,7 +23,7 @@ public final class UltimateShop extends JavaPlugin {
 
     public static int majorVersion;
 
-    public static int miniorVersion;
+    public static int minorVersion;
 
     public static boolean newSkullMethod;
 
@@ -33,7 +33,7 @@ public final class UltimateShop extends JavaPlugin {
         try {
             String[] versionParts = Bukkit.getBukkitVersion().split("-")[0].split("\\.");
             majorVersion = versionParts.length > 1 ? Integer.parseInt(versionParts[1]) : 0;
-            miniorVersion = versionParts.length > 2 ? Integer.parseInt(versionParts[2]) : 0;
+            minorVersion = versionParts.length > 2 ? Integer.parseInt(versionParts[2]) : 0;
         } catch (Throwable throwable) {
             Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Can not get your Minecraft version! Default set to 1.0.0.");
         }
@@ -69,7 +69,7 @@ public final class UltimateShop extends JavaPlugin {
             newSkullMethod = true;
             Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §fNew AuthLib found, enabled new skull get method!");
         }
-        Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §fYour Minecraft version is: 1." + majorVersion + "." + miniorVersion + "!");
+        Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §fYour Minecraft version is: 1." + majorVersion + "." + minorVersion + "!");
         new Metrics(this, 20783);
         Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §fPlugin is loaded. Author: PQguanfang.");
     }

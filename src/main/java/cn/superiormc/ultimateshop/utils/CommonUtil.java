@@ -47,7 +47,7 @@ public class CommonUtil {
 
     public static boolean getMinorVersion(int majorVersion, int minorVersion) {
         return UltimateShop.majorVersion > majorVersion || (UltimateShop.majorVersion == majorVersion &&
-                UltimateShop.miniorVersion >= minorVersion);
+                UltimateShop.minorVersion >= minorVersion);
     }
 
     public static void dispatchCommand(String command) {

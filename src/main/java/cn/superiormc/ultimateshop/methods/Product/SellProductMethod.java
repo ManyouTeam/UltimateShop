@@ -255,8 +255,7 @@ public class SellProductMethod {
             tempVal8.setLastSellTime(LocalDateTime.now());
             tempVal11.getUseTimesCache().put(tempVal2, tempVal8);
         }
-        if (!hide && tempVal1.getShopConfig().
-                        getBoolean("settings.send-messages-after-buy", true)) {
+        if (!hide && tempVal1.getShopConfig().getBoolean("settings.send-messages-after-buy", true) && !giveResult.empty && !takeResult.empty) {
             LanguageManager.languageManager.sendStringText(player,
                     "success-sell",
                     "item",

@@ -7,8 +7,11 @@ import cn.superiormc.ultimateshop.gui.inv.BuyMoreGUI;
 import cn.superiormc.ultimateshop.gui.inv.CommonGUI;
 import cn.superiormc.ultimateshop.gui.inv.SellAllGUI;
 import cn.superiormc.ultimateshop.gui.inv.ShopGUI;
+import cn.superiormc.ultimateshop.managers.LanguageManager;
 import cn.superiormc.ultimateshop.objects.ObjectShop;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
+import cn.superiormc.ultimateshop.objects.menus.MenuType;
+import cn.superiormc.ultimateshop.objects.menus.ObjectMenu;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
 import org.bukkit.entity.Player;
 
@@ -34,15 +37,29 @@ public class OpenGUI {
     }
 
     public static void openCommonGUI(Player player, String fileName, boolean bypass, boolean reopen) {
+        ObjectMenu commonMenu = ObjectMenu.commonMenus.get(fileName);
+        if (commonMenu == null || commonMenu.menuConfigs == null) {
+            LanguageManager.languageManager.sendStringText(player,
+                    "error.menu-not-found",
+                    "menu",
+                    fileName);
+            return;
+        }
+
+        if (commonMenu.getType().equals(MenuType.More)) {
+            LanguageManager.languageManager.sendStringText(player, "error.buy-more-menu-direct-open");
+            return;
+        }
+
         if (UltimateShop.useGeyser && CommonUtil.isBedrockPlayer(player)) {
-            FormCommonGUI formCommonGUI = new FormCommonGUI(player, fileName, bypass);
+            FormCommonGUI formCommonGUI = new FormCommonGUI(player, commonMenu, bypass);
             formCommonGUI.openGUI(reopen);
             if (formCommonGUI.getMenu() != null) {
                 formCommonGUI.getMenu().doOpenAction(player);
             }
             return;
         }
-        CommonGUI gui = new CommonGUI(player, fileName, bypass);
+        CommonGUI gui = new CommonGUI(player, commonMenu, bypass);
         gui.openGUI(reopen);
         if (gui.getMenu() != null) {
             gui.getMenu().doOpenAction(player);
@@ -58,6 +75,5 @@ public class OpenGUI {
         SellAllGUI gui = new SellAllGUI(player);
         gui.openGUI(true);
     }
-
 
 }
