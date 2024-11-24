@@ -1,5 +1,6 @@
 package cn.superiormc.ultimateshop.objects.buttons;
 
+import cn.superiormc.ultimateshop.objects.buttons.subobjects.ObjectDisplayItemStack;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
@@ -20,7 +21,7 @@ public abstract class AbstractButton {
         // Empty...
     }
 
-    public abstract ItemStack getDisplayItem(Player player, int multi);
+    public abstract ObjectDisplayItemStack getDisplayItem(Player player, int multi);
 
     //public abstract ButtonComponent getBedrockButton(Player player, int multi);
 

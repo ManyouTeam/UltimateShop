@@ -3,6 +3,7 @@ package cn.superiormc.ultimateshop.objects.items.prices;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.ErrorManager;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
+import cn.superiormc.ultimateshop.objects.buttons.subobjects.ObjectItemConfig;
 import cn.superiormc.ultimateshop.objects.items.*;
 import cn.superiormc.ultimateshop.objects.items.subobjects.ObjectDisplayPlaceholder;
 import cn.superiormc.ultimateshop.utils.TextUtil;

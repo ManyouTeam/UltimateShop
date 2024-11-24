@@ -10,6 +10,7 @@ import cn.superiormc.ultimateshop.objects.ObjectShop;
 import cn.superiormc.ultimateshop.objects.ObjectThingRun;
 import cn.superiormc.ultimateshop.objects.buttons.AbstractButton;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
+import cn.superiormc.ultimateshop.objects.buttons.subobjects.ObjectDisplayItemStack;
 import cn.superiormc.ultimateshop.objects.caches.ObjectUseTimesCache;
 import cn.superiormc.ultimateshop.objects.menus.ObjectMenu;
 import cn.superiormc.ultimateshop.utils.ItemUtil;
@@ -125,25 +126,8 @@ public class FormShopGUI extends FormGUI {
         tempVal8.putAll(tempVal7);
         for (int slot : tempVal8.keySet()) {
             AbstractButton button = tempVal8.get(slot);
-            ItemStack displayItem = button.getDisplayItem(player, 1);
-            if (ItemUtil.getItemNameWithoutVanilla(displayItem).trim().isEmpty() ||
-                    button.getButtonConfig().getBoolean("bedrock.hide", false)) {
-                continue;
-            }
-            String tempVal3 = TextUtil.parse(ItemUtil.getItemName(displayItem), player);
-            String icon = button.getButtonConfig().getString("bedrock.icon",
-                    button.getButtonConfig().getString("bedrock-icon"));
-            ButtonComponent tempVal6 = null;
-            if (icon != null && icon.split(";;").length == 2) {
-                String type = icon.split(";;")[0].toLowerCase();
-                if (type.equals("url")) {
-                    tempVal6 = ButtonComponent.of(tempVal3, FormImage.Type.URL, icon.split(";;")[1]);
-                } else if (type.equals("path")) {
-                    tempVal6 = ButtonComponent.of(tempVal3, FormImage.Type.PATH, icon.split(";;")[1]);
-                }
-            } else {
-                tempVal6 = ButtonComponent.of(tempVal3);
-            }
+            ObjectDisplayItemStack displayItem = button.getDisplayItem(player, 1);
+            ButtonComponent tempVal6 = displayItem.parseToBedrockButton();
             if (tempVal6 != null) {
                 tempVal5.button(tempVal6);
             }

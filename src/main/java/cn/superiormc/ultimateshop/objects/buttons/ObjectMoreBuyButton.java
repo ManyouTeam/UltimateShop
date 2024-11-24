@@ -2,6 +2,7 @@ package cn.superiormc.ultimateshop.objects.buttons;
 
 import cn.superiormc.ultimateshop.methods.GUI.ModifyDisplayItem;
 import cn.superiormc.ultimateshop.methods.Items.BuildItem;
+import cn.superiormc.ultimateshop.objects.buttons.subobjects.ObjectDisplayItemStack;
 import cn.superiormc.ultimateshop.utils.MathUtil;
 import cn.superiormc.ultimateshop.utils.TextUtil;
 import org.bukkit.Material;
@@ -20,14 +21,14 @@ public class ObjectMoreBuyButton extends AbstractButton {
     }
 
     @Override
-    public ItemStack getDisplayItem(Player player, int multi) {
+    public ObjectDisplayItemStack getDisplayItem(Player player, int multi) {
         ConfigurationSection tempVal1 = config.getConfigurationSection("display-item");
         if (tempVal1 == null) {
-            return new ItemStack(Material.STONE);
+            return ObjectDisplayItemStack.getAir();
         }
         String amount = tempVal1.getString("amount", "1");
-        ItemStack addLoreDisplayItem = BuildItem.buildItemStack(player, tempVal1,
-                MathUtil.doCalculate(TextUtil.withPAPI(amount, player)).intValue());
+        ObjectDisplayItemStack addLoreDisplayItem = new ObjectDisplayItemStack(BuildItem.buildItemStack(player, tempVal1,
+                MathUtil.doCalculate(TextUtil.withPAPI(amount, player)).intValue()));
         return ModifyDisplayItem.modifyItem(player, multi, addLoreDisplayItem, item, true, getClickType());
     }
 

@@ -10,7 +10,6 @@ import cn.superiormc.ultimateshop.utils.RandomUtil;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -189,17 +188,13 @@ public class ObjectProducts extends AbstractThings {
         }
     }
 
-    public ItemStack getDisplayItem(Player player) {
+    public ObjectSingleProduct getTargetProduct(Player player) {
         for (ObjectSingleProduct tempVal1 : singleProducts) {
             if (!tempVal1.getCondition(player)) {
                 continue;
             }
             // 商品的 times 是没用的，因为商品没有 apply 选项
-            double cost = tempVal1.getAmount(player, 0, true).doubleValue();
-            ItemStack tempVal2 = tempVal1.getItemThing(section, player, cost, true).getDisplayItem();
-            if (tempVal2 != null) {
-                return tempVal2;
-            }
+            return tempVal1;
         }
         return null;
     }

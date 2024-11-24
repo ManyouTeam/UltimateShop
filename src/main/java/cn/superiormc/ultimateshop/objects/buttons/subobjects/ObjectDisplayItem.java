@@ -6,6 +6,7 @@ import cn.superiormc.ultimateshop.methods.Items.BuildItem;
 import cn.superiormc.ultimateshop.objects.ObjectThingRun;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import cn.superiormc.ultimateshop.objects.items.ObjectCondition;
+import cn.superiormc.ultimateshop.objects.items.products.ObjectSingleProduct;
 import cn.superiormc.ultimateshop.utils.MathUtil;
 import cn.superiormc.ultimateshop.utils.TextUtil;
 import org.bukkit.Material;
@@ -17,12 +18,21 @@ public class ObjectDisplayItem {
 
     private final ConfigurationSection section;
 
+    private ConfigurationSection usedSection;
+
+    private boolean useFirstProduct = false;
+
     private final ConfigurationSection conditionSection;
 
     private ObjectItem item;
 
     public ObjectDisplayItem(ConfigurationSection section, ConfigurationSection conditionSection, ObjectItem item) {
-        this.section = section;
+        if (section == null) {
+            useFirstProduct = true;
+            this.section = item.getItemConfig();
+        } else {
+            this.section = section;
+        }
         this.conditionSection = conditionSection;
         this.item = item;
     }
@@ -32,23 +42,28 @@ public class ObjectDisplayItem {
         this.conditionSection = conditionSection;
     }
 
-    public ItemStack getDisplayItem(Player player) {
+    public ObjectDisplayItemStack getDisplayItem(Player player) {
         ItemStack addLoreDisplayItem = null;
-        if (section == null) {
-            if (item != null &&
-                ConfigManager.configManager.getBoolean("display-item.auto-set-first-product")) {
-                addLoreDisplayItem = item.getReward().getDisplayItem(player);
+        if (useFirstProduct) {
+            if (item != null && ConfigManager.configManager.getBoolean("display-item.auto-set-first-product")) {
+                ObjectSingleProduct singleProduct = item.getReward().getTargetProduct(player);
+                double cost = singleProduct.getAmount(player, 0, true).doubleValue();
+                ItemStack tempVal2 = singleProduct.getItemThing(null, player, cost, true).getDisplayItem();
+                if (tempVal2 != null) {
+                    addLoreDisplayItem = tempVal2;
+                    if (!section.contains("bedrock")) {
+                        usedSection = singleProduct.singleSection;
+                    }
+                }
             }
-        }
-        else {
+        } else {
             // 显示物品
             if (conditionSection == null) {
                 String amount = section.getString("amount", "1");
                 ItemStack displayItem = BuildItem.buildItemStack(player, section,
                         MathUtil.doCalculate(TextUtil.withPAPI(amount, player)).intValue());
                 addLoreDisplayItem = displayItem.clone();
-            }
-            else {
+            } else {
                 for (String conditionID : section.getKeys(false)) {
                     ConfigurationSection tempVal1 = conditionSection.getConfigurationSection(conditionID);
                     if (tempVal1 != null) {
@@ -59,6 +74,7 @@ public class ObjectDisplayItem {
                                     section.getConfigurationSection(conditionID),
                                     MathUtil.doCalculate(TextUtil.withPAPI(amount, player)).intValue());
                             addLoreDisplayItem = displayItem.clone();
+                            usedSection = section.getConfigurationSection(conditionID);
                             break;
                         }
                     }
@@ -68,11 +84,14 @@ public class ObjectDisplayItem {
         if (addLoreDisplayItem == null) {
             addLoreDisplayItem = new ItemStack(Material.AIR);
         }
-        return addLoreDisplayItem;
+        if (usedSection == null) {
+            usedSection = section;
+        }
+        return new ObjectDisplayItemStack(player, addLoreDisplayItem, usedSection);
     }
 
-    public ItemStack getDisplayItem(Player player, int multi) {
-        ItemStack addLoreDisplayItem = getDisplayItem(player);
+    public ObjectDisplayItemStack getDisplayItem(Player player, int multi) {
+        ObjectDisplayItemStack addLoreDisplayItem = getDisplayItem(player);
         if (item != null) {
             if (section != null && !section.getBoolean("modify-lore", true)) {
                 return addLoreDisplayItem;

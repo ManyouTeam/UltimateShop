@@ -6,6 +6,7 @@ import cn.superiormc.ultimateshop.managers.LanguageManager;
 import cn.superiormc.ultimateshop.methods.Product.BuyProductMethod;
 import cn.superiormc.ultimateshop.methods.Product.SellProductMethod;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
+import cn.superiormc.ultimateshop.objects.buttons.subobjects.ObjectDisplayItemStack;
 import cn.superiormc.ultimateshop.objects.caches.ObjectUseTimesCache;
 import cn.superiormc.ultimateshop.objects.items.prices.ObjectPrices;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
@@ -20,20 +21,20 @@ import java.util.List;
 
 public class ModifyDisplayItem {
 
-    public static ItemStack modifyItem(Player player,
-                                         int multi,
-                                         ItemStack addLoreDisplayItem,
-                                         ObjectItem item,
-                                         boolean buyMore) {
+    public static ObjectDisplayItemStack modifyItem(Player player,
+                                                    int multi,
+                                                    ObjectDisplayItemStack addLoreDisplayItem,
+                                                    ObjectItem item,
+                                                    boolean buyMore) {
         return modifyItem(player, multi, addLoreDisplayItem, item, buyMore, "general");
     }
 
-    public static ItemStack modifyItem(Player player,
-                                        int multi,
-                                        ItemStack addLoreDisplayItem,
-                                        ObjectItem item,
-                                        boolean buyMore,
-                                        String clickType) {
+    public static ObjectDisplayItemStack modifyItem(Player player,
+                                                    int multi,
+                                                    ObjectDisplayItemStack addLoreDisplayItem,
+                                                    ObjectItem item,
+                                                    boolean buyMore,
+                                                    String clickType) {
         if (clickType == null) {
             clickType = "general";
         }

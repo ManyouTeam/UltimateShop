@@ -10,6 +10,7 @@ import cn.superiormc.ultimateshop.methods.ProductTradeStatus;
 import cn.superiormc.ultimateshop.objects.ObjectShop;
 import cn.superiormc.ultimateshop.objects.ObjectThingRun;
 import cn.superiormc.ultimateshop.objects.buttons.subobjects.ObjectDisplayItem;
+import cn.superiormc.ultimateshop.objects.buttons.subobjects.ObjectDisplayItemStack;
 import cn.superiormc.ultimateshop.objects.buttons.subobjects.ObjectItemConfig;
 import cn.superiormc.ultimateshop.objects.items.ObjectAction;
 import cn.superiormc.ultimateshop.objects.items.ObjectCondition;
@@ -378,9 +379,9 @@ public class ObjectItem extends AbstractButton {
     }
 
     @Override
-    public ItemStack getDisplayItem(Player player, int multi) {
+    public ObjectDisplayItemStack getDisplayItem(Player player, int multi) {
         if (displayItem == null) {
-            return new ItemStack(Material.AIR);
+            return ObjectDisplayItemStack.getAir();
         }
         return displayItem.getDisplayItem(player, multi);
     }

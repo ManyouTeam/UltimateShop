@@ -4,6 +4,7 @@ import cn.superiormc.ultimateshop.gui.FormGUI;
 import cn.superiormc.ultimateshop.managers.LanguageManager;
 import cn.superiormc.ultimateshop.objects.ObjectThingRun;
 import cn.superiormc.ultimateshop.objects.buttons.AbstractButton;
+import cn.superiormc.ultimateshop.objects.buttons.subobjects.ObjectDisplayItemStack;
 import cn.superiormc.ultimateshop.objects.menus.ObjectMenu;
 import cn.superiormc.ultimateshop.utils.ItemUtil;
 import cn.superiormc.ultimateshop.utils.TextUtil;
@@ -40,25 +41,8 @@ public class FormCommonGUI extends FormGUI {
         SimpleForm.Builder tempVal2 = SimpleForm.builder();
         for (int slot : menuButtons.keySet()) {
             AbstractButton button = menuButtons.get(slot);
-            ItemStack displayItem = button.getDisplayItem(player, 1);
-            if (ItemUtil.getItemNameWithoutVanilla(displayItem).trim().isEmpty() ||
-                    button.getButtonConfig().getBoolean("bedrock.hide", false)) {
-                continue;
-            }
-            String icon = button.getButtonConfig().getString("bedrock.icon",
-                    button.getButtonConfig().getString("bedrock-icon"));
-            String tempVal3 = TextUtil.parse(ItemUtil.getItemName(displayItem), player);
-            ButtonComponent tempVal1 = null;
-            if (icon != null && icon.split(";;").length == 2) {
-                String type = icon.split(";;")[0].toLowerCase();
-                if (type.equals("url")) {
-                    tempVal1 = ButtonComponent.of(tempVal3, FormImage.Type.URL, icon.split(";;")[1]);
-                } else if (type.equals("path")) {
-                    tempVal1 = ButtonComponent.of(tempVal3, FormImage.Type.PATH, icon.split(";;")[1]);
-                }
-            } else {
-                tempVal1 = ButtonComponent.of(tempVal3);
-            }
+            ObjectDisplayItemStack displayItem = button.getDisplayItem(player, 1);
+            ButtonComponent tempVal1 = displayItem.parseToBedrockButton();
             if (tempVal1 != null) {
                 tempVal2.button(tempVal1);
             }

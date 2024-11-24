@@ -1,6 +1,7 @@
 package cn.superiormc.ultimateshop.objects.buttons;
 
 import cn.superiormc.ultimateshop.objects.buttons.subobjects.ObjectDisplayItem;
+import cn.superiormc.ultimateshop.objects.buttons.subobjects.ObjectDisplayItemStack;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
@@ -35,7 +36,7 @@ public class ObjectCopyItem extends AbstractButton {
     }
 
     @Override
-    public ItemStack getDisplayItem(Player player, int multi) {
+    public ObjectDisplayItemStack getDisplayItem(Player player, int multi) {
         if (displayItem == null) {
             return item.getDisplayItem(player, multi);
         }
