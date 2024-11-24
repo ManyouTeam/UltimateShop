@@ -121,10 +121,11 @@ menu:
   # Premium version only.
   click-event-actions:
     buy-one-stack:
-      type: buy
-      shop: {shop}
-      item: {item}
-      amount: 64
+      1:
+        type: buy
+        shop: {shop}
+        item: {item}
+        amount: 64
 
 use-times:
   default-reset-mode: 'NEVER'

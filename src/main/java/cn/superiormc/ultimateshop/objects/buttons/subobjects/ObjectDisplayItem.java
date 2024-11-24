@@ -37,7 +37,7 @@ public class ObjectDisplayItem {
         if (section == null) {
             if (item != null &&
                 ConfigManager.configManager.getBoolean("display-item.auto-set-first-product")) {
-                addLoreDisplayItem = item.getReward().getDisplayItem(section, player, 0, 1);
+                addLoreDisplayItem = item.getReward().getDisplayItem(player);
             }
         }
         else {

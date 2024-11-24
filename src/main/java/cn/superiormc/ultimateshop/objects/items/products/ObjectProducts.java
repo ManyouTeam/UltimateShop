@@ -189,16 +189,13 @@ public class ObjectProducts extends AbstractThings {
         }
     }
 
-    public ItemStack getDisplayItem(ConfigurationSection section,
-                                    Player player,
-                                    int times,
-                                    int classic_multi) {
+    public ItemStack getDisplayItem(Player player) {
         for (ObjectSingleProduct tempVal1 : singleProducts) {
             if (!tempVal1.getCondition(player)) {
                 continue;
             }
             // 商品的 times 是没用的，因为商品没有 apply 选项
-            double cost = getAmount(player, times, classic_multi, true).get(tempVal1).doubleValue();
+            double cost = tempVal1.getAmount(player, 0, true).doubleValue();
             ItemStack tempVal2 = tempVal1.getItemThing(section, player, cost, true).getDisplayItem();
             if (tempVal2 != null) {
                 return tempVal2;

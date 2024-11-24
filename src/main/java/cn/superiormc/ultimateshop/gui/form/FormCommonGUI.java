@@ -23,6 +23,7 @@ public class FormCommonGUI extends FormGUI {
     public FormCommonGUI(Player owner, ObjectMenu menu, boolean bypass) {
         super(owner);
         this.bypass = bypass;
+        this.commonMenu = menu;
         constructGUI();
     }
 

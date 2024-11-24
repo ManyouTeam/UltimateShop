@@ -15,7 +15,6 @@ public class TaskManager {
 
     private ScheduledTask saveFoliaTask;
 
-
     public TaskManager() {
         taskManager = this;
         if (ConfigManager.configManager.getBoolean("auto-save.enabled")) {
