@@ -47,6 +47,9 @@ public class ObjectDisplayItem {
         if (useFirstProduct) {
             if (item != null && ConfigManager.configManager.getBoolean("display-item.auto-set-first-product")) {
                 ObjectSingleProduct singleProduct = item.getReward().getTargetProduct(player);
+                if (singleProduct == null) {
+                    return ObjectDisplayItemStack.getAir();
+                }
                 double cost = singleProduct.getAmount(player, 0, true).doubleValue();
                 ItemStack tempVal2 = singleProduct.getItemThing(null, player, cost, true).getDisplayItem();
                 if (tempVal2 != null) {
@@ -82,7 +85,7 @@ public class ObjectDisplayItem {
             }
         }
         if (addLoreDisplayItem == null) {
-            addLoreDisplayItem = new ItemStack(Material.AIR);
+            return ObjectDisplayItemStack.getAir();
         }
         if (usedSection == null) {
             usedSection = section;

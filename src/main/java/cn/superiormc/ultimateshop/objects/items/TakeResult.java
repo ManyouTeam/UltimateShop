@@ -23,6 +23,7 @@ public class TakeResult {
 
     public void addResultMapElement(AbstractSingleThing thing, BigDecimal amount) {
         resultMap.put(thing, amount);
+        this.empty = false;
     }
 
     public Map<AbstractSingleThing, BigDecimal> getResultMap() {

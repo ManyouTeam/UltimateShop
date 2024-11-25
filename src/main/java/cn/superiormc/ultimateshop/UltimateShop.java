@@ -53,6 +53,9 @@ public final class UltimateShop extends JavaPlugin {
                     "Please do not use in production environment!");
             isFolia = true;
         }
+        if (!UltimateShop.freeVersion) {
+            Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §fLoading PREMIUM version only features...");
+        }
         new ItemManager();
         new LanguageManager();
         new CacheManager();
