@@ -2,6 +2,8 @@
 #
 # Read the Wiki: ultimateshop.superiormc.cn
 
+# Some options require restart the server to make effect.
+
 debug: false
 
 config-files:
@@ -89,11 +91,13 @@ menu:
           name: 'Amount'
           tip: 'Type amount here! Type all to sell all!'
     info:
-      title: 'Product Info: {item-name}'
+      title: 'Product Info: {item-name} x{amount}'
       buttons:
         buy: 'Buy'
         sell: 'Sell'
         buy-more: 'Select Amount'
+        # Remove this option if you don't want this button.
+        back: '&cBack'
   buy-more-menu:
     default:
       menu: buy-more

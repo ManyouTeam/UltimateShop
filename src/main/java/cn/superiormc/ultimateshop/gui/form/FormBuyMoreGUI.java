@@ -10,11 +10,11 @@ import cn.superiormc.ultimateshop.utils.TextUtil;
 import org.bukkit.entity.Player;
 import org.geysermc.cumulus.form.CustomForm;
 
-public class FormBuyOrSellGUI extends FormGUI {
+public class FormBuyMoreGUI extends FormGUI {
 
     private final ObjectItem item;
 
-        public FormBuyOrSellGUI(Player owner, ObjectItem item) {
+        public FormBuyMoreGUI(Player owner, ObjectItem item) {
         super(owner);
         this.item = item;
         constructGUI();
@@ -42,6 +42,9 @@ public class FormBuyOrSellGUI extends FormGUI {
         tempVal2.validResultHandler(response -> {
             FormInfoGUI infoGUI = new FormInfoGUI(player, item, response.next());
             infoGUI.openGUI(true);
+        });
+        tempVal2.closedOrInvalidResultHandler(response -> {
+            removeOpenGUIStatus();
         });
         form = tempVal2.build();
     }

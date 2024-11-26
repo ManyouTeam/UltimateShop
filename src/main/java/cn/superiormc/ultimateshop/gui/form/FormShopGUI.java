@@ -140,9 +140,16 @@ public class FormShopGUI extends FormGUI {
             removeOpenGUIStatus();
             menuButtons.get(menuItems.get(response.clickedButton())).clickEvent(ClickType.LEFT, player);
         });
+        tempVal5.closedOrInvalidResultHandler(response -> {
+            removeOpenGUIStatus();
+        });
+        if (getMenu().getString("bedrock.content", null) != null) {
+            tempVal5.content(getMenu().getString("bedrock.content", ""));
+        }
         form = tempVal5.build();
     }
 
+    @Override
     public ObjectMenu getMenu() {
         return shop.getShopMenuObject();
     }

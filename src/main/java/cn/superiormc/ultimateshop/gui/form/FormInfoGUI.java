@@ -56,7 +56,8 @@ public class FormInfoGUI extends FormGUI {
         SimpleForm.Builder tempVal2 = SimpleForm.builder();
 
         tempVal2.title(TextUtil.parse(player, ConfigManager.configManager.getString("menu.bedrock.info.title"))
-                .replace("{item-name}", item.getDisplayName(getPlayer().getPlayer())));
+                .replace("{item-name}", item.getDisplayName(player))
+                .replace("{amount}", amount));
         List<String> content = new ArrayList<>();
         if (item.getDisplayItem(player).hasItemMeta() && item.getDisplayItem(player).getItemMeta().hasLore()) {
             content.addAll(item.getDisplayItem(player).getItemMeta().getLore());
@@ -73,14 +74,19 @@ public class FormInfoGUI extends FormGUI {
         // 购买
         ButtonComponent buy = ButtonComponent.of(TextUtil.parse(player, ConfigManager.configManager.getString(
                 "menu.bedrock.info.buttons.buy"))
-                .replace("{item-name}", item.getDisplayName(getPlayer().getPlayer())));
+                .replace("{item-name}", item.getDisplayName(player)));
         // 回收
         ButtonComponent sell = ButtonComponent.of(TextUtil.parse(player, ConfigManager.configManager.getString(
                         "menu.bedrock.info.buttons.sell"))
-                .replace("{item-name}", item.getDisplayName(getPlayer().getPlayer())));
+                .replace("{item-name}", item.getDisplayName(player)));
+        // 选择数量
         ButtonComponent buyMore = ButtonComponent.of(TextUtil.parse(player, ConfigManager.configManager.getString(
                         "menu.bedrock.info.buttons.buy-more"))
-                .replace("{item-name}", item.getDisplayName(getPlayer().getPlayer())));
+                .replace("{item-name}", item.getDisplayName(player)));
+        // 返回
+        ButtonComponent back = ButtonComponent.of(TextUtil.parse(player, ConfigManager.configManager.getString(
+                "menu.bedrock.info.buttons.back", "Back"
+        )));
         if (!item.getBuyPrice().empty) {
             tempVal2.button(buy);
         }
@@ -90,17 +96,23 @@ public class FormInfoGUI extends FormGUI {
         if (item.getBuyMore() && ConfigManager.configManager.containsClickAction("select-amount")) {
             tempVal2.button(buyMore);
         }
+        tempVal2.button(back);
         tempVal2.validResultHandler(response -> {
             removeOpenGUIStatus();
             if (response.clickedButton().equals(buy)) {
                 doThing(true);
-            }
-            else if (response.clickedButton().equals(sell)) {
+            } else if (response.clickedButton().equals(sell)) {
                 doThing(false);
             } else if (response.clickedButton().equals(buyMore)) {
-                FormBuyOrSellGUI buyOrSellGUI = new FormBuyOrSellGUI(player, item);
+                FormBuyMoreGUI buyOrSellGUI = new FormBuyMoreGUI(player, item);
                 buyOrSellGUI.openGUI(true);
+            } else if (response.clickedButton().equals(back)) {
+                FormShopGUI shopGUI = new FormShopGUI(player, item.getShopObject(), true);
+                shopGUI.openGUI(true);
             }
+        });
+        tempVal2.closedOrInvalidResultHandler(response -> {
+            removeOpenGUIStatus();
         });
         form = tempVal2.build();
     }

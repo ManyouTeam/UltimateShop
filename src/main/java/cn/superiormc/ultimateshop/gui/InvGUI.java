@@ -66,6 +66,9 @@ public abstract class InvGUI extends AbstractGUI {
             guiCache.remove(player);
             this.guiListener = new GUIListener(this);
             Bukkit.getPluginManager().registerEvents(guiListener, UltimateShop.instance);
+            if (getMenu() != null) {
+                getMenu().doOpenAction(player);
+            }
         }
         if (guiMode != GUIMode.NOT_EDITING) {
             guiMode = GUIMode.NOT_EDITING;
@@ -74,14 +77,6 @@ public abstract class InvGUI extends AbstractGUI {
 
     public Inventory getInv() {
         return inv;
-    }
-
-    public ConfigurationSection getSection() {
-        return null;
-    }
-
-    public ObjectMenu getMenu() {
-        return null;
     }
 
     public Map<Integer, ItemStack> getMenuItems(Player player) {

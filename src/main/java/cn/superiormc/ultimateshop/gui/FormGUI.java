@@ -28,6 +28,9 @@ public abstract class FormGUI extends AbstractGUI {
         }
         if (form != null) {
             FloodgateApi.getInstance().sendForm(player.getUniqueId(), form);
+            if (getMenu() != null) {
+                getMenu().doOpenAction(player);
+            }
         }
     }
 

@@ -53,9 +53,16 @@ public class FormCommonGUI extends FormGUI {
             menuButtons.get(menuItems.get(response.clickedButton())).clickEvent(ClickType.LEFT, player);
             removeOpenGUIStatus();
         });
+        tempVal2.closedOrInvalidResultHandler(response -> {
+            removeOpenGUIStatus();
+        });
+        if (commonMenu.getString("bedrock.content", null) != null) {
+            tempVal2.content(commonMenu.getString("bedrock.content", ""));
+        }
         form = tempVal2.build();
     }
 
+    @Override
     public ObjectMenu getMenu() {
         return commonMenu;
     }

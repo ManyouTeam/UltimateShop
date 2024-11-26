@@ -2,7 +2,9 @@ package cn.superiormc.ultimateshop.gui;
 
 import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
+import cn.superiormc.ultimateshop.objects.menus.ObjectMenu;
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
@@ -54,6 +56,14 @@ public abstract class AbstractGUI {
 
     public Player getPlayer() {
         return player;
+    }
+
+    public ConfigurationSection getSection() {
+        return null;
+    }
+
+    public ObjectMenu getMenu() {
+        return null;
     }
 
     public void addCooldown() {

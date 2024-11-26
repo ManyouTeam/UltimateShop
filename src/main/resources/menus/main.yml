@@ -1,6 +1,9 @@
 title: 'Items Shop'
 size: 54
 
+bedrock:
+  content: '&fWelcome to shop.'
+
 open-actions:
   1:
     type: sound

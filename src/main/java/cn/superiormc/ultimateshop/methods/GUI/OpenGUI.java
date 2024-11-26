@@ -24,16 +24,10 @@ public class OpenGUI {
         if (UltimateShop.useGeyser && CommonUtil.isBedrockPlayer(player)) {
             FormShopGUI formShopGUI = new FormShopGUI(player, shop, bypass);
             formShopGUI.openGUI(reopen);
-            if (formShopGUI.getMenu() != null) {
-                formShopGUI.getMenu().doOpenAction(player);
-            }
             return;
         }
         ShopGUI gui = new ShopGUI(player, shop, bypass);
         gui.openGUI(reopen);
-        if (gui.getMenu() != null) {
-            gui.getMenu().doOpenAction(player);
-        }
     }
 
     public static void openCommonGUI(Player player, String fileName, boolean bypass, boolean reopen) {
@@ -54,16 +48,10 @@ public class OpenGUI {
         if (UltimateShop.useGeyser && CommonUtil.isBedrockPlayer(player)) {
             FormCommonGUI formCommonGUI = new FormCommonGUI(player, commonMenu, bypass);
             formCommonGUI.openGUI(reopen);
-            if (formCommonGUI.getMenu() != null) {
-                formCommonGUI.getMenu().doOpenAction(player);
-            }
             return;
         }
         CommonGUI gui = new CommonGUI(player, commonMenu, bypass);
         gui.openGUI(reopen);
-        if (gui.getMenu() != null) {
-            gui.getMenu().doOpenAction(player);
-        }
     }
 
     public static void openMoreGUI(Player player, ObjectItem item) {
