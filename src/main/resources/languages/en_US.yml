@@ -76,7 +76,7 @@ help:
     &f/shop getplaceholdervalue <text> &7- Parse input text. &c(Premium)
     &f/shop givesellstick <itemID> <playerID> [amount] &7- Give sell stick item. &c(Premium)
 
-inventory-full: "&#98FB98[UltimateShop] &fYou can not finish this translation because your inventory will full after translation!"
+inventory-full: "&#98FB98[UltimateShop] &fYou can not finish this transaction because your inventory will full after translation!"
 start-sell-all: "&#98FB98[UltimateShop] &fAll your {amount}x sellable items have been sold, you earned {reward} for this!"
 start-sell-stick: "&#98FB98[UltimateShop] &fAll your sellable items in this container have been sold, you earned {reward} for this!"
 give-sell-stick: "&#98FB98[UltimateShop] &fGive {player} sell stick {item} x{amount}!"

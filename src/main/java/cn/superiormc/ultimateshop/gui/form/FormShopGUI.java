@@ -144,7 +144,7 @@ public class FormShopGUI extends FormGUI {
             removeOpenGUIStatus();
         });
         if (getMenu().getString("bedrock.content", null) != null) {
-            tempVal5.content(getMenu().getString("bedrock.content", ""));
+            tempVal5.content(TextUtil.parse(player, getMenu().getString("bedrock.content", "")));
         }
         form = tempVal5.build();
     }

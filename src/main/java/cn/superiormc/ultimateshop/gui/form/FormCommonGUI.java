@@ -57,7 +57,7 @@ public class FormCommonGUI extends FormGUI {
             removeOpenGUIStatus();
         });
         if (commonMenu.getString("bedrock.content", null) != null) {
-            tempVal2.content(commonMenu.getString("bedrock.content", ""));
+            tempVal2.content(TextUtil.parse(player, getMenu().getString("bedrock.content", "")));
         }
         form = tempVal2.build();
     }

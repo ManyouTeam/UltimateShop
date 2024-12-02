@@ -192,4 +192,8 @@ public class ObjectMenu {
         return fileName;
     }
 
+    public ConfigurationSection getConfig() {
+        return menuConfigs;
+    }
+
 }
