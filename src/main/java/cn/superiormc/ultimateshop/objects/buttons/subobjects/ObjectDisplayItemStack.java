@@ -6,8 +6,10 @@ import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.geysermc.cumulus.component.ButtonComponent;
 import org.geysermc.cumulus.util.FormImage;
+import org.jetbrains.annotations.Nullable;
 
 public class ObjectDisplayItemStack extends ItemStack {
 
@@ -15,7 +17,7 @@ public class ObjectDisplayItemStack extends ItemStack {
         return new ObjectDisplayItemStack(new ItemStack(Material.AIR));
     }
 
-    private ItemStack javaItem;
+    private final ItemStack javaItem;
 
     private ConfigurationSection section;
 
@@ -31,6 +33,11 @@ public class ObjectDisplayItemStack extends ItemStack {
         this.javaItem = javaItem;
         this.section = section;
         this.player = player;
+    }
+
+    @Override
+    public boolean setItemMeta(@Nullable ItemMeta itemMeta) {
+        return javaItem.setItemMeta(itemMeta);
     }
 
     public ButtonComponent parseToBedrockButton() {

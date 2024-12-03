@@ -34,7 +34,7 @@ public class CommonGUI extends InvGUI {
             return;
         }
         menuButtons = commonMenu.getMenu();
-        menuItems = getMenuItems(player.getPlayer());
+        menuItems = getMenuItems(player);
         if (Objects.isNull(inv)) {
             inv = PaperUtil.createNewInv(player, commonMenu.getInt("size", 54),
                     commonMenu.getString("title", "Shop"));
