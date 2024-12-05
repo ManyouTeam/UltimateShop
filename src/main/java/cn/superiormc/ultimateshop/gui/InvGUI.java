@@ -83,7 +83,7 @@ public abstract class InvGUI extends AbstractGUI {
         Map<Integer, AbstractButton> tempVal1 = menuButtons;
         Map<Integer, ItemStack> resultItems = new HashMap<>();
         for (int i : tempVal1.keySet()) {
-            resultItems.put(i, tempVal1.get(i).getDisplayItem(player, 1));
+            resultItems.put(i, tempVal1.get(i).getDisplayItem(player, 1).getItemStack());
         }
         return resultItems;
     }
@@ -94,6 +94,6 @@ public abstract class InvGUI extends AbstractGUI {
         if (button == null) {
             return new ItemStack(Material.AIR);
         }
-        return button.getDisplayItem(player, 1);
+        return button.getDisplayItem(player, 1).getItemStack();
     }
 }

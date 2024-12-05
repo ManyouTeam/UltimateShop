@@ -2,8 +2,8 @@ package cn.superiormc.ultimateshop.objects.buttons;
 
 import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.gui.form.FormInfoGUI;
+import cn.superiormc.ultimateshop.gui.inv.BuyMoreGUI;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
-import cn.superiormc.ultimateshop.methods.GUI.OpenGUI;
 import cn.superiormc.ultimateshop.methods.Product.BuyProductMethod;
 import cn.superiormc.ultimateshop.methods.Product.SellProductMethod;
 import cn.superiormc.ultimateshop.methods.ProductTradeStatus;
@@ -230,7 +230,7 @@ public class ObjectItem extends AbstractButton {
 
     public String getDisplayName(Player player) {
         if (itemConfig.getString("display-name") == null) {
-            return ItemUtil.getItemName(displayItem.getDisplayItem(player));
+            return ItemUtil.getItemName(displayItem.getDisplayItem(player).getItemStack());
         }
         return TextUtil.parse(player, itemConfig.getString("display-name"));
     }
@@ -362,7 +362,7 @@ public class ObjectItem extends AbstractButton {
                 return;
             case "select-amount" :
                 if (getBuyMore()) {
-                    OpenGUI.openMoreGUI(player, this);
+                    BuyMoreGUI.openGUI(player, this);
                 }
                 return;
         }
@@ -390,7 +390,7 @@ public class ObjectItem extends AbstractButton {
         if (displayItem == null) {
             return new ItemStack(Material.AIR);
         }
-        return displayItem.getDisplayItem(player);
+        return displayItem.getDisplayItem(player).getItemStack();
     }
 
     public ObjectDisplayItem getDisplayItemObject() {

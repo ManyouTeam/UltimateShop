@@ -25,7 +25,7 @@ public class BuyMoreGUI extends InvGUI {
 
     private int nowingAmount;
 
-    public BuyMoreGUI(Player owner, ObjectItem item) {
+    private BuyMoreGUI(Player owner, ObjectItem item) {
         super(owner);
         this.item = item;
         this.nowingAmount = 1;
@@ -157,18 +157,23 @@ public class BuyMoreGUI extends InvGUI {
             if (tempVal2.type == ButtonType.DISPLAY) {
                 ObjectMoreDisplayButton tempVal3;
                 tempVal3 = (ObjectMoreDisplayButton) tempVal2;
-                resultItems.put(i, tempVal3.getDisplayItem(player, nowingAmount));
+                resultItems.put(i, tempVal3.getDisplayItem(player, nowingAmount).getItemStack());
             }
             else if (tempVal2.type == ButtonType.CONFIRM) {
                 ObjectMoreBuyButton tempVal4;
                 tempVal4 = (ObjectMoreBuyButton) tempVal2;
-                resultItems.put(i, tempVal4.getDisplayItem(player, nowingAmount));
+                resultItems.put(i, tempVal4.getDisplayItem(player, nowingAmount).getItemStack());
             }
             else {
-                resultItems.put(i, tempVal2.getDisplayItem(player, 1));
+                resultItems.put(i, tempVal2.getDisplayItem(player, 1).getItemStack());
             }
         }
         return resultItems;
+    }
+
+    public static void openGUI(Player player, ObjectItem item) {
+        BuyMoreGUI gui = new BuyMoreGUI(player, item);
+        gui.openGUI(true);
     }
 
 }

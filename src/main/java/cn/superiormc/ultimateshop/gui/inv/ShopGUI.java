@@ -4,6 +4,7 @@ import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.cache.PlayerCache;
 import cn.superiormc.ultimateshop.cache.ServerCache;
 import cn.superiormc.ultimateshop.gui.InvGUI;
+import cn.superiormc.ultimateshop.gui.form.FormShopGUI;
 import cn.superiormc.ultimateshop.managers.CacheManager;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.LanguageManager;
@@ -12,6 +13,7 @@ import cn.superiormc.ultimateshop.objects.ObjectThingRun;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import cn.superiormc.ultimateshop.objects.caches.ObjectUseTimesCache;
 import cn.superiormc.ultimateshop.objects.menus.ObjectMenu;
+import cn.superiormc.ultimateshop.utils.CommonUtil;
 import cn.superiormc.ultimateshop.utils.PaperUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -26,12 +28,15 @@ public class ShopGUI extends InvGUI {
 
     private final ObjectShop shop;
 
+    private final ObjectMenu shopMenu;
+
     private final boolean bypass;
 
-    public ShopGUI(Player owner, ObjectShop shop, boolean bypass) {
+    private ShopGUI(Player owner, ObjectShop shop, ObjectMenu shopMenu, boolean bypass) {
         super(owner);
         this.shop = shop;
         this.bypass = bypass;
+        this.shopMenu = shopMenu;
     }
 
     @Override
@@ -62,23 +67,7 @@ public class ShopGUI extends InvGUI {
                     player.getName());
             return;
         }
-        if (shop.getShopMenuObject() == null) {
-            LanguageManager.languageManager.sendStringText(player.getPlayer(),
-                    "error.shop-does-not-have-menu",
-                    "shop",
-                    shop.getShopName());
-            return;
-        }
-        if (shop.getShopMenuObject().menuConfigs == null) {
-            LanguageManager.languageManager.sendStringText(player.getPlayer(),
-                    "error.shop-menu-not-found",
-                    "shop",
-                    shop.getShopName(),
-                    "menu",
-                    shop.getShopMenu());
-            return;
-        }
-        if (!bypass && !shop.getShopMenuObject().getCondition().getAllBoolean(new ObjectThingRun(player))) {
+        if (!bypass && !shopMenu.getCondition().getAllBoolean(new ObjectThingRun(player))) {
             LanguageManager.languageManager.sendStringText(player,
                     "menu-condition-not-meet",
                     "menu",
@@ -117,7 +106,7 @@ public class ShopGUI extends InvGUI {
                 tempVal2.getUseTimesCache().get(tempVal5).setLastSellTime(null);
             }
         }
-        menuButtons = shop.getShopMenuObject().getMenu();
+        menuButtons = shopMenu.getMenu();
         if (ConfigManager.configManager.getBoolean("debug")) {
             for (Integer i : menuButtons.keySet()) {
                 Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §fMenu Buttons: " + menuButtons.get(i));
@@ -162,6 +151,40 @@ public class ShopGUI extends InvGUI {
     @Override
     public ObjectMenu getMenu() {
         return shop.getShopMenuObject();
+    }
+
+    public static void openGUI(Player player, ObjectShop shop, boolean bypass, boolean reopen) {
+        if (shop == null) {
+            return;
+        }
+
+        ObjectMenu shopMenu = shop.getShopMenuObject();
+        if (shopMenu == null) {
+            LanguageManager.languageManager.sendStringText(player.getPlayer(),
+                    "error.shop-does-not-have-menu",
+                    "shop",
+                    shop.getShopName());
+            return;
+        }
+        if (shopMenu.menuConfigs == null) {
+            LanguageManager.languageManager.sendStringText(player.getPlayer(),
+                    "error.shop-menu-not-found",
+                    "shop",
+                    shop.getShopName(),
+                    "menu",
+                    shop.getShopMenu());
+            return;
+        }
+
+        if (UltimateShop.useGeyser &&
+                shopMenu.isUseFloodgateHook() &&
+                CommonUtil.isBedrockPlayer(player)) {
+            FormShopGUI formShopGUI = new FormShopGUI(player, shop, shopMenu, bypass);
+            formShopGUI.openGUI(reopen);
+            return;
+        }
+        ShopGUI gui = new ShopGUI(player, shop, shopMenu, bypass);
+        gui.openGUI(reopen);
     }
 
 }

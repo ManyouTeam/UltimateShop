@@ -1,10 +1,6 @@
 package cn.superiormc.ultimateshop.commands;
 
-import cn.superiormc.ultimateshop.managers.ConfigManager;
-import cn.superiormc.ultimateshop.managers.LanguageManager;
-import cn.superiormc.ultimateshop.methods.GUI.OpenGUI;
-import cn.superiormc.ultimateshop.objects.ObjectShop;
-import org.bukkit.Bukkit;
+import cn.superiormc.ultimateshop.gui.inv.SellAllGUI;
 import org.bukkit.entity.Player;
 
 public class SubSellAll extends AbstractCommand {
@@ -18,6 +14,6 @@ public class SubSellAll extends AbstractCommand {
 
     @Override
     public void executeCommandInGame(String[] args, Player player) {
-        OpenGUI.openSellAllGUI(player);
+        SellAllGUI.openGUI(player);
     }
 }

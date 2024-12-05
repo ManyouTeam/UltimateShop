@@ -5,8 +5,6 @@ import cn.superiormc.ultimateshop.cache.ServerCache;
 import cn.superiormc.ultimateshop.gui.AbstractGUI;
 import cn.superiormc.ultimateshop.managers.CacheManager;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
-import cn.superiormc.ultimateshop.methods.GUI.OpenGUI;
-import cn.superiormc.ultimateshop.objects.items.ObjectAction;
 import cn.superiormc.ultimateshop.utils.FoliaUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;

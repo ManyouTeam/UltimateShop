@@ -11,7 +11,7 @@ import org.geysermc.cumulus.component.ButtonComponent;
 import org.geysermc.cumulus.util.FormImage;
 import org.jetbrains.annotations.Nullable;
 
-public class ObjectDisplayItemStack extends ItemStack {
+public class ObjectDisplayItemStack {
 
     public static ObjectDisplayItemStack getAir() {
         return new ObjectDisplayItemStack(new ItemStack(Material.AIR));
@@ -19,25 +19,30 @@ public class ObjectDisplayItemStack extends ItemStack {
 
     private final ItemStack javaItem;
 
+    private final ItemMeta meta;
+
     private ConfigurationSection section;
 
     private Player player;
 
     public ObjectDisplayItemStack(ItemStack javaItemOnly) {
-        super(javaItemOnly);
         this.javaItem = javaItemOnly;
+        this.meta = javaItemOnly.getItemMeta();
     }
 
     public ObjectDisplayItemStack(Player player, ItemStack javaItem, ConfigurationSection section) {
-        super(javaItem);
         this.javaItem = javaItem;
+        this.meta = javaItem.getItemMeta();
         this.section = section;
         this.player = player;
     }
 
-    @Override
-    public boolean setItemMeta(@Nullable ItemMeta itemMeta) {
-        return javaItem.setItemMeta(itemMeta);
+    public ItemMeta getMeta() {
+        return meta;
+    }
+
+    public void setItemMeta(@Nullable ItemMeta itemMeta) {
+        javaItem.setItemMeta(itemMeta);
     }
 
     public ButtonComponent parseToBedrockButton() {
@@ -62,5 +67,12 @@ public class ObjectDisplayItemStack extends ItemStack {
             tempVal1 = ButtonComponent.of(tempVal3);
         }
         return tempVal1;
+    }
+
+    public ItemStack getItemStack() {
+        if (javaItem == null) {
+            return new ItemStack(Material.AIR);
+        }
+        return javaItem;
     }
 }

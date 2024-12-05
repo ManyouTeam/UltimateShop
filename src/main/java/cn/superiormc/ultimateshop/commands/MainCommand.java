@@ -1,10 +1,11 @@
 package cn.superiormc.ultimateshop.commands;
 
 import cn.superiormc.ultimateshop.UltimateShop;
+import cn.superiormc.ultimateshop.gui.inv.CommonGUI;
+import cn.superiormc.ultimateshop.gui.inv.ShopGUI;
 import cn.superiormc.ultimateshop.managers.CommandManager;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.LanguageManager;
-import cn.superiormc.ultimateshop.methods.GUI.OpenGUI;
 import cn.superiormc.ultimateshop.objects.ObjectShop;
 import cn.superiormc.ultimateshop.objects.menus.ObjectMenu;
 import org.bukkit.command.Command;
@@ -26,11 +27,11 @@ public class MainCommand implements CommandExecutor {
                             LanguageManager.languageManager.sendStringText(sender, "error.args");
                         }
                         else {
-                            OpenGUI.openShopGUI((Player) sender, shop, false, false);
+                            ShopGUI.openGUI((Player) sender, shop, false, false);
                         }
                     }
                     else {
-                        OpenGUI.openCommonGUI((Player) sender, tempVal1, false, false);
+                        CommonGUI.openGUI((Player) sender, tempVal1, false, false);
                     }
                 }
                 else {

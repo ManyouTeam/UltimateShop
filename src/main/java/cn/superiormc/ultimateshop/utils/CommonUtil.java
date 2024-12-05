@@ -204,7 +204,7 @@ public class CommonUtil {
     }
 
     public static boolean isBedrockPlayer(Player player) {
-        if (!UltimateShop.useGeyser) {
+        if (!UltimateShop.useGeyser || !ConfigManager.configManager.getBoolean("menu.bedrock.enabled")) {
             return false;
         }
         if (ConfigManager.configManager.getString("menu.bedrock.check-method", "FLOODGATE").equalsIgnoreCase("FLOODGATE")) {

@@ -24,7 +24,7 @@ import java.util.Objects;
 
 public class SellAllGUI extends InvGUI {
 
-    public SellAllGUI(Player owner) {
+    private SellAllGUI(Player owner) {
         super(owner);
     }
 
@@ -113,4 +113,8 @@ public class SellAllGUI extends InvGUI {
         return true;
     }
 
+    public static void openGUI(Player player) {
+        SellAllGUI gui = new SellAllGUI(player);
+        gui.openGUI(true);
+    }
 }

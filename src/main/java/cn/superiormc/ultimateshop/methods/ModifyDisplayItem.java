@@ -1,4 +1,4 @@
-package cn.superiormc.ultimateshop.methods.GUI;
+package cn.superiormc.ultimateshop.methods;
 
 import cn.superiormc.ultimateshop.managers.CacheManager;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
@@ -10,10 +10,8 @@ import cn.superiormc.ultimateshop.objects.buttons.subobjects.ObjectDisplayItemSt
 import cn.superiormc.ultimateshop.objects.caches.ObjectUseTimesCache;
 import cn.superiormc.ultimateshop.objects.items.prices.ObjectPrices;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.time.LocalDateTime;
@@ -39,7 +37,7 @@ public class ModifyDisplayItem {
         if (clickType == null) {
             clickType = "general";
         }
-        ItemMeta tempVal2 = addLoreDisplayItem.getItemMeta();
+        ItemMeta tempVal2 = addLoreDisplayItem.getMeta();
         if (tempVal2 == null) {
             return addLoreDisplayItem;
         }

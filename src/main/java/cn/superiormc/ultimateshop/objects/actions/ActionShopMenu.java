@@ -1,7 +1,7 @@
 package cn.superiormc.ultimateshop.objects.actions;
 
+import cn.superiormc.ultimateshop.gui.inv.ShopGUI;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
-import cn.superiormc.ultimateshop.methods.GUI.OpenGUI;
 import cn.superiormc.ultimateshop.objects.ObjectThingRun;
 import org.bukkit.entity.Player;
 
@@ -16,6 +16,6 @@ public class ActionShopMenu extends AbstractRunAction {
     protected void onDoAction(ObjectSingleAction singleAction, ObjectThingRun thingRun) {
         Player player = thingRun.getPlayer();
         double amount = thingRun.getAmount();
-        OpenGUI.openShopGUI(player, ConfigManager.configManager.getShop(singleAction.getString("shop", player, amount)), false, true);
+        ShopGUI.openGUI(player, ConfigManager.configManager.getShop(singleAction.getString("shop", player, amount)), false, true);
     }
 }

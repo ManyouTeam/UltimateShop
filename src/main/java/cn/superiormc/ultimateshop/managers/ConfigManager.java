@@ -133,7 +133,7 @@ public class ConfigManager {
     }
 
     public boolean getBoolean(String path) {
-        return config.getBoolean(path, false);
+        return config.getBoolean(path);
     }
 
     public boolean getBooleanOrDefault(String originalPath, String newPath) {

@@ -33,10 +33,13 @@ public class FormShopGUI extends FormGUI {
 
     private final boolean bypass;
 
-    public FormShopGUI(Player owner, ObjectShop shop, boolean bypass) {
+    private final ObjectMenu shopMenu;
+
+    public FormShopGUI(Player owner, ObjectShop shop, ObjectMenu shopMenu, boolean bypass) {
         super(owner);
         this.shop = shop;
         this.bypass = bypass;
+        this.shopMenu = shopMenu;
         constructGUI();
     }
 

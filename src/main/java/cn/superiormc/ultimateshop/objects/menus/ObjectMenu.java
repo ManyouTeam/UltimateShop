@@ -41,6 +41,8 @@ public class ObjectMenu {
 
     public Map<String, AbstractButton> buttonItems = new HashMap<>();
 
+    private boolean useFloodgateHook;
+
     public ObjectMenu(String fileName, ObjectShop shop) {
         this.fileName = fileName;
         this.shop = shop;
@@ -89,14 +91,17 @@ public class ObjectMenu {
             this.condition = new ObjectCondition();
             this.openAction = new ObjectAction();
             this.closeAction = new ObjectAction();
+            this.useFloodgateHook = true;
         } else if (shop != null) {
             this.condition = new ObjectCondition(menuConfigs.getConfigurationSection("conditions"));
             this.openAction = new ObjectAction(menuConfigs.getConfigurationSection("open-actions"), shop);
             this.closeAction = new ObjectAction(menuConfigs.getConfigurationSection("close-actions"));
+            this.useFloodgateHook = true;
         } else {
             this.condition = new ObjectCondition(menuConfigs.getConfigurationSection("conditions"), shop);
             this.openAction = new ObjectAction(menuConfigs.getConfigurationSection("open-actions"));
             this.closeAction = new ObjectAction(menuConfigs.getConfigurationSection("close-actions"));
+            this.useFloodgateHook = menuConfigs.getBoolean("bedrock.enabled", true);
         }
     }
 
@@ -196,4 +201,7 @@ public class ObjectMenu {
         return menuConfigs;
     }
 
+    public boolean isUseFloodgateHook() {
+        return useFloodgateHook;
+    }
 }

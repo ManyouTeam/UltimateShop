@@ -1,12 +1,7 @@
 package cn.superiormc.ultimateshop.commands;
 
-import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.ItemManager;
 import cn.superiormc.ultimateshop.managers.LanguageManager;
-import cn.superiormc.ultimateshop.methods.GUI.OpenGUI;
-import cn.superiormc.ultimateshop.objects.ObjectShop;
-import cn.superiormc.ultimateshop.objects.menus.ObjectMenu;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;

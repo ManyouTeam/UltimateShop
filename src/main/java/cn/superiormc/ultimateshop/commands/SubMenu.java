@@ -1,9 +1,10 @@
 package cn.superiormc.ultimateshop.commands;
 
 import cn.superiormc.ultimateshop.UltimateShop;
+import cn.superiormc.ultimateshop.gui.inv.CommonGUI;
+import cn.superiormc.ultimateshop.gui.inv.ShopGUI;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.LanguageManager;
-import cn.superiormc.ultimateshop.methods.GUI.OpenGUI;
 import cn.superiormc.ultimateshop.objects.ObjectShop;
 import cn.superiormc.ultimateshop.objects.menus.MenuType;
 import cn.superiormc.ultimateshop.objects.menus.ObjectMenu;
@@ -28,10 +29,9 @@ public class SubMenu extends AbstractCommand {
         boolean bypass = args[args.length - 1].equals("-b") && player.hasPermission(requiredPermission + ".admin") && !UltimateShop.freeVersion;
         ObjectShop tempVal1 = ConfigManager.configManager.getShop(args[1]);
         if (tempVal1 == null) {
-            OpenGUI.openCommonGUI(player, args[1], bypass, false);
-        }
-        else {
-            OpenGUI.openShopGUI(player, tempVal1, bypass, false);
+            CommonGUI.openGUI(player, args[1], bypass, false);
+        } else {
+            ShopGUI.openGUI(player, tempVal1, bypass, false);
         }
     }
 
@@ -51,10 +51,9 @@ public class SubMenu extends AbstractCommand {
         }
         ObjectShop tempVal1 = ConfigManager.configManager.getShop(args[1]);
         if (tempVal1 == null) {
-            OpenGUI.openCommonGUI(player, args[1], bypass, false);
-        }
-        else {
-            OpenGUI.openShopGUI(player, tempVal1, bypass, false);
+            CommonGUI.openGUI(player, args[1], bypass, false);
+        } else {
+            ShopGUI.openGUI(player, tempVal1, bypass, false);
         }
     }
 

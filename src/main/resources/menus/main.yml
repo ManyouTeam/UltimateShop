@@ -2,6 +2,7 @@ title: 'Items Shop'
 size: 54
 
 bedrock:
+  enabled: true
   content: '&fWelcome to shop.'
 
 open-actions:

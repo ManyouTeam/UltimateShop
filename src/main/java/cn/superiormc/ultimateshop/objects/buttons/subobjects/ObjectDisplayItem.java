@@ -1,7 +1,7 @@
 package cn.superiormc.ultimateshop.objects.buttons.subobjects;
 
 import cn.superiormc.ultimateshop.managers.ConfigManager;
-import cn.superiormc.ultimateshop.methods.GUI.ModifyDisplayItem;
+import cn.superiormc.ultimateshop.methods.ModifyDisplayItem;
 import cn.superiormc.ultimateshop.methods.Items.BuildItem;
 import cn.superiormc.ultimateshop.objects.ObjectThingRun;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;

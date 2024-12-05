@@ -1,14 +1,12 @@
 package cn.superiormc.ultimateshop.objects.buttons;
 
-import cn.superiormc.ultimateshop.methods.GUI.ModifyDisplayItem;
+import cn.superiormc.ultimateshop.methods.ModifyDisplayItem;
 import cn.superiormc.ultimateshop.methods.Items.BuildItem;
 import cn.superiormc.ultimateshop.objects.buttons.subobjects.ObjectDisplayItemStack;
 import cn.superiormc.ultimateshop.utils.MathUtil;
 import cn.superiormc.ultimateshop.utils.TextUtil;
-import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 
 public class ObjectMoreBuyButton extends AbstractButton {
 

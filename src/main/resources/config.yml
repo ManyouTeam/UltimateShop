@@ -80,6 +80,7 @@ menu:
     black-slots: []
   # Premium version only
   bedrock:
+    enabled: true
     # Support value: FLOODGATE, UUID
     check-method: FLOODGATE
     # If enabled, we will try to reopen shop menu after player successfully buy or sell products.
