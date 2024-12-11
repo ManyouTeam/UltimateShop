@@ -3,7 +3,7 @@ package cn.superiormc.ultimateshop.commands;
 import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.managers.LanguageManager;
 import cn.superiormc.ultimateshop.methods.Items.DebuildItem;
-import org.bukkit.Bukkit;
+import cn.superiormc.ultimateshop.utils.SchedulerUtil;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
@@ -27,23 +27,14 @@ public class SubGenerateItemFormat extends AbstractCommand {
         YamlConfiguration itemConfig = new YamlConfiguration();
         DebuildItem.debuildItem(player.getInventory().getItemInMainHand(), itemConfig);
         String yaml = itemConfig.saveToString();
-        if (UltimateShop.isFolia) {
+        SchedulerUtil.runTaskAsynchronously(() -> {
             Path path = new File(UltimateShop.instance.getDataFolder(), "generated-item-format.yml").toPath();
             try {
                 Files.write(path, yaml.getBytes(StandardCharsets.UTF_8));
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        } else {
-            Bukkit.getScheduler().runTaskAsynchronously(UltimateShop.instance, () -> {
-                Path path = new File(UltimateShop.instance.getDataFolder(), "generated-item-format.yml").toPath();
-                try {
-                    Files.write(path, yaml.getBytes(StandardCharsets.UTF_8));
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            });
-        }
+        });
         LanguageManager.languageManager.sendStringText(player, "plugin.generated");
     }
 }

@@ -190,6 +190,8 @@ placeholder:
       buy-placeholder: buy
       sell-placeholder: sell
       black-dynamic-price: true
+      black-shops:
+        - 'example'
     # We will try adds dynamic up or down symbol for all dynamic price placeholder.
     # Please note that in your dynamic price amount option, first number must be the base price.
     # If you made the dynamic price according to the Wiki's instructions, then there is no problem at all.
@@ -342,7 +344,3 @@ auto-save:
   enabled: true
   hide-message: false
   period-tick: 6000
-
-check-class:
-  enabled: true
-  classes: []

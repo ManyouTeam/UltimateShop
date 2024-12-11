@@ -37,12 +37,6 @@ public final class UltimateShop extends JavaPlugin {
         } catch (Throwable throwable) {
             Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Can not get your Minecraft version! Default set to 1.0.0.");
         }
-        new ErrorManager();
-        new InitManager();
-        new ActionManager();
-        new ConditionManager();
-        new ConfigManager();
-        new HookManager();
         if (CommonUtil.getClass("com.destroystokyo.paper.PaperConfig")) {
             Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §fPaper is found, enabled Paper only feature!");
             isPaper = true;
@@ -56,6 +50,12 @@ public final class UltimateShop extends JavaPlugin {
         if (!UltimateShop.freeVersion) {
             Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §fLoading PREMIUM version only features...");
         }
+        new ErrorManager();
+        new InitManager();
+        new ActionManager();
+        new ConditionManager();
+        new ConfigManager();
+        new HookManager();
         new ItemManager();
         new LanguageManager();
         new CacheManager();

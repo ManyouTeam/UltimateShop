@@ -55,12 +55,13 @@ public class ObjectSinglePrice extends AbstractSingleThing {
             this.amountOption = tempVal1;
         }
         this.isStatic = amountOption.matches("-?\\d+(\\.\\d+)?");
-        if (!amountOption.contains("{discount_") && ConfigManager.configManager.getBoolean("placeholder.auto-settings.add-discount-in-all-price-amount.enabled")) {
+        if (!amountOption.contains("{discount_") &&
+                ConfigManager.configManager.getBoolean("placeholder.auto-settings.add-discount-in-all-price-amount.enabled") &&
+                !ConfigManager.configManager.getStringList("placeholder.auto-settings.add-discount-in-all-price-amount.black-shops").contains(prices.getItem().getShop())) {
             if (!ConfigManager.configManager.getBoolean("placeholder.auto-settings.add-discount-in-all-price-amount.black-dynamic-price") ||
-            isStatic) {
+                    isStatic) {
                 if (prices.getPriceMode() == PriceMode.BUY) {
-                    this.amountOption = "{discount_" + ConfigManager.configManager.getString("placeholder.auto-settings.add-discount-in-all-price-amount.buy-placeholder", "") +
-                            "} * (" + amountOption + ")";
+                    this.amountOption = "{discount_" + ConfigManager.configManager.getString("placeholder.auto-settings.add-discount-in-all-price-amount.buy-placeholder", "") + "} * (" + amountOption + ")";
                 } else {
                     this.amountOption = "{discount_" + ConfigManager.configManager.getString("placeholder.auto-settings.add-discount-in-all-price-amount.sell-placeholder", "") +
                             "} * (" + amountOption + ")";

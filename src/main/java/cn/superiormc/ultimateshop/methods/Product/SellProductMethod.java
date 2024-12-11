@@ -16,6 +16,7 @@ import cn.superiormc.ultimateshop.objects.items.TakeResult;
 import cn.superiormc.ultimateshop.objects.items.prices.ObjectPrices;
 import cn.superiormc.ultimateshop.objects.items.products.ObjectProducts;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
+import cn.superiormc.ultimateshop.utils.SchedulerUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -287,10 +288,8 @@ public class SellProductMethod {
             String filePath = ConfigManager.configManager.getString("log-transaction.file");
             if (filePath.isEmpty()) {
                 Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §fLog: " + log);
-            } else if (UltimateShop.isFolia) {
-                CommonUtil.logFile(filePath, log);
-            } else {
-                Bukkit.getScheduler().runTaskAsynchronously(UltimateShop.instance, () -> CommonUtil.logFile(filePath, log));
+            }  else {
+                SchedulerUtil.runTaskAsynchronously(() -> CommonUtil.logFile(filePath, log));
             }
         }
         return new ProductTradeStatus(ProductTradeStatus.Status.DONE, takeResult, giveResult, multi);

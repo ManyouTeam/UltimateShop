@@ -2,7 +2,7 @@ package cn.superiormc.ultimateshop.managers;
 
 import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
-import org.bukkit.Bukkit;
+import cn.superiormc.ultimateshop.utils.SchedulerUtil;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -17,7 +17,7 @@ import java.util.Map;
 
 public class ItemManager {
 
-    private static Map<String, ItemStack> savedItemMap = new HashMap<>();
+    private static final Map<String, ItemStack> savedItemMap = new HashMap<>();
 
     public static ItemManager itemManager;
 
@@ -33,6 +33,9 @@ public class ItemManager {
             dir.mkdir();
         }
         File[] tempList = dir.listFiles();
+        if (tempList == null) {
+            return;
+        }
         for (File file : tempList) {
             if (file.getName().endsWith(".yml")) {
                 YamlConfiguration section = YamlConfiguration.loadConfiguration(file);
@@ -61,7 +64,7 @@ public class ItemManager {
             briefcase.set("item", itemStack);
         }
         String yaml = briefcase.saveToString();
-        Bukkit.getScheduler().runTaskAsynchronously(UltimateShop.instance,() -> {
+        SchedulerUtil.runTaskAsynchronously(() -> {
             Path path = new File(dir.getPath(), key + ".yml").toPath();
             try {
                 Files.write(path, yaml.getBytes(StandardCharsets.UTF_8));

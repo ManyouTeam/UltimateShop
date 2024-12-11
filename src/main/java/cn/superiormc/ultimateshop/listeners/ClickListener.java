@@ -1,6 +1,5 @@
 package cn.superiormc.ultimateshop.listeners;
 
-import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.LanguageManager;
 import cn.superiormc.ultimateshop.methods.Product.SellProductMethod;
@@ -10,8 +9,7 @@ import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import cn.superiormc.ultimateshop.objects.items.AbstractSingleThing;
 import cn.superiormc.ultimateshop.objects.items.ThingMode;
 import cn.superiormc.ultimateshop.objects.items.prices.ObjectPrices;
-import cn.superiormc.ultimateshop.utils.FoliaUtil;
-import org.bukkit.Bukkit;
+import cn.superiormc.ultimateshop.utils.SchedulerUtil;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Container;
@@ -49,11 +47,7 @@ public class ClickListener implements Listener {
         } else if (!event.getAction().isLeftClick() && ConfigManager.configManager.getString("sell.sell-stick.click-type", "RIGHT").equals("LEFT")) {
             return;
         }
-        if (UltimateShop.isFolia) {
-            FoliaUtil.startUseSellStickForFolia(this, event);
-        } else {
-            Bukkit.getScheduler().runTaskLater(UltimateShop.instance, () -> startSell(event), 2L);
-        }
+        SchedulerUtil.runTaskLater(() -> startSell(event), 2L);
     }
 
     public void startSell(PlayerInteractEvent event) {
@@ -116,11 +110,7 @@ public class ClickListener implements Listener {
                                 result, ThingMode.ALL, true));
                 SellStickItem.removeSellStickValue(event.getPlayer(), event.getItem());
             }
-            if (UltimateShop.isFolia) {
-                FoliaUtil.removeSellStoclCooldownForFolia(event.getPlayer(), cooldown);
-            } else {
-                Bukkit.getScheduler().runTaskLater(UltimateShop.instance, () -> playerList.remove(event.getPlayer()), cooldown);
-            }
+            SchedulerUtil.runTaskLater(() -> playerList.remove(event.getPlayer()), cooldown);
         }
     }
 

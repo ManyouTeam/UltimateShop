@@ -1,15 +1,14 @@
 package cn.superiormc.ultimateshop.cache;
 
-import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.database.SQLDatabase;
 import cn.superiormc.ultimateshop.database.YamlDatabase;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
-import org.bukkit.Bukkit;
+import cn.superiormc.ultimateshop.utils.SchedulerUtil;
 import org.bukkit.entity.Player;
 
 public class PlayerCache extends ServerCache {
 
-    private Player player;
+    private final Player player;
 
     public PlayerCache(Player player) {
         super(player);
@@ -17,15 +16,7 @@ public class PlayerCache extends ServerCache {
     }
 
     public void initPlayerCache() {
-        if (UltimateShop.isFolia) {
-            if (ConfigManager.configManager.getBoolean("database.enabled")) {
-                SQLDatabase.checkData(this);
-            } else {
-                YamlDatabase.checkData(this);
-            }
-            return;
-        }
-        Bukkit.getScheduler().runTaskAsynchronously(UltimateShop.instance, () -> {
+        SchedulerUtil.runTaskAsynchronously(() -> {
             if (ConfigManager.configManager.getBoolean("database.enabled")) {
                 SQLDatabase.checkData(this);
             } else {
@@ -35,15 +26,7 @@ public class PlayerCache extends ServerCache {
     }
 
     public void shutPlayerCache(boolean quitServer) {
-        if (UltimateShop.isFolia) {
-            if (ConfigManager.configManager.getBoolean("database.enabled")) {
-                SQLDatabase.updateData(this, quitServer);
-            } else {
-                YamlDatabase.updateData(this, quitServer);
-            }
-            return;
-        }
-        Bukkit.getScheduler().runTaskAsynchronously(UltimateShop.instance, () -> {
+        SchedulerUtil.runTaskAsynchronously(() -> {
             if (ConfigManager.configManager.getBoolean("database.enabled")) {
                 SQLDatabase.updateData(this, quitServer);
             } else {

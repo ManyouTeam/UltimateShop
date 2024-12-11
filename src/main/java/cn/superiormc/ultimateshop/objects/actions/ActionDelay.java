@@ -3,7 +3,7 @@ package cn.superiormc.ultimateshop.objects.actions;
 import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.objects.ObjectThingRun;
 import cn.superiormc.ultimateshop.objects.items.ObjectAction;
-import org.bukkit.Bukkit;
+import cn.superiormc.ultimateshop.utils.SchedulerUtil;
 import org.bukkit.configuration.ConfigurationSection;
 
 public class ActionDelay extends AbstractRunAction {
@@ -24,10 +24,6 @@ public class ActionDelay extends AbstractRunAction {
         }
         long time = singleAction.getSection().getLong("time");
         ObjectAction action = new ObjectAction(chanceSection);
-        if (UltimateShop.isFolia) {
-            Bukkit.getGlobalRegionScheduler().runDelayed(UltimateShop.instance, work -> action.runAllActions(thingRun), time);
-        } else {
-            Bukkit.getScheduler().runTaskLater(UltimateShop.instance, () -> action.runAllActions(thingRun), time);
-        }
+        SchedulerUtil.runTaskLater(() -> action.runAllActions(thingRun), time);
     }
 }

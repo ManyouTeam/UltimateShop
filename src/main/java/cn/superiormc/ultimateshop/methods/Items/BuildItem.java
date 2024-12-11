@@ -584,7 +584,12 @@ public class BuildItem {
         // Skull
         if (meta instanceof SkullMeta) {
             SkullMeta skullMeta = (SkullMeta) meta;
-            String skullTextureNameKey = section.getString("skull-meta", section.getString("skull"));
+            String skullTextureNameKey = null;
+            if (UltimateShop.freeVersion) {
+                skullTextureNameKey = section.getString("skull-meta", section.getString("skull"));
+            } else {
+                skullTextureNameKey = TextUtil.parse(player, section.getString("skull-meta", section.getString("skull")));
+            }
             if (skullTextureNameKey != null) {
                 if (skullTextureNameKey.length() > 16) {
                     if (UltimateShop.isPaper && ConfigManager.configManager.getBoolean("paper-api.skull")) {
