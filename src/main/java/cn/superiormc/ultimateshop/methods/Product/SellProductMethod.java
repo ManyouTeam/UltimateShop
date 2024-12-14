@@ -106,24 +106,7 @@ public class SellProductMethod {
         ObjectUseTimesCache tempVal8 = tempVal11.getUseTimesCache().get(tempVal2);
         if (tempVal9 != null) {
             // 重置
-            if (tempVal9.getSellRefreshTime() != null && tempVal9.getSellRefreshTime().isBefore(LocalDateTime.now())) {
-                if (ConfigManager.configManager.getBoolean("debug")) {
-                    Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §bReset player sell data by GUI open check!");
-                }
-                tempVal3.getUseTimesCache().get(tempVal2).setSellUseTimes(0);
-                tempVal3.getUseTimesCache().get(tempVal2).setLastSellTime(null);
-            }
-            if (tempVal9.getCooldownSellRefreshTime() != null && tempVal9.getCooldownSellRefreshTime().isAfter(LocalDateTime.now())) {
-                if (shouldSendMessage) {
-                    LanguageManager.languageManager.sendStringText(player,
-                            "sell-in-cooldown",
-                            "item",
-                            tempVal2.getDisplayName(player),
-                            "refresh",
-                            tempVal9.getSellCooldownTimeDisplayName());
-                }
-                return ProductTradeStatus.IN_COOLDOWN;
-            }
+            tempVal9.refreshSellTimes();
             playerUseTimes = tempVal9.getSellUseTimes();
         }
         else {
@@ -174,12 +157,7 @@ public class SellProductMethod {
         if (tempVal8 != null) {
             if (quick) {
                 // 重置
-                if (tempVal8.getSellRefreshTime() != null && tempVal8.getSellRefreshTime().isBefore(LocalDateTime.now())) {
-                    if (ConfigManager.configManager.getBoolean("debug")) {
-                        Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §bReset server sell data by GUI open check!");
-                    }
-                    ServerCache.serverCache.getUseTimesCache().get(tempVal2).setSellUseTimes(0);
-                }
+                tempVal8.refreshSellTimes();
             }
             serverUseTimes = ServerCache.serverCache.getUseTimesCache().get(tempVal2).getSellUseTimes();
         }

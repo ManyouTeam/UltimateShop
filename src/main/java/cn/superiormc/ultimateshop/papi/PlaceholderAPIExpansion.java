@@ -174,14 +174,6 @@ public class PlaceholderAPIExpansion extends PlaceholderExpansion {
                 case "sell-refresh-player":
                     return String.valueOf(playerTimesCache == null ? "" :
                             playerTimesCache.getSellRefreshTimeDisplayName());
-                case "buy-cooldown-player":
-                    return String.valueOf(playerTimesCache == null ? ConfigManager.configManager.
-                            getString("placeholder.cooldown.now") :
-                            playerTimesCache.getBuyCooldownTimeDisplayName());
-                case "sell-cooldown-player":
-                    return String.valueOf(playerTimesCache == null ? ConfigManager.configManager.
-                            getString("placeholder.cooldown.now") :
-                            playerTimesCache.getSellCooldownTimeDisplayName());
                 case "buy-times-server":
                     return String.valueOf(serverTimesCache == null ? "0" :
                             serverTimesCache.getBuyUseTimes());
@@ -194,14 +186,6 @@ public class PlaceholderAPIExpansion extends PlaceholderExpansion {
                 case "sell-refresh-server":
                     return String.valueOf(serverTimesCache == null ? "" :
                             serverTimesCache.getSellRefreshTimeDisplayName());
-                case "buy-cooldown-server":
-                    return String.valueOf(serverTimesCache == null ? ConfigManager.configManager.
-                            getString("placeholder.cooldown.now") :
-                            serverTimesCache.getBuyCooldownTimeDisplayName());
-                case "sell-cooldown-server":
-                    return String.valueOf(serverTimesCache == null ? ConfigManager.configManager.
-                            getString("placeholder.cooldown.now") :
-                            serverTimesCache.getSellCooldownTimeDisplayName());
                 case "item-name":
                     return item.getDisplayName(player);
             }

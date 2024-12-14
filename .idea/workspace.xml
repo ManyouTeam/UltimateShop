@@ -5,26 +5,43 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="5408d61d-1b79-4aac-a73e-7cb790e636f7" name="变更" comment="[3.2.9] GUI code improve">
-      <change afterPath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/utils/SchedulerUtil.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/jarRepositories.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/jarRepositories.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/UltimateShop.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/UltimateShop.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/cache/PlayerCache.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/cache/PlayerCache.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/commands/SubGenerateItemFormat.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/commands/SubGenerateItemFormat.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/gui/AbstractGUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/gui/AbstractGUI.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/listeners/CacheListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/listeners/CacheListener.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/listeners/ClickListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/listeners/ClickListener.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/listeners/GUIListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/listeners/GUIListener.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/managers/ItemManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/managers/ItemManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/managers/TaskManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/managers/TaskManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/methods/Items/BuildItem.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/methods/Items/BuildItem.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/database/SQLDatabase.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/database/SQLDatabase.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/database/YamlDatabase.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/database/YamlDatabase.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/gui/form/FormShopGUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/gui/form/FormShopGUI.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/gui/inv/ShopGUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/gui/inv/ShopGUI.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/managers/CacheManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/managers/CacheManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/methods/ModifyDisplayItem.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/methods/ModifyDisplayItem.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/methods/Product/BuyProductMethod.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/methods/Product/BuyProductMethod.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/methods/Product/SellProductMethod.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/methods/Product/SellProductMethod.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/objects/actions/ActionClose.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/objects/actions/ActionClose.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/objects/actions/ActionDelay.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/objects/actions/ActionDelay.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/objects/items/prices/ObjectSinglePrice.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/objects/items/prices/ObjectSinglePrice.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/methods/ProductTradeStatus.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/methods/ProductTradeStatus.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/methods/StaticPlaceholder.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/methods/StaticPlaceholder.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/objects/buttons/ObjectItem.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/objects/buttons/ObjectItem.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/objects/caches/ObjectRandomPlaceholderCache.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/objects/caches/ObjectRandomPlaceholderCache.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/objects/caches/ObjectUseTimesCache.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/objects/caches/ObjectUseTimesCache.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/objects/items/subobjects/ObjectRandomPlaceholder.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/objects/items/subobjects/ObjectRandomPlaceholder.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/papi/PlaceholderAPIExpansion.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/papi/PlaceholderAPIExpansion.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/utils/CommonUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/utils/CommonUtil.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/utils/FoliaUtil.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/utils/TextUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/superiormc/ultimateshop/utils/TextUtil.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/config.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/config.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/languages/cs_CZ.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/languages/cs_CZ.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/languages/de_DE.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/languages/de_DE.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/languages/en_US.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/languages/en_US.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/languages/es_ES.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/languages/es_ES.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/languages/pt_BR.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/languages/pt_BR.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/languages/sk_SK.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/languages/sk_SK.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/languages/zh_CN.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/languages/zh_CN.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/shops/blocks.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/shops/blocks.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/shops/blocks2.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/shops/blocks2.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/shops/drops.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/shops/drops.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/shops/example.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/shops/example.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/shops/farming.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/shops/farming.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/shops/logs.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/shops/logs.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/shops/minerals.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/shops/minerals.yml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -99,11 +116,11 @@
       <recent name="C:\Users\16869\IdeaProjects\UltimateShop\src\main\java\cn\superiormc\ultimateshop\methods\Items" />
     </key>
     <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="cn.superiormc.ultimateshop.hooks.items" />
       <recent name="cn.superiormc.ultimateshop.utils" />
       <recent name="cn.superiormc.ultimateshop.hooks.economy" />
       <recent name="cn.superiormc.ultimateshop.objects.actions" />
       <recent name="cn.superiormc.ultimateshop.objects.conditions" />
-      <recent name="cn.superiormc.ultimateshop.managers" />
     </key>
   </component>
   <component name="RunManager">

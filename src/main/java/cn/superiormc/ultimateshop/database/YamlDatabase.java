@@ -13,6 +13,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -126,41 +127,7 @@ public class YamlDatabase {
             }
         }
         YamlConfiguration config = new YamlConfiguration();
-        // 储存购买次数
-        ConfigurationSection useTimesSection = config.createSection("useTimes");
-        Map<ObjectItem, ObjectUseTimesCache> tempVal1 = cache.getUseTimesCache();
-        for (ObjectItem tempVal4 : tempVal1.keySet()) {
-            data.clear();
-            ConfigurationSection tempVal5 = useTimesSection.getConfigurationSection(tempVal4.getShop());
-            if (tempVal5 == null) {
-                tempVal5 = useTimesSection.createSection(tempVal4.getShop());
-            }
-            ConfigurationSection tempVal6 = tempVal5.getConfigurationSection(tempVal4.getProduct());
-            if (tempVal1.get(tempVal4).getBuyUseTimes() != 0) {
-                data.put("buyUseTimes", tempVal1.get(tempVal4).getBuyUseTimes());
-            }
-            if (tempVal1.get(tempVal4).getSellUseTimes() != 0) {
-                data.put("sellUseTimes", tempVal1.get(tempVal4).getSellUseTimes());
-            }
-            if (tempVal1.get(tempVal4).getBuyRefreshTime() != null) {
-                data.put("lastBuyTime", tempVal1.get(tempVal4).getLastBuyTime());
-            }
-            if (tempVal1.get(tempVal4).getSellRefreshTime() != null) {
-                data.put("lastSellTime", tempVal1.get(tempVal4).getLastSellTime());
-            }
-            if (!cache.server && tempVal1.get(tempVal4).getCooldownBuyTime() != null) {
-                data.put("cooldownBuyTime", tempVal1.get(tempVal4).getCooldownBuyTime());
-            }
-            if (!cache.server && tempVal1.get(tempVal4).getCooldownSellTime() != null) {
-                data.put("cooldownSellTime", tempVal1.get(tempVal4).getCooldownSellTime());
-            }
-            for (String key : data.keySet()) {
-                if (tempVal6 == null) {
-                    tempVal6 = tempVal5.createSection(tempVal4.getProduct());
-                }
-                tempVal6.set(key, data.get(key));
-            }
-        }
+
         if (cache.server) {
             // 储存变量值
             ConfigurationSection randomPlaceholderSection = config.createSection("randomPlaceholder");
@@ -183,6 +150,45 @@ public class YamlDatabase {
                 }
             }
         }
+
+        // 储存购买次数
+        ConfigurationSection useTimesSection = config.createSection("useTimes");
+        Map<ObjectItem, ObjectUseTimesCache> tempVal1 = cache.getUseTimesCache();
+        for (ObjectItem tempVal4 : tempVal1.keySet()) {
+            data.clear();
+            ConfigurationSection tempVal5 = useTimesSection.getConfigurationSection(tempVal4.getShop());
+            if (tempVal5 == null) {
+                tempVal5 = useTimesSection.createSection(tempVal4.getShop());
+            }
+            ConfigurationSection tempVal6 = tempVal5.getConfigurationSection(tempVal4.getProduct());
+            if (tempVal1.get(tempVal4).getBuyUseTimes() != 0) {
+                data.put("buyUseTimes", tempVal1.get(tempVal4).getBuyUseTimes());
+            }
+            if (tempVal1.get(tempVal4).getSellUseTimes() != 0) {
+                data.put("sellUseTimes", tempVal1.get(tempVal4).getSellUseTimes());
+            }
+            LocalDateTime buyTime = tempVal1.get(tempVal4).getBuyRefreshTime();
+            if (buyTime != null && buyTime.getYear() < 2999) {
+                data.put("lastBuyTime", tempVal1.get(tempVal4).getLastBuyTime());
+            }
+            LocalDateTime sellTime = tempVal1.get(tempVal4).getSellRefreshTime();
+            if (sellTime != null && sellTime.getYear() < 2999) {
+                data.put("lastSellTime", tempVal1.get(tempVal4).getLastSellTime());
+            }
+            if (tempVal1.get(tempVal4).getCooldownBuyTime() != null) {
+                data.put("cooldownBuyTime", tempVal1.get(tempVal4).getCooldownBuyTime());
+            }
+            if (tempVal1.get(tempVal4).getCooldownSellTime() != null) {
+                data.put("cooldownSellTime", tempVal1.get(tempVal4).getCooldownSellTime());
+            }
+            for (String key : data.keySet()) {
+                if (tempVal6 == null) {
+                    tempVal6 = tempVal5.createSection(tempVal4.getProduct());
+                }
+                tempVal6.set(key, data.get(key));
+            }
+        }
+
         if (quitServer) {
             CacheManager.cacheManager.removePlayerCache(cache.player);
         }

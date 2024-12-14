@@ -28,18 +28,20 @@ public class TextUtil {
     }
 
     public static String withPAPI(String text, Player player) {
-        if (player == null) {
-            return text;
+        if (text == null) {
+            return "";
         }
         if (text.matches("[0-9]+")) {
             return text;
         }
-        Pattern pattern1 = Pattern.compile("\\{discount_(.*?)\\}");
-        Matcher matcher1 = pattern1.matcher(text);
-        while (matcher1.find()) {
-            String discount = matcher1.group(1);
-            text = text.replace("{discount_" + discount + "}",
-                    String.valueOf(StaticPlaceholder.getDiscountValue(discount, player)));
+        if (player != null) {
+            Pattern pattern1 = Pattern.compile("\\{discount_(.*?)\\}");
+            Matcher matcher1 = pattern1.matcher(text);
+            while (matcher1.find()) {
+                String discount = matcher1.group(1);
+                text = text.replace("{discount_" + discount + "}",
+                        String.valueOf(StaticPlaceholder.getDiscountValue(discount, player)));
+            }
         }
         Pattern pattern2 = Pattern.compile("\\{random_(.*?)\\}");
         Matcher matcher2 = pattern2.matcher(text);
@@ -78,8 +80,7 @@ public class TextUtil {
         }
         if (text.contains("%") && CommonUtil.checkPluginLoad("PlaceholderAPI")) {
             return PlaceholderAPI.setPlaceholders(player, text);
-        }
-        else {
+        } else {
             return text;
         }
     }

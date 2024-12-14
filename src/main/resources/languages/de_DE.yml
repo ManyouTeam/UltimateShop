@@ -84,8 +84,6 @@ add-times: "&#98FB98[UltimateShop] &fFüge {times} zu {player}'s {item} Verwendu
 set-times: "&#98FB98[UltimateShop] &fSetze {player}'s {item} Verwendungszeigen auf {times}!"
 add-times-shop: "&#98FB98[UltimateShop] &fFüge {times} zu {player}'s {shop}'s Produktgebrauchtzeiten!"
 set-times-shop: "&#98FB98[UltimateShop] &fSetze {player}'s {shop}'s Produktgebrauchzzeiten auf {times}!"
-buy-in-cooldown: "&#98FB98[UltimateShop] &fDu kannst {item} nicht kaufen aufgrund der Abklingzeit"
-sell-in-cooldown: "&#98FB98[UltimateShop] &fDu kannst {item} nicht verkaufen aufgrund der Abklingzeit!"
 success-buy: "&#98FB98[UltimateShop] &fErfolgreich {item}x{amount}, zum Preis von {price} gekauft!"
 success-sell: "&#98FB98[UltimateShop] &fErfolgreich {item}x{amount}, zum Preis von {price} verkauft!"
 menu-condition-not-meet: "&#98FB98[UltimateShop] &cDie Bedingung, um das Menü zu öffnen, wurde nicht erfüllt!"

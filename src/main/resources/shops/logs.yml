@@ -30,9 +30,11 @@ items:
       vip: 192
     sell-limits-conditions:
       vip:
-        - 'permission: group.vip'
-    sell-limits-reset-mode: 'TIMED'
-    sell-limits-reset-time: '00:00:00'
+        1:
+          type: permission
+          permission: 'group.vip'
+    sell-times-reset-mode: 'TIMED'
+    sell-times-reset-time: '00:00:00'
   B:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
@@ -58,9 +60,11 @@ items:
       vip: 192
     sell-limits-conditions:
       vip:
-        - 'permission: group.vip'
-    sell-limits-reset-mode: 'TIMED'
-    sell-limits-reset-time: '00:00:00'
+        1:
+          type: permission
+          permission: 'group.vip'
+    sell-times-reset-mode: 'TIMED'
+    sell-times-reset-time: '00:00:00'
   C:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
@@ -86,9 +90,11 @@ items:
       vip: 192
     sell-limits-conditions:
       vip:
-        - 'permission: group.vip'
-    sell-limits-reset-mode: 'TIMED'
-    sell-limits-reset-time: '00:00:00'
+        1:
+          type: permission
+          permission: 'group.vip'
+    sell-times-reset-mode: 'TIMED'
+    sell-times-reset-time: '00:00:00'
   D:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
@@ -114,9 +120,11 @@ items:
       vip: 192
     sell-limits-conditions:
       vip:
-        - 'permission: group.vip'
-    sell-limits-reset-mode: 'TIMED'
-    sell-limits-reset-time: '00:00:00'
+        1:
+          type: permission
+          permission: 'group.vip'
+    sell-times-reset-mode: 'TIMED'
+    sell-times-reset-time: '00:00:00'
   E:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
@@ -142,9 +150,11 @@ items:
       vip: 192
     sell-limits-conditions:
       vip:
-        - 'permission: group.vip'
-    sell-limits-reset-mode: 'TIMED'
-    sell-limits-reset-time: '00:00:00'
+        1:
+          type: permission
+          permission: 'group.vip'
+    sell-times-reset-mode: 'TIMED'
+    sell-times-reset-time: '00:00:00'
   F:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
@@ -170,9 +180,11 @@ items:
       vip: 192
     sell-limits-conditions:
       vip:
-        - 'permission: group.vip'
-    sell-limits-reset-mode: 'TIMED'
-    sell-limits-reset-time: '00:00:00'
+        1:
+          type: permission
+          permission: 'group.vip'
+    sell-times-reset-mode: 'TIMED'
+    sell-times-reset-time: '00:00:00'
   G:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
@@ -198,9 +210,11 @@ items:
       vip: 192
     sell-limits-conditions:
       vip:
-        - 'permission: group.vip'
-    sell-limits-reset-mode: 'TIMED'
-    sell-limits-reset-time: '00:00:00'
+        1:
+          type: permission
+          permission: 'group.vip'
+    sell-times-reset-mode: 'TIMED'
+    sell-times-reset-time: '00:00:00'
   H:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
@@ -226,9 +240,11 @@ items:
       vip: 192
     sell-limits-conditions:
       vip:
-        - 'permission: group.vip'
-    sell-limits-reset-mode: 'TIMED'
-    sell-limits-reset-time: '00:00:00'
+        1:
+          type: permission
+          permission: 'group.vip'
+    sell-times-reset-mode: 'TIMED'
+    sell-times-reset-time: '00:00:00'
   I:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
@@ -254,9 +270,11 @@ items:
       vip: 192
     sell-limits-conditions:
       vip:
-        - 'permission: group.vip'
-    sell-limits-reset-mode: 'TIMED'
-    sell-limits-reset-time: '00:00:00'
+        1:
+          type: permission
+          permission: 'group.vip'
+    sell-times-reset-mode: 'TIMED'
+    sell-times-reset-time: '00:00:00'
   J:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
@@ -282,9 +300,11 @@ items:
       vip: 192
     sell-limits-conditions:
       vip:
-        - 'permission: group.vip'
-    sell-limits-reset-mode: 'TIMED'
-    sell-limits-reset-time: '00:00:00'
+        1:
+          type: permission
+          permission: 'group.vip'
+    sell-times-reset-mode: 'TIMED'
+    sell-times-reset-time: '00:00:00'
   K:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
@@ -310,9 +330,11 @@ items:
       vip: 192
     sell-limits-conditions:
       vip:
-        - 'permission: group.vip'
-    sell-limits-reset-mode: 'TIMED'
-    sell-limits-reset-time: '00:00:00'
+        1:
+          type: permission
+          permission: 'group.vip'
+    sell-times-reset-mode: 'TIMED'
+    sell-times-reset-time: '00:00:00'
   L:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
@@ -338,9 +360,11 @@ items:
       vip: 192
     sell-limits-conditions:
       vip:
-        - 'permission: group.vip'
-    sell-limits-reset-mode: 'TIMED'
-    sell-limits-reset-time: '00:00:00'
+        1:
+          type: permission
+          permission: 'group.vip'
+    sell-times-reset-mode: 'TIMED'
+    sell-times-reset-time: '00:00:00'
   M:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
@@ -366,9 +390,11 @@ items:
       vip: 192
     sell-limits-conditions:
       vip:
-        - 'permission: group.vip'
-    sell-limits-reset-mode: 'TIMED'
-    sell-limits-reset-time: '00:00:00'
+        1:
+          type: permission
+          permission: 'group.vip'
+    sell-times-reset-mode: 'TIMED'
+    sell-times-reset-time: '00:00:00'
   N:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
@@ -394,9 +420,11 @@ items:
       vip: 192
     sell-limits-conditions:
       vip:
-        - 'permission: group.vip'
-    sell-limits-reset-mode: 'TIMED'
-    sell-limits-reset-time: '00:00:00'
+        1:
+          type: permission
+          permission: 'group.vip'
+    sell-times-reset-mode: 'TIMED'
+    sell-times-reset-time: '00:00:00'
   O:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
@@ -422,10 +450,12 @@ items:
       vip: 192
     sell-limits-conditions:
       vip:
-        - 'permission: group.vip'
-    sell-limits-reset-mode: 'TIMED'
-    sell-limits-reset-time: '00:00:00'
-  O:
+        1:
+          type: permission
+          permission: 'group.vip'
+    sell-times-reset-mode: 'TIMED'
+    sell-times-reset-time: '00:00:00'
+  P:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
     products:
@@ -450,6 +480,8 @@ items:
       vip: 192
     sell-limits-conditions:
       vip:
-        - 'permission: group.vip'
-    sell-limits-reset-mode: 'TIMED'
-    sell-limits-reset-time: '00:00:00'
+        1:
+          type: permission
+          permission: 'group.vip'
+    sell-times-reset-mode: 'TIMED'
+    sell-times-reset-time: '00:00:00'

@@ -76,34 +76,14 @@ public class ShopGUI extends InvGUI {
         }
         for (ObjectItem tempVal5 : shop.getProductList()) {
             ObjectUseTimesCache tempVal3 = tempVal1.getUseTimesCache().get(tempVal5);
-            if (tempVal3 != null && tempVal3.getBuyRefreshTime() != null && tempVal3.getBuyRefreshTime().isBefore(LocalDateTime.now())) {
-                if (ConfigManager.configManager.getBoolean("debug")) {
-                    Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §bReset player buy data by GUI open check!");
-                }
-                tempVal1.getUseTimesCache().get(tempVal5).setBuyUseTimes(0);
-                tempVal1.getUseTimesCache().get(tempVal5).setLastBuyTime(null);
-            }
-            if (tempVal3 != null && tempVal3.getSellRefreshTime() != null && tempVal3.getSellRefreshTime().isBefore(LocalDateTime.now())) {
-                if (ConfigManager.configManager.getBoolean("debug")) {
-                    Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §bReset player sell data by GUI open check!");
-                }
-                tempVal1.getUseTimesCache().get(tempVal5).setSellUseTimes(0);
-                tempVal1.getUseTimesCache().get(tempVal5).setLastSellTime(null);
+            if (tempVal3 != null) {
+                tempVal3.refreshBuyTimes();
+                tempVal3.refreshSellTimes();
             }
             ObjectUseTimesCache tempVal4 = tempVal2.getUseTimesCache().get(tempVal5);
-            if (tempVal4 != null && tempVal4.getBuyRefreshTime() != null && tempVal4.getBuyRefreshTime().isBefore(LocalDateTime.now())) {
-                if (ConfigManager.configManager.getBoolean("debug")) {
-                    Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §bReset server buy data by GUI open check!");
-                }
-                tempVal2.getUseTimesCache().get(tempVal5).setBuyUseTimes(0);
-                tempVal2.getUseTimesCache().get(tempVal5).setLastBuyTime(null);
-            }
-            if (tempVal4 != null && tempVal4.getSellRefreshTime() != null && tempVal4.getSellRefreshTime().isBefore(LocalDateTime.now())) {
-                if (ConfigManager.configManager.getBoolean("debug")) {
-                    Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §bReset server sell data by GUI open check!");
-                }
-                tempVal2.getUseTimesCache().get(tempVal5).setSellUseTimes(0);
-                tempVal2.getUseTimesCache().get(tempVal5).setLastSellTime(null);
+            if (tempVal4 != null) {
+                tempVal4.refreshBuyTimes();
+                tempVal4.refreshSellTimes();
             }
         }
         menuButtons = shopMenu.getMenu();

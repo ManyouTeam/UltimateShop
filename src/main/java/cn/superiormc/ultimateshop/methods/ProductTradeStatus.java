@@ -19,8 +19,6 @@ public class ProductTradeStatus {
 
     public static ProductTradeStatus NOT_ENOUGH = new ProductTradeStatus(Status.NOT_ENOUGH);
 
-    public static ProductTradeStatus IN_COOLDOWN = new ProductTradeStatus(Status.IN_COOLDOWN);
-
     public static ProductTradeStatus INVENTORY_FULL = new ProductTradeStatus(Status.INVENTORY_FULL);
 
     private GiveResult giveResult = null;
@@ -79,7 +77,6 @@ public class ProductTradeStatus {
         PLAYER_MAX,
         SERVER_MAX,
         NOT_ENOUGH,
-        IN_COOLDOWN,
         INVENTORY_FULL,
         DONE
     }

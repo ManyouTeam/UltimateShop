@@ -159,8 +159,8 @@ items:
         start-apply: 0
     buy-limits:
       global: '{sell-times-server}'
-    buy-limits-reset-mode: 'NEVER'
-    buy-limits-reset-time: '00:00:00' 
+    buy-times-reset-mode: 'NEVER'
+    buy-times-reset-time: '00:00:00'
   I:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
@@ -182,8 +182,8 @@ items:
         start-apply: 0
     buy-limits:
       global: '{sell-times-server}'
-    buy-limits-reset-mode: 'NEVER'
-    buy-limits-reset-time: '00:00:00' 
+    buy-times-reset-mode: 'NEVER'
+    buy-times-reset-time: '00:00:00'
   J:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
@@ -300,8 +300,8 @@ items:
         start-apply: 0
     buy-limits:
       global: '{sell-times-server}'
-    buy-limits-reset-mode: 'NEVER'
-    buy-limits-reset-time: '00:00:00' 
+    buy-times-reset-mode: 'NEVER'
+    buy-times-reset-time: '00:00:00' 
   P:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
@@ -323,8 +323,8 @@ items:
         start-apply: 0
     buy-limits:
       global: '{sell-times-server}'
-    buy-limits-reset-mode: 'NEVER'
-    buy-limits-reset-time: '00:00:00' 
+    buy-times-reset-mode: 'NEVER'
+    buy-times-reset-time: '00:00:00' 
   Q:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
@@ -403,8 +403,8 @@ items:
         start-apply: 0
     buy-limits:
       global: '{sell-times-server}'
-    buy-limits-reset-mode: 'NEVER'
-    buy-limits-reset-time: '00:00:00' 
+    buy-times-reset-mode: 'NEVER'
+    buy-times-reset-time: '00:00:00' 
     
 buttons:
   a:

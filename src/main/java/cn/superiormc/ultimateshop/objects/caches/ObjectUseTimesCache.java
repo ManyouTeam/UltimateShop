@@ -1,15 +1,18 @@
 package cn.superiormc.ultimateshop.objects.caches;
 
+import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.cache.ServerCache;
 import cn.superiormc.ultimateshop.managers.BungeeCordManager;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
+import cn.superiormc.ultimateshop.managers.ErrorManager;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
+import cn.superiormc.ultimateshop.objects.items.subobjects.ObjectRandomPlaceholder;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
+import cn.superiormc.ultimateshop.utils.TextUtil;
 import org.bukkit.Bukkit;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 public class ObjectUseTimesCache {
 
@@ -28,7 +31,6 @@ public class ObjectUseTimesCache {
     private final ObjectItem product;
 
     private final ServerCache cache;
-
 
     public ObjectUseTimesCache(ServerCache cache,
                                int buyUseTimes,
@@ -135,17 +137,18 @@ public class ObjectUseTimesCache {
         setCooldownBuyTime(false);
     }
 
+    public void resetCooldownBuyTime() {
+        cooldownBuyTime = null;
+    }
+
     public void setCooldownBuyTime(boolean notUseBungee) {
-        String mode = product.getItemConfig().getString("buy-cooldown-mode");
-        String tempVal1 = product.getItemConfig().getString("buy-cooldown-time");
-        if (mode == null || tempVal1 == null) {
-            return;
-        }
-        if (ConfigManager.configManager.getBoolean("debug")) {
-            Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §cSet cooldown time to " + product);
-        }
-        if (cooldownBuyTime == null || !cooldownBuyTime.isAfter(LocalDateTime.now())) {
-            if (mode.equals("TIMED")) {
+        if (cooldownBuyTime == null) {
+            String mode = product.getBuyTimesResetMode();
+            String tempVal1 = TextUtil.withPAPI(product.getBuyTimesResetTime(), cache.player);
+            if (mode == null || tempVal1.isEmpty()) {
+                return;
+            }
+            if (mode.equals("COOLDOWN_TIMED")) {
                 cooldownBuyTime = getTimedBuyRefreshTime(tempVal1);
                 if (!notUseBungee && cache.server && BungeeCordManager.bungeeCordManager != null) {
                     BungeeCordManager.bungeeCordManager.sendToOtherServer(
@@ -154,8 +157,7 @@ public class ObjectUseTimesCache {
                             "cooldown-buy-time",
                             null);
                 }
-            }
-            else if (mode.equals("TIMER")) {
+            } else if (mode.equals("COOLDOWN_TIMER")) {
                 cooldownBuyTime = getTimerBuyRefreshTime(tempVal1);
                 if (!notUseBungee && cache.server && BungeeCordManager.bungeeCordManager != null) {
                     BungeeCordManager.bungeeCordManager.sendToOtherServer(
@@ -172,17 +174,18 @@ public class ObjectUseTimesCache {
         setCooldownSellTime(false);
     }
 
+    public void resetCooldownSellTime() {
+        cooldownSellTime = null;
+    }
+
     public void setCooldownSellTime(boolean notUseBungee) {
-        String mode = product.getItemConfig().getString("sell-cooldown-mode");
-        String tempVal1 = product.getItemConfig().getString("sell-cooldown-time");
-        if (mode == null || tempVal1 == null) {
-            return;
-        }
-        if (ConfigManager.configManager.getBoolean("debug")) {
-            Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §cSet cooldown time to " + product);
-        }
-        if (cooldownSellTime == null || !cooldownSellTime.isAfter(LocalDateTime.now())) {
-            if (mode.equals("TIMED")) {
+        if (cooldownSellTime == null) {
+            String mode = product.getBuyTimesResetMode();
+            String tempVal1 = TextUtil.withPAPI(product.getBuyTimesResetTime(), cache.player);
+            if (mode == null || tempVal1.isEmpty()) {
+                return;
+            }
+            if (mode.equals("COOLDOWN_TIMED")) {
                 cooldownSellTime = getTimedSellRefreshTime(tempVal1);
                 if (!notUseBungee && cache.server && BungeeCordManager.bungeeCordManager != null) {
                     BungeeCordManager.bungeeCordManager.sendToOtherServer(
@@ -191,8 +194,7 @@ public class ObjectUseTimesCache {
                             "cooldown-sell-time",
                             null);
                 }
-            }
-            else if (mode.equals("TIMER")) {
+            } else if (mode.equals("COOLDOWN_TIMER")) {
                 cooldownSellTime = getTimerSellRefreshTime(tempVal1);
                 if (!notUseBungee && cache.server && BungeeCordManager.bungeeCordManager != null) {
                     BungeeCordManager.bungeeCordManager.sendToOtherServer(
@@ -239,56 +241,16 @@ public class ObjectUseTimesCache {
         return CommonUtil.timeToString(cooldownSellTime);
     }
 
-    public LocalDateTime getCooldownBuyRefreshTime() {
-        return cooldownBuyTime;
-    }
-
     public LocalDateTime getBuyRefreshTime() {
-        if (lastBuyTime == null) {
-            return LocalDateTime.now().withYear(2999);
-        }
-        String mode = product.getItemConfig().getString("buy-limits-reset-mode",
-                ConfigManager.configManager.getString("use-times.default-reset-mode"));
-        String tempVal1 = product.getItemConfig().getString("buy-limits-reset-time",
-                ConfigManager.configManager.getString("use-times.default-reset-time"));
-        if (mode.equals("TIMED")) {
-            return getTimedBuyRefreshTime(tempVal1);
-        }
-        else if (mode.equals("TIMER")) {
-            return getTimerBuyRefreshTime(tempVal1);
-        }
-        else {
-            return LocalDateTime.now().withYear(2999);
-        }
-    }
-
-    public LocalDateTime getCooldownSellRefreshTime() {
-        return cooldownSellTime;
+        String mode = product.getBuyTimesResetMode();
+        String tempVal1 = TextUtil.withPAPI(product.getBuyTimesResetTime(), cache.player);
+        return createRefreshTime(mode, tempVal1, true);
     }
 
     public LocalDateTime getSellRefreshTime() {
-        if (lastSellTime == null) {
-            return LocalDateTime.now().withYear(2999);
-        }
-        String mode = product.getItemConfig().getString("sell-limits-reset-mode",
-                ConfigManager.configManager.getString("use-times.default-reset-mode"));
-        String tempVal1 = product.getItemConfig().getString("sell-limits-reset-time",
-                ConfigManager.configManager.getString("use-times.default-reset-time"));
-        if (mode.equals("TIMED")) {
-            return getTimedSellRefreshTime(tempVal1);
-        } else if (mode.equals("TIMER")) {
-            return getTimerSellRefreshTime(tempVal1);
-        } else {
-            return LocalDateTime.now().withYear(2999);
-        }
-    }
-
-    public String getBuyCooldownTimeDisplayName() {
-        LocalDateTime tempVal1 = getCooldownBuyRefreshTime();
-        if (tempVal1 == null || !tempVal1.isAfter(LocalDateTime.now())) {
-            return ConfigManager.configManager.getString("placeholder.cooldown.now");
-        }
-        return CommonUtil.timeToString(tempVal1, ConfigManager.configManager.getString("placeholder.cooldown.format"));
+        String mode = product.getSellTimesResetMode();
+        String tempVal1 = TextUtil.withPAPI(product.getSellTimesResetTime(), cache.player);
+        return createRefreshTime(mode, tempVal1, false);
     }
 
     public String getBuyRefreshTimeDisplayName() {
@@ -297,14 +259,6 @@ public class ObjectUseTimesCache {
             return ConfigManager.configManager.getString("placeholder.refresh.never");
         }
         return CommonUtil.timeToString(tempVal1, ConfigManager.configManager.getString("placeholder.refresh.format"));
-    }
-
-    public String getSellCooldownTimeDisplayName() {
-        LocalDateTime tempVal1 = getCooldownSellRefreshTime();
-        if (tempVal1 == null || !tempVal1.isAfter(LocalDateTime.now())) {
-            return ConfigManager.configManager.getString("placeholder.cooldown.now");
-        }
-        return CommonUtil.timeToString(tempVal1, ConfigManager.configManager.getString("placeholder.cooldown.format"));
     }
 
     public String getSellRefreshTimeDisplayName() {
@@ -316,20 +270,59 @@ public class ObjectUseTimesCache {
     }
 
     private LocalDateTime getTimedBuyRefreshTime(String time) {
-        String tempVal1 = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-        tempVal1 = tempVal1 + " " + time;
-        LocalDateTime refreshResult = CommonUtil.stringToTime(tempVal1);
-        if (lastBuyTime.isAfter(refreshResult)) {
+        LocalDateTime refreshResult = null;
+        String[] tempVal2 = time.split(":");
+        int month = 0;
+        int day = 0;
+        if (tempVal2.length < 3) {
+            ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Your reset time " + time + " is invalid.");
+            return LocalDateTime.now();
+        }
+        if (tempVal2.length == 5) {
+            month = Integer.parseInt(tempVal2[0]);
+        }
+        if (tempVal2.length >= 4) {
+            day = Integer.parseInt(tempVal2[tempVal2.length - 4]);
+        }
+        LocalDateTime checkTime = lastBuyTime;
+        if (lastBuyTime == null) {
+            checkTime = LocalDateTime.now();
+        }
+        refreshResult = checkTime.withHour(Integer.parseInt(tempVal2[tempVal2.length - 3])).withMinute(
+                Integer.parseInt(tempVal2[tempVal2.length - 2])).withSecond(
+                Integer.parseInt(tempVal2[tempVal2.length - 1]));
+        refreshResult = refreshResult.plusDays(day).plusMonths(month);
+        if (checkTime.isAfter(refreshResult)) {
             refreshResult = refreshResult.plusDays(1L);
         }
         return refreshResult;
     }
 
     private LocalDateTime getTimedSellRefreshTime(String time) {
-        String tempVal1 = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-        tempVal1 = tempVal1 + " " + time;
-        LocalDateTime refreshResult = CommonUtil.stringToTime(tempVal1);
-        if (lastSellTime.isAfter(refreshResult)) {
+        LocalDate nowTime = LocalDate.now();
+        LocalDateTime refreshResult = null;
+        String[] tempVal2 = time.split(":");
+        int month = 0;
+        int day = 0;
+        if (tempVal2.length < 3) {
+            ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Your reset time " + time + " is invalid.");
+            return LocalDateTime.now();
+        }
+        if (tempVal2.length == 5) {
+            month = Integer.parseInt(tempVal2[0]);
+        }
+        if (tempVal2.length >= 4) {
+            day = Integer.parseInt(tempVal2[1]);
+        }
+        LocalDateTime checkTime = lastSellTime;
+        if (lastSellTime == null) {
+            checkTime = LocalDateTime.now();
+        }
+        refreshResult = checkTime.withHour(Integer.parseInt(tempVal2[tempVal2.length - 3])).withMinute(
+                Integer.parseInt(tempVal2[tempVal2.length - 2])).withSecond(
+                Integer.parseInt(tempVal2[tempVal2.length - 1]));
+        refreshResult = refreshResult.plusDays(day).plusMonths(month);
+        if (checkTime.isAfter(refreshResult)) {
             refreshResult = refreshResult.plusDays(1L);
         }
         return refreshResult;
@@ -337,17 +330,111 @@ public class ObjectUseTimesCache {
 
     private LocalDateTime getTimerBuyRefreshTime(String time) {
         LocalDateTime refreshResult = lastBuyTime;
-        refreshResult = refreshResult.plusHours(Long.parseLong(time.split(":")[0]));
-        refreshResult = refreshResult.plusMinutes(Long.parseLong(time.split(":")[1]));
-        refreshResult = refreshResult.plusSeconds(Long.parseLong(time.split(":")[2]));
+        if (refreshResult == null) {
+            refreshResult = LocalDateTime.now();
+        }
+        String[] tempVal2 = time.split(":");
+        if (tempVal2.length < 3) {
+            ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Your reset time " + time + " is invalid.");
+            return LocalDateTime.now();
+        }
+        int month = 0;
+        int day = 0;
+        if (!UltimateShop.freeVersion) {
+            if (tempVal2.length == 5) {
+                month = Integer.parseInt(tempVal2[0]);
+            }
+            if (tempVal2.length >= 4) {
+                day = Integer.parseInt(tempVal2[1]);
+            }
+        }
+        refreshResult = refreshResult.plusMonths(month).plusDays(day)
+                .plusHours(Integer.parseInt(tempVal2[tempVal2.length - 3]))
+                .plusMinutes(Integer.parseInt(tempVal2[tempVal2.length - 2]))
+                .plusSeconds(Integer.parseInt(tempVal2[tempVal2.length - 1]));
         return refreshResult;
     }
 
     private LocalDateTime getTimerSellRefreshTime(String time) {
         LocalDateTime refreshResult = lastSellTime;
-        refreshResult = refreshResult.plusHours(Long.parseLong(time.split(":")[0]));
-        refreshResult = refreshResult.plusMinutes(Long.parseLong(time.split(":")[1]));
-        refreshResult = refreshResult.plusSeconds(Long.parseLong(time.split(":")[2]));
+        if (refreshResult == null) {
+            refreshResult = LocalDateTime.now();
+        }
+        String[] tempVal2 = time.split(":");
+        if (tempVal2.length < 3) {
+            ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Your reset time " + time + " is invalid.");
+            return LocalDateTime.now();
+        }
+        int month = 0;
+        int day = 0;
+        if (!UltimateShop.freeVersion) {
+            if (tempVal2.length == 5) {
+                month = Integer.parseInt(tempVal2[0]);
+            }
+            if (tempVal2.length >= 4) {
+                day = Integer.parseInt(tempVal2[1]);
+            }
+        }
+        refreshResult = refreshResult.plusMonths(month).plusDays(day)
+                .plusHours(Integer.parseInt(tempVal2[tempVal2.length - 3]))
+                .plusMinutes(Integer.parseInt(tempVal2[tempVal2.length - 2]))
+                .plusSeconds(Integer.parseInt(tempVal2[tempVal2.length - 1]));
         return refreshResult;
+    }
+
+    private LocalDateTime createRefreshTime(String mode, String time, boolean buyOrSell) {
+        switch (mode) {
+            case "COOLDOWN_TIMED":
+            case "COOLDOWN_TIMER":
+                if (!UltimateShop.freeVersion) {
+                    if (buyOrSell) {
+                        setCooldownBuyTime();
+                        return cooldownBuyTime;
+                    }
+                    setCooldownSellTime();
+                    return cooldownSellTime;
+                }
+                return LocalDateTime.now();
+            case "TIMED":
+                if (buyOrSell) {
+                    return getTimedBuyRefreshTime(time);
+                }
+                return getTimedSellRefreshTime(time);
+            case "TIMER":
+                if (buyOrSell) {
+                    return getTimerBuyRefreshTime(time);
+                }
+                return getTimerSellRefreshTime(time);
+            case "CUSTOM":
+                if (UltimateShop.freeVersion) {
+                    return CommonUtil.stringToTime(time);
+                }
+                if (buyOrSell) {
+                    return CommonUtil.stringToTime(time, TextUtil.withPAPI(product.getBuyTimesResetFormat(), cache.player));
+                }
+                return CommonUtil.stringToTime(time, TextUtil.withPAPI(product.getSellTimesResetFormat(), cache.player));
+            case "RANDOM_PLACEHOLDER":
+                return ObjectRandomPlaceholder.getRefreshDoneTimeObject(time);
+            default:
+                return LocalDateTime.now().withYear(2999);
+        }
+    }
+
+    public void refreshSellTimes() {
+        LocalDateTime tempVal1 = getSellRefreshTime();
+        if (tempVal1 != null && tempVal1.isBefore(LocalDateTime.now())) {
+            setSellUseTimes(0);
+            setLastSellTime(null);
+            resetCooldownSellTime();
+        }
+    }
+
+    public void refreshBuyTimes() {
+        LocalDateTime tempVal1 = getBuyRefreshTime();
+        if (tempVal1 != null && tempVal1.isBefore(LocalDateTime.now())) {
+            setBuyUseTimes(0);
+            setLastBuyTime(null);
+            resetCooldownBuyTime();
+        }
     }
 }

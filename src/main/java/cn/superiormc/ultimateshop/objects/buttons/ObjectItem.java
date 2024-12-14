@@ -428,6 +428,56 @@ public class ObjectItem extends AbstractButton {
         }
     }
 
+    public String getBuyTimesResetMode() {
+        if (itemConfig.getString("buy-limits-reset-mode") != null) {
+            return itemConfig.getString("buy-limits-reset-mode");
+        } else if (itemConfig.getString("buy-times-reset-mode") != null) {
+            return itemConfig.getString("buy-times-reset-mode");
+        }
+        return ConfigManager.configManager.getString("use-times.default-reset-mode", "NEVER");
+    }
+
+    public String getBuyTimesResetTime() {
+        if (itemConfig.getString("buy-limits-reset-time") != null) {
+            return itemConfig.getString("buy-limits-reset-time");
+        } else if (itemConfig.getString("buy-times-reset-time") != null) {
+            return itemConfig.getString("buy-times-reset-time");
+        }
+        return ConfigManager.configManager.getString("use-times.default-reset-time", "00:00:00");
+    }
+
+    public String getBuyTimesResetFormat() {
+        if (itemConfig.getString("buy-times-reset-time-format") != null) {
+            return itemConfig.getString("buy-times-reset-time-format");
+        }
+        return ConfigManager.configManager.getString("use-times.default-reset-time-format", "yyyy-MM-dd HH:mm:ss");
+    }
+
+    public String getSellTimesResetMode() {
+        if (itemConfig.getString("sell-limits-reset-mode") != null) {
+            return itemConfig.getString("sell-limits-reset-mode");
+        } else if (itemConfig.getString("sell-times-reset-mode") != null) {
+            return itemConfig.getString("sell-times-reset-mode");
+        }
+        return ConfigManager.configManager.getString("use-times.default-reset-mode", "NEVER");
+    }
+
+    public String getSellTimesResetTime() {
+        if (itemConfig.getString("sell-limits-reset-time") != null) {
+            return itemConfig.getString("sell-limits-reset-time");
+        } else if (itemConfig.getString("sell-times-reset-time") != null) {
+            return itemConfig.getString("sell-times-reset-time");
+        }
+        return ConfigManager.configManager.getString("use-times.default-reset-time", "00:00:00");
+    }
+
+    public String getSellTimesResetFormat() {
+        if (itemConfig.getString("sell-times-reset-time-format") != null) {
+            return itemConfig.getString("sell-times-reset-time-format");
+        }
+        return ConfigManager.configManager.getString("use-times.default-reset-time-format", "yyyy-MM-dd HH:mm:ss");
+    }
+
     @Override
     public String toString() {
         return "Shop: " + shop.getShopName() + " Product: " + itemConfig.getSection().getName();

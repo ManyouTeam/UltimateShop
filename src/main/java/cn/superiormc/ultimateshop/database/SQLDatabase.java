@@ -72,6 +72,28 @@ public class SQLDatabase {
     }
 
     public static void checkData(ServerCache cache) {
+        QueryAction queryAction2;
+        if (cache.server && !UltimateShop.freeVersion) {
+            queryAction2 = sqlManager.createQuery()
+                    .inTable("ultimateshop_randomPlaceholder")
+                    .selectColumns("placeholderID", "nowValue",
+                            "refreshDoneTime")
+                    .build();
+        }
+        else {
+            return;
+        }
+        queryAction2.executeAsync((result) -> {
+            while (result.getResultSet().next()) {
+                String placeholderID = result.getResultSet().getString("placeholderID");
+                List<String> nowValue = CommonUtil.translateString(result.getResultSet().getString("nowValue"));
+                String refreshDoneTime = result.getResultSet().getString("refreshDoneTime");
+                if (nowValue != null && refreshDoneTime != null) {
+                    cache.setRandomPlaceholderCache(placeholderID, refreshDoneTime, nowValue);
+                }
+            }
+        });
+
         QueryAction queryAction1;
         if (cache.server) {
             queryAction1 = sqlManager.createQuery()
@@ -111,28 +133,6 @@ public class SQLDatabase {
                         cooldownPurchaseTime, cooldownSellTime);
             }
         });
-
-        QueryAction queryAction2;
-        if (cache.server && !UltimateShop.freeVersion) {
-            queryAction2 = sqlManager.createQuery()
-                    .inTable("ultimateshop_randomPlaceholder")
-                    .selectColumns("placeholderID", "nowValue",
-                            "refreshDoneTime")
-                    .build();
-        }
-        else {
-            return;
-        }
-        queryAction2.executeAsync((result) -> {
-            while (result.getResultSet().next()) {
-                String placeholderID = result.getResultSet().getString("placeholderID");
-                List<String> nowValue = CommonUtil.translateString(result.getResultSet().getString("nowValue"));
-                String refreshDoneTime = result.getResultSet().getString("refreshDoneTime");
-                if (nowValue != null && refreshDoneTime != null) {
-                    cache.setRandomPlaceholderCache(placeholderID, refreshDoneTime, nowValue);
-                }
-            }
-        });
     }
 
     public static void updateData(ServerCache cache, boolean quitServer) {
@@ -162,10 +162,6 @@ public class SQLDatabase {
             if (buyUseTimes == 0 && sellUseTimes == 0 && lastBuyTime == null && lastSellTime == null
             && cooldownBuyTime == null && cooldownSellTime == null) {
                 continue;
-            }
-            if (cache.server) {
-                cooldownBuyTime = null;
-                cooldownSellTime = null;
             }
             sqlManager.createInsert("ultimateshop_useTimes")
                     .setColumnNames("playerUUID",
@@ -230,10 +226,6 @@ public class SQLDatabase {
                 if (buyUseTimes == 0 && sellUseTimes == 0 && lastBuyTime == null && lastSellTime == null
                         && cooldownBuyTime == null && cooldownSellTime == null) {
                     continue;
-                }
-                if (cache.server) {
-                    cooldownBuyTime = null;
-                    cooldownSellTime = null;
                 }
                 sqlManager.createReplace("ultimateshop_useTimes")
                         .setColumnNames("playerUUID",

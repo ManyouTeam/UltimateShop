@@ -81,8 +81,6 @@ add-times: "&#98FB98[UltimateShop] &fPridané {times} do počtu použitia {item}
 set-times: "&#98FB98[UltimateShop] &fNastavený počet použitia {item} hráča {player} na {times}!"
 add-times-shop: "&#98FB98[UltimateShop] &fPridané {times} do počtu použitia všetkých produktov obchodu {shop} hráča {player}!"
 set-times-shop: "&#98FB98[UltimateShop] &fNastavený počet použitia všetkých produktov obchodu {shop} hráča {player} na {times}!"
-buy-in-cooldown: "&#98FB98[UltimateShop] &fNemôžete už kúpiť {item}, pretože je v čase ochladenia!"
-sell-in-cooldown: "&#98FB98[UltimateShop] &fNemôžete už predať {item}, pretože je v čase ochladenia!"
 success-buy: "&#98FB98[UltimateShop] &fÚspešne zakúpené {item}x{amount}, cena {price}!"
 success-sell: "&#98FB98[UltimateShop] &fÚspešne predané {item}x{amount}, získané {price}!"
 menu-condition-not-meet: "&#98FB98[UltimateShop] &cNesplnili ste podmienku na otvorenie tohto menu!"

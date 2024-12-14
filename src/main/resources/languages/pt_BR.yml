@@ -80,8 +80,6 @@ add-times: "&#98FB98[UltimateShop] &fAdicionou {times} aos tempos de uso do item
 set-times: "&#98FB98[UltimateShop] &fDefiniu os tempos de uso do item {item} do jogador {player} para {times}!"
 add-times-shop: "&#98FB98[UltimateShop] &fAdicionou {times} aos tempos de uso de todos os produtos da loja {shop} do jogador {player}!"
 set-times-shop: "&#98FB98[UltimateShop] &fDefiniu os tempos de uso de todos os produtos da loja {shop} do jogador {player} para {times}!"
-buy-in-cooldown: "&#98FB98[UltimateShop] &fVocê não pode mais comprar {item} porque está em período de espera!"
-sell-in-cooldown: "&#98FB98[UltimateShop] &fVocê não pode mais vender {item} porque está em período de espera!"
 success-buy: "&#98FB98[UltimateShop] &fVocê comprou com sucesso {item}x{amount}, custou {price}!"
 success-sell: "&#98FB98[UltimateShop] &fVocê vendeu com sucesso {item}x{amount}, ganhou {price}!"
 menu-condition-not-meet: "&#98FB98[UltimateShop] &cVocê não atendeu às condições necessárias para abrir este menu!"

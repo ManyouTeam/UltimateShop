@@ -42,6 +42,11 @@
       <option name="url" value="https://maven.enginehub.org/repo/" />
     </remote-repository>
     <remote-repository>
+      <option name="id" value="Nexo" />
+      <option name="name" value="Nexo" />
+      <option name="url" value="https://repo.nexomc.com/releases" />
+    </remote-repository>
+    <remote-repository>
       <option name="id" value="jitpack-repo" />
       <option name="name" value="jitpack-repo" />
       <option name="url" value="https://jitpack.io" />

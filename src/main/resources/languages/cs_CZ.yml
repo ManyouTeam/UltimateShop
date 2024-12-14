@@ -81,8 +81,6 @@ add-times: "&#98FB98[UltimateShop] &fPřidáno {times} pro {player} pro použit�
 set-times: "&#98FB98[UltimateShop] &fNastaveno {times} pro {player} pro použití položky {item}!"
 add-times-shop: "&#98FB98[UltimateShop] &fPřidáno {times} pro všechny produkty obchodu {shop} hráče {player}!"
 set-times-shop: "&#98FB98[UltimateShop] &fNastaveno {times} pro všechny produkty obchodu {shop} hráče {player}!"
-buy-in-cooldown: "&#98FB98[UltimateShop] &fYou can no longer buy {item} because it's in cooldown!"
-sell-in-cooldown: "&#98FB98[UltimateShop] &fYou can no longer sell {item} because it's in cooldown!"
 success-buy: "&#98FB98[UltimateShop] &fSuccessfully purchased {item}x{amount}, cost {price}!"
 success-sell: "&#98FB98[UltimateShop] &fSuccessfully sell {item}x{amount}, gain {price}!"
 menu-condition-not-meet: "&#98FB98[UltimateShop] &cYou didn't meet the condition that open this menu!"

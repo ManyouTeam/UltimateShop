@@ -52,8 +52,7 @@ public class StaticPlaceholder {
             ObjectCondition condition = new ObjectCondition(conditionSection.getConfigurationSection(groupName));
             if (condition.getAllBoolean(new ObjectThingRun(player))) {
                 result.add(section.getDouble(groupName));
-            }
-            else {
+            } else {
                 if (section.getDouble("default") != 0D) {
                     result.add(section.getDouble("default"));
                 }

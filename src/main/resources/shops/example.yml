@@ -276,5 +276,5 @@ items:
     buy-limits:
       global: 5
       default: 1
-    buy-limits-reset-mode: 'TIMED'
-    buy-limits-reset-time: '00:00:00'
+    buy-times-reset-mode: 'TIMED'
+    buy-times-reset-time: '00:00:00'

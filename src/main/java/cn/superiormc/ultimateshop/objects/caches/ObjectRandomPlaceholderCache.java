@@ -2,8 +2,10 @@ package cn.superiormc.ultimateshop.objects.caches;
 
 import cn.superiormc.ultimateshop.cache.ServerCache;
 import cn.superiormc.ultimateshop.managers.BungeeCordManager;
+import cn.superiormc.ultimateshop.managers.ErrorManager;
 import cn.superiormc.ultimateshop.objects.items.subobjects.ObjectRandomPlaceholder;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
+import cn.superiormc.ultimateshop.utils.TextUtil;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -64,8 +66,8 @@ public class ObjectRandomPlaceholderCache {
 
     public void setRefreshTime(boolean notUseBungee) {
         String mode = placeholder.getMode();
-        String time = placeholder.getConfig().getString("reset-time");
-        if (mode == null || time == null) {
+        String time = TextUtil.withPAPI(placeholder.getConfig().getString("reset-time"), null);
+        if (mode == null || time.isEmpty()) {
             if (nowValue == null) {
                 setPlaceholder(notUseBungee);
             }
@@ -85,12 +87,19 @@ public class ObjectRandomPlaceholderCache {
             }
         }
         if (needRefresh) {
-            if (mode.equals("TIMED")) {
-                refreshDoneTime = getTimedRefreshTime(time);
-            } else if (mode.equals("TIMER")) {
-                refreshDoneTime = getTimerRefreshTime(time);
-            } else {
-                refreshDoneTime = LocalDateTime.now().withYear(2999);
+            switch (mode) {
+                case "TIMED":
+                    refreshDoneTime = getTimedRefreshTime(time);
+                    break;
+                case "TIMER":
+                    refreshDoneTime = getTimerRefreshTime(time);
+                    break;
+                case "CUSTOM":
+                    refreshDoneTime = CommonUtil.stringToTime(time, placeholder.getConfig().getString("time-format", "yyyy-MM-dd HH:mm:ss"));
+                    break;
+                default:
+                    refreshDoneTime = LocalDateTime.now().withYear(2999);
+                    break;
             }
             setPlaceholder(notUseBungee);
         }
@@ -117,21 +126,50 @@ public class ObjectRandomPlaceholderCache {
     }
 
     private LocalDateTime getTimedRefreshTime(String time) {
-        String tempVal1 = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-        tempVal1 = tempVal1 + " " + time;
-        LocalDateTime refreshResult = CommonUtil.stringToTime(tempVal1);
-        if (LocalDateTime.now().isAfter(refreshResult) && refreshResult != null) {
+        LocalDate nowTime = LocalDate.now();
+        LocalDateTime refreshResult = null;
+        String[] tempVal2 = time.split(":");
+        if (tempVal2.length < 3) {
+            ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Your reset time " + time + " is invalid.");
+            return LocalDateTime.now();
+        }
+        int month = 0;
+        int day = 0;
+        if (tempVal2.length == 5) {
+            month = Integer.parseInt(tempVal2[0]);
+        }
+        if (tempVal2.length >= 4) {
+            day = Integer.parseInt(tempVal2[tempVal2.length - 4]);
+        }
+        refreshResult = nowTime.atTime(Integer.parseInt(tempVal2[tempVal2.length - 3]),
+                Integer.parseInt(tempVal2[tempVal2.length - 2]),
+                Integer.parseInt(tempVal2[tempVal2.length - 1]));
+        refreshResult = refreshResult.plusDays(day).plusMonths(month);
+        if (LocalDateTime.now().isAfter(refreshResult)) {
             refreshResult = refreshResult.plusDays(1L);
         }
         return refreshResult;
     }
 
-
     private LocalDateTime getTimerRefreshTime(String time) {
         LocalDateTime refreshResult = LocalDateTime.now();
-        refreshResult = refreshResult.plusHours(Long.parseLong(time.split(":")[0]));
-        refreshResult = refreshResult.plusMinutes(Long.parseLong(time.split(":")[1]));
-        refreshResult = refreshResult.plusSeconds(Long.parseLong(time.split(":")[2]));
+        String[] tempVal2 = time.split(":");
+        if (tempVal2.length < 3) {
+            ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Your reset time " + time + " is invalid.");
+            return LocalDateTime.now();
+        }
+        int month = 0;
+        int day = 0;
+        if (tempVal2.length == 5) {
+            month = Integer.parseInt(tempVal2[0]);
+        }
+        if (tempVal2.length >= 4) {
+            day = Integer.parseInt(tempVal2[tempVal2.length - 4]);
+        }
+        refreshResult = refreshResult.plusMonths(month).plusDays(day)
+                .plusHours(Integer.parseInt(tempVal2[tempVal2.length - 3]))
+                .plusMinutes(Integer.parseInt(tempVal2[tempVal2.length - 2]))
+                .plusSeconds(Integer.parseInt(tempVal2[tempVal2.length - 1]));
         return refreshResult;
     }
 

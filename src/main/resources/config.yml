@@ -135,6 +135,8 @@ menu:
 use-times:
   default-reset-mode: 'NEVER'
   default-reset-time: '00:00:00'
+  # This only works for CUSTOM type of reset mode.
+  default-reset-time-format: 'yyyy-MM-dd HH:mm:ss'
 
 math:
   enabled: true
@@ -284,8 +286,6 @@ placeholder:
     error: '&#ff3300Error!'
     buy-condition-not-meet: '&#ff3300Not meet the buy condition!'
     sell-condition-not-meet: '&#ff3300Not meet the sell condition!'
-    buy-in-cooldown: '&#ff3300In cooldown!'
-    sell-in-cooldown: '&#ff3300In cooldown!'
   # Premium version only.
   sell-stick:
     infinite: "&cInfinite"

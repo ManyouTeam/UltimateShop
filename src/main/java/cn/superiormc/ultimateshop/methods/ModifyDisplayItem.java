@@ -246,30 +246,6 @@ public class ModifyDisplayItem {
                             addLore.add(tempVal4);
                         }
                         break;
-                    case 'l':
-                        if (tempVal9 != null &&
-                                tempVal9.getCooldownBuyRefreshTime() != null &&
-                                tempVal9.getCooldownBuyRefreshTime().isAfter(LocalDateTime.now())) {
-                            if (not) {
-                                continue;
-                            }
-                            addLore.add(tempVal4);
-                        } else if (not) {
-                            addLore.add(tempVal4);
-                        }
-                        break;
-                    case 'm':
-                        if (tempVal10 != null &&
-                                tempVal10.getCooldownBuyRefreshTime() != null &&
-                                tempVal10.getCooldownBuyRefreshTime().isAfter(LocalDateTime.now())) {
-                            if (not) {
-                                continue;
-                            }
-                            addLore.add(tempVal4);
-                        } else if (not) {
-                            addLore.add(tempVal4);
-                        }
-                        break;
                     case 'n':
                         if ((!item.getBuyPrice().empty && parseClickType(item, clickType, true)) ||
                                 (!item.getSellPrice().empty && parseClickType(item, clickType, false))){
@@ -318,10 +294,6 @@ public class ModifyDisplayItem {
                         String.valueOf(tempVal9.getBuyRefreshTimeDisplayName()),
                         "sell-refresh-player",
                         String.valueOf(tempVal9.getSellRefreshTimeDisplayName()),
-                        "buy-cooldown-player",
-                        String.valueOf(tempVal9.getBuyCooldownTimeDisplayName()),
-                        "sell-cooldown-player",
-                        String.valueOf(tempVal9.getSellCooldownTimeDisplayName()),
                         "buy-times-server",
                         String.valueOf(tempVal10.getBuyUseTimes()),
                         "sell-times-server",
@@ -330,10 +302,6 @@ public class ModifyDisplayItem {
                         String.valueOf(tempVal10.getBuyRefreshTimeDisplayName()),
                         "sell-refresh-server",
                         String.valueOf(tempVal10.getSellRefreshTimeDisplayName()),
-                        "buy-cooldown-server",
-                        String.valueOf(tempVal10.getBuyCooldownTimeDisplayName()),
-                        "sell-cooldown-server",
-                        String.valueOf(tempVal10.getSellCooldownTimeDisplayName()),
                         "buy-click",
                         getBuyClickPlaceholder(player, multi, item, clickType),
                         "sell-click",
@@ -364,9 +332,6 @@ public class ModifyDisplayItem {
         switch (BuyProductMethod.startBuy(item.getShop(), item.getProduct(), player, false, true, multi).getStatus()) {
             case ERROR:
                 s = ConfigManager.configManager.getString("placeholder.click.error", "",  "amount", String.valueOf(multi));
-                break;
-            case IN_COOLDOWN:
-                s = ConfigManager.configManager.getString("placeholder.click.buy-in-cooldown", "",  "amount", String.valueOf(multi));
                 break;
             case PERMISSION:
                 s = ConfigManager.configManager.getString("placeholder.click.buy-condition-not-meet", "",  "amount", String.valueOf(multi));
@@ -408,9 +373,6 @@ public class ModifyDisplayItem {
                 break;
             case PERMISSION:
                 s = ConfigManager.configManager.getString("placeholder.click.sell-condition-not-meet", "",  "amount", String.valueOf(multi));
-                break;
-            case IN_COOLDOWN:
-                s = ConfigManager.configManager.getString("placeholder.click.sell-in-cooldown", "",  "amount", String.valueOf(multi));
                 break;
             case PLAYER_MAX:
                 s = ConfigManager.configManager.getString("placeholder.click.sell-max-limit-player", "",  "amount", String.valueOf(multi));

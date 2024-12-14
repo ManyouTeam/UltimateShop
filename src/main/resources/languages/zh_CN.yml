@@ -87,8 +87,6 @@ success-sell: '&#98FB98[UltimateShop] &f成功出售 {item}，&f获得 {price}!'
 menu-condition-not-meet: '&#98FB98[UltimateShop] &c你目前不能打开该菜单!'
 buy-condition-not-meet: '&#98FB98[UltimateShop] &c你目前不能购买该商品!'
 sell-condition-not-meet: '&#98FB98[UltimateShop]  &c你目前不能回收该商品!'
-buy-in-cooldown: '&#98FB98[UltimateShop] &c当前商品购买冷却中!'
-sell-in-cooldown: '&#98FB98[UltimateShop]  &c当前商品回收冷却中!'
 limit-reached-buy-player: '&#98FB98[UltimateShop] &c您无法再购买物品 {item}&c，您今天购买此物品 {times}
   次，其每日库存为 {limit}，下次刷新时间为 {refresh}.'
 limit-reached-sell-player: '&#98FB98[UltimateShop] &c您无法再出售物品 {item}&c，您今天出售此物品 {times}

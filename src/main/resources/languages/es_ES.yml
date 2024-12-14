@@ -83,8 +83,6 @@ add-times: "&#98FB98[UltimateShop] &fLe has agregado {times} veces de uso al {it
 set-times: "&#98FB98[UltimateShop] &fLe colocaste al objeto {item} de {player} para ser usado {times} veces."
 add-times-shop: "&#98FB98[UltimateShop] &fLe agregaste {times} veces de uso en todos los productos de la tienda {shop} al jugador {player}."
 set-times-shop: "&#98FB98[UltimateShop] &fLe colocastge {times} veces de uso en todos los productos de la tienda {shop} al jugador {player}."
-buy-in-cooldown: "&#98FB98[UltimateShop] &f¡No puedes seguir comprando {item}!, tienes que esperar un rato para volver a hacerlo."
-sell-in-cooldown: "&#98FB98[UltimateShop] &f¡No puedes seguir vendiendo {item}! tienes que esperar un rato para volver a hacerlo."
 success-buy: "&#98FB98[UltimateShop] &fHas comprado correctamente {item}x{amount}, por el precio de {price}."
 success-sell: "&#98FB98[UltimateShop] &fHas vendido correctamente {item}x{amount}, por el precio de {price}."
 menu-condition-not-meet: "&#98FB98[UltimateShop] &c¡No cumples con las condiciones para poder abrir este menú!"

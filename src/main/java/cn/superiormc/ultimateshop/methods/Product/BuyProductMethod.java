@@ -91,20 +91,7 @@ public class BuyProductMethod {
         ObjectUseTimesCache tempVal9 = tempVal3.getUseTimesCache().get(tempVal2);
         ObjectUseTimesCache tempVal8 = tempVal11.getUseTimesCache().get(tempVal2);
         if (tempVal9 != null) {
-            if (tempVal9.getBuyRefreshTime() != null && tempVal9.getBuyRefreshTime().isBefore(LocalDateTime.now())) {
-                tempVal3.getUseTimesCache().get(tempVal2).setBuyUseTimes(0);
-            }
-            if (tempVal9.getCooldownBuyRefreshTime() != null && tempVal9.getCooldownBuyRefreshTime().isAfter(LocalDateTime.now())) {
-                if (shouldSendMessage) {
-                    LanguageManager.languageManager.sendStringText(player,
-                            "buy-in-cooldown",
-                            "item",
-                            tempVal2.getDisplayName(player),
-                            "refresh",
-                            tempVal9.getBuyCooldownTimeDisplayName());
-                }
-                return ProductTradeStatus.IN_COOLDOWN;
-            }
+            tempVal9.refreshBuyTimes();
             playerUseTimes = tempVal9.getBuyUseTimes();
         }
         else {
@@ -138,10 +125,7 @@ public class BuyProductMethod {
         if (tempVal8 != null) {
             if (quick) {
                 // 重置
-                if (tempVal8.getBuyRefreshTime() != null && tempVal8.getBuyRefreshTime().isBefore(LocalDateTime.now())) {
-                    ServerCache.serverCache.getUseTimesCache().get(tempVal2).setBuyUseTimes(0);
-                    ServerCache.serverCache.getUseTimesCache().get(tempVal2).setLastBuyTime(null);
-                }
+                tempVal8.refreshBuyTimes();
             }
             serverUseTimes = ServerCache.serverCache.getUseTimesCache().get(tempVal2).getBuyUseTimes();
         }

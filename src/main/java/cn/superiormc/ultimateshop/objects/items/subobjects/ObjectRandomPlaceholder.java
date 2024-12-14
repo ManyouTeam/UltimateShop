@@ -18,8 +18,6 @@ public class ObjectRandomPlaceholder {
 
     private final List<String> configElements = new ArrayList<>();
 
-    private List<String> realElements = new ArrayList<>();
-
     private final Collection<ObjectRandomPlaceholder> notSameAs = new ArrayList<>();
 
     private final int elementAmount;
@@ -29,19 +27,6 @@ public class ObjectRandomPlaceholder {
         this.section = section;
         this.elementAmount = section.getInt("element-amount", 1);
         this.configElements.addAll(section.getStringList("elements"));
-    }
-
-    public void initElements() {
-        realElements = new ArrayList<>(configElements);
-        for (String configElement : configElements) {
-            ObjectRandomPlaceholder tempVal2 = ConfigManager.configManager.getRandomPlaceholder(configElement);
-            if (tempVal2 != null && !tempVal2.equals(this)) {
-                if (!tempVal2.getConfigElements().isEmpty()) {
-                    realElements.remove(configElement);
-                    realElements.addAll(tempVal2.getConfigElements());
-                }
-            }
-        }
     }
 
     public Collection<ObjectRandomPlaceholder> getNotSameAs() {
@@ -58,12 +43,12 @@ public class ObjectRandomPlaceholder {
 
     public List<String> getNewValue() {
         List<String> result = new ArrayList<>();
-        if (realElements.isEmpty()) {
+        if (configElements.isEmpty()) {
             result.add("ERROR: Value Empty");
         }
-        Collections.shuffle(realElements);
+        Collections.shuffle(configElements);
         for (int i = 0; i < Math.min(elementAmount, configElements.size()); i++) {
-            String tempVal1 = realElements.get(i);
+            String tempVal1 = configElements.get(i);
             String[] element = tempVal1.split("~");
             if (element.length == 1) {
                 result.add(tempVal1);
@@ -126,23 +111,23 @@ public class ObjectRandomPlaceholder {
         return tempVal3.get(x - 1);
     }
 
-    public static String getRefreshDoneTime(String id) {
+    public static LocalDateTime getRefreshDoneTimeObject(String id) {
         if (UltimateShop.freeVersion) {
-            return "ERROR: Free Version";
+            return LocalDateTime.now();
         }
         ObjectRandomPlaceholder tempVal1 = ConfigManager.configManager.getRandomPlaceholder(id);
         if (tempVal1 == null) {
-            return "ERROR: Unknown Placeholder";
+            return LocalDateTime.now();
         }
         ObjectRandomPlaceholderCache tempVal2 = CacheManager.cacheManager.serverCache.getRandomPlaceholderCache().get(tempVal1);
         if (tempVal2 == null) {
             CacheManager.cacheManager.serverCache.addRandomPlaceholderCache(tempVal1);
             tempVal2 = CacheManager.cacheManager.serverCache.getRandomPlaceholderCache().get(tempVal1);
         }
-        LocalDateTime tempVal3 = tempVal2.getRefreshDoneTime();
-        if (tempVal3 == null || tempVal3.getYear() == 2999) {
-            return ConfigManager.configManager.getString("placeholder.refresh.never");
-        }
-        return CommonUtil.timeToString(tempVal3, ConfigManager.configManager.getString("placeholder.cooldown.format"));
+        return tempVal2.getRefreshDoneTime();
+    }
+
+    public static String getRefreshDoneTime(String id) {
+        return CommonUtil.timeToString(getRefreshDoneTimeObject(id), ConfigManager.configManager.getString("placeholder.cooldown.format"));
     }
 }

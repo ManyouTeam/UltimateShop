@@ -25,13 +25,6 @@ public class CacheManager {
             SQLDatabase.initSQL();
         }
         serverCache = new ServerCache();
-        initRandomPlaceholderElements();
-    }
-
-    private void initRandomPlaceholderElements() {
-        for (ObjectRandomPlaceholder randomPlaceholder : ConfigManager.configManager.randomPlaceholders.values()) {
-            randomPlaceholder.initElements();
-        }
     }
 
     public void addPlayerCache(Player player) {
