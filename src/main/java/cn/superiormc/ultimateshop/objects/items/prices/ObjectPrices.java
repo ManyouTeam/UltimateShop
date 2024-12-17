@@ -106,8 +106,7 @@ public class ObjectPrices extends AbstractThings {
                             if (!confirmedAmount.contains(i)) {
                                 applyThings.put(tempVal1, PriceType.FIRST);
                                 confirmedAmount.add(i);
-                            }
-                            else if (!applyThings.containsKey(tempVal1)) {
+                            } else if (!applyThings.containsKey(tempVal1)) {
                                 applyThings.put(tempVal1, PriceType.NOT_FIRST);
                             }
                         }
@@ -187,6 +186,7 @@ public class ObjectPrices extends AbstractThings {
             case CLASSIC_ANY:
                 Map<ObjectSinglePrice, BigDecimal> tempVal4 = getAmount(player, times, amount);
                 Map<ObjectSinglePrice, Boolean> tempVal5 = getAnyTargetPrice(inventory, player, times, amount);
+                ObjectSinglePrice first = null;
                 for (ObjectSinglePrice tempVal11 : tempVal5.keySet()) {
                     if (tempVal11.empty) {
                         continue;
@@ -194,12 +194,16 @@ public class ObjectPrices extends AbstractThings {
                     if (Objects.nonNull(tempVal4.get(tempVal11))) {
                         cost = tempVal4.get(tempVal11);
                     }
+                    if (first == null) {
+                        first = tempVal11;
+                    }
                     if (tempVal5.get(tempVal11)) {
                         resultObject.addResultMapElement(tempVal11, cost);
                         resultObject.setResultBoolean();
                         return resultObject;
                     }
                 }
+                resultObject.addResultMapElement(first, cost);
                 return resultObject;
             default:
                 ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Can not get price-mode section in your shop config!!");
