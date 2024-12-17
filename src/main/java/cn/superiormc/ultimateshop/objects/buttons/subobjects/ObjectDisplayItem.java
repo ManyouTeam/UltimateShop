@@ -89,7 +89,7 @@ public class ObjectDisplayItem {
         if (usedSection == null) {
             usedSection = section;
         }
-        return new ObjectDisplayItemStack(player, addLoreDisplayItem, usedSection);
+        return new ObjectDisplayItemStack(player, addLoreDisplayItem, usedSection, item);
     }
 
     public ObjectDisplayItemStack getDisplayItem(Player player, int multi) {

@@ -376,7 +376,9 @@ public class DebuildItem {
                         GameProfile gameProfile = (GameProfile) field.get(skullMeta);
                         if (gameProfile != null) {
                             Property property = gameProfile.getProperties().get("textures").iterator().next();
-                            section.set("skull", property.getValue());
+                            Field field3 = property.getClass().getDeclaredField("value");
+                            field3.setAccessible(true);
+                            section.set("skull", field3.get(property));
                         }
                     }
                 } catch (Exception exception) {

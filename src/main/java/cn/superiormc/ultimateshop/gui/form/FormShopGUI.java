@@ -13,17 +13,13 @@ import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import cn.superiormc.ultimateshop.objects.buttons.subobjects.ObjectDisplayItemStack;
 import cn.superiormc.ultimateshop.objects.caches.ObjectUseTimesCache;
 import cn.superiormc.ultimateshop.objects.menus.ObjectMenu;
-import cn.superiormc.ultimateshop.utils.ItemUtil;
 import cn.superiormc.ultimateshop.utils.TextUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
-import org.bukkit.inventory.ItemStack;
 import org.geysermc.cumulus.component.ButtonComponent;
 import org.geysermc.cumulus.form.SimpleForm;
-import org.geysermc.cumulus.util.FormImage;
 
-import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -123,9 +119,7 @@ public class FormShopGUI extends FormGUI {
             removeOpenGUIStatus();
             menuButtons.get(menuItems.get(response.clickedButton())).clickEvent(ClickType.LEFT, player);
         });
-        tempVal5.closedOrInvalidResultHandler(response -> {
-            removeOpenGUIStatus();
-        });
+        tempVal5.closedOrInvalidResultHandler(response -> removeOpenGUIStatus());
         if (getMenu().getString("bedrock.content", null) != null) {
             tempVal5.content(TextUtil.parse(player, getMenu().getString("bedrock.content", "")));
         }

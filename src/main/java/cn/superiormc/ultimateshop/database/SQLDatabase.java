@@ -64,9 +64,10 @@ public class SQLDatabase {
                 .build().execute(null);
         if (!UltimateShop.freeVersion) {
             sqlManager.createTable("ultimateshop_randomPlaceholder")
-                    .addColumn("placeholderID", "VARCHAR(48)")
+                    .addColumn("placeholderID", "VARCHAR(48) NOT NULL PRIMARY KEY")
                     .addColumn("nowValue", "TEXT")
                     .addColumn("refreshDoneTime", "DATETIME")
+
                     .build().execute(null);
         }
     }
@@ -79,20 +80,17 @@ public class SQLDatabase {
                     .selectColumns("placeholderID", "nowValue",
                             "refreshDoneTime")
                     .build();
-        }
-        else {
-            return;
-        }
-        queryAction2.executeAsync((result) -> {
-            while (result.getResultSet().next()) {
-                String placeholderID = result.getResultSet().getString("placeholderID");
-                List<String> nowValue = CommonUtil.translateString(result.getResultSet().getString("nowValue"));
-                String refreshDoneTime = result.getResultSet().getString("refreshDoneTime");
-                if (nowValue != null && refreshDoneTime != null) {
-                    cache.setRandomPlaceholderCache(placeholderID, refreshDoneTime, nowValue);
+            queryAction2.executeAsync((result) -> {
+                while (result.getResultSet().next()) {
+                    String placeholderID = result.getResultSet().getString("placeholderID");
+                    List<String> nowValue = CommonUtil.translateString(result.getResultSet().getString("nowValue"));
+                    String refreshDoneTime = result.getResultSet().getString("refreshDoneTime");
+                    if (nowValue != null && refreshDoneTime != null) {
+                        cache.setRandomPlaceholderCache(placeholderID, refreshDoneTime, nowValue);
+                    }
                 }
-            }
-        });
+            });
+        }
 
         QueryAction queryAction1;
         if (cache.server) {
@@ -217,6 +215,10 @@ public class SQLDatabase {
         Map<ObjectItem, ObjectUseTimesCache> tempVal1 = cache.getUseTimesCache();
         for (ObjectItem tempVal2 : tempVal1.keySet()) {
             try {
+                sqlManager.createDelete("ultimateshop_useTimes").
+                        addCondition("playerUUID = '" + playerUUID + "'").
+                        addCondition("shop = '" + tempVal2.getShop() + "'").
+                        addCondition("product = '" + tempVal2.getProduct() + "'").build().execute();
                 int buyUseTimes = tempVal1.get(tempVal2).getBuyUseTimes();
                 int sellUseTimes = tempVal1.get(tempVal2).getSellUseTimes();
                 String lastBuyTime = tempVal1.get(tempVal2).getLastBuyTime();
@@ -227,7 +229,7 @@ public class SQLDatabase {
                         && cooldownBuyTime == null && cooldownSellTime == null) {
                     continue;
                 }
-                sqlManager.createReplace("ultimateshop_useTimes")
+                sqlManager.createInsert("ultimateshop_useTimes")
                         .setColumnNames("playerUUID",
                                 "shop",
                                 "product",

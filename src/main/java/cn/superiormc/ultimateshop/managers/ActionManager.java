@@ -39,6 +39,7 @@ public class ActionManager {
         registerNewAction("delay", new ActionDelay());
         registerNewAction("any", new ActionAny());
         registerNewAction("conditional", new ActionConditional());
+        registerNewAction("connect", new ActionConnect());
     }
 
     public void registerNewAction(String actionID,

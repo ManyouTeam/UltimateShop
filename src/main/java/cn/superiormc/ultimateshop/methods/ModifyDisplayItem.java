@@ -75,8 +75,7 @@ public class ModifyDisplayItem {
         if (tempVal9 != null) {
             buyTimes = tempVal9.getBuyUseTimes();
             sellTimes = tempVal9.getSellUseTimes();
-        }
-        else {
+        } else {
             CacheManager.cacheManager.getPlayerCache(player).setUseTimesCache(item,
                     0,
                     0,

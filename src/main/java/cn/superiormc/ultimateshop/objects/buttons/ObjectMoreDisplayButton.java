@@ -1,14 +1,13 @@
 package cn.superiormc.ultimateshop.objects.buttons;
 
 import cn.superiormc.ultimateshop.objects.buttons.subobjects.ObjectDisplayItemStack;
-import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 public class ObjectMoreDisplayButton extends AbstractButton {
 
-    private ObjectItem item;
+    private final ObjectItem item;
 
     public ObjectMoreDisplayButton(ConfigurationSection config, ObjectItem item) {
         super(config);

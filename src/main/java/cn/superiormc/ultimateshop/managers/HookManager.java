@@ -101,6 +101,9 @@ public class HookManager {
         if (CommonUtil.checkPluginLoad("ExecutableItems")) {
             registerNewItemHook("ExecutableItems", new ItemExecutableItemsHook());
         }
+        if (CommonUtil.checkPluginLoad("Nexo")) {
+            registerNewItemHook("Nexo", new ItemNexoHook());
+        }
     }
 
     public void registerNewEconomyHook(String pluginName,

@@ -41,8 +41,7 @@ public class ServerCache {
     public void initServerCache() {
         if (ConfigManager.configManager.getBoolean("database.enabled")) {
             SQLDatabase.checkData(this);
-        }
-        else {
+        } else {
             YamlDatabase.checkData(this);
         }
     }
@@ -50,8 +49,7 @@ public class ServerCache {
     public void shutServerCache(boolean quitServer) {
         if (ConfigManager.configManager.getBoolean("database.enabled")) {
             SQLDatabase.updateData(this, quitServer);
-        }
-        else {
+        } else {
             YamlDatabase.updateData(this, quitServer);
         }
     }
@@ -59,8 +57,7 @@ public class ServerCache {
     public void shutServerCacheOnDisable(boolean disable) {
         if (ConfigManager.configManager.getBoolean("database.enabled")) {
             SQLDatabase.updateDataOnDisable(this, disable);
-        }
-        else {
+        } else {
             YamlDatabase.updateData(this, true);
         }
     }

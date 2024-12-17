@@ -51,14 +51,14 @@ public class InitManager {
         resourceOutput("menus/example-shop-menu.yml", false);
     }
 
-    private void resourceOutput(String fileName, boolean fix) {
+    private void resourceOutput(String fileName, boolean regenerate) {
         File tempVal1 = new File(UltimateShop.instance.getDataFolder(), fileName);
         if (!tempVal1.exists()) {
-            if (!firstLoad && !fix) {
+            if (!firstLoad && !regenerate) {
                 return;
             }
             File tempVal2 = new File(fileName);
-            if (tempVal2.getParentFile() != null && fix) {
+            if (tempVal2.getParentFile() != null) {
                 CommonUtil.mkDir(tempVal2.getParentFile());
             }
             UltimateShop.instance.saveResource(tempVal2.getPath(), false);
