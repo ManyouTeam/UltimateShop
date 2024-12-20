@@ -78,6 +78,10 @@ public class ObjectUseTimesCache {
     }
 
     public void setBuyUseTimes(int i, boolean notUseBungee) {
+        if (i > Integer.MAX_VALUE - 10000) {
+            setSellUseTimes(0);
+            setBuyUseTimes(i - sellUseTimes);
+        }
         buyUseTimes = i;
         if (!notUseBungee && cache.server && BungeeCordManager.bungeeCordManager != null) {
             BungeeCordManager.bungeeCordManager.sendToOtherServer(
@@ -93,6 +97,10 @@ public class ObjectUseTimesCache {
     }
 
     public void setSellUseTimes(int i, boolean notUseBungee) {
+        if (i > Integer.MAX_VALUE - 10000) {
+            setBuyUseTimes(0);
+            setSellUseTimes(i - buyUseTimes);
+        }
         sellUseTimes = i;
         if (!notUseBungee && cache.server && BungeeCordManager.bungeeCordManager != null) {
             BungeeCordManager.bungeeCordManager.sendToOtherServer(

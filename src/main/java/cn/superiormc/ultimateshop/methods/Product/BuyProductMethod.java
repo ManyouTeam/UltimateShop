@@ -93,8 +93,7 @@ public class BuyProductMethod {
         if (tempVal9 != null) {
             tempVal9.refreshBuyTimes();
             playerUseTimes = tempVal9.getBuyUseTimes();
-        }
-        else {
+        } else {
             tempVal3.setUseTimesCache(tempVal2,
                     0,
                     0,
@@ -123,13 +122,9 @@ public class BuyProductMethod {
         }
         ObjectPrices tempVal5 = tempVal2.getBuyPrice();
         if (tempVal8 != null) {
-            if (quick) {
-                // 重置
-                tempVal8.refreshBuyTimes();
-            }
-            serverUseTimes = ServerCache.serverCache.getUseTimesCache().get(tempVal2).getBuyUseTimes();
-        }
-        else {
+            tempVal8.refreshBuyTimes();
+            serverUseTimes = tempVal8.getBuyUseTimes();
+        } else {
             tempVal11.setUseTimesCache(tempVal2,
                     0,
                     0,

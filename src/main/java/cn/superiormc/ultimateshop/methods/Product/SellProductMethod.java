@@ -108,8 +108,7 @@ public class SellProductMethod {
             // 重置
             tempVal9.refreshSellTimes();
             playerUseTimes = tempVal9.getSellUseTimes();
-        }
-        else {
+        } else {
             tempVal3.setUseTimesCache(tempVal2,
                     0,
                     0,
@@ -155,13 +154,9 @@ public class SellProductMethod {
             return ProductTradeStatus.PLAYER_MAX;
         }
         if (tempVal8 != null) {
-            if (quick) {
-                // 重置
-                tempVal8.refreshSellTimes();
-            }
-            serverUseTimes = ServerCache.serverCache.getUseTimesCache().get(tempVal2).getSellUseTimes();
-        }
-        else {
+            tempVal8.refreshSellTimes();
+            serverUseTimes = tempVal8.getSellUseTimes();
+        } else {
             tempVal11.setUseTimesCache(tempVal2,
                     0,
                     0,

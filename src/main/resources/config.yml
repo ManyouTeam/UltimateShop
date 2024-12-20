@@ -7,7 +7,6 @@
 debug: false
 
 config-files:
-  generate-default-files: true
   language: en_US
   # Premium version only.
   minecraft-locate-file:
@@ -143,6 +142,7 @@ use-times:
   default-reset-time: '00:00:00'
   # This only works for CUSTOM type of reset mode.
   default-reset-time-format: 'yyyy-MM-dd HH:mm:ss'
+  default-reset-value: 0
 
 math:
   enabled: true
@@ -240,11 +240,15 @@ placeholder:
     daily:
       reset-mode: TIMED
       reset-time: '00:00:00'
-      element-amount: 2
+      element-amount: 5
       elements:
         - 'A'
         - 'B'
         - 'C'
+        - 'D'
+        - 'E'
+        - 'F'
+        - 'G'
   # Premium version only
   compare:
     up: '↑'

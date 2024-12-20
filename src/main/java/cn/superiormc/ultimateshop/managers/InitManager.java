@@ -49,6 +49,7 @@ public class InitManager {
         resourceOutput("menus/buy-more-buy.yml", false);
         resourceOutput("menus/buy-more-sell.yml", false);
         resourceOutput("menus/example-shop-menu.yml", false);
+        resourceOutput("shops/daily.yml", false);
     }
 
     private void resourceOutput(String fileName, boolean regenerate) {

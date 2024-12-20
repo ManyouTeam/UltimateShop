@@ -100,6 +100,16 @@ public class ObjectItemConfig {
         return shopSection.getBoolean(path, defaultValue);
     }
 
+    public int getInt(String path, int defaultValue) {
+        if (shopSection == null) {
+            return section.getInt(path, defaultValue);
+        }
+        if (section.contains(path)) {
+            return section.getInt(path);
+        }
+        return shopSection.getInt(path, defaultValue);
+    }
+
     public ConfigurationSection getSection() {
         return section;
     }
