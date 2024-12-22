@@ -32,6 +32,8 @@ public class ObjectUseTimesCache {
 
     private final ServerCache cache;
 
+    private final boolean firstInsert;
+
     public ObjectUseTimesCache(ServerCache cache,
                                int buyUseTimes,
                                int sellUseTimes,
@@ -39,7 +41,9 @@ public class ObjectUseTimesCache {
                                String lastSellTime,
                                String cooldownBuyTime,
                                String cooldownSellTime,
-                               ObjectItem product) {
+                               ObjectItem product,
+                               boolean firstInsert) {
+        this.firstInsert = firstInsert;
         this.cache = cache;
         this.buyUseTimes = buyUseTimes;
         if (lastBuyTime != null) {
@@ -444,5 +448,9 @@ public class ObjectUseTimesCache {
             setLastBuyTime(null);
             resetCooldownBuyTime();
         }
+    }
+
+    public boolean isFirstInsert() {
+        return firstInsert;
     }
 }

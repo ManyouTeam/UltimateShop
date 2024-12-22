@@ -109,14 +109,7 @@ public class SellProductMethod {
             tempVal9.refreshSellTimes();
             playerUseTimes = tempVal9.getSellUseTimes();
         } else {
-            tempVal3.setUseTimesCache(tempVal2,
-                    0,
-                    0,
-                    null,
-                    null,
-                    null,
-                    null);
-            tempVal9 = tempVal3.getUseTimesCache().get(tempVal2);
+            tempVal9 = tempVal3.createUseTimesCache(tempVal2);
         }
         // 更改multi
         ObjectProducts tempVal5 = tempVal2.getReward();
@@ -157,13 +150,7 @@ public class SellProductMethod {
             tempVal8.refreshSellTimes();
             serverUseTimes = tempVal8.getSellUseTimes();
         } else {
-            tempVal11.setUseTimesCache(tempVal2,
-                    0,
-                    0,
-                    null,
-                    null,
-                    null,
-                    null);
+            tempVal11.createUseTimesCache(tempVal2);
         }
         if (tempVal2.getServerSellLimit(player) != -1 &&
                 serverUseTimes + multi > tempVal2.getServerSellLimit(player)) {

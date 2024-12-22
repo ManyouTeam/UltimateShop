@@ -54,14 +54,7 @@ public class BungeeCordSyncListener implements PluginMessageListener {
             }
             ObjectUseTimesCache useTimesCache = CacheManager.cacheManager.serverCache.getUseTimesCache().get(tempVal2);
             if (useTimesCache == null) {
-                CacheManager.cacheManager.serverCache.setUseTimesCache(tempVal2,
-                        0,
-                        0,
-                        null,
-                        null,
-                        null,
-                        null);
-                useTimesCache = CacheManager.cacheManager.serverCache.getUseTimesCache().get(tempVal2);
+                useTimesCache = CacheManager.cacheManager.serverCache.createUseTimesCache(tempVal2);
             }
             String typeMode = msgin.readUTF();
             switch (typeMode) {

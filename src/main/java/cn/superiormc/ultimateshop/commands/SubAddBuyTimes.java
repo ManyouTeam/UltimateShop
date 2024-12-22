@@ -60,29 +60,16 @@ public class SubAddBuyTimes extends AbstractCommand {
                 switch (args.length) {
                     case 4:
                         if (tempVal4 == null) {
-                            tempVal3.setUseTimesCache(item,
-                                    0,
-                                    0,
-                                    null,
-                                    null,
-                                    null,
-                                    null);
+                            tempVal3.createUseTimesCache(item);
                         } else {
                             tempVal4.setBuyUseTimes(0);
                         }
                         break;
                     case 5:
                         if (tempVal4 == null) {
-                            tempVal3.setUseTimesCache(item,
-                                    Integer.parseInt(args[4]),
-                                    0,
-                                    null,
-                                    null,
-                                    null,
-                                    null);
-                        } else {
-                            tempVal4.setBuyUseTimes(Integer.parseInt(args[4]) + tempVal4.getBuyUseTimes());
+                            tempVal4 = tempVal3.createUseTimesCache(item);
                         }
+                        tempVal4.setBuyUseTimes(Integer.parseInt(args[4]) + tempVal4.getBuyUseTimes());
                 }
             }
             LanguageManager.languageManager.sendStringText(player,
@@ -104,16 +91,9 @@ public class SubAddBuyTimes extends AbstractCommand {
         }
         ObjectUseTimesCache tempVal4 = tempVal3.getUseTimesCache().get(tempVal2);
         if (tempVal4 == null) {
-            tempVal3.setUseTimesCache(tempVal2,
-                    Integer.parseInt(args[4]),
-                    0,
-                    null,
-                    null,
-                    null,
-                    null);
-        } else {
-            tempVal4.setBuyUseTimes(Integer.parseInt(args[4]) + tempVal4.getBuyUseTimes());
+            tempVal4 = tempVal3.createUseTimesCache(tempVal2);
         }
+        tempVal4.setBuyUseTimes(Integer.parseInt(args[4]) + tempVal4.getBuyUseTimes());
         LanguageManager.languageManager.sendStringText(player,
                 "add-times",
                 "player",
@@ -159,29 +139,16 @@ public class SubAddBuyTimes extends AbstractCommand {
                 switch (args.length) {
                     case 4:
                         if (tempVal4 == null) {
-                            tempVal3.setUseTimesCache(item,
-                                    0,
-                                    0,
-                                    null,
-                                    null,
-                                    null,
-                                    null);
+                            tempVal3.createUseTimesCache(item);
                         } else {
                             tempVal4.setBuyUseTimes(0);
                         }
                         break;
                     case 5:
                         if (tempVal4 == null) {
-                            tempVal3.setUseTimesCache(item,
-                                    Integer.parseInt(args[4]),
-                                    0,
-                                    null,
-                                    null,
-                                    null,
-                                    null);
-                        } else {
-                            tempVal4.setBuyUseTimes(Integer.parseInt(args[4]) + tempVal4.getBuyUseTimes());
+                            tempVal4 = tempVal3.createUseTimesCache(item);
                         }
+                        tempVal4.setBuyUseTimes(Integer.parseInt(args[4]) + tempVal4.getBuyUseTimes());
                 }
             }
             LanguageManager.languageManager.sendStringText(
@@ -203,16 +170,9 @@ public class SubAddBuyTimes extends AbstractCommand {
         }
         ObjectUseTimesCache tempVal4 = tempVal3.getUseTimesCache().get(tempVal2);
         if (tempVal4 == null) {
-            tempVal3.setUseTimesCache(tempVal2,
-                    Integer.parseInt(args[4]),
-                    0,
-                    null,
-                    null,
-                    null,
-                    null);
-        } else {
-            tempVal4.setBuyUseTimes(Integer.parseInt(args[4]) + tempVal4.getBuyUseTimes());
+            tempVal4 = tempVal3.createUseTimesCache(tempVal2);
         }
+        tempVal4.setBuyUseTimes(Integer.parseInt(args[4]) + tempVal4.getBuyUseTimes());
         LanguageManager.languageManager.sendStringText("add-times",
                 "player",
                 args[3],

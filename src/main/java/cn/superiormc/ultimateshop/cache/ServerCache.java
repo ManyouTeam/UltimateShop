@@ -62,25 +62,22 @@ public class ServerCache {
         }
     }
 
-    public void setUseTimesCache(ObjectItem product,
-                                 int buyUseTimes,
-                                 int sellUseTimes,
-                                 String lastBuyTime,
-                                 String lastSellTime,
-                                 String cooldownBuyTime,
-                                 String cooldownSellTime
-    ) {
+    public ObjectUseTimesCache createUseTimesCache(ObjectItem product) {
         if (product == null) {
-            return;
+            return null;
         }
-        useTimesCache.put(product, new ObjectUseTimesCache(this,
-                buyUseTimes,
-                sellUseTimes,
-                lastBuyTime,
-                lastSellTime,
-                cooldownBuyTime,
-                cooldownSellTime,
-                product));
+        if (!useTimesCache.containsKey(product)) {
+            useTimesCache.put(product, new ObjectUseTimesCache(this,
+                    0,
+                    0,
+                    null,
+                    null,
+                    null,
+                    null,
+                    product,
+                    true));
+        }
+        return useTimesCache.get(product);
     }
 
     public void setUseTimesCache(String shop,
@@ -107,7 +104,8 @@ public class ServerCache {
                 lastSellTime,
                 cooldownBuyTime,
                 cooldownSellTime,
-                tempVal2));
+                tempVal2,
+                false));
     }
 
     public void setRandomPlaceholderCache(ObjectRandomPlaceholder placeholder,

@@ -76,24 +76,10 @@ public class ModifyDisplayItem {
             buyTimes = tempVal9.getBuyUseTimes();
             sellTimes = tempVal9.getSellUseTimes();
         } else {
-            CacheManager.cacheManager.getPlayerCache(player).setUseTimesCache(item,
-                    0,
-                    0,
-                    null,
-                    null,
-                    null,
-                    null);
-            tempVal9 = CacheManager.cacheManager.getPlayerCache(player).getUseTimesCache().get(item);
+            tempVal9 = CacheManager.cacheManager.getPlayerCache(player).createUseTimesCache(item);
         }
         if (tempVal10 == null) {
-            CacheManager.cacheManager.serverCache.setUseTimesCache(item,
-                    0,
-                    0,
-                    null,
-                    null,
-                    null,
-                    null);
-            tempVal10 = CacheManager.cacheManager.serverCache.getUseTimesCache().get(item);
+            tempVal10 = CacheManager.cacheManager.serverCache.createUseTimesCache(item);
         }
         for (String tempVal3 : item.getAddLore()) {
             String tempVal4 = tempVal3;

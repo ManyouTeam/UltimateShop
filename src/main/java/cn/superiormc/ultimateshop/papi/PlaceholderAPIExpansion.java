@@ -124,14 +124,7 @@ public class PlaceholderAPIExpansion extends PlaceholderExpansion {
             PlayerCache playerCache = CacheManager.cacheManager.getPlayerCache(player);
             ObjectUseTimesCache playerTimesCache = playerCache.getUseTimesCache().get(item);
             if (playerTimesCache == null) {
-                playerCache.setUseTimesCache(item,
-                        0,
-                        0,
-                        null,
-                        null,
-                        null,
-                        null);
-                playerTimesCache = playerCache.getUseTimesCache().get(item);
+                playerTimesCache = playerCache.createUseTimesCache(item);
                 if (playerTimesCache == null) {
                     return "ERROR: Can not load cache, restart the server.";
                 }

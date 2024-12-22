@@ -94,14 +94,7 @@ public class BuyProductMethod {
             tempVal9.refreshBuyTimes();
             playerUseTimes = tempVal9.getBuyUseTimes();
         } else {
-            tempVal3.setUseTimesCache(tempVal2,
-                    0,
-                    0,
-                    null,
-                    null,
-                    null,
-                    null);
-            tempVal9 = tempVal3.getUseTimesCache().get(tempVal2);
+            tempVal9 = tempVal3.createUseTimesCache(tempVal2);
         }
         if (tempVal2.getPlayerBuyLimit(player) != -1 &&
                 playerUseTimes + multi > tempVal2.getPlayerBuyLimit(player)) {
@@ -125,14 +118,7 @@ public class BuyProductMethod {
             tempVal8.refreshBuyTimes();
             serverUseTimes = tempVal8.getBuyUseTimes();
         } else {
-            tempVal11.setUseTimesCache(tempVal2,
-                    0,
-                    0,
-                    null,
-                    null,
-                    null,
-                    null);
-            tempVal8 = tempVal11.getUseTimesCache().get(tempVal2);
+            tempVal8 = tempVal11.createUseTimesCache(tempVal2);
         }
         if (tempVal2.getServerBuyLimit(player) != -1 &&
                 serverUseTimes + multi > tempVal2.getServerBuyLimit(player)) {
