@@ -228,40 +228,43 @@ public class SQLDatabase {
                     && cooldownBuyTime == null && cooldownSellTime == null) {
                 continue;
             }
-            if (tempVal1.get(tempVal2).isFirstInsert()) {
-                sqlManager.createInsert("ultimateshop_useTimes")
-                        .setColumnNames("playerUUID",
-                                "shop",
-                                "product",
-                                "buyUseTimes",
-                                "sellUseTimes",
-                                "lastBuyTime",
-                                "lastSellTime",
-                                "cooldownBuyTime",
-                                "cooldownSellTime")
-                        .setParams(playerUUID,
-                                tempVal2.getShop(),
-                                tempVal2.getProduct(),
-                                buyUseTimes,
-                                sellUseTimes,
-                                lastBuyTime,
-                                lastSellTime,
-                                cooldownBuyTime,
-                                cooldownSellTime)
-                        .executeAsync();
-            } else {
-                String[] keys = {"buyUseTimes", "sellUseTimes", "lastBuyTime", "lastSellTime", "cooldownBuyTime", "cooldownSellTime"};
-                Object[] values = {buyUseTimes, sellUseTimes, lastBuyTime, lastSellTime, cooldownBuyTime, cooldownSellTime};
-                sqlManager.createUpdate("ultimateshop_useTimes")
-                        .addCondition("playerUUID = '" + playerUUID + "'")
-                        .addCondition("shop = '" + tempVal2.getShop() + "'")
-                        .addCondition("product = '" + tempVal2.getProduct() + "'")
-                        .setColumnValues(keys, values)
-                        .build()
-                        .executeAsync();
+            try {
+                if (tempVal1.get(tempVal2).isFirstInsert()) {
+                    sqlManager.createInsert("ultimateshop_useTimes")
+                            .setColumnNames("playerUUID",
+                                    "shop",
+                                    "product",
+                                    "buyUseTimes",
+                                    "sellUseTimes",
+                                    "lastBuyTime",
+                                    "lastSellTime",
+                                    "cooldownBuyTime",
+                                    "cooldownSellTime")
+                            .setParams(playerUUID,
+                                    tempVal2.getShop(),
+                                    tempVal2.getProduct(),
+                                    buyUseTimes,
+                                    sellUseTimes,
+                                    lastBuyTime,
+                                    lastSellTime,
+                                    cooldownBuyTime,
+                                    cooldownSellTime)
+                            .execute();
+                } else {
+                    String[] keys = {"buyUseTimes", "sellUseTimes", "lastBuyTime", "lastSellTime", "cooldownBuyTime", "cooldownSellTime"};
+                    Object[] values = {buyUseTimes, sellUseTimes, lastBuyTime, lastSellTime, cooldownBuyTime, cooldownSellTime};
+                    sqlManager.createUpdate("ultimateshop_useTimes")
+                            .addCondition("playerUUID = '" + playerUUID + "'")
+                            .addCondition("shop = '" + tempVal2.getShop() + "'")
+                            .addCondition("product = '" + tempVal2.getProduct() + "'")
+                            .setColumnValues(keys, values)
+                            .build()
+                            .execute();
+                }
+            } catch (Throwable ignored) {
+
             }
         }
-
         if (cache.server && !UltimateShop.freeVersion) {
             Collection<ObjectRandomPlaceholderCache> tempVal3 = cache.getRandomPlaceholderCache().values();
             for (ObjectRandomPlaceholderCache tempVal4 : tempVal3) {

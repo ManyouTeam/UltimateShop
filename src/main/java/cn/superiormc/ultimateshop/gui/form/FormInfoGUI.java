@@ -71,18 +71,23 @@ public class FormInfoGUI extends FormGUI {
                 "general"
         ));
         tempVal2.content(bedrockTransfer(content));
+        String itemName = item.getDisplayName(player);
         // 购买
         ButtonComponent buy = ButtonComponent.of(TextUtil.parse(player, ConfigManager.configManager.getString(
                 "menu.bedrock.info.buttons.buy"))
-                .replace("{item-name}", item.getDisplayName(player)));
+                .replace("{item-name}", itemName));
         // 回收
         ButtonComponent sell = ButtonComponent.of(TextUtil.parse(player, ConfigManager.configManager.getString(
                         "menu.bedrock.info.buttons.sell"))
-                .replace("{item-name}", item.getDisplayName(player)));
+                .replace("{item-name}", itemName));
+        // 一键回收
+        ButtonComponent sellAll = ButtonComponent.of(TextUtil.parse(player, ConfigManager.configManager.getString(
+                "menu.bedrock.info.buttons.sell-all"))
+                        .replace("{item-name}", itemName));
         // 选择数量
         ButtonComponent buyMore = ButtonComponent.of(TextUtil.parse(player, ConfigManager.configManager.getString(
                         "menu.bedrock.info.buttons.buy-more"))
-                .replace("{item-name}", item.getDisplayName(player)));
+                .replace("{item-name}", itemName));
         // 返回
         ButtonComponent back = ButtonComponent.of(TextUtil.parse(player, ConfigManager.configManager.getString(
                 "menu.bedrock.info.buttons.back", "Back"
@@ -92,6 +97,9 @@ public class FormInfoGUI extends FormGUI {
         }
         if (!item.getSellPrice().empty) {
             tempVal2.button(sell);
+            if (ConfigManager.configManager.containsClickAction("sell-all")) {
+                tempVal2.button(sellAll);
+            }
         }
         if (item.getBuyMore() && ConfigManager.configManager.containsClickAction("select-amount")) {
             tempVal2.button(buyMore);
@@ -109,6 +117,14 @@ public class FormInfoGUI extends FormGUI {
             } else if (response.clickedButton().equals(back)) {
                 FormShopGUI shopGUI = new FormShopGUI(player, item.getShopObject(), item.getShopObject().getShopMenuObject(), true);
                 shopGUI.openGUI(true);
+            } else if (response.clickedButton().equals(sellAll)) {
+                SellProductMethod.startSell(item.getShop(),
+                        item.getProduct(),
+                        player.getPlayer(),
+                        !ConfigManager.configManager.getBoolean("placeholder.click.enabled"),
+                        false,
+                        true,
+                        menu.getSection().getInt("max-amount", 64));
             }
         });
         tempVal2.closedOrInvalidResultHandler(response -> removeOpenGUIStatus());
@@ -155,8 +171,7 @@ public class FormInfoGUI extends FormGUI {
                         false,
                         getAmount());
             }
-        }
-        else {
+        } else {
             if (!item.getSellPrice().empty) {
                 SellProductMethod.startSell(item.getShop(),
                         item.getProduct(),
@@ -177,8 +192,7 @@ public class FormInfoGUI extends FormGUI {
             realAmount = Integer.parseInt(amount);
             if (realAmount < 1) {
                 realAmount = 1;
-            }
-            else if (realAmount > menu.getSection().getInt("max-amount", 64)) {
+            } else if (realAmount > menu.getSection().getInt("max-amount", 64)) {
                 realAmount = menu.getSection().getInt("max-amount", 64);
             }
         }

@@ -42,6 +42,7 @@ public class ItemUtil {
                 result.append(firstChar).append(restOfWord).append(" ");
             }
         }
+        result.deleteCharAt(result.length() - 1);
         return result.toString();
     }
 

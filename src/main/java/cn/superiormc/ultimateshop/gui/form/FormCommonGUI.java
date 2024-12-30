@@ -6,18 +6,15 @@ import cn.superiormc.ultimateshop.objects.ObjectThingRun;
 import cn.superiormc.ultimateshop.objects.buttons.AbstractButton;
 import cn.superiormc.ultimateshop.objects.buttons.subobjects.ObjectDisplayItemStack;
 import cn.superiormc.ultimateshop.objects.menus.ObjectMenu;
-import cn.superiormc.ultimateshop.utils.ItemUtil;
 import cn.superiormc.ultimateshop.utils.TextUtil;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
-import org.bukkit.inventory.ItemStack;
 import org.geysermc.cumulus.component.ButtonComponent;
 import org.geysermc.cumulus.form.SimpleForm;
-import org.geysermc.cumulus.util.FormImage;
 
 public class FormCommonGUI extends FormGUI {
 
-    private ObjectMenu commonMenu = null;
+    private ObjectMenu commonMenu;
 
     private final boolean bypass;
 
@@ -53,9 +50,7 @@ public class FormCommonGUI extends FormGUI {
             menuButtons.get(menuItems.get(response.clickedButton())).clickEvent(ClickType.LEFT, player);
             removeOpenGUIStatus();
         });
-        tempVal2.closedOrInvalidResultHandler(response -> {
-            removeOpenGUIStatus();
-        });
+        tempVal2.closedOrInvalidResultHandler(response -> removeOpenGUIStatus());
         if (commonMenu.getString("bedrock.content", null) != null) {
             tempVal2.content(TextUtil.parse(player, getMenu().getString("bedrock.content", "")));
         }

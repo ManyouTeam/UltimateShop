@@ -95,13 +95,14 @@ menu:
       buttons:
         amount:
           name: 'Amount'
-          tip: 'Type amount here! Type all to sell all!'
+          tip: 'Type amount here!'
     info:
       title: 'Product Info: {item-name} x{amount}'
       buttons:
         buy: 'Buy'
         sell: 'Sell'
         buy-more: 'Select Amount'
+        sell-all: 'Sell All'
         # Remove this option if you don't want this button.
         back: '&cBack'
   buy-more-menu:
