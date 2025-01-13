@@ -1,8 +1,10 @@
 package cn.superiormc.ultimateshop.objects.buttons.subobjects;
 
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
+import cn.superiormc.ultimateshop.utils.TextUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -108,6 +110,16 @@ public class ObjectItemConfig {
             return section.getInt(path);
         }
         return shopSection.getInt(path, defaultValue);
+    }
+
+    public int getIntWithPAPI(Player player, String path, String defaultValue) {
+        if (shopSection == null) {
+            return Integer.parseInt(TextUtil.withPAPI(section.getString(path, defaultValue), player));
+        }
+        if (section.contains(path)) {
+            return Integer.parseInt(TextUtil.parse(section.getString(path), player));
+        }
+        return Integer.parseInt(TextUtil.parse(shopSection.getString(path, defaultValue), player));
     }
 
     public ConfigurationSection getSection() {

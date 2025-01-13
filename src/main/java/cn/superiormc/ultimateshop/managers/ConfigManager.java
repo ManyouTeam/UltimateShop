@@ -4,10 +4,12 @@ import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.objects.ObjectShop;
 import cn.superiormc.ultimateshop.objects.items.subobjects.ObjectRandomPlaceholder;
 import cn.superiormc.ultimateshop.objects.menus.ObjectMenu;
+import cn.superiormc.ultimateshop.utils.TextUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 
 import java.io.File;
@@ -142,6 +144,10 @@ public class ConfigManager {
 
     public int getInt(String path, int defaultValue) {
         return config.getInt(path, defaultValue);
+    }
+
+    public int getIntWithPAPI(Player player, String path, String defaultValue) {
+        return Integer.parseInt(TextUtil.withPAPI(config.getString(path, defaultValue), player));
     }
 
     public int getIntOrDefault(String originalPath, String newPath, int defaultValue) {

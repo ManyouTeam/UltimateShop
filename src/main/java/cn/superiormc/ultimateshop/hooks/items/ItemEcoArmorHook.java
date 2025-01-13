@@ -15,10 +15,7 @@ public class ItemEcoArmorHook extends AbstractItemHook {
 
     @Override
     public ItemStack getHookItemByID(Player player, String hookItemID) {
-        if (ArmorSets.getByID(hookItemID.split(";;")[0]) == null) {
-            return null;
-        }
-        ArmorSet armorSet = ArmorSets.getByID(hookItemID);
+        ArmorSet armorSet = ArmorSets.getByID(hookItemID.split(";;")[0]);
         if (armorSet == null) {
             return returnNullItem(hookItemID);
         }

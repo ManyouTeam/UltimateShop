@@ -453,6 +453,17 @@ public class ObjectItem extends AbstractButton {
         return ConfigManager.configManager.getString("use-times.default-reset-time-format", "yyyy-MM-dd HH:mm:ss");
     }
 
+    public int getBuyTimesResetValue(Player player) {
+        if (UltimateShop.freeVersion) {
+            return 0;
+        }
+        int value = itemConfig.getIntWithPAPI(player, "buy-times-reset-value", "-1");
+        if (value > 0) {
+            return value;
+        }
+        return ConfigManager.configManager.getIntWithPAPI(player, "use-times.default-reset-value", "0");
+    }
+
     public String getSellTimesResetMode() {
         if (itemConfig.getString("sell-limits-reset-mode") != null) {
             return itemConfig.getString("sell-limits-reset-mode");
@@ -476,6 +487,17 @@ public class ObjectItem extends AbstractButton {
             return itemConfig.getString("sell-times-reset-time-format");
         }
         return ConfigManager.configManager.getString("use-times.default-reset-time-format", "yyyy-MM-dd HH:mm:ss");
+    }
+
+    public int getSellTimesResetValue(Player player) {
+        if (UltimateShop.freeVersion) {
+            return 0;
+        }
+        int value = itemConfig.getIntWithPAPI(player, "sell-times-reset-value", "-1");
+        if (value > 0) {
+            return value;
+        }
+        return ConfigManager.configManager.getIntWithPAPI(player, "use-times.default-reset-value", "0");
     }
 
     @Override

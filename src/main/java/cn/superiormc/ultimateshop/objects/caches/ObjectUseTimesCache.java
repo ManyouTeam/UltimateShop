@@ -11,7 +11,6 @@ import cn.superiormc.ultimateshop.utils.CommonUtil;
 import cn.superiormc.ultimateshop.utils.TextUtil;
 import org.bukkit.Bukkit;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public class ObjectUseTimesCache {
@@ -283,59 +282,78 @@ public class ObjectUseTimesCache {
 
     private LocalDateTime getTimedBuyRefreshTime(String time) {
         LocalDateTime refreshResult = null;
-        String[] tempVal2 = time.split(":");
-        int month = 0;
-        int day = 0;
-        if (tempVal2.length < 3) {
-            ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Your reset time " + time + " is invalid.");
-            return LocalDateTime.now();
-        }
-        if (tempVal2.length == 5) {
-            month = Integer.parseInt(tempVal2[0]);
-        }
-        if (tempVal2.length >= 4) {
-            day = Integer.parseInt(tempVal2[tempVal2.length - 4]);
-        }
-        LocalDateTime checkTime = lastBuyTime;
-        if (lastBuyTime == null) {
-            checkTime = LocalDateTime.now();
-        }
-        refreshResult = checkTime.withHour(Integer.parseInt(tempVal2[tempVal2.length - 3])).withMinute(
-                Integer.parseInt(tempVal2[tempVal2.length - 2])).withSecond(
-                Integer.parseInt(tempVal2[tempVal2.length - 1]));
-        refreshResult = refreshResult.plusDays(day).plusMonths(month);
-        if (checkTime.isAfter(refreshResult)) {
-            refreshResult = refreshResult.plusDays(1L);
+        String[] tempVal3 = time.split(";;");
+        for (String tempVal4 : tempVal3) {
+            LocalDateTime thisResult;
+            String[] tempVal2 = tempVal4.split(":");
+            int month = 0;
+            int day = 0;
+            if (tempVal2.length < 3) {
+                ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Your reset time " + tempVal4 + " is invalid.");
+                return LocalDateTime.now();
+            }
+            if (tempVal2.length == 5) {
+                month = Integer.parseInt(tempVal2[0]);
+            }
+            if (tempVal2.length >= 4) {
+                day = Integer.parseInt(tempVal2[tempVal2.length - 4]);
+            }
+            LocalDateTime checkTime = lastBuyTime;
+            if (lastBuyTime == null) {
+                checkTime = LocalDateTime.now();
+            }
+            thisResult = checkTime.withHour(Integer.parseInt(tempVal2[tempVal2.length - 3])).withMinute(
+                    Integer.parseInt(tempVal2[tempVal2.length - 2])).withSecond(
+                    Integer.parseInt(tempVal2[tempVal2.length - 1]));
+            thisResult = thisResult.plusDays(day).plusMonths(month);
+            if (checkTime.isAfter(thisResult)) {
+                thisResult = thisResult.plusDays(1L);
+            }
+            if (refreshResult == null || thisResult.isBefore(refreshResult)) {
+                refreshResult = thisResult;
+            }
+            if (UltimateShop.freeVersion) {
+                break;
+            }
         }
         return refreshResult;
     }
 
     private LocalDateTime getTimedSellRefreshTime(String time) {
-        LocalDate nowTime = LocalDate.now();
         LocalDateTime refreshResult = null;
-        String[] tempVal2 = time.split(":");
-        int month = 0;
-        int day = 0;
-        if (tempVal2.length < 3) {
-            ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Your reset time " + time + " is invalid.");
-            return LocalDateTime.now();
-        }
-        if (tempVal2.length == 5) {
-            month = Integer.parseInt(tempVal2[0]);
-        }
-        if (tempVal2.length >= 4) {
-            day = Integer.parseInt(tempVal2[1]);
-        }
-        LocalDateTime checkTime = lastSellTime;
-        if (lastSellTime == null) {
-            checkTime = LocalDateTime.now();
-        }
-        refreshResult = checkTime.withHour(Integer.parseInt(tempVal2[tempVal2.length - 3])).withMinute(
-                Integer.parseInt(tempVal2[tempVal2.length - 2])).withSecond(
-                Integer.parseInt(tempVal2[tempVal2.length - 1]));
-        refreshResult = refreshResult.plusDays(day).plusMonths(month);
-        if (checkTime.isAfter(refreshResult)) {
-            refreshResult = refreshResult.plusDays(1L);
+        String[] tempVal3 = time.split(";;");
+        for (String tempVal4 : tempVal3) {
+            LocalDateTime thisResult;
+            String[] tempVal2 = tempVal4.split(":");
+            int month = 0;
+            int day = 0;
+            if (tempVal2.length < 3) {
+                ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Your reset time " + tempVal4 + " is invalid.");
+                return LocalDateTime.now();
+            }
+            if (tempVal2.length == 5) {
+                month = Integer.parseInt(tempVal2[0]);
+            }
+            if (tempVal2.length >= 4) {
+                day = Integer.parseInt(tempVal2[1]);
+            }
+            LocalDateTime checkTime = lastSellTime;
+            if (lastSellTime == null) {
+                checkTime = LocalDateTime.now();
+            }
+            thisResult = checkTime.withHour(Integer.parseInt(tempVal2[tempVal2.length - 3])).withMinute(
+                    Integer.parseInt(tempVal2[tempVal2.length - 2])).withSecond(
+                    Integer.parseInt(tempVal2[tempVal2.length - 1]));
+            thisResult = thisResult.plusDays(day).plusMonths(month);
+            if (checkTime.isAfter(thisResult)) {
+                thisResult = thisResult.plusDays(1L);
+            }
+            if (refreshResult == null || thisResult.isBefore(refreshResult)) {
+                refreshResult = thisResult;
+            }
+            if (UltimateShop.freeVersion) {
+                break;
+            }
         }
         return refreshResult;
     }
@@ -435,7 +453,7 @@ public class ObjectUseTimesCache {
     public void refreshSellTimes() {
         LocalDateTime tempVal1 = getSellRefreshTime();
         if (tempVal1 != null && tempVal1.isBefore(LocalDateTime.now())) {
-            setSellUseTimes(0);
+            setSellUseTimes(product.getSellTimesResetValue(cache.player));
             setLastSellTime(null);
             resetCooldownSellTime();
         }
@@ -444,7 +462,7 @@ public class ObjectUseTimesCache {
     public void refreshBuyTimes() {
         LocalDateTime tempVal1 = getBuyRefreshTime();
         if (tempVal1 != null && tempVal1.isBefore(LocalDateTime.now())) {
-            setBuyUseTimes(0);
+            setBuyUseTimes(product.getBuyTimesResetValue(cache.player));
             setLastBuyTime(null);
             resetCooldownBuyTime();
         }

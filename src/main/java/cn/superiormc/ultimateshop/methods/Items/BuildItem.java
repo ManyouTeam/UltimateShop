@@ -585,12 +585,11 @@ public class BuildItem {
         if (meta instanceof SkullMeta) {
             SkullMeta skullMeta = (SkullMeta) meta;
             String skullTextureNameKey = null;
-            if (UltimateShop.freeVersion) {
-                skullTextureNameKey = section.getString("skull-meta", section.getString("skull"));
-            } else {
-                skullTextureNameKey = TextUtil.parse(player, section.getString("skull-meta", section.getString("skull")));
-            }
+            skullTextureNameKey = section.getString("skull-meta", section.getString("skull"));
             if (skullTextureNameKey != null) {
+                if (!UltimateShop.freeVersion) {
+                    skullTextureNameKey = TextUtil.parse(player, skullTextureNameKey);
+                }
                 if (skullTextureNameKey.length() > 16) {
                     if (UltimateShop.isPaper && ConfigManager.configManager.getBoolean("paper-api.skull")) {
                         PlayerProfile profile = Bukkit.createProfile(UUID.randomUUID(), "");

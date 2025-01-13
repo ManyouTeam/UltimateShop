@@ -128,25 +128,32 @@ public class ObjectRandomPlaceholderCache {
     private LocalDateTime getTimedRefreshTime(String time) {
         LocalDate nowTime = LocalDate.now();
         LocalDateTime refreshResult = null;
-        String[] tempVal2 = time.split(":");
-        if (tempVal2.length < 3) {
-            ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Your reset time " + time + " is invalid.");
-            return LocalDateTime.now();
-        }
-        int month = 0;
-        int day = 0;
-        if (tempVal2.length == 5) {
-            month = Integer.parseInt(tempVal2[0]);
-        }
-        if (tempVal2.length >= 4) {
-            day = Integer.parseInt(tempVal2[tempVal2.length - 4]);
-        }
-        refreshResult = nowTime.atTime(Integer.parseInt(tempVal2[tempVal2.length - 3]),
-                Integer.parseInt(tempVal2[tempVal2.length - 2]),
-                Integer.parseInt(tempVal2[tempVal2.length - 1]));
-        refreshResult = refreshResult.plusDays(day).plusMonths(month);
-        if (LocalDateTime.now().isAfter(refreshResult)) {
-            refreshResult = refreshResult.plusDays(1L);
+        String[] tempVal3 = time.split(";;");
+        for (String tempVal4 : tempVal3) {
+            LocalDateTime thisResult;
+            String[] tempVal2 = tempVal4.split(":");
+            if (tempVal2.length < 3) {
+                ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Your reset time " + tempVal4 + " is invalid.");
+                return LocalDateTime.now();
+            }
+            int month = 0;
+            int day = 0;
+            if (tempVal2.length == 5) {
+                month = Integer.parseInt(tempVal2[0]);
+            }
+            if (tempVal2.length >= 4) {
+                day = Integer.parseInt(tempVal2[tempVal2.length - 4]);
+            }
+            thisResult = nowTime.atTime(Integer.parseInt(tempVal2[tempVal2.length - 3]),
+                    Integer.parseInt(tempVal2[tempVal2.length - 2]),
+                    Integer.parseInt(tempVal2[tempVal2.length - 1]));
+            thisResult= thisResult.plusDays(day).plusMonths(month);
+            if (LocalDateTime.now().isAfter(thisResult)) {
+                thisResult = thisResult.plusDays(1L);
+            }
+            if (refreshResult == null || thisResult.isBefore(refreshResult)) {
+                refreshResult = thisResult;
+            }
         }
         return refreshResult;
     }
