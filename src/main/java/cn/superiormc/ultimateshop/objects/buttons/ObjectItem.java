@@ -89,7 +89,7 @@ public class ObjectItem extends AbstractButton {
 
     private void initDisplayItem() {
         displayItem = new ObjectDisplayItem(itemConfig.getConfigurationSection("display-item"),
-                itemConfig.getConfigurationSection("display-item-conditions"),
+                itemConfig.getConfigurationSection(ConfigManager.configManager.getString("conditions.display-item-key")),
                 this);
     }
 

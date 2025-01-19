@@ -1,5 +1,6 @@
 package cn.superiormc.ultimateshop.objects.buttons;
 
+import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.objects.buttons.subobjects.ObjectDisplayItem;
 import cn.superiormc.ultimateshop.objects.buttons.subobjects.ObjectDisplayItemStack;
 import org.bukkit.Bukkit;
@@ -28,7 +29,7 @@ public class ObjectCopyItem extends AbstractButton {
     private void initDisplayItem() {
         if (section.contains("display-item")) {
             displayItem = new ObjectDisplayItem(section.getConfigurationSection("display-item"),
-                    section.getConfigurationSection("display-item-conditions"),
+                    section.getConfigurationSection(ConfigManager.configManager.getString("conditions.display-item-key")),
                     item);
         } else {
             displayItem = item.getDisplayItemObject();

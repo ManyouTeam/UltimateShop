@@ -1,5 +1,6 @@
 package cn.superiormc.ultimateshop.objects.buttons;
 
+import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.ErrorManager;
 import cn.superiormc.ultimateshop.objects.ObjectShop;
 import cn.superiormc.ultimateshop.objects.ObjectThingRun;
@@ -62,7 +63,7 @@ public class ObjectButton extends AbstractButton {
         }
         condition = new ObjectCondition(config.getConfigurationSection("conditions"));
         displayItem = new ObjectDisplayItem(config.getConfigurationSection("display-item"),
-                config.getConfigurationSection("display-item-conditions"));
+                config.getConfigurationSection(ConfigManager.configManager.getString("conditions.display-item-key")));
     }
 
     @Override

@@ -35,6 +35,8 @@ public class TaskManager {
     }
 
     public void cancelTask() {
-        saveTask.cancel();
+        if (saveTask != null) {
+            saveTask.cancel();
+        }
     }
 }

@@ -324,6 +324,12 @@ prices:
     amount: 1
     placeholder: '{amount} Mythic Axe'
 
+conditions:
+  products-key: 'products-conditions'
+  buy-prices-key: 'buy-prices-conditions'
+  sell-prices-key: 'sell-prices-conditions'
+  display-item-key: 'display-item-conditions'
+
 # Premium version only
 sell-stick-items:
   A:

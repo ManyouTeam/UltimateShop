@@ -87,12 +87,12 @@ public abstract class AbstractSingleThing implements Comparable<AbstractSingleTh
         if (this instanceof ObjectSinglePrice) {
             ObjectPrices objectPrices = (ObjectPrices) this.things;
             if (objectPrices.getPriceMode() == PriceMode.BUY) {
-                conditions = things.item.getItemConfig().getConfigurationSection("buy-prices-conditions." + id);
+                conditions = things.item.getItemConfig().getConfigurationSection(ConfigManager.configManager.getString("conditions.buy-prices-key") + "." + id);
             } else {
-                conditions = things.item.getItemConfig().getConfigurationSection("sell-prices-conditions." + id);
+                conditions = things.item.getItemConfig().getConfigurationSection(ConfigManager.configManager.getString("conditions.sell-prices-key") + "." + id);
             }
         } else if (this instanceof ObjectSingleProduct) {
-            conditions = things.item.getItemConfig().getConfigurationSection("products-conditions." + id);
+            conditions = things.item.getItemConfig().getConfigurationSection(ConfigManager.configManager.getString("conditions.products-key") + "." + id);
         }
         if (conditions == null) {
             conditions = singleSection.getConfigurationSection("conditions");

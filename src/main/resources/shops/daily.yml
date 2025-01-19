@@ -71,7 +71,9 @@ general-configs:
     vip: 256
   sell-limits-conditions:
     vip:
-      - 'permission: group.vip'
+      1:
+        type: permission
+        permission: 'group.vip'
   sell-limits-reset-mode: 'TIMED'
   sell-limits-reset-time: '00:00:00'
 

@@ -188,7 +188,7 @@ public class DebuildItem {
         // Glow
         if (CommonUtil.getMinorVersion(20, 5)) {
             if (meta.hasEnchantmentGlintOverride()) {
-                section.set("hide-tool-tip", "true");
+                section.set("glow", "true");
             }
         }
 
