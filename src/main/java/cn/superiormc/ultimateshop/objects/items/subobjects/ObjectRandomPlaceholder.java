@@ -7,6 +7,7 @@ import cn.superiormc.ultimateshop.objects.caches.ObjectRandomPlaceholderCache;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
 import org.bukkit.configuration.ConfigurationSection;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -128,6 +129,31 @@ public class ObjectRandomPlaceholder {
     }
 
     public static String getRefreshDoneTime(String id) {
-        return CommonUtil.timeToString(getRefreshDoneTimeObject(id), ConfigManager.configManager.getString("placeholder.cooldown.format"));
+        return CommonUtil.timeToString(getRefreshDoneTimeObject(id), ConfigManager.configManager.getString("placeholder.refresh.format"));
+    }
+
+    public static String getNextTime(String id) {
+        if (UltimateShop.freeVersion) {
+            return "";
+        }
+        LocalDateTime tempVal1 = getRefreshDoneTimeObject(id);
+        if (tempVal1 == null || tempVal1.getYear() == 2999) {
+            return ConfigManager.configManager.getString("placeholder.next.never");
+        }
+        Duration duration = Duration.between(tempVal1, LocalDateTime.now());
+        long totalSeconds = Math.abs(duration.getSeconds());
+        long days = totalSeconds / (24 * 3600);
+        long hours = (totalSeconds % (24 * 3600)) / 3600;
+        long minutes = (totalSeconds % 3600) / 60;
+        long seconds = totalSeconds % 60;
+        if (days > 0) {
+            return ConfigManager.configManager.getString("placeholder.next.with-day-format").replace("{d}", String.valueOf(days))
+                    .replace("{h}", String.format("%02d", hours))
+                    .replace("{m}", String.format("%02d", minutes))
+                    .replace("{s}", String.format("%02d", seconds));
+        }
+        return ConfigManager.configManager.getString("placeholder.next.without-day-format").replace("{h}", String.valueOf(hours))
+                .replace("{m}", String.format("%02d", minutes))
+                .replace("{s}", String.format("%02d", seconds));
     }
 }

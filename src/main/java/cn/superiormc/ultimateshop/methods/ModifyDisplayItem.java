@@ -14,7 +14,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -279,6 +278,10 @@ public class ModifyDisplayItem {
                         String.valueOf(tempVal9.getBuyRefreshTimeDisplayName()),
                         "sell-refresh-player",
                         String.valueOf(tempVal9.getSellRefreshTimeDisplayName()),
+                        "buy-next-player",
+                        String.valueOf(tempVal9.getBuyRefreshTimeNextName()),
+                        "sell-next-player",
+                        String.valueOf(tempVal9.getSellRefreshTimeNextName()),
                         "buy-times-server",
                         String.valueOf(tempVal10.getBuyUseTimes()),
                         "sell-times-server",
@@ -287,6 +290,10 @@ public class ModifyDisplayItem {
                         String.valueOf(tempVal10.getBuyRefreshTimeDisplayName()),
                         "sell-refresh-server",
                         String.valueOf(tempVal10.getSellRefreshTimeDisplayName()),
+                        "buy-next-server",
+                        String.valueOf(tempVal10.getBuyRefreshTimeNextName()),
+                        "sell-next-server",
+                        String.valueOf(tempVal10.getSellRefreshTimeNextName()),
                         "buy-click",
                         getBuyClickPlaceholder(player, multi, item, clickType),
                         "sell-click",

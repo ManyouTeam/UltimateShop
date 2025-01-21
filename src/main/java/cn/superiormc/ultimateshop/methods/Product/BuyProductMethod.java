@@ -108,7 +108,9 @@ public class BuyProductMethod {
                         "limit",
                         String.valueOf(tempVal2.getPlayerBuyLimit(player)),
                         "refresh",
-                        tempVal9.getBuyRefreshTimeDisplayName());
+                        tempVal9.getBuyRefreshTimeDisplayName(),
+                        "next",
+                        tempVal9.getBuyRefreshTimeNextName());
 
             }
             return ProductTradeStatus.PLAYER_MAX;
@@ -132,8 +134,9 @@ public class BuyProductMethod {
                         "limit",
                         String.valueOf(tempVal2.getServerBuyLimit(player)),
                         "refresh",
-                        tempVal8.getBuyRefreshTimeDisplayName());
-
+                        tempVal8.getBuyRefreshTimeDisplayName(),
+                        "next",
+                        tempVal8.getBuyRefreshTimeNextName());
             }
             return ProductTradeStatus.SERVER_MAX;
         }

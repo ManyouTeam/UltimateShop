@@ -11,6 +11,7 @@ import cn.superiormc.ultimateshop.utils.CommonUtil;
 import cn.superiormc.ultimateshop.utils.TextUtil;
 import org.bukkit.Bukkit;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 
 public class ObjectUseTimesCache {
@@ -272,12 +273,86 @@ public class ObjectUseTimesCache {
         return CommonUtil.timeToString(tempVal1, ConfigManager.configManager.getString("placeholder.refresh.format"));
     }
 
+    public String getBuyRefreshTimeNextName() {
+        if (UltimateShop.freeVersion) {
+            return "";
+        }
+        LocalDateTime tempVal1 = getBuyRefreshTime();
+        if (tempVal1 == null || tempVal1.getYear() == 2999) {
+            return ConfigManager.configManager.getString("placeholder.next.never");
+        }
+        Duration duration = Duration.between(LocalDateTime.now(), tempVal1);
+        long totalSeconds = Math.abs(duration.getSeconds());
+        long days = totalSeconds / (24 * 3600);
+        long hours = (totalSeconds % (24 * 3600)) / 3600;
+        long minutes = (totalSeconds % 3600) / 60;
+        long seconds = totalSeconds % 60;
+        if (days > 0) {
+            return ConfigManager.configManager.getString("placeholder.next.with-day-format").replace("{d}", String.valueOf(days))
+                    .replace("{h}", String.format("%02d", hours))
+                    .replace("{m}", String.format("%02d", minutes))
+                    .replace("{s}", String.format("%02d", seconds));
+        }
+        return ConfigManager.configManager.getString("placeholder.next.without-day-format").replace("{h}", String.valueOf(hours))
+                .replace("{m}", String.format("%02d", minutes))
+                .replace("{s}", String.format("%02d", seconds));
+    }
+
+    public String getBuyLastTimeName() {
+        if (UltimateShop.freeVersion) {
+            return "";
+        }
+        LocalDateTime tempVal1 = lastBuyTime;
+        if (tempVal1 == null || tempVal1.getYear() == 2999) {
+            return "0";
+        }
+        Duration duration = Duration.between(tempVal1, LocalDateTime.now());
+        return String.valueOf(duration.getSeconds());
+    }
+
     public String getSellRefreshTimeDisplayName() {
         LocalDateTime tempVal1 = getSellRefreshTime();
         if (tempVal1 == null || tempVal1.getYear() == 2999) {
             return ConfigManager.configManager.getString("placeholder.refresh.never");
         }
         return CommonUtil.timeToString(tempVal1, ConfigManager.configManager.getString("placeholder.refresh.format"));
+    }
+
+    public String getSellRefreshTimeNextName() {
+        if (UltimateShop.freeVersion) {
+            return "";
+        }
+        LocalDateTime tempVal1 = getSellRefreshTime();
+        if (tempVal1 == null || tempVal1.getYear() == 2999) {
+            return ConfigManager.configManager.getString("placeholder.next.never");
+        }
+        Duration duration = Duration.between(LocalDateTime.now(), tempVal1);
+        long totalSeconds = Math.abs(duration.getSeconds());
+        long days = totalSeconds / (24 * 3600);
+        long hours = (totalSeconds % (24 * 3600)) / 3600;
+        long minutes = (totalSeconds % 3600) / 60;
+        long seconds = totalSeconds % 60;
+        if (days > 0) {
+            return ConfigManager.configManager.getString("placeholder.next.with-day-format").replace("{d}", String.valueOf(days))
+                    .replace("{h}", String.format("%02d", hours))
+                    .replace("{m}", String.format("%02d", minutes))
+                    .replace("{s}", String.format("%02d", seconds));
+        }
+        return ConfigManager.configManager.getString("placeholder.next.without-day-format").replace("{h}", String.valueOf(hours))
+                .replace("{m}", String.format("%02d", minutes))
+                .replace("{s}", String.format("%02d", seconds));
+    }
+
+    public String getSellLastTimeName() {
+        if (UltimateShop.freeVersion) {
+            return "";
+        }
+        LocalDateTime tempVal1 = lastSellTime;
+        if (tempVal1 == null || tempVal1.getYear() == 2999) {
+            return "0";
+        }
+        Duration duration = Duration.between(tempVal1, LocalDateTime.now());
+        return String.valueOf(duration.getSeconds());
     }
 
     private LocalDateTime getTimedBuyRefreshTime(String time) {

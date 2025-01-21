@@ -162,7 +162,11 @@ public class ObjectSinglePrice extends AbstractSingleThing {
                         "buy-times-server",
                         replacePlaceholder(serverBuyTimes, offsetAmount, true),
                         "sell-times-server",
-                        replacePlaceholder(serverSellTimes, offsetAmount, false));
+                        replacePlaceholder(serverSellTimes, offsetAmount, false),
+                        "last-buy-player", tempVal3 != null ? tempVal3.getBuyLastTimeName() : "",
+                        "last-sell-player", tempVal3 != null ? tempVal3.getSellLastTimeName() : "",
+                        "last-buy-server", tempVal4 != null ? tempVal4.getBuyLastTimeName() : "",
+                        "last-sell-server", tempVal4 != null ? tempVal4.getSellLastTimeName() : "");
             }
             cost = MathUtil.doCalculate(TextUtil.withPAPI(tempVal1, player));
         }

@@ -89,7 +89,11 @@ public class ObjectSingleProduct extends AbstractSingleThing {
                         "buy-times-server",
                         replacePlaceholder(serverBuyTimes, offsetAmount, buyOrSell, true),
                         "sell-times-server",
-                        replacePlaceholder(serverSellTimes, offsetAmount, buyOrSell, false));
+                        replacePlaceholder(serverSellTimes, offsetAmount, buyOrSell, false),
+                        "last-buy-player", tempVal3 != null ? tempVal3.getBuyLastTimeName() : "",
+                        "last-sell-player", tempVal3 != null ? tempVal3.getSellLastTimeName() : "",
+                        "last-buy-server", tempVal4 != null ? tempVal4.getBuyLastTimeName() : "",
+                        "last-sell-server", tempVal4 != null ? tempVal4.getSellLastTimeName() : "");
             }
             cost = MathUtil.doCalculate(TextUtil.withPAPI(tempVal1, player));
         }

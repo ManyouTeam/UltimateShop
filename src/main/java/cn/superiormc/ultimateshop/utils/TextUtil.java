@@ -34,6 +34,15 @@ public class TextUtil {
         if (text.matches("[0-9]+")) {
             return text;
         }
+        text = parseBuiltInPlaceholder(text, player);
+        if (text.contains("%") && CommonUtil.checkPluginLoad("PlaceholderAPI")) {
+            return PlaceholderAPI.setPlaceholders(player, text);
+        } else {
+            return text;
+        }
+    }
+
+    public static String parseBuiltInPlaceholder(String text, Player player) {
         if (player != null) {
             Pattern pattern1 = Pattern.compile("\\{discount_(.*?)\\}");
             Matcher matcher1 = pattern1.matcher(text);
@@ -78,10 +87,13 @@ public class TextUtil {
             text = text.replace("{math_" + placeholder + "}",
                     MathUtil.doCalculate(placeholder, ConfigManager.configManager.getInt("placeholder.math.scale", 0)).toString());
         }
-        if (text.contains("%") && CommonUtil.checkPluginLoad("PlaceholderAPI")) {
-            return PlaceholderAPI.setPlaceholders(player, text);
-        } else {
-            return text;
+        Pattern pattern6 = Pattern.compile("\\{random-next_(.*?)}");
+        Matcher matcher6 = pattern6.matcher(text);
+        while (matcher6.find()) {
+            String placeholder = matcher6.group(1);
+            text = text.replace("{random-next_" + placeholder + "}",
+                    ObjectRandomPlaceholder.getNextTime(placeholder));
         }
+        return text;
     }
 }

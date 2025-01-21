@@ -63,9 +63,9 @@ public class SellStickItem {
         if (meta.hasLore()) {
             for (String str : meta.getLore()) {
                 if (!infinite) {
-                    str = str.replace("{times}", String.valueOf(times));
+                    str = CommonUtil.modifyString(str, "times", String.valueOf(times));
                 } else {
-                    str = str.replace("{times}", TextUtil.parse(player, ConfigManager.configManager.getString("placeholder.sell-stick.infinite")));
+                    str = CommonUtil.modifyString(str, "times", TextUtil.parse(player, ConfigManager.configManager.getString("placeholder.sell-stick.infinite")));
                 }
                 newLore.add(str);
             }

@@ -96,7 +96,11 @@ public class ObjectLimit {
                         "buy-times-server",
                         String.valueOf(serverBuyTimes),
                         "sell-times-server",
-                        String.valueOf(serverSellTimes));
+                        String.valueOf(serverSellTimes),
+                        "last-buy-player", tempVal3 != null ? tempVal3.getBuyLastTimeName() : "",
+                        "last-sell-player", tempVal3 != null ? tempVal3.getSellLastTimeName() : "",
+                        "last-buy-server", tempVal4 != null ? tempVal4.getBuyLastTimeName() : "",
+                        "last-sell-server", tempVal4 != null ? tempVal4.getSellLastTimeName() : "");
             }
             tempVal2 = MathUtil.doCalculate(
                     TextUtil.withPAPI(tempVal1, player)).intValue();

@@ -270,9 +270,11 @@ placeholder:
   refresh:
     format: "yyyy-MM-dd HH:mm:ss"
     never: "Never"
-  cooldown:
-    format: "yyyy-MM-dd HH:mm:ss"
-    now: "Now"
+  # Premium version only
+  next:
+    with-day-format: "{d}d {h}h {m}m {s}s"
+    without-day-format: "{h}h {m}m {s}s"
+    never: "Never"
   price:
     split-symbol-any: ', '
     split-symbol-all: ', '

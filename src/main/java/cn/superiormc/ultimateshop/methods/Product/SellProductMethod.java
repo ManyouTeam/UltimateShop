@@ -141,7 +141,9 @@ public class SellProductMethod {
                         "limit",
                         String.valueOf(tempVal2.getPlayerSellLimit(player)),
                         "refresh",
-                        tempVal9.getSellRefreshTimeDisplayName());
+                        tempVal9.getSellRefreshTimeDisplayName(),
+                        "next",
+                        tempVal9.getSellRefreshTimeNextName());
 
             }
             return ProductTradeStatus.PLAYER_MAX;
@@ -150,7 +152,7 @@ public class SellProductMethod {
             tempVal8.refreshSellTimes();
             serverUseTimes = tempVal8.getSellUseTimes();
         } else {
-            tempVal11.createUseTimesCache(tempVal2);
+            tempVal8 = tempVal11.createUseTimesCache(tempVal2);
         }
         if (tempVal2.getServerSellLimit(player) != -1 &&
                 serverUseTimes + multi > tempVal2.getServerSellLimit(player)) {
@@ -164,7 +166,9 @@ public class SellProductMethod {
                         "limit",
                         String.valueOf(tempVal2.getServerSellLimit(player)),
                         "refresh",
-                        tempVal8.getSellRefreshTimeDisplayName());
+                        tempVal8.getSellRefreshTimeDisplayName(),
+                        "next",
+                        tempVal8.getSellRefreshTimeNextName());
 
             }
             return ProductTradeStatus.SERVER_MAX;
