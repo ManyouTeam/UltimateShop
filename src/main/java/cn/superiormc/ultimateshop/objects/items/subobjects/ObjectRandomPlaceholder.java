@@ -114,11 +114,11 @@ public class ObjectRandomPlaceholder {
 
     public static LocalDateTime getRefreshDoneTimeObject(String id) {
         if (UltimateShop.freeVersion) {
-            return LocalDateTime.now();
+            return LocalDateTime.now().withYear(2999);
         }
         ObjectRandomPlaceholder tempVal1 = ConfigManager.configManager.getRandomPlaceholder(id);
         if (tempVal1 == null) {
-            return LocalDateTime.now();
+            return LocalDateTime.now().withYear(2999);
         }
         ObjectRandomPlaceholderCache tempVal2 = CacheManager.cacheManager.serverCache.getRandomPlaceholderCache().get(tempVal1);
         if (tempVal2 == null) {
@@ -140,8 +140,11 @@ public class ObjectRandomPlaceholder {
         if (tempVal1 == null || tempVal1.getYear() == 2999) {
             return ConfigManager.configManager.getString("placeholder.next.never");
         }
-        Duration duration = Duration.between(tempVal1, LocalDateTime.now());
-        long totalSeconds = Math.abs(duration.getSeconds());
+        Duration duration = Duration.between(LocalDateTime.now(), tempVal1);
+        long totalSeconds = duration.getSeconds();
+        if (totalSeconds < 0) {
+            return ConfigManager.configManager.getString("placeholder.next.never");
+        }
         long days = totalSeconds / (24 * 3600);
         long hours = (totalSeconds % (24 * 3600)) / 3600;
         long minutes = (totalSeconds % 3600) / 60;

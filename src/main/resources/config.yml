@@ -224,11 +224,13 @@ placeholder:
       mvp: 2
   discount-conditions:
     vip:
-      type: permission
-      permission: 'group.vip'
+      1:
+        type: permission
+        permission: 'group.vip'
     mvp:
-      type: permission
-      permission: 'group.mvp'
+      1:
+        type: permission
+        permission: 'group.mvp'
   # Premium version only.
   random:
     rotate:
@@ -274,7 +276,7 @@ placeholder:
   next:
     with-day-format: "{d}d {h}h {m}m {s}s"
     without-day-format: "{h}h {m}m {s}s"
-    never: "Never"
+    never: "Waiting for next refresh"
   price:
     split-symbol-any: ', '
     split-symbol-all: ', '

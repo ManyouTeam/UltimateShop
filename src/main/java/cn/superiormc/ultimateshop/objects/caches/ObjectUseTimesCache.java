@@ -154,7 +154,7 @@ public class ObjectUseTimesCache {
     }
 
     public void setCooldownBuyTime(boolean notUseBungee) {
-        if (cooldownBuyTime == null) {
+        if (cooldownBuyTime == null || !cooldownBuyTime.isBefore(LocalDateTime.now())) {
             String mode = product.getBuyTimesResetMode();
             String tempVal1 = TextUtil.withPAPI(product.getBuyTimesResetTime(), cache.player);
             if (mode == null || tempVal1.isEmpty()) {
@@ -191,7 +191,7 @@ public class ObjectUseTimesCache {
     }
 
     public void setCooldownSellTime(boolean notUseBungee) {
-        if (cooldownSellTime == null) {
+        if (cooldownSellTime == null || !cooldownSellTime.isBefore(LocalDateTime.now())) {
             String mode = product.getBuyTimesResetMode();
             String tempVal1 = TextUtil.withPAPI(product.getBuyTimesResetTime(), cache.player);
             if (mode == null || tempVal1.isEmpty()) {
@@ -282,7 +282,10 @@ public class ObjectUseTimesCache {
             return ConfigManager.configManager.getString("placeholder.next.never");
         }
         Duration duration = Duration.between(LocalDateTime.now(), tempVal1);
-        long totalSeconds = Math.abs(duration.getSeconds());
+        long totalSeconds = duration.getSeconds();
+        if (totalSeconds < 0) {
+            return ConfigManager.configManager.getString("placeholder.next.never");
+        }
         long days = totalSeconds / (24 * 3600);
         long hours = (totalSeconds % (24 * 3600)) / 3600;
         long minutes = (totalSeconds % 3600) / 60;
@@ -327,7 +330,10 @@ public class ObjectUseTimesCache {
             return ConfigManager.configManager.getString("placeholder.next.never");
         }
         Duration duration = Duration.between(LocalDateTime.now(), tempVal1);
-        long totalSeconds = Math.abs(duration.getSeconds());
+        long totalSeconds = duration.getSeconds();
+        if (totalSeconds < 0) {
+            return ConfigManager.configManager.getString("placeholder.next.never");
+        }
         long days = totalSeconds / (24 * 3600);
         long hours = (totalSeconds % (24 * 3600)) / 3600;
         long minutes = (totalSeconds % 3600) / 60;

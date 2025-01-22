@@ -38,6 +38,9 @@ public class ObjectRandomPlaceholderCache {
     }
 
     public LocalDateTime getRefreshDoneTime() {
+        if (refreshDoneTime != null && !refreshDoneTime.isAfter(LocalDateTime.now())) {
+            setRefreshTime();
+        }
         return refreshDoneTime;
     }
 
