@@ -552,12 +552,12 @@ public class DebuildItem {
 
             // Item Model
             if (meta.hasItemModel()) {
-                section.set("item-model", meta.getItemModel());
+                section.set("item-model", meta.getItemModel().asString());
             }
 
             // Tooltip Style
             if (meta.hasTooltipStyle()) {
-                section.set("tooltip-style", meta.getTooltipStyle());
+                section.set("tooltip-style", meta.getTooltipStyle().asString());
             }
 
             // Item Cooldown

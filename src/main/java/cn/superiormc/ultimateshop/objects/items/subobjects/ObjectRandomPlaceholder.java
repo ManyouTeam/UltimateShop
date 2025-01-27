@@ -5,6 +5,7 @@ import cn.superiormc.ultimateshop.managers.CacheManager;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.objects.caches.ObjectRandomPlaceholderCache;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.time.Duration;
@@ -28,6 +29,7 @@ public class ObjectRandomPlaceholder {
         this.section = section;
         this.elementAmount = section.getInt("element-amount", 1);
         this.configElements.addAll(section.getStringList("elements"));
+        Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §fLoaded random placeholder: " + id + ".yml!");
     }
 
     public Collection<ObjectRandomPlaceholder> getNotSameAs() {

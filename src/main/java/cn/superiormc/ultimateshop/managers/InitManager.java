@@ -44,12 +44,14 @@ public class InitManager {
         resourceOutput("shops/transport.yml", false);
         resourceOutput("shops/wools.yml", false);
         resourceOutput("shops/example.yml", false);
+        resourceOutput("shops/daily.yml", false);
         resourceOutput("menus/main.yml", false);
         resourceOutput("menus/buy-more.yml", false);
         resourceOutput("menus/buy-more-buy.yml", false);
         resourceOutput("menus/buy-more-sell.yml", false);
         resourceOutput("menus/example-shop-menu.yml", false);
-        resourceOutput("shops/daily.yml", false);
+        resourceOutput("random_placeholders/daily.yml", false);
+        resourceOutput("random_placeholders/rotate.yml", false);
     }
 
     private void resourceOutput(String fileName, boolean regenerate) {

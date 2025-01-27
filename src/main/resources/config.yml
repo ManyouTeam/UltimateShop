@@ -134,8 +134,8 @@ menu:
     buy-one-stack:
       1:
         type: buy
-        shop: {shop}
-        item: {item}
+        shop: '{shop}'
+        item: '{item}'
         amount: 64
 
 use-times:
@@ -231,27 +231,6 @@ placeholder:
       1:
         type: permission
         permission: 'group.mvp'
-  # Premium version only.
-  random:
-    rotate:
-      reset-mode: TIMED
-      reset-time: '00:00:00'
-      elements:
-        - 'A'
-        - 'B'
-        - 'C'
-    daily:
-      reset-mode: TIMED
-      reset-time: '00:00:00'
-      element-amount: 5
-      elements:
-        - 'A'
-        - 'B'
-        - 'C'
-        - 'D'
-        - 'E'
-        - 'F'
-        - 'G'
   # Premium version only
   compare:
     up: '↑'

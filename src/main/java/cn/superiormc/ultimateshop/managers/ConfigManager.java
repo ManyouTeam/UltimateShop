@@ -90,12 +90,33 @@ public class ConfigManager {
     }
 
     private void initRandomPlaceholder() {
-        ConfigurationSection tempVal1 = config.getConfigurationSection("placeholder.random");
-        if (tempVal1 == null) {
+        File dir = new File(UltimateShop.instance.getDataFolder(), "random_placeholders");
+        if (!dir.exists()) {
+            dir.mkdir();
+        }
+        File[] files = dir.listFiles();
+        if (!Objects.nonNull(files) && files.length != 0) {
             return;
         }
-        for (String key : tempVal1.getKeys(false)) {
-            randomPlaceholders.put(key, new ObjectRandomPlaceholder(key, tempVal1.getConfigurationSection(key)));
+        for (File file : files) {
+            String fileName = file.getName();
+            if (fileName.endsWith(".yml")) {
+                String substring = fileName.substring(0, fileName.length() - 4);
+                randomPlaceholders.put(substring, new ObjectRandomPlaceholder(substring, YamlConfiguration.loadConfiguration(file)));
+            }
+        }
+
+        // Legacy Support
+        if (randomPlaceholders.isEmpty()) {
+            ConfigurationSection tempVal1 = config.getConfigurationSection("placeholder.random");
+            if (tempVal1 == null) {
+                return;
+            }
+            for (String key : tempVal1.getKeys(false)) {
+                if (!randomPlaceholders.containsKey(key)) {
+                    randomPlaceholders.put(key, new ObjectRandomPlaceholder(key, tempVal1.getConfigurationSection(key)));
+                }
+            }
         }
     }
 

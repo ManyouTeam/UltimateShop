@@ -49,7 +49,7 @@ public class TextUtil {
             while (matcher1.find()) {
                 String discount = matcher1.group(1);
                 text = text.replace("{discount_" + discount + "}",
-                        String.valueOf(StaticPlaceholder.getDiscountValue(discount, player)));
+                        String.valueOf(StaticPlaceholder.getConditionalValue(discount, player)));
             }
         }
         Pattern pattern2 = Pattern.compile("\\{random_(.*?)\\}");

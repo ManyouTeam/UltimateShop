@@ -37,7 +37,7 @@ public class StaticPlaceholder {
         }
     }
 
-    public static double getDiscountValue(String papiID, Player player) {
+    public static double getConditionalValue(String papiID, Player player) {
         if (UltimateShop.freeVersion) {
             return 1D;
         }
