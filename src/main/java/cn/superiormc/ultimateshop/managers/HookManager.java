@@ -3,9 +3,11 @@ package cn.superiormc.ultimateshop.managers;
 import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.hooks.economy.*;
 import cn.superiormc.ultimateshop.hooks.items.*;
+import cn.superiormc.ultimateshop.hooks.protection.*;
 import cn.superiormc.ultimateshop.papi.PlaceholderAPIExpansion;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -20,8 +22,11 @@ public class HookManager {
 
     private Map<String, AbstractItemHook> itemHooks;
 
+    private Map<String, AbstractProtectionHook> protectionHooks;
+
     public HookManager() {
         hookManager = this;
+        initProtectionHook();
         initNormalHook();
         initEconomyHook();
         initItemHook();
@@ -106,6 +111,39 @@ public class HookManager {
         }
     }
 
+    private void initProtectionHook() {
+        if (CommonUtil.checkPluginLoad("WorldGuard")) {
+            registerNewProtectionHook("WorldGuard", new ProtectionWorldGuardHook());
+        }
+        if (CommonUtil.checkPluginLoad("Residence")) {
+            registerNewProtectionHook("Residence", new ProtectionResidenceHook());
+        }
+        if (CommonUtil.checkPluginLoad("GriefPrevention")) {
+            registerNewProtectionHook("GriefPrevention", new ProtectionGriefPreventionHook());
+        }
+        if (CommonUtil.checkPluginLoad("Lands")) {
+            registerNewProtectionHook("Lands", new ProtectionLandsHook());
+        }
+        if (CommonUtil.checkPluginLoad("HuskTowns")) {
+            registerNewProtectionHook("HuskTowns", new ProtectionHuskTownsHook());
+        }
+        if (CommonUtil.checkPluginLoad("HuskClaims")) {
+            registerNewProtectionHook("HuskClaims", new ProtectionHuskClaimsHook());
+        }
+        if (CommonUtil.checkPluginLoad("PlotSquared")) {
+            registerNewProtectionHook("PlotSquared", new ProtectionPlotSquaredHook());
+        }
+        if (CommonUtil.checkPluginLoad("Towny")) {
+            registerNewProtectionHook("Towny", new ProtectionTownyHook());
+        }
+        if (CommonUtil.checkPluginLoad("BentoBox")) {
+            registerNewProtectionHook("BentoBox", new ProtectionBentoBoxHook());
+        }
+        if (CommonUtil.checkPluginLoad("Dominion")) {
+            registerNewProtectionHook("Dominion", new ProtectionDominionHook());
+        }
+    }
+
     public void registerNewEconomyHook(String pluginName,
                                        AbstractEconomyHook economyHook) {
         if (!economyHooks.containsKey(pluginName)) {
@@ -117,6 +155,13 @@ public class HookManager {
                                     AbstractItemHook itemHook) {
         if (!itemHooks.containsKey(pluginName)) {
             itemHooks.put(pluginName, itemHook);
+        }
+    }
+
+    public void registerNewProtectionHook(String pluginName,
+                                          AbstractProtectionHook protectionHook) {
+        if (!protectionHooks.containsKey(pluginName)) {
+            protectionHooks.put(pluginName, protectionHook);
         }
     }
 
@@ -267,5 +312,17 @@ public class HookManager {
             }
         }
         return null;
+    }
+
+    public boolean getProtectionCanUse(Player player, Location location) {
+        if (UltimateShop.freeVersion || player.isOp() || player.hasPermission("ultimateshop.bypass.protection")) {
+            return true;
+        }
+        for (AbstractProtectionHook protectionHook : protectionHooks.values()) {
+            if (!protectionHook.canUse(player, location)) {
+                return false;
+            }
+        }
+        return true;
     }
 }

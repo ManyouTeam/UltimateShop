@@ -137,9 +137,19 @@
       <option name="url" value="https://s01.oss.sonatype.org/content/repositories/snapshots/" />
     </remote-repository>
     <remote-repository>
+      <option name="id" value="glaremasters repo" />
+      <option name="name" value="glaremasters repo" />
+      <option name="url" value="https://repo.glaremasters.me/repository/towny/" />
+    </remote-repository>
+    <remote-repository>
       <option name="id" value="spigotmc-repo" />
       <option name="name" value="spigotmc-repo" />
       <option name="url" value="https://hub.spigotmc.org/nexus/content/repositories/snapshots/" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="william278.net" />
+      <option name="name" value="william278.net" />
+      <option name="url" value="https://repo.william278.net/releases" />
     </remote-repository>
     <remote-repository>
       <option name="id" value="sonatype1" />

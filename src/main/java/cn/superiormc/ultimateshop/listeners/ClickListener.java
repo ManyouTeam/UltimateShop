@@ -1,6 +1,7 @@
 package cn.superiormc.ultimateshop.listeners;
 
 import cn.superiormc.ultimateshop.managers.ConfigManager;
+import cn.superiormc.ultimateshop.managers.HookManager;
 import cn.superiormc.ultimateshop.managers.LanguageManager;
 import cn.superiormc.ultimateshop.methods.Product.SellProductMethod;
 import cn.superiormc.ultimateshop.methods.ProductTradeStatus;
@@ -56,6 +57,9 @@ public class ClickListener implements Listener {
             return;
         }
         if (event.useInteractedBlock() == Event.Result.DENY || event.useItemInHand() == Event.Result.DENY) {
+            return;
+        }
+        if (!HookManager.hookManager.getProtectionCanUse(event.getPlayer(), block.getLocation())) {
             return;
         }
         BlockState state = block.getState();

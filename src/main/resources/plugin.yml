@@ -6,6 +6,16 @@ folia-supported: true
 authors:
   - PQguanfang
 softdepend:
+  - WorldGuard
+  - Towny
+  - Dominion
+  - Lands
+  - PlotSquared
+  - BentoBox
+  - Residence
+  - GriefPrevention
+  - HuskTowns
+  - HuskClaims
   - MMOItems
   - MythicLib
   - ItemsAdder

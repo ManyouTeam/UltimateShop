@@ -6,7 +6,7 @@
 
     <groupId>cn.superiormc</groupId>
     <artifactId>UltimateShop</artifactId>
-    <version>3.4.9</version>
+5.0    <version>3.5.0</version>
     <packaging>jar</packaging>
 
     <name>UltimateShop</name>
@@ -136,7 +136,27 @@
             <id>BenCodez Repo</id>
             <url>https://nexus.bencodez.com/repository/maven-public/</url>
         </repository>
+        <repository>
+            <id>william278.net</id>
+            <url>https://repo.william278.net/releases</url>
+        </repository>
+        <repository>
+            <id>glaremasters repo</id>
+            <url>https://repo.glaremasters.me/repository/towny/</url>
+        </repository>
     </repositories>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.intellectualsites.bom</groupId>
+                <artifactId>bom-newest</artifactId>
+                <version>1.52</version>
+                <scope>import</scope>
+                <type>pom</type>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <dependencies>
         <dependency>
@@ -379,6 +399,71 @@
             <version>0.5.0</version>
             <scope>system</scope>
             <systemPath>${project.basedir}/lib/nexo-0.5.0-dev.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>com.bekvon.bukkit.residence</groupId>
+            <artifactId>Residence</artifactId>
+            <version>5.1.6.2</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/Residence5.1.6.2.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>com.github.GriefPrevention</groupId>
+            <artifactId>GriefPrevention</artifactId>
+            <version>16.18.2</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.github.angeschossen</groupId>
+            <artifactId>LandsAPI</artifactId>
+            <version>7.11.10</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.william278.husktowns</groupId>
+            <artifactId>husktowns-bukkit</artifactId>
+            <version>3.1</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.william278.huskclaims</groupId>
+            <artifactId>huskclaims-bukkit</artifactId>
+            <version>1.5</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.intellectualsites.plotsquared</groupId>
+            <artifactId>plotsquared-core</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.intellectualsites.plotsquared</groupId>
+            <artifactId>plotsquared-bukkit</artifactId>
+            <scope>provided</scope>
+            <exclusions>
+                <exclusion>
+                    <artifactId>plotsquared-core</artifactId>
+                    <groupId>*</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>com.palmergames.bukkit.towny</groupId>
+            <artifactId>towny</artifactId>
+            <version>0.101.1.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>world.bentobox</groupId>
+            <artifactId>bentobox</artifactId>
+            <version>2.7.0-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>cn.lunadeer</groupId>
+            <artifactId>DominionAPI</artifactId>
+            <version>3.5</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 </project>
