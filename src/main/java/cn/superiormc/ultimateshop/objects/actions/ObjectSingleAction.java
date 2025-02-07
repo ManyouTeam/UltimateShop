@@ -45,6 +45,9 @@ public class ObjectSingleAction extends AbstractSingleRun {
         if (clickType != null && !clickType.equals(thingRun.getType().name())) {
             return;
         }
+        if (openOnce && thingRun.isReopen()) {
+            return;
+        }
         ActionManager.actionManager.doAction(this, thingRun);
     }
 

@@ -9,6 +9,7 @@ open-actions:
   1:
     type: sound
     sound: block.note_block.pling
+    open-once: true
 
 layout:
   - '000000000'

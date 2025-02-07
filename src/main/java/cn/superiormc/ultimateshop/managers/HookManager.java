@@ -112,6 +112,7 @@ public class HookManager {
     }
 
     private void initProtectionHook() {
+        protectionHooks = new HashMap<>();
         if (CommonUtil.checkPluginLoad("WorldGuard")) {
             registerNewProtectionHook("WorldGuard", new ProtectionWorldGuardHook());
         }

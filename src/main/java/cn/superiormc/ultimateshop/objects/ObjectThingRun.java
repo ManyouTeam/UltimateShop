@@ -17,6 +17,8 @@ public class ObjectThingRun {
 
     private final ClickType type;
 
+    private final boolean reopen;
+
     public ObjectThingRun(Player player) {
         this.player = player;
         this.times = 1;
@@ -24,6 +26,17 @@ public class ObjectThingRun {
         this.multi = 1;
         this.sellAll = false;
         this.type = null;
+        this.reopen = false;
+    }
+
+    public ObjectThingRun(Player player, boolean reopen) {
+        this.player = player;
+        this.times = 1;
+        this.amount = 1;
+        this.multi = 1;
+        this.sellAll = false;
+        this.type = null;
+        this.reopen = reopen;
     }
 
     public ObjectThingRun(Player player, ClickType type) {
@@ -33,15 +46,17 @@ public class ObjectThingRun {
         this.multi = 1;
         this.sellAll = false;
         this.type = type;
+        this.reopen = false;
     }
 
     public ObjectThingRun(Player player, int times, double amount) {
         this.player = player;
         this.times = times;
         this.amount = amount;
-        this.multi = 1;
+        this.multi = (int) amount;
         this.sellAll = false;
         this.type = null;
+        this.reopen = false;
     }
 
     public ObjectThingRun(Player player, int times, double amount, boolean sellAll) {
@@ -51,6 +66,7 @@ public class ObjectThingRun {
         this.multi = (int) amount;
         this.sellAll = sellAll;
         this.type = null;
+        this.reopen = false;
     }
 
     public Player getPlayer() {
@@ -58,10 +74,7 @@ public class ObjectThingRun {
     }
 
     public int getTimes() {
-        if (times < 0) {
-            return 0;
-        }
-        return times;
+        return Math.max(times, 0);
     }
 
     public boolean getSellAll() {
@@ -80,9 +93,10 @@ public class ObjectThingRun {
     }
 
     public int getMulti() {
-        if (multi < 1) {
-            return 1;
-        }
-        return multi;
+        return Math.max(multi, 1);
+    }
+
+    public boolean isReopen() {
+        return reopen;
     }
 }

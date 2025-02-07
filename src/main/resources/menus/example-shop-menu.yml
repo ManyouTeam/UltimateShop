@@ -2,7 +2,9 @@ title: '{shop-name}'
 size: 54
 
 open-actions:
-  - 'sound: item.book.page_turn;;1;;1'
+  1:
+    type: sound
+    sound: item.book.page_turn
 
 layout:
   - '000000000'

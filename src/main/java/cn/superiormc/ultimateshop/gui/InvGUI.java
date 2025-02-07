@@ -67,7 +67,7 @@ public abstract class InvGUI extends AbstractGUI {
             this.guiListener = new GUIListener(this);
             Bukkit.getPluginManager().registerEvents(guiListener, UltimateShop.instance);
             if (getMenu() != null) {
-                getMenu().doOpenAction(player);
+                getMenu().doOpenAction(player, reopen);
             }
         }
         if (guiMode != GUIMode.NOT_EDITING) {

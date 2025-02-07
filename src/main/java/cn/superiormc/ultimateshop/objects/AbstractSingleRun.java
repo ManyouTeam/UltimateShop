@@ -22,6 +22,8 @@ public abstract class AbstractSingleRun {
 
     protected boolean sellAllOnce;
 
+    protected boolean openOnce;
+
     protected String clickType;
 
     private ObjectShop shop;
@@ -35,6 +37,7 @@ public abstract class AbstractSingleRun {
         apply = section.getIntegerList("apply");
         multiOnce = section.getBoolean("multi-once", false);
         sellAllOnce = section.getBoolean("sell-all-once", false);
+        openOnce = section.getBoolean("open-once", false);
         clickType = section.getString("click-type", null);
     }
 
@@ -47,6 +50,7 @@ public abstract class AbstractSingleRun {
         apply = section.getIntegerList("apply");
         multiOnce = section.getBoolean("multi-once", false);
         sellAllOnce = section.getBoolean("sell-all-once", false);
+        openOnce = section.getBoolean("open-once", false);
         clickType = section.getString("click-type", null);
     }
 
@@ -58,6 +62,7 @@ public abstract class AbstractSingleRun {
         apply = section.getIntegerList("apply");
         multiOnce = section.getBoolean("multi-once", false);
         sellAllOnce = section.getBoolean("sell-all-once", false);
+        openOnce = section.getBoolean("open-once", false);
         clickType = section.getString("click-type", null);
     }
 

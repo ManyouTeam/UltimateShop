@@ -181,9 +181,9 @@ public class ObjectMenu {
         return condition;
     }
 
-    public void doOpenAction(Player player) {
+    public void doOpenAction(Player player, boolean reopen) {
         if (openAction != null) {
-            openAction.runAllActions(new ObjectThingRun(player));
+            openAction.runAllActions(new ObjectThingRun(player, reopen));
         }
     }
 
