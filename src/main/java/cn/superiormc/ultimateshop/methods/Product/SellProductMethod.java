@@ -1,6 +1,8 @@
 package cn.superiormc.ultimateshop.methods.Product;
 
 import cn.superiormc.ultimateshop.UltimateShop;
+import cn.superiormc.ultimateshop.api.ItemFinishTransactionEvent;
+import cn.superiormc.ultimateshop.api.ItemPreTransactionEvent;
 import cn.superiormc.ultimateshop.cache.PlayerCache;
 import cn.superiormc.ultimateshop.cache.ServerCache;
 import cn.superiormc.ultimateshop.managers.CacheManager;
@@ -173,7 +175,14 @@ public class SellProductMethod {
             }
             return ProductTradeStatus.SERVER_MAX;
         }
+        GiveResult giveResult = null;
         TakeResult takeResult = tempVal5.takeSingleThing(inventory, player, playerUseTimes, multi, false);
+        // API
+        if (!test) {
+            giveResult = tempVal2.getSellPrice().giveSingleThing(player, playerUseTimes, multi);
+            ItemPreTransactionEvent event = new ItemPreTransactionEvent(false, player, multi, tempVal2, giveResult, takeResult);
+            Bukkit.getServer().getPluginManager().callEvent(event);
+        }
         // price
         if (!takeResult.getResultBoolean()) {
             if (shouldSendMessage) {
@@ -187,9 +196,6 @@ public class SellProductMethod {
         if (test) {
             return new ProductTradeStatus(ProductTradeStatus.Status.DONE, takeResult);
         }
-        // 尝试给物品
-        // 回收的价格就是给的
-        GiveResult giveResult = tempVal2.getSellPrice().giveSingleThing(player, playerUseTimes, multi);
         // 尝试给物品
         if (!tempVal2.getSellPrice().giveThing(playerUseTimes, player, giveResult.getResultMap())) {
             if (shouldSendMessage) {
@@ -256,6 +262,8 @@ public class SellProductMethod {
                 SchedulerUtil.runTaskAsynchronously(() -> CommonUtil.logFile(filePath, log));
             }
         }
+        ItemFinishTransactionEvent event = new ItemFinishTransactionEvent(true, player, multi, tempVal2);
+        Bukkit.getServer().getPluginManager().callEvent(event);
         return new ProductTradeStatus(ProductTradeStatus.Status.DONE, takeResult, giveResult, multi);
     }
 }

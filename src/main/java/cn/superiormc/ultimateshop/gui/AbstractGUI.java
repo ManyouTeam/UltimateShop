@@ -43,7 +43,7 @@ public abstract class AbstractGUI {
 
     public void removeOpenGUIStatus() {
         long time = ConfigManager.configManager.getLong("menu.cooldown.reopen", 3L);
-        if (playerList.containsKey(player) && playerList.get(player) != GUIStatus.ALREADY_IN_COOLDOWN) {
+        if (time > 0L && playerList.containsKey(player) && playerList.get(player) != GUIStatus.ALREADY_IN_COOLDOWN) {
             playerList.replace(player, GUIStatus.ALREADY_IN_COOLDOWN);
             SchedulerUtil.runTaskLater(() -> playerList.remove(player), time);
         }

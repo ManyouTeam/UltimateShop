@@ -8,6 +8,7 @@ import cn.superiormc.ultimateshop.managers.ErrorManager;
 import cn.superiormc.ultimateshop.managers.HookManager;
 import cn.superiormc.ultimateshop.managers.ItemManager;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
+import cn.superiormc.ultimateshop.utils.NBTUtil;
 import cn.superiormc.ultimateshop.utils.TextUtil;
 import com.destroystokyo.paper.profile.PlayerProfile;
 import com.destroystokyo.paper.profile.ProfileProperty;
@@ -971,6 +972,19 @@ public class BuildItem {
         if (!UltimateShop.freeVersion && pluginEnchantsKey != null && CommonUtil.checkPluginLoad("AdvancedEnchantments")) {
             for (String enchantName : pluginEnchantsKey.getKeys(false)) {
                 item = AEAPI.applyEnchant(enchantName, pluginEnchantsKey.getInt(enchantName), item);
+            }
+        }
+
+        // NBT API
+        ConfigurationSection nbtSection = section.getConfigurationSection("nbt");
+        if (!UltimateShop.freeVersion && nbtSection != null && CommonUtil.checkPluginLoad("NBTAPI")) {
+            for (String nbtType : nbtSection.getKeys(false)) {
+                ConfigurationSection nbtTypeSection = nbtSection.getConfigurationSection(nbtType);
+                if (nbtTypeSection != null) {
+                    for (String nbtName : nbtTypeSection.getKeys(false)) {
+                        item = NBTUtil.addNBT(item, nbtType, nbtName, nbtTypeSection.get(nbtName));
+                    }
+                }
             }
         }
 

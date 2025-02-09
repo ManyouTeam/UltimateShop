@@ -2,11 +2,9 @@ package cn.superiormc.ultimateshop.listeners;
 
 import cn.superiormc.ultimateshop.gui.AbstractGUI;
 import cn.superiormc.ultimateshop.gui.InvGUI;
-import cn.superiormc.ultimateshop.gui.inv.GUIMode;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.ErrorManager;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
-import cn.superiormc.ultimateshop.utils.SchedulerUtil;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
@@ -86,11 +84,7 @@ public class GUIListener implements Listener {
             // 判定是否要打开上一页菜单
             if (gui.closeEventHandle(e.getInventory())) {
                 if (gui.getMenu() != null) {
-                    SchedulerUtil.runTaskLater(() -> {
-                        if (gui.guiMode == GUIMode.NOT_EDITING) {
-                            gui.getMenu().doCloseAction(player);
-                        }
-                    }, 4L);
+                    gui.getMenu().doCloseAction(player);
                 }
             }
         }

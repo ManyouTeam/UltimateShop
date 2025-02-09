@@ -31,10 +31,14 @@ sell:
   # For each product, you can add match-item section to make custom sell match method, for more info, please view Wiki.
   sell-method: Bukkit
   # Only support ItemFormat sell method.
-  ignore-item-format-key:
-    - 'lore'
-    - 'damage'
-    - 'tool.damage-per-block'
+  item-format:
+    require-same-key: false
+    ignore-key:
+      - 'lore'
+      - 'damage'
+      - 'enchants'
+      - 'tool.damage-per-block'
+      - 'nbt.CustomNBTKey'
   sell-all:
     ignore-items:
       # Format: Shop ID;;Item ID

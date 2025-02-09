@@ -39,6 +39,7 @@ softdepend:
   - VotingPlugin
   - ExecutableItems
   - MythicChanger
+  - NBTAPI
 commands:
   ultimateshop:
     aliases:

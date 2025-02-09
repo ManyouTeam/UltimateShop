@@ -4,6 +4,7 @@ import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.LocateManager;
 import cn.superiormc.ultimateshop.methods.Items.DebuildItem;
 import org.bukkit.configuration.MemoryConfiguration;
+import org.bukkit.configuration.MemorySection;
 import org.bukkit.inventory.ItemStack;
 import pers.neige.neigeitems.utils.ItemUtils;
 
@@ -52,18 +53,46 @@ public class ItemUtil {
         }
         Map<String, Object> item1Result = DebuildItem.debuildItem(item1, new MemoryConfiguration()).getValues(true);
         Map<String, Object> item2Result = DebuildItem.debuildItem(item2, new MemoryConfiguration()).getValues(true);
-        for (String key : item1Result.keySet()) {
-            if (ConfigManager.configManager.getStringList("sell.ignore-item-format-key").contains(key)) {
+        if (ConfigManager.configManager.getBoolean("sell.item-format.require-same-key")) {
+            for (String key : item1Result.keySet()) {
+                if (canIgnore(key)) {
+                    continue;
+                }
+                if (!item2Result.containsKey(key)) {
+                    return false;
+                }
+            }
+        }
+        for (String key : item2Result.keySet()) {
+            if (canIgnore(key)) {
                 continue;
             }
-            if (key.equals("amount")) {
+            Object object = item1Result.get(key);
+            if (object == null) {
+                return false;
+            }
+            if (object instanceof MemorySection) {
                 continue;
             }
-            if (item2Result.get(key) == null || !item2Result.get(key).equals(item1Result.get(key))) {
+            if (!object.equals(item2Result.get(key))) {
                 return false;
             }
         }
         return true;
     }
 
+    public static boolean canIgnore(String key) {
+        if (key == null) {
+            return true;
+        }
+        if (key.equals("amount")) {
+            return true;
+        }
+        for (String tempVal1 : ConfigManager.configManager.getStringListOrDefault("sell.ignore-item-format-key", "sell.item-format.ignore-key")) {
+            if (tempVal1.equals(key) || key.startsWith(tempVal1 + ".")) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

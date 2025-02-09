@@ -5,6 +5,7 @@ import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.ErrorManager;
 import cn.superiormc.ultimateshop.managers.HookManager;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
+import cn.superiormc.ultimateshop.utils.NBTUtil;
 import com.google.common.collect.Multimap;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
@@ -603,6 +604,18 @@ public class DebuildItem {
                 Tag<DamageType> damageTypeTag = meta.getDamageResistant();
                 if (damageTypeTag != null) {
                     section.set("damage-resistant", damageTypeTag.getKey().asString());
+                }
+            }
+        }
+
+        // NBT API
+        if (CommonUtil.checkPluginLoad("NBTAPI")) {
+            Map<String, Object> result = NBTUtil.getAllNBT(itemStack);
+            for (String nbtName : result.keySet()) {
+                Object object = result.get(nbtName);
+                String nbtType = NBTUtil.getObjectType(object);
+                if (nbtType != null) {
+                    section.set("nbt." + nbtType + "." + nbtName, object);
                 }
             }
         }
