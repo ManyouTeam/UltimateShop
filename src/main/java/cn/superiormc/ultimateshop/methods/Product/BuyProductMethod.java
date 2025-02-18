@@ -37,8 +37,7 @@ public class BuyProductMethod {
                                                boolean quick,
                                                boolean test,
                                                int multi) {
-        return startBuy(player.getInventory(),
-                shop, product, player, quick, test, multi);
+        return startBuy(player.getInventory(), shop, product, player, quick, test, multi);
     }
 
     public static ProductTradeStatus startBuy(Inventory inventory,
@@ -170,7 +169,7 @@ public class BuyProductMethod {
             return new ProductTradeStatus(ProductTradeStatus.Status.DONE, takeResult);
         }
         // 尝试给物品
-        if (!tempVal2.getReward().giveThing(playerUseTimes, player, giveResult.getResultMap())) {
+        if (!tempVal2.getReward().giveThing(playerUseTimes, player, 1, giveResult.getResultMap())) {
             if (shouldSendMessage) {
                 LanguageManager.languageManager.sendStringText(player, "inventory-full");
             }

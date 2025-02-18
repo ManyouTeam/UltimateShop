@@ -64,7 +64,7 @@ public class GiveItemStack {
         return displayItem;
     }
 
-    public void giveToPlayer(int times, Player player) {
+    public void giveToPlayer(int times, double multiplier, Player player) {
         if (thing.singleSection == null) {
             return;
         }
@@ -83,12 +83,12 @@ public class GiveItemStack {
                 HookManager.hookManager.giveEconomy(thing.singleSection.getString("economy-plugin"),
                         thing.singleSection.getString("economy-type", "Unknown"),
                         player,
-                        cost);
+                        cost * multiplier);
                 break;
             case VANILLA_ECONOMY:
                 HookManager.hookManager.giveEconomy(thing.singleSection.getString("economy-type"),
                         player,
-                        (int) cost);
+                        (int) (cost * multiplier));
                 break;
         }
         thing.giveAction.runAllActions(new ObjectThingRun(player, times, cost));

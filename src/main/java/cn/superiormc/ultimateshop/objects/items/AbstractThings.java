@@ -35,9 +35,11 @@ public abstract class AbstractThings {
         return mode;
     }
 
-    public abstract GiveResult giveSingleThing(Player player, int times, int amount);
+    public abstract GiveResult giveSingleThing(Player player,
+                                               int times,
+                                               int amount);
 
-    public boolean giveThing(int times, Player player, Map<AbstractSingleThing, BigDecimal> result) {
+    public boolean giveThing(int times, Player player, double multiplier, Map<AbstractSingleThing, BigDecimal> result) {
         boolean resultBoolean = true;
         Collection<GiveItemStack> giveItemStacks = new ArrayList<>();
         for (AbstractSingleThing singleThing: result.keySet()) {
@@ -51,12 +53,16 @@ public abstract class AbstractThings {
             return false;
         }
         for (GiveItemStack giveItemStack : giveItemStacks) {
-            giveItemStack.giveToPlayer(times, player);
+            giveItemStack.giveToPlayer(times, multiplier, player);
         }
         return true;
     }
 
-    public abstract TakeResult takeSingleThing(Inventory inventory, Player player, int times, int amount, boolean test);
+    public abstract TakeResult takeSingleThing(Inventory inventory,
+                                               Player player,
+                                               int times,
+                                               int amount,
+                                               boolean test);
 
 
     public void takeThing(Inventory inventory, Player player, Map<AbstractSingleThing, BigDecimal> result) {

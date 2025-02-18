@@ -38,7 +38,7 @@ sell:
       - 'damage'
       - 'enchants'
       - 'tool.damage-per-block'
-      - 'nbt.CustomNBTKey'
+      - 'nbt.string.CustomNBTKey'
   sell-all:
     ignore-items:
       # Format: Shop ID;;Item ID
@@ -49,6 +49,7 @@ sell:
     # In ticks.
     cooldown: 5
     hide-message: true
+    display-calculate-multiplier: true
     # Support value: LEFT, RIGHT and LEFT;;RIGHT
     # Do not change this value unless you are know what you are doing!
     click-type: RIGHT
@@ -316,33 +317,6 @@ conditions:
   buy-prices-key: 'buy-prices-conditions'
   sell-prices-key: 'sell-prices-conditions'
   display-item-key: 'display-item-conditions'
-
-# Premium version only
-sell-stick-items:
-  A:
-    material: STICK
-    name: '&dSell Stick &7(5 times)'
-    lore:
-      - '&fRight click a chest to use this item!'
-      - ''
-      - '&cLeft usages: {times}'
-    usage-times: 5
-  B:
-    material: STICK
-    name: '&dAdvanced Sell Stick &7(50 times)'
-    lore:
-      - '&fRight click a chest to use this item!'
-      - ''
-      - '&cLeft usages: {times}'
-    usage-times: 50
-  C:
-    material: STICK
-    name: '&5Epic Sell Stick'
-    lore:
-      - '&fRight click a chest to use this item!'
-      - ''
-      - '&cLeft usages: {times}'
-    usage-times: -1
 
 auto-save:
   enabled: true

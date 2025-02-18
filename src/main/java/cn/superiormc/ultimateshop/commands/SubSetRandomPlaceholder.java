@@ -16,7 +16,7 @@ import java.util.Random;
 public class SubSetRandomPlaceholder extends AbstractCommand {
 
     public SubSetRandomPlaceholder() {
-        this.id = "setreandomplaceholder";
+        this.id = "setrandomplaceholder";
         this.requiredPermission =  "ultimateshop." + id;
         this.onlyInGame = false;
         this.premiumOnly = true;

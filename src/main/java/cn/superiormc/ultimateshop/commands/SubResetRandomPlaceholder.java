@@ -15,7 +15,7 @@ import java.util.List;
 public class SubResetRandomPlaceholder extends AbstractCommand {
 
     public SubResetRandomPlaceholder() {
-        this.id = "resetreandomplaceholder";
+        this.id = "resetrandomplaceholder";
         this.requiredPermission =  "ultimateshop." + id;
         this.onlyInGame = false;
         this.premiumOnly = true;

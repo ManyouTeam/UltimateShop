@@ -2,12 +2,9 @@ package cn.superiormc.ultimateshop.commands;
 
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.LanguageManager;
-import cn.superiormc.ultimateshop.methods.SellStickItem;
-import cn.superiormc.ultimateshop.objects.ObjectShop;
-import cn.superiormc.ultimateshop.objects.menus.ObjectMenu;
+import cn.superiormc.ultimateshop.objects.ObjectSellStick;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
 import org.bukkit.Bukkit;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -34,10 +31,17 @@ public class SubGiveSellStick extends AbstractCommand {
                 return;
             }
         }
+        ObjectSellStick sellStick = ConfigManager.configManager.getSellStick(args[1]);
+        if (sellStick == null) {
+            LanguageManager.languageManager.sendStringText("error-item-not-found",
+                    "item",
+                    args[1]);
+            return;
+        }
         switch (args.length) {
             // /shop givestick 物品名称 玩家名称 数量
             case 2: case 3:
-                CommonUtil.giveOrDrop(givePlayer, SellStickItem.getSellStick(givePlayer, args[1], 1));
+                CommonUtil.giveOrDrop(givePlayer, sellStick.getNewItem(givePlayer, 1));
                 LanguageManager.languageManager.sendStringText(player,
                         "give-sell-stick",
                         "player",
@@ -48,7 +52,7 @@ public class SubGiveSellStick extends AbstractCommand {
                         "1");
                 break;
             case 4:
-                CommonUtil.giveOrDrop(givePlayer, SellStickItem.getSellStick(givePlayer, args[1], Integer.parseInt(args[3])));
+                CommonUtil.giveOrDrop(givePlayer, sellStick.getNewItem(givePlayer, Integer.parseInt(args[3])));
                 LanguageManager.languageManager.sendStringText(player,
                         "give-sell-stick",
                         "player",
@@ -68,10 +72,17 @@ public class SubGiveSellStick extends AbstractCommand {
             LanguageManager.languageManager.sendStringText("error.player-not-found", "player", args[2]);
             return;
         }
+        ObjectSellStick sellStick = ConfigManager.configManager.getSellStick(args[1]);
+        if (sellStick == null) {
+            LanguageManager.languageManager.sendStringText("error-item-not-found",
+                    "item",
+                    args[1]);
+            return;
+        }
         switch (args.length) {
             // /shop givestick 物品名称 玩家名称 数量
             case 3:
-                CommonUtil.giveOrDrop(givePlayer, SellStickItem.getSellStick(givePlayer, args[1], 1));
+                CommonUtil.giveOrDrop(givePlayer, sellStick.getNewItem(givePlayer, 1));
                 LanguageManager.languageManager.sendStringText("give-sell-stick",
                         "player",
                         givePlayer.getName(),
@@ -81,7 +92,7 @@ public class SubGiveSellStick extends AbstractCommand {
                         "1");
                 break;
             case 4:
-                CommonUtil.giveOrDrop(givePlayer, SellStickItem.getSellStick(givePlayer, args[1], Integer.parseInt(args[3])));
+                CommonUtil.giveOrDrop(givePlayer, sellStick.getNewItem(givePlayer, Integer.parseInt(args[3])));
                 LanguageManager.languageManager.sendStringText("give-sell-stick",
                         "player",
                         givePlayer.getName(),
@@ -98,9 +109,8 @@ public class SubGiveSellStick extends AbstractCommand {
         List<String> tempVal1 = new ArrayList<>();
         switch (args.length) {
             case 2:
-                ConfigurationSection section = ConfigManager.configManager.config.getConfigurationSection("sell-stick-items");
-                if (section != null) {
-                    tempVal1.addAll(section.getKeys(false));
+                for (ObjectSellStick sellStick : ConfigManager.configManager.getSellSticks()) {
+                    tempVal1.add(sellStick.getID());
                 }
                 break;
             case 3:

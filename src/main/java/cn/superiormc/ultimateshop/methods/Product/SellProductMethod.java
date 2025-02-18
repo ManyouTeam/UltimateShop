@@ -42,26 +42,26 @@ public class SellProductMethod {
     }
 
     public static ProductTradeStatus startSell(String shop,
-                                                                   String product,
-                                                                   Player player,
-                                                                   boolean quick,
-                                                                   boolean test,
-                                                                   boolean ableMaxSell,
-                                                                   int multi) {
-        return startSell(player.getInventory(),
-                shop, product, player, quick, test, false, ableMaxSell, false, multi);
+                                               String product,
+                                               Player player,
+                                               boolean quick,
+                                               boolean test,
+                                               boolean ableMaxSell,
+                                               int multi) {
+        return startSell(player.getInventory(), shop, product, player, quick, test, false, ableMaxSell, false, multi, 1);
     }
 
     public static ProductTradeStatus startSell(Inventory inventory,
-                                                                   String shop,
-                                                                   String product,
-                                                                   Player player,
-                                                                   boolean quick,
-                                                                   boolean test,
-                                                                   boolean hide,
-                                                                   boolean ableMaxSell,
-                                                                   boolean sellAll,
-                                                                   int multi) {
+                                               String shop,
+                                               String product,
+                                               Player player,
+                                               boolean quick,
+                                               boolean test,
+                                               boolean hide,
+                                               boolean ableMaxSell,
+                                               boolean sellAll,
+                                               int multi,
+                                               double multiplier) {
         ObjectShop tempVal1 = ConfigManager.configManager.getShop(shop);
         if (tempVal1 == null) {
             LanguageManager.languageManager.sendStringText(player,
@@ -197,7 +197,7 @@ public class SellProductMethod {
             return new ProductTradeStatus(ProductTradeStatus.Status.DONE, takeResult);
         }
         // 尝试给物品
-        if (!tempVal2.getSellPrice().giveThing(playerUseTimes, player, giveResult.getResultMap())) {
+        if (!tempVal2.getSellPrice().giveThing(playerUseTimes, player, multiplier, giveResult.getResultMap())) {
             if (shouldSendMessage) {
                 LanguageManager.languageManager.sendStringText(player, "inventory-full");
             }

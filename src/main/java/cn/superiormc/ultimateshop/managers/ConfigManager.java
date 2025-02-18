@@ -1,6 +1,7 @@
 package cn.superiormc.ultimateshop.managers;
 
 import cn.superiormc.ultimateshop.UltimateShop;
+import cn.superiormc.ultimateshop.objects.ObjectSellStick;
 import cn.superiormc.ultimateshop.objects.ObjectShop;
 import cn.superiormc.ultimateshop.objects.items.subobjects.ObjectRandomPlaceholder;
 import cn.superiormc.ultimateshop.objects.menus.ObjectMenu;
@@ -11,9 +12,14 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataType;
 
 import java.io.File;
 import java.util.*;
+
+import static cn.superiormc.ultimateshop.objects.ObjectSellStick.SELL_STICK_ID;
 
 public class ConfigManager {
 
@@ -25,6 +31,8 @@ public class ConfigManager {
 
     public Map<String, ObjectRandomPlaceholder> randomPlaceholders = new HashMap<>();
 
+    public Map<String, ObjectSellStick> sellStickMap = new HashMap<>();
+
     public ConfigManager() {
         configManager = this;
         UltimateShop.instance.saveDefaultConfig();
@@ -34,6 +42,7 @@ public class ConfigManager {
         initMenuConfigs();
         if (!UltimateShop.freeVersion) {
             initRandomPlaceholder();
+            initSellStickConfigs();
         }
     }
 
@@ -52,8 +61,7 @@ public class ConfigManager {
                 String substring = fileName.substring(0, fileName.length() - 4);
                 shopConfigs.put(substring,
                         new ObjectShop(substring, YamlConfiguration.loadConfiguration(file)));
-                Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §fLoaded shop: " +
-                        fileName + "!");
+                Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §fLoaded shop: " + fileName + "!");
             }
         }
     }
@@ -85,6 +93,24 @@ public class ConfigManager {
                     continue;
                 }
                 new ObjectMenu(substring);
+            }
+        }
+    }
+
+    private void initSellStickConfigs() {
+        File dir = new File(UltimateShop.instance.getDataFolder(), "sell_sticks");
+        if (!dir.exists()) {
+            dir.mkdir();
+        }
+        File[] files = dir.listFiles();
+        if (!Objects.nonNull(files) && files.length != 0) {
+            return;
+        }
+        for (File file : files) {
+            String fileName = file.getName();
+            if (fileName.endsWith(".yml")) {
+                String substring = fileName.substring(0, fileName.length() - 4);
+                sellStickMap.put(substring, new ObjectSellStick(substring, YamlConfiguration.loadConfiguration(file)));
             }
         }
     }
@@ -179,6 +205,10 @@ public class ConfigManager {
         return config.getLong(path, defaultValue);
     }
 
+    public double getDouble(String path, double defaultValue) {
+        return config.getDouble(path, defaultValue);
+    }
+
     public ConfigurationSection getSection(String path) {
         return config.getConfigurationSection(path);
     }
@@ -248,6 +278,23 @@ public class ConfigManager {
             return new ArrayList<>();
         }
         return section.getKeys(false);
+    }
+
+    public ObjectSellStick getSellStick(String id) {
+        return sellStickMap.get(id);
+    }
+
+    public ObjectSellStick getSellStickID(ItemStack item) {
+        ItemMeta meta = item.getItemMeta();
+        if (meta == null || !meta.getPersistentDataContainer().has(SELL_STICK_ID, PersistentDataType.STRING)) {
+            return null;
+        }
+        String id = meta.getPersistentDataContainer().get(SELL_STICK_ID, PersistentDataType.STRING);
+        return getSellStick(id);
+    }
+
+    public Collection<ObjectSellStick> getSellSticks() {
+        return sellStickMap.values();
     }
 
 }

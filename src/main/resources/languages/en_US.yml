@@ -78,7 +78,7 @@ help:
 
 inventory-full: "&#98FB98[UltimateShop] &fYou can not finish this transaction because your inventory will full after that!"
 start-sell-all: "&#98FB98[UltimateShop] &fAll your {amount}x sellable items have been sold, you earned {reward} for this!"
-start-sell-stick: "&#98FB98[UltimateShop] &fAll your sellable items in this container have been sold, you earned {reward} for this!"
+start-sell-stick: "&#98FB98[UltimateShop] &fAll your sellable items in this container have been sold, you earned {reward} with multiplier {multiplier} for this!"
 give-sell-stick: "&#98FB98[UltimateShop] &fGave {player} sell stick {item} x{amount}!"
 give-save-item: "&#98FB98[UltimateShop] &fGive {player} save item {item} x{amount}!"
 add-times: "&#98FB98[UltimateShop] &fAdd {times} to {player}'s {item} use times!"

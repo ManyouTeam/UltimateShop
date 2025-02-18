@@ -1,6 +1,5 @@
 package cn.superiormc.ultimateshop.utils;
 
-import cn.superiormc.mythicchanger.utils.CommonUtil;
 import de.tr7zw.nbtapi.NBTItem;
 import de.tr7zw.nbtapi.NBTType;
 import org.bukkit.inventory.ItemStack;

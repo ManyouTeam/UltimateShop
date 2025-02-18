@@ -5,7 +5,8 @@ import cn.superiormc.ultimateshop.managers.HookManager;
 import cn.superiormc.ultimateshop.managers.LanguageManager;
 import cn.superiormc.ultimateshop.methods.Product.SellProductMethod;
 import cn.superiormc.ultimateshop.methods.ProductTradeStatus;
-import cn.superiormc.ultimateshop.methods.SellStickItem;
+import cn.superiormc.ultimateshop.objects.ObjectSellStick;
+import cn.superiormc.ultimateshop.objects.ObjectThingRun;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import cn.superiormc.ultimateshop.objects.items.AbstractSingleThing;
 import cn.superiormc.ultimateshop.objects.items.ThingMode;
@@ -23,6 +24,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -39,19 +41,22 @@ public class ClickListener implements Listener {
         if (!EquipmentSlot.HAND.equals(event.getHand())) {
             return;
         }
-        int times = SellStickItem.getSellStickValue(event.getItem());
-        if (times <= 0) {
-            return;
-        }
         if (!event.getAction().isRightClick() && ConfigManager.configManager.getString("sell.sell-stick.click-type", "RIGHT").equals("RIGHT")) {
             return;
         } else if (!event.getAction().isLeftClick() && ConfigManager.configManager.getString("sell.sell-stick.click-type", "RIGHT").equals("LEFT")) {
             return;
         }
-        SchedulerUtil.runTaskLater(() -> startSell(event), 2L);
-    }
-
-    public void startSell(PlayerInteractEvent event) {
+        ItemStack item = event.getItem();
+        if (item == null) {
+            return;
+        }
+        ObjectSellStick sellStick = ConfigManager.configManager.getSellStickID(item);
+        if (sellStick == null) {
+            return;
+        }
+        if (!sellStick.getCondition().getAllBoolean(new ObjectThingRun(event.getPlayer()))) {
+            return;
+        }
         Block block = event.getClickedBlock();
         if (block == null) {
             return;
@@ -63,59 +68,71 @@ public class ClickListener implements Listener {
             return;
         }
         BlockState state = block.getState();
-        Inventory inventory = null;
-        if (state instanceof Container) {
-            inventory = ((Container) state).getInventory();
-        } else if (state instanceof EnderChest) {
-            inventory = event.getPlayer().getEnderChest();
-        }
-        if (inventory != null) {
-            if (inventory.isEmpty()) {
-                return;
+        SchedulerUtil.runTaskLater(() -> {
+            Inventory inventory = null;
+            if (state instanceof Container) {
+                inventory = ((Container) state).getInventory();
+            } else if (state instanceof EnderChest) {
+                inventory = event.getPlayer().getEnderChest();
             }
-            Map<AbstractSingleThing, BigDecimal> result = new HashMap<>();
-            boolean firstSell = false;
-            int cooldown = ConfigManager.configManager.getInt("sell.sell-stick.cooldown", -1);
-            if (cooldown < 5) {
-                cooldown = 5;
-            }
-            if (playerList.contains(event.getPlayer())) {
-                return;
-            }
-            playerList.add(event.getPlayer());
-            for (String shop : ConfigManager.configManager.shopConfigs.keySet()) {
-                for (ObjectItem products : ConfigManager.configManager.getShop(shop).getProductList()) {
-                    if (ConfigManager.configManager.getStringListOrDefault("menu.sell-all.ignore-items",
-                            "sell.sell-all.ignore-items").contains(shop + ";;" + products.getProduct())) {
-                        continue;
-                    }
-                    ProductTradeStatus status = SellProductMethod.startSell(inventory,
-                            shop,
-                            products.getProduct(),
-                            event.getPlayer(),
-                            false,
-                            false,
-                            ConfigManager.configManager.getBooleanOrDefault(
-                                    "menu.sell-all.hide-message", "sell.sell-stick.hide-message"),
-                            true,
-                            firstSell,
-                            1);
-                    if (status.getStatus() == ProductTradeStatus.Status.DONE && status.getGiveResult() != null) {
-                        result.putAll(status.getGiveResult().getResultMap());
-                    }
-                    if (!products.getSellAction().isEmpty()) {
-                        firstSell = true;
+            if (inventory != null) {
+                if (inventory.isEmpty()) {
+                    return;
+                }
+                Map<AbstractSingleThing, BigDecimal> result = new HashMap<>();
+                boolean firstSell = false;
+                int cooldown = ConfigManager.configManager.getInt("sell.sell-stick.cooldown", -1);
+                if (cooldown < 5) {
+                    cooldown = 5;
+                }
+                if (playerList.contains(event.getPlayer())) {
+                    return;
+                }
+                playerList.add(event.getPlayer());
+                for (String shop : ConfigManager.configManager.shopConfigs.keySet()) {
+                    for (ObjectItem products : ConfigManager.configManager.getShop(shop).getProductList()) {
+                        if (ConfigManager.configManager.getStringListOrDefault("menu.sell-all.ignore-items",
+                                "sell.sell-all.ignore-items").contains(shop + ";;" + products.getProduct())) {
+                            continue;
+                        }
+                        ProductTradeStatus status = SellProductMethod.startSell(inventory,
+                                shop,
+                                products.getProduct(),
+                                event.getPlayer(),
+                                false,
+                                false,
+                                ConfigManager.configManager.getBooleanOrDefault(
+                                        "menu.sell-all.hide-message", "sell.sell-stick.hide-message"),
+                                true,
+                                firstSell,
+                                1,
+                                sellStick.getMultiplier());
+                        if (status.getStatus() == ProductTradeStatus.Status.DONE && status.getGiveResult() != null) {
+                            result.putAll(status.getGiveResult().getResultMap());
+                        }
+                        if (!products.getSellAction().isEmpty()) {
+                            firstSell = true;
+                        }
                     }
                 }
+                if (!result.isEmpty()) {
+                    if (ConfigManager.configManager.getBoolean("sell.sell-stick.display-calculate-multiplier")) {
+                        for (AbstractSingleThing singleThing : result.keySet()) {
+                            BigDecimal newValue = result.get(singleThing).multiply(BigDecimal.valueOf(sellStick.getMultiplier()));
+                            result.put(singleThing, newValue);
+                        }
+                    }
+                    LanguageManager.languageManager.sendStringText(event.getPlayer(), "start-sell-stick",
+                            "reward", ObjectPrices.getDisplayNameInLine(event.getPlayer(), 1,
+                                    result, ThingMode.ALL, true),
+                            "multiplier", String.valueOf(sellStick.getMultiplier()));
+                    sellStick.takeUsageTimes(event.getPlayer(), event.getItem());
+                    sellStick.getAction().runAllActions(new ObjectThingRun(event.getPlayer()));
+                }
+                SchedulerUtil.runTaskLater(() -> playerList.remove(event.getPlayer()), cooldown);
             }
-            if (!result.isEmpty()) {
-                LanguageManager.languageManager.sendStringText(event.getPlayer(), "start-sell-stick",
-                        "reward", ObjectPrices.getDisplayNameInLine(event.getPlayer(), 1,
-                                result, ThingMode.ALL, true));
-                SellStickItem.removeSellStickValue(event.getPlayer(), event.getItem());
-            }
-            SchedulerUtil.runTaskLater(() -> playerList.remove(event.getPlayer()), cooldown);
-        }
+        }, 2L);
     }
+
 
 }

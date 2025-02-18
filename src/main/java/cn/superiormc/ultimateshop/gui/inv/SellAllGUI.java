@@ -72,6 +72,7 @@ public class SellAllGUI extends InvGUI {
                                 "menu.sell-all.hide-message", "sell.sell-all.hide-message"),
                         true,
                         firstSell,
+                        1,
                         1);
                 if (status.getStatus() == ProductTradeStatus.Status.DONE && status.getGiveResult() != null) {
                     result.putAll(status.getGiveResult().getResultMap());

@@ -88,7 +88,7 @@ public class ObjectProducts extends AbstractThings {
         if (section == null) {
             return resultObject;
         }
-        BigDecimal cost = BigDecimal.ZERO;
+        BigDecimal cost;
         boolean needFalse = false;
         switch (mode) {
             case UNKNOWN:

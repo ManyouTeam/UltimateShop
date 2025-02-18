@@ -103,8 +103,7 @@ public class SQLDatabase {
                             "cooldownBuyTime", "cooldownSellTime")
                     .addCondition("playerUUID = 'Global-Server'")
                     .build();
-        }
-        else {
+        } else {
             queryAction1 = sqlManager.createQuery()
                     .inTable("ultimateshop_useTimes")
                     .selectColumns("playerUUID",

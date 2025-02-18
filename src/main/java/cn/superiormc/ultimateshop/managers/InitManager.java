@@ -53,6 +53,9 @@ public class InitManager {
         resourceOutput("menus/example-shop-menu.yml", false);
         resourceOutput("random_placeholders/daily.yml", false);
         resourceOutput("random_placeholders/rotate.yml", false);
+        resourceOutput("sell_sticks/A.yml", false);
+        resourceOutput("sell_sticks/B.yml", false);
+        resourceOutput("sell_sticks/C.yml", false);
     }
 
     private void resourceOutput(String fileName, boolean regenerate) {
