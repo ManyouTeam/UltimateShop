@@ -197,9 +197,9 @@ display-item:
 
 placeholder:
   auto-settings:
-    # If enabled, we will auto add discount placeholder at all price amount.
+    # If enabled, we will auto add conditional placeholder at all price amount.
     # This can avoid the need to add the discount option in the amount options for each price.
-    add-discount-in-all-price-amount:
+    add-conditional-in-all-price-amount:
       enabled: false
       buy-placeholder: buy
       sell-placeholder: sell
@@ -215,27 +215,6 @@ placeholder:
     change-amount-in-all-price-placeholder:
       enabled: false
       replace-value: '%formatter_number_format_{amount}%'
-  # Premium version only.
-  discount:
-    buy:
-      mode: MIN
-      default: 1
-      vip: 0.5
-      mvp: 0.3
-    sell:
-      mode: MAX
-      default: 1
-      vip: 1.5
-      mvp: 2
-  discount-conditions:
-    vip:
-      1:
-        type: permission
-        permission: 'group.vip'
-    mvp:
-      1:
-        type: permission
-        permission: 'group.mvp'
   # Premium version only
   compare:
     up: '↑'

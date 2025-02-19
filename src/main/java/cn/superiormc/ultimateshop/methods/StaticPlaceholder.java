@@ -36,34 +36,4 @@ public class StaticPlaceholder {
                     "base", baseValue.toString(), "compare", compareValue.toString()));
         }
     }
-
-    public static double getConditionalValue(String papiID, Player player) {
-        if (UltimateShop.freeVersion) {
-            return 1D;
-        }
-        ConfigurationSection section = ConfigManager.configManager.getSection("placeholder.discount." + papiID);
-        ConfigurationSection conditionSection = ConfigManager.configManager.getSection("placeholder.discount-conditions");
-        if (section == null || conditionSection == null) {
-            return 1D;
-        }
-        Set<String> groupNameSet = conditionSection.getKeys(false);
-        List<Double> result = new ArrayList<>();
-        for (String groupName : groupNameSet) {
-            ObjectCondition condition = new ObjectCondition(conditionSection.getConfigurationSection(groupName));
-            if (condition.getAllBoolean(new ObjectThingRun(player))) {
-                result.add(section.getDouble(groupName));
-            } else {
-                if (section.getDouble("default") != 0D) {
-                    result.add(section.getDouble("default"));
-                }
-            }
-        }
-        if (result.size() == 0) {
-            result.add(1D);
-        }
-        if (section.getString("mode", "MIN").toUpperCase().equals("MIN")) {
-            return Collections.min(result);
-        }
-        return Collections.max(result);
-    }
 }

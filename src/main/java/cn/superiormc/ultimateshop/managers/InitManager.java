@@ -56,6 +56,9 @@ public class InitManager {
         resourceOutput("sell_sticks/A.yml", false);
         resourceOutput("sell_sticks/B.yml", false);
         resourceOutput("sell_sticks/C.yml", false);
+        resourceOutput("conditional_placeholders/buy.yml", false);
+        resourceOutput("conditional_placeholders/sell.yml", false);
+        resourceOutput("conditional_placeholders/example.yml", false);
     }
 
     private void resourceOutput(String fileName, boolean regenerate) {

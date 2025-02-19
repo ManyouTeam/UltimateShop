@@ -3,6 +3,7 @@ package cn.superiormc.ultimateshop.managers;
 import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.objects.ObjectSellStick;
 import cn.superiormc.ultimateshop.objects.ObjectShop;
+import cn.superiormc.ultimateshop.objects.items.subobjects.ObjectConditionalPlaceholder;
 import cn.superiormc.ultimateshop.objects.items.subobjects.ObjectRandomPlaceholder;
 import cn.superiormc.ultimateshop.objects.menus.ObjectMenu;
 import cn.superiormc.ultimateshop.utils.TextUtil;
@@ -31,6 +32,8 @@ public class ConfigManager {
 
     public Map<String, ObjectRandomPlaceholder> randomPlaceholders = new HashMap<>();
 
+    public Map<String, ObjectConditionalPlaceholder> conditionalPlaceholders = new HashMap<>();
+
     public Map<String, ObjectSellStick> sellStickMap = new HashMap<>();
 
     public ConfigManager() {
@@ -43,6 +46,7 @@ public class ConfigManager {
         if (!UltimateShop.freeVersion) {
             initRandomPlaceholder();
             initSellStickConfigs();
+            initConditionalPlaceholder();
         }
     }
 
@@ -146,6 +150,24 @@ public class ConfigManager {
         }
     }
 
+    private void initConditionalPlaceholder() {
+        File dir = new File(UltimateShop.instance.getDataFolder(), "conditional_placeholders");
+        if (!dir.exists()) {
+            dir.mkdir();
+        }
+        File[] files = dir.listFiles();
+        if (!Objects.nonNull(files) && files.length != 0) {
+            return;
+        }
+        for (File file : files) {
+            String fileName = file.getName();
+            if (fileName.endsWith(".yml")) {
+                String substring = fileName.substring(0, fileName.length() - 4);
+                conditionalPlaceholders.put(substring, new ObjectConditionalPlaceholder(substring, YamlConfiguration.loadConfiguration(file)));
+            }
+        }
+    }
+
     public ObjectShop getShop(String fileName) {
         return shopConfigs.get(fileName);
     }
@@ -160,10 +182,6 @@ public class ConfigManager {
             resultShops.add(shopConfigs.get(key));
         }
         return resultShops;
-    }
-
-    public ObjectRandomPlaceholder getRandomPlaceholder(String id) {
-        return randomPlaceholders.get(id);
     }
 
     public List<String> getStringList(String path) {
@@ -268,16 +286,20 @@ public class ConfigManager {
         return clickEventSection.contains(clickEvent);
     }
 
+    public ObjectRandomPlaceholder getRandomPlaceholder(String id) {
+        return randomPlaceholders.get(id);
+    }
+
     public Collection<ObjectRandomPlaceholder> getRandomPlaceholders() {
         return randomPlaceholders.values();
     }
 
-    public Collection<String> getDiscountPlaceholderIDs() {
-        ConfigurationSection section = config.getConfigurationSection("placeholder.discount");
-        if (section == null) {
-            return new ArrayList<>();
-        }
-        return section.getKeys(false);
+    public ObjectConditionalPlaceholder getConditionalPlaceholder(String id) {
+        return conditionalPlaceholders.get(id);
+    }
+
+    public Collection<ObjectConditionalPlaceholder> getConditionalPlaceholders() {
+        return conditionalPlaceholders.values();
     }
 
     public ObjectSellStick getSellStick(String id) {

@@ -1,0 +1,16 @@
+mode: MAX
+
+value:
+  default: 1
+  vip: 1.5
+  mvp: 2
+
+conditions:
+  vip:
+    1:
+      type: permission
+      permission: 'group.vip'
+  mvp:
+    1:
+      type: permission
+      permission: 'group.mvp'

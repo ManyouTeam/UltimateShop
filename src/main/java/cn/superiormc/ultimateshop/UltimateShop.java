@@ -2,6 +2,7 @@ package cn.superiormc.ultimateshop;
 
 import cn.superiormc.ultimateshop.cache.ServerCache;
 import cn.superiormc.ultimateshop.database.SQLDatabase;
+import cn.superiormc.ultimateshop.libs.bstats.Metrics;
 import cn.superiormc.ultimateshop.managers.*;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
 import org.bukkit.Bukkit;
@@ -71,6 +72,7 @@ public final class UltimateShop extends JavaPlugin {
             newSkullMethod = true;
             Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §fNew AuthLib found, enabled new skull get method!");
         }
+        new Metrics(UltimateShop.instance, 20783);
         Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §fYour Minecraft version is: 1." + majorVersion + "." + minorVersion + "!");
         Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §fPlugin is loaded. Author: PQguanfang.");
     }
