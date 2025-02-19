@@ -46,7 +46,7 @@ public class ObjectSellStick {
         this.usageTimes = section.getInt("usage-times");
         this.multiplier = section.getDouble("multiplier");
         this.infinite = usageTimes < 0 || section.getBoolean("infinite");
-        Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §fLoaded sell stick: " + id + "!");
+        Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §fLoaded sell stick: " + id + ".yml!");
     }
 
     public String getID() {

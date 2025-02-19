@@ -45,8 +45,8 @@ public class ConfigManager {
         initMenuConfigs();
         if (!UltimateShop.freeVersion) {
             initRandomPlaceholder();
-            initSellStickConfigs();
             initConditionalPlaceholder();
+            initSellStickConfigs();
         }
     }
 
