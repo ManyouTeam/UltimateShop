@@ -33,6 +33,8 @@ public class ActionManager {
         registerNewAction("mythicmobs_spawn", new ActionMythicMobsSpawn());
         registerNewAction("open_menu", new ActionOpenMenu());
         registerNewAction("shop_menu", new ActionShopMenu());
+        registerNewAction("sell_all_menu", new ActionSellAllMenu());
+        registerNewAction("buy_more_menu", new ActionBuyMoreMenu());
         registerNewAction("buy", new ActionBuy());
         registerNewAction("sell", new ActionSell());
         registerNewAction("chance", new ActionChance());

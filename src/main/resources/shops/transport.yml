@@ -18,12 +18,6 @@ items:
         amount: '6.58'
         placeholder: '{amount}$'
         start-apply: 0
-    sell-prices:
-      1:
-        economy-plugin: Vault
-        amount: '6.54'
-        placeholder: '{amount}$'
-        start-apply: 0
   B:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
@@ -35,12 +29,6 @@ items:
       1:
         economy-plugin: Vault
         amount: '55.47'
-        placeholder: '{amount}$'
-        start-apply: 0
-    sell-prices:
-      1:
-        economy-plugin: Vault
-        amount: '55.42'
         placeholder: '{amount}$'
         start-apply: 0
   C:
@@ -56,12 +44,6 @@ items:
         amount: '18.05'
         placeholder: '{amount}$'
         start-apply: 0
-    sell-prices:
-      1:
-        economy-plugin: Vault
-        amount: '18.02'
-        placeholder: '{amount}$'
-        start-apply: 0
   D:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
@@ -73,12 +55,6 @@ items:
       1:
         economy-plugin: Vault
         amount: '18.12'
-        placeholder: '{amount}$'
-        start-apply: 0
-    sell-prices:
-      1:
-        economy-plugin: Vault
-        amount: '18.09'
         placeholder: '{amount}$'
         start-apply: 0
   E:
@@ -94,14 +70,6 @@ items:
         amount: '88.7'
         placeholder: '{amount}$'
         start-apply: 0
-    sell-prices:
-      1:
-        economy-plugin: Vault
-        max-amount: 88.4
-        min-amount: 20.1
-        amount: '88.4'
-        placeholder: '{amount}$'
-        start-apply: 0
   F:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
@@ -113,12 +81,6 @@ items:
       1:
         economy-plugin: Vault
         amount: '104.53'
-        placeholder: '{amount}$'
-        start-apply: 0
-    sell-prices:
-      1:
-        economy-plugin: Vault
-        amount: '103'
         placeholder: '{amount}$'
         start-apply: 0
   G:
@@ -134,12 +96,6 @@ items:
         amount: '95.91'
         placeholder: '{amount}$'
         start-apply: 0
-    sell-prices:
-      1:
-        economy-plugin: Vault
-        amount: '95.85'
-        placeholder: '{amount}$'
-        start-apply: 0
   H:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
@@ -153,12 +109,6 @@ items:
         amount: '190.6'
         placeholder: '{amount}$'
         start-apply: 0
-    sell-prices:
-      1:
-        economy-plugin: Vault
-        amount: '188'
-        placeholder: '{amount}$'
-        start-apply: 0
   I:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
@@ -170,11 +120,5 @@ items:
       1:
         economy-plugin: Vault
         amount: '139.91'
-        placeholder: '{amount}$'
-        start-apply: 0
-    sell-prices:
-      1:
-        economy-plugin: Vault
-        amount: '138'
         placeholder: '{amount}$'
         start-apply: 0

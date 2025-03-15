@@ -26,6 +26,10 @@ paper-api:
     message: false
     item: false
 
+cache:
+  # If you are facing multi servers sync issue, try greater this value.
+  load-delay: 7
+
 sell:
   # Support Value: Bukkit or ItemFormat.
   # For each product, you can add match-item section to make custom sell match method, for more info, please view Wiki.

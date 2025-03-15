@@ -35,12 +35,10 @@ public class TextUtil {
         if (text.matches("[0-9]+")) {
             return text;
         }
-        text = parseBuiltInPlaceholder(text, player);
         if (text.contains("%") && CommonUtil.checkPluginLoad("PlaceholderAPI")) {
-            return PlaceholderAPI.setPlaceholders(player, text);
-        } else {
-            return text;
+            text = PlaceholderAPI.setPlaceholders(player, text);
         }
+        return parseBuiltInPlaceholder(text, player);
     }
 
     public static String parseBuiltInPlaceholder(String text, Player player) {

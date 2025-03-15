@@ -148,6 +148,7 @@ public class HookManager {
     public void registerNewEconomyHook(String pluginName,
                                        AbstractEconomyHook economyHook) {
         if (!economyHooks.containsKey(pluginName)) {
+            Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §fHooking into " + pluginName + "...");
             economyHooks.put(pluginName, economyHook);
         }
     }
@@ -155,6 +156,7 @@ public class HookManager {
     public void registerNewItemHook(String pluginName,
                                     AbstractItemHook itemHook) {
         if (!itemHooks.containsKey(pluginName)) {
+            Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §fHooking into " + pluginName + "...");
             itemHooks.put(pluginName, itemHook);
         }
     }
@@ -162,6 +164,7 @@ public class HookManager {
     public void registerNewProtectionHook(String pluginName,
                                           AbstractProtectionHook protectionHook) {
         if (!protectionHooks.containsKey(pluginName)) {
+            Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §fHooking into " + pluginName + "...");
             protectionHooks.put(pluginName, protectionHook);
         }
     }
