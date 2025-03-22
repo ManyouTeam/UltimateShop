@@ -167,6 +167,8 @@ log-transaction:
   format: '{player} | {shop} | {buy-or-sell} | {item-name}x{amount} | {price}'
 
 display-item:
+  # If set to true, if your product default amount is 10, and you purchase it x64 in one time, we will display 640 as result in amount placeholder.
+  calculate-amount: true
   auto-set-first-product: true
   # @+lower case means conditional lore, do not remove them here.
   # Otherwise, the line without this will always display it.

@@ -209,7 +209,7 @@ public class BuyProductMethod {
                             tempVal5.getMode(),
                             !ConfigManager.configManager.getBoolean("placeholder.status.can-used-everywhere")),
                     "amount",
-                    String.valueOf(multi));
+                    String.valueOf(multi * tempVal2.getDisplayItemObject().getAmountPlaceholder()));
         }
         if (ConfigManager.configManager.getBoolean("log-transaction.enabled") && !UltimateShop.freeVersion) {
             String log = CommonUtil.modifyString(ConfigManager.configManager.getString("log-transaction.format"),
@@ -219,7 +219,7 @@ public class BuyProductMethod {
                     "shop-name", tempVal1.getShopDisplayName(),
                     "item", product,
                     "item-name", tempVal2.getDisplayName(player),
-                    "amount", String.valueOf(multi),
+                    "amount", String.valueOf(multi * tempVal2.getDisplayItemObject().getAmountPlaceholder()),
                     "price", ObjectPrices.getDisplayNameInLine(player,
                             multi,
                             takeResult.getResultMap(),

@@ -332,7 +332,7 @@ public class DebuildItem {
         }
 
         // Axolotl Bucket
-        if (CommonUtil.getMajorVersion(17)) {
+        if (CommonUtil.getMinorVersion(17, 1)) {
             if (meta instanceof AxolotlBucketMeta) {
                 AxolotlBucketMeta bucket = (AxolotlBucketMeta) meta;
                 if (bucket.hasVariant()) {
