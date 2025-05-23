@@ -1,0 +1,308 @@
+settings:
+  menu: 'example-shop-menu'
+  buy-more: true
+  shop-name: 'Drops Shop'
+  hide-message: false
+
+items:
+  A:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: STRING
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: '1.65'
+        placeholder: '{amount}$'
+        start-apply: 0
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: '1.62'
+        placeholder: '{amount}$'
+        start-apply: 0
+  B:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: FEATHER
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: '0.55'
+        placeholder: '{amount}$'
+        start-apply: 0
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: '0.52'
+        placeholder: '{amount}$'
+        start-apply: 0
+  C:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: GUNPOWDER
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: '11'
+        placeholder: '{amount}$'
+        start-apply: 0
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: '10.97'
+        placeholder: '{amount}$'
+        start-apply: 0
+  D:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: FLINT
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: '0.55'
+        placeholder: '{amount}$'
+        start-apply: 0
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: '0.51'
+        placeholder: '{amount}$'
+        start-apply: 0
+  E:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: BONE
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: '1.75'
+        placeholder: '{amount}$'
+        start-apply: 0
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: '1.72'
+        placeholder: '{amount}$'
+        start-apply: 0
+  F:
+    price-mode: ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: GHAST_TEAR
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: '82.5'
+        placeholder: '{amount}$'
+        start-apply: 0
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: '81.78'
+        placeholder: '{amount}$'
+        start-apply: 0
+    buy-limits:
+      global: '{sell-times-server}'
+    buy-times-reset-mode: 'NEVER'
+    buy-times-reset-time: '00:00:00'
+  G:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: INK_SAC
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: '3.3'
+        placeholder: '{amount}$'
+        start-apply: 0
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: '3.1'
+        placeholder: '{amount}$'
+        start-apply: 0
+  H:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: GLOW_INK_SAC
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: '3.55'
+        placeholder: '{amount}$'
+        start-apply: 0
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: '3.53'
+        placeholder: '{amount}$'
+        start-apply: 0
+  I:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: SPIDER_EYE
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: '3.3'
+        placeholder: '{amount}$'
+        start-apply: 0
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: '3.1'
+        placeholder: '{amount}$'
+        start-apply: 0
+  J:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: ROTTEN_FLESH
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: '0.39'
+        placeholder: '{amount}$'
+        start-apply: 0
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: '0.36'
+        placeholder: '{amount}$'
+        start-apply: 0
+  K:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: LEATHER
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: '5.08'
+        placeholder: '{amount}$'
+        start-apply: 0
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: '5.05'
+        placeholder: '{amount}$'
+        start-apply: 0
+  L:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: RABBIT_HIDE
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: '1.31'
+        placeholder: '{amount}$'
+        start-apply: 0
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: '1.29'
+        placeholder: '{amount}$'
+        start-apply: 0
+  M:
+    price-mode: ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: ENDER_PEARL
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: '55+({buy-times-server}-{sell-times-server})*0.1'
+        placeholder: '{amount}$'
+        max-amount: 85.5
+        min-amount: 45.5
+        start-apply: 0
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: '23.5+({buy-times-server}-{sell-times-server})*0.1'
+        max-amount: 23.5
+        min-amount: 1
+        placeholder: '{amount}$'
+        start-apply: 0
+    buy-limits:
+      global: '{sell-times-server}'
+    buy-times-reset-mode: 'NEVER'
+    buy-times-reset-time: '00:00:00'
+  N:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: SLIME_BALL
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: '11'
+        placeholder: '{amount}$'
+        start-apply: 0
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: '10.79'
+        placeholder: '{amount}$'
+        start-apply: 0
+  O:
+    price-mode: ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: MAGMA_CREAM
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: '65.34'
+        placeholder: '{amount}$'
+        start-apply: 0
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: '65.21'
+        placeholder: '{amount}$'
+        start-apply: 0
+    buy-limits:
+      global: '{sell-times-server}'
+    buy-times-reset-mode: 'NEVER'
+    buy-times-reset-time: '00:00:00'

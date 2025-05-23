@@ -1,0 +1,121 @@
+settings:
+  menu: 'example-shop-menu'
+  buy-more: true
+  shop-name: 'Fish Shop'
+  hide-message: false
+
+items:
+  A:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: COD
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: '14.25'
+        placeholder: '{amount}$'
+        start-apply: 0
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: '12.15'
+        placeholder: '{amount}$'
+        start-apply: 0
+  B:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: COOKED_COD
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: '19.21'
+        placeholder: '{amount}$'
+        start-apply: 0
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: '18.48'
+        placeholder: '{amount}$'
+        start-apply: 0
+  C:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: SALMON
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: '17.26'
+        placeholder: '{amount}$'
+        start-apply: 0
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: '16.58'
+        placeholder: '{amount}$'
+        start-apply: 0
+  D:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: COOKED_SALMON
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: '21.26'
+        placeholder: '{amount}$'
+        start-apply: 0
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: '19.98'
+        placeholder: '{amount}$'
+        start-apply: 0
+  E:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: TROPICAL_FISH
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: '16.25'
+        placeholder: '{amount}$'
+        start-apply: 0
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: '15.86'
+        placeholder: '{amount}$'
+        start-apply: 0
+  F:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: PUFFERFISH
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: '23.51'
+        placeholder: '{amount}$'
+        start-apply: 0
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: '22.45'
+        placeholder: '{amount}$'
+        start-apply: 0

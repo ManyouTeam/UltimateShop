@@ -1,0 +1,11 @@
+display-item:
+  material: STICK
+  name: '&dAdvanced Sell Stick &7(50 times)'
+  lore:
+    - '&fRight click a chest to use this item!'
+    - ''
+    - '&cLeft usages: {times}'
+
+usage-times: 50
+
+multiplier: 1.3

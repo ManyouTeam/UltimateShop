@@ -1,0 +1,100 @@
+error:
+  product-not-found: "&#98FB98[UltimateShop] &c{product} nicht gefunden!"
+  shop-not-found: "&#98FB98[UltimateShop] &c{shop} nicht gefunden!"
+  player-not-found: "&#98FB98[UltimateShop] &c{player} nicht gefunden!"
+  item-not-found: "&#98FB98[UltimateShop] &c{item} nicht gefunden!"
+  save-item-not-found: "&#98FB98[UltimateShop] &cWe can't find this save item called {item}!"
+  args: "&#98FB98[UltimateShop] &cBefehl falsch verwendet. Solltest du Hilfe benötigen, nutze /shop help!"
+  in-game: "&#98FB98[UltimateShop] &cDieser Befehlt muss im Spiel genutzt werden!"
+  miss-permission: "&#98FB98[UltimateShop] &cDu besitzt keine Berechtigung diesen Befehl zu nutzen!"
+  menu-not-found: "&#98FB98[UltimateShop] &cMenü nicht gefunden: {menu}!"
+  buy-more-menu-direct-open: "&#98FB98[UltimateShop] &cDieses Menü ist ein buy more Menu und kann nicht direkt geöffnet werden!"
+  shop-menu-not-found: "&#98FB98[UltimateShop] &c{shop}'s Menü konnte nicht gefunden werden: {menu}!"
+  shop-does-not-have-menu: "&#98FB98[UltimateShop] &cShop {shop} hat kein gültiges Menü!"
+  random-placeholder-not-found: "&#98FB98[UltimateShop] &cPlatzhalter nicht gefunden: {placeholder}!"
+  random-placeholder-element-not-found: "&#98FB98[UltimateShop] &cScheinbar enthält der Platzhalter {placeholder} nicht das Element {element}!"
+  length-only-one: "&#98FB98[UltimateShop] &cProduct ID muss aus mindestens einem Zeichen bestehen!"
+
+plugin:
+  reloading: "&#98FB98[UltimateShop] &fVersuche das Plugin neu zu starten. Das System kann ruckeln
+    oder gar abstürzen, solltest du viele Produkte im Shop und viele Spieler Online haben. 
+    Wir empfehlen den Server, statt des Plugins, neu zu starten."
+  reloaded: "&#98FB98[UltimateShop] &fPlugin neu gestartet!"
+  reload-close-gui: "&#98FB98[UltimateShop] &fDein GUI wurde geschlossen, da der Admin das Plugin neu startet!"
+  saved: "&#98FB98[UltimateShop] &fGegenstand gespeichert!"
+  generated: "&#98FB98[UltimateShop] &fDas Format der Haltepunkte wurde im Plugin-Konfigurationsordner generiert, bitte kopieren Sie diese in Ihre Menü- oder Shop-Konfigurationen!"
+
+placeholderapi:
+  unknown-shop: "Unbekannter Shop"
+  unknown-product: "Unbekanntes Produkt"
+
+command-tab:
+  unknown-shop: "[Unknown Shop]"
+  unknown-random-placeholder: "[Unknown Random Placeholder]"
+  type-item-id: "[Type Item ID you want]"
+
+# All messages also support multi lines, just do it like this!
+help:
+  main: |
+    &#98FB98&lUltimateShop &7Made by @PQguanfang
+    &f/shop help &7- Hilfe aufrufen.
+    &f/shop menu <menuName> &7- Spezifisches Menü aufrufen.
+    &f/shop menu <shopName> &7- Spezifisches Shopmenü aufrufen.
+    &f/shop sellall &7- Öffnet das verkaufe alles Menü.
+  main-admin: |
+    &#98FB98&lUltimateShop &7Made by @PQguanfang
+    &f/shop help &7- Hilfe aufrufen.
+    &f/shop menu <menuName> &7- Spezifisches Menü aufrufen.
+    &f/shop menu <shopName> &7- Spezifisches Shopmenü aufrufen.
+    &f/shop quickbuy <shopName> <itemName> &7- Schnellkauf eines speziellen Gegenstandes ohne Menü.
+    &f/shop quicksell <shopName> <itemName> &7- Schnellverkauf eines speziellen Gegenstandes ohne Menü.
+    &f/shop reload &7- Plugin neu starten.
+    &f/shop sellall &7- Öffnet das verkaufe alles Menü.
+    &f/shop setbuytimes <shopName> <itemName> <playerName> [amount] &7- Setzt die Anzahl wie oft ein Gegenstand von jemandem gekauft werden darf.
+    &f/shop setselltimes <shopName> <itemName> <playerName> [amount] &7- Setzt die Anzahl wie oft ein Gegenstand von jemandem verkauft werden darf.
+    &f/shop addbuytimes <shopName> <itemName> <playerName> <amount> &7- Erhöht die Anzahl wie oft ein Gegenstand von jemand gekauft werden darf.
+    &f/shop addselltimes <shopName> <itemName> <playerName> <amount> &7- Erhöht die Anzahl wie oft ein Gegenstand von jemand verkauft werden darf.
+    &f/shop resetrandomplaceholder <placeholderID> &7-Setzt Platzhalterwert zurück. &c(Premium)
+    &f/shop setrandomplaceholder <placeholderID> [element] &7- Setzt Platzhalterwert. &c(Premium)
+    &f/shop getplaceholdervalue <text> &7- Gibt Platzhalterwert zurück. &c(Premium)
+    &f/shop saveitem <itemID> &7- Platzierte Gegenstände speichern.
+    &f/shop generateitemformat &7- Generiert platzierte Gegenstände ins ItemFormat.
+    &f/shop givesellstick <itemID> <playerID> [amount] &7- Gib verkaufsitem an Spieler. &c(Premium)
+  main-console: |
+    &#98FB98&lUltimateShop &7Made by @PQguanfang
+    &f/shop help &7- Hilfe aufrufen.
+    &f/shop menu <menuName> <playerName> &7- Spezifisches Menü aufrufen beim Spieler öffnen lassen.
+    &f/shop menu <shopName> <playerName> &7- Spezifisches Shopmenü aufrufen beim Spieler öffnen lassen.
+    &f/shop reload &7- Plugin neu starten.
+    &f/shop setbuytimes <shopName> <itemName> <playerName> [amount] &7- Setzt die Anzahl wie oft ein Gegenstand von jemandem gekauft werden darf.
+    &f/shop setselltimes <shopName> <itemName> <playerName> [amount] &7- Setzt die Anzahl wie oft ein Gegenstand von jemandem verkauft werden darf.
+    &f/shop addbuytimes <shopName> <itemName> <playerName> <amount> &7- Erhöht die Anzahl wie oft ein Gegenstand von jemand gekauft werden darf.
+    &f/shop addselltimes <shopName> <itemName> <playerName> <amount> &7- Erhöht die Anzahl wie oft ein Gegenstand von jemand verkauft werden darf.
+    &f/shop resetrandomplaceholder <placeholderID> &7-Setzt Platzhalterwert zurück. &c(Premium)
+    &f/shop setrandomplaceholder <placeholderID> [element] &7- Setzt Platzhalterwert. &c(Premium)
+    &f/shop getplaceholdervalue <text> &7- Gibt Platzhalterwert zurück. &c(Premium)
+    &f/shop givesellstick <itemID> <playerID> [amount] &7- Gib verkaufsitem an Spieler. &c(Premium)
+
+inventory-full: "&#98FB98[UltimateShop] &fTransaktion kann nicht durchgeführt werden, da das Inventar voll ist!"
+start-sell-all: "&#98FB98[UltimateShop] &fAlle deiner {amount} verkaufbaren Gegenstände wurden verkauft, dein Erlös war {reward}!"
+start-sell-stick: "&#98FB98[UltimateShop] &fAlle diner verkaufbaren Gegenstände in diesem Container wurden verkauft, dein Erlös war {reward}!"
+give-sell-stick: "&#98FB98[UltimateShop] &fGib {player} {item} x{amount}!"
+give-save-item: "&#98FB98[UltimateShop] &fGib {player} {item} x{amount}!"
+add-times: "&#98FB98[UltimateShop] &fFüge {times} zu {player}'s {item} Verwendungszeiten!"
+set-times: "&#98FB98[UltimateShop] &fSetze {player}'s {item} Verwendungszeigen auf {times}!"
+add-times-shop: "&#98FB98[UltimateShop] &fFüge {times} zu {player}'s {shop}'s Produktgebrauchtzeiten!"
+set-times-shop: "&#98FB98[UltimateShop] &fSetze {player}'s {shop}'s Produktgebrauchzzeiten auf {times}!"
+success-buy: "&#98FB98[UltimateShop] &fErfolgreich {item}x{amount}, zum Preis von {price} gekauft!"
+success-sell: "&#98FB98[UltimateShop] &fErfolgreich {item}x{amount}, zum Preis von {price} verkauft!"
+menu-condition-not-meet: "&#98FB98[UltimateShop] &cDie Bedingung, um das Menü zu öffnen, wurde nicht erfüllt!"
+buy-condition-not-meet: "&#98FB98[UltimateShop] &cDie Bedingung, um das Prdukt zu kaufen, wurde nicht erfüllt!"
+sell-condition-not-meet: "&#98FB98[UltimateShop] &cDie Bedingung, um das Prdukt zu verkaufen, wurde nicht erfüllt!"
+limit-reached-buy-player: "&#98FB98[UltimateShop] &cSie können Artikel {item} nicht mehr kaufen, Sie haben diesen Artikel heute {times} gekauft, und sein Tagesbestand ist {limit} für Sie, nächste Aktualisierungszeit: {refresh}."
+limit-reached-sell-player: "&#98FB98[UltimateShop] &cSie können Artikel {item} nicht mehr verkaufen, Sie haben diesen Artikel heute {times} verkauft, und sein Tageslimit ist {limit} für Sie, nächste Aktualisierungszeit: {refresh}."
+limit-reached-buy-server: "&#98FB98[UltimateShop] &cDu kannst Gegenstand {item} nicht mehr kaufen, alle Spieler kaufen diesen Gegenstand heute {times} und sein täglicher Bestand ist {limit}, nächste Aktualisierungszeit: {refresh}."
+limit-reached-sell-server: "&#98FB98[UltimateShop] &cDu kannst Gegenstand {item} nicht mehr verkaufen, alle Spieler verkauften diesen Gegenstand heute {times} und sein täglicher Bestand ist Limitiert auf {limit}, nächste Aktualisierungszeit: {refresh}."
+buy-price-not-enough: "&#98FB98[UltimateShop] &cDu hast nicht genügend Geld um {item} zu kaufen. Preis: {price}."
+sell-products-not-enough: "&#98FB98[UltimateShop] &cDu hast nicht genügend {item} zum verkaufen."
+parsed-value: "&#98FB98[UltimateShop] &fErmittelter Wert: {text}"
+reset-random-placeholder: "&#98FB98[UltimateShop] &fErfolgreich Platzhalter {placeholder} zurückgesetzt und der neue Wert ist {value}."
+set-random-placeholder: "&#98FB98[UltimateShop] &fErfolgreich Platzhalter {placeholder} Wert gesetzt: {value}. Bitte beachten Sie, dass die Aktualisierungszeit nicht zurückgesetzt wird!"

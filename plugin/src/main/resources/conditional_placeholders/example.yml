@@ -1,0 +1,16 @@
+mode: DEFAULT
+
+value:
+  default: 'Not bad'
+  vip: 'Good'
+  mvp: 'Very good'
+
+conditions:
+  vip:
+    1:
+      type: permission
+      permission: 'group.vip'
+  mvp:
+    1:
+      type: permission
+      permission: 'group.mvp'

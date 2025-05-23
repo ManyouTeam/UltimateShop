@@ -1,0 +1,18 @@
+display-item:
+  material: STICK
+  name: '&dSell Stick &7(5 times)'
+  lore:
+    - '&fRight click a chest to use this item!'
+    - ''
+    - '&cLeft usages: {times}'
+
+usage-times: 5
+
+multiplier: 1.2
+
+actions:
+  1:
+    type: sound
+    sound: 'block.note_block.pling'
+
+conditions: []

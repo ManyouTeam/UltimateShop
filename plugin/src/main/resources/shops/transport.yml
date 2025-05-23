@@ -1,0 +1,124 @@
+settings:
+  menu: 'example-shop-menu'
+  buy-more: true
+  shop-name: 'Transport things Shop'
+  hide-message: false
+
+items:
+  A:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: RAIL
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: '6.58'
+        placeholder: '{amount}$'
+        start-apply: 0
+  B:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: POWERED_RAIL
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: '55.47'
+        placeholder: '{amount}$'
+        start-apply: 0
+  C:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: ACTIVATOR_RAIL
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: '18.05'
+        placeholder: '{amount}$'
+        start-apply: 0
+  D:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: DETECTOR_RAIL
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: '18.12'
+        placeholder: '{amount}$'
+        start-apply: 0
+  E:
+    price-mode: ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: MINECART
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: '88.7'
+        placeholder: '{amount}$'
+        start-apply: 0
+  F:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: CHEST_MINECART
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: '104.53'
+        placeholder: '{amount}$'
+        start-apply: 0
+  G:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: FURNACE_MINECART
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: '95.91'
+        placeholder: '{amount}$'
+        start-apply: 0
+  H:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: HOPPER_MINECART
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: '190.6'
+        placeholder: '{amount}$'
+        start-apply: 0
+  I:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: TNT_MINECART
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: '139.91'
+        placeholder: '{amount}$'
+        start-apply: 0

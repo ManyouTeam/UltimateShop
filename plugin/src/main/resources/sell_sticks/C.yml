@@ -1,0 +1,11 @@
+display-item:
+  material: STICK
+  name: '&5Epic Sell Stick'
+  lore:
+    - '&fRight click a chest to use this item!'
+    - ''
+    - '&cLeft usages: {times}'
+
+usage-times: -1
+
+multiplier: 1.5

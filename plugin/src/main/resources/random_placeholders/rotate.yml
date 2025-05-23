@@ -1,0 +1,6 @@
+reset-mode: TIMED
+reset-time: '00:00:00'
+elements:
+  - 'A'
+  - 'B'
+  - 'C'

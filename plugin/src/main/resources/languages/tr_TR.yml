@@ -1,0 +1,101 @@
+error:
+  product-not-found: "&#98FB98[UltimateShop] &cÜrün {product} bulunamadı!"
+  shop-not-found: "&#98FB98[UltimateShop] &cMarket {shop} bulunamadı!"
+  player-not-found: "&#98FB98[UltimateShop] &cOyuncu {player} bulunamadı!"
+  item-not-found: "&#98FB98[UltimateShop] &cEşya {item} satışı bulunamadı!"
+  save-item-not-found: "&#98FB98[UltimateShop] &cKaydetme eşyası {item} bulunamadı!"
+  args: "&#98FB98[UltimateShop] &cHatalı komut, yardım için /shop help!"
+  in-game: "&#98FB98[UltimateShop] &cBu komutu yalnızca oyun içinde kullanabilirsin!"
+  miss-permission: "&#98FB98[UltimateShop] &cBu komutu kullanmak için yetkin bulunmuyor!"
+  menu-not-found: "&#98FB98[UltimateShop] &cMenü {menu} bulunamadı!"
+  buy-more-menu-direct-open: "&#98FB98[UltimateShop] &cBu menü 'Daha Fazla Satın Al' menüsüdür ve direkt olarak açılamaz!"
+  shop-menu-not-found: "&#98FB98[UltimateShop] &cMarket {shop}'e ait olan menü {menu} bulunamadı!"
+  shop-does-not-have-menu: "&#98FB98[UltimateShop] &cMarket {shop} geçerli bir menüye sahip değil!"
+  random-placeholder-not-found: "&#98FB98[UltimateShop] &cRastgele yer tutucu '{placeholder}' bulunamadı!"
+  random-placeholder-element-not-found: "&#98FB98[UltimateShop] &cGörünüşe göre yer tutucu '{placeholder}' şu elementi içermiyor: {element}!"
+  length-only-one: "&#98FB98[UltimateShop] &cÜrün ID'si 1 karakter büyüklüğünde olmalı!"
+
+plugin:
+  reloading: "&#98FB98[UltimateShop] &fEklenti yeniden başlatması deneniyor, eğer sunucuda
+    çok fazla market ürünleri ve oyuncu bulunuyorsa TPS düşüşü veya crash yaşanabilir çünkü
+    oyuncuların verileri senkronize şekilde kaydediliyor. Eklentiyi yeniden başlatmak yerine sunucuyu
+    yeniden başlatmanız veriyi daha güvende tutmanız için önerilir."
+  reloaded: "&#98FB98[UltimateShop] &fEklenti yenilendi!"
+  reload-close-gui: "&#98FB98[UltimateShop] &fMenünüz bir yetkili tarafından eklenti yenilendiği için kapatıldı!"
+  saved: "&#98FB98[UltimateShop] &fEşya kaydedildi!"
+  generated: "&#98FB98[UltimateShop] &fElinizdeki eşyanın 'eşya formatı' eklentinin config dosyasında oluşturuldu, lütfen onu menü veya market dosyanıza yapıştırın."
+
+placeholderapi:
+  unknown-shop: "Bilinmeyen Market"
+  unknown-product: "Bilinmeyen Ürün"
+
+command-tab:
+  unknown-shop: "[Bilinmeyen Market]"
+  unknown-random-placeholder: "[Bilinmeyen Rastgele Yer Tutucu]"
+  type-item-id: "[İstediğiniz Ürünün Eşya ID'si]"
+
+# All messages also support multi lines, just do it like this!
+help:
+  main: |
+    &#98FB98&lUltimateShop &7@PQguanfang tarafından yapıldı.
+    &f/shop help &7- Yardımı görüntüler.
+    &f/shop menu <menüAdı> &7- Belirlenen genel menüyü açar.
+    &f/shop menu <marketAdı> &7- Belirlenen market menüyü açar.
+    &f/shop sellall &7- Hepsini sat menüsünü açar.
+  main-admin: |
+    &#98FB98&lUltimateShop &7@PQguanfang tarafından yapıldı.
+    &f/shop help &7- Yardımı görüntüler.
+    &f/shop menu <menüAdı> &7- Belirlenen genel menüyü açar.
+    &f/shop menu <marketAdı> &7- Belirlenen market menüyü açar.
+    &f/shop quickbuy <marketAdı> <eşyaAdı> &7- Belirlenen eşyayı menüsüz şekilde hızlıca satın alır.
+    &f/shop quicksell <marketAdı> <eşyaAdı> &7- Belirlenen eşyayı menüsüz şekilde hızlıca satar.
+    &f/shop reload &7- Eklentiyi yeniler.
+    &f/shop sellall &7 - Hepsini sat menüsünü açar.
+    &f/shop setbuytimes <marketAdı> <eşyaAdı> <oyuncuAdı> [miktar] &7- Satın alma sayısını belirler.
+    &f/shop setselltimes <marketAdı> <eşyaAdı> <oyuncuAdı> [miktar] &7- Satma sayısını belirler.
+    &f/shop addbuytimes <marketAdı> <eşyaAdı> <oyuncuAdı> <miktar> &7- Satın alma sayısını artırır.
+    &f/shop addselltimes <marketAdı> <eşyaAdı> <oyuncuAdı> <miktar> &7- Satma sayısını artırır.
+    &f/shop resetrandomplaceholder <yerTutucuID> &7- Rastgele yer tutucu değerini sıfırlar. &c(Premium)
+    &f/shop setrandomplaceholder <yerTutucuID> [element] &7- Rastgele yer tutucu değerini belirler. &c(Premium)
+    &f/shop getplaceholdervalue <metin> &7- Girilen yer tutucu değerini gösterir. &c(Premium)
+    &f/shop saveitem <eşyaID> &7- Elinizdeki eşyayı kaydeder.
+    &f/shop generateitemformat &7- Elinizdeki eşyanın 'eşya formatı'nı oluşturur.
+    &f/shop givesellstick <eşyaID> <oyuncuID> [miktar] &7- Oyuncuya satış çubuğu verir. &c(Premium)
+  main-console: |
+    &#98FB98&lUltimateShop &7@PQguanfang tarafından yapıldı.
+    &f/shop help &7- Yardımı görüntüler.
+    &f/shop menu <menüAdı> &7- Belirlenen genel menüyü açar.
+    &f/shop menu <marketAdı> &7- Belirlenen market menüyü açar.
+    &f/shop reload &7- Eklentiyi yeniler.
+    &f/shop setbuytimes <marketAdı> <eşyaAdı> <oyuncuAdı> [miktar] &7- Satın alma sayısını belirler.
+    &f/shop setselltimes <marketAdı> <eşyaAdı> <oyuncuAdı> [miktar] &7- Satma sayısını belirler.
+    &f/shop addbuytimes <marketAdı> <eşyaAdı> <oyuncuAdı> <miktar> &7- Satın alma sayısını artırır.
+    &f/shop addselltimes <marketAdı> <eşyaAdı> <oyuncuAdı> <miktar> &7- Satma sayısını artırır.
+    &f/shop resetrandomplaceholder <yerTutucuID> &7- Rastgele yer tutucu değerini sıfırlar. &c(Premium)
+    &f/shop setrandomplaceholder <yerTutucuID> [element] &7- Rastgele yer tutucu değerini belirler. &c(Premium)
+    &f/shop getplaceholdervalue <metin> &7- Girilen yer tutucu değerini gösterir. &c(Premium)
+    &f/shop givesellstick <eşyaID> <oyuncuID> [miktar] &7- Satış çubuğu verir. &c(Premium)
+
+inventory-full: "&#98FB98[UltimateShop] &fİşlem sonrası envanteriniz dolacağı için bu işlem tamamlanamıyor!"
+start-sell-all: "&#98FB98[UltimateShop] &fTüm {amount}x satılabilir eşyalarınız satıldı, bu işlemden {reward} kazandınız!"
+start-sell-stick: "&#98FB98[UltimateShop] &fBu konteynerdeki tüm satılabilir eşyalar {multiplier} çarpanıyla satıldı, bu işlemden {reward} kazandınız!"
+give-sell-stick: "&#98FB98[UltimateShop] &f{player} adlı oyuncuya satış çubuğu {item} x{amount} verildi!"
+give-save-item: "&#98FB98[UltimateShop] &f{player} adlı oyuncuya kaydedilmiş eşya {item} x{amount} verildi!"
+add-times: "&#98FB98[UltimateShop] &f{player} adlı oyuncunun {item} eşyasına {times} kullanım eklendi!"
+set-times: "&#98FB98[UltimateShop] &f{player} adlı oyuncunun {item} eşyasının kullanımı {times} olarak belirlendi!"
+add-times-shop: "&#98FB98[UltimateShop] &f{player} adlı oyuncunun tüm {shop} ürünlerinin kullanımına {times} eklendi!"
+set-times-shop: "&#98FB98[UltimateShop] &f{player} adlı oyuncunun tüm {shop} ürünlerinin kullanımı {times} olarak belirlendi!"
+success-buy: "&#98FB98[UltimateShop] &f{item}x{amount} başarıyla satın alındı, tutar {price}!"
+success-sell: "&#98FB98[UltimateShop] &f{item}x{amount} başarıyla satıldı, kazanç {price}!"
+menu-condition-not-meet: "&#98FB98[UltimateShop] &cBu menüyü açmak için gereksinimleri tamamlamıyorsun!"
+buy-condition-not-meet: "&#98FB98[UltimateShop] &cBu ürünü satın almak için gereksinimleri tamamlamıyorsun!"
+sell-condition-not-meet: "&#98FB98[UltimateShop] &cBu ürünü satmak için gereksinimleri tamamlamıyorsun!"
+limit-reached-buy-player: "&#98FB98[UltimateShop] &cArtık {item} satın alamıyorsun, bu eşyadan {times} kez satın aldın ve senin için bunun limiti {limit}. Sonraki yenileme zamanı: {refresh}."
+limit-reached-sell-player: "&#98FB98[UltimateShop] &cArtık {item} satamıyorsun, bu eşyayı {times} kez sattın ve senin için bunun limiti {limit}. Sonraki yenileme zamanı: {refresh}."
+limit-reached-buy-server: "&#98FB98[UltimateShop] &cArtık {item} satın alamıyorsun, tüm oyuncular bu eşyadan {times} kez satın aldı ve bunun limiti {limit}. Sonraki yenileme zamanı: {refresh}."
+limit-reached-sell-server: "&#98FB98[UltimateShop] &cArtık {item} satamıyorsun, tüm oyuncular bu eşyayı {times} kez sattı ve bunun limiti {limit}. Sonraki yenileme zamanı: {refresh}."
+buy-price-not-enough: "&#98FB98[UltimateShop] &c{item} satın almak için yeterli bakiyen yok. Gerekli bakiye: {price}."
+sell-products-not-enough: "&#98FB98[UltimateShop] &cSatabilecek yeterli {item} eşyasına sahip değilsin."
+parsed-value: "&#98FB98[UltimateShop] &fYer tutucu değeri: {text}"
+reset-random-placeholder: "&#98FB98[UltimateShop] &fRastgele yer tutucu '{placeholder}' değeri sıfırlandı ve yeni değeri {value}."
+set-random-placeholder: "&#98FB98[UltimateShop] &fRastgele yer tutucu '{placeholder}' yeni değeri {value}. Yenileme süresinin değişmediğini unutmayın!"

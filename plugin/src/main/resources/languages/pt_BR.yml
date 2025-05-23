@@ -1,0 +1,96 @@
+error:
+  product-not-found: "&#98FB98[UltimateShop] &cNão foi possível encontrar o produto {product}!"
+  shop-not-found: "&#98FB98[UltimateShop] &cNão foi possível encontrar a loja {shop}!"
+  player-not-found: "&#98FB98[UltimateShop] &cNão conseguimos encontrar o jogador {player}!"
+  item-not-found: "&#98FB98[UltimateShop] &cNão conseguimos encontrar o item {item}!"
+  args: "&#98FB98[UltimateShop] &cUso de comando incorreto. Se precisar de ajuda, use /shop help!"
+  in-game: "&#98FB98[UltimateShop] &cVocê precisa usar este comando dentro do jogo!"
+  miss-permission: "&#98FB98[UltimateShop] &cVocê não tem permissão para usar este comando!"
+  menu-not-found: "&#98FB98[UltimateShop] &cNão conseguimos encontrar o menu: {menu}!"
+  buy-more-menu-direct-open: "&#98FB98[UltimateShop] &cEste menu é de compra adicional e não pode ser aberto diretamente!"
+  shop-menu-not-found: "&#98FB98[UltimateShop] &cNão conseguimos encontrar o menu {menu} da loja {shop}!"
+  shop-does-not-have-menu: "&#98FB98[UltimateShop] &cA loja {shop} não possui um menu válido!"
+  random-placeholder-not-found: "&#98FB98[UltimateShop] &cNão conseguimos encontrar o placeholder aleatório: {placeholder}!"
+  random-placeholder-element-not-found: "&#98FB98[UltimateShop] &cParece que o placeholder aleatório {placeholder} não inclui o elemento {element}!"
+  length-only-one: "&#98FB98[UltimateShop] &cO ID do produto deve ter apenas 1 caractere!"
+
+plugin:
+  reloading: "&#98FB98[UltimateShop] &fTentando recarregar o plugin. O servidor pode apresentar queda no TPS ou até mesmo travar se você tiver muitos produtos na loja e jogadores online, pois estamos tentando salvar os dados na thread principal do servidor. Recomendamos reiniciar o servidor em vez de recarregar o plugin para manter os dados seguros."
+  reloaded: "&#98FB98[UltimateShop] &fPlugin recarregado!"
+  reload-close-gui: "&#98FB98[UltimateShop] &fSua GUI foi fechada porque o administrador do servidor está tentando recarregar o plugin!"
+  saved: "&#98FB98[UltimateShop] &fItem salvo!"
+  generated: "&#98FB98[UltimateShop] &fFormato do item segurado gerado na pasta de configuração do plugin. Por favor, copie para os seus arquivos de menu ou configurações da loja!"
+
+placeholderapi:
+  unknown-shop: "Loja desconhecida"
+  unknown-product: "Produto desconhecido"
+
+command-tab:
+  unknown-shop: "[Loja Desconhecida]"
+  unknown-random-placeholder: "[Placeholder Aleatório Desconhecido]"
+  type-item-id: "[Digite o ID do item desejado]"
+
+# Todas as mensagens também suportam várias linhas, é só fazer assim!
+help:
+  main: |
+    &#98FB98&lUltimateShop &7Criado por @PQguanfang
+    &f/shop help &7- Exibe a ajuda.
+    &f/shop menu <menuName> &7- Abre um menu comum especificado.
+    &f/shop menu <shopName> &7- Abre o menu de uma loja especificada.
+    &f/shop sellall &7- Abre o menu de vender tudo.
+  main-admin: |
+    &#98FB98&lUltimateShop &7Criado por @PQguanfang
+    &f/shop help &7- Exibe a ajuda.
+    &f/shop menu <menuName> &7- Abre um menu comum especificado.
+    &f/shop menu <shopName> &7- Abre o menu de uma loja especificada.
+    &f/shop quickbuy <shopName> <itemName> &7- Compra rápida de um item especificado sem abrir o menu.
+    &f/shop quicksell <shopName> <itemName> &7- Venda rápida de um item especificado sem abrir o menu.
+    &f/shop reload &7- Recarrega o plugin.
+    &f/shop sellall &7 - Abre o menu de vender tudo.
+    &f/shop setbuytimes <shopName> <itemName> <playerName> [amount] &7- Define o número de compras.
+    &f/shop setselltimes <shopName> <itemName> <playerName> [amount] &7- Define o número de vendas.
+    &f/shop addbuytimes <shopName> <itemName> <playerName> <amount> &7- Adiciona ao número de compras.
+    &f/shop addselltimes <shopName> <itemName> <playerName> <amount> &7- Adiciona ao número de vendas.
+    &f/shop resetrandomplaceholder <placeholderID> &7- Redefine o valor do placeholder aleatório. &c(Premium)
+    &f/shop setrandomplaceholder <placeholderID> [element] &7- Define o valor do placeholder aleatório. &c(Premium)
+    &f/shop getplaceholdervalue <text> &7- Interpreta o texto inserido. &c(Premium)
+    &f/shop saveitem <itemID> &7- Salva o item segurado.
+    &f/shop generateitemformat &7- Interpreta o item segurado em formato de item.
+    &f/shop givesellstick <itemID> <playerID> [amount] &7- Dá o item de "vara de venda". &c(Premium)
+  main-console: |
+    &#98FB98&lUltimateShop &7Criado por @PQguanfang
+    &f/shop help &7- Exibe a ajuda.
+    &f/shop menu <menuName> <playerName> &7- Força a abertura de um menu comum especificado.
+    &f/shop menu <shopName> <playerName> &7- Força a abertura do menu de uma loja especificada.
+    &f/shop reload &7- Recarrega o plugin.
+    &f/shop setbuytimes <shopName> <itemName> <playerName> [amount] &7- Define o número de compras.
+    &f/shop setselltimes <shopName> <itemName> <playerName> [amount] &7- Define o número de vendas.
+    &f/shop addbuytimes <shopName> <itemName> <playerName> <amount> &7- Adiciona ao número de compras.
+    &f/shop addselltimes <shopName> <itemName> <playerName> <amount> &7- Adiciona ao número de vendas.
+    &f/shop resetrandomplaceholder <placeholderID> &7- Redefine o valor do placeholder aleatório. &c(Premium)
+    &f/shop setrandomplaceholder <placeholderID> [element] &7- Define o valor do placeholder aleatório. &c(Premium)
+    &f/shop getplaceholdervalue <text> &7- Interpreta o texto inserido. &c(Premium)
+    &f/shop givesellstick <itemID> <playerID> [amount] &7- Dá o item de "vara de venda". &c(Premium)
+
+inventory-full: "&#98FB98[UltimateShop] &fVocê não pode concluir esta transação porque seu inventário ficará cheio após a transação!"
+start-sell-all: "&#98FB98[UltimateShop] &fTodos os seus {amount}x itens vendáveis foram vendidos, você ganhou {reward} por isso!"
+start-sell-stick: "&#98FB98[UltimateShop] &fTodos os seus itens vendáveis neste contêiner foram vendidos, você ganhou {reward} por isso!"
+give-sell-stick: "&#98FB98[UltimateShop] &fVocê deu ao jogador {player} um bastão de venda {item} x{amount}!"
+add-times: "&#98FB98[UltimateShop] &fAdicionou {times} aos tempos de uso do item {item} do jogador {player}!"
+set-times: "&#98FB98[UltimateShop] &fDefiniu os tempos de uso do item {item} do jogador {player} para {times}!"
+add-times-shop: "&#98FB98[UltimateShop] &fAdicionou {times} aos tempos de uso de todos os produtos da loja {shop} do jogador {player}!"
+set-times-shop: "&#98FB98[UltimateShop] &fDefiniu os tempos de uso de todos os produtos da loja {shop} do jogador {player} para {times}!"
+success-buy: "&#98FB98[UltimateShop] &fVocê comprou com sucesso {item}x{amount}, custou {price}!"
+success-sell: "&#98FB98[UltimateShop] &fVocê vendeu com sucesso {item}x{amount}, ganhou {price}!"
+menu-condition-not-meet: "&#98FB98[UltimateShop] &cVocê não atendeu às condições necessárias para abrir este menu!"
+buy-condition-not-meet: "&#98FB98[UltimateShop] &cVocê não atendeu às condições necessárias para comprar este produto!"
+sell-condition-not-meet: "&#98FB98[UltimateShop] &cVocê não atendeu às condições necessárias para vender este produto!"
+limit-reached-buy-player: "&#98FB98[UltimateShop] &cVocê não pode mais comprar o item {item}. Você comprou este item {times} vezes hoje, e seu estoque diário é {limit} para você. Próximo horário de atualização: {refresh}."
+limit-reached-sell-player: "&#98FB98[UltimateShop] &cVocê não pode mais vender o item {item}. Você vendeu este item {times} vezes hoje, e seu estoque diário é {limit} para você. Próximo horário de atualização: {refresh}."
+limit-reached-buy-server: "&#98FB98[UltimateShop] &cVocê não pode mais comprar o item {item}. Todos os jogadores compraram este item {times} vezes hoje, e o estoque diário é {limit}. Próximo horário de atualização: {refresh}."
+limit-reached-sell-server: "&#98FB98[UltimateShop] &cVocê não pode mais vender o item {item}. Todos os jogadores venderam este item {times} vezes hoje, e o estoque diário é {limit}. Próximo horário de atualização: {refresh}."
+buy-price-not-enough: "&#98FB98[UltimateShop] &cVocê não tem dinheiro suficiente para comprar {item}. Preço necessário: {price}."
+sell-products-not-enough: "&#98FB98[UltimateShop] &cVocê não tem {item} suficiente para vender."
+parsed-value: "&#98FB98[UltimateShop] &fValor interpretado: {text}"
+reset-random-placeholder: "&#98FB98[UltimateShop] &fPlaceholder aleatório {placeholder} redefinido com sucesso. O novo valor é {value}."
+set-random-placeholder: "&#98FB98[UltimateShop] &fPlaceholder aleatório {placeholder} definido com sucesso. Novo valor: {value}. Observe que o tempo de atualização não foi redefinido!"

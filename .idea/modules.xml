@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/UltimateShop1.iml" filepath="$PROJECT_DIR$/UltimateShop1.iml" />
+      <module fileurl="file://$PROJECT_DIR$/core/core.iml" filepath="$PROJECT_DIR$/core/core.iml" />
+      <module fileurl="file://$PROJECT_DIR$/paper/paper.iml" filepath="$PROJECT_DIR$/paper/paper.iml" />
+      <module fileurl="file://$PROJECT_DIR$/plugin/plugin.iml" filepath="$PROJECT_DIR$/plugin/plugin.iml" />
+      <module fileurl="file://$PROJECT_DIR$/spigot/spigot.iml" filepath="$PROJECT_DIR$/spigot/spigot.iml" />
+    </modules>
+  </component>
+</project>

@@ -1,0 +1,375 @@
+settings:
+  menu: 'example-shop-menu'
+  buy-more: true
+  shop-name: 'Terracotta Shop'
+  hide-message: false
+
+items:
+  A:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: RED_TERRACOTTA
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: '14.8+({buy-times-server}-{sell-times-server})*0.01'
+        max-amount: 17.57
+        min-amount: 7.94
+        placeholder: '{amount}$'
+        start-apply: 0
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: '14.2+({buy-times-server}-{sell-times-server})*0.01'
+        max-amount: 17.54
+        min-amount: 7.91
+        placeholder: '{amount}$'
+        start-apply: 0
+  B:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: ORANGE_TERRACOTTA
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: '14.94+({buy-times-server}-{sell-times-server})*0.01'
+        max-amount: 17.59
+        min-amount: 7.94
+        placeholder: '{amount}$'
+        start-apply: 0
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: '14.82+({buy-times-server}-{sell-times-server})*0.01'
+        max-amount: 17.57
+        min-amount: 7.91
+        placeholder: '{amount}$'
+        start-apply: 0
+  C:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: YELLOW_TERRACOTTA
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: '14.87+({buy-times-server}-{sell-times-server})*0.01'
+        max-amount: 17.59
+        min-amount: 7.94
+        placeholder: '{amount}$'
+        start-apply: 0
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: '14.75+({buy-times-server}-{sell-times-server})*0.01'
+        max-amount: 17.56
+        min-amount: 7.91
+        placeholder: '{amount}$'
+        start-apply: 0
+  D:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: LIME_TERRACOTTA
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: '15.14+({buy-times-server}-{sell-times-server})*0.01'
+        max-amount: 18.59
+        min-amount: 9.94
+        placeholder: '{amount}$'
+        start-apply: 0
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: '15.08+({buy-times-server}-{sell-times-server})*0.01'
+        max-amount: 18.52
+        min-amount: 9.90
+        placeholder: '{amount}$'
+        start-apply: 0
+  E:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: GREEN_TERRACOTTA
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: '15.51+({buy-times-server}-{sell-times-server})*0.01'
+        max-amount: 20.79
+        min-amount: 10.24
+        placeholder: '{amount}$'
+        start-apply: 0
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: '15.46+({buy-times-server}-{sell-times-server})*0.01'
+        max-amount: 20.72
+        min-amount: 10.19
+        placeholder: '{amount}$'
+        start-apply: 0
+  F:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: LIGHT_BLUE_TERRACOTTA
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: '14.85+({buy-times-server}-{sell-times-server})*0.01'
+        max-amount: 19.59
+        min-amount: 9.94
+        placeholder: '{amount}$'
+        start-apply: 0
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: '14.76+({buy-times-server}-{sell-times-server})*0.01'
+        max-amount: 19.49
+        min-amount: 9.92
+        placeholder: '{amount}$'
+        start-apply: 0
+  G:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: CYAN_TERRACOTTA
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: '15.87+({buy-times-server}-{sell-times-server})*0.01'
+        max-amount: 21.59
+        min-amount: 11.75
+        placeholder: '{amount}$'
+        start-apply: 0
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: '15.83+({buy-times-server}-{sell-times-server})*0.01'
+        max-amount: 21.56
+        min-amount: 11.72
+        placeholder: '{amount}$'
+        start-apply: 0
+  H:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: BLUE_TERRACOTTA
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: '16.24+({buy-times-server}-{sell-times-server})*0.01'
+        max-amount: 23.68
+        min-amount: 10.98
+        placeholder: '{amount}$'
+        start-apply: 0
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: '16.17+({buy-times-server}-{sell-times-server})*0.01'
+        max-amount: 23.64
+        min-amount: 10.92
+        placeholder: '{amount}$'
+        start-apply: 0
+  I:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: PURPLE_TERRACOTTA
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: '15.51+({buy-times-server}-{sell-times-server})*0.01'
+        max-amount: 22.67
+        min-amount: 11.27
+        placeholder: '{amount}$'
+        start-apply: 0
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: '15.44+({buy-times-server}-{sell-times-server})*0.01'
+        max-amount: 22.65
+        min-amount: 11.23
+        placeholder: '{amount}$'
+        start-apply: 0
+  J:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: MAGENTA_TERRACOTTA
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: '15.35+({buy-times-server}-{sell-times-server})*0.01'
+        max-amount: 22.64
+        min-amount: 7.94
+        placeholder: '{amount}$'
+        start-apply: 0
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: '15.29+({buy-times-server}-{sell-times-server})*0.01'
+        max-amount: 22.61
+        min-amount: 7.92
+        placeholder: '{amount}$'
+        start-apply: 0
+  K:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: PINK_TERRACOTTA
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: '14.85+({buy-times-server}-{sell-times-server})*0.01'
+        max-amount: 18.59
+        min-amount: 9.24
+        placeholder: '{amount}$'
+        start-apply: 0
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: '14.79+({buy-times-server}-{sell-times-server})*0.01'
+        max-amount: 18.55
+        min-amount: 9.22
+        placeholder: '{amount}$'
+        start-apply: 0
+  L:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: BROWN_TERRACOTTA
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: '15.24+({buy-times-server}-{sell-times-server})*0.01'
+        max-amount: 22.18
+        min-amount: 11.75
+        placeholder: '{amount}$'
+        start-apply: 0
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: '15.16+({buy-times-server}-{sell-times-server})*0.01'
+        max-amount: 22.13
+        min-amount: 11.72
+        placeholder: '{amount}$'
+        start-apply: 0
+  M:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: BLACK_TERRACOTTA
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: '15.1+({buy-times-server}-{sell-times-server})*0.01'
+        max-amount: 21.57
+        min-amount: 9.23
+        placeholder: '{amount}$'
+        start-apply: 0
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: '14.87+({buy-times-server}-{sell-times-server})*0.01'
+        max-amount: 21.52
+        min-amount: 9.20
+        placeholder: '{amount}$'
+        start-apply: 0
+  N:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: GRAY_TERRACOTTA
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: '14.94+({buy-times-server}-{sell-times-server})*0.01'
+        max-amount: 19.58
+        min-amount: 8.78
+        placeholder: '{amount}$'
+        start-apply: 0
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: '14.78+({buy-times-server}-{sell-times-server})*0.01'
+        max-amount: 19.54
+        min-amount: 8.71
+        placeholder: '{amount}$'
+        start-apply: 0
+  O:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: LIGHT_GRAY_TERRACOTTA
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: '14.94+({buy-times-server}-{sell-times-server})*0.01'
+        max-amount: 17.57
+        min-amount: 9.38
+        placeholder: '{amount}$'
+        start-apply: 0
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: '14.78+({buy-times-server}-{sell-times-server})*0.01'
+        max-amount: 17.54
+        min-amount: 9.32
+        placeholder: '{amount}$'
+        start-apply: 0
+  P:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: WHITE_TERRACOTTA
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: '14.79+({buy-times-server}-{sell-times-server})*0.01'
+        max-amount: 21.65
+        min-amount: 11.75
+        placeholder: '{amount}$'
+        start-apply: 0
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: '14.68+({buy-times-server}-{sell-times-server})*0.01'
+        max-amount: 21.61
+        min-amount: 11.73
+        placeholder: '{amount}$'
+        start-apply: 0

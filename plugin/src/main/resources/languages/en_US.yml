@@ -1,0 +1,101 @@
+error:
+  product-not-found: "&#98FB98[UltimateShop] &cCan not found product {product}!"
+  shop-not-found: "&#98FB98[UltimateShop] &cCan not found shop {shop}!"
+  player-not-found: "&#98FB98[UltimateShop] &cWe can't find player {player}!"
+  item-not-found: "&#98FB98[UltimateShop] &cWe can't find sell tick {item}!"
+  save-item-not-found: "&#98FB98[UltimateShop] &cWe can't find this save item called {item}!"
+  args: "&#98FB98[UltimateShop] &cWrong command usage, if you need help, use /shop help!"
+  in-game: "&#98FB98[UltimateShop] &cYou have to use this command in game!"
+  miss-permission: "&#98FB98[UltimateShop] &cYou don't have permission to use this command!"
+  menu-not-found: "&#98FB98[UltimateShop] &cWe can't find menu: {menu}!"
+  buy-more-menu-direct-open: "&#98FB98[UltimateShop] &cThis menu is buy more menu and can not open directly!"
+  shop-menu-not-found: "&#98FB98[UltimateShop] &cWe can't find shop {shop}'s menu: {menu}!"
+  shop-does-not-have-menu: "&#98FB98[UltimateShop] &cShop {shop} does not have valid menu!"
+  random-placeholder-not-found: "&#98FB98[UltimateShop] &cWe can't find random placeholder: {placeholder}!"
+  random-placeholder-element-not-found: "&#98FB98[UltimateShop] &cSeems that random placeholder {placeholder} does not include element {element}!"
+  length-only-one: "&#98FB98[UltimateShop] &cProduct ID length must be 1 char!"
+
+plugin:
+  reloading: "&#98FB98[UltimateShop] &fTrying reload the plugin, server may have TPS
+    drop or even crash if you have much shop products and online players because we are trying save
+    their data in server main thread. We recommend you restart the server instead of reload plugin
+    to keep the data save."
+  reloaded: "&#98FB98[UltimateShop] &fPlugin reloaded!"
+  reload-close-gui: "&#98FB98[UltimateShop] &fYour GUI has been closed because the server admin is trying reload the plugin!"
+  saved: "&#98FB98[UltimateShop] &fItem Saved!"
+  generated: "&#98FB98[UltimateShop] &fGenerated hold item's item format at plugin config folder, please copy them into your menu or shop configs!"
+
+placeholderapi:
+  unknown-shop: "Unknown Shop"
+  unknown-product: "Unknown Product"
+
+command-tab:
+  unknown-shop: "[Unknown Shop]"
+  unknown-random-placeholder: "[Unknown Random Placeholder]"
+  type-item-id: "[Type Item ID you want]"
+
+# All messages also support multi lines, just do it like this!
+help:
+  main: |
+    &#98FB98&lUltimateShop &7Made by @PQguanfang
+    &f/shop help &7- View help.
+    &f/shop menu <menuName> &7- Open specified common menu.
+    &f/shop menu <shopName> &7- Open specified shop menu.
+    &f/shop sellall &7- Open sell all menu.
+  main-admin: |
+    &#98FB98&lUltimateShop &7Made by @PQguanfang
+    &f/shop help &7- View help.
+    &f/shop menu <menuName> &7- Open specified common menu.
+    &f/shop menu <shopName> &7- Open specified shop menu.
+    &f/shop quickbuy <shopName> <itemName> &7- Quick purchase specified item without open menu.
+    &f/shop quicksell <shopName> <itemName> &7- Quick sell specified item without open menu.
+    &f/shop reload &7- Reload the plugin.
+    &f/shop sellall &7 - Open sell all menu.
+    &f/shop setbuytimes <shopName> <itemName> <playerName> [amount] &7- Set buy times.
+    &f/shop setselltimes <shopName> <itemName> <playerName> [amount] &7- Set sell times.
+    &f/shop addbuytimes <shopName> <itemName> <playerName> <amount> &7- Add buy times.
+    &f/shop addselltimes <shopName> <itemName> <playerName> <amount> &7- Add sell times.
+    &f/shop resetrandomplaceholder <placeholderID> &7- Reset random placeholder value. &c(Premium)
+    &f/shop setrandomplaceholder <placeholderID> [element] &7- Set random placeholder value. &c(Premium)
+    &f/shop getplaceholdervalue <text> &7- Parse input text. &c(Premium)
+    &f/shop saveitem <itemID> &7- Save hold item.
+    &f/shop generateitemformat &7- Parse hold item into ItemFormat.
+    &f/shop givesellstick <itemID> <playerID> [amount] &7- Give sell stick item. &c(Premium)
+  main-console: |
+    &#98FB98&lUltimateShop &7Made by @PQguanfang
+    &f/shop help &7- View help.
+    &f/shop menu <menuName> <playerName> &7- Force open specified common menu.
+    &f/shop menu <shopName> <playerName> &7- Force open specified shop menu.
+    &f/shop reload &7- Reload the plugin.
+    &f/shop setbuytimes <shopName> <itemName> <playerName> [amount] &7- Set buy times.
+    &f/shop setselltimes <shopName> <itemName> <playerName> [amount] &7- Set sell times.
+    &f/shop addbuytimes <shopName> <itemName> <playerName> <amount> &7- Add buy times.
+    &f/shop addselltimes <shopName> <itemName> <playerName> <amount> &7- Add sell times.
+    &f/shop resetrandomplaceholder <placeholderID> &7- Reset random placeholder value. &c(Premium)
+    &f/shop setrandomplaceholder <placeholderID> [element] &7- Set random placeholder value. &c(Premium)
+    &f/shop getplaceholdervalue <text> &7- Parse input text. &c(Premium)
+    &f/shop givesellstick <itemID> <playerID> [amount] &7- Give sell stick item. &c(Premium)
+
+inventory-full: "&#98FB98[UltimateShop] &fYou can not finish this transaction because your inventory will full after that!"
+start-sell-all: "&#98FB98[UltimateShop] &fAll your {amount}x sellable items have been sold, you earned {reward} for this!"
+start-sell-stick: "&#98FB98[UltimateShop] &fAll your sellable items in this container have been sold, you earned {reward} with multiplier {multiplier} for this!"
+give-sell-stick: "&#98FB98[UltimateShop] &fGave {player} sell stick {item} x{amount}!"
+give-save-item: "&#98FB98[UltimateShop] &fGive {player} save item {item} x{amount}!"
+add-times: "&#98FB98[UltimateShop] &fAdd {times} to {player}'s {item} use times!"
+set-times: "&#98FB98[UltimateShop] &fSet {player}'s {item} use times to {times}!"
+add-times-shop: "&#98FB98[UltimateShop] &fAdd {times} to {player}'s all {shop}'s product use times!"
+set-times-shop: "&#98FB98[UltimateShop] &fSet {player}'s all {shop}'s product use times to {times}!"
+success-buy: "&#98FB98[UltimateShop] &fSuccessfully purchased {item}x{amount}, cost {price}!"
+success-sell: "&#98FB98[UltimateShop] &fSuccessfully sold {item}x{amount}, gain {price}!"
+menu-condition-not-meet: "&#98FB98[UltimateShop] &cYou didn't meet the condition that open this menu!"
+buy-condition-not-meet: "&#98FB98[UltimateShop] &cYou didn't meet the condition that buy this product!"
+sell-condition-not-meet: "&#98FB98[UltimateShop] &cYou didn't meet the condition that sell this product!"
+limit-reached-buy-player: "&#98FB98[UltimateShop] &cYou can no longer purchase item {item}, you purchase this item {times} times, and its stock is {limit} for you, next refresh time: {refresh}."
+limit-reached-sell-player: "&#98FB98[UltimateShop] &cYou can no longer sell item {item}, you purchase this item {times} times, and its stock is {limit} for you, next refresh time: {refresh}."
+limit-reached-buy-server: "&#98FB98[UltimateShop] &cYou can no longer purchase item {item}, all players buy this item {times} times, and its stock is {limit}, next refresh time: {refresh}."
+limit-reached-sell-server: "&#98FB98[UltimateShop] &cYou can no longer sell item {item}, all players sell this item {times} times, and its stock is {limit}, next refresh time: {refresh}."
+buy-price-not-enough: "&#98FB98[UltimateShop] &cYou do not have enough money to purchase {item}. Required price: {price}."
+sell-products-not-enough: "&#98FB98[UltimateShop] &cYou do not have enough {item} to sell."
+parsed-value: "&#98FB98[UltimateShop] &fParsed Value: {text}"
+reset-random-placeholder: "&#98FB98[UltimateShop] &fSuccessfully reset random placeholder {placeholder} and it's new value is {value}."
+set-random-placeholder: "&#98FB98[UltimateShop] &fSuccessfully set random placeholder {placeholder}'s new value to: {value}. Please note that the refresh time does not be reset!"

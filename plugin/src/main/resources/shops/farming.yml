@@ -1,0 +1,521 @@
+settings:
+  menu: 'example-shop-menu'
+  buy-more: true
+  shop-name: 'Farming Shop'
+  hide-message: false
+
+items:
+  A:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: WHEAT_SEEDS
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: '1.1'
+        placeholder: '{amount}$'
+        start-apply: 0
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: '0.8'
+        placeholder: '{amount}$'
+        start-apply: 0
+    sell-limits:
+      global: 640
+      default: 128
+      vip: 192
+    sell-limits-conditions:
+      vip:
+        1:
+          type: permission
+          permission: 'group.vip'
+    sell-times-reset-mode: 'TIMED'
+    sell-times-reset-time: '00:00:00'  
+  B:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: PUMPKIN_SEEDS
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: '4.5'
+        placeholder: '{amount}$'
+        start-apply: 0
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: '3.2'
+        placeholder: '{amount}$'
+        start-apply: 0 
+    sell-limits:
+      global: 640
+      default: 128
+      vip: 192
+    sell-limits-conditions:
+      vip:
+        1:
+          type: permission
+          permission: 'group.vip'
+    sell-times-reset-mode: 'TIMED'
+    sell-times-reset-time: '00:00:00'  
+  C:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: BEETROOT_SEEDS
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: '0.22'
+        placeholder: '{amount}$'
+        start-apply: 0
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: '0.15'
+        placeholder: '{amount}$'
+        start-apply: 0
+    sell-limits:
+      global: 640
+      default: 128
+      vip: 192
+    sell-limits-conditions:
+      vip:
+        1:
+          type: permission
+          permission: 'group.vip'
+    sell-times-reset-mode: 'TIMED'
+    sell-times-reset-time: '00:00:00'  
+  D:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: MELON_SEEDS
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: '4.5'
+        placeholder: '{amount}$'
+        start-apply: 0
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: '3.60'
+        placeholder: '{amount}$'
+        start-apply: 0
+    sell-limits:
+      global: 640
+      default: 128
+      vip: 192
+    sell-limits-conditions:
+      vip:
+        1:
+          type: permission
+          permission: 'group.vip'
+    sell-times-reset-mode: 'TIMED'
+    sell-times-reset-time: '00:00:00'  
+  E:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: WHEAT
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: '3.3'
+        placeholder: '{amount}$'
+        start-apply: 0
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: '2.90'
+        placeholder: '{amount}$'
+        start-apply: 0
+    sell-limits:
+      global: 640
+      default: 128
+      vip: 192
+    sell-limits-conditions:
+      vip:
+        1:
+          type: permission
+          permission: 'group.vip'
+    sell-times-reset-mode: 'TIMED'
+    sell-times-reset-time: '00:00:00'  
+  F:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: PUMPKIN
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: '30'
+        placeholder: '{amount}$'
+        start-apply: 0
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: '27'
+        placeholder: '{amount}$'
+        start-apply: 0
+    buy-limits:
+      global: '{sell-times-server}' 
+    buy-times-reset-mode: 'NEVER'
+    buy-times-reset-time: '00:00:00'
+    sell-limits:
+      global: 640
+      default: 128
+      vip: 192
+    sell-limits-conditions:
+      vip:
+        1:
+          type: permission
+          permission: 'group.vip'
+    sell-times-reset-mode: 'TIMED'
+    sell-times-reset-time: '00:00:00'  
+  G:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: MELON_SLICE
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: '4.65'
+        placeholder: '{amount}$'
+        start-apply: 0
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: '4'
+        placeholder: '{amount}$'
+        start-apply: 0
+    sell-limits:
+      global: 640
+      default: 128
+      vip: 192
+    sell-limits-conditions:
+      vip:
+        1:
+          type: permission
+          permission: 'group.vip'
+    sell-times-reset-mode: 'TIMED'
+    sell-times-reset-time: '00:00:00'  
+  H:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: BEETROOT
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: '0.66'
+        placeholder: '{amount}$'
+        start-apply: 0
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: '0.52'
+        placeholder: '{amount}$'
+        start-apply: 0 
+    sell-limits:
+      global: 640
+      default: 128
+      vip: 192
+    sell-limits-conditions:
+      vip:
+        1:
+          type: permission
+          permission: 'group.vip'
+    sell-times-reset-mode: 'TIMED'
+    sell-times-reset-time: '00:00:00'  
+  I:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: POTATO
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: '0.55'
+        placeholder: '{amount}$'
+        start-apply: 0
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: '0.49'
+        placeholder: '{amount}$'
+        start-apply: 0
+    sell-limits:
+      global: 640
+      default: 128
+      vip: 192
+    sell-limits-conditions:
+      vip:
+        1:
+          type: permission
+          permission: 'group.vip'
+    sell-times-reset-mode: 'TIMED'
+    sell-times-reset-time: '00:00:00'  
+  J:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: SUGAR_CANE
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: '1.22'
+        placeholder: '{amount}$'
+        start-apply: 0
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: '1.19'
+        placeholder: '{amount}$'
+        start-apply: 0
+    sell-limits:
+      global: 640
+      default: 128
+      vip: 192
+    sell-limits-conditions:
+      vip:
+        1:
+          type: permission
+          permission: 'group.vip'
+    sell-times-reset-mode: 'TIMED'
+    sell-times-reset-time: '00:00:00'  
+  K:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: KELP
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: '3.13'
+        placeholder: '{amount}$'
+        start-apply: 0
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: '2.85'
+        placeholder: '{amount}$'
+        start-apply: 0
+    sell-limits:
+      global: 640
+      default: 128
+      vip: 192
+    sell-limits-conditions:
+      vip:
+        1:
+          type: permission
+          permission: 'group.vip'
+    sell-times-reset-mode: 'TIMED'
+    sell-times-reset-time: '00:00:00'  
+  L:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: VINE
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: '5.5'
+        placeholder: '{amount}$'
+        start-apply: 0
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: '5.14'
+        placeholder: '{amount}$'
+        start-apply: 0
+    sell-limits:
+      global: 640
+      default: 128
+      vip: 192
+    sell-limits-conditions:
+      vip:
+        1:
+          type: permission
+          permission: 'group.vip'
+    sell-times-reset-mode: 'TIMED'
+    sell-times-reset-time: '00:00:00'  
+  M:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: CARROT
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: '0.83'
+        placeholder: '{amount}$'
+        start-apply: 0
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: '0.76'
+        placeholder: '{amount}$'
+        start-apply: 0
+    sell-limits:
+      global: 640
+      default: 128
+      vip: 192
+    sell-limits-conditions:
+      vip:
+        1:
+          type: permission
+          permission: 'group.vip'
+    sell-times-reset-mode: 'TIMED'
+    sell-times-reset-time: '00:00:00'  
+  N:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: NETHER_WART
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: '16.5'
+        placeholder: '{amount}$'
+        start-apply: 0
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: '15.85'
+        placeholder: '{amount}$'
+        start-apply: 0
+    sell-limits:
+      global: 640
+      default: 128
+      vip: 192
+    sell-limits-conditions:
+      vip:
+        1:
+          type: permission
+          permission: 'group.vip'
+    sell-times-reset-mode: 'TIMED'
+    sell-times-reset-time: '00:00:00'  
+  O:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: LILY_PAD
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: '3.3'
+        placeholder: '{amount}$'
+        start-apply: 0
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: '2.85'
+        placeholder: '{amount}$'
+        start-apply: 0
+    sell-limits:
+      global: 640
+      default: 128
+      vip: 192
+    sell-limits-conditions:
+      vip:
+        1:
+          type: permission
+          permission: 'group.vip'
+    sell-times-reset-mode: 'TIMED'
+    sell-times-reset-time: '00:00:00'  
+  P:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: sweet_berries
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: 4
+        placeholder: '{amount}$'
+        start-apply: 0  
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: 2
+        placeholder: '{amount}$'
+        start-apply: 0
+    sell-limits:
+      global: 640
+      default: 128
+      vip: 192
+    sell-limits-conditions:
+      vip:
+        1:
+          type: permission
+          permission: 'group.vip'
+    sell-times-reset-mode: 'TIMED'
+    sell-times-reset-time: '00:00:00'  
+  Q:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: glow_berries
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: 4
+        placeholder: '{amount}$'
+        start-apply: 0  
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: 2
+        placeholder: '{amount}$'
+        start-apply: 0
+    sell-limits:
+      global: 640
+      default: 128
+      vip: 192
+    sell-limits-conditions:
+      vip:
+        1:
+          type: permission
+          permission: 'group.vip'
+    sell-times-reset-mode: 'TIMED'
+    sell-times-reset-time: '00:00:00' 

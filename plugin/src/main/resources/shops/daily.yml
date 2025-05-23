@@ -1,0 +1,515 @@
+settings:
+  menu: 'example-shop-menu'
+  buy-more: true
+  shop-name: 'Daily Shop (Require Premium)'
+  hide-message: false
+
+general-configs:
+  price-mode: CLASSIC_ANY
+  product-mode: CLASSIC_ANY
+  products:
+    1:
+      material: REDSTONE
+      amount: 1
+    2:
+      material: IRON_INGOT
+      amount: 1
+    3:
+      material: GOLD_INGOT
+      amount: 1
+    4:
+      material: COPPER_INGOT
+      amount: 1
+    5:
+      material: DIAMOND
+      amount: 1
+    6:
+      material: LAPIS_LAZULI
+      amount: 1
+    7:
+      material: EMERALD
+      amount: 1
+  sell-prices:
+    1:
+      economy-plugin: Vault
+      amount: 1
+      placeholder: '&6{amount} Coins'
+      start-apply: 0
+    2:
+      economy-plugin: Vault
+      amount: 3
+      placeholder: '&6{amount} Coins'
+      start-apply: 0
+    3:
+      economy-plugin: Vault
+      amount: 1.6
+      placeholder: '&6{amount} Coins'
+      start-apply: 0
+    4:
+      economy-plugin: Vault
+      amount: 2
+      placeholder: '&6{amount} Coins'
+      start-apply: 0
+    5:
+      economy-plugin: Vault
+      amount: 0.8
+      placeholder: '&6{amount} Coins'
+      start-apply: 0
+    6:
+      economy-plugin: Vault
+      amount: 1.2
+      placeholder: '&6{amount} Coins'
+      start-apply: 0
+    7:
+      economy-plugin: Vault
+      amount: 3.3
+      placeholder: '&6{amount} Coins'
+      start-apply: 0
+  sell-limits:
+    global: 640
+    default: 18
+    vip: 256
+  sell-limits-conditions:
+    vip:
+      1:
+        type: permission
+        permission: 'group.vip'
+  sell-limits-reset-mode: 'TIMED'
+  sell-limits-reset-time: '00:00:00'
+
+items:
+  A:
+    products-conditions:
+      1:
+        1:
+          type: placeholder
+          placeholder: '{random_daily;;1}'
+          rule: '=='
+          value: 'A'
+      2:
+        1:
+          type: placeholder
+          placeholder: '{random_daily;;1}'
+          rule: '=='
+          value: 'B'
+      3:
+        1:
+          type: placeholder
+          placeholder: '{random_daily;;1}'
+          rule: '=='
+          value: 'C'
+      4:
+        1:
+          type: placeholder
+          placeholder: '{random_daily;;1}'
+          rule: '=='
+          value: 'D'
+      5:
+        1:
+          type: placeholder
+          placeholder: '{random_daily;;1}'
+          rule: '=='
+          value: 'E'
+      6:
+        1:
+          type: placeholder
+          placeholder: '{random_daily;;1}'
+          rule: '=='
+          value: 'F'
+      7:
+        1:
+          type: placeholder
+          placeholder: '{random_daily;;1}'
+          rule: '=='
+          value: 'G'
+    sell-prices-conditions:
+      1:
+        1:
+          type: placeholder
+          placeholder: '{random_daily;;1}'
+          rule: '=='
+          value: 'A'
+      2:
+        1:
+          type: placeholder
+          placeholder: '{random_daily;;1}'
+          rule: '=='
+          value: 'B'
+      3:
+        1:
+          type: placeholder
+          placeholder: '{random_daily;;1}'
+          rule: '=='
+          value: 'C'
+      4:
+        1:
+          type: placeholder
+          placeholder: '{random_daily;;1}'
+          rule: '=='
+          value: 'D'
+      5:
+        1:
+          type: placeholder
+          placeholder: '{random_daily;;1}'
+          rule: '=='
+          value: 'E'
+      6:
+        1:
+          type: placeholder
+          placeholder: '{random_daily;;1}'
+          rule: '=='
+          value: 'F'
+      7:
+        1:
+          type: placeholder
+          placeholder: '{random_daily;;1}'
+          rule: '=='
+          value: 'G'
+  B:
+    products-conditions:
+      1:
+        1:
+          type: placeholder
+          placeholder: '{random_daily;;2}'
+          rule: '=='
+          value: 'A'
+      2:
+        1:
+          type: placeholder
+          placeholder: '{random_daily;;2}'
+          rule: '=='
+          value: 'B'
+      3:
+        1:
+          type: placeholder
+          placeholder: '{random_daily;;2}'
+          rule: '=='
+          value: 'C'
+      4:
+        1:
+          type: placeholder
+          placeholder: '{random_daily;;2}'
+          rule: '=='
+          value: 'D'
+      5:
+        1:
+          type: placeholder
+          placeholder: '{random_daily;;2}'
+          rule: '=='
+          value: 'E'
+      6:
+        1:
+          type: placeholder
+          placeholder: '{random_daily;;2}'
+          rule: '=='
+          value: 'F'
+      7:
+        1:
+          type: placeholder
+          placeholder: '{random_daily;;2}'
+          rule: '=='
+          value: 'G'
+    sell-prices-conditions:
+      1:
+        1:
+          type: placeholder
+          placeholder: '{random_daily;;2}'
+          rule: '=='
+          value: 'A'
+      2:
+        1:
+          type: placeholder
+          placeholder: '{random_daily;;2}'
+          rule: '=='
+          value: 'B'
+      3:
+        1:
+          type: placeholder
+          placeholder: '{random_daily;;2}'
+          rule: '=='
+          value: 'C'
+      4:
+        1:
+          type: placeholder
+          placeholder: '{random_daily;;2}'
+          rule: '=='
+          value: 'D'
+      5:
+        1:
+          type: placeholder
+          placeholder: '{random_daily;;2}'
+          rule: '=='
+          value: 'E'
+      6:
+        1:
+          type: placeholder
+          placeholder: '{random_daily;;2}'
+          rule: '=='
+          value: 'F'
+      7:
+        1:
+          type: placeholder
+          placeholder: '{random_daily;;2}'
+          rule: '=='
+          value: 'G'
+  C:
+    products-conditions:
+      1:
+        1:
+          type: placeholder
+          placeholder: '{random_daily;;3}'
+          rule: '=='
+          value: 'A'
+      2:
+        1:
+          type: placeholder
+          placeholder: '{random_daily;;3}'
+          rule: '=='
+          value: 'B'
+      3:
+        1:
+          type: placeholder
+          placeholder: '{random_daily;;3}'
+          rule: '=='
+          value: 'C'
+      4:
+        1:
+          type: placeholder
+          placeholder: '{random_daily;;3}'
+          rule: '=='
+          value: 'D'
+      5:
+        1:
+          type: placeholder
+          placeholder: '{random_daily;;3}'
+          rule: '=='
+          value: 'E'
+      6:
+        1:
+          type: placeholder
+          placeholder: '{random_daily;;3}'
+          rule: '=='
+          value: 'F'
+      7:
+        1:
+          type: placeholder
+          placeholder: '{random_daily;;3}'
+          rule: '=='
+          value: 'G'
+    sell-prices-conditions:
+      1:
+        1:
+          type: placeholder
+          placeholder: '{random_daily;;2}'
+          rule: '=='
+          value: 'A'
+      2:
+        1:
+          type: placeholder
+          placeholder: '{random_daily;;3}'
+          rule: '=='
+          value: 'B'
+      3:
+        1:
+          type: placeholder
+          placeholder: '{random_daily;;3}'
+          rule: '=='
+          value: 'C'
+      4:
+        1:
+          type: placeholder
+          placeholder: '{random_daily;;3}'
+          rule: '=='
+          value: 'D'
+      5:
+        1:
+          type: placeholder
+          placeholder: '{random_daily;;3}'
+          rule: '=='
+          value: 'E'
+      6:
+        1:
+          type: placeholder
+          placeholder: '{random_daily;;3}'
+          rule: '=='
+          value: 'F'
+      7:
+        1:
+          type: placeholder
+          placeholder: '{random_daily;;3}'
+          rule: '=='
+          value: 'G'
+  D:
+    products-conditions:
+      1:
+        1:
+          type: placeholder
+          placeholder: '{random_daily;;4}'
+          rule: '=='
+          value: 'A'
+      2:
+        1:
+          type: placeholder
+          placeholder: '{random_daily;;4}'
+          rule: '=='
+          value: 'B'
+      3:
+        1:
+          type: placeholder
+          placeholder: '{random_daily;;4}'
+          rule: '=='
+          value: 'C'
+      4:
+        1:
+          type: placeholder
+          placeholder: '{random_daily;;4}'
+          rule: '=='
+          value: 'D'
+      5:
+        1:
+          type: placeholder
+          placeholder: '{random_daily;;4}'
+          rule: '=='
+          value: 'E'
+      6:
+        1:
+          type: placeholder
+          placeholder: '{random_daily;;4}'
+          rule: '=='
+          value: 'F'
+      7:
+        1:
+          type: placeholder
+          placeholder: '{random_daily;;4}'
+          rule: '=='
+          value: 'G'
+    sell-prices-conditions:
+      1:
+        1:
+          type: placeholder
+          placeholder: '{random_daily;;4}'
+          rule: '=='
+          value: 'A'
+      2:
+        1:
+          type: placeholder
+          placeholder: '{random_daily;;4}'
+          rule: '=='
+          value: 'B'
+      3:
+        1:
+          type: placeholder
+          placeholder: '{random_daily;;4}'
+          rule: '=='
+          value: 'C'
+      4:
+        1:
+          type: placeholder
+          placeholder: '{random_daily;;4}'
+          rule: '=='
+          value: 'D'
+      5:
+        1:
+          type: placeholder
+          placeholder: '{random_daily;;4}'
+          rule: '=='
+          value: 'E'
+      6:
+        1:
+          type: placeholder
+          placeholder: '{random_daily;;4}'
+          rule: '=='
+          value: 'F'
+      7:
+        1:
+          type: placeholder
+          placeholder: '{random_daily;;4}'
+          rule: '=='
+          value: 'G'
+  E:
+    products-conditions:
+      1:
+        1:
+          type: placeholder
+          placeholder: '{random_daily;;5}'
+          rule: '=='
+          value: 'A'
+      2:
+        1:
+          type: placeholder
+          placeholder: '{random_daily;;5}'
+          rule: '=='
+          value: 'B'
+      3:
+        1:
+          type: placeholder
+          placeholder: '{random_daily;;5}'
+          rule: '=='
+          value: 'C'
+      4:
+        1:
+          type: placeholder
+          placeholder: '{random_daily;;5}'
+          rule: '=='
+          value: 'D'
+      5:
+        1:
+          type: placeholder
+          placeholder: '{random_daily;;5}'
+          rule: '=='
+          value: 'E'
+      6:
+        1:
+          type: placeholder
+          placeholder: '{random_daily;;5}'
+          rule: '=='
+          value: 'F'
+      7:
+        1:
+          type: placeholder
+          placeholder: '{random_daily;;5}'
+          rule: '=='
+          value: 'G'
+    sell-prices-conditions:
+      1:
+        1:
+          type: placeholder
+          placeholder: '{random_daily;;5}'
+          rule: '=='
+          value: 'A'
+      2:
+        1:
+          type: placeholder
+          placeholder: '{random_daily;;5}'
+          rule: '=='
+          value: 'B'
+      3:
+        1:
+          type: placeholder
+          placeholder: '{random_daily;;5}'
+          rule: '=='
+          value: 'C'
+      4:
+        1:
+          type: placeholder
+          placeholder: '{random_daily;;5}'
+          rule: '=='
+          value: 'D'
+      5:
+        1:
+          type: placeholder
+          placeholder: '{random_daily;;5}'
+          rule: '=='
+          value: 'E'
+      6:
+        1:
+          type: placeholder
+          placeholder: '{random_daily;;5}'
+          rule: '=='
+          value: 'F'
+      7:
+        1:
+          type: placeholder
+          placeholder: '{random_daily;;5}'
+          rule: '=='
+          value: 'G'

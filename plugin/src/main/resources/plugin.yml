@@ -1,0 +1,72 @@
+name: UltimateShop
+version: '${project.version}'
+main: cn.superiormc.ultimateshop.UltimateShop
+api-version: 1.14
+folia-supported: true
+authors:
+  - PQguanfang
+softdepend:
+  - WorldGuard
+  - Towny
+  - Dominion
+  - Lands
+  - PlotSquared
+  - BentoBox
+  - Residence
+  - GriefPrevention
+  - HuskTowns
+  - HuskClaims
+  - MMOItems
+  - MythicLib
+  - ItemsAdder
+  - Vault
+  - PlayerPoints
+  - GamePoints
+  - Oraxen
+  - EcoItems
+  - EcoArmor
+  - PlaceholderAPI
+  - UltraEconomy
+  - CoinsEngine
+  - RedisEconomy
+  - EcoBits
+  - MythicMobs
+  - CraftEngine
+  - PEconomy
+  - RoyaleEconomy
+  - AdvancedEnchantments
+  - NeigeItems
+  - floodgate
+  - VotingPlugin
+  - ExecutableItems
+  - MythicChanger
+  - NBTAPI
+commands:
+  ultimateshop:
+    aliases:
+      - "shop"
+    usage: "/ultimateshop"
+    description: "UltimateShop Main Command."
+permissions:
+  ultimateshop.generateitemformat:
+    default: op
+  ultimateshop.givesellstick:
+    default: op
+  ultimateshop.menu:
+    default: true
+  ultimateshop.quickbuy:
+    default: op
+  ultimateshop.quicksell:
+    default: op
+  ultimateshop.reload:
+    default: op
+  ultimateshop.saveitem:
+    default: op
+  ultimateshop.sellall:
+    default: true
+  ultimateshop.setbuytimes:
+    default: op
+  ultimateshop.setselltimes:
+    default: op
+  ultimateshop.bypassprice:
+    default: false

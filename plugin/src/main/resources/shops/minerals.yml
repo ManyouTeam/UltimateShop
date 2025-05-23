@@ -1,0 +1,379 @@
+settings:
+  menu: 'example-shop-menu'
+  buy-more: true
+  shop-name: 'Minerals Shop'
+  hide-message: false
+
+items:
+  A:
+    price-mode: ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: diamond
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: '550+({buy-times-server}-{sell-times-server})*0.1'
+        max-amount: 5500
+        min-amount: 325
+        placeholder: '{amount}$'
+        start-apply: 0
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: '455+({buy-times-server}-{sell-times-server})*0.1'
+        max-amount: 455
+        min-amount: 1
+        placeholder: '{amount}$'
+        start-apply: 0
+    buy-limits:
+      global: '{sell-times-server}' 
+    buy-times-reset-mode: 'NEVER'
+    buy-times-reset-time: '00:00:00'
+    sell-limits:
+      global: 320
+      default: 64
+      vip: 96
+    sell-limits-conditions:
+      vip:
+        1:
+          type: permission
+          permission: 'group.vip'
+    sell-times-reset-mode: 'NEVER'
+    sell-times-reset-time: '00:00:00'  
+  B:
+    price-mode: ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: GOLD_INGOT
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: '58+({buy-times-server}-{sell-times-server})*0.1'
+        max-amount: 67
+        min-amount: 37
+        placeholder: '{amount}$'
+        start-apply: 0
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: '34+({buy-times-server}-{sell-times-server})*0.1'
+        max-amount: 67
+        min-amount: 1
+        placeholder: '{amount}$'
+        start-apply: 0
+    buy-limits:
+      global: '{sell-times-server}'
+    buy-times-reset-mode: 'NEVER'
+    buy-times-reset-time: '00:00:00'
+    sell-limits:
+      global: 640
+      default: 128
+      vip: 192
+    sell-times-conditions:
+      vip:
+        1:
+          type: permission
+          permission: 'group.vip'
+    sell-times-reset-mode: 'TIMED'
+    sell-times-reset-time: '00:00:00'
+  C:
+    price-mode: ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: IRON_INGOT
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: '18.4+({buy-times-server}-{sell-times-server})*0.1'
+        max-amount: 23.59
+        min-amount: 9.87
+        placeholder: '{amount}$'
+        start-apply: 0
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: '12+({buy-times-server}-{sell-times-server})*0.1'
+        max-amount: 23
+        min-amount: 1
+        placeholder: '{amount}$'
+        start-apply: 0
+    buy-limits:
+      global: '{sell-times-server}'
+    buy-times-reset-mode: 'NEVER'
+    buy-times-reset-time: '00:00:00'
+    sell-limits:
+      global: 640
+      default: 128
+      vip: 192
+    sell-limits-conditions:
+      vip:
+        1:
+          type: permission
+          permission: 'group.vip'
+    sell-times-reset-mode: 'TIMED'
+    sell-times-reset-time: '00:00:00'
+  D:
+    price-mode: ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: LAPIS_LAZULI
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: '13+({buy-times-server}-{sell-times-server})*0.1'
+        max-amount: 18
+        min-amount: 8
+        placeholder: '{amount}$'
+        start-apply: 0
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: '12+({buy-times-server}-{sell-times-server})*0.1'
+        max-amount: 17
+        min-amount: 1
+        placeholder: '{amount}$'
+        start-apply: 0
+    buy-limits:
+      global: '{sell-times-server}'
+    buy-times-reset-mode: 'NEVER'
+    buy-times-reset-time: '00:00:00' 
+    sell-limits:
+      global: 640
+      default: 128
+      vip: 192
+    sell-limits-conditions:
+      vip:
+        1:
+          type: permission
+          permission: 'group.vip'
+    sell-times-reset-mode: 'TIMED'
+    sell-times-reset-time: '00:00:00'  
+  E:
+    price-mode: ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: REDSTONE
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: '3.3+({buy-times-server}-{sell-times-server})*0.1'
+        max-amount: 6.3
+        min-amount: 2.5
+        placeholder: '{amount}$'
+        start-apply: 0
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: '3.1+({buy-times-server}-{sell-times-server})*0.1'
+        max-amount: 6.2
+        min-amount: 1.1
+        placeholder: '{amount}$'
+        start-apply: 0
+    buy-limits:
+      global: '{sell-times-server}' 
+    buy-times-reset-mode: 'NEVER'
+    buy-times-reset-time: '00:00:00' 
+    sell-limits:
+      global: 640
+      default: 128
+      vip: 192
+    sell-limits-conditions:
+      vip:
+        1:
+          type: permission
+          permission: 'group.vip'
+    sell-times-reset-mode: 'TIMED'
+    sell-times-reset-time: '00:00:00'  
+  F:
+    price-mode: ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: COAL
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: '8.8+({buy-times-server}-{sell-times-server})*0.1'
+        max-amount: 13
+        min-amount: 9
+        placeholder: '{amount}$'
+        start-apply: 0
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: '8.5+({buy-times-server}-{sell-times-server})*0.1'
+        max-amount: 12
+        min-amount: 2
+        placeholder: '{amount}$'
+        start-apply: 0
+    buy-limits:
+      global: '{sell-times-server}' 
+    buy-times-reset-mode: 'NEVER'
+    buy-times-reset-time: '00:00:00' 
+    sell-limits:
+      global: 640
+      default: 128
+      vip: 192
+    sell-limits-conditions:
+      vip:
+        1:
+          type: permission
+          permission: 'group.vip'
+    sell-times-reset-mode: 'TIMED'
+    sell-times-reset-time: '00:00:00'  
+  G:
+    price-mode: ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: AMETHYST_SHARD
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: '9.0+({buy-times-server}-{sell-times-server})*0.1'
+        max-amount: 12
+        min-amount: 2
+        placeholder: '{amount}$'
+        start-apply: 0
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: '8.9+({buy-times-server}-{sell-times-server})*0.1'
+        max-amount: 11
+        min-amount: 1
+        placeholder: '{amount}$'
+        start-apply: 0
+    buy-limits:
+      global: '{sell-times-server}'
+    buy-times-reset-mode: 'NEVER'
+    buy-times-reset-time: '00:00:00' 
+    sell-limits:
+      global: 640
+      default: 128
+      vip: 192
+    sell-limits-conditions:
+      vip:
+        1:
+          type: permission
+          permission: 'group.vip'
+    sell-times-reset-mode: 'TIMED'
+    sell-times-reset-time: '00:00:00'  
+  H:
+    price-mode: ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: ANCIENT_DEBRIS
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: '968+({buy-times-server}-{sell-times-server})*0.1'
+        max-amount: 1357
+        min-amount: 827
+        placeholder: '{amount}$'
+        start-apply: 0
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: '785+({buy-times-server}-{sell-times-server})*0.1'
+        max-amount: 785
+        min-amount: 1
+        placeholder: '{amount}$'
+        start-apply: 0
+    buy-limits:
+      global: '{sell-times-server}' 
+    buy-times-reset-mode: 'NEVER'
+    buy-limits-reset-time: '00:00:00' 
+    sell-limits:
+      global: 160
+      default: 32
+      vip: 64
+    sell-limits-conditions:
+      vip:
+        1:
+          type: permission
+          permission: 'group.vip'
+    sell-times-reset-mode: 'TIMED'
+    sell-times-reset-time: '00:00:00'  
+  I:
+    price-mode: ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: QUARTZ
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: '19+({buy-times-server}-{sell-times-server})*0.1'
+        max-amount: 24
+        min-amount: 21
+        placeholder: '{amount}$'
+        start-apply: 0
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: '14+({buy-times-server}-{sell-times-server})*0.1'
+        max-amount: 22
+        min-amount: 1
+        placeholder: '{amount}$'
+        start-apply: 0
+    buy-limits:
+      global: '{sell-times-server}'
+    buy-times-reset-mode: 'NEVER'
+    buy-limits-reset-time: '00:00:00' 
+    sell-limits:
+      global: 640
+      default: 128
+      vip: 192
+    sell-limits-conditions:
+      vip:
+        1:
+          type: permission
+          permission: 'group.vip'
+    sell-times-reset-mode: 'TIMED'
+    sell-times-reset-time: '00:00:00'  
+  J:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: COPPER_INGOT
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: '12'
+        placeholder: '{amount}$'
+        start-apply: 0
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: '11'
+        placeholder: '{amount}$'
+        start-apply: 0
+    sell-limits:
+      global: 640
+      default: 128
+      vip: 192
+    sell-limits-conditions:
+      vip:
+        1:
+          type: permission
+          permission: 'group.vip'
+    sell-times-reset-mode: 'TIMED'
+    sell-times-reset-time: '00:00:00'  

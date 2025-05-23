@@ -1,0 +1,53 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                             http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>cn.superiormc</groupId>
+        <artifactId>UltimateShop</artifactId>
+        <version>3.8.0</version>
+        <relativePath>../pom.xml</relativePath> <!-- 如果 plugin 和根目录同级 -->
+    </parent>
+
+    <build>
+        <finalName>${project.name}-${project.version}</finalName>
+    </build>
+
+    <artifactId>plugin</artifactId>
+    <packaging>jar</packaging>
+    <name>UltimateShop</name>
+
+    <dependencies>
+        <!-- Core module -->
+        <dependency>
+            <groupId>cn.superiormc</groupId>
+            <artifactId>core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <!-- Spigot module -->
+        <dependency>
+            <groupId>cn.superiormc</groupId>
+            <artifactId>spigot</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <!-- Paper module -->
+        <dependency>
+            <groupId>cn.superiormc</groupId>
+            <artifactId>paper</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <!-- Paper API (provided at runtime by server) -->
+        <dependency>
+            <groupId>io.papermc.paper</groupId>
+            <artifactId>paper-api</artifactId>
+            <version>1.21.5-R0.1-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+</project>

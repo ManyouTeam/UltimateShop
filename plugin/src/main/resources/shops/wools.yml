@@ -1,0 +1,215 @@
+settings:
+  menu: 'example-shop-menu'
+  buy-more: true
+  shop-name: 'Wools Shop'
+  hide-message: false
+
+items:
+  A:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: RED_WOOL
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: '6.99'
+        placeholder: '{amount}$'
+        start-apply: 0
+  B:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: ORANGE_WOOL
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: '8.25'
+        placeholder: '{amount}$'
+        start-apply: 0
+  C:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: YELLOW_WOOL
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: '7.64'
+        placeholder: '{amount}$'
+        start-apply: 0
+  D:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: LIME_WOOL
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: '9.99'
+        placeholder: '{amount}$'
+        start-apply: 0
+  E:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: GREEN_WOOL
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: '13.15'
+        placeholder: '{amount}$'
+        start-apply: 0
+  F:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: LIGHT_BLUE_WOOL
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: '7.42'
+        placeholder: '{amount}$'
+        start-apply: 0
+  G:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: CYAN_WOOL
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: '16.28'
+        placeholder: '{amount}$'
+        start-apply: 0
+  H:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: BLUE_WOOL
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: '19.45'
+        placeholder: '{amount}$'
+        start-apply: 0
+  I:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: PURPLE_WOOL
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: '13.16'
+        placeholder: '{amount}$'
+        start-apply: 0
+  J:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: MAGENTA_WOOL
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: '11.78'
+        placeholder: '{amount}$'
+        start-apply: 0
+  K:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: PINK_WOOL
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: '7.42'
+        placeholder: '{amount}$'
+        start-apply: 0
+  L:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: BROWN_WOOL
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: '10.85'
+        placeholder: '{amount}$'
+        start-apply: 0
+  M:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: BLACK_WOOL
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: '9.06'
+        placeholder: '{amount}$'
+        start-apply: 0
+  N:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: GRAY_WOOL
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: '8.25'
+        placeholder: '{amount}$'
+        start-apply: 0
+  O:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: LIGHT_GRAY_WOOL
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: '8.25'
+        placeholder: '{amount}$'
+        start-apply: 0
+  P:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: WHITE_WOOL
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: '6.4'
+        placeholder: '{amount}$'
+        start-apply: 0

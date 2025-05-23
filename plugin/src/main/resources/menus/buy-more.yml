@@ -1,0 +1,91 @@
+title: 'Select Quantity'
+
+layout:
+  - '000000000'
+  - '012304560'
+  - '000000000'
+  - '0000B0000'
+  - '00D0F0E00'
+  - 'A00000000'
+
+amount-items:
+  1:
+    display-item:
+      material: GREEN_WOOL
+      name: '&a+1'
+      lore:
+        - '&7Click to add 1 more.'
+    add-amount: 1
+  2:
+    display-item:
+      material: GREEN_WOOL
+      amount: 10
+      name: '&a+10'
+      lore:
+        - '&7Click to add 10 more.'
+    add-amount: 10
+  3:
+    display-item:
+      material: GREEN_WOOL
+      amount: 32
+      name: '&a+32'
+      lore:
+        - '&7Click to add 32 more.'
+    add-amount: 32
+  4:
+    display-item:
+      material: RED_WOOL
+      name: '&c-1'
+      lore:
+        - '&7Click to add 1 more.'
+    add-amount: -1
+  5:
+    display-item:
+      material: RED_WOOL
+      amount: 10
+      name: '&c-10'
+      lore:
+        - '&7Click to add 10 more.'
+    add-amount: -10
+  6:
+    display-item:
+      material: RED_WOOL
+      amount: 32
+      name: '&c-32'
+      lore:
+        - '&7Click to add 32 more.'
+    add-amount: -32
+    # Support replace add-amount option to set-amount.
+    # set-amount: 32
+
+display-item: B
+
+confirm-items:
+  D:
+    display-item:
+      material: PAPER
+      name: '&a&lCLICK TO BUY x{amount}'
+      lore:
+        - '&aClick to confirm and purchase'
+        - '&athe quantity you have selected.'
+    # You can remove click-action option, then confirm button can do all things, like buy, sell, sell all.
+    # If this option exists, then this confirm button can only do the thing.
+    click-action: buy
+  E:
+    display-item:
+      material: PAPER
+      name: '&c&lCLICK TO SELL x{amount}'
+      lore:
+        - '&cClick to confirm and sell'
+        - '&cthe quantity you have selected.'
+    click-action: sell
+
+buttons:
+  A:
+    display-item:
+      material: ARROW
+      name: '&c« Go back'
+    actions:
+      1:
+        type: shop_menu
+        shop: '{shop}'

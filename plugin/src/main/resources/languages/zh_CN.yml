@@ -1,0 +1,102 @@
+error:
+  product-not-found: '&#98FB98[UltimateShop] &c找不到商品 {product}!'
+  shop-not-found: '&#98FB98[UltimateShop] &c找不到商店 {shop}!'
+  player-not-found: '&#98FB98[UltimateShop] &c找不到玩家 {player}!'
+  item-not-found: '&#98FB98[UltimateShop] &c找不到物品 {item}!'
+  save-item-not-found: "&#98FB98[UltimateShop] &c找不到保存物品 {item}!"
+  args: '&#98FB98[UltimateShop] &c命令用法错误，请使用/shop help获取帮助!'
+  in-game: '&#98FB98[UltimateShop] &c你必须在游戏中使用该命令!'
+  miss-permission: '&#98FB98[UltimateShop] &c你没有权限使用该命令!'
+  menu-not-found: '&#98FB98[UltimateShop] &c找不到菜单：{menu}!'
+  buy-more-menu-direct-open: "&#98FB98[UltimateShop] &c这是增量购买菜单，无法直接打开!"
+  shop-menu-not-found: '&#98FB98[UltimateShop] &c找不到商店{shop}的菜单：{menu}!'
+  shop-does-not-have-menu: '&#98FB98[UltimateShop] &c商店{shop}没有有效的菜单!'
+  random-placeholder-not-found: "&#98FB98[UltimateShop] &c找不到随机增量符: {placeholder}!"
+  random-placeholder-element-not-found: "&#98FB98[UltimateShop] &c随机变量符 {placeholder} 中似乎不存在元素 {element}!"
+  length-only-one: '&#98FB98[UltimateShop] &c商品ID长度必须为1个字符!'
+
+plugin:
+  reloading: "&#98FB98[UltimateShop] &f插件重启中，您的服务器可会有卡顿. 除非特殊情况，我们建议您重启服务器，而不是重启插件，这样能保证数据储存安全."
+  reloaded: '&#98FB98[UltimateShop] &f插件已重启!'
+  saved: '&#98FB98[UltimateShop] &f物品已保存!'
+  reload-close-gui: '&#98FB98[UltimateShop] &f插件正在重启中，您打开的GUI已强制关闭!'
+  generated: '&#98FB98[UltimateShop] &f已在插件根目录下生成手持物品的物品格式文件!'
+
+placeholderapi:
+  unknown-shop: 未知商店
+  unknown-product: 未知商品
+
+command-tab:
+  unknown-shop: "[未知商店]"
+  type-item-id: '[输入想要设置的物品ID]'
+  unknown-random-placeholder: "[未知随机变量符]"
+
+# All messages also support multi lines, just do it like this!
+help:
+  main: |
+    &#98FB98&lUltimateShop &7作者： @PQguanfang
+    &f/shop help &7- 查看帮助.
+    &f/shop menu <menuName> &7- 打开普通菜单.
+    &f/shop menu <shopName> &7- 打开商店菜单.
+    &f/shop sellall &7- 打开一键回收菜单.
+  main-admin: |
+    &#98FB98&lUltimateShop &7作者：@PQguanfang
+    &f/shop help &7- 查看帮助.
+    &f/shop menu <menuName> &7- 打开普通菜单.
+    &f/shop menu <shopName> &7- 打开商店菜单.
+    &f/shop quickbuy <shopName> <itemName> &7- 快速购买指定商品，无需打开商店菜单.
+    &f/shop quicksell <shopName> <itemName> &7- 快速回收指定商品，无需打开商店菜单.
+    &f/shop reload &7- 重启插件.
+    &f/shop sellall &7- 打开一键回收菜单.
+    &f/shop setbuytimes <shopName> <itemName> <playerName> [amount] &7- 设置购买次数.
+    &f/shop setselltimes <shopName> <itemName> <playerName> [amount] &7- 设置回收次数.
+    &f/shop addbuytimes <shopName> <itemName> <playerName> <amount> &7- Add buy times.
+    &f/shop addselltimes <shopName> <itemName> <playerName> <amount> &7- Add sell times.
+    &f/shop resetrandomplaceholder <placeholderID> &7- Reset random placeholder value. &c(Premium)
+    &f/shop setrandomplaceholder <placeholderID> [element] &7- Set random placeholder value. &c(Premium)
+    &f/shop getplaceholdervalue <text> &7- Parse input text. &c(Premium)
+    &f/shop saveitem <itemID> &7- Save hold item.
+    &f/shop generateitemformat &7- Parse hold item into ItemFormat.
+    &f/shop givesellstick <itemID> <playerID> [amount] &7- Give sell stick item. &c(Premium)
+  main-console: |
+    &#98FB98&lUltimateShop &7作者：@PQguanfang
+    &f/shop help &7- 查看帮助.
+    &f/shop menu <menuName> <playerName> &7- 强制指定玩家打开普通菜单.
+    &f/shop menu <shopName> <playerName> &7- 强制指定玩家打开商店菜单.
+    &f/shop reload &7- 重启插件.
+    &f/shop setbuytimes <shopName> <itemName> <playerName> [amount] &7- 设置购买次数.
+    &f/shop setselltimes <shopName> <itemName> <playerName> [amount] &7- 设置回收次数.
+    &f/shop addbuytimes <shopName> <itemName> <playerName> <amount> &7- Add buy times.
+    &f/shop addselltimes <shopName> <itemName> <playerName> <amount> &7- Add sell times.
+    &f/shop resetrandomplaceholder <placeholderID> &7- Reset random placeholder value. &c(Premium)
+    &f/shop setrandomplaceholder <placeholderID> [element] &7- Set random placeholder value. &c(Premium)
+    &f/shop getplaceholdervalue <text> &7- Parse input text. &c(Premium)
+    &f/shop givesellstick <itemID> <playerID> [amount] &7- Give sell stick item. &c(Premium)
+
+inventory-full: "&#98FB98[UltimateShop] &f这次交易未能成功完成，因为在交易完成后，您的背包将会满掉!"
+start-sell-all: '&#98FB98[UltimateShop] &f您的所有 {amount}x 件物品已经回收，获得了 {reward}!'
+start-sell-stick: '&#98FB98[UltimateShop] &f您的所有可回收物品都已回收，获得了 {reward}，倍率 {multiplier}!'
+give-sell-stick: '&#98FB98[UltimateShop] &f给予 {player} 回收棒 {item} x{amount}!'
+give-save-item: "&#98FB98[UltimateShop] &f给予 {player} 保存物品 {item} x{amount}!"
+add-times: "&#98FB98[UltimateShop] &f添加 {times} 次数到玩家 {player} 的 {item} 次数!"
+set-times: '&#98FB98[UltimateShop] &f设置 {player} 的 {item} 次数为 {times}!'
+add-times-shop: "&#98FB98[UltimateShop] &fAdd {times} to {player}'s all {shop}'s product use times!"
+set-times-shop: "&#98FB98[UltimateShop] &fSet {player}'s all {shop}'s product use times to {times}!"
+success-buy: '&#98FB98[UltimateShop] &f成功购买 {item}，&f花费 {price}!'
+success-sell: '&#98FB98[UltimateShop] &f成功出售 {item}，&f获得 {price}!'
+menu-condition-not-meet: '&#98FB98[UltimateShop] &c你目前不能打开该菜单!'
+buy-condition-not-meet: '&#98FB98[UltimateShop] &c你目前不能购买该商品!'
+sell-condition-not-meet: '&#98FB98[UltimateShop]  &c你目前不能回收该商品!'
+limit-reached-buy-player: '&#98FB98[UltimateShop] &c您无法再购买物品 {item}&c，您今天购买此物品 {times}
+  次，其每日库存为 {limit}，下次刷新时间为 {refresh}.'
+limit-reached-sell-player: '&#98FB98[UltimateShop] &c您无法再出售物品 {item}&c，您今天出售此物品 {times}
+  次，其每日库存为 {limit}，下次刷新时间为 {refresh}.'
+limit-reached-buy-server: '&#98FB98[UltimateShop] &c您无法再购买物品 {item}&c，所有玩家今天购买此物品
+  {times} 次，其每日库存为 {limit}，下次刷新时间为 {refresh}.'
+limit-reached-sell-server: '&#98FB98[UltimateShop] &c您无法再出售物品 {item}&c，所有玩家今天出售此物品
+  {times} 次，其每日库存为 {limit}，下次刷新时间为 {refresh}.'
+buy-price-not-enough: '&#98FB98[UltimateShop] &c您没有足够的钱购买{item}. &c所需价格：{price}.'
+sell-products-not-enough: '&#98FB98[UltimateShop] &c您没有足够的 {item} &c可以出售.'
+parsed-value: "&#98FB98[UltimateShop] &f解析后的文本: {text}"
+reset-random-placeholder: "&#98FB98[UltimateShop] &f成功重置随机变量符 {placeholder}，其新的值是 {value}."
+set-random-placeholder: "&#98FB98[UltimateShop] &f成功设置随机变量符 {placeholder} 新的值为 {value}，请注意，变量符的刷新时间并未重置."

@@ -1,0 +1,487 @@
+settings:
+  menu: 'example-shop-menu'
+  buy-more: true
+  shop-name: 'Logs Shop'
+  hide-message: false
+
+items:
+  A:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: CHERRY_LOG
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: '10.42'
+        placeholder: '{amount}$'
+        start-apply: 0
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: '10.35'
+        placeholder: '{amount}$'
+        start-apply: 0
+    sell-limits:
+      global: 640
+      default: 128
+      vip: 192
+    sell-limits-conditions:
+      vip:
+        1:
+          type: permission
+          permission: 'group.vip'
+    sell-times-reset-mode: 'TIMED'
+    sell-times-reset-time: '00:00:00'
+  B:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: OAK_LOG
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: '9.06'
+        placeholder: '{amount}$'
+        start-apply: 0
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: '9.02'
+        placeholder: '{amount}$'
+        start-apply: 0
+    sell-limits:
+      global: 640
+      default: 128
+      vip: 192
+    sell-limits-conditions:
+      vip:
+        1:
+          type: permission
+          permission: 'group.vip'
+    sell-times-reset-mode: 'TIMED'
+    sell-times-reset-time: '00:00:00'
+  C:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: SPRUCE_LOG
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: '9.06'
+        placeholder: '{amount}$'
+        start-apply: 0
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: '9.02'
+        placeholder: '{amount}$'
+        start-apply: 0
+    sell-limits:
+      global: 640
+      default: 128
+      vip: 192
+    sell-limits-conditions:
+      vip:
+        1:
+          type: permission
+          permission: 'group.vip'
+    sell-times-reset-mode: 'TIMED'
+    sell-times-reset-time: '00:00:00'
+  D:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: BIRCH_LOG
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: '9.06'
+        placeholder: '{amount}$'
+        start-apply: 0
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: '9.02'
+        placeholder: '{amount}$'
+        start-apply: 0
+    sell-limits:
+      global: 640
+      default: 128
+      vip: 192
+    sell-limits-conditions:
+      vip:
+        1:
+          type: permission
+          permission: 'group.vip'
+    sell-times-reset-mode: 'TIMED'
+    sell-times-reset-time: '00:00:00'
+  E:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: MANGROVE_LOG
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: '9.06'
+        placeholder: '{amount}$'
+        start-apply: 0
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: '9.02'
+        placeholder: '{amount}$'
+        start-apply: 0
+    sell-limits:
+      global: 640
+      default: 128
+      vip: 192
+    sell-limits-conditions:
+      vip:
+        1:
+          type: permission
+          permission: 'group.vip'
+    sell-times-reset-mode: 'TIMED'
+    sell-times-reset-time: '00:00:00'
+  F:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: JUNGLE_LOG
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: '9.06'
+        placeholder: '{amount}$'
+        start-apply: 0
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: '9.02'
+        placeholder: '{amount}$'
+        start-apply: 0
+    sell-limits:
+      global: 640
+      default: 128
+      vip: 192
+    sell-limits-conditions:
+      vip:
+        1:
+          type: permission
+          permission: 'group.vip'
+    sell-times-reset-mode: 'TIMED'
+    sell-times-reset-time: '00:00:00'
+  G:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: ACACIA_LOG
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: '9.06'
+        placeholder: '{amount}$'
+        start-apply: 0
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: '9.02'
+        placeholder: '{amount}$'
+        start-apply: 0
+    sell-limits:
+      global: 640
+      default: 128
+      vip: 192
+    sell-limits-conditions:
+      vip:
+        1:
+          type: permission
+          permission: 'group.vip'
+    sell-times-reset-mode: 'TIMED'
+    sell-times-reset-time: '00:00:00'
+  H:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: DARK_OAK_LOG
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: '10.35'
+        placeholder: '{amount}$'
+        start-apply: 0
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: '10.32'
+        placeholder: '{amount}$'
+        start-apply: 0
+    sell-limits:
+      global: 640
+      default: 128
+      vip: 192
+    sell-limits-conditions:
+      vip:
+        1:
+          type: permission
+          permission: 'group.vip'
+    sell-times-reset-mode: 'TIMED'
+    sell-times-reset-time: '00:00:00'
+  I:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: CHERRY_SAPLING
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: '1.8'
+        placeholder: '{amount}$'
+        start-apply: 0
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: '1.5'
+        placeholder: '{amount}$'
+        start-apply: 0
+    sell-limits:
+      global: 640
+      default: 128
+      vip: 192
+    sell-limits-conditions:
+      vip:
+        1:
+          type: permission
+          permission: 'group.vip'
+    sell-times-reset-mode: 'TIMED'
+    sell-times-reset-time: '00:00:00'
+  J:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: OAK_SAPLING
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: '1.8'
+        placeholder: '{amount}$'
+        start-apply: 0
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: '1.6'
+        placeholder: '{amount}$'
+        start-apply: 0
+    sell-limits:
+      global: 640
+      default: 128
+      vip: 192
+    sell-limits-conditions:
+      vip:
+        1:
+          type: permission
+          permission: 'group.vip'
+    sell-times-reset-mode: 'TIMED'
+    sell-times-reset-time: '00:00:00'
+  K:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: SPRUCE_SAPLING
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: '1.8'
+        placeholder: '{amount}$'
+        start-apply: 0
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: '1.5'
+        placeholder: '{amount}$'
+        start-apply: 0
+    sell-limits:
+      global: 640
+      default: 128
+      vip: 192
+    sell-limits-conditions:
+      vip:
+        1:
+          type: permission
+          permission: 'group.vip'
+    sell-times-reset-mode: 'TIMED'
+    sell-times-reset-time: '00:00:00'
+  L:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: BIRCH_SAPLING
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: '1.8'
+        placeholder: '{amount}$'
+        start-apply: 0
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: '1.6'
+        placeholder: '{amount}$'
+        start-apply: 0
+    sell-limits:
+      global: 640
+      default: 128
+      vip: 192
+    sell-limits-conditions:
+      vip:
+        1:
+          type: permission
+          permission: 'group.vip'
+    sell-times-reset-mode: 'TIMED'
+    sell-times-reset-time: '00:00:00'
+  M:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: MANGROVE_PROPAGULE
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: '1.8'
+        placeholder: '{amount}$'
+        start-apply: 0
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: '1.6'
+        placeholder: '{amount}$'
+        start-apply: 0
+    sell-limits:
+      global: 640
+      default: 128
+      vip: 192
+    sell-limits-conditions:
+      vip:
+        1:
+          type: permission
+          permission: 'group.vip'
+    sell-times-reset-mode: 'TIMED'
+    sell-times-reset-time: '00:00:00'
+  N:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: JUNGLE_SAPLING
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: '1.8'
+        placeholder: '{amount}$'
+        start-apply: 0
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: '1.6'
+        placeholder: '{amount}$'
+        start-apply: 0
+    sell-limits:
+      global: 640
+      default: 128
+      vip: 192
+    sell-limits-conditions:
+      vip:
+        1:
+          type: permission
+          permission: 'group.vip'
+    sell-times-reset-mode: 'TIMED'
+    sell-times-reset-time: '00:00:00'
+  O:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: ACACIA_SAPLING
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: '1.8'
+        placeholder: '{amount}$'
+        start-apply: 0
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: '1.6'
+        placeholder: '{amount}$'
+        start-apply: 0
+    sell-limits:
+      global: 640
+      default: 128
+      vip: 192
+    sell-limits-conditions:
+      vip:
+        1:
+          type: permission
+          permission: 'group.vip'
+    sell-times-reset-mode: 'TIMED'
+    sell-times-reset-time: '00:00:00'
+  P:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: DARK_OAK_SAPLING
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: '1.8'
+        placeholder: '{amount}$'
+        start-apply: 0
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: '1.6'
+        placeholder: '{amount}$'
+        start-apply: 0
+    sell-limits:
+      global: 640
+      default: 128
+      vip: 192
+    sell-limits-conditions:
+      vip:
+        1:
+          type: permission
+          permission: 'group.vip'
+    sell-times-reset-mode: 'TIMED'
+    sell-times-reset-time: '00:00:00'

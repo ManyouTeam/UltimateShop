@@ -1,0 +1,280 @@
+settings:
+  menu: 'example-shop-menu'
+  buy-more: true
+  shop-name: 'Example Shop'
+  hide-message: false
+
+items:
+  #
+  # Potion Example
+  #
+  A:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: POTION
+        base-effect: STRENGTH, true, false
+        # For 1.20.5+ server:
+        # base-effect: LONG_STRENGTH
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: 60
+        placeholder: '{amount}$'
+        start-apply: 0
+  #
+  # Bundle Example
+  #
+  B:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: bundle
+        contents:
+          1:
+            material: DIAMOND
+            amount: 32
+        amount: 1
+    buy-prices:
+      1:
+        economy-type: levels
+        amount: 60
+        placeholder: '&6{amount} levels'
+        start-apply: 0
+  #
+  # Brushable Sand Example
+  #
+  C:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    add-lore:
+      - '&fBuy it for now: {buy-price}'
+    products:
+      1:
+        material: suspicious_sand
+        amount: 1
+        name: '&fMagic Sand'
+        lore:
+          - '&fA sand that includes apple!'
+        content:
+          material: APPLE
+    buy-prices:
+      1:
+        economy-type: levels
+        amount: 1
+        placeholder: '&6{amount} levels'
+        start-apply: 0
+  #
+  # Enchanted Item Example
+  #
+  D:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: DIAMOND_AXE
+        # If you installed MMOItems:
+        # hook-plugin: MMOItems
+        # hook-item: AXE;;EXECUTIONER_AXE
+        # Add more enchants for mmoitems item!
+        enchants:
+          FIRE_ASPECT: 2
+          UNBREAKING: 3
+          COIN_REPAIR: 2 # A EcoEnchants enchantment
+        plugin-enchants:
+          PLANTER: 5
+    buy-prices:
+      1:
+        economy-type: levels
+        amount: 20
+        placeholder: '&6{amount} levels'
+        start-apply: 0
+  #
+  # Enchanting book Example
+  #
+  E:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: ENCHANTED_BOOK
+        amount: 1
+        stored-enchants:
+          protection: 2
+    buy-prices:
+      1:
+        economy-type: levels
+        amount: 2
+        placeholder: '&6{amount} levels'
+        start-apply: 0
+  #
+  # CustomFishing item Example
+  #
+  F:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    display-item:
+      hook-plugin: ItemsAdder
+      hook-item: fish:common_bait
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: 5
+        start-apply: 0
+        placeholder: '{amount} Coins'
+    buy-actions:
+      - 'console_command: customfishing items bait give %player_name% common_bait 1'
+  #
+  # Banner Example
+  #
+  G:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: blue_banner
+        patterns:
+          SQUARE_BOTTOM_LEFT: LIGHT_BLUE
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: 60
+        placeholder: '{amount}$'
+        start-apply: 0
+  #
+  # Axolotl Bucket Example
+  #
+  H:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: AXOLOTL_BUCKET
+        color: WILD
+        amount: 1
+    buy-prices:
+      1:
+        economy-type: exp
+        amount: 60
+        placeholder: '&6{amount} Exps'
+        start-apply: 0
+  #
+  # Tropical Fish Example
+  #
+  I:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: TROPICAL_FISH_BUCKET
+        amount: 1
+        pattern: KOB
+        pattern-color: ORANGE
+        color: WHITE
+    buy-prices:
+      1:
+        economy-type: exp
+        amount: 50
+        placeholder: '&6{amount} Exps'
+        start-apply: 0
+  #
+  # Player Head Example
+  #
+  J:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: PLAYER_HEAD
+        amount: 1
+        skull: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvN2YzZmVkMTZmZDU1MTkwOWZhNWUyOWNkZDY5N2VlMzQ2ZTYzMzkwYjM4M2E0MzAwYTY2MmE4MGI2NGQ5ZWIxNyJ9fX0=
+    buy-prices:
+      1:
+        economy-type: exp
+        amount: 5
+        placeholder: '&6{amount} Exps'
+        start-apply: 0
+  K:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: PLAYER_HEAD
+        amount: 1
+        skull: PQguanfang
+    buy-prices:
+      1:
+        economy-type: exp
+        amount: 0
+        placeholder: '&6{amount} Exps'
+        start-apply: 0
+  #
+  # Firework Example
+  #
+  L:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: FIREWORK_ROCKET
+        amount: 1
+        power: 127
+        firework:
+          1:
+            flicker: true
+            trial: true
+            colors:
+              base:
+                - 0xff0000
+              fade:
+                - 666666
+            type: BALL
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: 155
+        placeholder: '{amount}$'
+        start-apply: 0
+  #
+  # Color Armor Example
+  #
+  M:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: LEATHER_CHESTPLATE
+        amount: 1
+        color: 50, 50, 50
+    buy-prices:
+      1:
+        economy-type: exp
+        amount: 0
+        placeholder: '&6{amount} Exps'
+        start-apply: 0
+  #
+  # Spawner Example
+  #
+  N:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: spawner
+        spawner: cow
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: 5000
+        placeholder: '{amount}$'
+        start-apply: 0
+    buy-limits:
+      global: 5
+      default: 1
+    buy-times-reset-mode: 'TIMED'
+    buy-times-reset-time: '00:00:00'

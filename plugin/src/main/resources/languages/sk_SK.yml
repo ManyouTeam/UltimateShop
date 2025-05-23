@@ -1,0 +1,97 @@
+error:
+  product-not-found: "&#98FB98[UltimateShop] &cNemôžeme nájsť produkt {product}!"
+  shop-not-found: "&#98FB98[UltimateShop] &cNemôžeme nájsť obchod {shop}!"
+  player-not-found: "&#98FB98[UltimateShop] &cNemôžeme nájsť hráča {player}!"
+  item-not-found: "&#98FB98[UltimateShop] &cNemôžeme nájsť predajný lístok {item}!"
+  save-item-not-found: "&#98FB98[UltimateShop] &cNemôžeme nájsť uloženú položku s názvom {item}!"
+  args: "&#98FB98[UltimateShop] &cNesprávne použitie príkazu, ak potrebujete pomoc, použite /shop help!"
+  in-game: "&#98FB98[UltimateShop] &cTento príkaz musíte použiť v hre!"
+  miss-permission: "&#98FB98[UltimateShop] &cNemáte oprávnenie použiť tento príkaz!"
+  menu-not-found: "&#98FB98[UltimateShop] &cNemôžeme nájsť menu: {menu}!"
+  buy-more-menu-direct-open: "&#98FB98[UltimateShop] &cToto menu je menu pre nákup viac položiek a nemôže sa otvoriť priamo!"
+  shop-menu-not-found: "&#98FB98[UltimateShop] &cNemôžeme nájsť menu obchodu {shop}: {menu}!"
+  shop-does-not-have-menu: "&#98FB98[UltimateShop] &cObchod {shop} nemá platné menu!"
+  random-placeholder-not-found: "&#98FB98[UltimateShop] &cNemôžeme nájsť náhodnú premennú: {placeholder}!"
+  random-placeholder-element-not-found: "&#98FB98[UltimateShop] &cZdá sa, že náhodná premenná {placeholder} neobsahuje prvok {element}!"
+  length-only-one: "&#98FB98[UltimateShop] &cDĺžka ID produktu musí byť 1 znak!"
+
+plugin:
+  reloading: "&#98FB98[UltimateShop] &fPokúšame sa znova načítať plugin, server môže mať pokles TPS alebo dokonca zlyhať, ak máte veľa obchodných produktov a online hráčov, pretože sa snažíme uložiť ich údaje na hlavné vlákno servera. Odporúčame reštartovať server namiesto opätovného načítania pluginu, aby sa údaje bezpečne uložili."
+  reloaded: "&#98FB98[UltimateShop] &fPlugin bol znova načítaný!"
+  reload-close-gui: "&#98FB98[UltimateShop] &fVaše GUI bolo zatvorené, pretože správca servera sa pokúša znova načítať plugin!"
+  saved: "&#98FB98[UltimateShop] &fPoložka bola uložená!"
+  generated: "&#98FB98[UltimateShop] &fGenerovaný formát položky držiacej v konfigurácii pluginu, skopírujte ho do svojho menu alebo konfigurácií obchodu!"
+
+placeholderapi:
+  unknown-shop: "Neznámy Obchod"
+  unknown-product: "Neznámy Produkt"
+
+command-tab:
+  unknown-shop: "[Neznámy Obchod]"
+  unknown-random-placeholder: "[Neznáma Náhodná Premenná]"
+  type-item-id: "[Zadajte ID položky, ktorú chcete]"
+
+help:
+  main: |
+    &#98FB98&lUltimateShop &7Vytvorené @PQguanfang &8‖ &7Slovenský preklad by Loding (@lodxng)
+    &f/shop help &7- Zobraziť pomoc.
+    &f/shop menu <menuName> &7- Otvoriť zadané bežné menu.
+    &f/shop menu <shopName> &7- Otvoriť menu zadaného obchodu.
+    &f/shop sellall &7- Otvoriť menu predať všetko.
+  main-admin: |
+    &#98FB98&lUltimateShop &7Vytvorené @PQguanfang &8‖ &7Slovenský preklad by Loding (@lodxng)
+    &f/shop help &7- Zobraziť pomoc.
+    &f/shop menu <menuName> &7- Otvoriť zadané bežné menu.
+    &f/shop menu <shopName> &7- Otvoriť menu zadaného obchodu.
+    &f/shop quickbuy <shopName> <itemName> &7- Rýchly nákup zadaného produktu bez otvorenia menu.
+    &f/shop quicksell <shopName> <itemName> &7- Rýchly predaj zadaného produktu bez otvorenia menu.
+    &f/shop reload &7- Znovu načítať plugin.
+    &f/shop sellall &7 - Otvoriť menu predať všetko.
+    &f/shop setbuytimes <shopName> <itemName> <playerName> [amount] &7- Nastaviť počet nákupov.
+    &f/shop setselltimes <shopName> <itemName> <playerName> [amount] &7- Nastaviť počet predajov.
+    &f/shop addbuytimes <shopName> <itemName> <playerName> <amount> &7- Pridať počet nákupov.
+    &f/shop addselltimes <shopName> <itemName> <playerName> <amount> &7- Pridať počet predajov.
+    &f/shop resetrandomplaceholder <placeholderID> &7- Resetovať hodnotu náhodnej premennej. &c(Premium)
+    &f/shop setrandomplaceholder <placeholderID> [element] &7- Nastaviť hodnotu náhodnej premennej. &c(Premium)
+    &f/shop getplaceholdervalue <text> &7- Spracovať vstupný text. &c(Premium)
+    &f/shop saveitem <itemID> &7- Uložiť držiacu položku.
+    &f/shop generateitemformat &7- Spracovať držiacu položku na ItemFormat.
+    &f/shop givesellstick <itemID> <playerID> [amount] &7- Dať predajný lístok. &c(Premium)
+  main-console: |
+    &#98FB98&lUltimateShop &7Vytvorené @PQguanfang &8‖ &7Slovenský preklad by Loding (@lodxng)
+    &f/shop help &7- Zobraziť pomoc.
+    &f/shop menu <menuName> <playerName> &7- Nasilu otvoriť zadané bežné menu.
+    &f/shop menu <shopName> <playerName> &7- Nasilu otvoriť menu zadaného obchodu.
+    &f/shop reload &7- Znovu načítať plugin.
+    &f/shop setbuytimes <shopName> <itemName> <playerName> [amount] &7- Nastaviť počet nákupov.
+    &f/shop setselltimes <shopName> <itemName> <playerName> [amount] &7- Nastaviť počet predajov.
+    &f/shop addbuytimes <shopName> <itemName> <playerName> <amount> &7- Pridať počet nákupov.
+    &f/shop addselltimes <shopName> <itemName> <playerName> <amount> &7- Pridať počet predajov.
+    &f/shop resetrandomplaceholder <placeholderID> &7- Resetovať hodnotu náhodnej premennej. &c(Premium)
+    &f/shop setrandomplaceholder <placeholderID> [element] &7- Nastaviť hodnotu náhodnej premennej. &c(Premium)
+    &f/shop getplaceholdervalue <text> &7- Spracovať vstupný text. &c(Premium)
+    &f/shop givesellstick <itemID> <playerID> [amount] &7- Dať predajný lístok. &c(Premium)
+
+inventory-full: "&#98FB98[UltimateShop] &fNemôžete dokončiť tento preklad, pretože váš inventár bude plný po preklade!"
+start-sell-all: "&#98FB98[UltimateShop] &fVšetky vaše {amount}x predajné položky boli predané, získali ste {reward} za to!"
+start-sell-stick: "&#98FB98[UltimateShop] &fVšetky vaše predajné položky v tomto kontajneri boli predané, získali ste {reward} za to!"
+give-sell-stick: "&#98FB98[UltimateShop] &fDajte {player} predajný lístok {item} x{amount}!"
+give-save-item: "&#98FB98[UltimateShop] &fDajte {player} uloženú položku {item} x{amount}!"
+add-times: "&#98FB98[UltimateShop] &fPridané {times} do počtu použitia {item} hráča {player}!"
+set-times: "&#98FB98[UltimateShop] &fNastavený počet použitia {item} hráča {player} na {times}!"
+add-times-shop: "&#98FB98[UltimateShop] &fPridané {times} do počtu použitia všetkých produktov obchodu {shop} hráča {player}!"
+set-times-shop: "&#98FB98[UltimateShop] &fNastavený počet použitia všetkých produktov obchodu {shop} hráča {player} na {times}!"
+success-buy: "&#98FB98[UltimateShop] &fÚspešne zakúpené {item}x{amount}, cena {price}!"
+success-sell: "&#98FB98[UltimateShop] &fÚspešne predané {item}x{amount}, získané {price}!"
+menu-condition-not-meet: "&#98FB98[UltimateShop] &cNesplnili ste podmienku na otvorenie tohto menu!"
+buy-condition-not-meet: "&#98FB98[UltimateShop] &cNesplnili ste podmienku na nákup tohto produktu!"
+sell-condition-not-meet: "&#98FB98[UltimateShop] &cNesplnili ste podmienku na predaj tohto produktu!"
+limit-reached-buy-player: "&#98FB98[UltimateShop] &cNemôžete už viac zakúpiť položku {item}, dnes ste ju zakúpili {times} krát, a jej denný limit je {limit} pre vás, ďalší čas obnovenia: {refresh}."
+limit-reached-sell-player: "&#98FB98[UltimateShop] &cNemôžete už viac predať položku {item}, dnes ste ju predali {times} krát, a jej denný limit je {limit} pre vás, ďalší čas obnovenia: {refresh}."
+limit-reached-buy-server: "&#98FB98[UltimateShop] &cNemôžete už viac zakúpiť položku {item}, všetci hráči ju dnes kúpili {times} krát, a jej denný limit je {limit}, ďalší čas obnovenia: {refresh}."
+limit-reached-sell-server: "&#98FB98[UltimateShop] &cNemôžete už viac predať položku {item}, všetci hráči ju dnes predali {times} krát, a jej denný limit je {limit}, ďalší čas obnovenia: {refresh}."
+buy-price-not-enough: "&#98FB98[UltimateShop] &cNemáte dostatok peňazí na nákup {item}. Požadovaná cena: {price}."
+sell-products-not-enough: "&#98FB98[UltimateShop] &cNemáte dostatok {item} na predaj."
+parsed-value: "&#98FB98[UltimateShop] &fSpracovaná hodnota: {text}"
+reset-random-placeholder: "&#98FB98[UltimateShop] &fÚspešne resetovaná náhodná premenná {placeholder} a jej nová hodnota je {value}."
+set-random-placeholder: "&#98FB98[UltimateShop] &fÚspešne nastavená nová hodnota náhodnej premennej {placeholder} na: {value}. Upozorňujeme, že čas obnovenia sa nezmení!"
