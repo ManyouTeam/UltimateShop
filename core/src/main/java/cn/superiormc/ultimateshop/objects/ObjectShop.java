@@ -11,6 +11,7 @@ import cn.superiormc.ultimateshop.objects.buttons.ObjectCopyItem;
 import cn.superiormc.ultimateshop.objects.menus.ObjectMenu;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import cn.superiormc.ultimateshop.utils.CommandUtil;
+import cn.superiormc.ultimateshop.utils.TextUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.BukkitCommand;
@@ -50,7 +51,7 @@ public class ObjectShop {
 
     private void initProducts() {
         if (config.getConfigurationSection("items") == null) {
-            ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Can not get items section in your shop config!!");
+            ErrorManager.errorManager.sendErrorMessage("§cError: Can not get items section in your shop config!!");
             return;
         }
         for (String s : config.getConfigurationSection("items").getKeys(false)) {
@@ -133,7 +134,7 @@ public class ObjectShop {
             };
             command.setDescription(config.getString("settings.custom-command.description", "UltimateShop Custom Command for " + commandName));
             CommandUtil.registerCustomCommand(command);
-            Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §fRegistered custom command for shop: " + shopName + ".");
+            UltimateShop.methodUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fRegistered custom command for shop: " + shopName + ".");
         }
     }
 

@@ -25,6 +25,11 @@ import java.util.UUID;
 public class PaperMethodUtil implements SpecialMethodUtil {
 
     @Override
+    public String methodID() {
+        return "paper";
+    }
+
+    @Override
     public void dispatchCommand(String command) {
         if (UltimateShop.isFolia) {
             Bukkit.getGlobalRegionScheduler().run(UltimateShop.instance, task -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command));
@@ -114,11 +119,7 @@ public class PaperMethodUtil implements SpecialMethodUtil {
 
     @Override
     public void setItemName(ItemMeta meta, String name, Player player) {
-        if (!CommonUtil.getMinorVersion(17, 1)) {
-            meta.setDisplayName(TextUtil.parse(player, name));
-            return;
-        }
-        if (!name.startsWith("&o")) {
+        if (PaperTextUtil.containsLegacyCodes(name)) {
             name = "<!i>" + name;
         }
         meta.displayName(PaperTextUtil.modernParse(name, player));
@@ -127,7 +128,7 @@ public class PaperMethodUtil implements SpecialMethodUtil {
     @Override
     public void setItemItemName(ItemMeta meta, String itemName, Player player) {
         if (!itemName.isEmpty()) {
-            if (!itemName.startsWith("&o")) {
+            if (PaperTextUtil.containsLegacyCodes(itemName)) {
                 itemName = "<!i>" + itemName;
             }
             meta.itemName(PaperTextUtil.modernParse(itemName, player));
@@ -138,26 +139,10 @@ public class PaperMethodUtil implements SpecialMethodUtil {
 
     @Override
     public void setItemLore(ItemMeta meta, List<String> lores, Player player) {
-        if (!CommonUtil.getMinorVersion(17, 1)) {
-            List<String> newLore = new ArrayList<>();
-            for (String lore : lores) {
-                for (String singleLore : lore.split("\n")) {
-                    if (singleLore.isEmpty()) {
-                        newLore.add(" ");
-                        continue;
-                    }
-                    newLore.add(TextUtil.parse(singleLore, player));
-                }
-            }
-            if (!newLore.isEmpty()) {
-                meta.setLore(newLore);
-            }
-            return;
-        }
         List<Component> veryNewLore = new ArrayList<>();
         for (String lore : lores) {
             for (String singleLore : lore.split("\n")) {
-                if (!singleLore.startsWith("&o")) {
+                if (PaperTextUtil.containsLegacyCodes(singleLore)) {
                     singleLore = "<!i>" + singleLore;
                 }
                 veryNewLore.add(PaperTextUtil.modernParse(singleLore, player));
@@ -187,6 +172,21 @@ public class PaperMethodUtil implements SpecialMethodUtil {
         if (text == null)
             return "";
         return LegacyComponentSerializer.legacySection().serialize(PaperTextUtil.modernParse(text));
+    }
+
+    @Override
+    public String getItemName(ItemMeta meta) {
+        return PaperTextUtil.changeToString(meta.displayName());
+    }
+
+    @Override
+    public String getItemItemName(ItemMeta meta) {
+        return PaperTextUtil.changeToString(meta.itemName());
+    }
+
+    @Override
+    public List<String> getItemLore(ItemMeta meta) {
+        return PaperTextUtil.changeToString(meta.lore());
     }
 
 }

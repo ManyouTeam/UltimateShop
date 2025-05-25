@@ -136,7 +136,7 @@ public class ObjectRandomPlaceholderCache {
             LocalDateTime thisResult;
             String[] tempVal2 = tempVal4.split(":");
             if (tempVal2.length < 3) {
-                ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Your reset time " + tempVal4 + " is invalid.");
+                ErrorManager.errorManager.sendErrorMessage("§cError: Your reset time " + tempVal4 + " is invalid.");
                 return LocalDateTime.now();
             }
             int month = 0;
@@ -165,7 +165,7 @@ public class ObjectRandomPlaceholderCache {
         LocalDateTime refreshResult = LocalDateTime.now();
         String[] tempVal2 = time.split(":");
         if (tempVal2.length < 3) {
-            ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Your reset time " + time + " is invalid.");
+            ErrorManager.errorManager.sendErrorMessage("§cError: Your reset time " + time + " is invalid.");
             return LocalDateTime.now();
         }
         int month = 0;

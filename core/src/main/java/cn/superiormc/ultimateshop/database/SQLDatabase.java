@@ -12,6 +12,7 @@ import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import cn.superiormc.ultimateshop.objects.caches.ObjectRandomPlaceholderCache;
 import cn.superiormc.ultimateshop.objects.caches.ObjectUseTimesCache;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
+import cn.superiormc.ultimateshop.utils.TextUtil;
 import org.bukkit.Bukkit;
 
 import java.sql.SQLException;
@@ -24,7 +25,7 @@ public class SQLDatabase {
     public static SQLManager sqlManager;
 
     public static void initSQL() {
-        Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §fTrying connect to SQL database...");
+        UltimateShop.methodUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fTrying connect to SQL database...");
         HikariConfig config = new HikariConfig();
         config.setDriverClassName(ConfigManager.configManager.getString("database.jdbc-class"));
         config.setJdbcUrl(ConfigManager.configManager.getString("database.jdbc-url"));
@@ -35,7 +36,7 @@ public class SQLDatabase {
         sqlManager = EasySQL.createManager(config);
         try {
             if (!sqlManager.getConnection().isValid(5)) {
-                Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §cFailed connect to SQL database!");
+                UltimateShop.methodUtil.sendMessage(null, TextUtil.pluginPrefix() + " §cFailed connect to SQL database!");
             }
         } catch (SQLException e) {
             e.printStackTrace();

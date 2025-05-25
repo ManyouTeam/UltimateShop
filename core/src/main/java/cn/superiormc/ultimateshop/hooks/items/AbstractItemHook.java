@@ -15,7 +15,7 @@ public abstract class AbstractItemHook {
     public abstract ItemStack getHookItemByID(Player player, String itemID);
 
     public ItemStack returnNullItem(String itemID) {
-        ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Can not get "
+        ErrorManager.errorManager.sendErrorMessage("§cError: Can not get "
                 + pluginName + " item: " + itemID + "!");
         return null;
     }

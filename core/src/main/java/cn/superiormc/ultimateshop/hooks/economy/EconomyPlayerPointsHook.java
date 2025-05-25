@@ -31,7 +31,7 @@ public class EconomyPlayerPointsHook extends AbstractEconomyHook {
     @Override
     public boolean isEnabled() {
         if (playerPoints == null) {
-            ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cCan not hook into PlayerPoints plugin, " +
+            ErrorManager.errorManager.sendErrorMessage("§cCan not hook into PlayerPoints plugin, " +
                     "maybe your are using old version, please try update it to newer version!");
             return false;
         }

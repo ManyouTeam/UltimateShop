@@ -64,8 +64,7 @@ public class BuyMoreGUI extends InvGUI {
             case SELECT_AMOUNT:
                 if (button.config.getInt("add-amount", 0) == 0) {
                     if (button.config.getInt("set-amount", -1) == -1) {
-                        ErrorManager.errorManager.sendErrorMessage(
-                                "§x§9§8§F§B§9§8[UltimateShop] §cError: Can not find add-amount section " +
+                        ErrorManager.errorManager.sendErrorMessage("§cError: Can not find add-amount section " +
                                         "in select amount button, or you are setting add-amount to 0?");
                         return true;
                     }
@@ -136,7 +135,7 @@ public class BuyMoreGUI extends InvGUI {
                         }
                         break;
                     default:
-                        ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cUnknown click action: "
+                        ErrorManager.errorManager.sendErrorMessage("§cUnknown click action: "
                                 + ConfigManager.configManager.getClickAction(type));
                         break;
                 }

@@ -687,7 +687,7 @@ public class BuildItem {
                 String spawnerKey = section.getString("spawner");
                 if (spawnerKey != null) {
                     EntityType entityType = Enums.getIfPresent(EntityType.class, spawnerKey.toUpperCase()).orNull();
-                    if (UltimateShop.isPaper && CommonUtil.getMinorVersion(20, 5) && entityType == EntityType.ITEM) {
+                    if (UltimateShop.methodUtil.methodID().equals("paper") && CommonUtil.getMinorVersion(20, 5) && entityType == EntityType.ITEM) {
                         spawner.setSpawnedType(EntityType.ITEM);
                         ConfigurationSection spawnerItemSection = section.getConfigurationSection("content");
                         if (spawnerItemSection != null) {

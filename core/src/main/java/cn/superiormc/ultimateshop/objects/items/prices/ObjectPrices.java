@@ -34,7 +34,7 @@ public class ObjectPrices extends AbstractThings {
     public void initSinglePrices() {
         for (String s : section.getKeys(false)) {
             if (section.getConfigurationSection(s) == null) {
-                ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Can not get prices section in your shop config!!");
+                ErrorManager.errorManager.sendErrorMessage("§cError: Can not get prices section in your shop config!!");
                 singlePrices.add(new ObjectSinglePrice());
             }
             else {
@@ -147,7 +147,7 @@ public class ObjectPrices extends AbstractThings {
                 }
                 return resultObject;
             default:
-                ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Can not get price-mode section in your shop config!!");
+                ErrorManager.errorManager.sendErrorMessage("§cError: Can not get price-mode section in your shop config!!");
                 return resultObject;
         }
     }
@@ -206,7 +206,7 @@ public class ObjectPrices extends AbstractThings {
                 resultObject.addResultMapElement(first, cost);
                 return resultObject;
             default:
-                ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Can not get price-mode section in your shop config!!");
+                ErrorManager.errorManager.sendErrorMessage("§cError: Can not get price-mode section in your shop config!!");
                 return resultObject;
         }
     }

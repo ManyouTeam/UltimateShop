@@ -168,7 +168,7 @@ public abstract class AbstractSingleThing implements Comparable<AbstractSingleTh
             case CUSTOM:
                 return Double.parseDouble(TextUtil.withPAPI(section.getString("match-placeholder", "0"), player));
             case UNKNOWN:
-                Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §c" +
+                UltimateShop.methodUtil.sendMessage(null, TextUtil.pluginPrefix() + " §c" +
                         "There is something wrong in your shop configs!");
                 return 0;
         }
@@ -234,7 +234,7 @@ public abstract class AbstractSingleThing implements Comparable<AbstractSingleTh
             case FREE:
                 return true;
             case UNKNOWN:
-                Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §c" +
+                UltimateShop.methodUtil.sendMessage(null, TextUtil.pluginPrefix() + " §c" +
                         "There is something wrong in your shop configs!");
                 return false;
         }

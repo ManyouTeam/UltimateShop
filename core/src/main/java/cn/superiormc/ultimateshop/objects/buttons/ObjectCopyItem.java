@@ -1,8 +1,10 @@
 package cn.superiormc.ultimateshop.objects.buttons;
 
+import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.objects.buttons.subobjects.ObjectDisplayItem;
 import cn.superiormc.ultimateshop.objects.buttons.subobjects.ObjectDisplayItemStack;
+import cn.superiormc.ultimateshop.utils.TextUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
@@ -22,7 +24,7 @@ public class ObjectCopyItem extends AbstractButton {
         this.section = section;
         this.item = item;
         initDisplayItem();
-        Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §fLoaded sub button for product " + item.getProduct() + " in shop " +
+        UltimateShop.methodUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fLoaded sub button for product " + item.getProduct() + " in shop " +
                 item.getShop() + "!");
     }
 

@@ -1,18 +1,22 @@
 package cn.superiormc.ultimateshop.paper.utils;
 
-import cn.superiormc.ultimateshop.libs.easyplugin.ColorParser;
 import cn.superiormc.ultimateshop.managers.ErrorManager;
 import cn.superiormc.ultimateshop.utils.TextUtil;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static cn.superiormc.ultimateshop.utils.TextUtil.GRADIENT_PATTERN;
+import static cn.superiormc.ultimateshop.utils.TextUtil.LEGACY_COLOR_PATTERN;
+import static cn.superiormc.ultimateshop.utils.TextUtil.SINGLE_HEX_PATTERN;
 
 public class PaperTextUtil {
 
@@ -20,9 +24,7 @@ public class PaperTextUtil {
     private static final LegacyComponentSerializer LEGACY_SERIALIZER = LegacyComponentSerializer.legacyAmpersand();
 
     // Regex patterns
-    private static final Pattern SINGLE_HEX_PATTERN = Pattern.compile("&#([A-Fa-f0-9]{6})");
-    private static final Pattern GRADIENT_PATTERN = Pattern.compile("&<#([A-Fa-f0-9]{6})>(.*?)&<#([A-Fa-f0-9]{6})>");
-    private static final Pattern LEGACY_COLOR_PATTERN = Pattern.compile("&([0-9a-frlomn])", Pattern.CASE_INSENSITIVE);
+    private static final Pattern SECTION_HEX_PATTERN = Pattern.compile("§x(§[A-Fa-f0-9]){6}");
 
     // Legacy color map
     private static final Map<Character, String> LEGACY_COLORS = new HashMap<>();
@@ -52,41 +54,48 @@ public class PaperTextUtil {
     }
 
     public static String convertToMiniMessage(String input) {
-        // First: handle gradient
-        Matcher gradientMatcher = GRADIENT_PATTERN.matcher(input);
-        StringBuffer gradientBuffer = new StringBuffer();
 
-        while (gradientMatcher.find()) {
-            String startColor = gradientMatcher.group(1);
+        // Step 1: §x hex colors (e.g. §x§1§2§3§4§5§6 → <#123456>)
+        Matcher sectionHexMatcher = SECTION_HEX_PATTERN.matcher(input);
+        StringBuilder sectionHexBuffer = new StringBuilder();
+        while (sectionHexMatcher.find()) {
+            String match = sectionHexMatcher.group();
+            // Extract the 6 hex digits from the §x§1§2... form
+            String hex = match.replace("§x", "").replace("§", "");
+            sectionHexMatcher.appendReplacement(sectionHexBuffer, "<#" + hex + ">");
+        }
+        sectionHexMatcher.appendTail(sectionHexBuffer);
+
+        String afterSectionHex = sectionHexBuffer.toString();
+
+        // Step 2: Gradients
+        Matcher gradientMatcher = GRADIENT_PATTERN.matcher(afterSectionHex);
+        StringBuilder gradientBuffer = new StringBuilder();
+        while (gradientMatcher.find() && gradientMatcher.groupCount() >= 3) {
+            String start = gradientMatcher.group(1);
             String text = gradientMatcher.group(2);
-            String endColor = gradientMatcher.group(3);
-            String replacement = String.format("<gradient:#%s:#%s>%s</gradient>", startColor, endColor, text);
+            String end = gradientMatcher.group(3);
+            String replacement = String.format("<gradient:#%s:#%s>%s</gradient>", start, end, text);
             gradientMatcher.appendReplacement(gradientBuffer, Matcher.quoteReplacement(replacement));
         }
         gradientMatcher.appendTail(gradientBuffer);
 
-        String afterGradient = gradientBuffer.toString();
-
-        // Second: handle single hex color
-        Matcher hexMatcher = SINGLE_HEX_PATTERN.matcher(afterGradient);
-        StringBuffer hexBuffer = new StringBuffer();
-
+        // Step 3: &#hex to MiniMessage
+        Matcher hexMatcher = SINGLE_HEX_PATTERN.matcher(gradientBuffer.toString());
+        StringBuilder hexBuffer = new StringBuilder();
         while (hexMatcher.find()) {
-            String color = hexMatcher.group(1);
-            hexMatcher.appendReplacement(hexBuffer, Matcher.quoteReplacement("<#" + color + ">"));
+            String hex = hexMatcher.group(1);
+            hexMatcher.appendReplacement(hexBuffer, "<#" + hex + ">");
         }
         hexMatcher.appendTail(hexBuffer);
 
-        String afterHex = hexBuffer.toString();
-
-        // Third: handle legacy color codes
-        Matcher legacyMatcher = LEGACY_COLOR_PATTERN.matcher(afterHex);
-        StringBuffer finalBuffer = new StringBuffer();
-
+        // Step 4: Legacy & § codes
+        Matcher legacyMatcher = LEGACY_COLOR_PATTERN.matcher(hexBuffer.toString());
+        StringBuilder finalBuffer = new StringBuilder();
         while (legacyMatcher.find()) {
             char code = Character.toLowerCase(legacyMatcher.group(1).charAt(0));
-            String miniTag = LEGACY_COLORS.getOrDefault(code, "");
-            legacyMatcher.appendReplacement(finalBuffer, Matcher.quoteReplacement("<" + miniTag + ">"));
+            String tag = LEGACY_COLORS.getOrDefault(code, "");
+            legacyMatcher.appendReplacement(finalBuffer, "<" + tag + ">");
         }
         legacyMatcher.appendTail(finalBuffer);
 
@@ -96,20 +105,47 @@ public class PaperTextUtil {
 
     public static Component modernParse(String text) {
         try {
-            if ((!text.contains("<") && !text.contains(">")) || text.startsWith("<!i>")) {
+            if (containsLegacyCodes(text)) {
                 text = convertToMiniMessage(text);
             }
             return MINI_MESSAGE.deserialize(text);
         } catch (Exception e) {
-            ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Can not parse text: " + text);
+            e.printStackTrace();
+            ErrorManager.errorManager.sendErrorMessage("§cError: Can not parse text: " + text);
             // 如果 MiniMessage 格式失败，退回兼容旧的 & 颜色代码
-            return LEGACY_SERIALIZER.deserialize(ColorParser.parse(text).replace('§', '&'));
+            return LEGACY_SERIALIZER.deserialize(TextUtil.colorize(text).replace('§', '&'));
         }
     }
 
     public static Component modernParse(String text, Player player) {
         text = TextUtil.withPAPI(text, player);
         return modernParse(text);
+    }
+
+    public static String changeToString(Component component) {
+        if (component == null) {
+            return null;
+        }
+        return MINI_MESSAGE.serialize(component);
+    }
+
+    public static List<String> changeToString(List<Component> component) {
+        if (component == null) {
+            return null;
+        }
+        List<String> result = new ArrayList<>();
+        for (Component singleComponent : component) {
+            result.add(changeToString(singleComponent));
+        }
+        return result;
+    }
+
+    public static boolean containsLegacyCodes(String text) {
+        return LEGACY_COLOR_PATTERN.matcher(text).find() ||
+                SINGLE_HEX_PATTERN.matcher(text).find() ||
+                GRADIENT_PATTERN.matcher(text).find() ||
+                SECTION_HEX_PATTERN.matcher(text).find()
+                || (text.startsWith("<!i>") && text.contains("&"))|| text.contains("§");
     }
 
 }

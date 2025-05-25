@@ -29,7 +29,7 @@ public class MathUtil {
             if (ConfigManager.configManager.getBoolean("debug")) {
                 ep.printStackTrace();
             }
-            ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Your number option value " +
+            ErrorManager.errorManager.sendErrorMessage("§cError: Your number option value " +
                     mathStr + " can not be read as a number, maybe" +
                     "set math.enabled to false in config.yml maybe solve this problem!");
             return BigDecimal.ZERO;
@@ -42,7 +42,7 @@ public class MathUtil {
             try {
                 tempVal1.add(new BigDecimal(tempVa2));
             } catch (NumberFormatException ep) {
-                ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Your number option value " +
+                ErrorManager.errorManager.sendErrorMessage("§cError: Your number option value " +
                         tempVa2 + " can not be read as a number, maybe" +
                         "set math.enabled to false in config.yml maybe solve this problem!");
                 tempVal1.add(new BigDecimal(-1));

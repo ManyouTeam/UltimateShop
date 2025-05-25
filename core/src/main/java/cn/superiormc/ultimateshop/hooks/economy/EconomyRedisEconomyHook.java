@@ -18,8 +18,7 @@ public class EconomyRedisEconomyHook extends AbstractEconomyHook {
     public double getEconomy(Player player, String currencyID) {
         Currency redisCurrency = api.getCurrencyByName(currencyID);
         if (redisCurrency == null) {
-            ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cCan not find currency " +
-                    currencyID + " in RedisEconomy plugin!");
+            ErrorManager.errorManager.sendErrorMessage("§cCan not find currency " + currencyID + " in RedisEconomy plugin!");
             return 0;
         }
         return redisCurrency.getBalance(player);
@@ -29,8 +28,7 @@ public class EconomyRedisEconomyHook extends AbstractEconomyHook {
     public void takeEconomy(Player player, double value, String currencyID) {
         Currency redisCurrency = api.getCurrencyByName(currencyID);
         if (redisCurrency == null) {
-            ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cCan not find currency " +
-                    currencyID + " in RedisEconomy plugin!");
+            ErrorManager.errorManager.sendErrorMessage("§cCan not find currency " + currencyID + " in RedisEconomy plugin!");
             return;
         }
         redisCurrency.withdrawPlayer(player, value);
@@ -40,7 +38,7 @@ public class EconomyRedisEconomyHook extends AbstractEconomyHook {
     public void giveEconomy(Player player, double value, String currencyID) {
         Currency redisCurrency = api.getCurrencyByName(currencyID);
         if (redisCurrency == null) {
-            ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cCan not find currency " +
+            ErrorManager.errorManager.sendErrorMessage("§cCan not find currency " +
                     currencyID + " in RedisEconomy plugin!");
             return;
         }
@@ -50,7 +48,7 @@ public class EconomyRedisEconomyHook extends AbstractEconomyHook {
     @Override
     public boolean isEnabled() {
         if (api == null) {
-            ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cCan not hook into RedisEconomy plugin!");
+            ErrorManager.errorManager.sendErrorMessage("§cCan not hook into RedisEconomy plugin!");
             return true;
         }
         return true;

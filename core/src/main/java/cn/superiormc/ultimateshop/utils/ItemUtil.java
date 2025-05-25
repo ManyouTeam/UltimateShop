@@ -1,5 +1,6 @@
 package cn.superiormc.ultimateshop.utils;
 
+import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.LocateManager;
 import cn.superiormc.ultimateshop.methods.Items.DebuildItem;
@@ -17,7 +18,7 @@ public class ItemUtil {
             return "";
         }
         if (displayItem.getItemMeta().hasDisplayName()) {
-            return displayItem.getItemMeta().getDisplayName();
+            return UltimateShop.methodUtil.getItemName(displayItem.getItemMeta());
         }
         if (LocateManager.enableThis() && LocateManager.locateManager != null) {
             return LocateManager.locateManager.getLocateName(displayItem);
@@ -31,7 +32,10 @@ public class ItemUtil {
             return "";
         }
         if (displayItem.getItemMeta().hasDisplayName()) {
-            return displayItem.getItemMeta().getDisplayName();
+            return UltimateShop.methodUtil.getItemName(displayItem.getItemMeta());
+        }
+        if (UltimateShop.methodUtil.methodID().equals("paper")) {
+            return "<translatable:item.minecraft." + displayItem.getType().name().toLowerCase() + ">";
         }
         StringBuilder result = new StringBuilder();
         for (String word : displayItem.getType().name().toLowerCase().split("_")) {

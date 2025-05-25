@@ -55,14 +55,14 @@ public class ObjectUseTimesCache {
         }
         if (cooldownBuyTime != null) {
             if (ConfigManager.configManager.getBoolean("debug")) {
-                Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §cSet cooldown time to " + product);
+                UltimateShop.methodUtil.sendMessage(null, TextUtil.pluginPrefix() + " §cSet cooldown time to " + product);
             }
             this.cooldownBuyTime = CommonUtil.stringToTime(cooldownBuyTime);
         }
         this.sellUseTimes = sellUseTimes;
         if (cooldownSellTime != null) {
             if (ConfigManager.configManager.getBoolean("debug")) {
-                Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §cSet cooldown time to " + product);
+                UltimateShop.methodUtil.sendMessage(null, TextUtil.pluginPrefix() + " §cSet cooldown time to " + product);
             }
             this.cooldownSellTime = CommonUtil.stringToTime(cooldownSellTime);
         }
@@ -238,7 +238,7 @@ public class ObjectUseTimesCache {
             return null;
         }
         if (ConfigManager.configManager.getBoolean("debug")) {
-            Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §cCooldown time: " + cooldownBuyTime);
+            UltimateShop.methodUtil.sendMessage(null, TextUtil.pluginPrefix() + " §cCooldown time: " + cooldownBuyTime);
         }
         return CommonUtil.timeToString(cooldownBuyTime);
     }
@@ -248,7 +248,7 @@ public class ObjectUseTimesCache {
             return null;
         }
         if (ConfigManager.configManager.getBoolean("debug")) {
-            Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §cCooldown time: " + cooldownSellTime);
+            UltimateShop.methodUtil.sendMessage(null, TextUtil.pluginPrefix() + " §cCooldown time: " + cooldownSellTime);
         }
         return CommonUtil.timeToString(cooldownSellTime);
     }
@@ -370,7 +370,7 @@ public class ObjectUseTimesCache {
             int month = 0;
             int day = 0;
             if (tempVal2.length < 3) {
-                ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Your reset time " + tempVal4 + " is invalid.");
+                ErrorManager.errorManager.sendErrorMessage("§cError: Your reset time " + tempVal4 + " is invalid.");
                 return LocalDateTime.now();
             }
             if (tempVal2.length == 5) {
@@ -409,7 +409,7 @@ public class ObjectUseTimesCache {
             int month = 0;
             int day = 0;
             if (tempVal2.length < 3) {
-                ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Your reset time " + tempVal4 + " is invalid.");
+                ErrorManager.errorManager.sendErrorMessage("§cError: Your reset time " + tempVal4 + " is invalid.");
                 return LocalDateTime.now();
             }
             if (tempVal2.length == 5) {
@@ -446,7 +446,7 @@ public class ObjectUseTimesCache {
         }
         String[] tempVal2 = time.split(":");
         if (tempVal2.length < 3) {
-            ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Your reset time " + time + " is invalid.");
+            ErrorManager.errorManager.sendErrorMessage("§cError: Your reset time " + time + " is invalid.");
             return LocalDateTime.now();
         }
         int month = 0;
@@ -473,7 +473,7 @@ public class ObjectUseTimesCache {
         }
         String[] tempVal2 = time.split(":");
         if (tempVal2.length < 3) {
-            ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Your reset time " + time + " is invalid.");
+            ErrorManager.errorManager.sendErrorMessage("§cError: Your reset time " + time + " is invalid.");
             return LocalDateTime.now();
         }
         int month = 0;

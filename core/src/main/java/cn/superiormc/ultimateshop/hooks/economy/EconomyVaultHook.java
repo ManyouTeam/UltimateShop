@@ -41,7 +41,7 @@ public class EconomyVaultHook extends AbstractEconomyHook {
     @Override
     public boolean isEnabled() {
         if (rsp == null) {
-            ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cCan not hook into Vault plugin, " +
+            ErrorManager.errorManager.sendErrorMessage("§cCan not hook into Vault plugin, " +
                     "Vault is a API plugin, maybe you didn't install a Vault-based economy plugin in your server!");
             return false;
         }

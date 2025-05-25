@@ -12,6 +12,8 @@ import java.util.List;
 
 public interface SpecialMethodUtil {
 
+    String methodID();
+
     void dispatchCommand(String command);
 
     void dispatchCommand(Player player, String command);
@@ -39,4 +41,10 @@ public interface SpecialMethodUtil {
     Inventory createNewInv(Player player, int size, String text);
 
     String legacyParse(String text);
+
+    String getItemName(ItemMeta meta);
+
+    String getItemItemName(ItemMeta meta);
+
+    List<String> getItemLore(ItemMeta meta);
 }

@@ -6,6 +6,7 @@ import cn.superiormc.ultimateshop.hooks.items.*;
 import cn.superiormc.ultimateshop.hooks.protection.*;
 import cn.superiormc.ultimateshop.papi.PlaceholderAPIExpansion;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
+import cn.superiormc.ultimateshop.utils.TextUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -35,13 +36,13 @@ public class HookManager {
     private void initNormalHook() {
         if (CommonUtil.checkPluginLoad("PlaceholderAPI")) {
             PlaceholderAPIExpansion.papi = new PlaceholderAPIExpansion(UltimateShop.instance);
-            Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §fHooking into PlaceholderAPI...");
+            UltimateShop.methodUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fHooking into PlaceholderAPI...");
             if (PlaceholderAPIExpansion.papi.register()){
-                Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §fFinished hook!");
+                UltimateShop.methodUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fFinished hook!");
             }
         }
         if (!UltimateShop.freeVersion && CommonUtil.getClass("org.geysermc.floodgate.api.FloodgateApi")) {
-            Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §fHooking into Floodgate...");
+            UltimateShop.methodUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fHooking into Floodgate...");
             UltimateShop.useGeyser = true;
         }
     }
@@ -151,7 +152,7 @@ public class HookManager {
     public void registerNewEconomyHook(String pluginName,
                                        AbstractEconomyHook economyHook) {
         if (!economyHooks.containsKey(pluginName)) {
-            Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §fHooking into " + pluginName + "...");
+            UltimateShop.methodUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fHooking into " + pluginName + "...");
             economyHooks.put(pluginName, economyHook);
         }
     }
@@ -159,7 +160,7 @@ public class HookManager {
     public void registerNewItemHook(String pluginName,
                                     AbstractItemHook itemHook) {
         if (!itemHooks.containsKey(pluginName)) {
-            Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §fHooking into " + pluginName + "...");
+            UltimateShop.methodUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fHooking into " + pluginName + "...");
             itemHooks.put(pluginName, itemHook);
         }
     }
@@ -167,14 +168,14 @@ public class HookManager {
     public void registerNewProtectionHook(String pluginName,
                                           AbstractProtectionHook protectionHook) {
         if (!protectionHooks.containsKey(pluginName)) {
-            Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §fHooking into " + pluginName + "...");
+            UltimateShop.methodUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fHooking into " + pluginName + "...");
             protectionHooks.put(pluginName, protectionHook);
         }
     }
 
     public double getEconomyAmount(Player player, String pluginName, String currencyID) {
         if (!economyHooks.containsKey(pluginName)) {
-            ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Can not hook into "
+            ErrorManager.errorManager.sendErrorMessage("§cError: Can not hook into "
                     + pluginName + " plugin, maybe we do not support this plugin, or your server didn't correctly load " +
                     "this plugin!");
             return 0;
@@ -194,7 +195,7 @@ public class HookManager {
         else if (vanillaType.equals("levels")) {
             return player.getLevel();
         }
-        ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: You set economy type to "
+        ErrorManager.errorManager.sendErrorMessage("§cError: You set economy type to "
                 + vanillaType + " in shop config, however for now UltimateShop does not support it!");
         return 0;
     }
@@ -208,7 +209,7 @@ public class HookManager {
             return false;
         }
         if (!economyHooks.containsKey(pluginName)) {
-            ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Can not hook into "
+            ErrorManager.errorManager.sendErrorMessage("§cError: Can not hook into "
                     + pluginName + " plugin, maybe we do not support this plugin, or your server didn't correctly load " +
                     "this plugin!");
             return false;
@@ -240,14 +241,14 @@ public class HookManager {
             }
             return false;
         }
-        ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: You set economy type to "
+        ErrorManager.errorManager.sendErrorMessage("§cError: You set economy type to "
                 + vanillaType + " in shop config, however for now UltimateShop does not support it!");
         return false;
     }
 
     public ItemStack getHookItem(Player player, String pluginName, String itemID) {
         if (!itemHooks.containsKey(pluginName)) {
-            ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Can not hook into "
+            ErrorManager.errorManager.sendErrorMessage("§cError: Can not hook into "
                     + pluginName + " plugin, maybe we do not support this plugin, or your server didn't correctly load " +
                     "this plugin!");
             return null;
@@ -258,7 +259,7 @@ public class HookManager {
 
     public void giveEconomy(String pluginName, String currencyName, Player player, double value) {
         if (!economyHooks.containsKey(pluginName)) {
-            ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Can not hook into "
+            ErrorManager.errorManager.sendErrorMessage("§cError: Can not hook into "
                     + pluginName + " plugin, maybe we do not support this plugin, or your server didn't correctly load " +
                     "this plugin!");
             return;
@@ -279,13 +280,13 @@ public class HookManager {
             player.giveExpLevels(value);
             return;
         }
-        ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: You set economy type to "
+        ErrorManager.errorManager.sendErrorMessage("§cError: You set economy type to "
                 + vanillaType + " in shop config, however for now UltimateShop does not support it!");
     }
 
     public void takeEconomy(String pluginName, String currencyName, Player player, double value) {
         if (!economyHooks.containsKey(pluginName)) {
-            ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Can not hook into "
+            ErrorManager.errorManager.sendErrorMessage("§cError: Can not hook into "
                     + pluginName + " plugin, maybe we do not support this plugin, or your server didn't correctly load " +
                     "this plugin!");
             return;
@@ -302,7 +303,7 @@ public class HookManager {
             return null;
         }
         if (!itemHooks.containsKey(pluginName)) {
-            ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Can not hook into "
+            ErrorManager.errorManager.sendErrorMessage("§cError: Can not hook into "
                     + pluginName + " plugin, maybe we do not support this plugin, or your server didn't correctly load " +
                     "this plugin!");
             return null;

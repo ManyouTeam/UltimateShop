@@ -65,7 +65,7 @@ public class ConfigManager {
                 String substring = fileName.substring(0, fileName.length() - 4);
                 shopConfigs.put(substring,
                         new ObjectShop(substring, YamlConfiguration.loadConfiguration(file)));
-                Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §fLoaded shop: " + fileName + "!");
+                UltimateShop.methodUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fLoaded shop: " + fileName + "!");
             }
         }
     }

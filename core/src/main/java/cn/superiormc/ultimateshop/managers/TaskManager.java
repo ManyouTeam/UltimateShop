@@ -1,7 +1,9 @@
 package cn.superiormc.ultimateshop.managers;
 
+import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.cache.ServerCache;
 import cn.superiormc.ultimateshop.utils.SchedulerUtil;
+import cn.superiormc.ultimateshop.utils.TextUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -21,8 +23,8 @@ public class TaskManager {
     public void initSaveTasks() {
         saveTask = SchedulerUtil.runTaskTimer(() -> {
             if (!ConfigManager.configManager.getBoolean("auto-save.hide-message")) {
-                Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §fAuto saving data...");
-                Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §fIf this lead to server TPS drop, " +
+                UltimateShop.methodUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fAuto saving data...");
+                UltimateShop.methodUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fIf this lead to server TPS drop, " +
                         "you should consider disable auto save feature at config.yml!");
             }
             ServerCache.serverCache.shutServerCache(false);

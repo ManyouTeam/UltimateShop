@@ -85,11 +85,6 @@ public class ShopGUI extends InvGUI {
             }
         }
         menuButtons = shopMenu.getMenu();
-        if (ConfigManager.configManager.getBoolean("debug")) {
-            for (Integer i : menuButtons.keySet()) {
-                Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §fMenu Buttons: " + menuButtons.get(i));
-            }
-        }
         menuItems = getMenuItems(player);
         if (Objects.isNull(inv)) {
             if (shop.getShopMenuObject() != null) {

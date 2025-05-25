@@ -250,7 +250,7 @@ public class CommonUtil {
             writer.write(textToAppend);
             writer.newLine();
         } catch (IOException e) {
-            ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Can not write log file: " + filePath);
+            ErrorManager.errorManager.sendErrorMessage("§cError: Can not write log file: " + filePath);
         }
     }
 

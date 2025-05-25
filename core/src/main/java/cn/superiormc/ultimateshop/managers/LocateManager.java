@@ -3,6 +3,7 @@ package cn.superiormc.ultimateshop.managers;
 import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
 import cn.superiormc.ultimateshop.utils.ItemUtil;
+import cn.superiormc.ultimateshop.utils.TextUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.inventory.ItemStack;
 import org.json.JSONArray;
@@ -48,7 +49,7 @@ public class LocateManager {
         if (!InitManager.initManager.isFirstLoad() && !ConfigManager.configManager.getBoolean("config-files.minecraft-locate-file.generate-new-one")) {
             return;
         }
-        Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §fDownloading Minecraft locate file, this will cost some time...");
+        UltimateShop.methodUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fDownloading Minecraft locate file, this will cost some time...");
         String MINECRAFT_VERSION = "1." + UltimateShop.majorVersion + "." + UltimateShop.minorVersion;
         if (MINECRAFT_VERSION.endsWith(".0")) {
             MINECRAFT_VERSION = MINECRAFT_VERSION.substring(0, MINECRAFT_VERSION.length() -2);
@@ -71,7 +72,7 @@ public class LocateManager {
             }
 
             if (targetVersion == null) {
-                ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Failed to download Minecraft locate file. Reason: Can not get your Minecraft version!");
+                ErrorManager.errorManager.sendErrorMessage("§cError: Failed to download Minecraft locate file. Reason: Can not get your Minecraft version!");
                 return;
             }
 
@@ -83,7 +84,7 @@ public class LocateManager {
 
             JSONObject objects = assetIndex.getJSONObject("objects");
             if (!objects.has("minecraft/lang/" + languageFileName)) {
-                ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Failed to download Minecraft locate file. Reason: Can not find locate file: " + languageFileName + "!");
+                ErrorManager.errorManager.sendErrorMessage("§cError: Failed to download Minecraft locate file. Reason: Can not find locate file: " + languageFileName + "!");
                 return;
             }
 
@@ -105,7 +106,7 @@ public class LocateManager {
                 }
             }
         } catch (Throwable throwable) {
-            ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Failed to download Minecraft locate file. Reason: Internet problem!");
+            ErrorManager.errorManager.sendErrorMessage("§cError: Failed to download Minecraft locate file. Reason: Internet problem!");
             throwable.fillInStackTrace();
         }
     }
@@ -117,9 +118,9 @@ public class LocateManager {
             this.fileContent = new JSONObject(new JSONTokener(fis));
             fis.close();
         } catch (FileNotFoundException e) {
-            ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Failed to load Minecraft locate file. Reason: Can not find locate file: " + languageFileName + "!");
+            ErrorManager.errorManager.sendErrorMessage("§cError: Failed to load Minecraft locate file. Reason: Can not find locate file: " + languageFileName + "!");
         } catch (Throwable throwable) {
-            ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Failed to load Minecraft locate file. Reason: " + throwable.getMessage() + "!");
+            ErrorManager.errorManager.sendErrorMessage("§cError: Failed to load Minecraft locate file. Reason: " + throwable.getMessage() + "!");
             throwable.fillInStackTrace();
         }
 

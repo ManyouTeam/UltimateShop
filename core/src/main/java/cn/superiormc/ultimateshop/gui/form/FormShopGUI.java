@@ -1,5 +1,6 @@
 package cn.superiormc.ultimateshop.gui.form;
 
+import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.cache.PlayerCache;
 import cn.superiormc.ultimateshop.cache.ServerCache;
 import cn.superiormc.ultimateshop.gui.FormGUI;
@@ -86,11 +87,6 @@ public class FormShopGUI extends FormGUI {
             }
         }
         menuButtons = shop.getShopMenuObject().getMenu();
-        if (ConfigManager.configManager.getBoolean("debug")) {
-            for (Integer i : menuButtons.keySet()) {
-                Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §fMenu Buttons: " + menuButtons.get(i));
-            }
-        }
         SimpleForm.Builder tempVal5 = SimpleForm.builder();
         Map<Integer, AbstractButton> tempVal8 = new LinkedHashMap<>();
         Map<Integer, AbstractButton> tempVal7 = new LinkedHashMap<>();

@@ -13,6 +13,7 @@ import cn.superiormc.ultimateshop.objects.items.ObjectAction;
 import cn.superiormc.ultimateshop.objects.items.ObjectCondition;
 import cn.superiormc.ultimateshop.utils.CommandUtil;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
+import cn.superiormc.ultimateshop.utils.TextUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.BukkitCommand;
@@ -89,11 +90,11 @@ public class ObjectMenu {
         }
         File file = new File(UltimateShop.instance.getDataFolder() + "/menus/" + fileName + ".yml");
         if (!file.exists()){
-            Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: We can not found your menu file: " +
+            UltimateShop.methodUtil.sendMessage(null, TextUtil.pluginPrefix() + " §cError: We can not found your menu file: " +
                     fileName + ".yml!");
         } else {
             if (type == MenuType.Common) {
-                Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §fLoaded menu: " + fileName + ".yml!");
+                UltimateShop.methodUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fLoaded menu: " + fileName + ".yml!");
             }
             this.menuConfigs = YamlConfiguration.loadConfiguration(file);
         }
@@ -189,7 +190,7 @@ public class ObjectMenu {
             };
             command.setDescription(menu.getString("custom-command.description", "UltimateShop Custom Command for " + commandName));
             CommandUtil.registerCustomCommand(command);
-            Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §fRegistered custom command for menu: " + fileName + ".");
+            UltimateShop.methodUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fRegistered custom command for menu: " + fileName + ".");
         }
     }
 

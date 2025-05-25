@@ -34,7 +34,7 @@ public class ObjectButton extends AbstractButton {
         super(config);
         this.type = ButtonType.COMMON;
         if (config == null) {
-            ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: " +
+            ErrorManager.errorManager.sendErrorMessage("§cError: " +
                     "Can not found config for button, there is something wrong in your menu configs!");
             return;
         }
@@ -46,7 +46,7 @@ public class ObjectButton extends AbstractButton {
         this.type = ButtonType.COMMON;
         this.shop = shop;
         if (config == null) {
-            ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: " +
+            ErrorManager.errorManager.sendErrorMessage("§cError: " +
                     "Can not found config for button, there is something wrong in your menu configs!");
             return;
         }

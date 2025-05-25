@@ -15,8 +15,7 @@ public class EconomyCoinsEngineHook extends AbstractEconomyHook {
     public double getEconomy(Player player, String currencyID) {
         Currency currency = CoinsEngineAPI.getCurrency(currencyID);
         if (currency == null) {
-            ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cCan not find currency " +
-                    currencyID + " in CoinsEngine plugin!");
+            ErrorManager.errorManager.sendErrorMessage("§cCan not find currency " + currencyID + " in CoinsEngine plugin!");
             return 0;
         }
         return CoinsEngineAPI.getBalance(player, currency);
@@ -26,8 +25,7 @@ public class EconomyCoinsEngineHook extends AbstractEconomyHook {
     public void takeEconomy(Player player, double value, String currencyID) {
         Currency currency = CoinsEngineAPI.getCurrency(currencyID);
         if (currency == null) {
-            ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cCan not find currency " +
-                    currencyID + " in CoinsEngine plugin!");
+            ErrorManager.errorManager.sendErrorMessage("§cCan not find currency " + currencyID + " in CoinsEngine plugin!");
             return;
         }
         CoinsEngineAPI.removeBalance(player, currency, value);
@@ -37,8 +35,7 @@ public class EconomyCoinsEngineHook extends AbstractEconomyHook {
     public void giveEconomy(Player player, double value, String currencyID) {
         Currency currency = CoinsEngineAPI.getCurrency(currencyID);
         if (currency == null) {
-            ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cCan not find currency " +
-                    currencyID + " in CoinsEngine plugin!");
+            ErrorManager.errorManager.sendErrorMessage("§cCan not find currency " + currencyID + " in CoinsEngine plugin!");
             return;
         }
         CoinsEngineAPI.addBalance(player, currency, value);

@@ -1,6 +1,7 @@
 package cn.superiormc.ultimateshop.managers;
 
 import cn.superiormc.ultimateshop.UltimateShop;
+import cn.superiormc.ultimateshop.utils.TextUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -18,7 +19,7 @@ public class ErrorManager {
 
     public void sendErrorMessage(String message){
         if (!getError || !message.equals(lastErrorMessage)) {
-            Bukkit.getConsoleSender().sendMessage(message);
+            UltimateShop.methodUtil.sendMessage(null, TextUtil.pluginPrefix() + " " + message);
             lastErrorMessage = message;
             getError = true;
             try {

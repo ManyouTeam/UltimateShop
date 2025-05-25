@@ -1,7 +1,6 @@
 package cn.superiormc.ultimateshop.methods.Items;
 
 import cn.superiormc.ultimateshop.UltimateShop;
-import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.ErrorManager;
 import cn.superiormc.ultimateshop.managers.HookManager;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
@@ -57,27 +56,19 @@ public class DebuildItem {
 
         // Custom Name
         if (meta.hasDisplayName()) {
-            if (UltimateShop.isPaper && ConfigManager.configManager.getBoolean("paper-api.use-component.item")) {
-                section.set("name", meta.displayName());
-            } else {
-                section.set("name", meta.getDisplayName());
-            }
+            section.set("name", UltimateShop.methodUtil.getItemName(meta));
         }
 
         // Item Name
         if (CommonUtil.getMinorVersion(20, 5)) {
             if (meta.hasItemName()) {
-                section.set("item-name", meta.getItemName());
+                section.set("item-name", UltimateShop.methodUtil.getItemItemName(meta));
             }
         }
 
         // Lore
         if (meta.hasLore()) {
-            if (UltimateShop.isPaper && ConfigManager.configManager.getBoolean("paper-api.use-component.item")) {
-                section.set("lore", meta.lore());
-            } else {
-                section.set("lore", meta.getLore());
-            }
+            section.set("lore", UltimateShop.methodUtil.getItemLore(meta));
         }
 
         // Custom Model Data

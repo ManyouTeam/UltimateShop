@@ -1,6 +1,7 @@
 package cn.superiormc.ultimateshop.managers;
 
 import cn.superiormc.ultimateshop.UltimateShop;
+import cn.superiormc.ultimateshop.utils.TextUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -33,7 +34,7 @@ public class LanguageManager {
         if (!file.exists()){
             this.file = new File(UltimateShop.instance.getDataFolder(), "message.yml");
             if (!file.exists()) {
-                Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §cWe can not found your message file, " +
+                UltimateShop.methodUtil.sendMessage(null, TextUtil.pluginPrefix() + " §cWe can not found your message file, " +
                         "please try restart your server!");
             }
         }
@@ -70,11 +71,11 @@ public class LanguageManager {
         String text = this.messageFile.getString(args[0]);
         if (text == null) {
             if (this.tempMessageFile.getString(args[0]) == null) {
-                Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §cCan not found language key: " + args[0] + "!");
+                UltimateShop.methodUtil.sendMessage(null, TextUtil.pluginPrefix() + " §cCan not found language key: " + args[0] + "!");
                 return;
             }
             else {
-                Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §cUpdated your language file, added " +
+                UltimateShop.methodUtil.sendMessage(null, TextUtil.pluginPrefix() + " §cUpdated your language file, added " +
                         "new language key and it's default value: " + args[0] + "!");
                 text = this.tempMessageFile.getString(args[0]);
                 messageFile.set(args[0], text);
@@ -103,10 +104,10 @@ public class LanguageManager {
         String text = this.messageFile.getString(args[0]);
         if (text == null) {
             if (this.tempMessageFile.getString(args[0]) == null) {
-                player.sendMessage("§x§9§8§F§B§9§8[UltimateShop] §cCan not found language key: " + args[0] + "!");
+                player.sendMessage(TextUtil.pluginPrefix() + " §cCan not found language key: " + args[0] + "!");
                 return;
             } else {
-                Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §cUpdated your language file, added " +
+                UltimateShop.methodUtil.sendMessage(null, TextUtil.pluginPrefix() + " §cUpdated your language file, added " +
                         "new language key and it's default value: " + args[0] + "!");
                 text = this.tempMessageFile.getString(args[0]);
                 messageFile.set(args[0], text);
@@ -136,7 +137,7 @@ public class LanguageManager {
             if (this.tempMessageFile.getString(path) == null) {
                 return "§cCan not found language key: " + path + "!";
             }
-            Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §cUpdated your language file, added " +
+            UltimateShop.methodUtil.sendMessage(null, TextUtil.pluginPrefix() + " §cUpdated your language file, added " +
                     "new language key and it's default value: " + path + "!");
             messageFile.set(path, this.tempMessageFile.getString(path));
             try {
@@ -156,7 +157,7 @@ public class LanguageManager {
                 tempVal1.add("§cCan not found language key: " + path + "!");
                 return tempVal1;
             }
-            Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §cUpdated your language file, added " +
+            UltimateShop.methodUtil.sendMessage(null, TextUtil.pluginPrefix() + " §cUpdated your language file, added " +
                     "new language key and it's default value: " + path + "!");
             messageFile.set(path, this.tempMessageFile.getStringList(path));
             try {

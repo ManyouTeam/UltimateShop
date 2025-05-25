@@ -1,7 +1,6 @@
 package cn.superiormc.ultimateshop.spigot;
 
 import cn.superiormc.ultimateshop.UltimateShop;
-import cn.superiormc.ultimateshop.libs.easyplugin.ColorParser;
 import cn.superiormc.ultimateshop.managers.ErrorManager;
 import cn.superiormc.ultimateshop.utils.SpecialMethodUtil;
 import cn.superiormc.ultimateshop.utils.TextUtil;
@@ -11,7 +10,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
-import org.bukkit.event.block.Action;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -24,6 +22,11 @@ import java.util.List;
 import java.util.UUID;
 
 public class SpigotMethodUtil implements SpecialMethodUtil {
+
+    @Override
+    public String methodID() {
+        return "spigot";
+    }
 
     @Override
     public void dispatchCommand(String command) {
@@ -152,6 +155,21 @@ public class SpigotMethodUtil implements SpecialMethodUtil {
     public String legacyParse(String text) {
         if (text == null)
             return "";
-        return ColorParser.parse(text);
+        return TextUtil.colorize(text);
+    }
+
+    @Override
+    public String getItemName(ItemMeta meta) {
+        return meta.getDisplayName();
+    }
+
+    @Override
+    public String getItemItemName(ItemMeta meta) {
+        return meta.getItemName();
+    }
+
+    @Override
+    public List<String> getItemLore(ItemMeta meta) {
+        return meta.getLore();
     }
 }

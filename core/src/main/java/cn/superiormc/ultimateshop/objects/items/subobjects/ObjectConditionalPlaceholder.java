@@ -36,7 +36,7 @@ public class ObjectConditionalPlaceholder {
         } else {
             this.mode = ConditionalPlaceholderType.MIN;
         }
-        Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[UltimateShop] §fLoaded conditional placeholder: " + id + ".yml!");
+        UltimateShop.methodUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fLoaded conditional placeholder: " + id + ".yml!");
     }
 
     public String getID() {

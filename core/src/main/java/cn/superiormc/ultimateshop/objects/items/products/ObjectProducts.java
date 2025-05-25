@@ -7,6 +7,7 @@ import cn.superiormc.ultimateshop.objects.items.AbstractThings;
 import cn.superiormc.ultimateshop.objects.items.GiveResult;
 import cn.superiormc.ultimateshop.objects.items.TakeResult;
 import cn.superiormc.ultimateshop.utils.RandomUtil;
+import cn.superiormc.ultimateshop.utils.TextUtil;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -29,7 +30,7 @@ public class ObjectProducts extends AbstractThings {
     public void initSingleProducts() {
         for (String s : section.getKeys(false)) {
             if (section.getConfigurationSection(s) == null) {
-                ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Can not get products section in your shop config!!");
+                ErrorManager.errorManager.sendErrorMessage("§cError: Can not get products section in your shop config!!");
                 singleProducts.add(new ObjectSingleProduct());
             }
             else {
@@ -76,7 +77,7 @@ public class ObjectProducts extends AbstractThings {
                 }
                 return resultObject;
             default:
-                ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Can not get price-mode section in your shop config!!");
+                ErrorManager.errorManager.sendErrorMessage("§cError: Can not get price-mode section in your shop config!!");
                 return resultObject;
         }
     }
@@ -124,7 +125,7 @@ public class ObjectProducts extends AbstractThings {
                 }
                 return resultObject;
             default:
-                ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Can not get price-mode section in your shop config!!");
+                ErrorManager.errorManager.sendErrorMessage("§cError: Can not get price-mode section in your shop config!!");
                 return resultObject;
         }
     }
@@ -183,7 +184,7 @@ public class ObjectProducts extends AbstractThings {
                 }
                 return maxAmount;
             default:
-                ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: Can not get price-mode section in your shop config!!");
+                ErrorManager.errorManager.sendErrorMessage("§cError: Can not get price-mode section in your shop config!!");
                 return 0;
         }
     }

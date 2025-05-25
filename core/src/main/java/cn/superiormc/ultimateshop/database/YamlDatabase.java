@@ -38,7 +38,7 @@ public class YamlDatabase {
                     }
                     config.save(file);
                 } catch (IOException e) {
-                    ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: " +
+                    ErrorManager.errorManager.sendErrorMessage("§cError: " +
                             "Can not create new data file: " + cache.player.getUniqueId() + ".yml!");
                 }
             }
@@ -55,7 +55,7 @@ public class YamlDatabase {
                     }
                     config.save(file);
                 } catch (IOException e) {
-                    ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: " +
+                    ErrorManager.errorManager.sendErrorMessage("§cError: " +
                             "Can not create new data file: global.yml!");
                 }
             }
@@ -198,8 +198,7 @@ public class YamlDatabase {
             }
             config.save(file);
         } catch (IOException e) {
-            ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cError: " +
-                    "Can not save data file: " + file.getName() + "!");
+            ErrorManager.errorManager.sendErrorMessage("§cError: Can not save data file: " + file.getName() + "!");
         }
     }
 

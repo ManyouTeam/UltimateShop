@@ -15,7 +15,7 @@ public class EconomyRoyaleEconomyHook extends AbstractEconomyHook {
     public double getEconomy(Player player, String currencyID) {
         Currency reCurrency = MultiCurrencyHandler.findCurrencyById(currencyID);
         if (reCurrency == null) {
-            ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cCan not find currency " +
+            ErrorManager.errorManager.sendErrorMessage("§cCan not find currency " +
                     currencyID + " in RoyaleEconomy plugin!");
             return 0;
         }
@@ -26,7 +26,7 @@ public class EconomyRoyaleEconomyHook extends AbstractEconomyHook {
     public void takeEconomy(Player player, double value, String currencyID) {
         Currency reCurrency = MultiCurrencyHandler.findCurrencyById(currencyID);
         if (reCurrency == null) {
-            ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cCan not find currency " +
+            ErrorManager.errorManager.sendErrorMessage("§cCan not find currency " +
                     currencyID + " in RoyaleEconomy plugin!");
             return;
         }
@@ -37,7 +37,7 @@ public class EconomyRoyaleEconomyHook extends AbstractEconomyHook {
     public void giveEconomy(Player player, double value, String currencyID) {
         Currency reCurrency = MultiCurrencyHandler.findCurrencyById(currencyID);
         if (reCurrency == null) {
-            ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[UltimateShop] §cCan not find currency " +
+            ErrorManager.errorManager.sendErrorMessage("§cCan not find currency " +
                     currencyID + " in RoyaleEconomy plugin!");
             return;
         }
