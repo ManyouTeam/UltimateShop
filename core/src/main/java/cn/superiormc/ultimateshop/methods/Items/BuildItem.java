@@ -890,6 +890,12 @@ public class BuildItem {
 
         item.setItemMeta(meta);
 
+        // Paper Component Data
+        ConfigurationSection componentKey = section.getConfigurationSection("component");
+        if (componentKey != null) {
+            item = UltimateShop.methodUtil.editItemStack(item, player, componentKey, -1, args);
+        }
+
         // Plugin Enchantments
         ConfigurationSection pluginEnchantsKey = section.getConfigurationSection("plugin-enchants");
         if (!UltimateShop.freeVersion && pluginEnchantsKey != null && CommonUtil.checkPluginLoad("AdvancedEnchantments")) {
@@ -900,6 +906,9 @@ public class BuildItem {
 
         // NBT API
         ConfigurationSection nbtSection = section.getConfigurationSection("nbt");
+        if (nbtSection == null && componentKey != null) {
+            nbtSection = componentKey.getConfigurationSection("custom-data");
+        }
         if (!UltimateShop.freeVersion && nbtSection != null && CommonUtil.checkPluginLoad("NBTAPI")) {
             for (String nbtType : nbtSection.getKeys(false)) {
                 ConfigurationSection nbtTypeSection = nbtSection.getConfigurationSection(nbtType);

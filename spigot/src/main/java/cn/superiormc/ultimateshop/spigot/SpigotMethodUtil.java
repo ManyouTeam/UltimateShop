@@ -8,6 +8,7 @@ import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -171,5 +172,10 @@ public class SpigotMethodUtil implements SpecialMethodUtil {
     @Override
     public List<String> getItemLore(ItemMeta meta) {
         return meta.getLore();
+    }
+
+    @Override
+    public ItemStack editItemStack(ItemStack item, Player player, ConfigurationSection section, int amount, String... args) {
+        return item;
     }
 }

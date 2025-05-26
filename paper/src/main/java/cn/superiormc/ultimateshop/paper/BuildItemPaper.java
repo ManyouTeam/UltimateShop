@@ -1,12 +1,7 @@
 package cn.superiormc.ultimateshop.paper;
 
-import cn.superiormc.mythicchanger.manager.ChangesManager;
-import cn.superiormc.mythicchanger.objects.ObjectAction;
 import cn.superiormc.ultimateshop.UltimateShop;
-import cn.superiormc.ultimateshop.managers.HookManager;
-import cn.superiormc.ultimateshop.managers.ItemManager;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
-import cn.superiormc.ultimateshop.utils.NBTUtil;
 import cn.superiormc.ultimateshop.paper.utils.PaperTextUtil;
 import cn.superiormc.ultimateshop.utils.TextUtil;
 import com.destroystokyo.paper.profile.PlayerProfile;
@@ -24,7 +19,6 @@ import io.papermc.paper.registry.TypedKey;
 import io.papermc.paper.registry.set.RegistryKeySet;
 import io.papermc.paper.registry.set.RegistrySet;
 import io.papermc.paper.registry.tag.TagKey;
-import net.advancedplugins.ae.api.AEAPI;
 import net.kyori.adventure.util.TriState;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
@@ -68,34 +62,6 @@ public class BuildItemPaper {
                                           int amount,
                                           String... args) {
 
-        // Material
-        String materialKey = section.getString("material");
-        if (materialKey != null) {
-            Material material = Material.getMaterial(materialKey.toUpperCase());
-            if (material != null) {
-                item = item.withType(material);
-            } else {
-                ItemStack savedItem = ItemManager.itemManager.getItemByKey(section.getString("material"));
-                if (savedItem != null) {
-                    item = savedItem;
-                }
-            }
-        } else {
-            String pluginName = section.getString("hook-plugin");
-            String itemID = section.getString("hook-item");
-            if (pluginName != null && itemID != null) {
-                if (pluginName.equals("MMOItems") && !itemID.contains(";;")) {
-                    itemID = section.getString("hook-item-type") + ";;" + itemID;
-                } else if (pluginName.equals("EcoArmor") && !itemID.contains(";;")) {
-                    itemID = itemID + ";;" + section.getString("hook-item-type");
-                }
-                ItemStack hookItem = HookManager.hookManager.getHookItem(player, pluginName, itemID);
-                if (hookItem != null) {
-                    item = hookItem;
-                }
-            }
-        }
-
         // Amount
         if (amount > 0) {
             item.setAmount(amount);
@@ -126,13 +92,7 @@ public class BuildItemPaper {
             item.setData(DataComponentTypes.LORE, builder.build());
         }
 
-        // Custom Model Data
-        int customModelDataKey = section.getInt("custom-model-data", section.getInt("cmd", -1));
-        if (customModelDataKey > 0) {
-            item.setData(DataComponentTypes.CUSTOM_MODEL_DATA, CustomModelData.customModelData().addFloat((float) customModelDataKey).build());
-        }
-
-        // Custom Model Data Modern
+        // Custom Model Data Model
         ConfigurationSection customModelDataSection = section.getConfigurationSection("custom-model-data");
         if (customModelDataSection != null) {
             CustomModelData.Builder builder = CustomModelData.customModelData();
@@ -199,8 +159,12 @@ public class BuildItemPaper {
                 }
                 int i = 0;
                 for (String singleMaterial : ruleParseResult) {
-                    TypedKey<BlockType> key = TypedKey.create(RegistryKey.BLOCK, singleMaterial);
+                    TypedKey<BlockType> key = RegistryKey.BLOCK.typedKey(singleMaterial);
+                    if (Registry.BLOCK.get(key) == null) {
+                        break;
+                    }
                     blockTypeKeys.add(key);
+                    i ++;
                 }
                 RegistryKeySet<@org.jetbrains.annotations.NotNull BlockType> blockTypes = RegistrySet.keySet(RegistryKey.BLOCK, blockTypeKeys);
                 Tool.Rule rule = Tool.rule(blockTypes, Float.parseFloat(ruleParseResult[i]), TriState.byBoolean(Boolean.parseBoolean(ruleParseResult[i + 1])));
@@ -234,7 +198,7 @@ public class BuildItemPaper {
         }
 
         // Flag
-        List<String> itemFlagKey = section.getStringList("flags");
+        List<String> itemFlagKey = section.getStringList("hide-tooltip");
         if (!itemFlagKey.isEmpty()) {
             TooltipDisplay.Builder builder = TooltipDisplay.tooltipDisplay();
             for (String flag : itemFlagKey) {
@@ -297,9 +261,8 @@ public class BuildItemPaper {
                                 slot);
                     builder.addModifier(attributeInst, modifier, slot);
                 }
-
-                item.setData(DataComponentTypes.ATTRIBUTE_MODIFIERS, builder.build());
             }
+            item.setData(DataComponentTypes.ATTRIBUTE_MODIFIERS, builder.build());
         }
 
         // Damage
@@ -376,7 +339,7 @@ public class BuildItemPaper {
                 builder.customColor(CommonUtil.parseColor(potionColor));
             }
 
-            String potionName = potionKey.getString("potion-name");
+            String potionName = potionKey.getString("name");
             if (potionName != null) {
                 builder.customName(potionName);
             }
@@ -390,7 +353,7 @@ public class BuildItemPaper {
         }
 
         // Charged Projectiles
-        ConfigurationSection chargedProjectilesKey = section.getConfigurationSection("charged_projectiles");
+        ConfigurationSection chargedProjectilesKey = section.getConfigurationSection("charged-projectiles");
         if (chargedProjectilesKey != null) {
             ChargedProjectiles.Builder builder = ChargedProjectiles.chargedProjectiles();
             for (String key : chargedProjectilesKey.getKeys(false)) {
@@ -424,7 +387,7 @@ public class BuildItemPaper {
         }
 
         // Leather Armor Color
-        String colorKey = section.getString("color");
+        String colorKey = section.getString("leather-color");
         if (colorKey != null) {
             item.setData(DataComponentTypes.DYED_COLOR, DyedItemColor.dyedItemColor(CommonUtil.parseColor(colorKey)));
         }
@@ -539,87 +502,6 @@ public class BuildItemPaper {
             }
             item.setData(DataComponentTypes.BUNDLE_CONTENTS, builder.build());
 
-        }
-
-        // Block
-        ConfigurationSection blockSection = section.getConfigurationSection("block-state");
-        if (blockSection != null) {
-            BlockItemDataProperties blockItemDataProperties = item.getData(DataComponentTypes.BLOCK_DATA);
-            if (blockItemDataProperties != null) {
-                BlockType blockType = item.getType().asBlockType();
-                assert blockType != null;
-                BlockData blockData = blockItemDataProperties.createBlockData(blockType);
-                BlockState state = blockData.createBlockState();
-                if (state instanceof CreatureSpawner) {
-                    CreatureSpawner spawner = (CreatureSpawner) state;
-                    String spawnerKey = section.getString("spawner");
-                    if (spawnerKey != null) {
-                        EntityType entityType = Enums.getIfPresent(EntityType.class, spawnerKey.toUpperCase()).orNull();
-                        if (CommonUtil.getMinorVersion(20, 5) && entityType == EntityType.ITEM) {
-                            spawner.setSpawnedType(EntityType.ITEM);
-                            ConfigurationSection spawnerItemSection = section.getConfigurationSection("content");
-                            if (spawnerItemSection != null) {
-                                spawner.setSpawnedItem(buildItemStack(player, spawnerItemSection,
-                                        spawnerItemSection.getInt("amount")));
-                            }
-                        } else {
-                            spawner.setSpawnedType(entityType);
-                        }
-                    }
-
-                    int spawnerMinDelayKey = section.getInt("min-delay", -1);
-                    if (spawnerMinDelayKey != -1) {
-                        spawner.setMinSpawnDelay(spawnerMinDelayKey);
-                    }
-
-                    int spawnerMaxDelayKey = section.getInt("max-delay", -1);
-                    if (spawnerMaxDelayKey != -1) {
-                        spawner.setMaxSpawnDelay(spawnerMaxDelayKey);
-                    }
-
-                    int spawnerMaxEntities = section.getInt("max-entities", -1);
-                    if (spawnerMaxEntities != -1) {
-                        spawner.setMaxNearbyEntities(spawnerMaxEntities);
-                    }
-
-                    int spawnerPlayerRange = section.getInt("player-range", -1);
-                    if (spawnerPlayerRange != -1) {
-                        spawner.setRequiredPlayerRange(spawnerPlayerRange);
-                    }
-
-                    int spawnerSpawnRange = section.getInt("spawn-range", -1);
-                    if (spawnerSpawnRange != -1) {
-                        spawner.setSpawnRange(spawnerSpawnRange);
-                    }
-
-                    spawner.update(true);
-                    blockItemDataProperties.applyTo(spawner.getBlockData());
-                } else if (state instanceof ShulkerBox) {
-                    ConfigurationSection shulkerContentKey = section.getConfigurationSection("contents");
-                    if (shulkerContentKey != null) {
-                        ShulkerBox box = (ShulkerBox) state;
-                        for (String key : shulkerContentKey.getKeys(false)) {
-                            ConfigurationSection contentItemSection = shulkerContentKey.getConfigurationSection(key);
-                            if (contentItemSection != null) {
-                                box.getInventory().setItem(Integer.parseInt(key), buildItemStack(player,
-                                        contentItemSection,
-                                        contentItemSection.getInt("amount"),
-                                        args));
-                            }
-                        }
-                        box.update(true);
-                        blockItemDataProperties.applyTo(box.getBlockData());
-                    }
-                } else if (CommonUtil.getMajorVersion(20) && state instanceof BrushableBlock) {
-                    BrushableBlock brushableBlock = (BrushableBlock) state;
-                    ConfigurationSection brushableContentKey = section.getConfigurationSection("content");
-                    if (brushableContentKey != null) {
-                        brushableBlock.setItem(buildItemStack(player, brushableContentKey, brushableContentKey.getInt("amount"), args));
-                        blockItemDataProperties.applyTo(brushableBlock.getBlockData());
-                    }
-                }
-                item.setData(DataComponentTypes.BLOCK_DATA, blockItemDataProperties);
-            }
         }
 
         // Ominous Bottle
@@ -785,7 +667,7 @@ public class BuildItemPaper {
                             builder.addEffect(ConsumeEffect.playSoundConsumeEffect(CommonUtil.parseNamespacedKey(consumableKey.getString("play-sound", ""))));
 
                         case "random-teleport":
-                            builder.addEffect(ConsumeEffect.teleportRandomlyEffect((float) consumableKey.getDouble("diameter")));
+                            builder.addEffect(ConsumeEffect.teleportRandomlyEffect((float) consumableKey.getDouble("random-teleport")));
 
                         case "clear-effect":
                             builder.addEffect(ConsumeEffect.clearAllStatusEffects());
@@ -794,33 +676,6 @@ public class BuildItemPaper {
                 }
             }
             item.setData(DataComponentTypes.CONSUMABLE, builder.build());
-        }
-
-        // Plugin Enchantments
-        ConfigurationSection pluginEnchantsKey = section.getConfigurationSection("plugin-enchants");
-        if (!UltimateShop.freeVersion && pluginEnchantsKey != null && CommonUtil.checkPluginLoad("AdvancedEnchantments")) {
-            for (String enchantName : pluginEnchantsKey.getKeys(false)) {
-                item = AEAPI.applyEnchant(enchantName, pluginEnchantsKey.getInt(enchantName), item);
-            }
-        }
-
-        // NBT API
-        ConfigurationSection nbtSection = section.getConfigurationSection("nbt");
-        if (!UltimateShop.freeVersion && nbtSection != null && CommonUtil.checkPluginLoad("NBTAPI")) {
-            for (String nbtType : nbtSection.getKeys(false)) {
-                ConfigurationSection nbtTypeSection = nbtSection.getConfigurationSection(nbtType);
-                if (nbtTypeSection != null) {
-                    for (String nbtName : nbtTypeSection.getKeys(false)) {
-                        item = NBTUtil.addNBT(item, nbtType, nbtName, nbtTypeSection.get(nbtName));
-                    }
-                }
-            }
-        }
-
-        // MythicChanger Changes
-        ConfigurationSection changeSection = section.getConfigurationSection("change-item");
-        if (changeSection != null && CommonUtil.checkPluginLoad("MythicChanger")) {
-            ChangesManager.changesManager.setRealChange(new ObjectAction(), changeSection, item.clone(), item, player);
         }
         return item;
     }

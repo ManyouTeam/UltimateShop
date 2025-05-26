@@ -66,7 +66,6 @@ public class TextUtil {
                 hexMatcher.appendReplacement(hexBuffer, "§x" + toMinecraftHex(hex));
             } else {
                 char legacy = getClosestLegacyColor(hex);
-                Bukkit.getConsoleSender().sendMessage(legacy + "");
                 hexMatcher.appendReplacement(hexBuffer, "§" + legacy);
             }
         }

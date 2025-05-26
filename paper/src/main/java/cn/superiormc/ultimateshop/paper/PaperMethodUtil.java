@@ -4,13 +4,13 @@ import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.paper.utils.PaperTextUtil;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
 import cn.superiormc.ultimateshop.utils.SpecialMethodUtil;
-import cn.superiormc.ultimateshop.utils.TextUtil;
 import com.destroystokyo.paper.profile.PlayerProfile;
 import com.destroystokyo.paper.profile.ProfileProperty;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -187,6 +187,14 @@ public class PaperMethodUtil implements SpecialMethodUtil {
     @Override
     public List<String> getItemLore(ItemMeta meta) {
         return PaperTextUtil.changeToString(meta.lore());
+    }
+
+    @Override
+    public ItemStack editItemStack(ItemStack item, Player player, ConfigurationSection section, int amount, String... args) {
+        if (!CommonUtil.getMinorVersion(21, 5) || UltimateShop.freeVersion) {
+            return item;
+        }
+        return BuildItemPaper.editItemStack(item, player, section, amount, args);
     }
 
 }

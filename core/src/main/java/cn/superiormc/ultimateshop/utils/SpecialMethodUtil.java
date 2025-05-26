@@ -1,6 +1,7 @@
 package cn.superiormc.ultimateshop.utils;
 
 import org.bukkit.Location;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -47,4 +48,10 @@ public interface SpecialMethodUtil {
     String getItemItemName(ItemMeta meta);
 
     List<String> getItemLore(ItemMeta meta);
+
+    ItemStack editItemStack(ItemStack item,
+                            Player player,
+                            ConfigurationSection section,
+                            int amount,
+                            String... args);
 }
