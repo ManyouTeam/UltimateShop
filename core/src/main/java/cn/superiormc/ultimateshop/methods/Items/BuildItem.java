@@ -63,7 +63,7 @@ public class BuildItem {
             if (material != null) {
                 item.setType(material);
             } else {
-                ItemStack savedItem = ItemManager.itemManager.getItemByKey(section.getString("material"));
+                ItemStack savedItem = ItemManager.itemManager.getItemByKey(player, section.getString("material"));
                 if (savedItem != null) {
                     item = savedItem;
                 }
@@ -71,6 +71,7 @@ public class BuildItem {
         } else {
             String pluginName = section.getString("hook-plugin");
             String itemID = section.getString("hook-item");
+            Object itemThing = section.get("item");
             if (pluginName != null && itemID != null) {
                 if (pluginName.equals("MMOItems") && !itemID.contains(";;")) {
                     itemID = section.getString("hook-item-type") + ";;" + itemID;
@@ -81,6 +82,8 @@ public class BuildItem {
                 if (hookItem != null) {
                     item = hookItem;
                 }
+            } else if (itemThing != null) {
+                item = UltimateShop.methodUtil.getItemObject(itemThing);
             }
         }
 

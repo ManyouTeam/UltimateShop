@@ -1,7 +1,11 @@
 package cn.superiormc.ultimateshop.managers;
 
 import cn.superiormc.ultimateshop.UltimateShop;
+import cn.superiormc.ultimateshop.methods.Items.BuildItem;
+import cn.superiormc.ultimateshop.methods.Items.DebuildItem;
 import cn.superiormc.ultimateshop.utils.SchedulerUtil;
+import cn.superiormc.ultimateshop.utils.TextUtil;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -16,7 +20,9 @@ import java.util.Map;
 
 public class ItemManager {
 
-    private static final Map<String, ItemStack> savedItemMap = new HashMap<>();
+    private final Map<String, ItemStack> savedItemMap = new HashMap<>();
+
+    private final Map<String, ConfigurationSection> savedItemFormatMap = new HashMap<>();
 
     public static ItemManager itemManager;
 
@@ -41,7 +47,13 @@ public class ItemManager {
                 String key = file.getName();
                 key = key.substring(0, key.length() - 4);
                 Object object = section.get("item");
-                savedItemMap.put(key, UltimateShop.methodUtil.getItemObject(object));
+                if (section.getKeys(false).size() == 1 && object != null) {
+                    savedItemMap.put(key, UltimateShop.methodUtil.getItemObject(object));
+                    UltimateShop.methodUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fLoaded Bukkit Saved Item: " + key + ".yml!");
+                } else {
+                    savedItemFormatMap.put(key, section);
+                    UltimateShop.methodUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fLoaded ItemFormat Saved Item: " + key + ".yml!");
+                }
             }
         }
     }
@@ -66,14 +78,39 @@ public class ItemManager {
         savedItemMap.put(key, item);
     }
 
-    public ItemStack getItemByKey(String key) {
+    public void saveMainHandItemFormat(Player player, String key) {
+        File dir = new File(UltimateShop.instance.getDataFolder() + "/items");
+        if (!dir.exists()) {
+            dir.mkdir();
+        }
+        YamlConfiguration briefcase = new YamlConfiguration();
+        DebuildItem.debuildItem(player.getInventory().getItemInMainHand(), briefcase);
+        String yaml = briefcase.saveToString();
+        SchedulerUtil.runTaskAsynchronously(() -> {
+            Path path = new File(dir.getPath(), key + ".yml").toPath();
+            try {
+                Files.write(path, yaml.getBytes(StandardCharsets.UTF_8));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+    }
+
+    public ItemStack getItemByKey(Player player, String key) {
         if (savedItemMap.containsKey(key)) {
             return savedItemMap.get(key).clone();
+        }
+        if (savedItemFormatMap.containsKey(key) && player != null) {
+            return BuildItem.buildItemStack(player, savedItemFormatMap.get(key), savedItemFormatMap.get(key).getInt("amount", 1));
         }
         return null;
     }
 
     public Map<String, ItemStack> getSavedItemMap() {
         return savedItemMap;
+    }
+
+    public Map<String, ConfigurationSection> getSavedItemFormatMap() {
+        return savedItemFormatMap;
     }
 }

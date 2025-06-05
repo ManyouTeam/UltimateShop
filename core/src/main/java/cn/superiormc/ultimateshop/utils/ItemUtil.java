@@ -34,8 +34,8 @@ public class ItemUtil {
         if (displayItem.getItemMeta().hasDisplayName()) {
             return UltimateShop.methodUtil.getItemName(displayItem.getItemMeta());
         }
-        if (UltimateShop.methodUtil.methodID().equals("paper")) {
-            return "<translatable:item.minecraft." + displayItem.getType().name().toLowerCase() + ">";
+        if (UltimateShop.methodUtil.methodID().equals("paper") && ConfigManager.configManager.getBoolean("display-item.auto-translate-item-name")) {
+            return "<lang:item.minecraft." + displayItem.getType().name().toLowerCase() + ">";
         }
         StringBuilder result = new StringBuilder();
         for (String word : displayItem.getType().name().toLowerCase().split("_")) {

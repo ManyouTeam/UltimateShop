@@ -75,7 +75,7 @@ public abstract class AbstractSingleThing implements Comparable<AbstractSingleTh
             type = ThingType.HOOK_ECONOMY;
         } else if (section.contains("economy-type") && !section.contains("economy-plugin")) {
             type = ThingType.VANILLA_ECONOMY;
-        } else if (section.contains("material")) {
+        } else if (section.contains("material") || section.contains("item")) {
             type = ThingType.VANILLA_ITEM;
         } else {
             type = ThingType.FREE;
@@ -251,7 +251,7 @@ public abstract class AbstractSingleThing implements Comparable<AbstractSingleTh
             }
             section = singleSection;
         }
-        if (!section.getBoolean("give-item", true) || (!section.contains("material") && !section.contains("hook-item"))) {
+        if (!section.getBoolean("give-item", true) || (!section.contains("material") && !section.contains("item") && !section.contains("hook-item"))) {
             return new GiveItemStack(this);
         }
         int amount = (int) cost;

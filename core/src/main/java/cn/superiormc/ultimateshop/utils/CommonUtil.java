@@ -193,10 +193,13 @@ public class CommonUtil {
 
     public static NamespacedKey parseNamespacedKey(String key) {
         String[] keySplit = key.split(":");
-        if (keySplit.length == 1 || CommonUtil.getMajorVersion(16)) {
+        if (keySplit.length == 1) {
             return NamespacedKey.minecraft(key.toLowerCase());
         }
-        return NamespacedKey.fromString(key);
+        if (CommonUtil.getMajorVersion(16)) {
+            return NamespacedKey.fromString(key);
+        }
+        return new NamespacedKey("ultimateshop", "unknown");
     }
 
     public static Color parseColor(String color) {

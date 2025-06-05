@@ -11,6 +11,7 @@ import cn.superiormc.ultimateshop.objects.buttons.subobjects.ObjectDisplayItemSt
 import cn.superiormc.ultimateshop.objects.caches.ObjectUseTimesCache;
 import cn.superiormc.ultimateshop.objects.items.prices.ObjectPrices;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
+import cn.superiormc.ultimateshop.utils.TextUtil;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -83,6 +84,9 @@ public class ModifyDisplayItem {
         }
         for (String tempVal3 : item.getAddLore()) {
             String tempVal4 = tempVal3;
+            if (bedrock) {
+                tempVal4 = TextUtil.parse(tempVal4);
+            }
             boolean not = false;
             if (tempVal4.endsWith("-b")) {
                 if (bedrock) {

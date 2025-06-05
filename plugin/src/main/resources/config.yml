@@ -157,6 +157,8 @@ log-transaction:
   format: '{player} | {shop} | {buy-or-sell} | {item-name}x{amount} | {price}'
 
 display-item:
+  # Require Paper 1.17.1+ version.
+  auto-translate-item-name: true
   # If set to true, if your product default amount is 10, and you purchase it x64 in one time, we will display 640 as result in amount placeholder.
   calculate-amount: true
   auto-set-first-product: true

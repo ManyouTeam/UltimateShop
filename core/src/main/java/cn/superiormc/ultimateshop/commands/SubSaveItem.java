@@ -13,12 +13,16 @@ public class SubSaveItem extends AbstractCommand {
         this.id = "saveitem";
         this.requiredPermission =  "ultimateshop." + id;
         this.onlyInGame = true;
-        this.requiredArgLength = new Integer[]{2};
+        this.requiredArgLength = new Integer[]{2, 3};
     }
 
     @Override
     public void executeCommandInGame(String[] args, Player player) {
-        ItemManager.itemManager.saveMainHandItem(player, args[1]);
+        if (args.length == 2 || args[args.length - 1].equalsIgnoreCase("bukkit")) {
+            ItemManager.itemManager.saveMainHandItem(player, args[1]);
+        } else if (args[args.length - 1].equalsIgnoreCase("itemformat")) {
+            ItemManager.itemManager.saveMainHandItemFormat(player, args[1]);
+        }
         LanguageManager.languageManager.sendStringText(player, "plugin.saved");
     }
 
@@ -29,6 +33,9 @@ public class SubSaveItem extends AbstractCommand {
             case 2:
                 tempVal1.add(LanguageManager.languageManager.getStringText("command-tab.type-item-id"));
                 break;
+            case 3:
+                tempVal1.add("bukkit");
+                tempVal1.add("itemformat");
         }
         return tempVal1;
     }

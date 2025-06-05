@@ -27,14 +27,14 @@ public class SubGiveSaveItem extends AbstractCommand {
      */
     @Override
     public void executeCommandInGame(String[] args, Player player) {
-        ItemStack item = ItemManager.itemManager.getItemByKey(args[1]);
+        Player target = player;
+        if (args.length > 2) {
+            target = Bukkit.getPlayer(args[2]);
+        }
+        ItemStack item = ItemManager.itemManager.getItemByKey(target, args[1]);
         if (item == null) {
             LanguageManager.languageManager.sendStringText(player, "error.save-item-not-found", "item", args[1]);
             return;
-        }
-        Player target = null;
-        if (args.length > 2) {
-            target = Bukkit.getPlayer(args[2]);
         }
         if (target == null) {
             int amount = 1;
@@ -59,16 +59,16 @@ public class SubGiveSaveItem extends AbstractCommand {
 
     @Override
     public void executeCommandInConsole(String[] args) {
-        ItemStack item = ItemManager.itemManager.getItemByKey(args[1]);
-        if (item == null) {
-            LanguageManager.languageManager.sendStringText("error.save-item-not-found", "item", args[1]);
-            return;
-        }
         if (args.length < 3) {
             LanguageManager.languageManager.sendStringText("error.args");
             return;
         }
         Player target = Bukkit.getPlayer(args[2]);
+        ItemStack item = ItemManager.itemManager.getItemByKey(target, args[1]);
+        if (item == null) {
+            LanguageManager.languageManager.sendStringText("error.save-item-not-found", "item", args[1]);
+            return;
+        }
         if (target == null) {
             LanguageManager.languageManager.sendStringText("error.player-not-found", "player", args[2]);
         } else {
@@ -89,6 +89,7 @@ public class SubGiveSaveItem extends AbstractCommand {
         int length = args.length;
         if (length == 2) {
             tempVal1.addAll(ItemManager.itemManager.getSavedItemMap().keySet());
+            tempVal1.addAll(ItemManager.itemManager.getSavedItemFormatMap().keySet());
         } else if (length == 3) {
             for (Player player : Bukkit.getOnlinePlayers()) {
                 tempVal1.add(player.getName());
