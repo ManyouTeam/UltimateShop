@@ -8,6 +8,7 @@ debug: false
 
 config-files:
   language: en_US
+  force-parse-mini-message: true
   # Premium version only.
   minecraft-locate-file:
     # After enable, we will autoload Minecraft locate file when we need know an item's locate name.

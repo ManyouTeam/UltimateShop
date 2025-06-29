@@ -87,7 +87,7 @@ public class SpigotMethodUtil implements SpecialMethodUtil {
                     mtd.invoke(meta, constroctor.newInstance(profile));
                 } catch (Exception exception) {
                     exception.printStackTrace();
-                    ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[ManyouItems] §cError: Can not parse skull texture in a item!");
+                    ErrorManager.errorManager.sendErrorMessage("§cError: Can not parse skull texture in a item!");
                 }
             } catch (Exception e) {
                 throw new RuntimeException(e);
@@ -101,7 +101,7 @@ public class SpigotMethodUtil implements SpecialMethodUtil {
                 mtd.invoke(meta, profile);
             } catch (Exception exception) {
                 exception.printStackTrace();
-                ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[ManyouItems] §cError: Can not parse skull texture in a item!");
+                ErrorManager.errorManager.sendErrorMessage("§cError: Can not parse skull texture in a item!");
             }
         }
         return meta;

@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/UltimateShop1.iml" filepath="$PROJECT_DIR$/UltimateShop1.iml" />
+      <module fileurl="file://$PROJECT_DIR$/UltimateShop.iml" filepath="$PROJECT_DIR$/UltimateShop.iml" />
       <module fileurl="file://$PROJECT_DIR$/core/core.iml" filepath="$PROJECT_DIR$/core/core.iml" />
       <module fileurl="file://$PROJECT_DIR$/paper/paper.iml" filepath="$PROJECT_DIR$/paper/paper.iml" />
       <module fileurl="file://$PROJECT_DIR$/plugin/plugin.iml" filepath="$PROJECT_DIR$/plugin/plugin.iml" />

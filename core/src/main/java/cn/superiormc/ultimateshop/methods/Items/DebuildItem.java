@@ -375,7 +375,7 @@ public class DebuildItem {
                     }
                 } catch (Exception exception) {
                     exception.printStackTrace();
-                    ErrorManager.errorManager.sendErrorMessage("§x§9§8§F§B§9§8[ManyouItems] §cError: Can not parse skull texture in a item!");
+                    ErrorManager.errorManager.sendErrorMessage("§cError: Can not parse skull texture in a item!");
                 }
             }
         }

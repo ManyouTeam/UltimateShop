@@ -27,17 +27,22 @@ public class SubGiveSaveItem extends AbstractCommand {
      */
     @Override
     public void executeCommandInGame(String[] args, Player player) {
-        Player target = player;
+        boolean giveSelf = false;
+        Player target = null;
         if (args.length > 2) {
             target = Bukkit.getPlayer(args[2]);
+        }
+        if (target == null) {
+            target = player;
+            giveSelf = true;
         }
         ItemStack item = ItemManager.itemManager.getItemByKey(target, args[1]);
         if (item == null) {
             LanguageManager.languageManager.sendStringText(player, "error.save-item-not-found", "item", args[1]);
             return;
         }
-        if (target == null) {
-            int amount = 1;
+        int amount = 1;
+        if (giveSelf) {
             if (args.length == 3) {
                 amount = Integer.parseInt(args[2]);
             }
@@ -46,7 +51,6 @@ public class SubGiveSaveItem extends AbstractCommand {
             LanguageManager.languageManager.sendStringText(player, "give-save-item", "player", player.getName(),
                     "item", args[1], "amount", String.valueOf(amount));
         } else {
-            int amount = 1;
             if (args.length == 4) {
                 amount = Integer.parseInt(args[3]);
             }
@@ -64,14 +68,14 @@ public class SubGiveSaveItem extends AbstractCommand {
             return;
         }
         Player target = Bukkit.getPlayer(args[2]);
-        ItemStack item = ItemManager.itemManager.getItemByKey(target, args[1]);
-        if (item == null) {
-            LanguageManager.languageManager.sendStringText("error.save-item-not-found", "item", args[1]);
-            return;
-        }
         if (target == null) {
             LanguageManager.languageManager.sendStringText("error.player-not-found", "player", args[2]);
         } else {
+            ItemStack item = ItemManager.itemManager.getItemByKey(target, args[1]);
+            if (item == null) {
+                LanguageManager.languageManager.sendStringText("error-save-item-not-found", "item", args[1]);
+                return;
+            }
             int amount = 1;
             if (args.length == 4) {
                 amount = Integer.parseInt(args[3]);

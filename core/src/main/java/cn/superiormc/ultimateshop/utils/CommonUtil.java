@@ -36,8 +36,7 @@ public class CommonUtil {
             return LuckPermsProvider.get().getPlayerAdapter(Player.class).
                     getPermissionData(player).
                     checkPermission(permission).asBoolean();
-        }
-        else {
+        } else {
             return player.hasPermission(permission);
         }
     }
@@ -49,18 +48,6 @@ public class CommonUtil {
     public static boolean getMinorVersion(int majorVersion, int minorVersion) {
         return UltimateShop.majorVersion > majorVersion || (UltimateShop.majorVersion == majorVersion &&
                 UltimateShop.minorVersion >= minorVersion);
-    }
-
-    public static void dispatchCommand(String command) {
-        UltimateShop.methodUtil.dispatchCommand(command);
-    }
-
-    public static void dispatchCommand(Player player, String command) {
-        UltimateShop.methodUtil.dispatchCommand(player, command);
-    }
-
-    public static void dispatchOpCommand(Player player, String command) {
-        UltimateShop.methodUtil.dispatchOpCommand(player, command);
     }
 
     public static void summonMythicMobs(Location location, String mobID, int level) {
@@ -225,6 +212,9 @@ public class CommonUtil {
     }
 
     public static void giveOrDrop(Player player, ItemStack... item) {
+        if (player == null) {
+            return;
+        }
         HashMap<Integer, ItemStack> result = player.getInventory().addItem(item);
         if (!result.isEmpty()) {
             for (int id : result.keySet()) {

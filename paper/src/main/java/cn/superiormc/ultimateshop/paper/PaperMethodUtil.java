@@ -1,9 +1,11 @@
 package cn.superiormc.ultimateshop.paper;
 
 import cn.superiormc.ultimateshop.UltimateShop;
+import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.paper.utils.PaperTextUtil;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
 import cn.superiormc.ultimateshop.utils.SpecialMethodUtil;
+import cn.superiormc.ultimateshop.utils.TextUtil;
 import com.destroystokyo.paper.profile.PlayerProfile;
 import com.destroystokyo.paper.profile.ProfileProperty;
 import net.kyori.adventure.text.Component;
@@ -169,8 +171,12 @@ public class PaperMethodUtil implements SpecialMethodUtil {
 
     @Override
     public String legacyParse(String text) {
-        if (text == null)
+        if (text == null) {
             return "";
+        }
+        if (!ConfigManager.configManager.getBoolean("config-files.force-parse-mini-message")) {
+            return TextUtil.colorize(text);
+        }
         return LegacyComponentSerializer.legacySection().serialize(PaperTextUtil.modernParse(text));
     }
 
