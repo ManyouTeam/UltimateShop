@@ -9,7 +9,6 @@ import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import cn.superiormc.ultimateshop.objects.items.subobjects.ObjectRandomPlaceholder;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
 import cn.superiormc.ultimateshop.utils.TextUtil;
-import org.bukkit.Bukkit;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -18,11 +17,19 @@ public class ObjectUseTimesCache {
 
     private int buyUseTimes;
 
+    private int totalBuyUseTimes;
+
     private int sellUseTimes;
+
+    private int totalSellUseTimes;
 
     private LocalDateTime lastBuyTime = null;
 
     private LocalDateTime lastSellTime = null;
+
+    private LocalDateTime lastResetBuyTime = null;
+
+    private LocalDateTime lastResetSellTime = null;
 
     private LocalDateTime cooldownBuyTime = null;
 
@@ -36,9 +43,13 @@ public class ObjectUseTimesCache {
 
     public ObjectUseTimesCache(ServerCache cache,
                                int buyUseTimes,
+                               int totalBuyUseTimes,
                                int sellUseTimes,
+                               int totalSellUseTimes,
                                String lastBuyTime,
                                String lastSellTime,
+                               String lastResetBuyTime,
+                               String lastResetSellTime,
                                String cooldownBuyTime,
                                String cooldownSellTime,
                                ObjectItem product,
@@ -46,12 +57,20 @@ public class ObjectUseTimesCache {
         this.firstInsert = firstInsert;
         this.cache = cache;
         this.buyUseTimes = buyUseTimes;
+        this.totalBuyUseTimes = totalBuyUseTimes;
         if (lastBuyTime != null) {
             this.lastBuyTime = CommonUtil.stringToTime(lastBuyTime);
         }
         this.sellUseTimes = sellUseTimes;
+        this.totalSellUseTimes = totalSellUseTimes;
         if (lastSellTime != null) {
             this.lastSellTime = CommonUtil.stringToTime(lastSellTime);
+        }
+        if (lastResetBuyTime != null) {
+            this.lastResetBuyTime = CommonUtil.stringToTime(lastResetBuyTime);
+        }
+        if (lastResetSellTime != null) {
+            this.lastResetSellTime = CommonUtil.stringToTime(lastResetSellTime);
         }
         if (cooldownBuyTime != null) {
             if (ConfigManager.configManager.getBoolean("debug")) {
@@ -59,7 +78,6 @@ public class ObjectUseTimesCache {
             }
             this.cooldownBuyTime = CommonUtil.stringToTime(cooldownBuyTime);
         }
-        this.sellUseTimes = sellUseTimes;
         if (cooldownSellTime != null) {
             if (ConfigManager.configManager.getBoolean("debug")) {
                 UltimateShop.methodUtil.sendMessage(null, TextUtil.pluginPrefix() + " §cSet cooldown time to " + product);
@@ -73,18 +91,43 @@ public class ObjectUseTimesCache {
         return buyUseTimes;
     }
 
+    public int getTotalBuyUseTimes() {
+        if (UltimateShop.freeVersion) {
+            return 0;
+        }
+        return totalBuyUseTimes;
+    }
+
     public int getSellUseTimes() {
         return sellUseTimes;
     }
 
-    public void setBuyUseTimes(int i) {
-        setBuyUseTimes(i, false);
+    public int getTotalSellUseTimes() {
+        if (UltimateShop.freeVersion) {
+            return 0;
+        }
+        return totalSellUseTimes;
     }
 
-    public void setBuyUseTimes(int i, boolean notUseBungee) {
+    public void setBuyUseTimes(int i) {
+        setBuyUseTimes(i, false, false);
+    }
+
+    public void setBuyUseTimes(int i, boolean isReset) {
+        setBuyUseTimes(i, false, isReset);
+    }
+
+    public void setBuyUseTimes(int i, boolean notUseBungee, boolean isReset) {
         if (i > Integer.MAX_VALUE - 10000) {
             setSellUseTimes(0);
             setBuyUseTimes(i - sellUseTimes);
+        }
+        if (!isReset) {
+            if (totalBuyUseTimes > Integer.MAX_VALUE - 10000) {
+                totalBuyUseTimes = i;
+            } else {
+                totalBuyUseTimes = totalBuyUseTimes + (i - buyUseTimes);
+            }
         }
         buyUseTimes = i;
         if (!notUseBungee && cache.server && BungeeCordManager.bungeeCordManager != null) {
@@ -97,13 +140,24 @@ public class ObjectUseTimesCache {
     }
 
     public void setSellUseTimes(int i) {
-        setSellUseTimes(i, false);
+        setSellUseTimes(i, false, false);
     }
 
-    public void setSellUseTimes(int i, boolean notUseBungee) {
+    public void setSellUseTimes(int i, boolean isReset) {
+        setSellUseTimes(i, false, isReset);
+    }
+
+    public void setSellUseTimes(int i, boolean notUseBungee, boolean isReset) {
         if (i > Integer.MAX_VALUE - 10000) {
             setBuyUseTimes(0);
             setSellUseTimes(i - buyUseTimes);
+        }
+        if (!isReset) {
+            if (totalSellUseTimes > Integer.MAX_VALUE - 10000) {
+                totalSellUseTimes = i;
+            } else {
+                totalSellUseTimes = totalSellUseTimes + (i - sellUseTimes);
+            }
         }
         sellUseTimes = i;
         if (!notUseBungee && cache.server && BungeeCordManager.bungeeCordManager != null) {
@@ -116,6 +170,13 @@ public class ObjectUseTimesCache {
     }
 
     public void setLastBuyTime(LocalDateTime time) {
+        if (time == null) {
+            if (cooldownBuyTime != null) {
+                lastResetBuyTime = cooldownBuyTime;
+            } else {
+                lastResetBuyTime = LocalDateTime.now();
+            }
+        }
         setLastBuyTime(time, false);
     }
 
@@ -131,6 +192,13 @@ public class ObjectUseTimesCache {
     }
 
     public void setLastSellTime(LocalDateTime time) {
+        if (time == null) {
+            if (cooldownSellTime != null) {
+                lastResetSellTime = cooldownSellTime;
+            } else {
+                lastResetSellTime = LocalDateTime.now();
+            }
+        }
         setLastSellTime(time, false);
     }
 
@@ -192,8 +260,8 @@ public class ObjectUseTimesCache {
 
     public void setCooldownSellTime(boolean notUseBungee) {
         if (cooldownSellTime == null || !cooldownSellTime.isBefore(LocalDateTime.now())) {
-            String mode = product.getBuyTimesResetMode();
-            String tempVal1 = TextUtil.withPAPI(product.getBuyTimesResetTime(), cache.player);
+            String mode = product.getSellTimesResetMode();
+            String tempVal1 = TextUtil.withPAPI(product.getSellTimesResetTime(), cache.player);
             if (mode == null || tempVal1.isEmpty()) {
                 return;
             }
@@ -231,6 +299,20 @@ public class ObjectUseTimesCache {
             return null;
         }
         return CommonUtil.timeToString(lastSellTime);
+    }
+
+    public String getLastResetBuyTime() {
+        if (lastResetBuyTime == null) {
+            return null;
+        }
+        return CommonUtil.timeToString(lastResetBuyTime);
+    }
+
+    public String getLastResetSellTime() {
+        if (lastResetSellTime == null) {
+            return null;
+        }
+        return CommonUtil.timeToString(lastResetSellTime);
     }
 
     public String getCooldownBuyTime() {
@@ -303,11 +385,23 @@ public class ObjectUseTimesCache {
 
     public String getBuyLastTimeName() {
         if (UltimateShop.freeVersion) {
-            return "";
+            return "0";
         }
         LocalDateTime tempVal1 = lastBuyTime;
         if (tempVal1 == null || tempVal1.getYear() == 2999) {
             return "0";
+        }
+        Duration duration = Duration.between(tempVal1, LocalDateTime.now());
+        return String.valueOf(duration.getSeconds());
+    }
+
+    public String getBuyLastResetTimeName() {
+        if (UltimateShop.freeVersion) {
+            return "0";
+        }
+        LocalDateTime tempVal1 = lastResetBuyTime;
+        if (tempVal1 == null || tempVal1.getYear() == 2999) {
+            return getBuyLastTimeName();
         }
         Duration duration = Duration.between(tempVal1, LocalDateTime.now());
         return String.valueOf(duration.getSeconds());
@@ -323,7 +417,7 @@ public class ObjectUseTimesCache {
 
     public String getSellRefreshTimeNextName() {
         if (UltimateShop.freeVersion) {
-            return "";
+            return "0";
         }
         LocalDateTime tempVal1 = getSellRefreshTime();
         if (tempVal1 == null || tempVal1.getYear() == 2999) {
@@ -351,11 +445,23 @@ public class ObjectUseTimesCache {
 
     public String getSellLastTimeName() {
         if (UltimateShop.freeVersion) {
-            return "";
+            return "0";
         }
         LocalDateTime tempVal1 = lastSellTime;
         if (tempVal1 == null || tempVal1.getYear() == 2999) {
             return "0";
+        }
+        Duration duration = Duration.between(tempVal1, LocalDateTime.now());
+        return String.valueOf(duration.getSeconds());
+    }
+
+    public String getSellLastResetTimeName() {
+        if (UltimateShop.freeVersion) {
+            return "0";
+        }
+        LocalDateTime tempVal1 = lastResetSellTime;
+        if (tempVal1 == null || tempVal1.getYear() == 2999) {
+            return getSellLastTimeName();
         }
         Duration duration = Duration.between(tempVal1, LocalDateTime.now());
         return String.valueOf(duration.getSeconds());
@@ -531,21 +637,21 @@ public class ObjectUseTimesCache {
         }
     }
 
-    public void refreshSellTimes() {
-        LocalDateTime tempVal1 = getSellRefreshTime();
-        if (tempVal1 != null && tempVal1.isBefore(LocalDateTime.now())) {
-            setSellUseTimes(product.getSellTimesResetValue(cache.player));
-            setLastSellTime(null);
-            resetCooldownSellTime();
-        }
-    }
-
     public void refreshBuyTimes() {
         LocalDateTime tempVal1 = getBuyRefreshTime();
         if (tempVal1 != null && tempVal1.isBefore(LocalDateTime.now())) {
-            setBuyUseTimes(product.getBuyTimesResetValue(cache.player));
+            setBuyUseTimes(product.getBuyTimesResetValue(cache.player), true);
             setLastBuyTime(null);
             resetCooldownBuyTime();
+        }
+    }
+
+    public void refreshSellTimes() {
+        LocalDateTime tempVal1 = getSellRefreshTime();
+        if (tempVal1 != null && tempVal1.isBefore(LocalDateTime.now())) {
+            setSellUseTimes(product.getSellTimesResetValue(cache.player), true);
+            setLastSellTime(null);
+            resetCooldownSellTime();
         }
     }
 

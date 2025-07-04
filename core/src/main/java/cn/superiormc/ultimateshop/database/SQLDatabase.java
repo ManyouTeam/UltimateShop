@@ -13,7 +13,6 @@ import cn.superiormc.ultimateshop.objects.caches.ObjectRandomPlaceholderCache;
 import cn.superiormc.ultimateshop.objects.caches.ObjectUseTimesCache;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
 import cn.superiormc.ultimateshop.utils.TextUtil;
-import org.bukkit.Bukkit;
 
 import java.sql.SQLException;
 import java.util.Collection;
@@ -57,9 +56,13 @@ public class SQLDatabase {
                 .addColumn("shop", "VARCHAR(48)")
                 .addColumn("product", "VARCHAR(1)")
                 .addColumn("buyUseTimes", "INT")
+                .addColumn("totalBuyUseTimes", "INT")
                 .addColumn("sellUseTimes", "INT")
+                .addColumn("totalSellUseTimes", "INT")
                 .addColumn("lastBuyTime", "DATETIME")
                 .addColumn("lastSellTime", "DATETIME")
+                .addColumn("lastResetBuyTime", "DATETIME")
+                .addColumn("lastResetSellTime", "DATETIME")
                 .addColumn("cooldownBuyTime", "DATETIME")
                 .addColumn("cooldownSellTime", "DATETIME")
                 .build().execute(null);
@@ -71,6 +74,21 @@ public class SQLDatabase {
 
                     .build().execute(null);
         }
+    }
+
+    public static void updateTable() {
+        sqlManager.alterTable("ultimateshop_useTimes")
+                .addColumn("totalBuyUseTimes", "INT")
+                .executeAsync();
+        sqlManager.alterTable("ultimateshop_useTimes")
+                .addColumn("totalSellUseTimes", "INT")
+                .executeAsync();
+        sqlManager.alterTable("ultimateshop_useTimes")
+                .addColumn("lastResetBuyTime", "DATETIME")
+                .executeAsync();
+        sqlManager.alterTable("ultimateshop_useTimes")
+                .addColumn("lastResetSellTime", "DATETIME")
+                .executeAsync();
     }
 
     public static void checkData(ServerCache cache) {
@@ -100,7 +118,9 @@ public class SQLDatabase {
                     .selectColumns("playerUUID",
                             "shop", "product",
                             "buyUseTimes",  "sellUseTimes",
+                            "totalBuyUseTimes", "totalSellUseTimes",
                             "lastBuyTime", "lastSellTime",
+                            "lastResetBuyTime", "lastResetSellTime",
                             "cooldownBuyTime", "cooldownSellTime")
                     .addCondition("playerUUID = 'Global-Server'")
                     .build();
@@ -110,7 +130,9 @@ public class SQLDatabase {
                     .selectColumns("playerUUID",
                             "shop", "product",
                             "buyUseTimes", "sellUseTimes",
+                            "totalBuyUseTimes", "totalSellUseTimes",
                             "lastBuyTime", "lastSellTime",
+                            "lastResetBuyTime", "lastResetSellTime",
                             "cooldownBuyTime", "cooldownSellTime")
                     .addCondition("playerUUID = '" + cache.player.getUniqueId() + "'")
                     .build();
@@ -120,14 +142,19 @@ public class SQLDatabase {
                 String shop = result.getResultSet().getString("shop");
                 String product = result.getResultSet().getString("product");
                 int buyUseTimes = result.getResultSet().getInt("buyUseTimes");
+                int totalBuyUseTimes = result.getResultSet().getInt("totalBuyUseTimes");
                 int sellUseTimes = result.getResultSet().getInt("sellUseTimes");
+                int totalSellUseTimes = result.getResultSet().getInt("totalSellUseTimes");
                 String lastPurchaseTime = result.getResultSet().getString("lastBuyTime");
                 String lastSellTime = result.getResultSet().getString("lastSellTime");
+                String lastResetBuyTime = result.getResultSet().getString("lastResetBuyTime");
+                String lastResetSellTime = result.getResultSet().getString("lastResetSellTime");
                 String cooldownPurchaseTime = result.getResultSet().getString("cooldownBuyTime");
                 String cooldownSellTime = result.getResultSet().getString("cooldownSellTime");
                 cache.setUseTimesCache(shop, product,
-                        buyUseTimes, sellUseTimes,
-                        lastPurchaseTime,  lastSellTime,
+                        buyUseTimes, totalBuyUseTimes,
+                        sellUseTimes, totalSellUseTimes,
+                        lastPurchaseTime,  lastSellTime, lastResetBuyTime, lastResetSellTime,
                         cooldownPurchaseTime, cooldownSellTime);
             }
         });
@@ -143,12 +170,17 @@ public class SQLDatabase {
         }
         Map<ObjectItem, ObjectUseTimesCache> tempVal1 = cache.getUseTimesCache();
         for (ObjectItem tempVal2 : tempVal1.keySet()) {
-            int buyUseTimes = tempVal1.get(tempVal2).getBuyUseTimes();
-            int sellUseTimes = tempVal1.get(tempVal2).getSellUseTimes();
-            String lastBuyTime = tempVal1.get(tempVal2).getLastBuyTime();
-            String lastSellTime = tempVal1.get(tempVal2).getLastSellTime();
-            String cooldownBuyTime = tempVal1.get(tempVal2).getCooldownBuyTime();
-            String cooldownSellTime = tempVal1.get(tempVal2).getCooldownSellTime();
+            ObjectUseTimesCache tempCache = tempVal1.get(tempVal2);
+            int buyUseTimes = tempCache.getBuyUseTimes();
+            int totalBuyUseTimes = tempCache.getTotalBuyUseTimes();
+            int sellUseTimes = tempCache.getSellUseTimes();
+            int totalSellUseTimes = tempCache.getTotalSellUseTimes();
+            String lastBuyTime = tempCache.getLastBuyTime();
+            String lastSellTime = tempCache.getLastSellTime();
+            String lastResetBuyTime = tempCache.getLastResetBuyTime();
+            String lastResetSellTime = tempCache.getLastResetSellTime();
+            String cooldownBuyTime = tempCache.getCooldownBuyTime();
+            String cooldownSellTime = tempCache.getCooldownSellTime();
             if (buyUseTimes == 0 && sellUseTimes == 0 && lastBuyTime == null && lastSellTime == null
             && cooldownBuyTime == null && cooldownSellTime == null) {
                 continue;
@@ -159,24 +191,36 @@ public class SQLDatabase {
                                 "shop",
                                 "product",
                                 "buyUseTimes",
+                                "totalBuyUseTimes",
                                 "sellUseTimes",
+                                "totalSellUseTimes",
                                 "lastBuyTime",
                                 "lastSellTime",
+                                "lastResetBuyTime",
+                                "lastResetSellTime",
                                 "cooldownBuyTime",
                                 "cooldownSellTime")
                         .setParams(playerUUID,
                                 tempVal2.getShop(),
                                 tempVal2.getProduct(),
                                 buyUseTimes,
+                                totalBuyUseTimes,
                                 sellUseTimes,
+                                totalSellUseTimes,
                                 lastBuyTime,
                                 lastSellTime,
+                                lastResetBuyTime,
+                                lastResetSellTime,
                                 cooldownBuyTime,
                                 cooldownSellTime)
                         .executeAsync();
             } else {
-                String[] keys = {"buyUseTimes", "sellUseTimes", "lastBuyTime", "lastSellTime", "cooldownBuyTime", "cooldownSellTime"};
-                Object[] values = {buyUseTimes, sellUseTimes, lastBuyTime, lastSellTime, cooldownBuyTime, cooldownSellTime};
+                String[] keys = {"buyUseTimes", "totalBuyUseTimes", "sellUseTimes", "totalSellUseTimes",
+                        "lastBuyTime", "lastSellTime", "lastResetBuyTime", "lastResetSellTime",
+                        "cooldownBuyTime", "cooldownSellTime"};
+                Object[] values = {buyUseTimes, totalBuyUseTimes, sellUseTimes, totalSellUseTimes,
+                        lastBuyTime, lastSellTime, lastResetBuyTime, lastResetSellTime,
+                        cooldownBuyTime, cooldownSellTime};
                 sqlManager.createUpdate("ultimateshop_useTimes")
                         .addCondition("playerUUID = '" + playerUUID + "'")
                         .addCondition("shop = '" + tempVal2.getShop() + "'")
@@ -218,12 +262,17 @@ public class SQLDatabase {
         }
         Map<ObjectItem, ObjectUseTimesCache> tempVal1 = cache.getUseTimesCache();
         for (ObjectItem tempVal2 : tempVal1.keySet()) {
-            int buyUseTimes = tempVal1.get(tempVal2).getBuyUseTimes();
-            int sellUseTimes = tempVal1.get(tempVal2).getSellUseTimes();
-            String lastBuyTime = tempVal1.get(tempVal2).getLastBuyTime();
-            String lastSellTime = tempVal1.get(tempVal2).getLastSellTime();
-            String cooldownBuyTime = tempVal1.get(tempVal2).getCooldownBuyTime();
-            String cooldownSellTime = tempVal1.get(tempVal2).getCooldownSellTime();
+            ObjectUseTimesCache tempCache = tempVal1.get(tempVal2);
+            int buyUseTimes = tempCache.getBuyUseTimes();
+            int totalBuyUseTimes = tempCache.getTotalBuyUseTimes();
+            int sellUseTimes = tempCache.getSellUseTimes();
+            int totalSellUseTimes = tempCache.getTotalSellUseTimes();
+            String lastBuyTime = tempCache.getLastBuyTime();
+            String lastSellTime = tempCache.getLastSellTime();
+            String lastResetBuyTime = tempCache.getLastResetBuyTime();
+            String lastResetSellTime = tempCache.getLastResetSellTime();
+            String cooldownBuyTime = tempCache.getCooldownBuyTime();
+            String cooldownSellTime = tempCache.getCooldownSellTime();
             if (buyUseTimes == 0 && sellUseTimes == 0 && lastBuyTime == null && lastSellTime == null
                     && cooldownBuyTime == null && cooldownSellTime == null) {
                 continue;
@@ -235,31 +284,43 @@ public class SQLDatabase {
                                     "shop",
                                     "product",
                                     "buyUseTimes",
+                                    "totalBuyUseTimes",
                                     "sellUseTimes",
+                                    "totalSellUseTimes",
                                     "lastBuyTime",
                                     "lastSellTime",
+                                    "lastResetBuyTime",
+                                    "lastResetSellTime",
                                     "cooldownBuyTime",
                                     "cooldownSellTime")
                             .setParams(playerUUID,
                                     tempVal2.getShop(),
                                     tempVal2.getProduct(),
                                     buyUseTimes,
+                                    totalBuyUseTimes,
                                     sellUseTimes,
+                                    totalSellUseTimes,
                                     lastBuyTime,
                                     lastSellTime,
+                                    lastResetBuyTime,
+                                    lastResetSellTime,
                                     cooldownBuyTime,
                                     cooldownSellTime)
-                            .execute();
+                            .executeAsync();
                 } else {
-                    String[] keys = {"buyUseTimes", "sellUseTimes", "lastBuyTime", "lastSellTime", "cooldownBuyTime", "cooldownSellTime"};
-                    Object[] values = {buyUseTimes, sellUseTimes, lastBuyTime, lastSellTime, cooldownBuyTime, cooldownSellTime};
+                    String[] keys = {"buyUseTimes", "totalBuyUseTimes", "sellUseTimes", "totalSellUseTimes",
+                            "lastBuyTime", "lastSellTime", "lastResetBuyTime", "lastResetSellTime",
+                            "cooldownBuyTime", "cooldownSellTime"};
+                    Object[] values = {buyUseTimes, totalBuyUseTimes, sellUseTimes, totalSellUseTimes,
+                            lastBuyTime, lastSellTime, lastResetBuyTime, lastResetSellTime,
+                            cooldownBuyTime, cooldownSellTime};
                     sqlManager.createUpdate("ultimateshop_useTimes")
                             .addCondition("playerUUID = '" + playerUUID + "'")
                             .addCondition("shop = '" + tempVal2.getShop() + "'")
                             .addCondition("product = '" + tempVal2.getProduct() + "'")
                             .setColumnValues(keys, values)
                             .build()
-                            .execute();
+                            .executeAsync();
                 }
             } catch (Throwable ignored) {
 

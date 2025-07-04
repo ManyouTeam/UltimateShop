@@ -13,7 +13,6 @@ public class ObjectSingleAction extends AbstractSingleRun {
 
     private final ObjectAction action;
 
-
     public ObjectSingleAction(ObjectAction action, ConfigurationSection actionSection) {
         super(actionSection);
         this.action = action;

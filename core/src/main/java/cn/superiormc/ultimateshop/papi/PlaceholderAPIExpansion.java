@@ -115,6 +115,10 @@ public class PlaceholderAPIExpansion extends PlaceholderExpansion {
                     return String.valueOf(playerTimesCache.getBuyUseTimes());
                 case "sell-times-player":
                     return String.valueOf(playerTimesCache.getSellUseTimes());
+                case "buy-total-player":
+                    return String.valueOf(playerTimesCache.getTotalBuyUseTimes());
+                case "sell-total-player":
+                    return String.valueOf(playerTimesCache.getTotalSellUseTimes());
                 case "buy-refresh-player":
                     return String.valueOf(playerTimesCache.getBuyRefreshTimeDisplayName());
                 case "sell-refresh-player":
@@ -127,6 +131,10 @@ public class PlaceholderAPIExpansion extends PlaceholderExpansion {
                     return String.valueOf(serverTimesCache.getBuyUseTimes());
                 case "sell-times-server":
                     return String.valueOf(serverTimesCache.getSellUseTimes());
+                case "buy-total-server":
+                    return String.valueOf(serverTimesCache.getTotalBuyUseTimes());
+                case "sell-total-server":
+                    return String.valueOf(serverTimesCache.getTotalSellUseTimes());
                 case "buy-refresh-server":
                     return String.valueOf(serverTimesCache.getBuyRefreshTimeDisplayName());
                 case "sell-refresh-server":
@@ -143,6 +151,14 @@ public class PlaceholderAPIExpansion extends PlaceholderExpansion {
                     return serverTimesCache.getBuyLastTimeName();
                 case "last-sell-server":
                     return serverTimesCache.getSellLastTimeName();
+                case "last-buy-reset-time-player":
+                    return playerTimesCache.getBuyLastResetTimeName();
+                case "last-sell-reset-time-player":
+                    return playerTimesCache.getSellLastResetTimeName();
+                case "last-buy-reset-time-server":
+                    return serverTimesCache.getBuyLastResetTimeName();
+                case "last-sell-reset-time-server":
+                    return serverTimesCache.getSellLastResetTimeName();
                 case "item-name":
                     return item.getDisplayName(player);
             }

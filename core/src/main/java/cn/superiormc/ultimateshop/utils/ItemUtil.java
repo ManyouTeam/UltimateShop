@@ -1,5 +1,6 @@
 package cn.superiormc.ultimateshop.utils;
 
+import cn.superiormc.mythicchanger.utils.CommonUtil;
 import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.LocateManager;
@@ -16,6 +17,11 @@ public class ItemUtil {
     public static String getItemName(ItemStack displayItem) {
         if (displayItem == null || displayItem.getItemMeta() == null) {
             return "";
+        }
+        if (CommonUtil.getMinorVersion(20, 5)) {
+            if (displayItem.getItemMeta().hasItemName()) {
+                return UltimateShop.methodUtil.getItemItemName(displayItem.getItemMeta());
+            }
         }
         if (displayItem.getItemMeta().hasDisplayName()) {
             return UltimateShop.methodUtil.getItemName(displayItem.getItemMeta());
@@ -35,7 +41,7 @@ public class ItemUtil {
             return UltimateShop.methodUtil.getItemName(displayItem.getItemMeta());
         }
         if (UltimateShop.methodUtil.methodID().equals("paper") && ConfigManager.configManager.getBoolean("display-item.auto-translate-item-name")) {
-            return "<lang:item.minecraft." + displayItem.getType().name().toLowerCase() + ">";
+            return "<lang:" + displayItem.translationKey() + ">";
         }
         StringBuilder result = new StringBuilder();
         for (String word : displayItem.getType().name().toLowerCase().split("_")) {

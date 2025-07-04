@@ -59,10 +59,10 @@ public class BungeeCordSyncListener implements PluginMessageListener {
             String typeMode = msgin.readUTF();
             switch (typeMode) {
                 case "buy-times":
-                    useTimesCache.setBuyUseTimes(Integer.parseInt(msgin.readUTF()), true);
+                    useTimesCache.setBuyUseTimes(Integer.parseInt(msgin.readUTF()), true, false);
                     break;
                 case "sell-times":
-                    useTimesCache.setSellUseTimes(Integer.parseInt(msgin.readUTF()), true);
+                    useTimesCache.setSellUseTimes(Integer.parseInt(msgin.readUTF()), true, false);
                     break;
                 case "last-buy-time":
                     useTimesCache.setLastBuyTime(CommonUtil.stringToTime(msgin.readUTF()), true);

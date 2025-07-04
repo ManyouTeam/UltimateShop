@@ -94,6 +94,7 @@ public class ItemManager {
                 e.printStackTrace();
             }
         });
+        savedItemFormatMap.put(key, briefcase);
     }
 
     public ItemStack getItemByKey(Player player, String key) {

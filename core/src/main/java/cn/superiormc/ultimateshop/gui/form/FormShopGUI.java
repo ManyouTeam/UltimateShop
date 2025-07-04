@@ -42,24 +42,24 @@ public class FormShopGUI extends FormGUI {
 
     @Override
     protected void constructGUI() {
-        PlayerCache tempVal1 = CacheManager.cacheManager.getPlayerCache(player.getPlayer());
+        PlayerCache tempVal1 = CacheManager.cacheManager.getPlayerCache(player);
         ServerCache tempVal2 = ServerCache.serverCache;
         if (tempVal1 == null) {
-            LanguageManager.languageManager.sendStringText(player.getPlayer(),
+            LanguageManager.languageManager.sendStringText(player,
                     "error.player-not-found",
                     "player",
                     player.getName());
             return;
         }
         if (shop.getShopMenuObject() == null) {
-            LanguageManager.languageManager.sendStringText(player.getPlayer(),
+            LanguageManager.languageManager.sendStringText(player,
                     "error.shop-does-not-have-menu",
                     "shop",
                     shop.getShopName());
             return;
         }
         if (shop.getShopMenuObject().menuConfigs == null) {
-            LanguageManager.languageManager.sendStringText(player.getPlayer(),
+            LanguageManager.languageManager.sendStringText(player,
                     "error.shop-menu-not-found",
                     "shop",
                     shop.getShopName(),

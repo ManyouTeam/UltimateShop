@@ -72,14 +72,19 @@ public class YamlDatabase {
                         continue;
                     }
                     int buyUseTimes = tempVal4.getInt("buyUseTimes", 0);
+                    int totalBuyUseTimes = tempVal4.getInt("totalBuyUseTimes", 0);
                     int sellUseTimes = tempVal4.getInt("sellUseTimes", 0);
+                    int totalSellUseTimes = tempVal4.getInt("totalSellUseTimes", 0);
                     String lastPurchaseTime = tempVal4.getString("lastBuyTime", null);
                     String lastSellTime = tempVal4.getString("lastSellTime", null);
+                    String lastResetBuyTime = tempVal4.getString("lastResetBuyTime", null);
+                    String lastResetSellTime = tempVal4.getString("lastResetSellTime", null);
                     String cooldownPurchaseTime = tempVal4.getString("cooldownBuyTime", null);
                     String cooldownSellTime = tempVal4.getString("cooldownSellTime", null);
                     cache.setUseTimesCache(shopID, productID,
-                            buyUseTimes, sellUseTimes,
-                            lastPurchaseTime, lastSellTime,
+                            buyUseTimes, totalBuyUseTimes,
+                            sellUseTimes, totalSellUseTimes,
+                            lastPurchaseTime, lastSellTime, lastResetBuyTime, lastResetSellTime,
                             cooldownPurchaseTime, cooldownSellTime);
                 }
             }
@@ -156,30 +161,41 @@ public class YamlDatabase {
         Map<ObjectItem, ObjectUseTimesCache> tempVal1 = cache.getUseTimesCache();
         for (ObjectItem tempVal4 : tempVal1.keySet()) {
             data.clear();
+            ObjectUseTimesCache tempCache = tempVal1.get(tempVal4);
             ConfigurationSection tempVal5 = useTimesSection.getConfigurationSection(tempVal4.getShop());
             if (tempVal5 == null) {
                 tempVal5 = useTimesSection.createSection(tempVal4.getShop());
             }
             ConfigurationSection tempVal6 = tempVal5.getConfigurationSection(tempVal4.getProduct());
-            if (tempVal1.get(tempVal4).getBuyUseTimes() != 0) {
-                data.put("buyUseTimes", tempVal1.get(tempVal4).getBuyUseTimes());
+            if (tempCache.getBuyUseTimes() != 0) {
+                data.put("buyUseTimes", tempCache.getBuyUseTimes());
             }
-            if (tempVal1.get(tempVal4).getSellUseTimes() != 0) {
-                data.put("sellUseTimes", tempVal1.get(tempVal4).getSellUseTimes());
+            if (tempCache.getTotalBuyUseTimes() != 0) {
+                data.put("totalBuyUseTimes", tempCache.getTotalBuyUseTimes());
             }
-            LocalDateTime buyTime = tempVal1.get(tempVal4).getBuyRefreshTime();
-            if (buyTime != null && buyTime.getYear() < 2999) {
-                data.put("lastBuyTime", tempVal1.get(tempVal4).getLastBuyTime());
+            if (tempCache.getSellUseTimes() != 0) {
+                data.put("sellUseTimes", tempCache.getSellUseTimes());
             }
-            LocalDateTime sellTime = tempVal1.get(tempVal4).getSellRefreshTime();
-            if (sellTime != null && sellTime.getYear() < 2999) {
-                data.put("lastSellTime", tempVal1.get(tempVal4).getLastSellTime());
+            if (tempCache.getTotalSellUseTimes() != 0) {
+                data.put("totalSellUseTimes", tempCache.getTotalSellUseTimes());
             }
-            if (tempVal1.get(tempVal4).getCooldownBuyTime() != null) {
-                data.put("cooldownBuyTime", tempVal1.get(tempVal4).getCooldownBuyTime());
+            if (tempCache.getLastBuyTime() != null) {
+                data.put("lastBuyTime", tempCache.getLastBuyTime());
             }
-            if (tempVal1.get(tempVal4).getCooldownSellTime() != null) {
-                data.put("cooldownSellTime", tempVal1.get(tempVal4).getCooldownSellTime());
+            if (tempCache.getLastSellTime() != null) {
+                data.put("lastSellTime", tempCache.getLastSellTime());
+            }
+            if (tempCache.getLastResetBuyTime() != null) {
+                data.put("lastResetBuyTime", tempCache.getLastResetBuyTime());
+            }
+            if (tempCache.getLastResetSellTime() != null) {
+                data.put("lastResetSellTime", tempCache.getLastResetSellTime());
+            }
+            if (tempCache.getCooldownBuyTime() != null) {
+                data.put("cooldownBuyTime", tempCache.getCooldownBuyTime());
+            }
+            if (tempCache.getCooldownSellTime() != null) {
+                data.put("cooldownSellTime", tempCache.getCooldownSellTime());
             }
             for (String key : data.keySet()) {
                 if (tempVal6 == null) {

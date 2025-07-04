@@ -32,8 +32,7 @@ public class ObjectProducts extends AbstractThings {
             if (section.getConfigurationSection(s) == null) {
                 ErrorManager.errorManager.sendErrorMessage("§cError: Can not get products section in your shop config!!");
                 singleProducts.add(new ObjectSingleProduct());
-            }
-            else {
+            } else {
                 singleProducts.add(new ObjectSingleProduct(s, this));
             }
         }
