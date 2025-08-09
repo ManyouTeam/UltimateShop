@@ -5,13 +5,19 @@ import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.methods.StaticPlaceholder;
 import cn.superiormc.ultimateshop.objects.items.subobjects.ObjectConditionalPlaceholder;
 import cn.superiormc.ultimateshop.objects.items.subobjects.ObjectRandomPlaceholder;
+import com.cronutils.model.Cron;
+import com.cronutils.model.CronType;
+import com.cronutils.model.definition.CronDefinitionBuilder;
+import com.cronutils.model.time.ExecutionTime;
+import com.cronutils.parser.CronParser;
 import me.clip.placeholderapi.PlaceholderAPI;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.awt.*;
 import java.math.BigDecimal;
+import java.time.ZonedDateTime;
 import java.util.Map;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -254,6 +260,31 @@ public class TextUtil {
             text = text.replace("{random-next_" + placeholder + "}",
                     ObjectRandomPlaceholder.getNextTime(placeholder));
         }
+        Pattern pattern7 = Pattern.compile("\\{cron_\"([^\"]+)\"\\}");
+        Matcher matcher7 = pattern7.matcher(text);
+        while (matcher7.find()) {
+            String cronExpression = matcher7.group(1);
+
+            // 使用 Quartz 格式解析
+            CronParser parser = new CronParser(CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ));
+            Cron cron = parser.parse(cronExpression);
+            cron.validate(); // 检查合法性
+
+            // 当前时间
+            ZonedDateTime now = ZonedDateTime.now();
+
+            // 获取下一次执行时间
+            ExecutionTime executionTime = ExecutionTime.forCron(cron);
+            Optional<ZonedDateTime> nextExecution = executionTime.nextExecution(now);
+
+            String time = "";
+
+            if (nextExecution.isPresent()) {
+                time = CommonUtil.timeToString(nextExecution.get().toLocalDateTime(), ConfigManager.configManager.getString("placeholder.cron.format"));
+            }
+            text = text.replace("{cron_\"" + cronExpression + "\"}", time);
+        }
+
         return text;
     }
 }

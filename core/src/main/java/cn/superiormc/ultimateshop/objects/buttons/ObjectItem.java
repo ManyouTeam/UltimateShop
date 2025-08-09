@@ -64,11 +64,14 @@ public class ObjectItem extends AbstractButton {
 
     public final boolean empty;
 
+    private boolean enableSellAll;
+
     public ObjectItem(ObjectShop shop, ConfigurationSection originalConfig) {
         super(originalConfig);
         this.shop = shop;
         this.type = ButtonType.SHOP;
         this.itemConfig = new ObjectItemConfig(this, originalConfig);
+        this.enableSellAll = itemConfig.getBoolean("sell-all", true);
         initReward();
         initBuyPrice();
         initSellPrice();
@@ -228,6 +231,10 @@ public class ObjectItem extends AbstractButton {
         sellCondition = new ObjectCondition(section, this);
     }
 
+    public boolean isEnableSellAll() {
+        return enableSellAll;
+    }
+
     public String getDisplayName(Player player) {
         if (itemConfig.getString("display-name") == null) {
             return ItemUtil.getItemName(displayItem.getDisplayItem(player).getItemStack());
@@ -348,7 +355,7 @@ public class ObjectItem extends AbstractButton {
                 }
                 return;
             case "sell-all" :
-                if (!sellPrice.empty && SellProductMethod.startSell(getShop(),
+                if (!sellPrice.empty && isEnableSellAll() && SellProductMethod.startSell(getShop(),
                         getProduct(),
                         player,
                         !b,

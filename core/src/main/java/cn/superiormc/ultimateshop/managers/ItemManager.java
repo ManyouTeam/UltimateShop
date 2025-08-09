@@ -34,7 +34,7 @@ public class ItemManager {
     public void initSavedItems() {
         savedItemMap.clear();
         File dir = new File(UltimateShop.instance.getDataFolder() + "/items");
-        if(!dir.exists()) {
+        if (!dir.exists()) {
             dir.mkdir();
         }
         File[] tempList = dir.listFiles();
@@ -47,12 +47,16 @@ public class ItemManager {
                 String key = file.getName();
                 key = key.substring(0, key.length() - 4);
                 Object object = section.get("item");
-                if (section.getKeys(false).size() == 1 && object != null) {
-                    savedItemMap.put(key, UltimateShop.methodUtil.getItemObject(object));
-                    UltimateShop.methodUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fLoaded Bukkit Saved Item: " + key + ".yml!");
-                } else {
-                    savedItemFormatMap.put(key, section);
-                    UltimateShop.methodUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fLoaded ItemFormat Saved Item: " + key + ".yml!");
+                try {
+                    if (section.getKeys(false).size() == 1 && object != null) {
+                        savedItemMap.put(key, UltimateShop.methodUtil.getItemObject(object));
+                        UltimateShop.methodUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fLoaded Bukkit Saved Item: " + key + ".yml!");
+                    } else {
+                        savedItemFormatMap.put(key, section);
+                        UltimateShop.methodUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fLoaded ItemFormat Saved Item: " + key + ".yml!");
+                    }
+                } catch (Throwable throwable) {
+                    ErrorManager.errorManager.sendErrorMessage("§cError: Failed to load Saved Item: " + key + ". If this error always happens, try delete this save item because this save item file maybe break or not support new server or plugin version.");
                 }
             }
         }

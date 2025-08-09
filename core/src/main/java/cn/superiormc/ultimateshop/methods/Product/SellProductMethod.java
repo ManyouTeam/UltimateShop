@@ -14,6 +14,7 @@ import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import cn.superiormc.ultimateshop.objects.ObjectShop;
 import cn.superiormc.ultimateshop.objects.caches.ObjectUseTimesCache;
 import cn.superiormc.ultimateshop.objects.items.GiveResult;
+import cn.superiormc.ultimateshop.objects.items.MaxSellResult;
 import cn.superiormc.ultimateshop.objects.items.TakeResult;
 import cn.superiormc.ultimateshop.objects.items.prices.ObjectPrices;
 import cn.superiormc.ultimateshop.objects.items.products.ObjectProducts;
@@ -116,14 +117,20 @@ public class SellProductMethod {
         }
         // 更改multi
         ObjectProducts tempVal5 = tempVal2.getReward();
-        if (ableMaxSell) {
-            if (tempVal5.getMaxAbleSellAmount(inventory, player, playerUseTimes) > 0) {
-                multi = tempVal5.getMaxAbleSellAmount(inventory, player, playerUseTimes);
+        MaxSellResult sellResult = tempVal5.getMaxAbleSellAmount(inventory, player, playerUseTimes);
+        if (ableMaxSell && tempVal2.isEnableSellAll()) {
+            if (sellResult.getMaxAmount() > 0) {
+                multi = sellResult.getMaxAmount();
             }
             if (tempVal2.getPlayerSellLimit(player) != -1 &&
                     multi > tempVal2.getPlayerSellLimit(player) - playerUseTimes &&
                     tempVal2.getPlayerSellLimit(player) - playerUseTimes > 0) {
                 multi = tempVal2.getPlayerSellLimit(player) - playerUseTimes;
+            }
+            if (tempVal2.getServerSellLimit(player) != -1 &&
+                    multi > tempVal2.getServerSellLimit(player) - serverUseTimes &&
+                    tempVal2.getServerSellLimit(player) - serverUseTimes > 0) {
+                multi = tempVal2.getServerSellLimit(player) - serverUseTimes;
             }
             int maxAmount = ConfigManager.configManager.getIntOrDefault("menu.sell-all.max-amount",
                     "sell.max-amount", 128);
@@ -177,7 +184,13 @@ public class SellProductMethod {
             return ProductTradeStatus.SERVER_MAX;
         }
         GiveResult giveResult = null;
-        TakeResult takeResult = tempVal5.takeSingleThing(inventory, player, playerUseTimes, multi, false);
+        TakeResult takeResult = null;
+        if (ableMaxSell) {
+            sellResult.setMaxAmount(multi);
+            takeResult = sellResult.getTakeResult();
+        } else {
+            takeResult = tempVal5.takeSingleThing(inventory, player, playerUseTimes, multi, false);
+        }
         // API
         if (!test) {
             giveResult = tempVal2.getSellPrice().giveSingleThing(player, playerUseTimes, multi);
@@ -226,6 +239,7 @@ public class SellProductMethod {
             }
             tempVal8.setSellUseTimes(tempVal8.getSellUseTimes() + multi);
             tempVal8.setLastSellTime(LocalDateTime.now());
+            tempVal8.setCooldownSellTime();
             tempVal11.getUseTimesCache().put(tempVal2, tempVal8);
         }
         if (!hide && tempVal1.getShopConfig().getBoolean("settings.send-messages-after-buy", true) && !giveResult.empty && !takeResult.empty) {

@@ -68,8 +68,7 @@ public class CommonUtil {
             String var2 = "%" + args[i] + "%";
             if (args[i + 1] == null) {
                 text = text.replace(var1, "").replace(var2, "");
-            }
-            else {
+            } else {
                 text = text.replace(var1, args[i + 1]).replace(var2, args[i + 1]);
             }
         }
@@ -83,8 +82,7 @@ public class CommonUtil {
                 String var = "{" + args[i] + "}";
                 if (args[i + 1] == null) {
                     s = s.replace(var, "");
-                }
-                else {
+                } else {
                     s = s.replace(var, args[i + 1]);
                 }
             }

@@ -8,7 +8,7 @@ import org.bukkit.entity.Player;
 public class SubUpdateMySQLTable extends AbstractCommand {
 
     public SubUpdateMySQLTable() {
-        this.id = "updatemysqtable";
+        this.id = "updatemysqltable";
         this.requiredPermission =  "ultimateshop." + id;
         this.onlyInGame = false;
         this.requiredArgLength = new Integer[]{1};

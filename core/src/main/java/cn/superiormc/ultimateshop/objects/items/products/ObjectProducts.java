@@ -2,12 +2,8 @@ package cn.superiormc.ultimateshop.objects.items.products;
 
 import cn.superiormc.ultimateshop.managers.ErrorManager;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
-import cn.superiormc.ultimateshop.objects.items.AbstractSingleThing;
-import cn.superiormc.ultimateshop.objects.items.AbstractThings;
-import cn.superiormc.ultimateshop.objects.items.GiveResult;
-import cn.superiormc.ultimateshop.objects.items.TakeResult;
+import cn.superiormc.ultimateshop.objects.items.*;
 import cn.superiormc.ultimateshop.utils.RandomUtil;
-import cn.superiormc.ultimateshop.utils.TextUtil;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -16,6 +12,7 @@ import java.math.BigDecimal;
 import java.util.*;
 
 public class ObjectProducts extends AbstractThings {
+
     public Collection<ObjectSingleProduct> singleProducts = new TreeSet<>();
 
     public ObjectProducts() {
@@ -28,12 +25,24 @@ public class ObjectProducts extends AbstractThings {
     }
 
     public void initSingleProducts() {
+        boolean allIsStatic = true;
         for (String s : section.getKeys(false)) {
             if (section.getConfigurationSection(s) == null) {
                 ErrorManager.errorManager.sendErrorMessage("§cError: Can not get products section in your shop config!!");
                 singleProducts.add(new ObjectSingleProduct());
             } else {
-                singleProducts.add(new ObjectSingleProduct(s, this));
+                ObjectSingleProduct singleProduct = new ObjectSingleProduct(s, this);
+                singleProducts.add(singleProduct);
+                if (!singleProduct.isStatic()) {
+                    allIsStatic = false;
+                }
+            }
+        }
+        if (allIsStatic) {
+            if (mode.equals(ThingMode.ANY)) {
+                mode = ThingMode.CLASSIC_ANY;
+            } else if (mode.equals(ThingMode.ALL)) {
+                mode = ThingMode.CLASSIC_ALL;
             }
         }
         empty = singleProducts.isEmpty();
@@ -139,8 +148,7 @@ public class ObjectProducts extends AbstractThings {
                         if (productMaps.containsKey(tempVal3)) {
                             productMaps.put(tempVal3,
                                     productMaps.get(tempVal3).add(tempVal3.getAmount(player, i, buyOrSell)));
-                        }
-                        else {
+                        } else {
                             productMaps.put(tempVal3, tempVal3.getAmount(player, i, buyOrSell));
                         }
                     }
@@ -152,8 +160,7 @@ public class ObjectProducts extends AbstractThings {
                     if (productMaps.containsKey(tempVal3)) {
                         productMaps.put(tempVal3,
                                 productMaps.get(tempVal3).add(tempVal3.getAmount(player, 0, buyOrSell).multiply(new BigDecimal(multi))));
-                    }
-                    else {
+                    } else {
                         productMaps.put(tempVal3, tempVal3.getAmount(player, 0, buyOrSell).multiply(new BigDecimal(multi)));
                     }
                 }
@@ -162,29 +169,80 @@ public class ObjectProducts extends AbstractThings {
         return productMaps;
     }
 
-    public int getMaxAbleSellAmount(Inventory inventory, Player player, int times) {
+    public MaxSellResult getMaxAbleSellAmount(Inventory inventory, Player player, int times) {
         int maxAmount = -1;
+        MaxSellResult sellResult = new MaxSellResult();
         switch (mode) {
             case UNKNOWN:
-                return 0;
+                return MaxSellResult.empty;
             case ANY:
             case CLASSIC_ANY:
-            case ALL:
-            case CLASSIC_ALL:
+                boolean needTrue = true;
                 for (ObjectSingleProduct tempVal1 : singleProducts) {
                     if (!tempVal1.getCondition(player)) {
                         continue;
                     }
-                    double cost = getAmount(player, times, 1, false).get(tempVal1).doubleValue();
-                    int tempVal2 = (int) (tempVal1.playerHasAmount(inventory, player) / cost);
+                    if (!tempVal1.isStatic()) {
+                        ErrorManager.errorManager.sendErrorMessage("§6Warning: It seems that one of your product is using dynamic amounts, which results in an error in calculating the maximum sellable quantity for that product in the sell all, as the results of each sale are different and the plugin cannot predict the price for the next sale.");
+                    }
+                    BigDecimal cost = getAmount(player, times, 1, false).get(tempVal1);
+                    int tempVal2 = (int) (tempVal1.playerHasAmount(inventory, player) / cost.doubleValue());
+                    if (tempVal2 >= 0) {
+                        if (maxAmount < 0) {
+                            maxAmount = 0;
+                        }
+                        maxAmount = tempVal2 + maxAmount;
+                        BigDecimal realCost = getAmount(player, times, tempVal2, false).get(tempVal1);
+                        if (tempVal1.playerHasEnough(inventory, player, false, realCost.doubleValue())) {
+                            sellResult.getTakeResult().addResultMapElement(tempVal1, realCost);
+                        } else {
+                            needTrue = false;
+                        }
+                    }
+                }
+                if (needTrue) {
+                    sellResult.getTakeResult().setResultBoolean();
+                }
+                sellResult.setMaxAmount(maxAmount);
+                return sellResult;
+            case ALL:
+            case CLASSIC_ALL:
+                boolean needFalse = false;
+                for (ObjectSingleProduct tempVal1 : singleProducts) {
+                    if (!tempVal1.getCondition(player)) {
+                        continue;
+                    }
+                    if (!tempVal1.isStatic()) {
+                        ErrorManager.errorManager.sendErrorMessage("§6Warning: It seems that one of your product is using dynamic amounts, which results in an error in calculating the maximum sellable quantity for that product in the sell all, as the results of each sale are different and the plugin cannot predict the price for the next sale.");
+                    }
+                    BigDecimal cost = getAmount(player, times, 1, false).get(tempVal1);
+                    int tempVal2 = (int) (tempVal1.playerHasAmount(inventory, player) / cost.doubleValue());
                     if (maxAmount == -1 || tempVal2 < maxAmount) {
                         maxAmount = tempVal2;
                     }
                 }
-                return maxAmount;
+                if (maxAmount > 0) {
+                    for (ObjectSingleProduct tempVal1 : singleProducts) {
+                        if (!tempVal1.getCondition(player)) {
+                            continue;
+                        }
+                        BigDecimal realCost = getAmount(player, times, maxAmount, false).get(tempVal1);
+                        sellResult.getTakeResult().addResultMapElement(tempVal1, realCost);
+
+                        if (!tempVal1.playerHasEnough(inventory, player, false, realCost.doubleValue())) {
+                            needFalse = true;
+                        }
+                    }
+
+                    if (!needFalse) {
+                        sellResult.getTakeResult().setResultBoolean();
+                    }
+                }
+                sellResult.setMaxAmount(maxAmount);
+                return sellResult;
             default:
                 ErrorManager.errorManager.sendErrorMessage("§cError: Can not get price-mode section in your shop config!!");
-                return 0;
+                return MaxSellResult.empty;
         }
     }
 

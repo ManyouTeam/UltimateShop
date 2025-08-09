@@ -39,7 +39,7 @@ public class BuyMoreGUI extends InvGUI {
         }
         // display item
         menuButtons = menu.getMenu();
-        menuItems = getMenuItems(player.getPlayer());
+        menuItems = getMenuItems(player);
         int displaySlot = menu.getDisplayItemSlot();
         ItemStack tempVal1 = menuItems.get(displaySlot);
         tempVal1.setAmount(nowingAmount);
@@ -124,7 +124,7 @@ public class BuyMoreGUI extends InvGUI {
                         }
                         break;
                     case "sell-all" :
-                        if (!item.getSellPrice().empty) {
+                        if (!item.getSellPrice().empty && item.isEnableSellAll()) {
                             SellProductMethod.startSell(item.getShop(),
                                     item.getProduct(),
                                     player.getPlayer(),
@@ -157,13 +157,11 @@ public class BuyMoreGUI extends InvGUI {
                 ObjectMoreDisplayButton tempVal3;
                 tempVal3 = (ObjectMoreDisplayButton) tempVal2;
                 resultItems.put(i, tempVal3.getDisplayItem(player, nowingAmount).getItemStack());
-            }
-            else if (tempVal2.type == ButtonType.CONFIRM) {
+            } else if (tempVal2.type == ButtonType.CONFIRM) {
                 ObjectMoreBuyButton tempVal4;
                 tempVal4 = (ObjectMoreBuyButton) tempVal2;
                 resultItems.put(i, tempVal4.getDisplayItem(player, nowingAmount).getItemStack());
-            }
-            else {
+            } else {
                 resultItems.put(i, tempVal2.getDisplayItem(player, 1).getItemStack());
             }
         }

@@ -105,7 +105,7 @@ public class DebuildItem {
                 List<String> effects = new ArrayList<>();
                 for (FoodComponent.FoodEffect foodEffect : foodComponent.getEffects()) {
                     if (CommonUtil.getMajorVersion(18)) {
-                        effects.add(foodEffect.getEffect().getType().getKey() + ", " + foodEffect.getEffect().getDuration() + ", " +
+                        effects.add(foodEffect.getEffect().getType().getKey().getKey() + ", " + foodEffect.getEffect().getDuration() + ", " +
                                 foodEffect.getEffect().getAmplifier() + ", " + foodEffect.getEffect().isAmbient() + ", " +
                                 foodEffect.getEffect().hasParticles() + ", " + foodEffect.getEffect().hasIcon() + ", " +
                                 foodEffect.getProbability());
@@ -155,7 +155,7 @@ public class DebuildItem {
         // Jukebox Playable
         if (CommonUtil.getMajorVersion(21)) {
             JukeboxPlayableComponent jukeboxPlayableComponent = meta.getJukeboxPlayable();
-            if (!jukeboxPlayableComponent.isShowInTooltip() && !CommonUtil.getMinorVersion(21, 5)) {
+            if (!CommonUtil.getMinorVersion(21, 5) && !jukeboxPlayableComponent.isShowInTooltip()) {
                 section.set("show-song", jukeboxPlayableComponent.isShowInTooltip());
             }
             if (!jukeboxPlayableComponent.getSongKey().toString().equals("minecraft:13")) {
@@ -271,7 +271,7 @@ public class DebuildItem {
             List<String> effects = new ArrayList<>();
             for (PotionEffect effect : potion.getCustomEffects()) {
                 if (CommonUtil.getMajorVersion(18)) {
-                    effects.add(effect.getType().getKey() + ", " + effect.getDuration() + ", " + effect.getAmplifier() + ", " +
+                    effects.add(effect.getType().getKey().getKey() + ", " + effect.getDuration() + ", " + effect.getAmplifier() + ", " +
                             effect.getAmplifier() + ", " + effect.isAmbient() + ", " +
                             effect.hasParticles() + ", " + effect.hasIcon());
                 } else {
@@ -286,7 +286,7 @@ public class DebuildItem {
             if (CommonUtil.getMinorVersion(20, 5)) {
                 PotionType potionType = potion.getBasePotionType();
                 if (potionType != null) {
-                    section.set("base-effect", potionType.getKey().toString());
+                    section.set("base-effect", potionType.getKey().getKey());
                 }
             } else {
                 PotionData potionData = potion.getBasePotionData();
@@ -413,23 +413,25 @@ public class DebuildItem {
             FireworkEffectMeta fireworkEffectMeta = (FireworkEffectMeta) meta;
             if (fireworkEffectMeta.hasEffect()) {
                 FireworkEffect fireworkEffect = fireworkEffectMeta.getEffect();
-                section.set("firework.type", fireworkEffect.getType().name());
-                section.set("firework.flicker", fireworkEffect);
-                section.set("firework.trail", fireworkEffect.hasTrail());
+                if (fireworkEffect != null) {
+                    section.set("firework.type", fireworkEffect.getType().name());
+                    section.set("firework.flicker", fireworkEffect);
+                    section.set("firework.trail", fireworkEffect.hasTrail());
 
-                List<Integer> baseColors = new ArrayList<>();
-                List<Integer> fadeColors = new ArrayList<>();
+                    List<Integer> baseColors = new ArrayList<>();
+                    List<Integer> fadeColors = new ArrayList<>();
 
-                ConfigurationSection colors = section.createSection("firework.colors");
-                for (Color color : fireworkEffect.getColors()) {
-                    baseColors.add(color.asRGB());
+                    ConfigurationSection colors = section.createSection("firework.colors");
+                    for (Color color : fireworkEffect.getColors()) {
+                        baseColors.add(color.asRGB());
+                    }
+                    colors.set("base", baseColors);
+
+                    for (Color color : fireworkEffect.getFadeColors()) {
+                        fadeColors.add(color.asRGB());
+                    }
+                    colors.set("fade", fadeColors);
                 }
-                colors.set("base", baseColors);
-
-                for (Color color : fireworkEffect.getFadeColors()) {
-                    fadeColors.add(color.asRGB());
-                }
-                colors.set("fade", fadeColors);
             }
         }
 
@@ -440,7 +442,7 @@ public class DebuildItem {
 
             for (PotionEffect effect : stew.getCustomEffects()) {
                 if (CommonUtil.getMajorVersion(18)) {
-                    effects.add(effect.getType().getKey() + ", " + effect.getDuration() + ", " + effect.getAmplifier());
+                    effects.add(effect.getType().getKey().getKey() + ", " + effect.getDuration() + ", " + effect.getAmplifier());
                 } else {
                     effects.add(effect.getType().getName() + ", " + effect.getDuration() + ", " + effect.getAmplifier());
                 }

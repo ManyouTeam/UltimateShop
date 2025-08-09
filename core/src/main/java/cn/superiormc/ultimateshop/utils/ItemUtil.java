@@ -1,6 +1,5 @@
 package cn.superiormc.ultimateshop.utils;
 
-import cn.superiormc.mythicchanger.utils.CommonUtil;
 import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.LocateManager;

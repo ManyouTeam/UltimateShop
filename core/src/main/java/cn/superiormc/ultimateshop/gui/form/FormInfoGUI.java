@@ -93,7 +93,7 @@ public class FormInfoGUI extends FormGUI {
         }
         if (!item.getSellPrice().empty) {
             tempVal2.button(sell);
-            if (ConfigManager.configManager.containsClickAction("sell-all")) {
+            if (ConfigManager.configManager.containsClickAction("sell-all") && item.isEnableSellAll()) {
                 tempVal2.button(sellAll);
             }
         }

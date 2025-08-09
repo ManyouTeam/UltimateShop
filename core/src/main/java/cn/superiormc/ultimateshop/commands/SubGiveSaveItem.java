@@ -12,7 +12,6 @@ import java.util.List;
 
 public class SubGiveSaveItem extends AbstractCommand {
 
-
     public SubGiveSaveItem() {
         this.id = "givesaveitem";
         this.requiredPermission =  "ultimateshop." + id;
@@ -73,7 +72,7 @@ public class SubGiveSaveItem extends AbstractCommand {
         } else {
             ItemStack item = ItemManager.itemManager.getItemByKey(target, args[1]);
             if (item == null) {
-                LanguageManager.languageManager.sendStringText("error-save-item-not-found", "item", args[1]);
+                LanguageManager.languageManager.sendStringText("error.save-item-not-found", "item", args[1]);
                 return;
             }
             int amount = 1;

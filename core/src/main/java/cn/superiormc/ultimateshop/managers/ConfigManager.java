@@ -169,7 +169,14 @@ public class ConfigManager {
     }
 
     public ObjectShop getShop(String fileName) {
-        return shopConfigs.get(fileName);
+        if (fileName == null) {
+            return null;
+        }
+        ObjectShop shop = shopConfigs.get(fileName);
+        if (shop == null) {
+            return shopConfigs.get(fileName.replace('-', '_'));
+        }
+        return shop;
     }
 
     public Collection<ObjectShop> getShops() {

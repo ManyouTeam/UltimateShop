@@ -47,12 +47,15 @@ public class ModifyDisplayItem {
             UltimateShop.methodUtil.setItemName(tempVal2, item.getDisplayName(player), player);
         }
         if (tempVal2.hasDisplayName()) {
-            UltimateShop.methodUtil.setItemName(tempVal2, CommonUtil.modifyString(tempVal2.getDisplayName(), "amount", String.valueOf(multi),
+            UltimateShop.methodUtil.setItemName(tempVal2, CommonUtil.modifyString(UltimateShop.methodUtil.getItemName(tempVal2), "amount", String.valueOf(multi),
                     "item-name", item.getDisplayName(player)), player);
         }
         List<String> addLore = new ArrayList<>();
         if (tempVal2.hasLore()) {
-            addLore.addAll(tempVal2.getLore());
+            addLore.addAll(CommonUtil.modifyList(player,
+                    UltimateShop.methodUtil.getItemLore(tempVal2),
+                    "amount", String.valueOf(multi),
+                    "item-name", item.getDisplayName(player)));
         }
         addLore.addAll(getModifiedLore(player, multi, item, buyMore, false, clickType));
         if (!addLore.isEmpty()) {
@@ -227,6 +230,19 @@ public class ModifyDisplayItem {
                         break;
                     case 'k':
                         if (!buyMore && item.getBuyMore()) {
+                            if (not) {
+                                continue;
+                            }
+                            addLore.add(tempVal4);
+                        } else if (not) {
+                            addLore.add(tempVal4);
+                        }
+                        break;
+                    case 'm':
+                        if (!parseClickType(item, clickType, false)) {
+                            continue;
+                        }
+                        if (!item.getSellPrice().empty && item.isEnableSellAll()) {
                             if (not) {
                                 continue;
                             }
@@ -419,8 +435,9 @@ public class ModifyDisplayItem {
             case "buy" :
                 return buyOrSell;
             case "sell" :
-            case "sell-all" :
                 return !buyOrSell;
+            case "sell-all" :
+                return !buyOrSell && item.isEnableSellAll();
             case "buy-or-sell" :
                 if (item.getBuyPrice().empty && !item.getSellPrice().empty) {
                     return !buyOrSell;

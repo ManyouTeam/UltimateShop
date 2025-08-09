@@ -2,7 +2,6 @@ package cn.superiormc.ultimateshop.managers;
 
 import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.utils.TextUtil;
-import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -73,8 +72,7 @@ public class LanguageManager {
             if (this.tempMessageFile.getString(args[0]) == null) {
                 UltimateShop.methodUtil.sendMessage(null, TextUtil.pluginPrefix() + " §cCan not found language key: " + args[0] + "!");
                 return;
-            }
-            else {
+            } else {
                 UltimateShop.methodUtil.sendMessage(null, TextUtil.pluginPrefix() + " §cUpdated your language file, added " +
                         "new language key and it's default value: " + args[0] + "!");
                 text = this.tempMessageFile.getString(args[0]);
@@ -95,7 +93,7 @@ public class LanguageManager {
                 text = text.replace(var, args[i + 1]);
             }
         }
-        if (text.length() != 0) {
+        if (!text.isEmpty()) {
             UltimateShop.methodUtil.sendMessage(null, text);
         }
     }
@@ -127,7 +125,7 @@ public class LanguageManager {
                 text = text.replace(var, args[i + 1]);
             }
         }
-        if (text.length() != 0) {
+        if (!text.isEmpty()) {
             UltimateShop.methodUtil.sendMessage(player, text);
         }
     }

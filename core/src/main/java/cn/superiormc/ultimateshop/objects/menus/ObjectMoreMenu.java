@@ -55,8 +55,7 @@ public class ObjectMoreMenu extends ObjectMenu {
             return;
         }
         for (String button : tempVal1.getKeys(false)) {
-            buttonItems.put(button, new ObjectMoreBuyButton(tempVal1.getConfigurationSection(button),
-                    item));
+            buttonItems.put(button, new ObjectMoreBuyButton(tempVal1.getConfigurationSection(button), item));
         }
         int i = 0;
         for (String singleLine : menuConfigs.getStringList("layout")) {

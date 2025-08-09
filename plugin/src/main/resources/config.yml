@@ -189,7 +189,7 @@ display-item:
     - '@a{buy-click}-b'
     - '@b{sell-click}-b'
     - '@k&#FFFACDRight-Shift click to pick amount!-b'
-    - '@b&#FFFACDDrop (Q key) to sell all!-b'
+    - '@m&#FFFACDDrop (Q key) to sell all!-b'
     - '@n&c&l:( Can not do this-i'
     - '@a&cThis item can not be sold-i-m'
     - '@b&cThis item can not be purchased-i-m'
@@ -227,6 +227,8 @@ placeholder:
     can-used-everywhere: false
   math:
     scale: 0
+  cron:
+    format: "yyyy-MM-dd HH:mm:ss"
   data:
     # If your server never use dynamic value in prices or similar things, you can set this option to false.
     # This will improve little plugin performance.

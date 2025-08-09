@@ -2,6 +2,7 @@ package cn.superiormc.ultimateshop.paper;
 
 import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
+import cn.superiormc.ultimateshop.managers.ErrorManager;
 import cn.superiormc.ultimateshop.paper.utils.PaperTextUtil;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
 import cn.superiormc.ultimateshop.utils.SpecialMethodUtil;
@@ -76,11 +77,12 @@ public class PaperMethodUtil implements SpecialMethodUtil {
 
     @Override
     public ItemStack getItemObject(Object object) {
+        if (object instanceof ItemStack) {
+            ErrorManager.errorManager.sendErrorMessage("§6Warning: The item you try obtained is using legacy format!");
+            return (ItemStack) object;
+        }
         if (CommonUtil.getMajorVersion(15)) {
             return ItemStack.deserializeBytes((byte[]) object);
-        }
-        if (object instanceof ItemStack) {
-            return (ItemStack) object;
         }
         return null;
     }

@@ -32,13 +32,24 @@ public class ObjectPrices extends AbstractThings {
     }
 
     public void initSinglePrices() {
+        boolean allIsStatic = true;
         for (String s : section.getKeys(false)) {
             if (section.getConfigurationSection(s) == null) {
                 ErrorManager.errorManager.sendErrorMessage("§cError: Can not get prices section in your shop config!!");
                 singlePrices.add(new ObjectSinglePrice());
+            } else {
+                ObjectSinglePrice singlePrice = new ObjectSinglePrice(s, this);
+                singlePrices.add(singlePrice);
+                if (!singlePrice.isStatic()) {
+                    allIsStatic = false;
+                }
             }
-            else {
-                singlePrices.add(new ObjectSinglePrice(s, this));
+        }
+        if (allIsStatic) {
+            if (mode.equals(ThingMode.ANY)) {
+                mode = ThingMode.CLASSIC_ANY;
+            } else if (mode.equals(ThingMode.ALL)) {
+                mode = ThingMode.CLASSIC_ALL;
             }
         }
         empty = singlePrices.isEmpty();

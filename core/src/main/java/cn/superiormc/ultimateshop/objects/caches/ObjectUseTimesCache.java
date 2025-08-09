@@ -246,6 +246,9 @@ public class ObjectUseTimesCache {
                             "cooldown-buy-time",
                             null);
                 }
+            } else if (mode.equals("COOLDOWN_CUSTOM")) {
+                cooldownBuyTime = CommonUtil.stringToTime(tempVal1,
+                        TextUtil.withPAPI(product.getBuyTimesResetFormat(), cache.player));
             }
         }
     }
@@ -283,6 +286,9 @@ public class ObjectUseTimesCache {
                             "cooldown-sell-time",
                             null);
                 }
+            } else if (mode.equals("COOLDOWN_CUSTOM")) {
+                cooldownSellTime = CommonUtil.stringToTime(tempVal1,
+                        TextUtil.withPAPI(product.getSellTimesResetFormat(), cache.player));
             }
         }
     }
@@ -493,7 +499,7 @@ public class ObjectUseTimesCache {
                     Integer.parseInt(tempVal2[tempVal2.length - 2])).withSecond(
                     Integer.parseInt(tempVal2[tempVal2.length - 1]));
             thisResult = thisResult.plusDays(day).plusMonths(month);
-            if (checkTime.isAfter(thisResult)) {
+            if (!checkTime.isBefore(thisResult)) {
                 thisResult = thisResult.plusDays(1L);
             }
             if (refreshResult == null || thisResult.isBefore(refreshResult)) {
@@ -532,7 +538,7 @@ public class ObjectUseTimesCache {
                     Integer.parseInt(tempVal2[tempVal2.length - 2])).withSecond(
                     Integer.parseInt(tempVal2[tempVal2.length - 1]));
             thisResult = thisResult.plusDays(day).plusMonths(month);
-            if (checkTime.isAfter(thisResult)) {
+            if (!checkTime.isBefore(thisResult)) {
                 thisResult = thisResult.plusDays(1L);
             }
             if (refreshResult == null || thisResult.isBefore(refreshResult)) {
@@ -603,6 +609,7 @@ public class ObjectUseTimesCache {
         switch (mode) {
             case "COOLDOWN_TIMED":
             case "COOLDOWN_TIMER":
+            case "COOLDOWN_CUSTOM":
                 if (!UltimateShop.freeVersion) {
                     if (buyOrSell) {
                         setCooldownBuyTime();
