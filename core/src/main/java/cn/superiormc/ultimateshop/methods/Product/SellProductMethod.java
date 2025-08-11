@@ -72,7 +72,7 @@ public class SellProductMethod {
                     shop);
             return ProductTradeStatus.ERROR;
         }
-        boolean shouldSendMessage = !hide && inventory instanceof PlayerInventory && !test && (quick ||
+        boolean shouldSendMessage = !hide && !test && (quick ||
                 !tempVal1.getShopConfig().getBoolean("settings.hide-message", false));
         ObjectItem tempVal2 = tempVal1.getProduct(product);
         if (tempVal2 == null) {
@@ -117,28 +117,29 @@ public class SellProductMethod {
         }
         // 更改multi
         ObjectProducts tempVal5 = tempVal2.getReward();
-        MaxSellResult sellResult = tempVal5.getMaxAbleSellAmount(inventory, player, playerUseTimes);
-        if (ableMaxSell && tempVal2.isEnableSellAll()) {
+        MaxSellResult sellResult = null;
+        if (ableMaxSell) {
+            int maxAmount = Integer.MAX_VALUE;
+            if (tempVal2.getPlayerSellLimit(player) != -1) {
+                maxAmount = tempVal2.getPlayerSellLimit(player) - playerUseTimes;
+            }
+            if (tempVal2.getServerSellLimit(player) != -1 &&
+                    maxAmount > tempVal2.getServerSellLimit(player) - serverUseTimes) {
+                maxAmount = tempVal2.getServerSellLimit(player) - serverUseTimes;
+            }
+            int configMaxAmount = ConfigManager.configManager.getIntOrDefault("menu.sell-all.max-amount",
+                    "sell.max-amount", 128);
+            if (configMaxAmount >= 0 && maxAmount > configMaxAmount) {
+                maxAmount = configMaxAmount;
+            }
+            if (maxAmount < 0) {
+                maxAmount = 0;
+            }
+            sellResult = tempVal5.getMaxAbleSellAmount(inventory, player, playerUseTimes, multi, maxAmount);
             if (sellResult.getMaxAmount() > 0) {
                 multi = sellResult.getMaxAmount();
             }
-            if (tempVal2.getPlayerSellLimit(player) != -1 &&
-                    multi > tempVal2.getPlayerSellLimit(player) - playerUseTimes &&
-                    tempVal2.getPlayerSellLimit(player) - playerUseTimes > 0) {
-                multi = tempVal2.getPlayerSellLimit(player) - playerUseTimes;
-            }
-            if (tempVal2.getServerSellLimit(player) != -1 &&
-                    multi > tempVal2.getServerSellLimit(player) - serverUseTimes &&
-                    tempVal2.getServerSellLimit(player) - serverUseTimes > 0) {
-                multi = tempVal2.getServerSellLimit(player) - serverUseTimes;
-            }
-            int maxAmount = ConfigManager.configManager.getIntOrDefault("menu.sell-all.max-amount",
-                    "sell.max-amount", 128);
-            if (maxAmount >= 0 && multi >= maxAmount) {
-                multi = maxAmount;
-            }
         }
-
         if (tempVal2.getPlayerSellLimit(player) != -1 &&
                 playerUseTimes + multi > tempVal2.getPlayerSellLimit(player)) {
             if (shouldSendMessage) {
@@ -185,8 +186,7 @@ public class SellProductMethod {
         }
         GiveResult giveResult = null;
         TakeResult takeResult = null;
-        if (ableMaxSell) {
-            sellResult.setMaxAmount(multi);
+        if (sellResult != null) {
             takeResult = sellResult.getTakeResult();
         } else {
             takeResult = tempVal5.takeSingleThing(inventory, player, playerUseTimes, multi, false);
@@ -242,7 +242,7 @@ public class SellProductMethod {
             tempVal8.setCooldownSellTime();
             tempVal11.getUseTimesCache().put(tempVal2, tempVal8);
         }
-        if (!hide && tempVal1.getShopConfig().getBoolean("settings.send-messages-after-buy", true) && !giveResult.empty && !takeResult.empty) {
+        if (!hide && !tempVal1.getShopConfig().getBoolean("settings.hide-message", false) && !giveResult.empty && !takeResult.empty) {
             LanguageManager.languageManager.sendStringText(player,
                     "success-sell",
                     "item",

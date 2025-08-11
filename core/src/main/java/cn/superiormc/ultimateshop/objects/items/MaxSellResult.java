@@ -24,6 +24,9 @@ public class MaxSellResult {
     }
 
     public int getMaxAmount() {
+        if (maxAmount < 0) {
+            return 0;
+        }
         return maxAmount;
     }
 }

@@ -169,7 +169,7 @@ public class ObjectProducts extends AbstractThings {
         return productMaps;
     }
 
-    public MaxSellResult getMaxAbleSellAmount(Inventory inventory, Player player, int times) {
+    public MaxSellResult getMaxAbleSellAmount(Inventory inventory, Player player, int times, int multi, int maxLimit) {
         int maxAmount = -1;
         MaxSellResult sellResult = new MaxSellResult();
         switch (mode) {
@@ -177,6 +177,7 @@ public class ObjectProducts extends AbstractThings {
                 return MaxSellResult.empty;
             case ANY:
             case CLASSIC_ANY:
+                boolean breakThisTime = false;
                 boolean needTrue = true;
                 for (ObjectSingleProduct tempVal1 : singleProducts) {
                     if (!tempVal1.getCondition(player)) {
@@ -187,20 +188,29 @@ public class ObjectProducts extends AbstractThings {
                     }
                     BigDecimal cost = getAmount(player, times, 1, false).get(tempVal1);
                     int tempVal2 = (int) (tempVal1.playerHasAmount(inventory, player) / cost.doubleValue());
-                    if (tempVal2 >= 0) {
+                    if (tempVal2 > 0) {
                         if (maxAmount < 0) {
                             maxAmount = 0;
                         }
-                        maxAmount = tempVal2 + maxAmount;
+                        if (tempVal2 + maxAmount >= maxLimit) {
+                            tempVal2 = maxLimit - maxAmount;
+                            maxAmount = maxLimit;
+                            breakThisTime = true;
+                        } else {
+                            maxAmount = tempVal2 + maxAmount;
+                        }
                         BigDecimal realCost = getAmount(player, times, tempVal2, false).get(tempVal1);
                         if (tempVal1.playerHasEnough(inventory, player, false, realCost.doubleValue())) {
                             sellResult.getTakeResult().addResultMapElement(tempVal1, realCost);
                         } else {
                             needTrue = false;
                         }
+                        if (breakThisTime) {
+                            break;
+                        }
                     }
                 }
-                if (needTrue) {
+                if (needTrue && maxAmount > 0) {
                     sellResult.getTakeResult().setResultBoolean();
                 }
                 sellResult.setMaxAmount(maxAmount);
@@ -220,6 +230,9 @@ public class ObjectProducts extends AbstractThings {
                     if (maxAmount == -1 || tempVal2 < maxAmount) {
                         maxAmount = tempVal2;
                     }
+                }
+                if (maxAmount >= maxLimit) {
+                    maxAmount = maxLimit;
                 }
                 if (maxAmount > 0) {
                     for (ObjectSingleProduct tempVal1 : singleProducts) {
