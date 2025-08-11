@@ -72,7 +72,7 @@ public class SellProductMethod {
                     shop);
             return ProductTradeStatus.ERROR;
         }
-        boolean shouldSendMessage = !hide && !test && (quick ||
+        boolean shouldSendMessage = !hide && inventory instanceof PlayerInventory  && !test && (quick ||
                 !tempVal1.getShopConfig().getBoolean("settings.hide-message", false));
         ObjectItem tempVal2 = tempVal1.getProduct(product);
         if (tempVal2 == null) {
