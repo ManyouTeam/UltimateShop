@@ -170,17 +170,17 @@ public class BuyProductMethod {
             return new ProductTradeStatus(ProductTradeStatus.Status.DONE, takeResult);
         }
         // 尝试给物品
-        if (!tempVal2.getReward().giveThing(playerUseTimes, player, 1, giveResult.getResultMap())) {
+        if (!tempVal2.getReward().giveThing(playerUseTimes, multi, player, 1, giveResult.getResultMap())) {
             if (shouldSendMessage) {
                 LanguageManager.languageManager.sendStringText(player, "inventory-full");
             }
             return ProductTradeStatus.INVENTORY_FULL;
         }
         // 扣钱
-        tempVal5.takeThing(inventory, player, takeResult.getResultMap());
+        tempVal5.takeThing(playerUseTimes, multi, inventory, player, takeResult.getResultMap());
         int calculateAmount = multi * tempVal2.getDisplayItemObject().getAmountPlaceholder(player);
         // 执行动作
-        tempVal2.getBuyAction().runAllActions(new ObjectThingRun(player, playerUseTimes, calculateAmount));
+        tempVal2.getBuyAction().runAllActions(new ObjectThingRun(player, playerUseTimes, multi, calculateAmount));
         // limit+1
         if (tempVal9 != null) {
             if (ConfigManager.configManager.getBoolean("debug")) {

@@ -6,7 +6,7 @@
     <parent>
         <groupId>cn.superiormc</groupId>
         <artifactId>UltimateShop</artifactId>
-        <version>3.9.3</version>
+        <version>3.9.4</version>
     </parent>
 
     <artifactId>core</artifactId>
@@ -327,6 +327,12 @@
             <groupId>net.momirealms</groupId>
             <artifactId>craft-engine-bukkit</artifactId>
             <version>0.0.34</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.bgsoftware</groupId>
+            <artifactId>SuperiorSkyblockAPI</artifactId>
+            <version>2025.1</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>

@@ -211,7 +211,7 @@ public class SellProductMethod {
             return new ProductTradeStatus(ProductTradeStatus.Status.DONE, takeResult);
         }
         // 尝试给物品
-        if (!tempVal2.getSellPrice().giveThing(playerUseTimes, player, multiplier, giveResult.getResultMap())) {
+        if (!tempVal2.getSellPrice().giveThing(playerUseTimes, multi, player, multiplier, giveResult.getResultMap())) {
             if (shouldSendMessage) {
                 LanguageManager.languageManager.sendStringText(player, "inventory-full");
             }
@@ -219,10 +219,10 @@ public class SellProductMethod {
         }
         // 扣物品
         // 扣的是奖励中的东西
-        tempVal5.takeThing(inventory, player, takeResult.getResultMap());
+        tempVal5.takeThing(playerUseTimes, multi, inventory, player, takeResult.getResultMap());
         int calculateAmount = multi * tempVal2.getDisplayItemObject().getAmountPlaceholder(player);
         // 执行动作
-        tempVal2.getSellAction().runAllActions(new ObjectThingRun(player, playerUseTimes, calculateAmount, sellAll));
+        tempVal2.getSellAction().runAllActions(new ObjectThingRun(player, playerUseTimes, multi, calculateAmount, sellAll));
         // limit+1
         if (tempVal9 != null) {
             if (ConfigManager.configManager.getBoolean("debug")) {

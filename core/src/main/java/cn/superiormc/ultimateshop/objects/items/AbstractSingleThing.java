@@ -32,6 +32,8 @@ public abstract class AbstractSingleThing implements Comparable<AbstractSingleTh
 
     public ObjectAction giveAction;
 
+    public ObjectAction takeAction;
+
     public ObjectCondition condition;
 
     public boolean empty;
@@ -77,6 +79,8 @@ public abstract class AbstractSingleThing implements Comparable<AbstractSingleTh
             type = ThingType.VANILLA_ECONOMY;
         } else if (section.contains("material") || section.contains("item")) {
             type = ThingType.VANILLA_ITEM;
+        } else if (section.contains("amount")) {
+            type = ThingType.RESERVE;
         } else {
             type = ThingType.FREE;
         }
@@ -102,6 +106,7 @@ public abstract class AbstractSingleThing implements Comparable<AbstractSingleTh
 
     protected void initAction() {
         giveAction = new ObjectAction(singleSection.getConfigurationSection("give-actions"), things.getItem());
+        takeAction = new ObjectAction(singleSection.getConfigurationSection("take-actions"), things.getItem());
     }
 
     public GiveItemStack playerCanGive(Player player,
@@ -118,7 +123,7 @@ public abstract class AbstractSingleThing implements Comparable<AbstractSingleTh
                 } else {
                     return getItemThing(singleSection, player, cost, false);
                 }
-            case HOOK_ECONOMY : case VANILLA_ECONOMY: case CUSTOM:
+            case HOOK_ECONOMY : case VANILLA_ECONOMY: case CUSTOM: case RESERVE:
                 return new GiveItemStack(cost, this);
         }
         return new GiveItemStack(this);
@@ -167,6 +172,8 @@ public abstract class AbstractSingleThing implements Comparable<AbstractSingleTh
                         section.getString("economy-type"));
             case CUSTOM:
                 return Double.parseDouble(TextUtil.withPAPI(section.getString("match-placeholder", "0"), player));
+            case FREE: case RESERVE:
+                return 0;
             case UNKNOWN:
                 UltimateShop.methodUtil.sendMessage(null, TextUtil.pluginPrefix() + " §c" +
                         "There is something wrong in your shop configs!");
@@ -194,7 +201,6 @@ public abstract class AbstractSingleThing implements Comparable<AbstractSingleTh
         if (section == null) {
             return false;
         }
-
         if (cost < 0) {
             return false;
         }
@@ -231,7 +237,7 @@ public abstract class AbstractSingleThing implements Comparable<AbstractSingleTh
                         (int) cost, take);
             case CUSTOM:
                 return Double.parseDouble(TextUtil.withPAPI(section.getString("match-placeholder", "0"), player)) >= cost;
-            case FREE:
+            case FREE: case RESERVE:
                 return true;
             case UNKNOWN:
                 UltimateShop.methodUtil.sendMessage(null, TextUtil.pluginPrefix() + " §c" +

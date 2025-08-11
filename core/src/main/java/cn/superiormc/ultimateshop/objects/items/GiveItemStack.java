@@ -4,6 +4,7 @@ import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.HookManager;
 import cn.superiormc.ultimateshop.objects.ObjectThingRun;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -64,7 +65,7 @@ public class GiveItemStack {
         return displayItem;
     }
 
-    public void giveToPlayer(int times, double multiplier, Player player) {
+    public void giveToPlayer(int times, int multi, double multiplier, Player player) {
         if (thing.singleSection == null) {
             return;
         }
@@ -91,7 +92,7 @@ public class GiveItemStack {
                         (int) (cost * multiplier));
                 break;
         }
-        thing.giveAction.runAllActions(new ObjectThingRun(player, times, cost));
+        thing.giveAction.runAllActions(new ObjectThingRun(player, times, multi, cost));
     }
 
     public void setCanGive(boolean canGive) {

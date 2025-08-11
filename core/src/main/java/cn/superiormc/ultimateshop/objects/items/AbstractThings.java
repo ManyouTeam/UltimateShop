@@ -1,6 +1,8 @@
 package cn.superiormc.ultimateshop.objects.items;
 
+import cn.superiormc.ultimateshop.objects.ObjectThingRun;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -39,7 +41,7 @@ public abstract class AbstractThings {
                                                int times,
                                                int amount);
 
-    public boolean giveThing(int times, Player player, double multiplier, Map<AbstractSingleThing, BigDecimal> result) {
+    public boolean giveThing(int times, int multi, Player player, double multiplier, Map<AbstractSingleThing, BigDecimal> result) {
         boolean resultBoolean = true;
         Collection<GiveItemStack> giveItemStacks = new ArrayList<>();
         for (AbstractSingleThing singleThing: result.keySet()) {
@@ -53,7 +55,7 @@ public abstract class AbstractThings {
             return false;
         }
         for (GiveItemStack giveItemStack : giveItemStacks) {
-            giveItemStack.giveToPlayer(times, multiplier, player);
+            giveItemStack.giveToPlayer(times, multi, multiplier, player);
         }
         return true;
     }
@@ -65,9 +67,11 @@ public abstract class AbstractThings {
                                                boolean test);
 
 
-    public void takeThing(Inventory inventory, Player player, Map<AbstractSingleThing, BigDecimal> result) {
+    public void takeThing(int times, int multi, Inventory inventory, Player player, Map<AbstractSingleThing, BigDecimal> result) {
         for (AbstractSingleThing singleThing : result.keySet()) {
-            singleThing.playerHasEnough(inventory, player, true, result.get(singleThing).doubleValue());
+            double cost = result.get(singleThing).doubleValue();
+            singleThing.playerHasEnough(inventory, player, true, cost);
+            singleThing.takeAction.runAllActions(new ObjectThingRun(player, times, multi, cost));
         }
     }
 

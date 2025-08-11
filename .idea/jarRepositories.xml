@@ -92,6 +92,11 @@
       <option name="url" value="https://repo1.maven.org/maven2" />
     </remote-repository>
     <remote-repository>
+      <option name="id" value="bg-repo" />
+      <option name="name" value="bg-repo" />
+      <option name="url" value="https://repo.bg-software.com/repository/api/" />
+    </remote-repository>
+    <remote-repository>
       <option name="id" value="codemc-repo" />
       <option name="name" value="codemc-repo" />
       <option name="url" value="https://repo.codemc.org/repository/maven-public/" />

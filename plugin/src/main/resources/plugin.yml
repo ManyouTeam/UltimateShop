@@ -1,5 +1,5 @@
 name: UltimateShop
-version: '3.9.3'
+version: '3.9.4'
 main: cn.superiormc.ultimateshop.UltimateShop
 api-version: 1.14
 folia-supported: true
@@ -16,6 +16,7 @@ softdepend:
   - GriefPrevention
   - HuskTowns
   - HuskClaims
+  - SuperiorSkyblock2
   - MMOItems
   - MythicLib
   - ItemsAdder

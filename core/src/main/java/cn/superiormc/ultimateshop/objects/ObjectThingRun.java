@@ -1,5 +1,6 @@
 package cn.superiormc.ultimateshop.objects;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 
@@ -49,21 +50,21 @@ public class ObjectThingRun {
         this.reopen = false;
     }
 
-    public ObjectThingRun(Player player, int times, double amount) {
+    public ObjectThingRun(Player player, int times, int multi, double amount) {
         this.player = player;
         this.times = times;
         this.amount = amount;
-        this.multi = (int) amount;
+        this.multi = multi;
         this.sellAll = false;
         this.type = null;
         this.reopen = false;
     }
 
-    public ObjectThingRun(Player player, int times, double amount, boolean sellAll) {
+    public ObjectThingRun(Player player, int times, int multi, double amount, boolean sellAll) {
         this.player = player;
         this.times = times;
         this.amount = amount;
-        this.multi = (int) amount;
+        this.multi = multi;
         this.sellAll = sellAll;
         this.type = null;
         this.reopen = false;
@@ -93,7 +94,10 @@ public class ObjectThingRun {
     }
 
     public int getMulti() {
-        return Math.max(multi, 1);
+        if (multi < 1) {
+            return 1;
+        }
+        return multi;
     }
 
     public boolean isReopen() {

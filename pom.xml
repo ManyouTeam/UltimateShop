@@ -5,7 +5,7 @@
 
     <groupId>cn.superiormc</groupId>
     <artifactId>UltimateShop</artifactId>
-    <version>3.9.3</version>
+    <version>3.9.4</version>
     <packaging>pom</packaging>
 
     <modules>
@@ -172,6 +172,10 @@
         <repository>
             <id>momirealms repo</id>
             <url>https://repo.momirealms.net/releases/</url>
+        </repository>
+        <repository>
+            <id>bg-repo</id>
+            <url>https://repo.bg-software.com/repository/api/</url>
         </repository>
     </repositories>
 </project>

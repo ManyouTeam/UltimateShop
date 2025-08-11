@@ -9,5 +9,6 @@ public enum ThingType {
     UNKNOWN,
     MATCH_ITEM,
     CUSTOM,
+    RESERVE,
     FREE
 }
