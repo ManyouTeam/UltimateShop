@@ -7,6 +7,7 @@ import cn.superiormc.ultimateshop.managers.ErrorManager;
 import cn.superiormc.ultimateshop.methods.Product.BuyProductMethod;
 import cn.superiormc.ultimateshop.methods.Product.SellProductMethod;
 import cn.superiormc.ultimateshop.objects.buttons.*;
+import cn.superiormc.ultimateshop.objects.menus.MenuSender;
 import cn.superiormc.ultimateshop.objects.menus.ObjectMoreMenu;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
@@ -38,7 +39,7 @@ public class BuyMoreGUI extends InvGUI {
             return;
         }
         // display item
-        menuButtons = menu.getMenu();
+        menuButtons = menu.getMenu(MenuSender.of(player));
         menuItems = getMenuItems(player);
         int displaySlot = menu.getDisplayItemSlot();
         ItemStack tempVal1 = menuItems.get(displaySlot);

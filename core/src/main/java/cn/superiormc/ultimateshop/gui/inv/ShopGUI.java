@@ -12,9 +12,9 @@ import cn.superiormc.ultimateshop.objects.ObjectShop;
 import cn.superiormc.ultimateshop.objects.ObjectThingRun;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import cn.superiormc.ultimateshop.objects.caches.ObjectUseTimesCache;
+import cn.superiormc.ultimateshop.objects.menus.MenuSender;
 import cn.superiormc.ultimateshop.objects.menus.ObjectMenu;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.Inventory;
@@ -84,7 +84,7 @@ public class ShopGUI extends InvGUI {
                 tempVal4.refreshSellTimes();
             }
         }
-        menuButtons = shopMenu.getMenu();
+        menuButtons = shopMenu.getMenu(MenuSender.of(player));
         menuItems = getMenuItems(player);
         if (Objects.isNull(inv)) {
             if (shop.getShopMenuObject() != null) {
@@ -150,7 +150,7 @@ public class ShopGUI extends InvGUI {
         }
 
         if (UltimateShop.useGeyser &&
-                shopMenu.isUseFloodgateHook() &&
+                shopMenu.isUseGeyser() &&
                 CommonUtil.isBedrockPlayer(player)) {
             FormShopGUI formShopGUI = new FormShopGUI(player, shop, shopMenu, bypass);
             formShopGUI.openGUI(reopen);

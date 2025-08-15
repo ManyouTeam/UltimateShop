@@ -54,7 +54,7 @@ public class SQLDatabase {
         sqlManager.createTable("ultimateshop_useTimes")
                 .addColumn("playerUUID", "VARCHAR(36)")
                 .addColumn("shop", "VARCHAR(48)")
-                .addColumn("product", "VARCHAR(1)")
+                .addColumn("product", "VARCHAR(48)")
                 .addColumn("buyUseTimes", "INT")
                 .addColumn("totalBuyUseTimes", "INT")
                 .addColumn("sellUseTimes", "INT")
@@ -256,8 +256,7 @@ public class SQLDatabase {
         String playerUUID;
         if (cache.server) {
             playerUUID = "Global-Server";
-        }
-        else {
+        } else {
             playerUUID = cache.player.getUniqueId().toString();
         }
         Map<ObjectItem, ObjectUseTimesCache> tempVal1 = cache.getUseTimesCache();
@@ -306,7 +305,7 @@ public class SQLDatabase {
                                     lastResetSellTime,
                                     cooldownBuyTime,
                                     cooldownSellTime)
-                            .executeAsync();
+                            .execute();
                 } else {
                     String[] keys = {"buyUseTimes", "totalBuyUseTimes", "sellUseTimes", "totalSellUseTimes",
                             "lastBuyTime", "lastSellTime", "lastResetBuyTime", "lastResetSellTime",
@@ -320,7 +319,7 @@ public class SQLDatabase {
                             .addCondition("product = '" + tempVal2.getProduct() + "'")
                             .setColumnValues(keys, values)
                             .build()
-                            .executeAsync();
+                            .execute();
                 }
             } catch (Throwable ignored) {
 

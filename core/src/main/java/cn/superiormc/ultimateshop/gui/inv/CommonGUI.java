@@ -6,6 +6,7 @@ import cn.superiormc.ultimateshop.gui.form.FormCommonGUI;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.LanguageManager;
 import cn.superiormc.ultimateshop.objects.ObjectThingRun;
+import cn.superiormc.ultimateshop.objects.menus.MenuSender;
 import cn.superiormc.ultimateshop.objects.menus.MenuType;
 import cn.superiormc.ultimateshop.objects.menus.ObjectMenu;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
@@ -36,7 +37,7 @@ public class CommonGUI extends InvGUI {
                     commonMenu.getName());
             return;
         }
-        menuButtons = commonMenu.getMenu();
+        menuButtons = commonMenu.getMenu(MenuSender.of(player));
         menuItems = getMenuItems(player);
         if (Objects.isNull(inv)) {
             inv = UltimateShop.methodUtil.createNewInv(player, commonMenu.getInt("size", 54),
@@ -82,7 +83,7 @@ public class CommonGUI extends InvGUI {
             return;
         }
 
-        if (UltimateShop.useGeyser && commonMenu.isUseFloodgateHook() && CommonUtil.isBedrockPlayer(player)) {
+        if (UltimateShop.useGeyser && commonMenu.isUseGeyser() && CommonUtil.isBedrockPlayer(player)) {
             FormCommonGUI formCommonGUI = new FormCommonGUI(player, commonMenu, bypass);
             formCommonGUI.openGUI(reopen);
             return;

@@ -5,6 +5,7 @@ import cn.superiormc.ultimateshop.managers.LanguageManager;
 import cn.superiormc.ultimateshop.objects.ObjectThingRun;
 import cn.superiormc.ultimateshop.objects.buttons.AbstractButton;
 import cn.superiormc.ultimateshop.objects.buttons.subobjects.ObjectDisplayItemStack;
+import cn.superiormc.ultimateshop.objects.menus.MenuSender;
 import cn.superiormc.ultimateshop.objects.menus.ObjectMenu;
 import cn.superiormc.ultimateshop.utils.TextUtil;
 import org.bukkit.entity.Player;
@@ -34,7 +35,7 @@ public class FormCommonGUI extends FormGUI {
                     commonMenu.getName());
             return;
         }
-        menuButtons = commonMenu.getMenu();
+        menuButtons = commonMenu.getMenu(MenuSender.of(player));
         SimpleForm.Builder tempVal2 = SimpleForm.builder();
         for (int slot : menuButtons.keySet()) {
             AbstractButton button = menuButtons.get(slot);

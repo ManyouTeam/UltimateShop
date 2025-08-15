@@ -2,7 +2,6 @@ package cn.superiormc.ultimateshop.objects.menus;
 
 import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.gui.inv.CommonGUI;
-import cn.superiormc.ultimateshop.gui.inv.ShopGUI;
 import cn.superiormc.ultimateshop.managers.LanguageManager;
 import cn.superiormc.ultimateshop.objects.ObjectShop;
 import cn.superiormc.ultimateshop.objects.ObjectThingRun;
@@ -12,9 +11,7 @@ import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import cn.superiormc.ultimateshop.objects.items.ObjectAction;
 import cn.superiormc.ultimateshop.objects.items.ObjectCondition;
 import cn.superiormc.ultimateshop.utils.CommandUtil;
-import cn.superiormc.ultimateshop.utils.CommonUtil;
 import cn.superiormc.ultimateshop.utils.TextUtil;
-import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.BukkitCommand;
 import org.bukkit.configuration.Configuration;
@@ -24,6 +21,7 @@ import org.bukkit.entity.Player;
 
 import java.io.File;
 import java.util.*;
+import java.util.function.BiConsumer;
 
 public class ObjectMenu {
 
@@ -49,15 +47,19 @@ public class ObjectMenu {
 
     public Map<String, AbstractButton> buttonItems = new HashMap<>();
 
-    private boolean useFloodgateHook;
+    private boolean useGeyser;
+
+    private boolean dynamicLayout;
 
     public ObjectMenu(String fileName, ObjectShop shop) {
         this.fileName = fileName;
         this.shop = shop;
         this.type = MenuType.Shop;
         initMenu();
-        initShopItems();
-        initButtonItems();
+        if (!dynamicLayout) {
+            initShopItems(MenuSender.empty);
+            initButtonItems(MenuSender.empty);
+        }
     }
 
     public ObjectMenu(String fileName, ObjectItem item) {
@@ -65,14 +67,18 @@ public class ObjectMenu {
         this.shop = item.getShopObject();
         this.type = MenuType.More;
         initMenu();
-        initButtonItems();
+        if (!dynamicLayout) {
+            initButtonItems(MenuSender.empty);
+        }
     }
 
     public ObjectMenu(String fileName) {
         this.fileName = fileName;
         this.type = MenuType.Common;
         initMenu();
-        initButtonItems();
+        if (!dynamicLayout) {
+            initButtonItems(MenuSender.empty);
+        }
         if (!UltimateShop.freeVersion) {
             initCustomCommand();
         }
@@ -102,73 +108,117 @@ public class ObjectMenu {
             this.condition = new ObjectCondition();
             this.openAction = new ObjectAction();
             this.closeAction = new ObjectAction();
-            this.useFloodgateHook = true;
+            this.useGeyser = true;
         } else if (shop != null) {
             this.condition = new ObjectCondition(menuConfigs.getConfigurationSection("conditions"));
             this.openAction = new ObjectAction(menuConfigs.getConfigurationSection("open-actions"), shop);
             this.closeAction = new ObjectAction(menuConfigs.getConfigurationSection("close-actions"));
-            this.useFloodgateHook = true;
+            this.useGeyser = true;
         } else {
             this.condition = new ObjectCondition(menuConfigs.getConfigurationSection("conditions"), shop);
             this.openAction = new ObjectAction(menuConfigs.getConfigurationSection("open-actions"));
             this.closeAction = new ObjectAction(menuConfigs.getConfigurationSection("close-actions"));
-            this.useFloodgateHook = menuConfigs.getBoolean("bedrock.enabled", true);
+            this.useGeyser = menuConfigs.getBoolean("bedrock.enabled", true);
         }
+        this.dynamicLayout = menuConfigs.getBoolean("dynamic-layout", false) && !UltimateShop.freeVersion;
     }
 
-    public void initShopItems() {
-        int i = 0;
+    public void initShopItems(MenuSender menuSender) {
         if (menuConfigs == null) {
             return;
         }
+        int slot = 0;
         for (String singleLine : menuConfigs.getStringList("layout")) {
-            for (int c = 0 ; c < singleLine.length() ; c ++) {
-                char itemChar = singleLine.charAt(c);
-                int slot = i;
-                i ++;
-                if (!UltimateShop.freeVersion && shop.getCopyItem(String.valueOf(itemChar))!= null) {
-                    menuItems.put(slot, shop.getCopyItem(String.valueOf(itemChar)));
-                    continue;
+            int c = 0;
+            while (c < singleLine.length()) {
+                String id;
+
+                if (singleLine.charAt(c) == '`') {
+                    // 找到下一个 `
+                    int end = singleLine.indexOf('`', c + 1);
+                    if (end == -1) {
+                        // 没闭合，当作普通字符处理
+                        id = String.valueOf(singleLine.charAt(c));
+                        c++;
+                    } else {
+                        id = singleLine.substring(c + 1, end);
+                        c = end + 1;
+                    }
+                } else {
+                    id = String.valueOf(singleLine.charAt(c));
+                    c++;
                 }
-                if (shop.getButton(String.valueOf(itemChar)) != null) {
-                    menuItems.put(slot, shop.getButton(String.valueOf(itemChar)));
-                    continue;
+
+                if (!menuSender.isStatic()) {
+                    id = TextUtil.withPAPI(id, menuSender.getPlayer());
                 }
-                if (shop.getProduct(String.valueOf(itemChar)) != null) {
-                    menuItems.put(slot, shop.getProduct(String.valueOf(itemChar)));
-                    continue;
+
+                // 放入物品
+                if (!UltimateShop.freeVersion && shop.getCopyItem(id) != null) {
+                    menuItems.put(slot, shop.getCopyItem(id));
+                } else if (shop.getButton(id) != null) {
+                    menuItems.put(slot, shop.getButton(id));
+                } else if (shop.getProduct(id) != null) {
+                    menuItems.put(slot, shop.getProduct(id));
                 }
+
+                slot++;
             }
         }
     }
 
-    public void initButtonItems() {
+    public void initButtonItems(MenuSender menuSender) {
         if (menuConfigs == null) {
             return;
         }
+
         ConfigurationSection tempVal1 = menuConfigs.getConfigurationSection("buttons");
         if (tempVal1 == null) {
             return;
         }
+
         for (String button : tempVal1.getKeys(false)) {
             if (shop == null) {
                 buttonItems.put(button, new ObjectButton(tempVal1.getConfigurationSection(button)));
-            }
-            else {
-                buttonItems.put(button, new ObjectButton(tempVal1.getConfigurationSection(button),
-                        shop));
+            } else {
+                buttonItems.put(button, new ObjectButton(tempVal1.getConfigurationSection(button), shop));
             }
         }
-        int i = 0;
+
+        int slot = 0;
         for (String singleLine : menuConfigs.getStringList("layout")) {
-            for (int c = 0 ; c < singleLine.length() ; c ++) {
-                char itemChar = singleLine.charAt(c);
-                int slot = i;
-                i ++;
-                if (buttonItems.get(String.valueOf(itemChar)) == null) {
-                    continue;
+            int c = 0;
+            while (c < singleLine.length()) {
+                String id;
+
+                // 读取多字符ID
+                if (singleLine.charAt(c) == '`') {
+                    int end = singleLine.indexOf('`', c + 1);
+                    if (end == -1) {
+                        // 没闭合，退化为单字符
+                        id = String.valueOf(singleLine.charAt(c));
+                        c++;
+                    } else {
+                        id = singleLine.substring(c + 1, end);
+                        c = end + 1;
+                    }
+                } else {
+                    // 单字符ID
+                    id = String.valueOf(singleLine.charAt(c));
+                    c++;
                 }
-                menuItems.put(slot, buttonItems.get(String.valueOf(itemChar)));
+
+                if (!menuSender.isStatic()) {
+                    id = TextUtil.withPAPI(id, menuSender.getPlayer());
+                }
+
+                // 放入按钮（如果存在）
+                AbstractButton buttonObj = buttonItems.get(id);
+                if (buttonObj != null) {
+                    menuItems.put(slot, buttonObj);
+                }
+
+                slot++;
             }
         }
     }
@@ -205,7 +255,13 @@ public class ObjectMenu {
         return menuConfigs.getInt(path, defaultValue);
     }
 
-    public Map<Integer, AbstractButton> getMenu() {
+    public Map<Integer, AbstractButton> getMenu(MenuSender menuSender) {
+        if (dynamicLayout) {
+            if (type == MenuType.Shop) {
+                initShopItems(menuSender);
+            }
+            initButtonItems(menuSender);
+        }
         return menuItems;
     }
 
@@ -233,7 +289,34 @@ public class ObjectMenu {
         return menuConfigs;
     }
 
-    public boolean isUseFloodgateHook() {
-        return useFloodgateHook;
+    public boolean isUseGeyser() {
+        return useGeyser;
     }
+
+    protected void parseLayout(List<String> layout, BiConsumer<Integer, String> itemHandler) {
+        int slot = 0;
+        for (String singleLine : layout) {
+            int c = 0;
+            while (c < singleLine.length()) {
+                String id;
+                if (singleLine.charAt(c) == '`') {
+                    int end = singleLine.indexOf('`', c + 1);
+                    if (end == -1) {
+                        id = String.valueOf(singleLine.charAt(c));
+                        c++;
+                    } else {
+                        id = singleLine.substring(c + 1, end);
+                        c = end + 1;
+                    }
+                } else {
+                    id = String.valueOf(singleLine.charAt(c));
+                    c++;
+                }
+
+                itemHandler.accept(slot, id);
+                slot++;
+            }
+        }
+    }
+
 }

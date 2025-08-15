@@ -13,6 +13,7 @@ import cn.superiormc.ultimateshop.objects.buttons.AbstractButton;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import cn.superiormc.ultimateshop.objects.buttons.subobjects.ObjectDisplayItemStack;
 import cn.superiormc.ultimateshop.objects.caches.ObjectUseTimesCache;
+import cn.superiormc.ultimateshop.objects.menus.MenuSender;
 import cn.superiormc.ultimateshop.objects.menus.ObjectMenu;
 import cn.superiormc.ultimateshop.utils.TextUtil;
 import org.bukkit.Bukkit;
@@ -86,7 +87,7 @@ public class FormShopGUI extends FormGUI {
                 tempVal4.refreshSellTimes();
             }
         }
-        menuButtons = shop.getShopMenuObject().getMenu();
+        menuButtons = shop.getShopMenuObject().getMenu(MenuSender.of(player));
         SimpleForm.Builder tempVal5 = SimpleForm.builder();
         Map<Integer, AbstractButton> tempVal8 = new LinkedHashMap<>();
         Map<Integer, AbstractButton> tempVal7 = new LinkedHashMap<>();

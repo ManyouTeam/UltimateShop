@@ -4,6 +4,7 @@ import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.LocateManager;
 import cn.superiormc.ultimateshop.methods.Items.DebuildItem;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.MemoryConfiguration;
 import org.bukkit.configuration.MemorySection;
 import org.bukkit.inventory.ItemStack;
@@ -56,6 +57,10 @@ public class ItemUtil {
 
     public static boolean isSameItem(ItemStack item1, ItemStack item2) {
         if (ConfigManager.configManager.getStringOrDefault("sell-mode", "sell.sell-method", "Bukkit").equals("Bukkit")) {
+            if (ConfigManager.configManager.getBoolean("debug")) {
+                UltimateShop.methodUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fItem in player inventory: " + item1);
+                UltimateShop.methodUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fItem in shop: " + item2);
+            }
             return item1.isSimilar(item2);
         }
         Map<String, Object> item1Result = DebuildItem.debuildItem(item1, new MemoryConfiguration()).getValues(true);

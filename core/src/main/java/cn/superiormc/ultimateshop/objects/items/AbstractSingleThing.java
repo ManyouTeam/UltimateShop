@@ -204,6 +204,9 @@ public abstract class AbstractSingleThing implements Comparable<AbstractSingleTh
         if (cost < 0) {
             return false;
         }
+        if (!singleSection.getBoolean("take", true)) {
+            take = false;
+        }
         switch (type) {
             case HOOK_ITEM:
                 String pluginName = section.getString("hook-plugin", "");

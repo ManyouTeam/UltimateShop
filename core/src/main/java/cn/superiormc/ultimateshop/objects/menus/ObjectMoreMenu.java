@@ -29,21 +29,16 @@ public class ObjectMoreMenu extends ObjectMenu {
         if (displayItem == null) {
             return;
         }
-        int i = 0;
-        for (String singleLine : menuConfigs.getStringList("layout")) {
-            for (int c = 0 ; c < singleLine.length() ; c ++) {
-                char itemChar = singleLine.charAt(c);
-                int slot = i;
-                i ++;
-                if (displayItem.equals(String.valueOf(itemChar))) {
-                    displayItemSlot = slot;
-                    menuItems.put(slot, new ObjectMoreDisplayButton(
-                            menuConfigs.getConfigurationSection("display-item"),
-                            item)
-                    );
-                }
+
+        parseLayout(menuConfigs.getStringList("layout"), (slot, id) -> {
+            if (displayItem.equals(id)) {
+                displayItemSlot = slot;
+                menuItems.put(slot, new ObjectMoreDisplayButton(
+                        menuConfigs.getConfigurationSection("display-item"),
+                        item
+                ));
             }
-        }
+        });
     }
 
     private void initConfirmItem() {
@@ -57,18 +52,13 @@ public class ObjectMoreMenu extends ObjectMenu {
         for (String button : tempVal1.getKeys(false)) {
             buttonItems.put(button, new ObjectMoreBuyButton(tempVal1.getConfigurationSection(button), item));
         }
-        int i = 0;
-        for (String singleLine : menuConfigs.getStringList("layout")) {
-            for (int c = 0 ; c < singleLine.length() ; c ++) {
-                char itemChar = singleLine.charAt(c);
-                int slot = i;
-                i ++;
-                if (buttonItems.get(String.valueOf(itemChar)) == null) {
-                    continue;
-                }
-                menuItems.put(slot, buttonItems.get(String.valueOf(itemChar)));
+
+        parseLayout(menuConfigs.getStringList("layout"), (slot, id) -> {
+            AbstractButton btn = buttonItems.get(id);
+            if (btn != null) {
+                menuItems.put(slot, btn);
             }
-        }
+        });
     }
 
     private void initSelectAmountItem() {
@@ -82,18 +72,13 @@ public class ObjectMoreMenu extends ObjectMenu {
         for (String button : tempVal1.getKeys(false)) {
             buttonItems.put(button, new ObjectMoreButton(tempVal1.getConfigurationSection(button)));
         }
-        int i = 0;
-        for (String singleLine : menuConfigs.getStringList("layout")) {
-            for (int c = 0 ; c < singleLine.length() ; c ++) {
-                char itemChar = singleLine.charAt(c);
-                int slot = i;
-                i ++;
-                if (buttonItems.get(String.valueOf(itemChar)) == null) {
-                    continue;
-                }
-                menuItems.put(slot, buttonItems.get(String.valueOf(itemChar)));
+
+        parseLayout(menuConfigs.getStringList("layout"), (slot, id) -> {
+            AbstractButton btn = buttonItems.get(id);
+            if (btn != null) {
+                menuItems.put(slot, btn);
             }
-        }
+        });
     }
 
     public int getDisplayItemSlot() {

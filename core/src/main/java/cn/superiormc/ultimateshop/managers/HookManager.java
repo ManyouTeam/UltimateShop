@@ -7,7 +7,6 @@ import cn.superiormc.ultimateshop.hooks.protection.*;
 import cn.superiormc.ultimateshop.papi.PlaceholderAPIExpansion;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
 import cn.superiormc.ultimateshop.utils.TextUtil;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
