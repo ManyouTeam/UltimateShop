@@ -1,6 +1,7 @@
 package cn.superiormc.ultimateshop.papi;
 
 import cn.superiormc.ultimateshop.UltimateShop;
+import cn.superiormc.ultimateshop.api.ShopHelper;
 import cn.superiormc.ultimateshop.cache.PlayerCache;
 import cn.superiormc.ultimateshop.managers.CacheManager;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
@@ -13,6 +14,7 @@ import cn.superiormc.ultimateshop.utils.TextUtil;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 public class PlaceholderAPIExpansion extends PlaceholderExpansion {
@@ -60,6 +62,12 @@ public class PlaceholderAPIExpansion extends PlaceholderExpansion {
         String[] args = params.split("_");
         if (args.length < 1) {
             return null;
+        } else if (args[0].contains("hold-buy-price")) {
+            ItemStack[] items = new ItemStack[]{player.getInventory().getItemInMainHand()};
+            return ShopHelper.getBuyPricesDisplay(items, player, 1);
+        } else if (args[0].contains("hold-sell-price")) {
+            ItemStack[] items = new ItemStack[]{player.getInventory().getItemInMainHand()};
+            return ShopHelper.getSellPricesDisplay(items, player, 1);
         } else if (args[0].startsWith("{")) {
             return TextUtil.parseBuiltInPlaceholder(params, player);
         } else {
@@ -94,13 +102,13 @@ public class PlaceholderAPIExpansion extends PlaceholderExpansion {
                 case "buy-price":
                     return TextUtil.parse(ObjectPrices.getDisplayNameInLine(player,
                             1,
-                            item.getBuyPrice().takeSingleThing(player.getInventory(), player, playerTimesCache.getBuyUseTimes(), 1, true).getResultMap(),
+                            item.getBuyPrice().take(player.getInventory(), player, playerTimesCache.getBuyUseTimes(), 1, true).getResultMap(),
                             item.getBuyPrice().getMode(),
                             !ConfigManager.configManager.getBoolean("placeholder.status.can-used-everywhere")));
                 case "sell-price":
                     return TextUtil.parse(ObjectPrices.getDisplayNameInLine(player,
                             1,
-                            item.getSellPrice().giveSingleThing(player, playerTimesCache.getBuyUseTimes(), 1).getResultMap(),
+                            item.getSellPrice().give(player, playerTimesCache.getBuyUseTimes(), 1).getResultMap(),
                             item.getSellPrice().getMode(),
                             !ConfigManager.configManager.getBoolean("placeholder.status.can-used-everywhere")));
                 case "buy-limit-player":

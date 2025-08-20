@@ -88,13 +88,13 @@ public class ObjectDisplayItemStack {
                         "buy-price",
                         ObjectPrices.getDisplayNameInLine(player,
                                 1,
-                                item.getBuyPrice().takeSingleThing(player.getInventory(), player, tempVal9.getBuyUseTimes(), 1, true).getResultMap(),
+                                item.getBuyPrice().take(player.getInventory(), player, tempVal9.getBuyUseTimes(), 1, true).getResultMap(),
                                 item.getBuyPrice().getMode(),
                                 false),
                         "sell-price",
                         ObjectPrices.getDisplayNameInLine(player,
                                 1,
-                                item.getSellPrice().giveSingleThing(player, tempVal9.getBuyUseTimes(), 1).getResultMap(),
+                                item.getSellPrice().give(player, tempVal9.getBuyUseTimes(), 1).getResultMap(),
                                 item.getSellPrice().getMode(),
                                 false)));
             }

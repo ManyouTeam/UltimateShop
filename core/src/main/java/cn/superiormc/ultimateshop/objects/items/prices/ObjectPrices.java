@@ -129,7 +129,7 @@ public class ObjectPrices extends AbstractThings {
     }
 
     @Override
-    public GiveResult giveSingleThing(Player player, int times, int amount) {
+    public GiveResult give(Player player, int times, int amount) {
         Map<AbstractSingleThing, BigDecimal> result = new TreeMap<>();
         GiveResult resultObject = new GiveResult(result);
         if (section == null || singlePrices.isEmpty()) {
@@ -165,7 +165,7 @@ public class ObjectPrices extends AbstractThings {
 
     // 作为价格时候使用
     @Override
-    public TakeResult takeSingleThing(Inventory inventory, Player player, int times, int amount, boolean test) {
+    public TakeResult take(Inventory inventory, Player player, int times, int amount, boolean test) {
         Map<AbstractSingleThing, BigDecimal> result = new TreeMap<>();
         TakeResult resultObject = new TakeResult(result);
         if (section == null) {
@@ -210,7 +210,9 @@ public class ObjectPrices extends AbstractThings {
                     }
                     if (tempVal5.get(tempVal11)) {
                         resultObject.addResultMapElement(tempVal11, cost);
-                        resultObject.setResultBoolean();
+                        if (!test) {
+                            resultObject.setResultBoolean();
+                        }
                         return resultObject;
                     }
                 }

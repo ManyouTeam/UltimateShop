@@ -143,10 +143,10 @@ public class BuyProductMethod {
             return ProductTradeStatus.SERVER_MAX;
         }
         GiveResult giveResult = null;
-        TakeResult takeResult = tempVal5.takeSingleThing(inventory, player, playerUseTimes, multi, false);
+        TakeResult takeResult = tempVal5.take(inventory, player, playerUseTimes, multi, false);
         // API
         if (!test) {
-            giveResult = tempVal2.getReward().giveSingleThing(player, playerUseTimes, multi);
+            giveResult = tempVal2.getReward().give(player, playerUseTimes, multi);
             ItemPreTransactionEvent event = new ItemPreTransactionEvent(true, player, multi, tempVal2, giveResult, takeResult);
             Bukkit.getServer().getPluginManager().callEvent(event);
         }
@@ -170,14 +170,14 @@ public class BuyProductMethod {
             return new ProductTradeStatus(ProductTradeStatus.Status.DONE, takeResult);
         }
         // 尝试给物品
-        if (!tempVal2.getReward().giveThing(playerUseTimes, multi, player, 1, giveResult.getResultMap())) {
+        if (!giveResult.give(playerUseTimes, multi, player, 1)) {
             if (shouldSendMessage) {
                 LanguageManager.languageManager.sendStringText(player, "inventory-full");
             }
             return ProductTradeStatus.INVENTORY_FULL;
         }
         // 扣钱
-        tempVal5.takeThing(playerUseTimes, multi, inventory, player, takeResult.getResultMap());
+        takeResult.take(playerUseTimes, multi, inventory, player);
         int calculateAmount = multi * tempVal2.getDisplayItemObject().getAmountPlaceholder(player);
         // 执行动作
         tempVal2.getBuyAction().runAllActions(new ObjectThingRun(player, playerUseTimes, multi, calculateAmount));

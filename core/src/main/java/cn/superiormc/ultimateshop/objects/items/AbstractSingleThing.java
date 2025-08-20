@@ -319,6 +319,14 @@ public abstract class AbstractSingleThing implements Comparable<AbstractSingleTh
         return displayPlaceholder;
     }
 
+    public ConfigurationSection getSingleSection() {
+        return singleSection;
+    }
+
+    public AbstractThings getThings() {
+        return things;
+    }
+
     @Override
     public int compareTo(@NotNull AbstractSingleThing otherThing) {
         int len1 = getId().length();

@@ -35,11 +35,11 @@ public class SellProductMethod {
     }
 
     public static ProductTradeStatus startSell(String shop,
-                                                                   String product,
-                                                                   Player player,
-                                                                   boolean quick,
-                                                                   boolean test,
-                                                                   int multi) {
+                                               String product,
+                                               Player player,
+                                               boolean quick,
+                                               boolean test,
+                                               int multi) {
         return startSell(shop, product, player, quick, test, false, multi);
     }
 
@@ -189,11 +189,11 @@ public class SellProductMethod {
         if (sellResult != null) {
             takeResult = sellResult.getTakeResult();
         } else {
-            takeResult = tempVal5.takeSingleThing(inventory, player, playerUseTimes, multi, false);
+            takeResult = tempVal5.take(inventory, player, playerUseTimes, multi, false);
         }
         // API
         if (!test) {
-            giveResult = tempVal2.getSellPrice().giveSingleThing(player, playerUseTimes, multi);
+            giveResult = tempVal2.getSellPrice().give(player, playerUseTimes, multi);
             ItemPreTransactionEvent event = new ItemPreTransactionEvent(false, player, multi, tempVal2, giveResult, takeResult);
             Bukkit.getServer().getPluginManager().callEvent(event);
         }
@@ -211,7 +211,7 @@ public class SellProductMethod {
             return new ProductTradeStatus(ProductTradeStatus.Status.DONE, takeResult);
         }
         // 尝试给物品
-        if (!tempVal2.getSellPrice().giveThing(playerUseTimes, multi, player, multiplier, giveResult.getResultMap())) {
+        if (!giveResult.give(playerUseTimes, multi, player, multiplier)) {
             if (shouldSendMessage) {
                 LanguageManager.languageManager.sendStringText(player, "inventory-full");
             }
@@ -219,7 +219,7 @@ public class SellProductMethod {
         }
         // 扣物品
         // 扣的是奖励中的东西
-        tempVal5.takeThing(playerUseTimes, multi, inventory, player, takeResult.getResultMap());
+        takeResult.take(playerUseTimes, multi, inventory, player);
         int calculateAmount = multi * tempVal2.getDisplayItemObject().getAmountPlaceholder(player);
         // 执行动作
         tempVal2.getSellAction().runAllActions(new ObjectThingRun(player, playerUseTimes, multi, calculateAmount, sellAll));

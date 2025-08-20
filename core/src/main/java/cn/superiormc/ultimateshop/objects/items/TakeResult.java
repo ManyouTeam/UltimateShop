@@ -1,5 +1,9 @@
 package cn.superiormc.ultimateshop.objects.items;
 
+import cn.superiormc.ultimateshop.objects.ObjectThingRun;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
+
 import java.math.BigDecimal;
 import java.util.Map;
 
@@ -30,7 +34,22 @@ public class TakeResult {
         return resultMap;
     }
 
+    public AbstractThings getThings() {
+        for (AbstractSingleThing singleThing : resultMap.keySet()) {
+            return singleThing.getThings();
+        }
+        return null;
+    }
+
     public boolean getResultBoolean() {
         return resultBoolean;
+    }
+
+    public void take(int times, int amount, Inventory inventory, Player player) {
+        for (AbstractSingleThing singleThing : resultMap.keySet()) {
+            double cost = resultMap.get(singleThing).doubleValue();
+            singleThing.playerHasEnough(inventory, player, true, cost);
+            singleThing.takeAction.runAllActions(new ObjectThingRun(player, times, amount, cost));
+        }
     }
 }

@@ -1,16 +1,9 @@
 package cn.superiormc.ultimateshop.objects.items;
 
-import cn.superiormc.ultimateshop.objects.ObjectThingRun;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
-
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Map;
 
 public abstract class AbstractThings {
 
@@ -37,43 +30,16 @@ public abstract class AbstractThings {
         return mode;
     }
 
-    public abstract GiveResult giveSingleThing(Player player,
-                                               int times,
-                                               int amount);
+    public abstract GiveResult give(Player player,
+                                    int times,
+                                    int amount);
 
-    public boolean giveThing(int times, int multi, Player player, double multiplier, Map<AbstractSingleThing, BigDecimal> result) {
-        boolean resultBoolean = true;
-        Collection<GiveItemStack> giveItemStacks = new ArrayList<>();
-        for (AbstractSingleThing singleThing: result.keySet()) {
-            GiveItemStack giveItemStack = singleThing.playerCanGive(player, result.get(singleThing).doubleValue());
-            giveItemStacks.add(giveItemStack);
-            if (!giveItemStack.isCanGive()) {
-                resultBoolean = false;
-            }
-        }
-        if (!resultBoolean) {
-            return false;
-        }
-        for (GiveItemStack giveItemStack : giveItemStacks) {
-            giveItemStack.giveToPlayer(times, multi, multiplier, player);
-        }
-        return true;
-    }
+    public abstract TakeResult take(Inventory inventory,
+                                    Player player,
+                                    int times,
+                                    int amount,
+                                    boolean test);
 
-    public abstract TakeResult takeSingleThing(Inventory inventory,
-                                               Player player,
-                                               int times,
-                                               int amount,
-                                               boolean test);
-
-
-    public void takeThing(int times, int multi, Inventory inventory, Player player, Map<AbstractSingleThing, BigDecimal> result) {
-        for (AbstractSingleThing singleThing : result.keySet()) {
-            double cost = result.get(singleThing).doubleValue();
-            singleThing.playerHasEnough(inventory, player, true, cost);
-            singleThing.takeAction.runAllActions(new ObjectThingRun(player, times, multi, cost));
-        }
-    }
 
     private void initThingMode(String mode) {
         switch(mode.toUpperCase()) {

@@ -49,7 +49,7 @@ public class ObjectProducts extends AbstractThings {
     }
 
     @Override
-    public GiveResult giveSingleThing(Player player, int times, int amount) {
+    public GiveResult give(Player player, int times, int amount) {
         Map<AbstractSingleThing, BigDecimal> result = new TreeMap<>();
         GiveResult resultObject = new GiveResult(result);
         if (section == null || singleProducts.isEmpty()) {
@@ -91,7 +91,7 @@ public class ObjectProducts extends AbstractThings {
     }
 
     @Override
-    public TakeResult takeSingleThing(Inventory inventory, Player player, int times, int amount, boolean test) {
+    public TakeResult take(Inventory inventory, Player player, int times, int amount, boolean test) {
         Map<AbstractSingleThing, BigDecimal> result = new TreeMap<>();
         TakeResult resultObject = new TakeResult(result);
         if (section == null) {
@@ -109,8 +109,8 @@ public class ObjectProducts extends AbstractThings {
                         continue;
                     }
                     cost = getAmount(player, times, amount, false).get(tempVal1);
+                    resultObject.addResultMapElement(tempVal1, cost);
                     if (!test && tempVal1.playerHasEnough(inventory, player, false, cost.doubleValue())) {
-                        resultObject.addResultMapElement(tempVal1, cost);
                         resultObject.setResultBoolean();
                         return resultObject;
                     }

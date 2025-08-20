@@ -14,8 +14,14 @@ error:
   random-placeholder-not-found: "&#98FB98[UltimateShop] &cWe can't find random placeholder: {placeholder}!"
   random-placeholder-element-not-found: "&#98FB98[UltimateShop] &cSeems that random placeholder {placeholder} does not include element {element}!"
   length-only-one: "&#98FB98[UltimateShop] &cProduct ID length must be 1 char!"
+  result-empty: "&#98FB98[UltimateShop] &cSearch result is empty!"
 
 plugin:
+  search: |
+    &#98FB98&lUltimateShop &7Search Result
+    &fTarget Item: {item-name} in shop {shop} &7(/shop menu {shop})
+    &fBuy Price: {buy-price}
+    &fSell Price: {sell-price}
   reloading: "&#98FB98[UltimateShop] &fTrying reload the plugin, server may have TPS
     drop or even crash if you have much shop products and online players because we are trying save
     their data in server main thread. We recommend you restart the server instead of reload plugin
