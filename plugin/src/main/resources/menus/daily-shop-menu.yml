@@ -1,0 +1,32 @@
+# PREMIUM version only.
+
+title: '{shop-name}'
+size: 36
+
+conditions:
+  1:
+    type: permission
+    permission: 'test.required'
+
+open-actions:
+  1:
+    type: sound
+    sound: item.book.page_turn
+
+dynamic-layout: true
+
+layout:
+  - '000000000'
+  - '000`{random_daily;;1}``{random_daily;;2}``{random_daily;;3}`000'
+  - '000000000'
+  - 'a0003000b'
+
+buttons:
+  3:
+    display-item:
+      material: ARROW
+      name: '&c« Go back'
+    actions:
+      1:
+        type: open_menu
+        menu: main

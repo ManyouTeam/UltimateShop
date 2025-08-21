@@ -51,8 +51,9 @@ public class InitManager {
         resourceOutput("menus/buy-more-buy.yml", false);
         resourceOutput("menus/buy-more-sell.yml", false);
         resourceOutput("menus/example-shop-menu.yml", false);
+        resourceOutput("menus/daily-shop-menu.yml", false);
         resourceOutput("random_placeholders/daily.yml", false);
-        resourceOutput("random_placeholders/rotate.yml", false);
+        resourceOutput("random_placeholders/reset.yml", false);
         resourceOutput("sell_sticks/A.yml", false);
         resourceOutput("sell_sticks/B.yml", false);
         resourceOutput("sell_sticks/C.yml", false);

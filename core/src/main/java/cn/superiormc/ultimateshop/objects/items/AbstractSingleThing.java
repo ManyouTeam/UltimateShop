@@ -171,7 +171,12 @@ public abstract class AbstractSingleThing implements Comparable<AbstractSingleTh
                 return HookManager.hookManager.getEconomyAmount(player,
                         section.getString("economy-type"));
             case CUSTOM:
-                return Double.parseDouble(TextUtil.withPAPI(section.getString("match-placeholder", "0"), player));
+                try {
+                    return Double.parseDouble(TextUtil.withPAPI(section.getString("match-placeholder", "0"), player));
+                } catch (Throwable throwable) {
+                    throwable.printStackTrace();
+                    return 0;
+                }
             case FREE: case RESERVE:
                 return 0;
             case UNKNOWN:
@@ -239,12 +244,16 @@ public abstract class AbstractSingleThing implements Comparable<AbstractSingleTh
                         section.getString("economy-type"),
                         (int) cost, take);
             case CUSTOM:
-                return Double.parseDouble(TextUtil.withPAPI(section.getString("match-placeholder", "0"), player)) >= cost;
+                try {
+                    return Double.parseDouble(TextUtil.withPAPI(section.getString("match-placeholder", "0"), player)) >= cost;
+                } catch (Throwable throwable) {
+                    throwable.printStackTrace();
+                    return false;
+                }
             case FREE: case RESERVE:
                 return true;
             case UNKNOWN:
-                UltimateShop.methodUtil.sendMessage(null, TextUtil.pluginPrefix() + " §c" +
-                        "There is something wrong in your shop configs!");
+                UltimateShop.methodUtil.sendMessage(null, TextUtil.pluginPrefix() + " §cThere is something wrong in your shop configs!");
                 return false;
         }
         return false;

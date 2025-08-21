@@ -81,7 +81,7 @@ public class ShopHelper {
                 if (takeResult != null && !takeResult.empty && takeResult.getResultBoolean()) {
                     TakeResult anotherTakeResult = item.getBuyPrice().take(inventory, player, getBuyUseTimes(item, player), amount, false);
                     if (anotherTakeResult != null) {
-                        return ObjectPrices.getDisplayNameInLine(player, amount, anotherTakeResult.getResultMap(), item.getBuyPrice().getMode(), false);
+                        return ObjectPrices.getDisplayNameInLine(player, amount, anotherTakeResult.getResultMap(), item.getBuyPrice().getMode(), true);
                     }
                 }
             }
@@ -113,7 +113,7 @@ public class ShopHelper {
                 TakeResult takeResult = item.getReward().take(inventory, player, 1, 1, false);
                 if (takeResult != null && !takeResult.empty && takeResult.getResultBoolean()) {
                     GiveResult anotherGiveResult = item.getSellPrice().give(player, getBuyUseTimes(item, player), amount);
-                    return ObjectPrices.getDisplayNameInLine(player, amount, anotherGiveResult.getResultMap(), item.getReward().getMode(), false);
+                    return ObjectPrices.getDisplayNameInLine(player, amount, anotherGiveResult.getResultMap(), item.getReward().getMode(), true);
                 }
             }
         }
