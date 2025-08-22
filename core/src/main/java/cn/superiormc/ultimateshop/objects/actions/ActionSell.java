@@ -1,5 +1,6 @@
 package cn.superiormc.ultimateshop.objects.actions;
 
+import cn.superiormc.ultimateshop.api.ShopHelper;
 import cn.superiormc.ultimateshop.methods.Product.SellProductMethod;
 import cn.superiormc.ultimateshop.objects.ObjectThingRun;
 import org.bukkit.entity.Player;
@@ -15,8 +16,8 @@ public class ActionSell extends AbstractRunAction {
     protected void onDoAction(ObjectSingleAction singleAction, ObjectThingRun thingRun) {
         Player player = thingRun.getPlayer();
         double amount = thingRun.getAmount();
-        singleAction.setLastTradeStatus(SellProductMethod.startSell(singleAction.getString("shop", player, amount),
-                singleAction.getString("item", player, amount),
+        singleAction.setLastTradeStatus(SellProductMethod.startSell(ShopHelper.getItemFromID(singleAction.getString("shop", player, amount),
+                        singleAction.getString("item", player, amount)),
                 player,
                 true,
                 false,

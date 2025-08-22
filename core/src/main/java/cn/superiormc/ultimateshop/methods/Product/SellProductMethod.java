@@ -30,68 +30,52 @@ import java.time.LocalDateTime;
 
 public class SellProductMethod {
 
-    public static ProductTradeStatus startSell(String shop, String product, Player player, boolean quick) {
-        return startSell(shop, product, player, quick, false, 1);
+    public static ProductTradeStatus startSell(ObjectItem item, Player player, boolean hideMessage) {
+        return startSell(item, player, hideMessage, false, 1);
     }
 
-    public static ProductTradeStatus startSell(String shop,
-                                               String product,
+    public static ProductTradeStatus startSell(ObjectItem item,
                                                Player player,
-                                               boolean quick,
+                                               boolean hideMessage,
                                                boolean test,
                                                int multi) {
-        return startSell(shop, product, player, quick, test, false, multi);
+        return startSell(item, player, hideMessage, test, false, multi);
     }
 
-    public static ProductTradeStatus startSell(String shop,
-                                               String product,
+    public static ProductTradeStatus startSell(ObjectItem item,
                                                Player player,
-                                               boolean quick,
+                                               boolean hideMessage,
                                                boolean test,
                                                boolean ableMaxSell,
                                                int multi) {
-        return startSell(player.getInventory(), shop, product, player, quick, test, false, ableMaxSell, false, multi, 1);
+        return startSell(player.getInventory(), item, player, hideMessage, test, false, ableMaxSell, false, multi, 1);
     }
 
     public static ProductTradeStatus startSell(Inventory inventory,
-                                               String shop,
-                                               String product,
+                                               ObjectItem item,
                                                Player player,
-                                               boolean quick,
+                                               boolean hideMessage,
                                                boolean test,
                                                boolean hide,
                                                boolean ableMaxSell,
                                                boolean sellAll,
                                                int multi,
                                                double multiplier) {
-        ObjectShop tempVal1 = ConfigManager.configManager.getShop(shop);
-        if (tempVal1 == null) {
-            LanguageManager.languageManager.sendStringText(player,
-                    "error.shop-not-found",
-                    "shop",
-                    shop);
+        if (item == null) {
             return ProductTradeStatus.ERROR;
         }
-        boolean shouldSendMessage = !hide && inventory instanceof PlayerInventory  && !test && (quick ||
-                !tempVal1.getShopConfig().getBoolean("settings.hide-message", false));
-        ObjectItem tempVal2 = tempVal1.getProduct(product);
-        if (tempVal2 == null) {
-            LanguageManager.languageManager.sendStringText(player,
-                    "error.product-not-found",
-                    "product",
-                    product);
-            return ProductTradeStatus.ERROR;
-        }
-        if (!tempVal2.getSellCondition(player)) {
+        boolean shouldSendMessage = !hide && inventory instanceof PlayerInventory  && !test && (hideMessage ||
+                !item.getShopObject().getShopConfig().getBoolean("settings.hide-message", false));
+        if (!item.getSellCondition(player)) {
             if (shouldSendMessage) {
                 LanguageManager.languageManager.sendStringText(player,
                         "sell-condition-not-meet",
                         "product",
-                        product);
+                        item.getProduct());
             }
             return ProductTradeStatus.PERMISSION;
         }
-        if (tempVal2.getSellPrice().empty) {
+        if (item.getSellPrice().empty) {
             return ProductTradeStatus.ERROR;
         }
         PlayerCache tempVal3 = CacheManager.cacheManager.getPlayerCache(player);
@@ -106,26 +90,26 @@ public class SellProductMethod {
         // limit
         int playerUseTimes = 0;
         int serverUseTimes = 0;
-        ObjectUseTimesCache tempVal9 = tempVal3.getUseTimesCache().get(tempVal2);
-        ObjectUseTimesCache tempVal8 = tempVal11.getUseTimesCache().get(tempVal2);
+        ObjectUseTimesCache tempVal9 = tempVal3.getUseTimesCache().get(item);
+        ObjectUseTimesCache tempVal8 = tempVal11.getUseTimesCache().get(item);
         if (tempVal9 != null) {
             // 重置
             tempVal9.refreshSellTimes();
             playerUseTimes = tempVal9.getSellUseTimes();
         } else {
-            tempVal9 = tempVal3.createUseTimesCache(tempVal2);
+            tempVal9 = tempVal3.createUseTimesCache(item);
         }
         // 更改multi
-        ObjectProducts tempVal5 = tempVal2.getReward();
+        ObjectProducts tempVal5 = item.getReward();
         MaxSellResult sellResult = null;
         if (ableMaxSell) {
             int maxAmount = Integer.MAX_VALUE;
-            if (tempVal2.getPlayerSellLimit(player) != -1) {
-                maxAmount = tempVal2.getPlayerSellLimit(player) - playerUseTimes;
+            if (item.getPlayerSellLimit(player) != -1) {
+                maxAmount = item.getPlayerSellLimit(player) - playerUseTimes;
             }
-            if (tempVal2.getServerSellLimit(player) != -1 &&
-                    maxAmount > tempVal2.getServerSellLimit(player) - serverUseTimes) {
-                maxAmount = tempVal2.getServerSellLimit(player) - serverUseTimes;
+            if (item.getServerSellLimit(player) != -1 &&
+                    maxAmount > item.getServerSellLimit(player) - serverUseTimes) {
+                maxAmount = item.getServerSellLimit(player) - serverUseTimes;
             }
             int configMaxAmount = ConfigManager.configManager.getIntOrDefault("menu.sell-all.max-amount",
                     "sell.max-amount", 128);
@@ -140,17 +124,17 @@ public class SellProductMethod {
                 multi = sellResult.getMaxAmount();
             }
         }
-        if (tempVal2.getPlayerSellLimit(player) != -1 &&
-                playerUseTimes + multi > tempVal2.getPlayerSellLimit(player)) {
+        if (item.getPlayerSellLimit(player) != -1 &&
+                playerUseTimes + multi > item.getPlayerSellLimit(player)) {
             if (shouldSendMessage) {
                 LanguageManager.languageManager.sendStringText(player,
                         "limit-reached-sell-player",
                         "item",
-                        tempVal2.getDisplayName(player),
+                        item.getDisplayName(player),
                         "times",
                         String.valueOf(playerUseTimes),
                         "limit",
-                        String.valueOf(tempVal2.getPlayerSellLimit(player)),
+                        String.valueOf(item.getPlayerSellLimit(player)),
                         "refresh",
                         tempVal9.getSellRefreshTimeDisplayName(),
                         "next",
@@ -163,19 +147,19 @@ public class SellProductMethod {
             tempVal8.refreshSellTimes();
             serverUseTimes = tempVal8.getSellUseTimes();
         } else {
-            tempVal8 = tempVal11.createUseTimesCache(tempVal2);
+            tempVal8 = tempVal11.createUseTimesCache(item);
         }
-        if (tempVal2.getServerSellLimit(player) != -1 &&
-                serverUseTimes + multi > tempVal2.getServerSellLimit(player)) {
+        if (item.getServerSellLimit(player) != -1 &&
+                serverUseTimes + multi > item.getServerSellLimit(player)) {
             if (shouldSendMessage) {
                 LanguageManager.languageManager.sendStringText(player,
                         "limit-reached-sell-server",
                         "item",
-                        tempVal2.getDisplayName(player),
+                        item.getDisplayName(player),
                         "times",
                         String.valueOf(serverUseTimes),
                         "limit",
-                        String.valueOf(tempVal2.getServerSellLimit(player)),
+                        String.valueOf(item.getServerSellLimit(player)),
                         "refresh",
                         tempVal8.getSellRefreshTimeDisplayName(),
                         "next",
@@ -193,8 +177,8 @@ public class SellProductMethod {
         }
         // API
         if (!test) {
-            giveResult = tempVal2.getSellPrice().give(player, playerUseTimes, multi);
-            ItemPreTransactionEvent event = new ItemPreTransactionEvent(false, player, multi, tempVal2, giveResult, takeResult);
+            giveResult = item.getSellPrice().give(player, playerUseTimes, multi);
+            ItemPreTransactionEvent event = new ItemPreTransactionEvent(false, player, multi, item, giveResult, takeResult);
             Bukkit.getServer().getPluginManager().callEvent(event);
         }
         // price
@@ -203,7 +187,7 @@ public class SellProductMethod {
                 LanguageManager.languageManager.sendStringText(player,
                         "sell-products-not-enough",
                         "item",
-                        tempVal2.getDisplayName(player));
+                        item.getDisplayName(player));
             }
             return ProductTradeStatus.NOT_ENOUGH;
         }
@@ -220,9 +204,9 @@ public class SellProductMethod {
         // 扣物品
         // 扣的是奖励中的东西
         takeResult.take(playerUseTimes, multi, inventory, player);
-        int calculateAmount = multi * tempVal2.getDisplayItemObject().getAmountPlaceholder(player);
+        int calculateAmount = multi * item.getDisplayItemObject().getAmountPlaceholder(player);
         // 执行动作
-        tempVal2.getSellAction().runAllActions(new ObjectThingRun(player, playerUseTimes, multi, calculateAmount, sellAll));
+        item.getSellAction().runAllActions(new ObjectThingRun(player, playerUseTimes, multi, calculateAmount, sellAll));
         // limit+1
         if (tempVal9 != null) {
             if (ConfigManager.configManager.getBoolean("debug")) {
@@ -231,7 +215,7 @@ public class SellProductMethod {
             tempVal9.setSellUseTimes(tempVal9.getSellUseTimes() + multi);
             tempVal9.setLastSellTime(LocalDateTime.now());
             tempVal9.setCooldownSellTime();
-            tempVal3.getUseTimesCache().put(tempVal2, tempVal9);
+            tempVal3.getUseTimesCache().put(item, tempVal9);
         }
         if (tempVal8 != null) {
             if (ConfigManager.configManager.getBoolean("debug")) {
@@ -240,18 +224,18 @@ public class SellProductMethod {
             tempVal8.setSellUseTimes(tempVal8.getSellUseTimes() + multi);
             tempVal8.setLastSellTime(LocalDateTime.now());
             tempVal8.setCooldownSellTime();
-            tempVal11.getUseTimesCache().put(tempVal2, tempVal8);
+            tempVal11.getUseTimesCache().put(item, tempVal8);
         }
-        if (!hide && !tempVal1.getShopConfig().getBoolean("settings.hide-message", false) && !giveResult.empty && !takeResult.empty) {
+        if (!hide && !item.getShopObject().getShopConfig().getBoolean("settings.hide-message", false) && !giveResult.empty && !takeResult.empty) {
             LanguageManager.languageManager.sendStringText(player,
                     "success-sell",
                     "item",
-                    tempVal2.getDisplayName(player),
+                    item.getDisplayName(player),
                     "price",
                     ObjectPrices.getDisplayNameInLine(player,
                             multi,
                             giveResult.getResultMap(),
-                            tempVal2.getSellPrice().getMode(),
+                            item.getSellPrice().getMode(),
                             !ConfigManager.configManager.getBoolean("placeholder.status.can-used-everywhere")),
                     "amount",
                     String.valueOf(calculateAmount));
@@ -260,15 +244,15 @@ public class SellProductMethod {
             String log = CommonUtil.modifyString(ConfigManager.configManager.getString("log-transaction.format"),
                     "player", player.getName(),
                     "player-uuid", player.getUniqueId().toString(),
-                    "shop", shop,
-                    "shop-name", tempVal1.getShopDisplayName(),
-                    "item", product,
-                    "item-name", tempVal2.getDisplayName(player),
+                    "shop", item.getShop(),
+                    "shop-name", item.getShopObject().getShopDisplayName(),
+                    "item", item.getProduct(),
+                    "item-name", item.getDisplayName(player),
                     "amount", String.valueOf(calculateAmount),
                     "price", ObjectPrices.getDisplayNameInLine(player,
                             multi,
                             giveResult.getResultMap(),
-                            tempVal2.getSellPrice().getMode(),
+                            item.getSellPrice().getMode(),
                             !ConfigManager.configManager.getBoolean("placeholder.status.can-used-everywhere")),
                     "buy-or-sell", "SELL");
             String filePath = ConfigManager.configManager.getString("log-transaction.file");
@@ -278,7 +262,7 @@ public class SellProductMethod {
                 SchedulerUtil.runTaskAsynchronously(() -> CommonUtil.logFile(filePath, log));
             }
         }
-        ItemFinishTransactionEvent event = new ItemFinishTransactionEvent(true, player, multi, tempVal2);
+        ItemFinishTransactionEvent event = new ItemFinishTransactionEvent(true, player, multi, item);
         Bukkit.getServer().getPluginManager().callEvent(event);
         return new ProductTradeStatus(ProductTradeStatus.Status.DONE, takeResult, giveResult, multi);
     }

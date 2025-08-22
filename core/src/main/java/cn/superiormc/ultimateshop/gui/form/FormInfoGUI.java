@@ -114,9 +114,8 @@ public class FormInfoGUI extends FormGUI {
                 FormShopGUI shopGUI = new FormShopGUI(player, item.getShopObject(), item.getShopObject().getShopMenuObject(), true);
                 shopGUI.openGUI(true);
             } else if (response.clickedButton().equals(sellAll)) {
-                SellProductMethod.startSell(item.getShop(),
-                        item.getProduct(),
-                        player.getPlayer(),
+                SellProductMethod.startSell(item,
+                        player,
                         !ConfigManager.configManager.getBoolean("placeholder.click.enabled"),
                         false,
                         true,
@@ -150,9 +149,8 @@ public class FormInfoGUI extends FormGUI {
         boolean b = ConfigManager.configManager.getBoolean("placeholder.click.enabled");
         if (!buyOrSell && amount.equals("all")) {
             if (!item.getSellPrice().empty) {
-                SellProductMethod.startSell(item.getShop(),
-                        item.getProduct(),
-                        player.getPlayer(),
+                SellProductMethod.startSell(item,
+                        player,
                         !b,
                         false,
                         true,
@@ -163,18 +161,16 @@ public class FormInfoGUI extends FormGUI {
 
         if (buyOrSell) {
             if (!item.getBuyPrice().empty) {
-                BuyProductMethod.startBuy(item.getShop(),
-                        item.getProduct(),
-                        player.getPlayer(),
+                BuyProductMethod.startBuy(item,
+                        player,
                         !b,
                         false,
                         getAmount());
             }
         } else {
             if (!item.getSellPrice().empty) {
-                SellProductMethod.startSell(item.getShop(),
-                        item.getProduct(),
-                        player.getPlayer(),
+                SellProductMethod.startSell(item,
+                        player,
                         !b,
                         false,
                         getAmount());

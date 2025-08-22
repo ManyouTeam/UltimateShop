@@ -293,6 +293,10 @@ public class ObjectMenu {
         return useGeyser;
     }
 
+    public boolean isDynamicLayout() {
+        return dynamicLayout;
+    }
+
     protected void parseLayout(List<String> layout, BiConsumer<Integer, String> itemHandler) {
         int slot = 0;
         for (String singleLine : layout) {

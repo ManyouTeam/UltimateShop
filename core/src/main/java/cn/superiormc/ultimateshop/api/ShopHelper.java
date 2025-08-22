@@ -2,6 +2,7 @@ package cn.superiormc.ultimateshop.api;
 
 import cn.superiormc.ultimateshop.managers.CacheManager;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
+import cn.superiormc.ultimateshop.managers.LanguageManager;
 import cn.superiormc.ultimateshop.objects.ObjectShop;
 import cn.superiormc.ultimateshop.objects.ObjectThingRun;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
@@ -24,6 +25,15 @@ import java.util.Collection;
 import java.util.Map;
 
 public class ShopHelper {
+
+    @Nullable
+    public static ObjectItem getItemFromID(String shop, String product) {
+        ObjectShop tempVal1 = ConfigManager.configManager.getShop(shop);
+        if (tempVal1 == null) {
+            return null;
+        }
+        return tempVal1.getProduct(product);
+    }
 
     public static int getBuyUseTimes(ObjectItem item, Player player) {
         ObjectUseTimesCache useTimesCache = CacheManager.cacheManager.getPlayerCache(player).getUseTimesCache().get(item);

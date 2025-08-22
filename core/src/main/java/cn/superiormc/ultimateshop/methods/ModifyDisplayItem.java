@@ -358,7 +358,7 @@ public class ModifyDisplayItem {
             }
         }
         String s = "";
-        switch (BuyProductMethod.startBuy(item.getShop(), item.getProduct(), player, false, true, multi).getStatus()) {
+        switch (BuyProductMethod.startBuy(item, player, false, true, multi).getStatus()) {
             case ERROR:
                 s = ConfigManager.configManager.getString("placeholder.click.error", "",  "amount", String.valueOf(multi));
                 break;
@@ -396,7 +396,7 @@ public class ModifyDisplayItem {
             }
         }
         String s;
-        switch (SellProductMethod.startSell(item.getShop(), item.getProduct(), player, false, true, multi).getStatus()) {
+        switch (SellProductMethod.startSell(item, player, false, true, multi).getStatus()) {
             case ERROR :
                 s = ConfigManager.configManager.getString("placeholder.click.error", "",  "amount", String.valueOf(multi));
                 break;

@@ -91,14 +91,13 @@ public class ClickListener implements Listener {
                 }
                 playerList.add(event.getPlayer());
                 for (String shop : ConfigManager.configManager.shopConfigs.keySet()) {
-                    for (ObjectItem products : ConfigManager.configManager.getShop(shop).getProductList()) {
+                    for (ObjectItem products : ConfigManager.configManager.getShop(shop).getProductListNotHidden()) {
                         if (ConfigManager.configManager.getStringListOrDefault("menu.sell-all.ignore-items",
                                 "sell.sell-all.ignore-items").contains(shop + ";;" + products.getProduct())) {
                             continue;
                         }
                         ProductTradeStatus status = SellProductMethod.startSell(inventory,
-                                shop,
-                                products.getProduct(),
+                                products,
                                 event.getPlayer(),
                                 false,
                                 false,

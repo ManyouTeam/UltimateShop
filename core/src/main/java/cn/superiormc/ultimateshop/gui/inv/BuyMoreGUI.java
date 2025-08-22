@@ -94,9 +94,8 @@ public class BuyMoreGUI extends InvGUI {
                 switch (clickType) {
                     case "buy" :
                         if (!item.getBuyPrice().empty) {
-                            BuyProductMethod.startBuy(item.getShop(),
-                                    item.getProduct(),
-                                    player.getPlayer(),
+                            BuyProductMethod.startBuy(item,
+                                    player,
                                     !b,
                                     false,
                                     nowingAmount);
@@ -104,9 +103,8 @@ public class BuyMoreGUI extends InvGUI {
                         break;
                     case "sell" :
                         if (!item.getSellPrice().empty) {
-                            SellProductMethod.startSell(item.getShop(),
-                                    item.getProduct(),
-                                    player.getPlayer(),
+                            SellProductMethod.startSell(item,
+                                    player,
                                     !b,
                                     false,
                                     nowingAmount);
@@ -114,21 +112,20 @@ public class BuyMoreGUI extends InvGUI {
                         break;
                     case "buy-or-sell" :
                         if (item.getBuyPrice().empty && !item.getSellPrice().empty) {
-                            SellProductMethod.startSell(item.getShop(), item.getProduct(), player.getPlayer(), !b,
+                            SellProductMethod.startSell(item, player, !b,
                                     false,
                                     nowingAmount);
                         }
                         else {
-                            BuyProductMethod.startBuy(item.getShop(), item.getProduct(), player.getPlayer(), !b,
+                            BuyProductMethod.startBuy(item, player, !b,
                                     false,
                                     nowingAmount);
                         }
                         break;
                     case "sell-all" :
                         if (!item.getSellPrice().empty && item.isEnableSellAll()) {
-                            SellProductMethod.startSell(item.getShop(),
-                                    item.getProduct(),
-                                    player.getPlayer(),
+                            SellProductMethod.startSell(item,
+                                    player,
                                     !b,
                                     false,
                                     true,

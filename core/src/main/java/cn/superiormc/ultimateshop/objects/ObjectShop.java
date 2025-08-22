@@ -12,7 +12,6 @@ import cn.superiormc.ultimateshop.objects.menus.ObjectMenu;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import cn.superiormc.ultimateshop.utils.CommandUtil;
 import cn.superiormc.ultimateshop.utils.TextUtil;
-import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.BukkitCommand;
 import org.bukkit.configuration.ConfigurationSection;
@@ -156,6 +155,17 @@ public class ObjectShop {
         return items.get(productID);
     }
 
+    public ObjectItem getProductNotHidden(String productID) {
+        if (productID == null) {
+            return null;
+        }
+        ObjectItem item = items.get(productID);
+        if (menu != null && !menu.menuItems.containsValue(item) && ConfigManager.configManager.getBoolean("menu.secret-shop-items")) {
+            return null;
+        }
+        return item;
+    }
+
     public ObjectCopyItem getCopyItem(String itemID) {
         if (itemID == null) {
             return null;
@@ -166,7 +176,20 @@ public class ObjectShop {
     public List<ObjectItem> getProductList() {
         List<ObjectItem> resultItems = new ArrayList<>();
         for (String key : items.keySet()) {
-            resultItems.add(items.get(key));
+            ObjectItem item = items.get(key);
+            resultItems.add(item);
+        }
+        return resultItems;
+    }
+
+    public List<ObjectItem> getProductListNotHidden() {
+        List<ObjectItem> resultItems = new ArrayList<>();
+        for (String key : items.keySet()) {
+            ObjectItem item = items.get(key);
+            if (menu != null && !menu.menuItems.containsValue(item) && ConfigManager.configManager.getBoolean("menu.secret-shop-items")) {
+                continue;
+            }
+            resultItems.add(item);
         }
         return resultItems;
     }

@@ -64,7 +64,7 @@ public class ObjectItem extends AbstractButton {
 
     public final boolean empty;
 
-    private boolean enableSellAll;
+    private final boolean enableSellAll;
 
     public ObjectItem(ObjectShop shop, ConfigurationSection originalConfig) {
         super(originalConfig);
@@ -334,29 +334,28 @@ public class ObjectItem extends AbstractButton {
         switch (tempVal1){
             case "buy" :
                 if (!buyPrice.empty &&
-                        BuyProductMethod.startBuy(getShop(), getProduct(), player, !b).getStatus() != ProductTradeStatus.Status.DONE) {
+                        BuyProductMethod.startBuy(this, player, !b).getStatus() != ProductTradeStatus.Status.DONE) {
                     failAction.runAllActions(new ObjectThingRun(player, type));
                 }
                 return;
             case "sell" :
                 if (!sellPrice.empty &&
-                        SellProductMethod.startSell(getShop(), getProduct(), player, !b).getStatus() != ProductTradeStatus.Status.DONE) {
+                        SellProductMethod.startSell(this, player, !b).getStatus() != ProductTradeStatus.Status.DONE) {
                     failAction.runAllActions(new ObjectThingRun(player, type));
                 }
                 return;
             case "buy-or-sell" :
                 if (buyPrice.empty && !sellPrice.empty) {
-                    if (SellProductMethod.startSell(getShop(), getProduct(), player, !b).getStatus() != ProductTradeStatus.Status.DONE) {
+                    if (SellProductMethod.startSell(this, player, !b).getStatus() != ProductTradeStatus.Status.DONE) {
                         failAction.runAllActions(new ObjectThingRun(player, type));
                     }
                 }
-                else if (!buyPrice.empty && BuyProductMethod.startBuy(getShop(), getProduct(), player, !b).getStatus() != ProductTradeStatus.Status.DONE) {
+                else if (!buyPrice.empty && BuyProductMethod.startBuy(this, player, !b).getStatus() != ProductTradeStatus.Status.DONE) {
                     failAction.runAllActions(new ObjectThingRun(player, type));
                 }
                 return;
             case "sell-all" :
-                if (!sellPrice.empty && isEnableSellAll() && SellProductMethod.startSell(getShop(),
-                        getProduct(),
+                if (!sellPrice.empty && isEnableSellAll() && SellProductMethod.startSell(this,
                         player,
                         !b,
                         false,

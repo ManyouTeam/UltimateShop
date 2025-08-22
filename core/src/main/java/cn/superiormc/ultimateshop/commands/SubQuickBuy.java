@@ -1,5 +1,6 @@
 package cn.superiormc.ultimateshop.commands;
 
+import cn.superiormc.ultimateshop.api.ShopHelper;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.LanguageManager;
 import cn.superiormc.ultimateshop.methods.Product.BuyProductMethod;
@@ -23,13 +24,28 @@ public class SubQuickBuy extends AbstractCommand {
 
     @Override
     public void executeCommandInGame(String[] args, Player player) {
+        ObjectShop tempVal1 = ConfigManager.configManager.getShop(args[1]);
+        if (tempVal1 == null) {
+            LanguageManager.languageManager.sendStringText(player,
+                    "error.shop-not-found",
+                    "shop",
+                    args[1]);
+            return;
+        }
+        ObjectItem tempVal2 = tempVal1.getProductNotHidden(args[2]);
+        if (tempVal2 == null) {
+            LanguageManager.languageManager.sendStringText(player,
+                    "error.product-not-found",
+                    "product",
+                    args[2]);
+            return;
+        }
         switch (args.length) {
             case 3:
-                BuyProductMethod.startBuy(args[1], args[2], player, true);
+                BuyProductMethod.startBuy(tempVal2, player, true);
                 break;
             case 4:
-                BuyProductMethod.startBuy(args[1],
-                        args[2],
+                BuyProductMethod.startBuy(tempVal2,
                         player,
                         true,
                         false,
@@ -47,13 +63,28 @@ public class SubQuickBuy extends AbstractCommand {
                             args[args.length - 1]);
             return;
         }
+        ObjectShop tempVal1 = ConfigManager.configManager.getShop(args[1]);
+        if (tempVal1 == null) {
+            LanguageManager.languageManager.sendStringText(player,
+                    "error.shop-not-found",
+                    "shop",
+                    args[1]);
+            return;
+        }
+        ObjectItem tempVal2 = tempVal1.getProductNotHidden(args[2]);
+        if (tempVal2 == null) {
+            LanguageManager.languageManager.sendStringText(player,
+                    "error.product-not-found",
+                    "product",
+                    args[2]);
+            return;
+        }
         switch (args.length) {
             case 4:
-                BuyProductMethod.startBuy(args[1], args[2], player, true);
+                BuyProductMethod.startBuy(tempVal2, player, true);
                 break;
             case 5:
-                BuyProductMethod.startBuy(args[1],
-                        args[2],
+                BuyProductMethod.startBuy(tempVal2,
                         player,
                         true,
                         false,
@@ -77,7 +108,7 @@ public class SubQuickBuy extends AbstractCommand {
                     tempVal1.add(LanguageManager.languageManager.getStringText("command-tab.unknown-shop"));
                     break;
                 }
-                for (ObjectItem tempVal4 : tempVal3.getProductList()) {
+                for (ObjectItem tempVal4 : tempVal3.getProductListNotHidden()) {
                     tempVal1.add(tempVal4.getItemConfig().getName());
                 }
                 break;
