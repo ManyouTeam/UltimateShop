@@ -13,7 +13,6 @@ error:
   shop-does-not-have-menu: "&#98FB98[UltimateShop] &cShop {shop} hat kein gültiges Menü!"
   random-placeholder-not-found: "&#98FB98[UltimateShop] &cPlatzhalter nicht gefunden: {placeholder}!"
   random-placeholder-element-not-found: "&#98FB98[UltimateShop] &cScheinbar enthält der Platzhalter {placeholder} nicht das Element {element}!"
-  length-only-one: "&#98FB98[UltimateShop] &cProduct ID muss aus mindestens einem Zeichen bestehen!"
 
 plugin:
   reloading: "&#98FB98[UltimateShop] &fVersuche das Plugin neu zu starten. Das System kann ruckeln

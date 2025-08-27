@@ -13,7 +13,7 @@ error:
   shop-does-not-have-menu: '&#98FB98[UltimateShop] &c商店{shop}没有有效的菜单!'
   random-placeholder-not-found: "&#98FB98[UltimateShop] &c找不到随机增量符: {placeholder}!"
   random-placeholder-element-not-found: "&#98FB98[UltimateShop] &c随机变量符 {placeholder} 中似乎不存在元素 {element}!"
-  length-only-one: '&#98FB98[UltimateShop] &c商品ID长度必须为1个字符!'
+  result-empty: "&#98FB98[UltimateShop] &c该物品在商店中不存在!"
 
 plugin:
   reloading: "&#98FB98[UltimateShop] &f插件重启中，您的服务器可会有卡顿. 除非特殊情况，我们建议您重启服务器，而不是重启插件，这样能保证数据储存安全."

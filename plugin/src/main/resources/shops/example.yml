@@ -1,11 +1,18 @@
+# Read plugin wiki before use this plugin.
+# This example file only shows you about 10% common usages of this plugin. This plugin has much powerful features need you unlock by carefully read plugin Wiki!
+
 settings:
   menu: 'example-shop-menu'
   buy-more: true
   shop-name: 'Example Shop'
   hide-message: false
 
-# Read plugin wiki before use this plugin.
-# This example file only shows you about 10% common usages of this plugin. This plugin has much powerful features need you unlock by carefully read plugin Wiki!
+# General Configs means the section below will work for all products inside this shop.
+general-configs:
+  conditions:
+    10:
+      type: permission
+      permission: 'test.required'
 
 items:
   #

@@ -13,8 +13,7 @@ error:
   shop-does-not-have-menu: "&#98FB98[UltimateShop] &cShop {shop} does not have valid menu!"
   random-placeholder-not-found: "&#98FB98[UltimateShop] &cWe can't find random placeholder: {placeholder}!"
   random-placeholder-element-not-found: "&#98FB98[UltimateShop] &cSeems that random placeholder {placeholder} does not include element {element}!"
-  length-only-one: "&#98FB98[UltimateShop] &cProduct ID length must be 1 char!"
-  result-empty: "&#98FB98[UltimateShop] &cSearch result is empty!"
+  result-empty: "&#98FB98[UltimateShop] &cThis item seems does not exist in shop!"
 
 plugin:
   search: |

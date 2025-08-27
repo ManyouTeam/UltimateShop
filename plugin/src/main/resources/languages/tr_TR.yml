@@ -13,7 +13,6 @@ error:
   shop-does-not-have-menu: "&#98FB98[UltimateShop] &cMarket {shop} geçerli bir menüye sahip değil!"
   random-placeholder-not-found: "&#98FB98[UltimateShop] &cRastgele yer tutucu '{placeholder}' bulunamadı!"
   random-placeholder-element-not-found: "&#98FB98[UltimateShop] &cGörünüşe göre yer tutucu '{placeholder}' şu elementi içermiyor: {element}!"
-  length-only-one: "&#98FB98[UltimateShop] &cÜrün ID'si 1 karakter büyüklüğünde olmalı!"
 
 plugin:
   reloading: "&#98FB98[UltimateShop] &fEklenti yeniden başlatması deneniyor, eğer sunucuda

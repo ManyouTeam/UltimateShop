@@ -14,7 +14,6 @@ error:
   shop-does-not-have-menu: "&#98FB98[UltimateShop] &c¡La tienda &a{shop}&c no tiene un menú valido!"
   random-placeholder-not-found: "&#98FB98[UltimateShop] &cNo se pudo encontrar el placeholder random: &a{placeholder}"
   random-placeholder-element-not-found: "&#98FB98[UltimateShop] &cParece que el placeholder random &a{placeholder} &cno incluye el elemento &a{element}&c."
-  length-only-one: "&#98FB98[UltimateShop] &c¡La longitud de la ID del producto debe ser mínimo de 1 caracter!"
 
 plugin:
   reloading: "&#98FB98[UltimateShop] &fIntentando recargar el plugin. El TPS del server puede caer o incluso crashear si tienes muchos productos y jugadores en línea porque intentamos salvar la información en el hilo principal del servidor. Recomendamos reiniciar el servidor en lugar de recargar para salvar los datos."

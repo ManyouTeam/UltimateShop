@@ -3,10 +3,10 @@
 title: '{shop-name}'
 size: 36
 
-conditions:
-  1:
-    type: permission
-    permission: 'test.required'
+#conditions:
+#  1:
+#    type: permission
+#    permission: 'test.required'
 
 open-actions:
   1:

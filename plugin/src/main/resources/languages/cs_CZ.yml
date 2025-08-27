@@ -13,7 +13,6 @@ error:
   shop-does-not-have-menu: "&#98FB98[UltimateShop] &cObchod {shop} nemá platné menu!"
   random-placeholder-not-found: "&#98FB98[UltimateShop] &cNemůžeme najít náhodný placeholder: {placeholder}!"
   random-placeholder-element-not-found: "&#98FB98[UltimateShop] &cZdá se, že náhodný placeholder {placeholder} neobsahuje prvek {element}!"
-  length-only-one: "&#98FB98[UltimateShop] &cDélka ID produktu musí být 1 znak!"
 
 plugin:
   reloading: "&#98FB98[UltimateShop] &fZkoušíme znovu načíst plugin, server může mít pokles TPS nebo dokonce spadnout, pokud máte hodně produktů a hráčů online, protože se pokoušíme uložit jejich data do hlavního vlákna serveru. Doporučujeme server restartovat místo znovunačítání pluginu pro zachování dat."
