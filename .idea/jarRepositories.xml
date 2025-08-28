@@ -82,6 +82,11 @@
       <option name="url" value="https://oss.sonatype.org/content/groups/public/" />
     </remote-repository>
     <remote-repository>
+      <option name="id" value="nexo-repo" />
+      <option name="name" value="nexo-repo" />
+      <option name="url" value="https://repo.nexomc.com/releases" />
+    </remote-repository>
+    <remote-repository>
       <option name="id" value="opencollab-snapshot" />
       <option name="name" value="opencollab-snapshot" />
       <option name="url" value="https://repo.opencollab.dev/main/" />
