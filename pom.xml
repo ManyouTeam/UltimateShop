@@ -5,7 +5,7 @@
 
     <groupId>cn.superiormc</groupId>
     <artifactId>UltimateShop</artifactId>
-    <version>3.10.4</version>
+    <version>3.11.0</version>
     <packaging>pom</packaging>
 
     <modules>
@@ -42,6 +42,10 @@
                         <relocation>
                             <pattern>org.bstats</pattern>
                             <shadedPattern>cn.superiormc.ultimateshop.bstats</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>com.zaxxer.hikari</pattern>
+                            <shadedPattern>cn.superiormc.ultimateshop.libs.hikari</shadedPattern>
                         </relocation>
                     </relocations>
                 </configuration>

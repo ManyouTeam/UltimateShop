@@ -42,7 +42,6 @@ public class CommandManager {
        registerNewSubCommand(new SubGetPlaceholderValue());
        registerNewSubCommand(new SubResetRandomPlaceholder());
        registerNewSubCommand(new SubSetRandomPlaceholder());
-       registerNewSubCommand(new SubUpdateMySQLTable());
        registerNewSubCommand(new SubSearch());
        registerNewSubCommand(new SubSellAllHand());
     }

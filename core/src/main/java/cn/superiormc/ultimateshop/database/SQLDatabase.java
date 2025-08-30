@@ -1,9 +1,7 @@
 package cn.superiormc.ultimateshop.database;
 
-import cc.carm.lib.easysql.EasySQL;
-import cc.carm.lib.easysql.api.SQLManager;
-import cc.carm.lib.easysql.api.action.query.QueryAction;
-import cc.carm.lib.easysql.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.cache.ServerCache;
 import cn.superiormc.ultimateshop.managers.CacheManager;
@@ -14,14 +12,14 @@ import cn.superiormc.ultimateshop.objects.caches.ObjectUseTimesCache;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
 import cn.superiormc.ultimateshop.utils.TextUtil;
 
-import java.sql.SQLException;
-import java.util.Collection;
+import java.sql.*;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
 
 public class SQLDatabase {
-    public static SQLManager sqlManager;
+
+    public static HikariDataSource dataSource;
 
     public static void initSQL() {
         UltimateShop.methodUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fTrying connect to SQL database...");
@@ -32,9 +30,9 @@ public class SQLDatabase {
             config.setUsername(ConfigManager.configManager.getString("database.properties.user"));
             config.setPassword(ConfigManager.configManager.getString("database.properties.password"));
         }
-        sqlManager = EasySQL.createManager(config);
-        try {
-            if (!sqlManager.getConnection().isValid(5)) {
+        dataSource = new HikariDataSource(config);
+        try (Connection conn = dataSource.getConnection()) {
+            if (!conn.isValid(5)) {
                 UltimateShop.methodUtil.sendMessage(null, TextUtil.pluginPrefix() + " §cFailed connect to SQL database!");
             }
         } catch (SQLException e) {
@@ -44,209 +42,184 @@ public class SQLDatabase {
     }
 
     public static void closeSQL() {
-        if (Objects.nonNull(sqlManager)) {
-            EasySQL.shutdownManager(sqlManager);
-            sqlManager = null;
+        if (dataSource != null && !dataSource.isClosed()) {
+            dataSource.close();
         }
     }
 
     public static void createTable() {
-        sqlManager.createTable("ultimateshop_useTimes")
-                .addColumn("playerUUID", "VARCHAR(36)")
-                .addColumn("shop", "VARCHAR(48)")
-                .addColumn("product", "VARCHAR(48)")
-                .addColumn("buyUseTimes", "INT")
-                .addColumn("totalBuyUseTimes", "INT")
-                .addColumn("sellUseTimes", "INT")
-                .addColumn("totalSellUseTimes", "INT")
-                .addColumn("lastBuyTime", "DATETIME")
-                .addColumn("lastSellTime", "DATETIME")
-                .addColumn("lastResetBuyTime", "DATETIME")
-                .addColumn("lastResetSellTime", "DATETIME")
-                .addColumn("cooldownBuyTime", "DATETIME")
-                .addColumn("cooldownSellTime", "DATETIME")
-                .build().execute(null);
-        if (!UltimateShop.freeVersion) {
-            sqlManager.createTable("ultimateshop_randomPlaceholder")
-                    .addColumn("placeholderID", "VARCHAR(48) NOT NULL PRIMARY KEY")
-                    .addColumn("nowValue", "TEXT")
-                    .addColumn("refreshDoneTime", "DATETIME")
+        try (Connection conn = dataSource.getConnection();
+             Statement stmt = conn.createStatement()) {
 
-                    .build().execute(null);
+            // 主表：使用唯一索引避免重复
+            stmt.execute("""
+                CREATE TABLE IF NOT EXISTS ultimateshop_useTimes (
+                    playerUUID VARCHAR(36) NOT NULL,
+                    shop VARCHAR(48) NOT NULL,
+                    product VARCHAR(48) NOT NULL,
+                    buyUseTimes INT DEFAULT 0,
+                    totalBuyUseTimes INT DEFAULT 0,
+                    sellUseTimes INT DEFAULT 0,
+                    totalSellUseTimes INT DEFAULT 0,
+                    lastBuyTime DATETIME NULL,
+                    lastSellTime DATETIME NULL,
+                    lastResetBuyTime DATETIME NULL,
+                    lastResetSellTime DATETIME NULL,
+                    cooldownBuyTime DATETIME NULL,
+                    cooldownSellTime DATETIME NULL,
+                    PRIMARY KEY (playerUUID, shop, product)
+                )
+                """);
+
+            if (!UltimateShop.freeVersion) {
+                stmt.execute("""
+                    CREATE TABLE IF NOT EXISTS ultimateshop_randomPlaceholder (
+                        placeholderID VARCHAR(48) NOT NULL PRIMARY KEY,
+                        nowValue TEXT,
+                        refreshDoneTime DATETIME
+                    )
+                    """);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-    }
-
-    public static void updateTable() {
-        sqlManager.alterTable("ultimateshop_useTimes")
-                .addColumn("totalBuyUseTimes", "INT")
-                .executeAsync();
-        sqlManager.alterTable("ultimateshop_useTimes")
-                .addColumn("totalSellUseTimes", "INT")
-                .executeAsync();
-        sqlManager.alterTable("ultimateshop_useTimes")
-                .addColumn("lastResetBuyTime", "DATETIME")
-                .executeAsync();
-        sqlManager.alterTable("ultimateshop_useTimes")
-                .addColumn("lastResetSellTime", "DATETIME")
-                .executeAsync();
     }
 
     public static void checkData(ServerCache cache) {
-        QueryAction queryAction2;
-        if (cache.server && !UltimateShop.freeVersion) {
-            queryAction2 = sqlManager.createQuery()
-                    .inTable("ultimateshop_randomPlaceholder")
-                    .selectColumns("placeholderID", "nowValue",
-                            "refreshDoneTime")
-                    .build();
-            queryAction2.executeAsync((result) -> {
-                while (result.getResultSet().next()) {
-                    String placeholderID = result.getResultSet().getString("placeholderID");
-                    List<String> nowValue = CommonUtil.translateString(result.getResultSet().getString("nowValue"));
-                    String refreshDoneTime = result.getResultSet().getString("refreshDoneTime");
-                    if (nowValue != null && refreshDoneTime != null) {
-                        cache.setRandomPlaceholderCache(placeholderID, refreshDoneTime, nowValue);
+        CompletableFuture.supplyAsync(() -> {
+            try (Connection conn = dataSource.getConnection()) {
+                if (cache.server && !UltimateShop.freeVersion) {
+                    try (PreparedStatement ps = conn.prepareStatement(
+                            "SELECT placeholderID, nowValue, refreshDoneTime FROM ultimateshop_randomPlaceholder"
+                    ); ResultSet rs = ps.executeQuery()) {
+                        while (rs.next()) {
+                            String placeholderID = rs.getString("placeholderID");
+                            List<String> nowValue = CommonUtil.translateString(rs.getString("nowValue"));
+                            String refreshDoneTime = rs.getString("refreshDoneTime");
+                            if (nowValue != null && refreshDoneTime != null) {
+                                cache.setRandomPlaceholderCache(placeholderID, refreshDoneTime, nowValue);
+                            }
+                        }
                     }
                 }
-            });
-        }
 
-        QueryAction queryAction1;
-        if (cache.server) {
-            queryAction1 = sqlManager.createQuery()
-                    .inTable("ultimateshop_useTimes")
-                    .selectColumns("playerUUID",
-                            "shop", "product",
-                            "buyUseTimes",  "sellUseTimes",
-                            "totalBuyUseTimes", "totalSellUseTimes",
-                            "lastBuyTime", "lastSellTime",
-                            "lastResetBuyTime", "lastResetSellTime",
-                            "cooldownBuyTime", "cooldownSellTime")
-                    .addCondition("playerUUID = 'Global-Server'")
-                    .build();
-        } else {
-            queryAction1 = sqlManager.createQuery()
-                    .inTable("ultimateshop_useTimes")
-                    .selectColumns("playerUUID",
-                            "shop", "product",
-                            "buyUseTimes", "sellUseTimes",
-                            "totalBuyUseTimes", "totalSellUseTimes",
-                            "lastBuyTime", "lastSellTime",
-                            "lastResetBuyTime", "lastResetSellTime",
-                            "cooldownBuyTime", "cooldownSellTime")
-                    .addCondition("playerUUID = '" + cache.player.getUniqueId() + "'")
-                    .build();
-        }
-        queryAction1.executeAsync((result) -> {
-            while (result.getResultSet().next()) {
-                String shop = result.getResultSet().getString("shop");
-                String product = result.getResultSet().getString("product");
-                int buyUseTimes = result.getResultSet().getInt("buyUseTimes");
-                int totalBuyUseTimes = result.getResultSet().getInt("totalBuyUseTimes");
-                int sellUseTimes = result.getResultSet().getInt("sellUseTimes");
-                int totalSellUseTimes = result.getResultSet().getInt("totalSellUseTimes");
-                String lastPurchaseTime = result.getResultSet().getString("lastBuyTime");
-                String lastSellTime = result.getResultSet().getString("lastSellTime");
-                String lastResetBuyTime = result.getResultSet().getString("lastResetBuyTime");
-                String lastResetSellTime = result.getResultSet().getString("lastResetSellTime");
-                String cooldownPurchaseTime = result.getResultSet().getString("cooldownBuyTime");
-                String cooldownSellTime = result.getResultSet().getString("cooldownSellTime");
-                cache.setUseTimesCache(shop, product,
-                        buyUseTimes, totalBuyUseTimes,
-                        sellUseTimes, totalSellUseTimes,
-                        lastPurchaseTime,  lastSellTime, lastResetBuyTime, lastResetSellTime,
-                        cooldownPurchaseTime, cooldownSellTime);
+                PreparedStatement ps;
+                if (cache.server) {
+                    ps = conn.prepareStatement(
+                            "SELECT * FROM ultimateshop_useTimes WHERE playerUUID = 'Global-Server'"
+                    );
+                } else {
+                    ps = conn.prepareStatement(
+                            "SELECT * FROM ultimateshop_useTimes WHERE playerUUID = ?"
+                    );
+                    ps.setString(1, cache.player.getUniqueId().toString());
+                }
+
+                try (ResultSet rs = ps.executeQuery()) {
+                    while (rs.next()) {
+                        cache.setUseTimesCache(
+                                rs.getString("shop"),
+                                rs.getString("product"),
+                                rs.getInt("buyUseTimes"),
+                                rs.getInt("totalBuyUseTimes"),
+                                rs.getInt("sellUseTimes"),
+                                rs.getInt("totalSellUseTimes"),
+                                rs.getString("lastBuyTime"),
+                                rs.getString("lastSellTime"),
+                                rs.getString("lastResetBuyTime"),
+                                rs.getString("lastResetSellTime"),
+                                rs.getString("cooldownBuyTime"),
+                                rs.getString("cooldownSellTime")
+                        );
+                    }
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
             }
+            return null;
         });
     }
+
 
     public static void updateData(ServerCache cache, boolean quitServer) {
         String playerUUID;
         if (cache.server) {
             playerUUID = "Global-Server";
-        }
-        else {
+        } else {
             playerUUID = cache.player.getUniqueId().toString();
         }
         Map<ObjectItem, ObjectUseTimesCache> tempVal1 = cache.getUseTimesCache();
-        for (ObjectItem tempVal2 : tempVal1.keySet()) {
-            ObjectUseTimesCache tempCache = tempVal1.get(tempVal2);
-            int buyUseTimes = tempCache.getBuyUseTimes();
-            int totalBuyUseTimes = tempCache.getTotalBuyUseTimes();
-            int sellUseTimes = tempCache.getSellUseTimes();
-            int totalSellUseTimes = tempCache.getTotalSellUseTimes();
-            String lastBuyTime = tempCache.getLastBuyTime();
-            String lastSellTime = tempCache.getLastSellTime();
-            String lastResetBuyTime = tempCache.getLastResetBuyTime();
-            String lastResetSellTime = tempCache.getLastResetSellTime();
-            String cooldownBuyTime = tempCache.getCooldownBuyTime();
-            String cooldownSellTime = tempCache.getCooldownSellTime();
-            if (buyUseTimes == 0 && sellUseTimes == 0 && lastBuyTime == null && lastSellTime == null
-            && cooldownBuyTime == null && cooldownSellTime == null) {
+        for (ObjectItem item : tempVal1.keySet()) {
+            ObjectUseTimesCache tempCache = tempVal1.get(item);
+            if (tempCache == null || tempCache.isEmpty()) {
                 continue;
             }
-            if (tempVal1.get(tempVal2).isFirstInsert()) {
-                sqlManager.createInsert("ultimateshop_useTimes")
-                        .setColumnNames("playerUUID",
-                                "shop",
-                                "product",
-                                "buyUseTimes",
-                                "totalBuyUseTimes",
-                                "sellUseTimes",
-                                "totalSellUseTimes",
-                                "lastBuyTime",
-                                "lastSellTime",
-                                "lastResetBuyTime",
-                                "lastResetSellTime",
-                                "cooldownBuyTime",
-                                "cooldownSellTime")
-                        .setParams(playerUUID,
-                                tempVal2.getShop(),
-                                tempVal2.getProduct(),
-                                buyUseTimes,
-                                totalBuyUseTimes,
-                                sellUseTimes,
-                                totalSellUseTimes,
-                                lastBuyTime,
-                                lastSellTime,
-                                lastResetBuyTime,
-                                lastResetSellTime,
-                                cooldownBuyTime,
-                                cooldownSellTime)
-                        .executeAsync();
-            } else {
-                String[] keys = {"buyUseTimes", "totalBuyUseTimes", "sellUseTimes", "totalSellUseTimes",
-                        "lastBuyTime", "lastSellTime", "lastResetBuyTime", "lastResetSellTime",
-                        "cooldownBuyTime", "cooldownSellTime"};
-                Object[] values = {buyUseTimes, totalBuyUseTimes, sellUseTimes, totalSellUseTimes,
-                        lastBuyTime, lastSellTime, lastResetBuyTime, lastResetSellTime,
-                        cooldownBuyTime, cooldownSellTime};
-                sqlManager.createUpdate("ultimateshop_useTimes")
-                        .addCondition("playerUUID = '" + playerUUID + "'")
-                        .addCondition("shop = '" + tempVal2.getShop() + "'")
-                        .addCondition("product = '" + tempVal2.getProduct() + "'")
-                        .setColumnValues(keys, values)
-                        .build()
-                        .executeAsync();
-            }
+            CompletableFuture.runAsync(() -> {
+                String sql = """
+                        INSERT INTO ultimateshop_useTimes
+                        (playerUUID, shop, product, buyUseTimes, totalBuyUseTimes, sellUseTimes, totalSellUseTimes,
+                         lastBuyTime, lastSellTime, lastResetBuyTime, lastResetSellTime, cooldownBuyTime, cooldownSellTime)
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                        ON DUPLICATE KEY UPDATE
+                            buyUseTimes = VALUES(buyUseTimes),
+                            totalBuyUseTimes = VALUES(totalBuyUseTimes),
+                            sellUseTimes = VALUES(sellUseTimes),
+                            totalSellUseTimes = VALUES(totalSellUseTimes),
+                            lastBuyTime = VALUES(lastBuyTime),
+                            lastSellTime = VALUES(lastSellTime),
+                            lastResetBuyTime = VALUES(lastResetBuyTime),
+                            lastResetSellTime = VALUES(lastResetSellTime),
+                            cooldownBuyTime = VALUES(cooldownBuyTime),
+                            cooldownSellTime = VALUES(cooldownSellTime)
+                        """;
+
+                try (Connection conn = dataSource.getConnection();
+                     PreparedStatement ps = conn.prepareStatement(sql)) {
+                    ps.setString(1, playerUUID);
+                    ps.setString(2, item.getShop());
+                    ps.setString(3, item.getProduct());
+                    ps.setInt(4, tempCache.getBuyUseTimes());
+                    ps.setInt(5, tempCache.getTotalBuyUseTimes());
+                    ps.setInt(6, tempCache.getSellUseTimes());
+                    ps.setInt(7, tempCache.getTotalSellUseTimes());
+                    ps.setString(8, tempCache.getLastBuyTime());
+                    ps.setString(9, tempCache.getLastSellTime());
+                    ps.setString(10, tempCache.getLastResetBuyTime());
+                    ps.setString(11, tempCache.getLastResetSellTime());
+                    ps.setString(12, tempCache.getCooldownBuyTime());
+                    ps.setString(13, tempCache.getCooldownSellTime());
+                    ps.executeUpdate();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            });
         }
 
         if (cache.server && !UltimateShop.freeVersion) {
-            Collection<ObjectRandomPlaceholderCache> tempVal3 = cache.getRandomPlaceholderCache().values();
-            for (ObjectRandomPlaceholderCache tempVal4 : tempVal3) {
-                if (tempVal4.getPlaceholder().getMode().equals("ONCE")) {
+            for (ObjectRandomPlaceholderCache phCache : cache.getRandomPlaceholderCache().values()) {
+                if ("ONCE".equals(phCache.getPlaceholder().getMode())) {
                     continue;
                 }
-                String placeholderID = tempVal4.getPlaceholder().getID();
-                String nowValue = CommonUtil.translateStringList(tempVal4.getNowValue());
-                String refreshDoneTime = CommonUtil.timeToString(tempVal4.getRefreshDoneTime());
-                sqlManager.createReplace("ultimateshop_randomPlaceholder")
-                        .setColumnNames("placeholderID", "nowValue",
-                                "refreshDoneTime")
-                        .setParams(placeholderID, nowValue, refreshDoneTime)
-                        .executeAsync();
+
+                String sql = """
+                    INSERT INTO ultimateshop_randomPlaceholder (placeholderID, nowValue, refreshDoneTime)
+                    VALUES (?, ?, ?)
+                    ON DUPLICATE KEY UPDATE
+                        nowValue = VALUES(nowValue),
+                        refreshDoneTime = VALUES(refreshDoneTime)
+                    """;
+                try (Connection conn = dataSource.getConnection();
+                     PreparedStatement ps = conn.prepareStatement(sql)) {
+                    ps.setString(1, phCache.getPlaceholder().getID());
+                    ps.setString(2, CommonUtil.translateStringList(phCache.getNowValue()));
+                    ps.setString(3, CommonUtil.timeToString(phCache.getRefreshDoneTime()));
+                    ps.executeUpdate();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
             }
         }
+
         if (quitServer) {
             CacheManager.cacheManager.removePlayerCache(cache.player);
         }
@@ -260,91 +233,75 @@ public class SQLDatabase {
             playerUUID = cache.player.getUniqueId().toString();
         }
         Map<ObjectItem, ObjectUseTimesCache> tempVal1 = cache.getUseTimesCache();
-        for (ObjectItem tempVal2 : tempVal1.keySet()) {
-            ObjectUseTimesCache tempCache = tempVal1.get(tempVal2);
-            int buyUseTimes = tempCache.getBuyUseTimes();
-            int totalBuyUseTimes = tempCache.getTotalBuyUseTimes();
-            int sellUseTimes = tempCache.getSellUseTimes();
-            int totalSellUseTimes = tempCache.getTotalSellUseTimes();
-            String lastBuyTime = tempCache.getLastBuyTime();
-            String lastSellTime = tempCache.getLastSellTime();
-            String lastResetBuyTime = tempCache.getLastResetBuyTime();
-            String lastResetSellTime = tempCache.getLastResetSellTime();
-            String cooldownBuyTime = tempCache.getCooldownBuyTime();
-            String cooldownSellTime = tempCache.getCooldownSellTime();
-            if (buyUseTimes == 0 && sellUseTimes == 0 && lastBuyTime == null && lastSellTime == null
-                    && cooldownBuyTime == null && cooldownSellTime == null) {
+        for (ObjectItem item : tempVal1.keySet()) {
+            ObjectUseTimesCache tempCache = tempVal1.get(item);
+            if (tempCache == null || tempCache.isEmpty()) {
                 continue;
             }
-            try {
-                if (tempVal1.get(tempVal2).isFirstInsert()) {
-                    sqlManager.createInsert("ultimateshop_useTimes")
-                            .setColumnNames("playerUUID",
-                                    "shop",
-                                    "product",
-                                    "buyUseTimes",
-                                    "totalBuyUseTimes",
-                                    "sellUseTimes",
-                                    "totalSellUseTimes",
-                                    "lastBuyTime",
-                                    "lastSellTime",
-                                    "lastResetBuyTime",
-                                    "lastResetSellTime",
-                                    "cooldownBuyTime",
-                                    "cooldownSellTime")
-                            .setParams(playerUUID,
-                                    tempVal2.getShop(),
-                                    tempVal2.getProduct(),
-                                    buyUseTimes,
-                                    totalBuyUseTimes,
-                                    sellUseTimes,
-                                    totalSellUseTimes,
-                                    lastBuyTime,
-                                    lastSellTime,
-                                    lastResetBuyTime,
-                                    lastResetSellTime,
-                                    cooldownBuyTime,
-                                    cooldownSellTime)
-                            .execute();
-                } else {
-                    String[] keys = {"buyUseTimes", "totalBuyUseTimes", "sellUseTimes", "totalSellUseTimes",
-                            "lastBuyTime", "lastSellTime", "lastResetBuyTime", "lastResetSellTime",
-                            "cooldownBuyTime", "cooldownSellTime"};
-                    Object[] values = {buyUseTimes, totalBuyUseTimes, sellUseTimes, totalSellUseTimes,
-                            lastBuyTime, lastSellTime, lastResetBuyTime, lastResetSellTime,
-                            cooldownBuyTime, cooldownSellTime};
-                    sqlManager.createUpdate("ultimateshop_useTimes")
-                            .addCondition("playerUUID = '" + playerUUID + "'")
-                            .addCondition("shop = '" + tempVal2.getShop() + "'")
-                            .addCondition("product = '" + tempVal2.getProduct() + "'")
-                            .setColumnValues(keys, values)
-                            .build()
-                            .execute();
-                }
-            } catch (Throwable ignored) {
+            String sql = """
+            INSERT INTO ultimateshop_useTimes
+            (playerUUID, shop, product, buyUseTimes, totalBuyUseTimes, sellUseTimes, totalSellUseTimes,
+             lastBuyTime, lastSellTime, lastResetBuyTime, lastResetSellTime, cooldownBuyTime, cooldownSellTime)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ON DUPLICATE KEY UPDATE
+                buyUseTimes = VALUES(buyUseTimes),
+                totalBuyUseTimes = VALUES(totalBuyUseTimes),
+                sellUseTimes = VALUES(sellUseTimes),
+                totalSellUseTimes = VALUES(totalSellUseTimes),
+                lastBuyTime = VALUES(lastBuyTime),
+                lastSellTime = VALUES(lastSellTime),
+                lastResetBuyTime = VALUES(lastResetBuyTime),
+                lastResetSellTime = VALUES(lastResetSellTime),
+                cooldownBuyTime = VALUES(cooldownBuyTime),
+                cooldownSellTime = VALUES(cooldownSellTime)
+            """;
 
+            try (Connection conn = dataSource.getConnection();
+                 PreparedStatement ps = conn.prepareStatement(sql)) {
+                ps.setString(1, playerUUID);
+                ps.setString(2, item.getShop());
+                ps.setString(3, item.getProduct());
+                ps.setInt(4, tempCache.getBuyUseTimes());
+                ps.setInt(5, tempCache.getTotalBuyUseTimes());
+                ps.setInt(6, tempCache.getSellUseTimes());
+                ps.setInt(7, tempCache.getTotalSellUseTimes());
+                ps.setString(8, tempCache.getLastBuyTime());
+                ps.setString(9, tempCache.getLastSellTime());
+                ps.setString(10, tempCache.getLastResetBuyTime());
+                ps.setString(11, tempCache.getLastResetSellTime());
+                ps.setString(12, tempCache.getCooldownBuyTime());
+                ps.setString(13, tempCache.getCooldownSellTime());
+                ps.executeUpdate();
+            } catch (SQLException e) {
+                e.printStackTrace();
             }
         }
+
         if (cache.server && !UltimateShop.freeVersion) {
-            Collection<ObjectRandomPlaceholderCache> tempVal3 = cache.getRandomPlaceholderCache().values();
-            for (ObjectRandomPlaceholderCache tempVal4 : tempVal3) {
-                if (tempVal4.getPlaceholder().getMode().equals("ONCE")) {
+            for (ObjectRandomPlaceholderCache phCache : cache.getRandomPlaceholderCache().values()) {
+                if ("ONCE".equals(phCache.getPlaceholder().getMode())) {
                     continue;
                 }
-                String placeholderID = tempVal4.getPlaceholder().getID();
-                String nowValue = CommonUtil.translateStringList(tempVal4.getNowValue(disable));
-                String refreshDoneTime = CommonUtil.timeToString(tempVal4.getRefreshDoneTime());
-                try {
-                    sqlManager.createReplace("ultimateshop_randomPlaceholder")
-                            .setColumnNames("placeholderID", "nowValue",
-                                    "refreshDoneTime")
-                            .setParams(placeholderID, nowValue, refreshDoneTime)
-                            .execute();
+
+                String sql = """
+                    INSERT INTO ultimateshop_randomPlaceholder (placeholderID, nowValue, refreshDoneTime)
+                    VALUES (?, ?, ?)
+                    ON DUPLICATE KEY UPDATE
+                        nowValue = VALUES(nowValue),
+                        refreshDoneTime = VALUES(refreshDoneTime)
+                    """;
+                try (Connection conn = dataSource.getConnection();
+                     PreparedStatement ps = conn.prepareStatement(sql)) {
+                    ps.setString(1, phCache.getPlaceholder().getID());
+                    ps.setString(2, CommonUtil.translateStringList(phCache.getNowValue(disable)));
+                    ps.setString(3, CommonUtil.timeToString(phCache.getRefreshDoneTime()));
+                    ps.executeUpdate();
                 } catch (SQLException e) {
-                    throw new RuntimeException(e);
+                    e.printStackTrace();
                 }
             }
         }
+
         CacheManager.cacheManager.removePlayerCache(cache.player);
     }
 

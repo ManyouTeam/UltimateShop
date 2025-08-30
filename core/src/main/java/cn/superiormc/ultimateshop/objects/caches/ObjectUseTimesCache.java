@@ -662,6 +662,10 @@ public class ObjectUseTimesCache {
         }
     }
 
+    public boolean isEmpty() {
+        return buyUseTimes == 0 && totalBuyUseTimes == 0 && sellUseTimes == 0 && totalSellUseTimes == 0;
+    }
+
     public boolean isFirstInsert() {
         return firstInsert;
     }
