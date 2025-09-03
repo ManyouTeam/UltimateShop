@@ -67,7 +67,6 @@ public class SellAllGUI extends InvGUI {
                         player.getPlayer(),
                         false,
                         false,
-                        ConfigManager.configManager.getBoolean("sell.sell-all.hide-message"),
                         true,
                         firstSell,
                         1,

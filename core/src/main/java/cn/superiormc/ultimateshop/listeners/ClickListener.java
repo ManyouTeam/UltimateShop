@@ -101,7 +101,6 @@ public class ClickListener implements Listener {
                                 event.getPlayer(),
                                 false,
                                 false,
-                                ConfigManager.configManager.getBoolean("sell.sell-stick.hide-message"),
                                 true,
                                 firstSell,
                                 1,

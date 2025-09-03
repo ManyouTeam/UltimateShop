@@ -38,12 +38,10 @@ sell:
     ignore-items:
       # Format: Shop ID;;Item ID
       - 'hideshop;;A'
-    hide-message: true
   sell-stick:
     # The min value here is 5, if you set value less than 5, we will auto set the cooldown to 5 tick.
     # In ticks.
     cooldown: 5
-    hide-message: true
     display-calculate-multiplier: true
     # Support value: LEFT, RIGHT and LEFT;;RIGHT
     # Do not change this value unless you are know what you are doing!

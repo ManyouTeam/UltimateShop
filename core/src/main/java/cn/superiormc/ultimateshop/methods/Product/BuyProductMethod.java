@@ -13,7 +13,6 @@ import cn.superiormc.ultimateshop.objects.ObjectThingRun;
 import cn.superiormc.ultimateshop.objects.caches.ObjectUseTimesCache;
 import cn.superiormc.ultimateshop.objects.items.GiveResult;
 import cn.superiormc.ultimateshop.objects.items.prices.ObjectPrices;
-import cn.superiormc.ultimateshop.objects.ObjectShop;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import cn.superiormc.ultimateshop.objects.items.TakeResult;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
@@ -28,28 +27,28 @@ import java.time.LocalDateTime;
 
 public class BuyProductMethod {
 
-    public static ProductTradeStatus startBuy(ObjectItem item, Player player, boolean hideMessage) {
-        return startBuy(item, player, hideMessage, false, 1);
+    public static ProductTradeStatus startBuy(ObjectItem item, Player player, boolean forceDisplayMessage) {
+        return startBuy(item, player, forceDisplayMessage, false, 1);
     }
 
     public static ProductTradeStatus startBuy(ObjectItem item,
                                                Player player,
-                                               boolean hideMessage,
-                                               boolean test,
+                                               boolean forceDisplayMessage,
+                                               boolean notCost,
                                                int multi) {
-        return startBuy(player.getInventory(), item, player, hideMessage, test, multi);
+        return startBuy(player.getInventory(), item, player, forceDisplayMessage, notCost, multi);
     }
 
     public static ProductTradeStatus startBuy(Inventory inventory,
                                                ObjectItem item,
                                                Player player,
-                                               boolean hideMessage,
-                                               boolean test,
+                                               boolean forceDisplayMessage,
+                                               boolean notCost,
                                                int multi) {
         if (item == null) {
             return ProductTradeStatus.ERROR;
         }
-        boolean shouldSendMessage = inventory instanceof PlayerInventory && !test && (hideMessage ||
+        boolean shouldSendMessage = inventory instanceof PlayerInventory && !notCost && (forceDisplayMessage ||
                 !item.getShopObject().getShopConfig().getBoolean("settings.hide-message", false));
         if (!item.getBuyCondition(player)) {
             if (shouldSendMessage) {
@@ -130,7 +129,7 @@ public class BuyProductMethod {
         GiveResult giveResult = null;
         TakeResult takeResult = tempVal5.take(inventory, player, playerUseTimes, multi, false);
         // API
-        if (!test) {
+        if (!notCost) {
             giveResult = item.getReward().give(player, playerUseTimes, multi);
             ItemPreTransactionEvent event = new ItemPreTransactionEvent(true, player, multi, item, giveResult, takeResult);
             Bukkit.getServer().getPluginManager().callEvent(event);
@@ -151,7 +150,7 @@ public class BuyProductMethod {
             }
             return ProductTradeStatus.NOT_ENOUGH;
         }
-        if (test) {
+        if (notCost) {
             return new ProductTradeStatus(ProductTradeStatus.Status.DONE, takeResult);
         }
         // 尝试给物品

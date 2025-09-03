@@ -11,7 +11,6 @@ import cn.superiormc.ultimateshop.managers.LanguageManager;
 import cn.superiormc.ultimateshop.methods.ProductTradeStatus;
 import cn.superiormc.ultimateshop.objects.ObjectThingRun;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
-import cn.superiormc.ultimateshop.objects.ObjectShop;
 import cn.superiormc.ultimateshop.objects.caches.ObjectUseTimesCache;
 import cn.superiormc.ultimateshop.objects.items.GiveResult;
 import cn.superiormc.ultimateshop.objects.items.MaxSellResult;
@@ -30,33 +29,32 @@ import java.time.LocalDateTime;
 
 public class SellProductMethod {
 
-    public static ProductTradeStatus startSell(ObjectItem item, Player player, boolean hideMessage) {
-        return startSell(item, player, hideMessage, false, 1);
+    public static ProductTradeStatus startSell(ObjectItem item, Player player, boolean forceDisplayMessage) {
+        return startSell(item, player, forceDisplayMessage, false, 1);
     }
 
     public static ProductTradeStatus startSell(ObjectItem item,
                                                Player player,
-                                               boolean hideMessage,
+                                               boolean forceDisplayMessage,
                                                boolean test,
                                                int multi) {
-        return startSell(item, player, hideMessage, test, false, multi);
+        return startSell(item, player, forceDisplayMessage, test, false, multi);
     }
 
     public static ProductTradeStatus startSell(ObjectItem item,
                                                Player player,
-                                               boolean hideMessage,
-                                               boolean test,
+                                               boolean forceDisplayMessage,
+                                               boolean notCost,
                                                boolean ableMaxSell,
                                                int multi) {
-        return startSell(player.getInventory(), item, player, hideMessage, test, false, ableMaxSell, false, multi, 1);
+        return startSell(player.getInventory(), item, player, forceDisplayMessage, notCost, ableMaxSell, false, multi, 1);
     }
 
     public static ProductTradeStatus startSell(Inventory inventory,
                                                ObjectItem item,
                                                Player player,
-                                               boolean hideMessage,
-                                               boolean test,
-                                               boolean hide,
+                                               boolean forceDisplayMessage,
+                                               boolean notCost,
                                                boolean ableMaxSell,
                                                boolean sellAll,
                                                int multi,
@@ -64,7 +62,7 @@ public class SellProductMethod {
         if (item == null) {
             return ProductTradeStatus.ERROR;
         }
-        boolean shouldSendMessage = !hide && inventory instanceof PlayerInventory  && !test && (hideMessage ||
+        boolean shouldSendMessage = inventory instanceof PlayerInventory && !notCost && (forceDisplayMessage ||
                 !item.getShopObject().getShopConfig().getBoolean("settings.hide-message", false));
         if (!item.getSellCondition(player)) {
             if (shouldSendMessage) {
@@ -176,7 +174,7 @@ public class SellProductMethod {
             takeResult = tempVal5.take(inventory, player, playerUseTimes, multi, false);
         }
         // API
-        if (!test) {
+        if (!notCost) {
             giveResult = item.getSellPrice().give(player, playerUseTimes, multi);
             ItemPreTransactionEvent event = new ItemPreTransactionEvent(false, player, multi, item, giveResult, takeResult);
             Bukkit.getServer().getPluginManager().callEvent(event);
@@ -191,7 +189,7 @@ public class SellProductMethod {
             }
             return ProductTradeStatus.NOT_ENOUGH;
         }
-        if (test) {
+        if (notCost) {
             return new ProductTradeStatus(ProductTradeStatus.Status.DONE, takeResult);
         }
         // 尝试给物品
@@ -226,7 +224,7 @@ public class SellProductMethod {
             tempVal8.setCooldownSellTime();
             tempVal11.getUseTimesCache().put(item, tempVal8);
         }
-        if (!hide && !item.getShopObject().getShopConfig().getBoolean("settings.hide-message", false) && !giveResult.empty && !takeResult.empty) {
+        if (!item.getShopObject().getShopConfig().getBoolean("settings.hide-message", false) && !giveResult.empty && !takeResult.empty) {
             LanguageManager.languageManager.sendStringText(player,
                     "success-sell",
                     "item",
