@@ -100,8 +100,7 @@ public class ObjectSinglePrice extends AbstractSingleThing {
         while (apply.size() > cost.size()) {
             if (!cost.isEmpty()) {
                 cost.add(cost.get(cost.size() - 1));
-            }
-            else {
+            } else {
                 cost.add(-1.0);
             }
         }

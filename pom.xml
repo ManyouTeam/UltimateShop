@@ -5,7 +5,7 @@
 
     <groupId>cn.superiormc</groupId>
     <artifactId>UltimateShop</artifactId>
-    <version>3.11.1</version>
+    <version>3.11.2</version>
     <packaging>pom</packaging>
 
     <modules>

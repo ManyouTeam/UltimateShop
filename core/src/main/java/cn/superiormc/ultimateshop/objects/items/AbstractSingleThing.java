@@ -56,8 +56,7 @@ public abstract class AbstractSingleThing implements Comparable<AbstractSingleTh
         if (singleSection != null && singleSection.contains("custom-type")) {
             initType(ConfigManager.configManager.config.getConfigurationSection("prices." +
                     singleSection.getString("custom-type")));
-        }
-        else {
+        } else {
             initType(singleSection);
         }
         this.empty = false;

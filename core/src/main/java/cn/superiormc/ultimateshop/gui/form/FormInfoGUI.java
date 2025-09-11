@@ -1,5 +1,6 @@
 package cn.superiormc.ultimateshop.gui.form;
 
+import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.cache.PlayerCache;
 import cn.superiormc.ultimateshop.gui.FormGUI;
 import cn.superiormc.ultimateshop.gui.inv.ShopGUI;
@@ -60,7 +61,7 @@ public class FormInfoGUI extends FormGUI {
                         "amount", amount)));
         List<String> content = new ArrayList<>();
         if (item.getDisplayItem(player).hasItemMeta() && item.getDisplayItem(player).getItemMeta().hasLore()) {
-            content.addAll(item.getDisplayItem(player).getItemMeta().getLore());
+            content.addAll(UltimateShop.methodUtil.getItemLore(item.getDisplayItem(player).getItemMeta()));
             content.add(" ");
         }
         content.addAll(ModifyDisplayItem.getModifiedLore(player.getPlayer(),
@@ -70,7 +71,7 @@ public class FormInfoGUI extends FormGUI {
                 true,
                 "general"
         ));
-        tempVal2.content(bedrockTransfer(content));
+        tempVal2.content(TextUtil.parse(bedrockTransfer(content)));
         String itemName = item.getDisplayName(player);
         // 购买
         ButtonComponent buy = ButtonComponent.of(TextUtil.parse(player, ConfigManager.configManager.getString(

@@ -28,8 +28,7 @@ public class ItemMMOItemsHook extends AbstractItemHook {
         String tempVal2 = MMOItems.getTypeName(hookItem);
         if (tempVal2 == null || tempVal2.isEmpty()) {
             return null;
-        }
-        else {
+        } else {
             return tempVal2 + ";;" + tempVal1;
         }
     }

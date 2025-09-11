@@ -94,16 +94,14 @@ public class ModifyDisplayItem {
             if (tempVal4.endsWith("-b")) {
                 if (bedrock) {
                     continue;
-                }
-                else {
+                } else {
                     tempVal4 = tempVal4.substring(0, tempVal4.length() - 2);
                 }
             }
             if (tempVal4.endsWith("-m")) {
                 if (!buyMore) {
                     continue;
-                }
-                else {
+                } else {
                     tempVal4 = tempVal4.substring(0, tempVal4.length() - 2);
                 }
             }
@@ -263,8 +261,7 @@ public class ModifyDisplayItem {
                         }
                         break;
                 }
-            }
-            else {
+            } else {
                 addLore.add(tempVal3);
             }
         }
@@ -352,8 +349,7 @@ public class ModifyDisplayItem {
         if (!ConfigManager.configManager.getBoolean("placeholder.click.enabled")) {
             if (item.getSellPrice().empty || clickType.equals("buy")) {
                 return ConfigManager.configManager.getString("placeholder.click.buy-with-no-sell", "", "amount", String.valueOf(multi));
-            }
-            else {
+            } else {
                 return ConfigManager.configManager.getString("placeholder.click.buy", "", "amount", String.valueOf(multi));
             }
         }
@@ -377,8 +373,7 @@ public class ModifyDisplayItem {
             case DONE :
                 if (item.getSellPrice().empty || clickType.equals("buy")) {
                     s = ConfigManager.configManager.getString("placeholder.click.buy-with-no-sell", "", "amount", String.valueOf(multi));
-                }
-                else {
+                } else {
                     s = ConfigManager.configManager.getString("placeholder.click.buy", "", "amount", String.valueOf(multi));
                 }
                 break;
@@ -390,8 +385,7 @@ public class ModifyDisplayItem {
         if (!ConfigManager.configManager.getBoolean("placeholder.click.enabled")) {
             if (item.getBuyPrice().empty || clickType.equals("sell")) {
                 return ConfigManager.configManager.getString("placeholder.click.sell-with-no-buy", "",  "amount", String.valueOf(multi));
-            }
-            else {
+            } else {
                 return ConfigManager.configManager.getString("placeholder.click.sell", "",  "amount", String.valueOf(multi));
             }
         }
@@ -415,8 +409,7 @@ public class ModifyDisplayItem {
             case DONE :
                 if (item.getBuyPrice().empty || clickType.equals("sell")) {
                     s = ConfigManager.configManager.getString("placeholder.click.sell-with-no-buy", "",  "amount", String.valueOf(multi));
-                }
-                else {
+                } else {
                     s = ConfigManager.configManager.getString("placeholder.click.sell", "",  "amount", String.valueOf(multi));
                 }
                 break;
@@ -441,8 +434,7 @@ public class ModifyDisplayItem {
             case "buy-or-sell" :
                 if (item.getBuyPrice().empty && !item.getSellPrice().empty) {
                     return !buyOrSell;
-                }
-                else {
+                } else {
                     return buyOrSell;
                 }
             default:

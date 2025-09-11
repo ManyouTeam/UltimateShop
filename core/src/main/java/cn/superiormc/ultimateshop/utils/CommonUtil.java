@@ -210,7 +210,7 @@ public class CommonUtil {
     }
 
     public static void giveOrDrop(Player player, ItemStack... item) {
-        if (player == null) {
+        if (player == null || item == null) {
             return;
         }
         HashMap<Integer, ItemStack> result = player.getInventory().addItem(item);

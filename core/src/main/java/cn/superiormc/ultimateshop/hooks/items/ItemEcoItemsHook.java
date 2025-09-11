@@ -26,8 +26,7 @@ public class ItemEcoItemsHook extends AbstractItemHook {
         EcoItem tempVal1 = ItemUtilsKt.getEcoItem(hookItem);
         if (tempVal1 == null) {
             return null;
-        }
-        else {
+        } else {
             return tempVal1.getID();
         }
     }

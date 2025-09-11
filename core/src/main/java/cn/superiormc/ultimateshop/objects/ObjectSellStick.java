@@ -66,13 +66,12 @@ public class ObjectSellStick {
         }
         resultItem.setAmount(amount);
         if (!resultItem.hasItemMeta()) {
-            ItemMeta tempMeta = Bukkit.getItemFactory().getItemMeta(resultItem.getType());
-            resultItem.setItemMeta(tempMeta);
+            return null;
         }
         ItemMeta meta = resultItem.getItemMeta();
         List<String> newLore = new ArrayList<>();
         if (meta.hasLore()) {
-            for (String str : meta.getLore()) {
+            for (String str : UltimateShop.methodUtil.getItemLore(meta)) {
                 if (!infinite) {
                     str = CommonUtil.modifyString(str, "times", String.valueOf(times));
                 } else {

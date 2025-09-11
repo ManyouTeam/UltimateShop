@@ -60,8 +60,7 @@ public class LanguageManager {
     public void sendStringText(CommandSender sender, String... args) {
         if (sender instanceof Player) {
             sendStringText((Player) sender, args);
-        }
-        else {
+        } else {
             sendStringText(args);
         }
     }
@@ -88,8 +87,7 @@ public class LanguageManager {
             String var = "{" + args[i] + "}";
             if (args[i + 1] == null) {
                 text = text.replace(var, "");
-            }
-            else {
+            } else {
                 text = text.replace(var, args[i + 1]);
             }
         }
@@ -120,8 +118,7 @@ public class LanguageManager {
             String var = "{" + args[i] + "}";
             if (args[i + 1] == null) {
                 text = text.replace(var, "");
-            }
-            else {
+            } else {
                 text = text.replace(var, args[i + 1]);
             }
         }

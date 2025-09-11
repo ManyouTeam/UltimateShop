@@ -110,8 +110,7 @@ public class ObjectItem extends AbstractButton {
         if (itemConfig.getConfigurationSection("buy-prices") == null) {
             if (itemConfig.getConfigurationSection("prices") == null) {
                 buyPrice = new ObjectPrices();
-            }
-            else {
+            } else {
                 buyPrice = new ObjectPrices(itemConfig.getConfigurationSection("prices"),
                         itemConfig.getString("price-mode", "ANY"),
                         this,
@@ -129,8 +128,7 @@ public class ObjectItem extends AbstractButton {
         if (itemConfig.getConfigurationSection("sell-prices") == null) {
             if (itemConfig.getConfigurationSection("prices") == null) {
                 sellPrice = new ObjectPrices();
-            }
-            else {
+            } else {
                 sellPrice = new ObjectPrices(itemConfig.getConfigurationSection("prices"),
                         itemConfig.getString("price-mode", "ANY"),
                         this,
@@ -160,8 +158,7 @@ public class ObjectItem extends AbstractButton {
         if (itemConfig.getConfigurationSection("limits") == null) {
             if (itemConfig.getConfigurationSection("buy-limits") == null) {
                 buyLimit = new ObjectLimit();
-            }
-            else {
+            } else {
                 buyLimit = new ObjectLimit(itemConfig.getConfigurationSection("buy-limits"),
                         itemConfig.getConfigurationSection("buy-limits-conditions"),
                         this);
@@ -177,8 +174,7 @@ public class ObjectItem extends AbstractButton {
         if (itemConfig.getConfigurationSection("limits") == null) {
             if (itemConfig.getConfigurationSection("sell-limits") == null) {
                 sellLimit = new ObjectLimit();
-            }
-            else {
+            } else {
                 sellLimit = new ObjectLimit(itemConfig.getConfigurationSection("sell-limits"),
                         itemConfig.getConfigurationSection("sell-limits-conditions"),
                         this);

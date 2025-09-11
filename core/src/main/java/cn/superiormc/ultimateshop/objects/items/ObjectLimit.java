@@ -123,8 +123,7 @@ public class ObjectLimit {
                         "last-reset-sell-server", tempVal4 != null ? tempVal4.getSellLastResetTimeName() : ""
                         );
             }
-            tempVal2 = MathUtil.doCalculate(
-                    TextUtil.withPAPI(tempVal1, player)).intValue();
+            tempVal2 = MathUtil.doCalculate(TextUtil.withPAPI(tempVal1, player)).intValue();
         }
         return tempVal2;
     }

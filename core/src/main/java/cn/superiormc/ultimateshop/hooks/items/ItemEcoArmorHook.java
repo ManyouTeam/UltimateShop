@@ -31,8 +31,7 @@ public class ItemEcoArmorHook extends AbstractItemHook {
         ArmorSet tempVal1 = ArmorUtils.getSetOnItem(hookItem);
         if (tempVal1 == null) {
             return null;
-        }
-        else {
+        } else {
             String tempVal2 = tempVal1.getId();
             ArmorSlot tempVal3 = ArmorSlot.getSlot(hookItem);
             if (tempVal3 == null) {

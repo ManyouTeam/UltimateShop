@@ -258,8 +258,7 @@ public class ConfigManager {
             String var = "{" + args[i] + "}";
             if (args[i + 1] == null) {
                 s = s.replace(var, "");
-            }
-            else {
+            } else {
                 s = s.replace(var, args[i + 1]);
             }
         }

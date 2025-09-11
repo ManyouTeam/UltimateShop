@@ -6,6 +6,7 @@ import cn.superiormc.ultimateshop.utils.CommonUtil;
 import java.io.*;
 
 public class InitManager {
+
     public static InitManager initManager;
 
     private boolean firstLoad = false;

@@ -145,7 +145,7 @@ public class PaperTextUtil {
                 SINGLE_HEX_PATTERN.matcher(text).find() ||
                 GRADIENT_PATTERN.matcher(text).find() ||
                 SECTION_HEX_PATTERN.matcher(text).find()
-                || (text.startsWith("<!i>") && text.contains("&")) || text.contains("§");
+                || text.contains("§");
     }
 
 }

@@ -36,14 +36,12 @@ public class ItemPriceUtil {
                 }
                 if (inventory instanceof PlayerInventory) {
                     player.getInventory().setStorageContents(storage);
-                }
-                else {
+                } else {
                     inventory.setStorageContents(storage);
                 }
             }
             return true;
-        }
-        else {
+        } else {
             return false;
         }
     }
@@ -89,8 +87,7 @@ public class ItemPriceUtil {
                 }
                 if (inventory instanceof PlayerInventory) {
                     player.getInventory().setStorageContents(storage);
-                }
-                else {
+                } else {
                     inventory.setStorageContents(storage);
                 }
             }

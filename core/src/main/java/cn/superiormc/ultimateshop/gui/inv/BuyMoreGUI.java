@@ -68,12 +68,10 @@ public class BuyMoreGUI extends InvGUI {
                         ErrorManager.errorManager.sendErrorMessage("§cError: Can not find add-amount section " +
                                         "in select amount button, or you are setting add-amount to 0?");
                         return true;
-                    }
-                    else {
+                    } else {
                         nowingAmount = button.config.getInt("set-amount");
                     }
-                }
-                else {
+                } else {
                     nowingAmount = nowingAmount + button.config.getInt("add-amount");
                 }
                 if (nowingAmount < 1) {
@@ -115,8 +113,7 @@ public class BuyMoreGUI extends InvGUI {
                             SellProductMethod.startSell(item, player, !b,
                                     false,
                                     nowingAmount);
-                        }
-                        else {
+                        } else {
                             BuyProductMethod.startBuy(item, player, !b,
                                     false,
                                     nowingAmount);
