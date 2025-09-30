@@ -6,7 +6,10 @@ import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.ErrorManager;
 import cn.superiormc.ultimateshop.methods.Product.BuyProductMethod;
 import cn.superiormc.ultimateshop.methods.Product.SellProductMethod;
+import cn.superiormc.ultimateshop.methods.ProductTradeStatus;
+import cn.superiormc.ultimateshop.objects.ObjectThingRun;
 import cn.superiormc.ultimateshop.objects.buttons.*;
+import cn.superiormc.ultimateshop.objects.items.ObjectAction;
 import cn.superiormc.ultimateshop.objects.menus.MenuSender;
 import cn.superiormc.ultimateshop.objects.menus.ObjectMoreMenu;
 import org.bukkit.entity.Player;
@@ -85,7 +88,7 @@ public class BuyMoreGUI extends InvGUI {
                 break;
             case CONFIRM:
                 boolean b = ConfigManager.configManager.getBoolean("placeholder.click.enabled");
-                String clickType = ConfigManager.configManager.getClickAction(type);
+                String clickType = ConfigManager.configManager.getClickAction(type, button);
                 if (((ObjectMoreBuyButton)button).getClickType() != null) {
                     clickType = ((ObjectMoreBuyButton)button).getClickType().toLowerCase();
                 }
@@ -129,10 +132,15 @@ public class BuyMoreGUI extends InvGUI {
                                     nowingAmount);
                         }
                         break;
-                    default:
-                        ErrorManager.errorManager.sendErrorMessage("§cUnknown click action: "
-                                + ConfigManager.configManager.getClickAction(type));
-                        break;
+                }
+                if (!UltimateShop.freeVersion) {
+                    ObjectAction action = new ObjectAction(
+                            ConfigManager.configManager.getSection("menu.click-event-actions." + clickType),
+                            item);
+                    action.runAllActions(new ObjectThingRun(player, type));
+                    if (action.getLastTradeStatus() != null && action.getLastTradeStatus().getStatus() != ProductTradeStatus.Status.DONE) {
+                        item.getFailAction().runAllActions(new ObjectThingRun(player, type));
+                    }
                 }
                 break;
             default:

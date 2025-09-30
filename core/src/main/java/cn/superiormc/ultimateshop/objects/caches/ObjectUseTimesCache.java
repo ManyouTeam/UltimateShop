@@ -12,6 +12,7 @@ import cn.superiormc.ultimateshop.utils.TextUtil;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 public class ObjectUseTimesCache {
 
@@ -118,6 +119,11 @@ public class ObjectUseTimesCache {
     }
 
     public void setBuyUseTimes(int i, boolean notUseBungee, boolean isReset) {
+        int maxTimes = product.getBuyTimesMaxValue(cache.player);
+        if (!UltimateShop.freeVersion && !ConfigManager.configManager.getBoolean("use-times.max-value-for-total-only")
+                && maxTimes >= 0 && i > maxTimes) {
+            return;
+        }
         if (i > Integer.MAX_VALUE - 10000) {
             setSellUseTimes(0);
             setBuyUseTimes(i - sellUseTimes);
@@ -127,6 +133,10 @@ public class ObjectUseTimesCache {
                 totalBuyUseTimes = i;
             } else {
                 totalBuyUseTimes = totalBuyUseTimes + (i - buyUseTimes);
+            }
+            if (!UltimateShop.freeVersion && ConfigManager.configManager.getBoolean("use-times.max-value-for-total-only")
+                    && maxTimes >= 0 && totalBuyUseTimes > maxTimes) {
+                totalBuyUseTimes = maxTimes;
             }
         }
         buyUseTimes = i;
@@ -148,6 +158,11 @@ public class ObjectUseTimesCache {
     }
 
     public void setSellUseTimes(int i, boolean notUseBungee, boolean isReset) {
+        int maxTimes = product.getSellTimesMaxValue(cache.player);
+        if (!UltimateShop.freeVersion && !ConfigManager.configManager.getBoolean("use-times.max-value-for-total-only")
+                && maxTimes >= 0 && i > maxTimes) {
+            return;
+        }
         if (i > Integer.MAX_VALUE - 10000) {
             setBuyUseTimes(0);
             setSellUseTimes(i - buyUseTimes);
@@ -157,6 +172,10 @@ public class ObjectUseTimesCache {
                 totalSellUseTimes = i;
             } else {
                 totalSellUseTimes = totalSellUseTimes + (i - sellUseTimes);
+            }
+            if (!UltimateShop.freeVersion && ConfigManager.configManager.getBoolean("use-times.max-value-for-total-only")
+                    && maxTimes >= 0 && totalSellUseTimes > maxTimes) {
+                totalSellUseTimes = maxTimes;
             }
         }
         sellUseTimes = i;
@@ -171,11 +190,7 @@ public class ObjectUseTimesCache {
 
     public void setLastBuyTime(LocalDateTime time) {
         if (time == null) {
-            if (cooldownBuyTime != null) {
-                lastResetBuyTime = cooldownBuyTime;
-            } else {
-                lastResetBuyTime = LocalDateTime.now();
-            }
+            lastResetBuyTime = Objects.requireNonNullElseGet(cooldownBuyTime, LocalDateTime::now);
         }
         setLastBuyTime(time, false);
     }
@@ -193,11 +208,7 @@ public class ObjectUseTimesCache {
 
     public void setLastSellTime(LocalDateTime time) {
         if (time == null) {
-            if (cooldownSellTime != null) {
-                lastResetSellTime = cooldownSellTime;
-            } else {
-                lastResetSellTime = LocalDateTime.now();
-            }
+            lastResetSellTime = Objects.requireNonNullElseGet(cooldownSellTime, LocalDateTime::now);
         }
         setLastSellTime(time, false);
     }
@@ -228,26 +239,28 @@ public class ObjectUseTimesCache {
             if (mode == null || tempVal1.isEmpty()) {
                 return;
             }
-            if (mode.equals("COOLDOWN_TIMED")) {
-                cooldownBuyTime = getTimedBuyRefreshTime(tempVal1);
-                if (!notUseBungee && cache.server && BungeeCordManager.bungeeCordManager != null) {
-                    BungeeCordManager.bungeeCordManager.sendToOtherServer(
-                            product.getShop(),
-                            product.getProduct(),
-                            "cooldown-buy-time",
-                            null);
+            switch (mode) {
+                case "COOLDOWN_TIMED" -> {
+                    cooldownBuyTime = getTimedBuyRefreshTime(tempVal1);
+                    if (!notUseBungee && cache.server && BungeeCordManager.bungeeCordManager != null) {
+                        BungeeCordManager.bungeeCordManager.sendToOtherServer(
+                                product.getShop(),
+                                product.getProduct(),
+                                "cooldown-buy-time",
+                                null);
+                    }
                 }
-            } else if (mode.equals("COOLDOWN_TIMER")) {
-                cooldownBuyTime = getTimerBuyRefreshTime(tempVal1);
-                if (!notUseBungee && cache.server && BungeeCordManager.bungeeCordManager != null) {
-                    BungeeCordManager.bungeeCordManager.sendToOtherServer(
-                            product.getShop(),
-                            product.getProduct(),
-                            "cooldown-buy-time",
-                            null);
+                case "COOLDOWN_TIMER" -> {
+                    cooldownBuyTime = getTimerBuyRefreshTime(tempVal1);
+                    if (!notUseBungee && cache.server && BungeeCordManager.bungeeCordManager != null) {
+                        BungeeCordManager.bungeeCordManager.sendToOtherServer(
+                                product.getShop(),
+                                product.getProduct(),
+                                "cooldown-buy-time",
+                                null);
+                    }
                 }
-            } else if (mode.equals("COOLDOWN_CUSTOM")) {
-                cooldownBuyTime = CommonUtil.stringToTime(tempVal1,
+                case "COOLDOWN_CUSTOM" -> cooldownBuyTime = CommonUtil.stringToTime(tempVal1,
                         TextUtil.withPAPI(product.getBuyTimesResetFormat(), cache.player));
             }
         }
@@ -268,26 +281,28 @@ public class ObjectUseTimesCache {
             if (mode == null || tempVal1.isEmpty()) {
                 return;
             }
-            if (mode.equals("COOLDOWN_TIMED")) {
-                cooldownSellTime = getTimedSellRefreshTime(tempVal1);
-                if (!notUseBungee && cache.server && BungeeCordManager.bungeeCordManager != null) {
-                    BungeeCordManager.bungeeCordManager.sendToOtherServer(
-                            product.getShop(),
-                            product.getProduct(),
-                            "cooldown-sell-time",
-                            null);
+            switch (mode) {
+                case "COOLDOWN_TIMED" -> {
+                    cooldownSellTime = getTimedSellRefreshTime(tempVal1);
+                    if (!notUseBungee && cache.server && BungeeCordManager.bungeeCordManager != null) {
+                        BungeeCordManager.bungeeCordManager.sendToOtherServer(
+                                product.getShop(),
+                                product.getProduct(),
+                                "cooldown-sell-time",
+                                null);
+                    }
                 }
-            } else if (mode.equals("COOLDOWN_TIMER")) {
-                cooldownSellTime = getTimerSellRefreshTime(tempVal1);
-                if (!notUseBungee && cache.server && BungeeCordManager.bungeeCordManager != null) {
-                    BungeeCordManager.bungeeCordManager.sendToOtherServer(
-                            product.getShop(),
-                            product.getProduct(),
-                            "cooldown-sell-time",
-                            null);
+                case "COOLDOWN_TIMER" -> {
+                    cooldownSellTime = getTimerSellRefreshTime(tempVal1);
+                    if (!notUseBungee && cache.server && BungeeCordManager.bungeeCordManager != null) {
+                        BungeeCordManager.bungeeCordManager.sendToOtherServer(
+                                product.getShop(),
+                                product.getProduct(),
+                                "cooldown-sell-time",
+                                null);
+                    }
                 }
-            } else if (mode.equals("COOLDOWN_CUSTOM")) {
-                cooldownSellTime = CommonUtil.stringToTime(tempVal1,
+                case "COOLDOWN_CUSTOM" -> cooldownSellTime = CommonUtil.stringToTime(tempVal1,
                         TextUtil.withPAPI(product.getSellTimesResetFormat(), cache.player));
             }
         }

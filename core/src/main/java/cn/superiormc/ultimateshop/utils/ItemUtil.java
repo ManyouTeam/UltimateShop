@@ -4,7 +4,6 @@ import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.LocateManager;
 import cn.superiormc.ultimateshop.methods.Items.DebuildItem;
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.MemoryConfiguration;
 import org.bukkit.configuration.MemorySection;
 import org.bukkit.inventory.ItemStack;

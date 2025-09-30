@@ -265,6 +265,18 @@ public class CommonUtil {
         return new ArrayList<>(Arrays.asList(string.split(";;")));
     }
 
+    public static boolean containsAnyString(String text, String... keywords) {
+        if (text == null || keywords == null) {
+            return false;
+        }
+        for (String keyword : keywords) {
+            if (text.equals(keyword)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public static boolean actionIsLeftClick(Action action) {
         return action == Action.LEFT_CLICK_AIR || action == Action.LEFT_CLICK_BLOCK;
     }

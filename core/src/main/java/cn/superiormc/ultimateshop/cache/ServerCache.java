@@ -66,11 +66,17 @@ public class ServerCache {
         if (product == null) {
             return null;
         }
+        int defaultBuyTimes = 0;
+        int defaultSellTimes = 0;
+        if (ConfigManager.configManager.getBoolean("use-times.set-reset-value-by-default")) {
+            defaultBuyTimes = product.getBuyTimesResetValue(player);
+            defaultSellTimes = product.getSellTimesResetValue(player);
+        }
         if (!useTimesCache.containsKey(product)) {
             useTimesCache.put(product, new ObjectUseTimesCache(this,
+                    defaultBuyTimes,
                     0,
-                    0,
-                    0,
+                    defaultSellTimes,
                     0,
                     null,
                     null,

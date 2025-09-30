@@ -267,6 +267,10 @@ public class ObjectItem extends AbstractButton {
         return sellAction;
     }
 
+    public ObjectAction getFailAction() {
+        return failAction;
+    }
+
     public int getPlayerBuyLimit(Player player) {
         ObjectLimit tempVal1 = buyLimit;
         if (buyLimit == null) {
@@ -326,8 +330,8 @@ public class ObjectItem extends AbstractButton {
             return;
         }
         boolean b = ConfigManager.configManager.getBoolean("placeholder.click.enabled");
-        String tempVal1 = ConfigManager.configManager.getClickAction(type);
-        switch (tempVal1){
+        String tempVal1 = ConfigManager.configManager.getClickAction(type, this);
+        switch (tempVal1) {
             case "buy" :
                 if (!buyPrice.empty &&
                         BuyProductMethod.startBuy(this, player, !b).getStatus() != ProductTradeStatus.Status.DONE) {
@@ -371,8 +375,7 @@ public class ObjectItem extends AbstractButton {
                     ConfigManager.configManager.getSection("menu.click-event-actions." + tempVal1),
                     this);
             action.runAllActions(new ObjectThingRun(player, type));
-            if (action.getLastTradeStatus() != null &&
-                    action.getLastTradeStatus().getStatus() != ProductTradeStatus.Status.DONE) {
+            if (action.getLastTradeStatus() != null && action.getLastTradeStatus().getStatus() != ProductTradeStatus.Status.DONE) {
                 failAction.runAllActions(new ObjectThingRun(player, type));
             }
         }
@@ -464,6 +467,17 @@ public class ObjectItem extends AbstractButton {
         return ConfigManager.configManager.getIntWithPAPI(player, "use-times.default-reset-value", "0");
     }
 
+    public int getBuyTimesMaxValue(Player player) {
+        if (UltimateShop.freeVersion) {
+            return -1;
+        }
+        int value = itemConfig.getIntWithPAPI(player, "buy-times-max-value", "-1");
+        if (value > 0) {
+            return value;
+        }
+        return ConfigManager.configManager.getIntWithPAPI(player, "use-times.default-max-value", "-1");
+    }
+
     public String getSellTimesResetMode() {
         if (itemConfig.getString("sell-limits-reset-mode") != null) {
             return itemConfig.getString("sell-limits-reset-mode");
@@ -498,6 +512,17 @@ public class ObjectItem extends AbstractButton {
             return value;
         }
         return ConfigManager.configManager.getIntWithPAPI(player, "use-times.default-reset-value", "0");
+    }
+
+    public int getSellTimesMaxValue(Player player) {
+        if (UltimateShop.freeVersion) {
+            return -1;
+        }
+        int value = itemConfig.getIntWithPAPI(player, "sell-times-max-value", "-1");
+        if (value > 0) {
+            return value;
+        }
+        return ConfigManager.configManager.getIntWithPAPI(player, "use-times.default-max-value", "-1");
     }
 
     @Override

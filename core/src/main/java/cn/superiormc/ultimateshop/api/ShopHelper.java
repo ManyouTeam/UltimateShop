@@ -2,7 +2,6 @@ package cn.superiormc.ultimateshop.api;
 
 import cn.superiormc.ultimateshop.managers.CacheManager;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
-import cn.superiormc.ultimateshop.managers.LanguageManager;
 import cn.superiormc.ultimateshop.objects.ObjectShop;
 import cn.superiormc.ultimateshop.objects.ObjectThingRun;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;

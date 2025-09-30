@@ -132,8 +132,18 @@ menu:
   # Premium version only.
   click-event-actions:
     buy-one-stack:
+      display-name: 'Buy One Stack'
+      buy-only: true
       1:
         type: buy
+        shop: '{shop}'
+        item: '{item}'
+        amount: 64
+    sell-one-stack:
+      display-name: 'Sell One Stack'
+      sell-only: true
+      1:
+        type: sell
         shop: '{shop}'
         item: '{item}'
         amount: 64
@@ -144,6 +154,12 @@ use-times:
   # This only works for CUSTOM type of reset mode.
   default-reset-time-format: 'yyyy-MM-dd HH:mm:ss'
   default-reset-value: 0
+  # Set -1 to disable.
+  default-max-value: -1
+  # If set to true, product default buy / sell times will be set to reset value set in product configs or default value above.
+  set-reset-value-by-default: true
+  # If set to true, max value set in product configs or default value set above will only work for total placeholder.
+  max-value-for-total-only: true
 
 math:
   enabled: true

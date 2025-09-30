@@ -10,15 +10,24 @@ import cn.superiormc.ultimateshop.managers.LanguageManager;
 import cn.superiormc.ultimateshop.methods.ModifyDisplayItem;
 import cn.superiormc.ultimateshop.methods.Product.BuyProductMethod;
 import cn.superiormc.ultimateshop.methods.Product.SellProductMethod;
+import cn.superiormc.ultimateshop.methods.ProductTradeStatus;
+import cn.superiormc.ultimateshop.objects.ObjectThingRun;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
+import cn.superiormc.ultimateshop.objects.items.ObjectAction;
 import cn.superiormc.ultimateshop.objects.menus.ObjectMoreMenu;
+import cn.superiormc.ultimateshop.utils.CommonUtil;
 import cn.superiormc.ultimateshop.utils.TextUtil;
+import org.bukkit.Bukkit;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.ClickType;
 import org.geysermc.cumulus.component.ButtonComponent;
 import org.geysermc.cumulus.form.SimpleForm;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class FormInfoGUI extends FormGUI {
 
@@ -85,6 +94,25 @@ public class FormInfoGUI extends FormGUI {
         // 选择数量
         ButtonComponent buyMore = ButtonComponent.of(TextUtil.parse(player, ConfigManager.configManager.getString(
                         "menu.bedrock.info.buttons.buy-more", "Buy More", "item-name", itemName)));
+        Map<ClickType, ButtonComponent> clickEvents = new HashMap<>();
+        for (ClickType type : ClickType.values()) {
+            String clickType = ConfigManager.configManager.getClickAction(type, item);
+            if (CommonUtil.containsAnyString(clickType, "buy", "sell", "buy-or-sell", "sell-all", "select-amount")) {
+                continue;
+            }
+            ConfigurationSection tempVal3 = ConfigManager.configManager.getSection("menu.click-event-actions." + clickType);
+            if (tempVal3 == null) {
+                continue;
+            }
+            if (tempVal3.getBoolean("buy-only", false) && item.getBuyPrice().empty) {
+                continue;
+            }
+            if (tempVal3.getBoolean("sell-only", false) && item.getSellPrice().empty) {
+                continue;
+            }
+            ButtonComponent clickEvent = ButtonComponent.of(TextUtil.parse(player, tempVal3.getString("display-name", clickType)));
+            clickEvents.put(type, clickEvent);
+        }
         // 返回
         ButtonComponent back = ButtonComponent.of(TextUtil.parse(player, ConfigManager.configManager.getString(
                 "menu.bedrock.info.buttons.back", "Back"
@@ -100,6 +128,9 @@ public class FormInfoGUI extends FormGUI {
         }
         if (item.getBuyMore() && ConfigManager.configManager.containsClickAction("select-amount")) {
             tempVal2.button(buyMore);
+        }
+        for (ButtonComponent buttonComponent : clickEvents.values()) {
+            tempVal2.button(buttonComponent);
         }
         tempVal2.button(back);
         tempVal2.validResultHandler(response -> {
@@ -123,6 +154,19 @@ public class FormInfoGUI extends FormGUI {
                         menu.getSection().getInt("max-amount", 64));
                 if (ConfigManager.configManager.getBoolean("menu.bedrock.not-auto-close")) {
                     ShopGUI.openGUI(player, item.getShopObject(), true, true);
+                }
+            }
+            for (ClickType type : clickEvents.keySet()) {
+                ButtonComponent buttonComponent = clickEvents.get(type);
+                if (response.clickedButton().equals(buttonComponent)) {
+                    String clickType = ConfigManager.configManager.getClickAction(type, item);
+                    ObjectAction action = new ObjectAction(
+                            ConfigManager.configManager.getSection("menu.click-event-actions." + clickType),
+                            item);
+                    action.runAllActions(new ObjectThingRun(player, type));
+                    if (action.getLastTradeStatus() != null && action.getLastTradeStatus().getStatus() != ProductTradeStatus.Status.DONE) {
+                        item.getFailAction().runAllActions(new ObjectThingRun(player, type));
+                    }
                 }
             }
         });

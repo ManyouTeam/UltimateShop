@@ -3,6 +3,7 @@ package cn.superiormc.ultimateshop.managers;
 import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.objects.ObjectSellStick;
 import cn.superiormc.ultimateshop.objects.ObjectShop;
+import cn.superiormc.ultimateshop.objects.buttons.AbstractButton;
 import cn.superiormc.ultimateshop.objects.items.subobjects.ObjectConditionalPlaceholder;
 import cn.superiormc.ultimateshop.objects.items.subobjects.ObjectRandomPlaceholder;
 import cn.superiormc.ultimateshop.objects.menus.ObjectMenu;
@@ -269,10 +270,13 @@ public class ConfigManager {
         return config.getString(originalPath, config.getString(newPath, defaultValue));
     }
 
-    public String getClickAction(ClickType type) {
-        ConfigurationSection tempVal1 = config.getConfigurationSection("menu.click-event");
+    public String getClickAction(ClickType type, AbstractButton button) {
+        ConfigurationSection tempVal1 = button.getButtonConfig().getConfigurationSection("click-event");;
         if (tempVal1 == null) {
-            return "none";
+            tempVal1 = config.getConfigurationSection("menu.click-event");
+            if (tempVal1 == null) {
+                return "none";
+            }
         }
         for (String s : tempVal1.getKeys(false)) {
             for (String t : tempVal1.getString(s).split(";;")) {
