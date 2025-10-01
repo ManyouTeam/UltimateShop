@@ -3,6 +3,7 @@ package cn.superiormc.ultimateshop.cache;
 import cn.superiormc.ultimateshop.database.SQLDatabase;
 import cn.superiormc.ultimateshop.database.YamlDatabase;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
+import cn.superiormc.ultimateshop.managers.ErrorManager;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import cn.superiormc.ultimateshop.objects.ObjectShop;
 import cn.superiormc.ultimateshop.objects.caches.ObjectRandomPlaceholderCache;
@@ -135,7 +136,15 @@ public class ServerCache {
         if (nowValue == null) {
             return;
         }
-        randomPlaceholderCache.put(placeholder, new ObjectRandomPlaceholderCache(placeholder, nowValue, CommonUtil.stringToTime(refreshDoneTime)));
+        if (server && placeholder.isPerPlayer()) {
+            ErrorManager.errorManager.sendErrorMessage("§cThe random placeholder is per player and can not sync data with server cache.");
+            return;
+        }
+        if (!server && !placeholder.isPerPlayer()) {
+            ErrorManager.errorManager.sendErrorMessage("§cThe random placeholder is globally and can not sync data with player cache.");
+            return;
+        }
+        randomPlaceholderCache.put(placeholder, new ObjectRandomPlaceholderCache(this, placeholder, nowValue, CommonUtil.stringToTime(refreshDoneTime)));
     }
 
     public void setRandomPlaceholderCache(String id,
@@ -148,14 +157,30 @@ public class ServerCache {
         if (tempVal1 == null) {
             return;
         }
-        randomPlaceholderCache.put(tempVal1, new ObjectRandomPlaceholderCache(tempVal1, nowValue, CommonUtil.stringToTime(refreshDoneTime)));
+        if (server && tempVal1.isPerPlayer()) {
+            ErrorManager.errorManager.sendErrorMessage("§cThe random placeholder is per player and can not sync data with server cache.");
+            return;
+        }
+        if (!server && !tempVal1.isPerPlayer()) {
+            ErrorManager.errorManager.sendErrorMessage("§cThe random placeholder is globally and can not sync data with player cache.");
+            return;
+        }
+        randomPlaceholderCache.put(tempVal1, new ObjectRandomPlaceholderCache(this, tempVal1, nowValue, CommonUtil.stringToTime(refreshDoneTime)));
     }
 
     public void addRandomPlaceholderCache(ObjectRandomPlaceholder placeholder) {
         if (placeholder == null) {
             return;
         }
-        randomPlaceholderCache.put(placeholder, new ObjectRandomPlaceholderCache(placeholder));
+        if (server && placeholder.isPerPlayer()) {
+            ErrorManager.errorManager.sendErrorMessage("§cThe random placeholder is per player and can not sync data with server cache.");
+            return;
+        }
+        if (!server && !placeholder.isPerPlayer()) {
+            ErrorManager.errorManager.sendErrorMessage("§cThe random placeholder is globally and can not sync data with player cache.");
+            return;
+        }
+        randomPlaceholderCache.put(placeholder, new ObjectRandomPlaceholderCache(this, placeholder));
     }
 
     public Map<ObjectRandomPlaceholder, ObjectRandomPlaceholderCache> getRandomPlaceholderCache() {

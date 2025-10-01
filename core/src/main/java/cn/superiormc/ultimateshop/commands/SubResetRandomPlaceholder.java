@@ -7,6 +7,7 @@ import cn.superiormc.ultimateshop.managers.LanguageManager;
 import cn.superiormc.ultimateshop.objects.caches.ObjectRandomPlaceholderCache;
 import cn.superiormc.ultimateshop.objects.items.subobjects.ObjectRandomPlaceholder;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -19,7 +20,7 @@ public class SubResetRandomPlaceholder extends AbstractCommand {
         this.requiredPermission =  "ultimateshop." + id;
         this.onlyInGame = false;
         this.premiumOnly = true;
-        this.requiredArgLength = new Integer[]{2};
+        this.requiredArgLength = new Integer[]{2, 3};
     }
 
     @Override
@@ -29,10 +30,31 @@ public class SubResetRandomPlaceholder extends AbstractCommand {
             LanguageManager.languageManager.sendStringText(player, "error.random-placeholder-not-found", "placeholder", args[1]);
             return;
         }
-        ObjectRandomPlaceholderCache cache = ServerCache.serverCache.getRandomPlaceholderCache().get(placeholder);
+        ServerCache tempVal1;
+        if (args.length < 3 || args[2].equals("global")) {
+            tempVal1 = ServerCache.serverCache;
+        } else {
+            Player changePlayer = Bukkit.getPlayer(args[2]);
+            if (changePlayer == null) {
+                LanguageManager.languageManager.sendStringText(player,
+                        "error.player-not-found",
+                        "player",
+                        args[2]);
+                return;
+            }
+            tempVal1 = CacheManager.cacheManager.getPlayerCache(changePlayer);
+        }
+        ObjectRandomPlaceholderCache cache = tempVal1.getRandomPlaceholderCache().get(placeholder);
         if (cache == null) {
-            CacheManager.cacheManager.serverCache.addRandomPlaceholderCache(placeholder);
-            cache = ServerCache.serverCache.getRandomPlaceholderCache().get(placeholder);
+            tempVal1.addRandomPlaceholderCache(placeholder);
+            cache = tempVal1.getRandomPlaceholderCache().get(placeholder);
+        }
+        if (cache == null) {
+            LanguageManager.languageManager.sendStringText(player,
+                    "error.random-placeholder-player-arg-required",
+                    "placeholder",
+                    args[1]);
+            return;
         }
         cache.removeRefreshDoneTime();
         cache.setRefreshTime();
@@ -51,10 +73,31 @@ public class SubResetRandomPlaceholder extends AbstractCommand {
             LanguageManager.languageManager.sendStringText("error.random-placeholder-not-found", "placeholder", args[1]);
             return;
         }
-        ObjectRandomPlaceholderCache cache = ServerCache.serverCache.getRandomPlaceholderCache().get(placeholder);
+        ServerCache tempVal1;
+        if (args.length < 3 || args[2].equals("global")) {
+            tempVal1 = ServerCache.serverCache;
+        } else {
+            Player changePlayer = Bukkit.getPlayer(args[2]);
+            if (changePlayer == null) {
+                LanguageManager.languageManager.sendStringText(
+                        "error.player-not-found",
+                        "player",
+                        args[2]);
+                return;
+            }
+            tempVal1 = CacheManager.cacheManager.getPlayerCache(changePlayer);
+        }
+        ObjectRandomPlaceholderCache cache = tempVal1.getRandomPlaceholderCache().get(placeholder);
         if (cache == null) {
-            CacheManager.cacheManager.serverCache.addRandomPlaceholderCache(placeholder);
-            cache = ServerCache.serverCache.getRandomPlaceholderCache().get(placeholder);
+            tempVal1.addRandomPlaceholderCache(placeholder);
+            cache = tempVal1.getRandomPlaceholderCache().get(placeholder);
+        }
+        if (cache == null) {
+            LanguageManager.languageManager.sendStringText(
+                    "error.random-placeholder-player-arg-required",
+                    "placeholder",
+                    args[1]);
+            return;
         }
         cache.removeRefreshDoneTime();
         cache.setRefreshTime();
@@ -73,6 +116,12 @@ public class SubResetRandomPlaceholder extends AbstractCommand {
                 for (ObjectRandomPlaceholder tempVal2: ConfigManager.configManager.getRandomPlaceholders()) {
                     tempVal1.add(tempVal2.getID());
                 }
+                break;
+            case 3:
+                for (Player player : Bukkit.getOnlinePlayers()) {
+                    tempVal1.add(player.getName());
+                }
+                tempVal1.add("global");
                 break;
         }
         return tempVal1;

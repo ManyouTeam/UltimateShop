@@ -11,8 +11,8 @@ error:
   buy-more-menu-direct-open: "&#98FB98[UltimateShop] &c这是增量购买菜单，无法直接打开!"
   shop-menu-not-found: '&#98FB98[UltimateShop] &c找不到商店{shop}的菜单：{menu}!'
   shop-does-not-have-menu: '&#98FB98[UltimateShop] &c商店{shop}没有有效的菜单!'
-  random-placeholder-not-found: "&#98FB98[UltimateShop] &c找不到随机增量符: {placeholder}!"
-  random-placeholder-element-not-found: "&#98FB98[UltimateShop] &c随机变量符 {placeholder} 中似乎不存在元素 {element}!"
+  random-placeholder-not-found: "&#98FB98[UltimateShop] &c找不到随机变量符: {placeholder}!"
+  random-placeholder-player-arg-required: "&#98FB98[UltimateShop] &c随机变量符 {placeholder} 是分玩家输出值的，因此你必须指定一名玩家!"
   result-empty: "&#98FB98[UltimateShop] &c该物品在商店中不存在!"
 
 plugin:

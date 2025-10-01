@@ -1,0 +1,23 @@
+reset-mode: TIMED
+reset-time: '00:00:00'
+per-player-element: true
+element-amount: 5
+elements:
+  A:
+    rate: 1
+    conditions:
+      1:
+        type: permission
+        permission: 'test.permission'
+  B:
+    rate: 5
+  C:
+    rate: 2
+  D:
+    rate: 5
+  E:
+    rate: 2
+  F:
+    rate: 15
+  G:
+    rate: 7

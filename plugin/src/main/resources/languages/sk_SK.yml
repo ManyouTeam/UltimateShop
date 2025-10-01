@@ -12,7 +12,6 @@ error:
   shop-menu-not-found: "&#98FB98[UltimateShop] &cNemôžeme nájsť menu obchodu {shop}: {menu}!"
   shop-does-not-have-menu: "&#98FB98[UltimateShop] &cObchod {shop} nemá platné menu!"
   random-placeholder-not-found: "&#98FB98[UltimateShop] &cNemôžeme nájsť náhodnú premennú: {placeholder}!"
-  random-placeholder-element-not-found: "&#98FB98[UltimateShop] &cZdá sa, že náhodná premenná {placeholder} neobsahuje prvok {element}!"
 
 plugin:
   reloading: "&#98FB98[UltimateShop] &fPokúšame sa znova načítať plugin, server môže mať pokles TPS alebo dokonca zlyhať, ak máte veľa obchodných produktov a online hráčov, pretože sa snažíme uložiť ich údaje na hlavné vlákno servera. Odporúčame reštartovať server namiesto opätovného načítania pluginu, aby sa údaje bezpečne uložili."

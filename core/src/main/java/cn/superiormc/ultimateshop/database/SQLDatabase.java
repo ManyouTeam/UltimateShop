@@ -73,12 +73,14 @@ public class SQLDatabase {
 
             if (!UltimateShop.freeVersion) {
                 stmt.execute("""
-                    CREATE TABLE IF NOT EXISTS ultimateshop_randomPlaceholder (
-                        placeholderID VARCHAR(48) NOT NULL PRIMARY KEY,
-                        nowValue TEXT,
-                        refreshDoneTime DATETIME
-                    )
-                    """);
+                CREATE TABLE IF NOT EXISTS ultimateshop_randomPlaceholders (
+                    playerUUID VARCHAR(36) NOT NULL,
+                    placeholderID VARCHAR(48) NOT NULL,
+                    nowValue TEXT,
+                    refreshDoneTime DATETIME,
+                    PRIMARY KEY (playerUUID, placeholderID)
+                )
+                """);
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -88,16 +90,19 @@ public class SQLDatabase {
     public static void checkData(ServerCache cache) {
         CompletableFuture.supplyAsync(() -> {
             try (Connection conn = dataSource.getConnection()) {
-                if (cache.server && !UltimateShop.freeVersion) {
+                if (!UltimateShop.freeVersion) {
                     try (PreparedStatement ps = conn.prepareStatement(
-                            "SELECT placeholderID, nowValue, refreshDoneTime FROM ultimateshop_randomPlaceholder"
-                    ); ResultSet rs = ps.executeQuery()) {
-                        while (rs.next()) {
-                            String placeholderID = rs.getString("placeholderID");
-                            List<String> nowValue = CommonUtil.translateString(rs.getString("nowValue"));
-                            String refreshDoneTime = rs.getString("refreshDoneTime");
-                            if (nowValue != null && refreshDoneTime != null) {
-                                cache.setRandomPlaceholderCache(placeholderID, refreshDoneTime, nowValue);
+                            "SELECT placeholderID, nowValue, refreshDoneTime FROM ultimateshop_randomPlaceholders WHERE playerUUID = ?"
+                    )) {
+                        ps.setString(1, cache.server ? "Global-Server" : cache.player.getUniqueId().toString());
+                        try (ResultSet rs = ps.executeQuery()) {
+                            while (rs.next()) {
+                                String placeholderID = rs.getString("placeholderID");
+                                List<String> nowValue = CommonUtil.translateString(rs.getString("nowValue"));
+                                String refreshDoneTime = rs.getString("refreshDoneTime");
+                                if (nowValue != null && refreshDoneTime != null) {
+                                    cache.setRandomPlaceholderCache(placeholderID, refreshDoneTime, nowValue);
+                                }
                             }
                         }
                     }
@@ -195,24 +200,25 @@ public class SQLDatabase {
             });
         }
 
-        if (cache.server && !UltimateShop.freeVersion) {
+        if (!UltimateShop.freeVersion) {
             for (ObjectRandomPlaceholderCache phCache : cache.getRandomPlaceholderCache().values()) {
                 if ("ONCE".equals(phCache.getPlaceholder().getMode())) {
                     continue;
                 }
 
                 String sql = """
-                    INSERT INTO ultimateshop_randomPlaceholder (placeholderID, nowValue, refreshDoneTime)
-                    VALUES (?, ?, ?)
-                    ON DUPLICATE KEY UPDATE
-                        nowValue = VALUES(nowValue),
-                        refreshDoneTime = VALUES(refreshDoneTime)
-                    """;
+                      INSERT INTO ultimateshop_randomPlaceholders (playerUUID, placeholderID, nowValue, refreshDoneTime)
+                      VALUES (?, ?, ?, ?)
+                      ON DUPLICATE KEY UPDATE
+                          nowValue = VALUES(nowValue),
+                          refreshDoneTime = VALUES(refreshDoneTime)
+                      """;
                 try (Connection conn = dataSource.getConnection();
                      PreparedStatement ps = conn.prepareStatement(sql)) {
-                    ps.setString(1, phCache.getPlaceholder().getID());
-                    ps.setString(2, CommonUtil.translateStringList(phCache.getNowValue()));
-                    ps.setString(3, CommonUtil.timeToString(phCache.getRefreshDoneTime()));
+                    ps.setString(1, playerUUID);  // 新增 playerUUID
+                    ps.setString(2, phCache.getPlaceholder().getID());
+                    ps.setString(3, CommonUtil.translateStringList(phCache.getNowValue()));
+                    ps.setString(4, CommonUtil.timeToString(phCache.getRefreshDoneTime()));
                     ps.executeUpdate();
                 } catch (SQLException e) {
                     e.printStackTrace();
@@ -284,17 +290,18 @@ public class SQLDatabase {
                 }
 
                 String sql = """
-                    INSERT INTO ultimateshop_randomPlaceholder (placeholderID, nowValue, refreshDoneTime)
-                    VALUES (?, ?, ?)
-                    ON DUPLICATE KEY UPDATE
-                        nowValue = VALUES(nowValue),
-                        refreshDoneTime = VALUES(refreshDoneTime)
-                    """;
+                      INSERT INTO ultimateshop_randomPlaceholders (playerUUID, placeholderID, nowValue, refreshDoneTime)
+                      VALUES (?, ?, ?, ?)
+                      ON DUPLICATE KEY UPDATE
+                          nowValue = VALUES(nowValue),
+                          refreshDoneTime = VALUES(refreshDoneTime)
+                      """;
                 try (Connection conn = dataSource.getConnection();
                      PreparedStatement ps = conn.prepareStatement(sql)) {
-                    ps.setString(1, phCache.getPlaceholder().getID());
-                    ps.setString(2, CommonUtil.translateStringList(phCache.getNowValue(disable)));
-                    ps.setString(3, CommonUtil.timeToString(phCache.getRefreshDoneTime()));
+                    ps.setString(1, playerUUID);  // 新增 playerUUID
+                    ps.setString(2, phCache.getPlaceholder().getID());
+                    ps.setString(3, CommonUtil.translateStringList(phCache.getNowValue()));
+                    ps.setString(4, CommonUtil.timeToString(phCache.getRefreshDoneTime()));
                     ps.executeUpdate();
                 } catch (SQLException e) {
                     e.printStackTrace();

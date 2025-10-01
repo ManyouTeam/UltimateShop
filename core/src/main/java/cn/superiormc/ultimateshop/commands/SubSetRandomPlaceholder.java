@@ -7,6 +7,7 @@ import cn.superiormc.ultimateshop.managers.LanguageManager;
 import cn.superiormc.ultimateshop.objects.caches.ObjectRandomPlaceholderCache;
 import cn.superiormc.ultimateshop.objects.items.subobjects.ObjectRandomPlaceholder;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -20,27 +21,47 @@ public class SubSetRandomPlaceholder extends AbstractCommand {
         this.requiredPermission =  "ultimateshop." + id;
         this.onlyInGame = false;
         this.premiumOnly = true;
-        this.requiredArgLength = new Integer[]{2, 3, 4};
+        this.requiredArgLength = new Integer[]{2, 3, 4, 5};
     }
 
     @Override
     public void executeCommandInGame(String[] args, Player player) {
-        boolean bypassElementCheck = args[args.length - 1].equals("-b");
         ObjectRandomPlaceholder placeholder = ConfigManager.configManager.getRandomPlaceholder(args[1]);
         if (placeholder == null) {
             LanguageManager.languageManager.sendStringText(player, "error.random-placeholder-not-found", "placeholder", args[1]);
             return;
         }
-        ObjectRandomPlaceholderCache cache = ServerCache.serverCache.getRandomPlaceholderCache().get(placeholder);
+        ServerCache tempVal1;
+        if (args.length < 3 || args[args.length - 1].equals("global")) {
+            tempVal1 = ServerCache.serverCache;
+        } else {
+            Player changePlayer = Bukkit.getPlayer(args[3]);
+            if (changePlayer == null) {
+                if (args.length == 4) {
+                    changePlayer = player;
+                } else {
+                    LanguageManager.languageManager.sendStringText(player,
+                            "error.player-not-found",
+                            "player",
+                            args[3]);
+                    return;
+                }
+            }
+            tempVal1 = CacheManager.cacheManager.getPlayerCache(changePlayer);
+        }
+        ObjectRandomPlaceholderCache cache = tempVal1.getRandomPlaceholderCache().get(placeholder);
         if (cache == null) {
-            CacheManager.cacheManager.serverCache.addRandomPlaceholderCache(placeholder);
-            cache = ServerCache.serverCache.getRandomPlaceholderCache().get(placeholder);
+            tempVal1.addRandomPlaceholderCache(placeholder);
+            cache = tempVal1.getRandomPlaceholderCache().get(placeholder);
+        }
+        if (cache == null) {
+            LanguageManager.languageManager.sendStringText(player,
+                    "error.random-placeholder-player-arg-required",
+                    "placeholder",
+                    args[1]);
+            return;
         }
         if (args.length > 2) {
-            if (!placeholder.getConfigElements().contains(args[2]) && !bypassElementCheck) {
-                LanguageManager.languageManager.sendStringText(player, "error.random-placeholder-element-not-found", "placeholder", args[1], "element", args[2]);
-                return;
-            }
             String[] element = args[2].split("~");
             if (element.length == 1) {
                 cache.setPlaceholder(CommonUtil.translateString(args[2]), false);
@@ -64,27 +85,42 @@ public class SubSetRandomPlaceholder extends AbstractCommand {
 
     @Override
     public void executeCommandInConsole(String[] args) {
-        boolean bypassElementCheck = args[args.length - 1].equals("-b");
         ObjectRandomPlaceholder placeholder = ConfigManager.configManager.getRandomPlaceholder(args[1]);
         if (placeholder == null) {
             LanguageManager.languageManager.sendStringText("error.random-placeholder-not-found", "placeholder", args[1]);
             return;
         }
-        ObjectRandomPlaceholderCache cache = ServerCache.serverCache.getRandomPlaceholderCache().get(placeholder);
-        if (cache == null) {
-            CacheManager.cacheManager.serverCache.addRandomPlaceholderCache(placeholder);
-            cache = ServerCache.serverCache.getRandomPlaceholderCache().get(placeholder);
-        }
-        if (args.length > 2) {
-            if (!placeholder.getConfigElements().contains(args[2]) && !bypassElementCheck) {
-                LanguageManager.languageManager.sendStringText("error.random-placeholder-element-not-found", "placeholder", args[1], "element", args[2]);
+        ServerCache tempVal1;
+        if (args.length < 4 || args[args.length - 1].equals("global")) {
+            tempVal1 = ServerCache.serverCache;
+        } else {
+            Player changePlayer = Bukkit.getPlayer(args[args.length - 1]);
+            if (changePlayer == null) {
+                LanguageManager.languageManager.sendStringText(
+                        "error.player-not-found",
+                        "player",
+                        args[3]);
                 return;
             }
+            tempVal1 = CacheManager.cacheManager.getPlayerCache(changePlayer);
+        }
+        ObjectRandomPlaceholderCache cache = tempVal1.getRandomPlaceholderCache().get(placeholder);
+        if (cache == null) {
+            tempVal1.addRandomPlaceholderCache(placeholder);
+            cache = tempVal1.getRandomPlaceholderCache().get(placeholder);
+        }
+        if (cache == null) {
+            LanguageManager.languageManager.sendStringText(
+                    "error.random-placeholder-player-arg-required",
+                    "placeholder",
+                    args[1]);
+            return;
+        }
+        if (args.length > 2) {
             String[] element = args[2].split("~");
             if (element.length == 1) {
                 cache.setPlaceholder(CommonUtil.translateString(args[2]), false);
-            }
-            else {
+            } else {
                 int min = Integer.parseInt(element[0]);
                 int max = Integer.parseInt(element[1]);
                 Random random = new Random();
@@ -117,6 +153,13 @@ public class SubSetRandomPlaceholder extends AbstractCommand {
                 } else {
                     tempVal1.addAll(tempVal3.getConfigElements());
                 }
+                break;
+            case 4:
+                for (Player player : Bukkit.getOnlinePlayers()) {
+                    tempVal1.add(player.getName());
+                }
+                tempVal1.add("global");
+                break;
         }
         return tempVal1;
     }

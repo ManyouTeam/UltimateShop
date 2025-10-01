@@ -653,7 +653,7 @@ public class ObjectUseTimesCache {
                 }
                 return CommonUtil.stringToTime(time, TextUtil.withPAPI(product.getSellTimesResetFormat(), cache.player));
             case "RANDOM_PLACEHOLDER":
-                return ObjectRandomPlaceholder.getRefreshDoneTimeObject(time);
+                return ObjectRandomPlaceholder.getRefreshDoneTimeObject(cache.player, time);
             default:
                 return LocalDateTime.now().withYear(2999);
         }

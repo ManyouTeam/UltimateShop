@@ -89,20 +89,18 @@ public class YamlDatabase {
                 }
             }
         }
-        if (cache.server) {
-            // 随机变量系统
-            ConfigurationSection randomPlaceholderSection = config.getConfigurationSection("randomPlaceholder");
-            if (randomPlaceholderSection != null && !UltimateShop.freeVersion) {
-                for (String placeholderID : randomPlaceholderSection.getKeys(false)) {
-                    ConfigurationSection tempVal3 = randomPlaceholderSection.getConfigurationSection(placeholderID);
-                    if (tempVal3 == null) {
-                        continue;
-                    }
-                    String refreshDoneTime = tempVal3.getString("refreshDoneTime", null);
-                    String nowValue = tempVal3.getString("nowValue", null);
-                    if (refreshDoneTime != null && nowValue != null) {
-                        cache.setRandomPlaceholderCache(placeholderID, refreshDoneTime, CommonUtil.translateString(nowValue));
-                    }
+        // 随机变量系统
+        ConfigurationSection randomPlaceholderSection = config.getConfigurationSection("randomPlaceholder");
+        if (randomPlaceholderSection != null && !UltimateShop.freeVersion) {
+            for (String placeholderID : randomPlaceholderSection.getKeys(false)) {
+                ConfigurationSection tempVal3 = randomPlaceholderSection.getConfigurationSection(placeholderID);
+                if (tempVal3 == null) {
+                    continue;
+                }
+                String refreshDoneTime = tempVal3.getString("refreshDoneTime", null);
+                String nowValue = tempVal3.getString("nowValue", null);
+                if (refreshDoneTime != null && nowValue != null) {
+                    cache.setRandomPlaceholderCache(placeholderID, refreshDoneTime, CommonUtil.translateString(nowValue));
                 }
             }
         }
@@ -133,25 +131,23 @@ public class YamlDatabase {
         }
         YamlConfiguration config = new YamlConfiguration();
 
-        if (cache.server) {
-            // 储存变量值
-            ConfigurationSection randomPlaceholderSection = config.createSection("randomPlaceholder");
-            Collection<ObjectRandomPlaceholderCache> tempVal7 = cache.getRandomPlaceholderCache().values();
-            for (ObjectRandomPlaceholderCache tempVal8 : tempVal7) {
-                data.clear();
-                if (tempVal8.getPlaceholder().getMode().equals("ONCE")) {
-                    continue;
-                }
-                ConfigurationSection tempVal9 = randomPlaceholderSection.getConfigurationSection(tempVal8.getPlaceholder().getID());
-                if (tempVal9 == null) {
-                    tempVal9 = randomPlaceholderSection.createSection(tempVal8.getPlaceholder().getID());
-                }
-                data.put("nowValue", CommonUtil.translateStringList(tempVal8.getNowValue(true)));
-                data.put("refreshDoneTime", CommonUtil.timeToString(tempVal8.getRefreshDoneTime()));
-                for (String key : data.keySet()) {
-                    if (!UltimateShop.freeVersion) {
-                        tempVal9.set(key, data.get(key));
-                    }
+        // 储存变量值
+        ConfigurationSection randomPlaceholderSection = config.createSection("randomPlaceholder");
+        Collection<ObjectRandomPlaceholderCache> tempVal7 = cache.getRandomPlaceholderCache().values();
+        for (ObjectRandomPlaceholderCache tempVal8 : tempVal7) {
+            data.clear();
+            if (tempVal8.getPlaceholder().getMode().equals("ONCE")) {
+                continue;
+            }
+            ConfigurationSection tempVal9 = randomPlaceholderSection.getConfigurationSection(tempVal8.getPlaceholder().getID());
+            if (tempVal9 == null) {
+                tempVal9 = randomPlaceholderSection.createSection(tempVal8.getPlaceholder().getID());
+            }
+            data.put("nowValue", CommonUtil.translateStringList(tempVal8.getNowValue(true)));
+            data.put("refreshDoneTime", CommonUtil.timeToString(tempVal8.getRefreshDoneTime()));
+            for (String key : data.keySet()) {
+                if (!UltimateShop.freeVersion) {
+                    tempVal9.set(key, data.get(key));
                 }
             }
         }

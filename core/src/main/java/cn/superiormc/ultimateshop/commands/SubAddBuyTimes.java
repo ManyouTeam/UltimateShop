@@ -35,8 +35,7 @@ public class SubAddBuyTimes extends AbstractCommand {
         ServerCache tempVal3;
         if (args[3].equals("global")) {
             tempVal3 = ServerCache.serverCache;
-        }
-        else {
+        } else {
             Player changePlayer = Bukkit.getPlayer(args[3]);
             if (changePlayer == null) {
                 LanguageManager.languageManager.sendStringText(player,
@@ -116,8 +115,7 @@ public class SubAddBuyTimes extends AbstractCommand {
         ServerCache tempVal3;
         if (args[3].equals("global")) {
             tempVal3 = ServerCache.serverCache;
-        }
-        else {
+        } else {
             Player changePlayer = Bukkit.getPlayer(args[3]);
             if (changePlayer == null) {
                 LanguageManager.languageManager.sendStringText("error.player-not-found",

@@ -12,7 +12,7 @@ error:
   shop-menu-not-found: "&#98FB98[UltimateShop] &cWe can't find shop {shop}'s menu: {menu}!"
   shop-does-not-have-menu: "&#98FB98[UltimateShop] &cShop {shop} does not have valid menu!"
   random-placeholder-not-found: "&#98FB98[UltimateShop] &cWe can't find random placeholder: {placeholder}!"
-  random-placeholder-element-not-found: "&#98FB98[UltimateShop] &cSeems that random placeholder {placeholder} does not include element {element}!"
+  random-placeholder-player-arg-required: "&#98FB98[UltimateShop] &cRandom placeholder {placeholder} is per player data, you need specific a player!"
   result-empty: "&#98FB98[UltimateShop] &cThis item seems does not exist in shop!"
 
 plugin:

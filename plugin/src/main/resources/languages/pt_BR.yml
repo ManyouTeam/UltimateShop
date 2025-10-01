@@ -11,7 +11,6 @@ error:
   shop-menu-not-found: "&#98FB98[UltimateShop] &cNão conseguimos encontrar o menu {menu} da loja {shop}!"
   shop-does-not-have-menu: "&#98FB98[UltimateShop] &cA loja {shop} não possui um menu válido!"
   random-placeholder-not-found: "&#98FB98[UltimateShop] &cNão conseguimos encontrar o placeholder aleatório: {placeholder}!"
-  random-placeholder-element-not-found: "&#98FB98[UltimateShop] &cParece que o placeholder aleatório {placeholder} não inclui o elemento {element}!"
 
 plugin:
   reloading: "&#98FB98[UltimateShop] &fTentando recarregar o plugin. O servidor pode apresentar queda no TPS ou até mesmo travar se você tiver muitos produtos na loja e jogadores online, pois estamos tentando salvar os dados na thread principal do servidor. Recomendamos reiniciar o servidor em vez de recarregar o plugin para manter os dados seguros."

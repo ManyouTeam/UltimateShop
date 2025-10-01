@@ -9,7 +9,6 @@ import cn.superiormc.ultimateshop.utils.TextUtil;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public class ObjectRandomPlaceholderCache {
@@ -20,14 +19,20 @@ public class ObjectRandomPlaceholderCache {
 
     private final ObjectRandomPlaceholder placeholder;
 
-    public ObjectRandomPlaceholderCache(ObjectRandomPlaceholder placeholder) {
+    private final ServerCache cache;
+
+    public ObjectRandomPlaceholderCache(ServerCache cache,
+                                        ObjectRandomPlaceholder placeholder) {
+        this.cache = cache;
         this.placeholder = placeholder;
         setRefreshTime();
     }
 
-    public ObjectRandomPlaceholderCache(ObjectRandomPlaceholder placeholder,
+    public ObjectRandomPlaceholderCache(ServerCache cache,
+                                        ObjectRandomPlaceholder placeholder,
                                         List<String> nowValue,
                                         LocalDateTime refreshDoneTime) {
+        this.cache = cache;
         this.placeholder = placeholder;
         this.nowValue = nowValue;
         this.refreshDoneTime = refreshDoneTime;
@@ -85,7 +90,7 @@ public class ObjectRandomPlaceholderCache {
             if (tempVal1.equals(getPlaceholder())) {
                 continue;
             }
-            if (tempVal1.getNowValue().equals(nowValue)) {
+            if (tempVal1.getNowValue(cache).equals(nowValue)) {
                 needRefresh = true;
             }
         }
@@ -109,7 +114,7 @@ public class ObjectRandomPlaceholderCache {
     }
 
     public void setPlaceholder(boolean notUseBungee) {
-        setPlaceholder(placeholder.getNewValue(), notUseBungee);
+        setPlaceholder(placeholder.getNewValue(cache), notUseBungee);
     }
 
     public void setPlaceholder(List<String> element, boolean notUseBungee) {
@@ -118,7 +123,7 @@ public class ObjectRandomPlaceholderCache {
         }
         nowValue = element;
         if (!placeholder.getMode().equals("ONCE") && refreshDoneTime != null) {
-            ServerCache.serverCache.setRandomPlaceholderCache(placeholder, CommonUtil.timeToString(refreshDoneTime), nowValue);
+            cache.setRandomPlaceholderCache(placeholder, CommonUtil.timeToString(refreshDoneTime), nowValue);
         }
         if (!notUseBungee && BungeeCordManager.bungeeCordManager != null) {
             BungeeCordManager.bungeeCordManager.sendToOtherServer(

@@ -1,6 +1,7 @@
 package cn.superiormc.ultimateshop.utils;
 
 import cn.superiormc.ultimateshop.UltimateShop;
+import cn.superiormc.ultimateshop.managers.CacheManager;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.methods.StaticPlaceholder;
 import cn.superiormc.ultimateshop.objects.items.subobjects.ObjectConditionalPlaceholder;
@@ -229,14 +230,14 @@ public class TextUtil {
                 number = Integer.parseInt(tempVal1[1]);
             }
             text = text.replace("{random_" + matcher2.group(1) + "}",
-                    ObjectRandomPlaceholder.getNowValue(placeholder, number));
+                    ObjectRandomPlaceholder.getNowValue(player, placeholder, number));
         }
         Pattern pattern3 = Pattern.compile("\\{random-times_(.*?)}");
         Matcher matcher3 = pattern3.matcher(text);
         while (matcher3.find()) {
             String placeholder = matcher3.group(1);
             text = text.replace("{random-times_" + placeholder + "}",
-                    ObjectRandomPlaceholder.getRefreshDoneTime(placeholder));
+                    ObjectRandomPlaceholder.getRefreshDoneTime(player, placeholder));
         }
         Pattern pattern4 = Pattern.compile("\\{compare_([\\d.]+)_([\\d.]+)}");
         Matcher matcher4 = pattern4.matcher(text);
@@ -258,7 +259,7 @@ public class TextUtil {
         while (matcher6.find()) {
             String placeholder = matcher6.group(1);
             text = text.replace("{random-next_" + placeholder + "}",
-                    ObjectRandomPlaceholder.getNextTime(placeholder));
+                    ObjectRandomPlaceholder.getNextTime(player, placeholder));
         }
         Pattern pattern7 = Pattern.compile("\\{cron_\"([^\"]+)\"\\}");
         Matcher matcher7 = pattern7.matcher(text);
