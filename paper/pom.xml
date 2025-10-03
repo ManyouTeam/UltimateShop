@@ -6,7 +6,7 @@
     <parent>
         <groupId>cn.superiormc</groupId>
         <artifactId>UltimateShop</artifactId>
-        <version>3.12.0</version>
+        <version>3.12.1</version>
     </parent>
 
     <artifactId>paper</artifactId>
@@ -39,7 +39,7 @@
         <dependency>
             <groupId>cn.superiormc</groupId>
             <artifactId>core</artifactId>
-            <version>3.12.0</version>
+            <version>3.12.1</version>
             <optional>true</optional>
         </dependency>
     </dependencies>

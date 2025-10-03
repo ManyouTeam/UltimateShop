@@ -11,11 +11,14 @@ public class ObjectMoreMenu extends ObjectMenu {
 
     private final ConfigurationSection section;
 
+    private boolean invalid;
+
     public ObjectMoreMenu(ConfigurationSection section, ObjectItem item) {
         super(section.getString("menu", "buy-more"), item);
         this.item = item;
         this.type = MenuType.More;
         this.section = section;
+        this.invalid = true;
         initDisplayItem();
         initConfirmItem();
         initSelectAmountItem();
@@ -49,8 +52,13 @@ public class ObjectMoreMenu extends ObjectMenu {
         if (tempVal1 == null) {
             return;
         }
+
         for (String button : tempVal1.getKeys(false)) {
-            buttonItems.put(button, new ObjectMoreBuyButton(tempVal1.getConfigurationSection(button), item));
+            ObjectMoreBuyButton buyButton = new ObjectMoreBuyButton(tempVal1.getConfigurationSection(button), item);
+            buttonItems.put(button, buyButton);
+            if (!buyButton.isInvalid()) {
+                invalid = false;
+            }
         }
 
         parseLayout(menuConfigs.getStringList("layout"), (slot, id) -> {
@@ -87,5 +95,9 @@ public class ObjectMoreMenu extends ObjectMenu {
 
     public ConfigurationSection getSection() {
         return section;
+    }
+
+    public boolean isInvalid() {
+        return invalid;
     }
 }

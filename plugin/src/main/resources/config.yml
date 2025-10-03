@@ -106,6 +106,7 @@ menu:
         # Remove this option if you don't want this button.
         back: '&cBack'
   buy-more-menu:
+    not-open-when-invalid: true
     default:
       menu: buy-more
       max-amount: 64

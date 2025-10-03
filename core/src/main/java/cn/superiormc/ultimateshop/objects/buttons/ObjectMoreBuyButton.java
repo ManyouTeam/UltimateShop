@@ -36,4 +36,14 @@ public class ObjectMoreBuyButton extends AbstractButton {
     public String getClickType() {
         return config.getString("click-action", null);
     }
+
+    public boolean isInvalid() {
+        return switch (getClickType()) {
+            case "buy" -> item.getBuyPrice().empty;
+            case "sell" -> item.getSellPrice().empty;
+            case "buy-or-sell" -> item.getBuyPrice().empty && item.getSellPrice().empty;
+            case "sell-all" -> item.getSellPrice().empty || !item.isEnableSellAll();
+            default -> false;
+        };
+    }
 }

@@ -1,10 +1,12 @@
 package cn.superiormc.ultimateshop.objects.actions;
 
+import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.gui.inv.BuyMoreGUI;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.objects.ObjectShop;
 import cn.superiormc.ultimateshop.objects.ObjectThingRun;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
+import cn.superiormc.ultimateshop.objects.menus.ObjectMoreMenu;
 import org.bukkit.entity.Player;
 
 public class ActionBuyMoreMenu extends AbstractRunAction {
@@ -24,7 +26,12 @@ public class ActionBuyMoreMenu extends AbstractRunAction {
         }
         ObjectItem item = shop.getProduct(singleAction.getString("item", player, amount));
         if (item != null) {
-            BuyMoreGUI.openGUI(player, item);
+            if (singleAction.contains("buy-more-menu") && !UltimateShop.freeVersion) {
+                ObjectMoreMenu menu = new ObjectMoreMenu(singleAction.getSection("buy-more-menu"), item);
+                BuyMoreGUI.openGUI(player, item, menu);
+            } else {
+                BuyMoreGUI.openGUI(player, item);
+            }
         }
     }
 }

@@ -113,6 +113,14 @@ public abstract class AbstractSingleRun {
         return section.getBoolean(path, defaultValue);
     }
 
+    public boolean contains(String path) {
+        return section.contains(path);
+    }
+
+    public ConfigurationSection getSection(String path) {
+        return section.getConfigurationSection(path);
+    }
+
     public String getString(String path, Player player, double amount) {
         return replacePlaceholder(section.getString(path), player, amount);
     }

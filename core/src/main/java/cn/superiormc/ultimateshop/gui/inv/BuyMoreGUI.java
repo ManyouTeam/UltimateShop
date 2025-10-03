@@ -25,19 +25,26 @@ public class BuyMoreGUI extends InvGUI {
 
     private final ObjectItem item;
 
-    private ObjectMoreMenu menu;
+    private final ObjectMoreMenu menu;
 
     private int nowingAmount;
 
     private BuyMoreGUI(Player owner, ObjectItem item) {
         super(owner);
         this.item = item;
+        this.menu = item.getBuyMoreMenu();
+        this.nowingAmount = 1;
+    }
+
+    private BuyMoreGUI(Player owner, ObjectItem item, ObjectMoreMenu menu) {
+        super(owner);
+        this.item = item;
+        this.menu = menu;
         this.nowingAmount = 1;
     }
 
     @Override
     protected void constructGUI() {
-        menu = item.getBuyMoreMenu();
         if (menu == null) {
             return;
         }
@@ -172,8 +179,18 @@ public class BuyMoreGUI extends InvGUI {
     }
 
     public static void openGUI(Player player, ObjectItem item) {
+        if (ConfigManager.configManager.getBoolean("menu.buy-more-menu.not-open-when-invalid") && item.getBuyMoreMenu().isInvalid()) {
+            return;
+        }
         BuyMoreGUI gui = new BuyMoreGUI(player, item);
         gui.openGUI(true);
     }
 
+    public static void openGUI(Player player, ObjectItem item, ObjectMoreMenu menu) {
+        if (ConfigManager.configManager.getBoolean("menu.buy-more-menu.not-open-when-invalid") && menu.isInvalid()) {
+            return;
+        }
+        BuyMoreGUI gui = new BuyMoreGUI(player, item, menu);
+        gui.openGUI(true);
+    }
 }
