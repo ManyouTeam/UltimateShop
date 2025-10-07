@@ -15,8 +15,8 @@ public abstract class AbstractItemHook {
     public abstract ItemStack getHookItemByID(Player player, String itemID);
 
     public ItemStack returnNullItem(String itemID) {
-        ErrorManager.errorManager.sendErrorMessage("§cError: Can not get "
-                + pluginName + " item: " + itemID + "!");
+        ErrorManager.errorManager.sendErrorMessage("§cError: Can not get " + pluginName + " item: " + itemID + ", " +
+                "if you firmly believe that the item ID is correct, it is possible that your formatting is incorrect.");
         return null;
     }
 

@@ -1,5 +1,6 @@
 package cn.superiormc.ultimateshop.objects.items;
 
+import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.objects.ObjectShop;
 import cn.superiormc.ultimateshop.objects.ObjectThingRun;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
@@ -73,6 +74,10 @@ public class ObjectCondition {
         }
         for (ObjectSingleCondition singleCondition : conditions){
             if (!singleCondition.checkBoolean(thingRun)) {
+                if (!UltimateShop.freeVersion) {
+                    ObjectAction action = new ObjectAction(section.getConfigurationSection("not-meet-actions"));
+                    action.runAllActions(thingRun);
+                }
                 return false;
             }
         }
@@ -87,6 +92,10 @@ public class ObjectCondition {
             if (singleCondition.checkBoolean(thingRun)) {
                 return true;
             }
+        }
+        if (!UltimateShop.freeVersion) {
+            ObjectAction action = new ObjectAction(section.getConfigurationSection("not-meet-actions"));
+            action.runAllActions(thingRun);
         }
         return false;
     }

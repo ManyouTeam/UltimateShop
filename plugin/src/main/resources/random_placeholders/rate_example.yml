@@ -1,6 +1,7 @@
 reset-mode: TIMED
 reset-time: '00:00:00'
 per-player-element: true
+element-sort: true
 element-amount: 5
 elements:
   A:

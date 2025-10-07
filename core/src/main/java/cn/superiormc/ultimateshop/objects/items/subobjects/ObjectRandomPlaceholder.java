@@ -9,7 +9,6 @@ import cn.superiormc.ultimateshop.objects.caches.ObjectRandomPlaceholderCache;
 import cn.superiormc.ultimateshop.objects.items.ObjectCondition;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
 import cn.superiormc.ultimateshop.utils.TextUtil;
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
@@ -50,6 +49,7 @@ public class ObjectRandomPlaceholder {
                 if (single == null) {
                     continue;
                 }
+
                 int rate = single.getInt("rate", 1);
                 UltimateShop.methodUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fAdded element " + key + " for random placeholder: " + id + ".yml!");
 
@@ -98,12 +98,28 @@ public class ObjectRandomPlaceholder {
             return result;
         }
 
+        List<RandomElement> chosenList = new ArrayList<>();
         int size = available.size();
         for (int i = 0; i < Math.min(elementAmount, size); i++) {
             RandomElement chosen = getWeightedRandom(available);
-            result.add(chosen.getValue());
+            chosenList.add(chosen);
             available.remove(chosen);
         }
+
+        boolean sortByOriginal = section.getBoolean("element-sort", true);
+        if (sortByOriginal) {
+            Set<RandomElement> chosenSet = new HashSet<>(chosenList); // O(1) 查找
+            for (RandomElement elem : elements) {
+                if (chosenSet.contains(elem)) {
+                    result.add(elem.getValue());
+                }
+            }
+        } else {
+            for (RandomElement elem : chosenList) {
+                result.add(elem.getValue());
+            }
+        }
+
         return result;
     }
 
@@ -113,7 +129,9 @@ public class ObjectRandomPlaceholder {
         int cur = 0;
         for (RandomElement elem : elements) {
             cur += elem.getRate();
-            if (rnd < cur) return elem;
+            if (rnd < cur) {
+                return elem;
+            }
         }
         return elements.get(0); // fallback
     }
