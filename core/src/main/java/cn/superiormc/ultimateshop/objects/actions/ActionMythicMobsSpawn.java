@@ -17,6 +17,7 @@ public class ActionMythicMobsSpawn extends AbstractRunAction {
     @Override
     protected void onDoAction(ObjectSingleAction singleAction, ObjectThingRun thingRun) {
         Player player = thingRun.getPlayer();
+        double amount = thingRun.getAmount();
         String mobName = singleAction.getString("entity");
         String worldName = singleAction.getString("world");
         Location location;
@@ -25,9 +26,9 @@ public class ActionMythicMobsSpawn extends AbstractRunAction {
         } else {
             World world = Bukkit.getWorld(worldName);
             location = new Location(world,
-                    singleAction.getDouble("x"),
-                    singleAction.getDouble("y"),
-                    singleAction.getDouble("z"));
+                    singleAction.getDouble("x", player, amount),
+                    singleAction.getDouble("y", player, amount),
+                    singleAction.getDouble("z", player, amount));
 
         }
         CommonUtil.summonMythicMobs(location, mobName, singleAction.getInt("level", 1));

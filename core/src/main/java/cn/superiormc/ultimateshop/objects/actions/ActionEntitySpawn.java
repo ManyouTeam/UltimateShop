@@ -18,6 +18,7 @@ public class ActionEntitySpawn extends AbstractRunAction {
     @Override
     protected void onDoAction(ObjectSingleAction singleAction, ObjectThingRun thingRun) {
         Player player = thingRun.getPlayer();
+        double amount = thingRun.getAmount();
         EntityType entity = EntityType.valueOf(singleAction.getString("entity").toUpperCase());
         String worldName = singleAction.getString("world");
         Location location;
@@ -26,9 +27,9 @@ public class ActionEntitySpawn extends AbstractRunAction {
         } else {
             World world = Bukkit.getWorld(worldName);
             location = new Location(world,
-                    singleAction.getDouble("x"),
-                    singleAction.getDouble("y"),
-                    singleAction.getDouble("z"));
+                    singleAction.getDouble("x", player, amount),
+                    singleAction.getDouble("y", player, amount),
+                    singleAction.getDouble("z", player, amount));
 
         }
         UltimateShop.methodUtil.spawnEntity(location, entity);

@@ -105,6 +105,13 @@ public class ObjectRandomPlaceholderCache {
                 case "CUSTOM":
                     refreshDoneTime = CommonUtil.stringToTime(time, placeholder.getConfig().getString("time-format", "yyyy-MM-dd HH:mm:ss"));
                     break;
+                case "RANDOM_PLACEHOLDER":
+                    if (time.equals(placeholder.getID())) {
+                        refreshDoneTime = LocalDateTime.now().withYear(2999);
+                    } else {
+                        refreshDoneTime = ObjectRandomPlaceholder.getRefreshDoneTimeObject(cache.player, time);
+                    }
+                    break;
                 default:
                     refreshDoneTime = LocalDateTime.now().withYear(2999);
                     break;

@@ -28,6 +28,9 @@ public class CommonUtil {
         if (pluginName == null) {
             return false;
         }
+        if (ConfigManager.configManager.getBoolean("bypass-plugin-check." + pluginName)) {
+            return true;
+        }
         return UltimateShop.instance.getServer().getPluginManager().isPluginEnabled(pluginName);
     }
 
