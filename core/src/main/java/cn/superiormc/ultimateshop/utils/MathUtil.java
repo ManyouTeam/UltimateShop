@@ -7,8 +7,6 @@ import redempt.crunch.Crunch;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.ArrayList;
-import java.util.List;
 
 public class MathUtil {
 
@@ -34,20 +32,5 @@ public class MathUtil {
                     "set math.enabled to false in config.yml maybe solve this problem!");
             return BigDecimal.ZERO;
         }
-    }
-
-    public static List<BigDecimal> transferMathList(List<String> stringList) {
-        List<BigDecimal> tempVal1 = new ArrayList<>();
-        for (String tempVa2 : stringList) {
-            try {
-                tempVal1.add(new BigDecimal(tempVa2));
-            } catch (NumberFormatException ep) {
-                ErrorManager.errorManager.sendErrorMessage("§cError: Your number option value " +
-                        tempVa2 + " can not be read as a number, maybe" +
-                        "set math.enabled to false in config.yml maybe solve this problem!");
-                tempVal1.add(new BigDecimal(-1));
-            }
-        }
-        return tempVal1;
     }
 }

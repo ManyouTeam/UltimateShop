@@ -111,12 +111,12 @@ public class ObjectRandomPlaceholder {
             Set<RandomElement> chosenSet = new HashSet<>(chosenList); // O(1) 查找
             for (RandomElement elem : elements) {
                 if (chosenSet.contains(elem)) {
-                    result.add(elem.getValue());
+                    result.add(elem.parseValue());
                 }
             }
         } else {
             for (RandomElement elem : chosenList) {
-                result.add(elem.getValue());
+                result.add(elem.parseValue());
             }
         }
 
