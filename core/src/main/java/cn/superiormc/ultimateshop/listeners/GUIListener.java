@@ -5,6 +5,8 @@ import cn.superiormc.ultimateshop.gui.InvGUI;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.ErrorManager;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
+import cn.superiormc.ultimateshop.utils.PacketInventoryUtil;
+import cn.superiormc.ultimateshop.utils.TextUtil;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
@@ -20,6 +22,7 @@ import java.util.Objects;
 public class GUIListener implements Listener {
 
     private final Player player;
+
     private final InvGUI gui;
 
     public GUIListener(InvGUI gui) {
@@ -54,9 +57,13 @@ public class GUIListener implements Listener {
                 if (CommonUtil.getMajorVersion(16) && e.getClick() == ClickType.SWAP_OFFHAND && e.isCancelled()) {
                     player.getInventory().setItemInOffHand(player.getInventory().getItemInOffHand());
                 }
+                if (PacketInventoryUtil.packetInventoryUtil != null) {
+                    if (!ConfigManager.configManager.getBoolean("menu.title-update.black-dynamic-title") || !gui.dynamicTitle) {
+                        PacketInventoryUtil.packetInventoryUtil.updateTitle(player, TextUtil.withPAPI(gui.title, player), gui);
+                    }
+                }
             }
-        }
-        catch (Throwable throwable) {
+        } catch (Throwable throwable) {
             ErrorManager.errorManager.sendErrorMessage("§cError: Your menu configs has wrong, error message: " + throwable.getMessage());
             throwable.printStackTrace();
             AbstractGUI.playerList.remove(player);
@@ -80,11 +87,13 @@ public class GUIListener implements Listener {
                 return;
             }
             HandlerList.unregisterAll(this);
+            if (PacketInventoryUtil.packetInventoryUtil != null) {
+                PacketInventoryUtil.packetInventoryUtil.clear(player);
+            }
             player.updateInventory();
             if (AbstractGUI.playerList.containsKey(player)) {
                 gui.removeOpenGUIStatus();
             }
-            // 判定是否要打开上一页菜单
             if (gui.closeEventHandle(e.getInventory())) {
                 if (gui.getMenu() != null) {
                     gui.getMenu().doCloseAction(player);

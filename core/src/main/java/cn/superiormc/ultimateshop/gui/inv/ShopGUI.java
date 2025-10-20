@@ -15,6 +15,7 @@ import cn.superiormc.ultimateshop.objects.caches.ObjectUseTimesCache;
 import cn.superiormc.ultimateshop.objects.menus.MenuSender;
 import cn.superiormc.ultimateshop.objects.menus.ObjectMenu;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
+import cn.superiormc.ultimateshop.utils.PacketInventoryUtil;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.Inventory;
@@ -86,11 +87,19 @@ public class ShopGUI extends InvGUI {
         }
         menuButtons = shopMenu.getMenu(MenuSender.of(player));
         menuItems = getMenuItems(player);
-        if (Objects.isNull(inv)) {
-            if (shop.getShopMenuObject() != null) {
-                inv = UltimateShop.methodUtil.createNewInv(player, shop.getShopMenuObject().getInt("size", 54),
-                        shop.getShopMenuObject().getString("title", shop.getShopDisplayName())
-                                .replace("{shop-name}", shop.getShopDisplayName()));
+
+        ObjectMenu menu = shop.getShopMenuObject();
+        if (menu != null) {
+            dynamicTitle = menu.menuConfigs.getBoolean("dynamic-title.enabled");
+            if (dynamicTitle && PacketInventoryUtil.packetInventoryUtil != null) {
+                PacketInventoryUtil.packetInventoryUtil.startAnimation(player, menu.menuConfigs.getStringList("dynamic-title.titles"),
+                        menu.menuConfigs.getLong("dynamic-title.interval", 5L), this);
+            } else {
+                title = menu.getString("title", "Shop");
+            }
+            if (Objects.isNull(inv)) {
+                title = shop.getShopMenuObject().getString("title", shop.getShopDisplayName()).replace("{shop-name}", shop.getShopDisplayName());
+                inv = UltimateShop.methodUtil.createNewInv(player, shop.getShopMenuObject().getInt("size", 54), title);
             }
         }
         for (int slot : menuButtons.keySet()) {

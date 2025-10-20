@@ -12,6 +12,7 @@ import cn.superiormc.ultimateshop.objects.buttons.*;
 import cn.superiormc.ultimateshop.objects.items.ObjectAction;
 import cn.superiormc.ultimateshop.objects.menus.MenuSender;
 import cn.superiormc.ultimateshop.objects.menus.ObjectMoreMenu;
+import cn.superiormc.ultimateshop.utils.PacketInventoryUtil;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.Inventory;
@@ -54,9 +55,15 @@ public class BuyMoreGUI extends InvGUI {
         int displaySlot = menu.getDisplayItemSlot();
         ItemStack tempVal1 = menuItems.get(displaySlot);
         tempVal1.setAmount(nowingAmount);
+        dynamicTitle = menu.menuConfigs.getBoolean("dynamic-title.enabled");
+        if (dynamicTitle && PacketInventoryUtil.packetInventoryUtil != null) {
+            PacketInventoryUtil.packetInventoryUtil.startAnimation(player, menu.menuConfigs.getStringList("dynamic-title.titles"),
+                    menu.menuConfigs.getLong("dynamic-title.interval", 5L), this);
+        } else {
+            title = menu.getString("title", "Buy More Menu");
+        }
         if (Objects.isNull(inv)) {
-            inv = UltimateShop.methodUtil.createNewInv(player, menu.getInt("size", 54),
-                    menu.getString("title", "Shop"));
+            inv = UltimateShop.methodUtil.createNewInv(player, menu.getInt("size", 54), title);
         }
         inv.setItem(displaySlot, tempVal1);
         // 其他物品

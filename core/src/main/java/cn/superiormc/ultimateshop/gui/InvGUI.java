@@ -27,6 +27,10 @@ public abstract class InvGUI extends AbstractGUI {
 
     protected BukkitRunnable runTask = null;
 
+    public String title;
+
+    public boolean dynamicTitle;
+
     public InvGUI(Player owner) {
         super(owner);
     }

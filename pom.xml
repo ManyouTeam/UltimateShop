@@ -5,7 +5,7 @@
 
     <groupId>cn.superiormc</groupId>
     <artifactId>UltimateShop</artifactId>
-    <version>3.12.6</version>
+    <version>3.13.0</version>
     <packaging>pom</packaging>
 
     <modules>
@@ -184,6 +184,10 @@
         <repository>
             <id>nexo-repo</id>
             <url>https://repo.nexomc.com/releases</url>
+        </repository>
+        <repository>
+            <id>codemc-releases</id>
+            <url>https://repo.codemc.io/repository/maven-releases/</url>
         </repository>
     </repositories>
 </project>

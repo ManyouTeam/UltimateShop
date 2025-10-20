@@ -11,6 +11,7 @@ import cn.superiormc.ultimateshop.objects.items.AbstractSingleThing;
 import cn.superiormc.ultimateshop.objects.items.ThingMode;
 import cn.superiormc.ultimateshop.objects.items.prices.ObjectPrices;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
+import cn.superiormc.ultimateshop.utils.PacketInventoryUtil;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.Inventory;
@@ -30,10 +31,16 @@ public class SellAllGUI extends InvGUI {
 
     @Override
     protected void constructGUI() {
+        dynamicTitle = ConfigManager.configManager.getBoolean("menu.sell-all.dynamic-title.enabled");
+        if (dynamicTitle && PacketInventoryUtil.packetInventoryUtil != null) {
+            PacketInventoryUtil.packetInventoryUtil.startAnimation(player, ConfigManager.configManager.getStringList("menu.sell-all.dynamic-title.titles"),
+                    ConfigManager.configManager.getLong("menu.sell-all.dynamic-title.interval", 5L), this);
+        } else {
+            title = ConfigManager.configManager.getString("menu.sell-all.title");
+        }
         if (Objects.isNull(inv)) {
             inv = UltimateShop.methodUtil.createNewInv(player, ConfigManager.configManager.getInt
-                            ("menu.sell-all.size", 54),
-                   ConfigManager.configManager.getString("menu.sell-all.title"));
+                            ("menu.sell-all.size", 54), title);
         }
     }
 

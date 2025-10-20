@@ -10,6 +10,7 @@ import cn.superiormc.ultimateshop.objects.menus.MenuSender;
 import cn.superiormc.ultimateshop.objects.menus.MenuType;
 import cn.superiormc.ultimateshop.objects.menus.ObjectMenu;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
+import cn.superiormc.ultimateshop.utils.PacketInventoryUtil;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.Inventory;
@@ -39,9 +40,15 @@ public class CommonGUI extends InvGUI {
         }
         menuButtons = commonMenu.getMenu(MenuSender.of(player));
         menuItems = getMenuItems(player);
+        dynamicTitle = commonMenu.menuConfigs.getBoolean("dynamic-title.enabled");
+        if (dynamicTitle && PacketInventoryUtil.packetInventoryUtil != null) {
+            PacketInventoryUtil.packetInventoryUtil.startAnimation(player, commonMenu.menuConfigs.getStringList("dynamic-title.titles"),
+                    commonMenu.menuConfigs.getLong("dynamic-title.interval", 5L), this);
+        } else {
+            title = commonMenu.getString("title", "Shop");
+        }
         if (Objects.isNull(inv)) {
-            inv = UltimateShop.methodUtil.createNewInv(player, commonMenu.getInt("size", 54),
-                    commonMenu.getString("title", "Shop"));
+            inv = UltimateShop.methodUtil.createNewInv(player, commonMenu.getInt("size", 54), title);
         }
         for (int slot : menuButtons.keySet()) {
             inv.setItem(slot, menuItems.get(slot));
