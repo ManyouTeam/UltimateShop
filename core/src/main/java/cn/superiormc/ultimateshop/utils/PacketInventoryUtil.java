@@ -20,30 +20,21 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class PacketInventoryUtil extends PacketListenerAbstract {
+public class PacketInventoryUtil {
 
     public static PacketInventoryUtil packetInventoryUtil;
 
-    private final Map<UUID, Integer> WINDOW_IDS = new ConcurrentHashMap<>();
-    private final Map<UUID, Integer> WINDOW_TYPES = new ConcurrentHashMap<>();
-    private final Map<UUID, SchedulerUtil> RUNNING_ANIMATIONS = new ConcurrentHashMap<>();
-
+    protected final Map<UUID, Integer> WINDOW_IDS = new ConcurrentHashMap<>();
+    protected final Map<UUID, Integer> WINDOW_TYPES = new ConcurrentHashMap<>();
+    protected final Map<UUID, SchedulerUtil> RUNNING_ANIMATIONS = new ConcurrentHashMap<>();
 
     public PacketInventoryUtil() {
-        PacketEvents.getAPI().getEventManager().registerListener(this);
         packetInventoryUtil = this;
+        initListener();
     }
 
-    @Override
-    public void onPacketSend(PacketSendEvent event) {
-        if (event.getPacketType() == PacketType.Play.Server.OPEN_WINDOW) {
-            WrapperPlayServerOpenWindow wrapper = new WrapperPlayServerOpenWindow(event);
-            Player player = event.getPlayer();
-            UUID uuid = player.getUniqueId();
-
-            WINDOW_IDS.put(uuid, wrapper.getContainerId());
-            WINDOW_TYPES.put(uuid, wrapper.getType());
-        }
+    private void initListener() {
+        PacketEvents.getAPI().getEventManager().registerListener(new PacketListener());
     }
 
     public void updateTitle(Player player, String newTitle, InvGUI gui) {
@@ -105,5 +96,18 @@ public class PacketInventoryUtil extends PacketListenerAbstract {
             task.cancel();
         }
     }
+}
 
+class PacketListener extends PacketListenerAbstract {
+    @Override
+    public void onPacketSend(PacketSendEvent event) {
+        if (event.getPacketType() == PacketType.Play.Server.OPEN_WINDOW) {
+            WrapperPlayServerOpenWindow wrapper = new WrapperPlayServerOpenWindow(event);
+            Player player = event.getPlayer();
+            UUID uuid = player.getUniqueId();
+
+            PacketInventoryUtil.packetInventoryUtil.WINDOW_IDS.put(uuid, wrapper.getContainerId());
+            PacketInventoryUtil.packetInventoryUtil.WINDOW_TYPES.put(uuid, wrapper.getType());
+        }
+    }
 }

@@ -11,6 +11,8 @@ import com.destroystokyo.paper.profile.PlayerProfile;
 import com.destroystokyo.paper.profile.ProfileProperty;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import net.kyori.adventure.title.Title;
+import net.kyori.adventure.util.Ticks;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
@@ -21,6 +23,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -164,6 +167,15 @@ public class PaperMethodUtil implements SpecialMethodUtil {
         } else {
             player.sendMessage(PaperTextUtil.modernParse(text, player));
         }
+    }
+
+    @Override
+    public void sendTitle(Player player, String title, String subTitle, int fadeIn, int stay, int fadeOut) {
+        player.showTitle(Title.title(PaperTextUtil.modernParse(title),
+                PaperTextUtil.modernParse(subTitle),
+                Title.Times.times(Ticks.duration(fadeIn),
+                        Ticks.duration(stay),
+                        Ticks.duration(fadeOut))));
     }
 
     @Override

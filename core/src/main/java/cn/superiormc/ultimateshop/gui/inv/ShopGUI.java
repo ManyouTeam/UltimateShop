@@ -91,7 +91,7 @@ public class ShopGUI extends InvGUI {
         ObjectMenu menu = shop.getShopMenuObject();
         if (menu != null) {
             dynamicTitle = menu.menuConfigs.getBoolean("dynamic-title.enabled");
-            if (dynamicTitle && PacketInventoryUtil.packetInventoryUtil != null) {
+            if (dynamicTitle && UltimateShop.usePacketEvents) {
                 PacketInventoryUtil.packetInventoryUtil.startAnimation(player, menu.menuConfigs.getStringList("dynamic-title.titles"),
                         menu.menuConfigs.getLong("dynamic-title.interval", 5L), this);
             } else {

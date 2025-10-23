@@ -21,11 +21,6 @@ public class ListenerManager {
         Bukkit.getPluginManager().registerEvents(new CacheListener(), UltimateShop.instance);
         if (!UltimateShop.freeVersion) {
             Bukkit.getPluginManager().registerEvents(new ClickListener(), UltimateShop.instance);
-            if (ConfigManager.configManager.getBoolean("menu.title-update.enabled") && UltimateShop.methodUtil.methodID().equals("paper") &&
-                    CommonUtil.checkPluginLoad("packetevents")) {
-                UltimateShop.methodUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fDynamic title enabled.");
-                new PacketInventoryUtil();
-            }
         }
     }
 }

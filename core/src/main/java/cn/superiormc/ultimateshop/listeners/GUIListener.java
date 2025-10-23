@@ -1,5 +1,6 @@
 package cn.superiormc.ultimateshop.listeners;
 
+import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.gui.AbstractGUI;
 import cn.superiormc.ultimateshop.gui.InvGUI;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
@@ -57,7 +58,7 @@ public class GUIListener implements Listener {
                 if (CommonUtil.getMajorVersion(16) && e.getClick() == ClickType.SWAP_OFFHAND && e.isCancelled()) {
                     player.getInventory().setItemInOffHand(player.getInventory().getItemInOffHand());
                 }
-                if (PacketInventoryUtil.packetInventoryUtil != null) {
+                if (UltimateShop.usePacketEvents) {
                     if (!ConfigManager.configManager.getBoolean("menu.title-update.black-dynamic-title") || !gui.dynamicTitle) {
                         PacketInventoryUtil.packetInventoryUtil.updateTitle(player, TextUtil.withPAPI(gui.title, player), gui);
                     }
@@ -87,7 +88,7 @@ public class GUIListener implements Listener {
                 return;
             }
             HandlerList.unregisterAll(this);
-            if (PacketInventoryUtil.packetInventoryUtil != null) {
+            if (UltimateShop.usePacketEvents) {
                 PacketInventoryUtil.packetInventoryUtil.clear(player);
             }
             player.updateInventory();

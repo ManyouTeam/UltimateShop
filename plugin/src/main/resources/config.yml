@@ -66,7 +66,7 @@ menu:
     reopen: -1
   # PREMIUM version only
   title-update:
-    enabled: true
+    enabled: false
     black-dynamic-title: true
     resend-items-pack: false
   ignore-click-outside: false

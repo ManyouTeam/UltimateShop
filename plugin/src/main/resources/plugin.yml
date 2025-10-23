@@ -1,5 +1,5 @@
 name: UltimateShop
-version: '3.13.0'
+version: '3.13.1'
 main: cn.superiormc.ultimateshop.UltimateShop
 api-version: 1.14
 folia-supported: true
@@ -42,6 +42,7 @@ softdepend:
   - ExecutableItems
   - MythicChanger
   - NBTAPI
+  - packetevents
 commands:
   ultimateshop:
     aliases:

@@ -32,7 +32,7 @@ public class SellAllGUI extends InvGUI {
     @Override
     protected void constructGUI() {
         dynamicTitle = ConfigManager.configManager.getBoolean("menu.sell-all.dynamic-title.enabled");
-        if (dynamicTitle && PacketInventoryUtil.packetInventoryUtil != null) {
+        if (dynamicTitle && UltimateShop.usePacketEvents) {
             PacketInventoryUtil.packetInventoryUtil.startAnimation(player, ConfigManager.configManager.getStringList("menu.sell-all.dynamic-title.titles"),
                     ConfigManager.configManager.getLong("menu.sell-all.dynamic-title.interval", 5L), this);
         } else {

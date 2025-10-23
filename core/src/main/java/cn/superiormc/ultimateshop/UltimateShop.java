@@ -5,6 +5,7 @@ import cn.superiormc.ultimateshop.database.SQLDatabase;
 import cn.superiormc.ultimateshop.libs.bstats.Metrics;
 import cn.superiormc.ultimateshop.managers.*;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
+import cn.superiormc.ultimateshop.utils.PacketInventoryUtil;
 import cn.superiormc.ultimateshop.utils.SpecialMethodUtil;
 import cn.superiormc.ultimateshop.utils.TextUtil;
 import org.bukkit.Bukkit;
@@ -22,6 +23,8 @@ public final class UltimateShop extends JavaPlugin {
     public static boolean isFolia = false;
 
     public static boolean useGeyser = false;
+
+    public static boolean usePacketEvents = false;
 
     public static int majorVersion;
 
@@ -84,6 +87,12 @@ public final class UltimateShop extends JavaPlugin {
         }
         if (BungeeCordManager.enableThis()) {
             new BungeeCordManager();
+        }
+        if (ConfigManager.configManager.getBoolean("menu.title-update.enabled") && UltimateShop.methodUtil.methodID().equals("paper") &&
+                CommonUtil.checkPluginLoad("packetevents")) {
+            usePacketEvents = true;
+            new PacketInventoryUtil();
+            UltimateShop.methodUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fDynamic title enabled.");
         }
         if (!CommonUtil.checkClass("com.mojang.authlib.properties.Property", "getValue") && CommonUtil.getMinorVersion(21, 1)) {
             newSkullMethod = true;

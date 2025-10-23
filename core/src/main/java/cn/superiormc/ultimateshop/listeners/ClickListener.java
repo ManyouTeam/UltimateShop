@@ -69,7 +69,7 @@ public class ClickListener implements Listener {
             return;
         }
         BlockState state = block.getState();
-        SchedulerUtil.runTaskLater(() -> {
+        SchedulerUtil.runTaskLater(block, () -> {
             Inventory inventory = null;
             if (state instanceof Container) {
                 inventory = ((Container) state).getInventory();

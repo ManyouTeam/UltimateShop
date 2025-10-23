@@ -41,7 +41,7 @@ public class CommonGUI extends InvGUI {
         menuButtons = commonMenu.getMenu(MenuSender.of(player));
         menuItems = getMenuItems(player);
         dynamicTitle = commonMenu.menuConfigs.getBoolean("dynamic-title.enabled");
-        if (dynamicTitle && PacketInventoryUtil.packetInventoryUtil != null) {
+        if (dynamicTitle && UltimateShop.usePacketEvents) {
             PacketInventoryUtil.packetInventoryUtil.startAnimation(player, commonMenu.menuConfigs.getStringList("dynamic-title.titles"),
                     commonMenu.menuConfigs.getLong("dynamic-title.interval", 5L), this);
         } else {

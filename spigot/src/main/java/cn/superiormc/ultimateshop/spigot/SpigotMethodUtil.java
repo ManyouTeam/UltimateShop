@@ -148,6 +148,11 @@ public class SpigotMethodUtil implements SpecialMethodUtil {
     }
 
     @Override
+    public void sendTitle(Player player, String title, String subTitle, int fadeIn, int stay, int fadeOut) {
+        player.sendTitle(title, subTitle, fadeIn, stay, fadeOut);
+    }
+
+    @Override
     public Inventory createNewInv(Player player, int size, String text) {
         return Bukkit.createInventory(player, size, TextUtil.parse(text, player));
     }

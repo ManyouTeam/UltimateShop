@@ -3,6 +3,8 @@ package cn.superiormc.ultimateshop.utils;
 import cn.superiormc.ultimateshop.UltimateShop;
 import io.papermc.paper.threadedregions.scheduler.ScheduledTask;
 import org.bukkit.Bukkit;
+import org.bukkit.block.Block;
+import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 
 public class SchedulerUtil {
@@ -75,6 +77,16 @@ public class SchedulerUtil {
                     scheduledTask -> task.run(), delayTicks));
         } else {
             return new SchedulerUtil(Bukkit.getScheduler().runTaskLaterAsynchronously(UltimateShop.instance, task, delayTicks));
+        }
+    }
+
+    public static SchedulerUtil runTaskLater(Block block, Runnable task, long delayTicks) {
+        if (UltimateShop.isFolia) {
+            if (delayTicks <= 0) delayTicks = 1;
+            return new SchedulerUtil(Bukkit.getRegionScheduler().runDelayed(
+                    UltimateShop.instance, block.getLocation(), scheduledTask -> task.run(), delayTicks));
+        } else {
+            return new SchedulerUtil(Bukkit.getScheduler().runTaskLater(UltimateShop.instance, task, delayTicks));
         }
     }
 
