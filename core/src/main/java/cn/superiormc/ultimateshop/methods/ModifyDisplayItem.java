@@ -4,8 +4,6 @@ import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.managers.CacheManager;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.LanguageManager;
-import cn.superiormc.ultimateshop.methods.Product.BuyProductMethod;
-import cn.superiormc.ultimateshop.methods.Product.SellProductMethod;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import cn.superiormc.ultimateshop.objects.buttons.subobjects.ObjectDisplayItemStack;
 import cn.superiormc.ultimateshop.objects.caches.ObjectUseTimesCache;
@@ -22,15 +20,13 @@ import java.util.List;
 public class ModifyDisplayItem {
 
     public static ObjectDisplayItemStack modifyItem(Player player,
-                                                    int multi,
                                                     ObjectDisplayItemStack addLoreDisplayItem,
                                                     ObjectItem item,
                                                     boolean buyMore) {
-        return modifyItem(player, multi, addLoreDisplayItem, item, buyMore, "general");
+        return modifyItem(player, addLoreDisplayItem, item, buyMore, "general");
     }
 
     public static ObjectDisplayItemStack modifyItem(Player player,
-                                                    int multi,
                                                     ObjectDisplayItemStack addLoreDisplayItem,
                                                     ObjectItem item,
                                                     boolean buyMore,
@@ -42,6 +38,7 @@ public class ModifyDisplayItem {
         if (tempVal2 == null) {
             return addLoreDisplayItem;
         }
+        int multi = addLoreDisplayItem.getAmount();
         // 修改物品名称
         if (item.getItemConfig().getString("display-name") != null) {
             UltimateShop.methodUtil.setItemName(tempVal2, item.getDisplayName(player), player);
@@ -57,7 +54,7 @@ public class ModifyDisplayItem {
                     "amount", String.valueOf(multi),
                     "item-name", item.getDisplayName(player)));
         }
-        addLore.addAll(getModifiedLore(player, multi, item, buyMore, false, clickType));
+        addLore.addAll(getModifiedLore(player, addLoreDisplayItem, item, buyMore, false, clickType));
         if (!addLore.isEmpty()) {
             UltimateShop.methodUtil.setItemLore(tempVal2, addLore, player);
         }
@@ -66,7 +63,7 @@ public class ModifyDisplayItem {
     }
     
     public static List<String> getModifiedLore(Player player,
-                                                int multi,
+                                               ObjectDisplayItemStack addLoreDisplayItem,
                                                 ObjectItem item,
                                                 boolean buyMore,
                                                 boolean bedrock,
@@ -270,14 +267,14 @@ public class ModifyDisplayItem {
                 addLore = CommonUtil.modifyList(player, addLore,
                         "buy-price",
                         ObjectPrices.getDisplayNameInLine(player,
-                                multi,
-                                item.getBuyPrice().take(player.getInventory(), player, tempVal9.getBuyUseTimes(), multi, true).getResultMap(),
+                                addLoreDisplayItem.getAmount(),
+                                item.getBuyPrice().take(player.getInventory(), player, tempVal9.getBuyUseTimes(), addLoreDisplayItem.getAmount(), true).getResultMap(),
                                 item.getBuyPrice().getMode(),
                                 false),
                         "sell-price",
                         ObjectPrices.getDisplayNameInLine(player,
-                                multi,
-                                item.getSellPrice().give(player, tempVal9.getBuyUseTimes(), multi).getResultMap(),
+                                addLoreDisplayItem.getAmount(),
+                                item.getSellPrice().give(player, tempVal9.getBuyUseTimes(), addLoreDisplayItem.getAmount()).getResultMap(),
                                 item.getSellPrice().getMode(),
                                 false),
                         "buy-limit-player",
@@ -329,11 +326,11 @@ public class ModifyDisplayItem {
                         "last-reset-buy-server", tempVal10.getBuyLastResetTimeName(),
                         "last-reset-sell-server", tempVal10.getSellLastResetTimeName(),
                         "buy-click",
-                        getBuyClickPlaceholder(player, multi, item, clickType),
+                        getBuyClickPlaceholder(addLoreDisplayItem, item, clickType),
                         "sell-click",
-                        getSellClickPlaceholder(player, multi, item, clickType),
+                        getSellClickPlaceholder(addLoreDisplayItem, item, clickType),
                         "amount",
-                        String.valueOf(multi),
+                        String.valueOf(addLoreDisplayItem.getAmount()),
                         "item-name",
                         item.getDisplayName(player)
                 );
@@ -345,8 +342,9 @@ public class ModifyDisplayItem {
         return addLore;
     }
 
-    private static String getBuyClickPlaceholder(Player player, int multi, ObjectItem item, String clickType) {
-        if (!ConfigManager.configManager.getBoolean("placeholder.click.enabled")) {
+    private static String getBuyClickPlaceholder(ObjectDisplayItemStack addLoreDisplayItem, ObjectItem item, String clickType) {
+        int multi = addLoreDisplayItem.getAmount();
+        if (addLoreDisplayItem.getBuyStatus() == null) {
             if (item.getSellPrice().empty || clickType.equals("buy")) {
                 return ConfigManager.configManager.getString("placeholder.click.buy-with-no-sell", "", "amount", String.valueOf(multi));
             } else {
@@ -354,7 +352,7 @@ public class ModifyDisplayItem {
             }
         }
         String s = "";
-        switch (BuyProductMethod.startBuy(item, player, false, true, multi).getStatus()) {
+        switch (addLoreDisplayItem.getBuyStatus().getStatus()) {
             case ERROR:
                 s = ConfigManager.configManager.getString("placeholder.click.error", "",  "amount", String.valueOf(multi));
                 break;
@@ -381,8 +379,9 @@ public class ModifyDisplayItem {
         return s;
     }
 
-    private static String getSellClickPlaceholder(Player player, int multi, ObjectItem item, String clickType) {
-        if (!ConfigManager.configManager.getBoolean("placeholder.click.enabled")) {
+    private static String getSellClickPlaceholder(ObjectDisplayItemStack addLoreDisplayItem, ObjectItem item, String clickType) {
+        int multi = addLoreDisplayItem.getAmount();
+        if (addLoreDisplayItem.getSellStatus() == null) {
             if (item.getBuyPrice().empty || clickType.equals("sell")) {
                 return ConfigManager.configManager.getString("placeholder.click.sell-with-no-buy", "",  "amount", String.valueOf(multi));
             } else {
@@ -390,7 +389,7 @@ public class ModifyDisplayItem {
             }
         }
         String s;
-        switch (SellProductMethod.startSell(item, player, false, true, multi).getStatus()) {
+        switch (addLoreDisplayItem.getSellStatus().getStatus()) {
             case ERROR :
                 s = ConfigManager.configManager.getString("placeholder.click.error", "",  "amount", String.valueOf(multi));
                 break;

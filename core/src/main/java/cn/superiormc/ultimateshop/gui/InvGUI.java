@@ -29,8 +29,6 @@ public abstract class InvGUI extends AbstractGUI {
 
     public String title;
 
-    public boolean dynamicTitle;
-
     public InvGUI(Player owner) {
         super(owner);
     }

@@ -59,9 +59,7 @@ public class GUIListener implements Listener {
                     player.getInventory().setItemInOffHand(player.getInventory().getItemInOffHand());
                 }
                 if (UltimateShop.usePacketEvents) {
-                    if (!ConfigManager.configManager.getBoolean("menu.title-update.black-dynamic-title") || !gui.dynamicTitle) {
-                        PacketInventoryUtil.packetInventoryUtil.updateTitle(player, TextUtil.withPAPI(gui.title, player), gui);
-                    }
+                    PacketInventoryUtil.packetInventoryUtil.updateTitle(player, TextUtil.withPAPI(gui.title, player), gui);
                 }
             }
         } catch (Throwable throwable) {
@@ -88,9 +86,6 @@ public class GUIListener implements Listener {
                 return;
             }
             HandlerList.unregisterAll(this);
-            if (UltimateShop.usePacketEvents) {
-                PacketInventoryUtil.packetInventoryUtil.clear(player);
-            }
             player.updateInventory();
             if (AbstractGUI.playerList.containsKey(player)) {
                 gui.removeOpenGUIStatus();

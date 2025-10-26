@@ -11,14 +11,13 @@ import com.github.retrooper.packetevents.protocol.packettype.PacketType;
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerOpenWindow;
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerWindowItems;
 import io.github.retrooper.packetevents.util.SpigotConversionUtil;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class PacketInventoryUtil {
 
@@ -65,36 +64,6 @@ public class PacketInventoryUtil {
         UUID uuid = player.getUniqueId();
         WINDOW_IDS.remove(uuid);
         WINDOW_TYPES.remove(uuid);
-        stopAnimation(player);
-    }
-
-    public void startAnimation(Player player, List<String> frames, long interval, InvGUI gui) {
-        stopAnimation(player);
-
-        if (frames == null || frames.isEmpty()) {
-            return;
-        }
-
-        UUID uuid = player.getUniqueId();
-
-        AtomicInteger index = new AtomicInteger(0);
-        SchedulerUtil task = SchedulerUtil.runTaskTimer(() -> {
-            if (!player.isOnline()) {
-                stopAnimation(player);
-                return;
-            }
-
-            gui.title = frames.get(index.getAndIncrement() % frames.size());
-            updateTitle(player, gui.title, gui);
-        }, 0L, interval);
-        RUNNING_ANIMATIONS.put(uuid, task);
-    }
-
-    public void stopAnimation(Player player) {
-        SchedulerUtil task = RUNNING_ANIMATIONS.remove(player.getUniqueId());
-        if (task != null) {
-            task.cancel();
-        }
     }
 }
 

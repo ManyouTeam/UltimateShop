@@ -40,13 +40,7 @@ public class CommonGUI extends InvGUI {
         }
         menuButtons = commonMenu.getMenu(MenuSender.of(player));
         menuItems = getMenuItems(player);
-        dynamicTitle = commonMenu.menuConfigs.getBoolean("dynamic-title.enabled");
-        if (dynamicTitle && UltimateShop.usePacketEvents) {
-            PacketInventoryUtil.packetInventoryUtil.startAnimation(player, commonMenu.menuConfigs.getStringList("dynamic-title.titles"),
-                    commonMenu.menuConfigs.getLong("dynamic-title.interval", 5L), this);
-        } else {
-            title = commonMenu.getString("title", "Shop");
-        }
+        title = commonMenu.getString("title", "Shop");
         if (Objects.isNull(inv)) {
             inv = UltimateShop.methodUtil.createNewInv(player, commonMenu.getInt("size", 54), title);
         }

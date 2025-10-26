@@ -55,13 +55,7 @@ public class BuyMoreGUI extends InvGUI {
         int displaySlot = menu.getDisplayItemSlot();
         ItemStack tempVal1 = menuItems.get(displaySlot);
         tempVal1.setAmount(nowingAmount);
-        dynamicTitle = menu.menuConfigs.getBoolean("dynamic-title.enabled");
-        if (dynamicTitle && UltimateShop.usePacketEvents) {
-            PacketInventoryUtil.packetInventoryUtil.startAnimation(player, menu.menuConfigs.getStringList("dynamic-title.titles"),
-                    menu.menuConfigs.getLong("dynamic-title.interval", 5L), this);
-        } else {
-            title = menu.getString("title", "Buy More Menu");
-        }
+        title = menu.getString("title", "Buy More Menu");
         if (Objects.isNull(inv)) {
             inv = UltimateShop.methodUtil.createNewInv(player, menu.getInt("size", 54), title);
         }

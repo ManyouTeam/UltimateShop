@@ -90,13 +90,7 @@ public class ShopGUI extends InvGUI {
 
         ObjectMenu menu = shop.getShopMenuObject();
         if (menu != null) {
-            dynamicTitle = menu.menuConfigs.getBoolean("dynamic-title.enabled");
-            if (dynamicTitle && UltimateShop.usePacketEvents) {
-                PacketInventoryUtil.packetInventoryUtil.startAnimation(player, menu.menuConfigs.getStringList("dynamic-title.titles"),
-                        menu.menuConfigs.getLong("dynamic-title.interval", 5L), this);
-            } else {
-                title = menu.getString("title", "Shop");
-            }
+            title = menu.getString("title", "Shop");
             if (Objects.isNull(inv)) {
                 title = shop.getShopMenuObject().getString("title", shop.getShopDisplayName()).replace("{shop-name}", shop.getShopDisplayName());
                 inv = UltimateShop.methodUtil.createNewInv(player, shop.getShopMenuObject().getInt("size", 54), title);
