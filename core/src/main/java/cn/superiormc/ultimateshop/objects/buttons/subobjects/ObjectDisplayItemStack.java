@@ -2,9 +2,6 @@ package cn.superiormc.ultimateshop.objects.buttons.subobjects;
 
 import cn.superiormc.ultimateshop.managers.CacheManager;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
-import cn.superiormc.ultimateshop.methods.Product.BuyProductMethod;
-import cn.superiormc.ultimateshop.methods.Product.SellProductMethod;
-import cn.superiormc.ultimateshop.methods.ProductTradeStatus;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import cn.superiormc.ultimateshop.objects.caches.ObjectUseTimesCache;
 import cn.superiormc.ultimateshop.objects.items.prices.ObjectPrices;
@@ -26,21 +23,15 @@ public class ObjectDisplayItemStack {
         return new ObjectDisplayItemStack(new ItemStack(Material.AIR));
     }
 
-    private ItemStack javaItem;
+    private final ItemStack javaItem;
 
-    private ItemMeta meta;
+    private final ItemMeta meta;
 
     private ConfigurationSection section;
 
     private Player player;
 
     private ObjectItem item;
-
-    private int amount = 1;
-
-    private ProductTradeStatus buyStatus;
-
-    private ProductTradeStatus sellStatus;
 
     public ObjectDisplayItemStack(ItemStack javaItemOnly) {
         this.javaItem = javaItemOnly;
@@ -53,41 +44,6 @@ public class ObjectDisplayItemStack {
         this.section = section;
         this.player = player;
         this.item = item;
-    }
-
-    public ObjectDisplayItemStack(Player player) {
-        this.player = player;
-    }
-
-    public void setBaseSetting(ItemStack javaItem, ConfigurationSection section, ObjectItem item) {
-        this.javaItem = javaItem;
-        this.meta = javaItem.getItemMeta();
-        this.section = section;
-        this.item = item;
-    }
-
-    public void setAmount(int amount) {
-        this.amount = amount;
-        if (item != null && ConfigManager.configManager.getBoolean("placeholder.click.enabled")) {
-            if (!item.getBuyPrice().empty) {
-                buyStatus = BuyProductMethod.startBuy(item, player, false, true, amount);
-            }
-            if (!item.getSellPrice().empty) {
-                sellStatus = SellProductMethod.startSell(item, player, false, true, amount);
-            }
-        }
-    }
-
-    public int getAmount() {
-        return amount;
-    }
-
-    public ProductTradeStatus getBuyStatus() {
-        return buyStatus;
-    }
-
-    public ProductTradeStatus getSellStatus() {
-        return sellStatus;
     }
 
     public ItemMeta getMeta() {

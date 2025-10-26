@@ -5,8 +5,7 @@ import cn.superiormc.ultimateshop.objects.items.TakeResult;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.HashMap;
 
 public class ProductTradeStatus {
 
@@ -80,11 +79,5 @@ public class ProductTradeStatus {
         NOT_ENOUGH,
         INVENTORY_FULL,
         DONE
-    }
-
-    public static List<String> getAllNames() {
-        return Arrays.stream(Status.values())
-                .map(Enum::name)
-                .collect(Collectors.toList());
     }
 }

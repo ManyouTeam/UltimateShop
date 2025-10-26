@@ -13,7 +13,6 @@ import cn.superiormc.ultimateshop.methods.Product.SellProductMethod;
 import cn.superiormc.ultimateshop.methods.ProductTradeStatus;
 import cn.superiormc.ultimateshop.objects.ObjectThingRun;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
-import cn.superiormc.ultimateshop.objects.buttons.subobjects.ObjectDisplayItemStack;
 import cn.superiormc.ultimateshop.objects.items.ObjectAction;
 import cn.superiormc.ultimateshop.objects.menus.ObjectMoreMenu;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
@@ -22,7 +21,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
-import org.bukkit.inventory.ItemStack;
 import org.geysermc.cumulus.component.ButtonComponent;
 import org.geysermc.cumulus.form.SimpleForm;
 
@@ -71,13 +69,12 @@ public class FormInfoGUI extends FormGUI {
                         "item-name", item.getDisplayName(player),
                         "amount", amount)));
         List<String> content = new ArrayList<>();
-        ObjectDisplayItemStack tempVal5 = item.getDisplayItem(player, getAmount());
-        if (tempVal5.getMeta() != null && tempVal5.getMeta().hasLore()) {
-            content.addAll(UltimateShop.methodUtil.getItemLore(tempVal5.getMeta()));
+        if (item.getDisplayItem(player).hasItemMeta() && item.getDisplayItem(player).getItemMeta().hasLore()) {
+            content.addAll(UltimateShop.methodUtil.getItemLore(item.getDisplayItem(player).getItemMeta()));
             content.add(" ");
         }
         content.addAll(ModifyDisplayItem.getModifiedLore(player.getPlayer(),
-                tempVal5,
+                getAmount(),
                 item,
                 false,
                 true,

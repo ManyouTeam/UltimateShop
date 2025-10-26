@@ -43,7 +43,7 @@ public class ObjectCopyItem extends AbstractButton {
         if (displayItem == null) {
             return item.getDisplayItem(player, multi);
         }
-        return displayItem.getDisplayItem(player, multi, true);
+        return displayItem.getDisplayItem(player, multi);
     }
 
     @Override

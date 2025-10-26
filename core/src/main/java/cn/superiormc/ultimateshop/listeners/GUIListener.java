@@ -86,6 +86,9 @@ public class GUIListener implements Listener {
                 return;
             }
             HandlerList.unregisterAll(this);
+            if (UltimateShop.usePacketEvents) {
+                PacketInventoryUtil.packetInventoryUtil.clear(player);
+            }
             player.updateInventory();
             if (AbstractGUI.playerList.containsKey(player)) {
                 gui.removeOpenGUIStatus();

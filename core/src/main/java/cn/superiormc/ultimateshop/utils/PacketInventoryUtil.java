@@ -11,7 +11,6 @@ import com.github.retrooper.packetevents.protocol.packettype.PacketType;
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerOpenWindow;
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerWindowItems;
 import io.github.retrooper.packetevents.util.SpigotConversionUtil;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -25,7 +24,6 @@ public class PacketInventoryUtil {
 
     protected final Map<UUID, Integer> WINDOW_IDS = new ConcurrentHashMap<>();
     protected final Map<UUID, Integer> WINDOW_TYPES = new ConcurrentHashMap<>();
-    protected final Map<UUID, SchedulerUtil> RUNNING_ANIMATIONS = new ConcurrentHashMap<>();
 
     public PacketInventoryUtil() {
         packetInventoryUtil = this;

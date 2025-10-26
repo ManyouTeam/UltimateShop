@@ -386,7 +386,7 @@ public class ObjectItem extends AbstractButton {
         if (displayItem == null) {
             return ObjectDisplayItemStack.getAir();
         }
-        return displayItem.getDisplayItem(player, multi, true);
+        return displayItem.getDisplayItem(player, multi);
     }
 
     public ItemStack getDisplayItem(Player player) {

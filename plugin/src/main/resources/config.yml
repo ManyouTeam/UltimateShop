@@ -67,6 +67,7 @@ menu:
   # PREMIUM version only
   title-update:
     enabled: false
+    black-dynamic-title: true
     resend-items-pack: false
   ignore-click-outside: false
   shop:
@@ -81,6 +82,13 @@ menu:
   sell-all:
     size: 54
     title: '&fSell All &7- Esc to confirm sell!'
+    dynamic-title:
+      enabled: false
+      titles:
+        - "§aUltimateShop §7| §fSell All here~"
+        - "§bUltimateShop §7| §fSell All here~"
+        - "§dUltimateShop §7| §fSell All here~"
+      interval: 15
     black-slots: []
   # Premium version only
   bedrock:
