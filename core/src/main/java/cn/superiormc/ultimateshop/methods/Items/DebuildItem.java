@@ -1,7 +1,9 @@
 package cn.superiormc.ultimateshop.methods.Items;
 
+import cn.superiormc.mythicchanger.MythicChanger;
+import cn.superiormc.mythicchanger.manager.ConfigManager;
+import cn.superiormc.mythicchanger.manager.ErrorManager;
 import cn.superiormc.ultimateshop.UltimateShop;
-import cn.superiormc.ultimateshop.managers.ErrorManager;
 import cn.superiormc.ultimateshop.managers.HookManager;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
 import cn.superiormc.ultimateshop.utils.NBTUtil;
@@ -345,13 +347,15 @@ public class DebuildItem {
         // Skull
         if (meta instanceof SkullMeta) {
             SkullMeta skullMeta = (SkullMeta) meta;
-            if (skullMeta.hasOwner() && skullMeta.getOwningPlayer().getName() != null) {
-                section.set("skull", skullMeta.getOwningPlayer().getName());
-            } else {
-                try {
+            try {
+                if (skullMeta.hasOwner() && skullMeta.getOwningPlayer() != null) {
+                    if (skullMeta.getOwningPlayer().getName() != null) {
+                        section.set("skull", skullMeta.getOwningPlayer().getName());
+                    }
+                } else {
                     Field field = skullMeta.getClass().getDeclaredField("profile");
                     field.setAccessible(true);
-                    if (UltimateShop.newSkullMethod) {
+                    if (MythicChanger.newSkullMethod) {
                         Object playerProfile = field.get(skullMeta);
                         if (playerProfile != null) {
                             Field field2 = playerProfile.getClass().getDeclaredField("f");
@@ -373,10 +377,12 @@ public class DebuildItem {
                             section.set("skull", field3.get(property));
                         }
                     }
-                } catch (Exception exception) {
-                    exception.printStackTrace();
-                    ErrorManager.errorManager.sendErrorMessage("§cError: Can not parse skull texture in a item!");
                 }
+            } catch (Throwable throwable) {
+                if (ConfigManager.configManager.getBoolean("debug")) {
+                    throwable.printStackTrace();
+                }
+                ErrorManager.errorManager.sendErrorMessage("§cError: Can not parse skull texture in a item!");
             }
         }
 

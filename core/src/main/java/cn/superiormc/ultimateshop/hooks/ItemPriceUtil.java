@@ -98,7 +98,7 @@ public class ItemPriceUtil {
         }
     }
 
-    public static int getItemAmount(Inventory inventory, ConfigurationSection section) {
+    public static int getItemAmount(Inventory inventory, Player player, ConfigurationSection section) {
         if (section == null) {
             return 0;
         }
@@ -108,7 +108,7 @@ public class ItemPriceUtil {
             if (tempVal1 == null || tempVal1.getType().isAir()) {
                 continue;
             }
-            if (MatchItemManager.matchItemManager.getMatch(section.getConfigurationSection("match-item"), tempVal1)) {
+            if (MatchItemManager.matchItemManager.getMatch(section.getConfigurationSection("match-item"), player, tempVal1)) {
                 amount += tempVal1.getAmount();
             }
         }
@@ -120,13 +120,13 @@ public class ItemPriceUtil {
             return false;
         }
         ItemStack[] storage = inventory.getStorageContents();
-        if (take || getItemAmount(inventory, section) >= value) {
+        if (take || getItemAmount(inventory, player, section) >= value) {
             if (take) {
                 for (ItemStack itemStack : storage) {
                     if (itemStack == null || itemStack.getType().isAir()) {
                         continue;
                     }
-                    if (MatchItemManager.matchItemManager.getMatch(section.getConfigurationSection("match-item"), itemStack)) {
+                    if (MatchItemManager.matchItemManager.getMatch(section.getConfigurationSection("match-item"), player, itemStack)) {
                         if (itemStack.getAmount() >= value) {
                             itemStack.setAmount(itemStack.getAmount() - value);
                             break;

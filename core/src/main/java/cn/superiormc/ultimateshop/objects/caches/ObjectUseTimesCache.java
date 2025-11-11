@@ -120,10 +120,6 @@ public class ObjectUseTimesCache {
 
     public void setBuyUseTimes(int i, boolean notUseBungee, boolean isReset) {
         int maxTimes = product.getBuyTimesMaxValue(cache.player);
-        if (!UltimateShop.freeVersion && !ConfigManager.configManager.getBoolean("use-times.max-value-for-total-only")
-                && maxTimes >= 0 && i > maxTimes) {
-            return;
-        }
         if (i > Integer.MAX_VALUE - 10000) {
             setSellUseTimes(0);
             setBuyUseTimes(i - sellUseTimes);
@@ -139,7 +135,11 @@ public class ObjectUseTimesCache {
                 totalBuyUseTimes = maxTimes;
             }
         }
-        buyUseTimes = i;
+        if (!UltimateShop.freeVersion && maxTimes >= 0 && i > maxTimes) {
+            buyUseTimes = maxTimes;
+        } else {
+            buyUseTimes = i;
+        }
         if (!notUseBungee && cache.server && BungeeCordManager.bungeeCordManager != null) {
             BungeeCordManager.bungeeCordManager.sendToOtherServer(
                     product.getShop(),
@@ -159,10 +159,6 @@ public class ObjectUseTimesCache {
 
     public void setSellUseTimes(int i, boolean notUseBungee, boolean isReset) {
         int maxTimes = product.getSellTimesMaxValue(cache.player);
-        if (!UltimateShop.freeVersion && !ConfigManager.configManager.getBoolean("use-times.max-value-for-total-only")
-                && maxTimes >= 0 && i > maxTimes) {
-            return;
-        }
         if (i > Integer.MAX_VALUE - 10000) {
             setBuyUseTimes(0);
             setSellUseTimes(i - buyUseTimes);
@@ -178,7 +174,11 @@ public class ObjectUseTimesCache {
                 totalSellUseTimes = maxTimes;
             }
         }
-        sellUseTimes = i;
+        if (!UltimateShop.freeVersion && maxTimes >= 0 && i > maxTimes) {
+            sellUseTimes = maxTimes;
+        } else {
+            sellUseTimes = i;
+        }
         if (!notUseBungee && cache.server && BungeeCordManager.bungeeCordManager != null) {
             BungeeCordManager.bungeeCordManager.sendToOtherServer(
                     product.getShop(),
