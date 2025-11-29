@@ -87,15 +87,15 @@ public class SubGiveSaveItem extends AbstractCommand {
     }
 
     @Override
-    public List<String> getTabResult(String[] args) {
+    public List<String> getTabResult(String[] args, Player player) {
         List<String> tempVal1 = new ArrayList<>();
         int length = args.length;
         if (length == 2) {
             tempVal1.addAll(ItemManager.itemManager.getSavedItemMap().keySet());
             tempVal1.addAll(ItemManager.itemManager.getSavedItemFormatMap().keySet());
         } else if (length == 3) {
-            for (Player player : Bukkit.getOnlinePlayers()) {
-                tempVal1.add(player.getName());
+            for (Player tempVal2 : Bukkit.getOnlinePlayers()) {
+                tempVal1.add(tempVal2.getName());
             }
         } else if (length == 4) {
             tempVal1.add("[amount]");

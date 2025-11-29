@@ -36,7 +36,7 @@ public class ObjectMoreMenu extends ObjectMenu {
         parseLayout(menuConfigs.getStringList("layout"), (slot, id) -> {
             if (displayItem.equals(id)) {
                 displayItemSlot = slot;
-                menuItems.put(slot, new ObjectMoreDisplayButton(
+                getButtons().put(slot, new ObjectMoreDisplayButton(
                         menuConfigs.getConfigurationSection("display-item"),
                         item
                 ));
@@ -64,7 +64,7 @@ public class ObjectMoreMenu extends ObjectMenu {
         parseLayout(menuConfigs.getStringList("layout"), (slot, id) -> {
             AbstractButton btn = buttonItems.get(id);
             if (btn != null) {
-                menuItems.put(slot, btn);
+                getButtons().put(slot, btn);
             }
         });
     }
@@ -84,7 +84,7 @@ public class ObjectMoreMenu extends ObjectMenu {
         parseLayout(menuConfigs.getStringList("layout"), (slot, id) -> {
             AbstractButton btn = buttonItems.get(id);
             if (btn != null) {
-                menuItems.put(slot, btn);
+                getButtons().put(slot, btn);
             }
         });
     }

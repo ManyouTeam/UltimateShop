@@ -1,6 +1,6 @@
 package cn.superiormc.ultimateshop.objects.conditions;
 
-import cn.superiormc.mythicchanger.manager.ErrorManager;
+import cn.superiormc.ultimateshop.managers.ErrorManager;
 import cn.superiormc.ultimateshop.objects.ObjectThingRun;
 import org.bukkit.entity.Player;
 

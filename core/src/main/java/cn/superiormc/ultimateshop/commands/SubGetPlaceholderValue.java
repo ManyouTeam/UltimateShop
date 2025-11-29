@@ -25,7 +25,7 @@ public class SubGetPlaceholderValue extends AbstractCommand {
     }
 
     @Override
-    public List<String> getTabResult(String[] args) {
+    public List<String> getTabResult(String[] args, Player player) {
         List<String> tempVal1 = new ArrayList<>();
         switch (args.length) {
             case 2:

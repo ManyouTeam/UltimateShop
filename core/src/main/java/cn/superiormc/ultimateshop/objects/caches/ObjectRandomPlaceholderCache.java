@@ -43,7 +43,7 @@ public class ObjectRandomPlaceholderCache {
     }
 
     public LocalDateTime getRefreshDoneTime() {
-        if (refreshDoneTime != null && !refreshDoneTime.isAfter(LocalDateTime.now())) {
+        if (refreshDoneTime != null && !refreshDoneTime.isAfter(CommonUtil.getNowTime())) {
             setRefreshTime();
         }
         return refreshDoneTime;
@@ -85,7 +85,7 @@ public class ObjectRandomPlaceholderCache {
             setPlaceholder(notUseBungee);
             return;
         }
-        boolean needRefresh = nowValue == null || refreshDoneTime == null || !refreshDoneTime.isAfter(LocalDateTime.now());
+        boolean needRefresh = nowValue == null || refreshDoneTime == null || !refreshDoneTime.isAfter(CommonUtil.getNowTime());
         for (ObjectRandomPlaceholder tempVal1 : placeholder.getNotSameAs()) {
             if (tempVal1.equals(getPlaceholder())) {
                 continue;
@@ -107,13 +107,13 @@ public class ObjectRandomPlaceholderCache {
                     break;
                 case "RANDOM_PLACEHOLDER":
                     if (time.equals(placeholder.getID())) {
-                        refreshDoneTime = LocalDateTime.now().withYear(2999);
+                        refreshDoneTime = CommonUtil.getNowTime().withYear(2999);
                     } else {
                         refreshDoneTime = ObjectRandomPlaceholder.getRefreshDoneTimeObject(cache.player, time);
                     }
                     break;
                 default:
-                    refreshDoneTime = LocalDateTime.now().withYear(2999);
+                    refreshDoneTime = CommonUtil.getNowTime().withYear(2999);
                     break;
             }
             setPlaceholder(notUseBungee);
@@ -149,7 +149,7 @@ public class ObjectRandomPlaceholderCache {
             String[] tempVal2 = tempVal4.split(":");
             if (tempVal2.length < 3) {
                 ErrorManager.errorManager.sendErrorMessage("§cError: Your reset time " + tempVal4 + " is invalid.");
-                return LocalDateTime.now();
+                return CommonUtil.getNowTime();
             }
             int month = 0;
             int day = 0;
@@ -163,7 +163,7 @@ public class ObjectRandomPlaceholderCache {
                     Integer.parseInt(tempVal2[tempVal2.length - 2]),
                     Integer.parseInt(tempVal2[tempVal2.length - 1]));
             thisResult= thisResult.plusDays(day).plusMonths(month);
-            if (LocalDateTime.now().isAfter(thisResult)) {
+            if (CommonUtil.getNowTime().isAfter(thisResult)) {
                 thisResult = thisResult.plusDays(1L);
             }
             if (refreshResult == null || thisResult.isBefore(refreshResult)) {
@@ -174,11 +174,11 @@ public class ObjectRandomPlaceholderCache {
     }
 
     private LocalDateTime getTimerRefreshTime(String time) {
-        LocalDateTime refreshResult = LocalDateTime.now();
+        LocalDateTime refreshResult = CommonUtil.getNowTime();
         String[] tempVal2 = time.split(":");
         if (tempVal2.length < 3) {
             ErrorManager.errorManager.sendErrorMessage("§cError: Your reset time " + time + " is invalid.");
-            return LocalDateTime.now();
+            return CommonUtil.getNowTime();
         }
         int month = 0;
         int day = 0;

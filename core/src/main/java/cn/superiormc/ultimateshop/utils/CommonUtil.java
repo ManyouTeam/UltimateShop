@@ -19,6 +19,7 @@ import java.lang.reflect.Method;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
@@ -53,6 +54,18 @@ public class CommonUtil {
                 UltimateShop.minorVersion >= minorVersion);
     }
 
+    public static LocalDateTime getNowTime() {
+        LocalDateTime now = LocalDateTime.now();
+
+        if (ConfigManager.configManager.getBoolean("time-offset.enabled")) {
+            return now.plusHours(ConfigManager.configManager.getInt("time-offset.offset-hours", 0))
+                    .plusMinutes(ConfigManager.configManager.getInt("time-offset.offset-minutes", 0))
+                    .plusSeconds(ConfigManager.configManager.getInt("time-offset.offset-seconds", 0));
+        }
+        
+        return now;
+    }
+    
     public static void summonMythicMobs(Location location, String mobID, int level) {
         try {
             MythicBukkit.inst().getMobManager().getMythicMob(mobID).ifPresent(mob -> mob.spawn(BukkitAdapter.adapt(location), level));

@@ -1,7 +1,6 @@
 package cn.superiormc.ultimateshop.commands;
 
 import cn.superiormc.ultimateshop.UltimateShop;
-import cn.superiormc.ultimateshop.api.ShopHelper;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.LanguageManager;
 import cn.superiormc.ultimateshop.methods.Product.SellProductMethod;
@@ -33,7 +32,7 @@ public class SubQuickSell extends AbstractCommand {
                     args[1]);
             return;
         }
-        ObjectItem tempVal2 = tempVal1.getProductNotHidden(args[2]);
+        ObjectItem tempVal2 = tempVal1.getProductNotHidden(player, args[2]);
         if (tempVal2 == null) {
             LanguageManager.languageManager.sendStringText(player,
                     "error.product-not-found",
@@ -74,7 +73,7 @@ public class SubQuickSell extends AbstractCommand {
                     args[1]);
             return;
         }
-        ObjectItem tempVal2 = tempVal1.getProductNotHidden(args[2]);
+        ObjectItem tempVal2 = tempVal1.getProductNotHidden(player, args[2]);
         if (tempVal2 == null) {
             LanguageManager.languageManager.sendStringText(player,
                     "error.product-not-found",
@@ -99,7 +98,7 @@ public class SubQuickSell extends AbstractCommand {
     }
 
     @Override
-    public List<String> getTabResult(String[] args) {
+    public List<String> getTabResult(String[] args, Player player) {
         List<String> tempVal1 = new ArrayList<>();
         switch (args.length) {
             case 2:
@@ -113,7 +112,7 @@ public class SubQuickSell extends AbstractCommand {
                     tempVal1.add(LanguageManager.languageManager.getStringText("command-tab.unknown-shop"));
                     break;
                 }
-                for (ObjectItem tempVal4 : tempVal3.getProductListNotHidden()) {
+                for (ObjectItem tempVal4 : tempVal3.getProductListNotHidden(player)) {
                     tempVal1.add(tempVal4.getItemConfig().getName());
                 }
                 break;

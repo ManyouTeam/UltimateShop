@@ -3,6 +3,7 @@ package cn.superiormc.ultimateshop.cache;
 import cn.superiormc.ultimateshop.database.SQLDatabase;
 import cn.superiormc.ultimateshop.database.YamlDatabase;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
+import cn.superiormc.ultimateshop.objects.menus.MenuSender;
 import cn.superiormc.ultimateshop.utils.SchedulerUtil;
 import org.bukkit.entity.Player;
 
@@ -41,5 +42,9 @@ public class PlayerCache extends ServerCache {
         } else {
             YamlDatabase.updateData(this, true);
         }
+    }
+
+    public Player getPlayer() {
+        return player;
     }
 }

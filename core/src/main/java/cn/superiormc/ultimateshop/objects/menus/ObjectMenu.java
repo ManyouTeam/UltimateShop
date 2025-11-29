@@ -12,6 +12,7 @@ import cn.superiormc.ultimateshop.objects.items.ObjectAction;
 import cn.superiormc.ultimateshop.objects.items.ObjectCondition;
 import cn.superiormc.ultimateshop.utils.CommandUtil;
 import cn.superiormc.ultimateshop.utils.TextUtil;
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.BukkitCommand;
 import org.bukkit.configuration.Configuration;
@@ -43,9 +44,9 @@ public class ObjectMenu {
 
     public Configuration menuConfigs;
 
-    public Map<Integer, AbstractButton> menuItems = new TreeMap<>();
+    protected final Map<MenuSender, Map<Integer, AbstractButton>> menuItems = new HashMap<>();
 
-    public Map<String, AbstractButton> buttonItems = new HashMap<>();
+    protected final Map<String, AbstractButton> buttonItems = new HashMap<>();
 
     private boolean useGeyser;
 
@@ -127,6 +128,9 @@ public class ObjectMenu {
         if (menuConfigs == null) {
             return;
         }
+        if (!dynamicLayout) {
+            menuSender = MenuSender.empty;
+        }
         int slot = 0;
         for (String singleLine : menuConfigs.getStringList("layout")) {
             int c = 0;
@@ -155,11 +159,11 @@ public class ObjectMenu {
 
                 // 放入物品
                 if (!UltimateShop.freeVersion && shop.getCopyItem(id) != null) {
-                    menuItems.put(slot, shop.getCopyItem(id));
+                    getButtons(menuSender).put(slot, shop.getCopyItem(id));
                 } else if (shop.getButton(id) != null) {
-                    menuItems.put(slot, shop.getButton(id));
+                    getButtons(menuSender).put(slot, shop.getButton(id));
                 } else if (shop.getProduct(id) != null) {
-                    menuItems.put(slot, shop.getProduct(id));
+                    getButtons(menuSender).put(slot, shop.getProduct(id));
                 }
 
                 slot++;
@@ -170,6 +174,9 @@ public class ObjectMenu {
     public void initButtonItems(MenuSender menuSender) {
         if (menuConfigs == null) {
             return;
+        }
+        if (!dynamicLayout) {
+            menuSender = MenuSender.empty;
         }
 
         ConfigurationSection tempVal1 = menuConfigs.getConfigurationSection("buttons");
@@ -215,7 +222,7 @@ public class ObjectMenu {
                 // 放入按钮（如果存在）
                 AbstractButton buttonObj = buttonItems.get(id);
                 if (buttonObj != null) {
-                    menuItems.put(slot, buttonObj);
+                    getButtons(menuSender).put(slot, buttonObj);
                 }
 
                 slot++;
@@ -262,7 +269,11 @@ public class ObjectMenu {
             }
             initButtonItems(menuSender);
         }
-        return menuItems;
+        Map<Integer, AbstractButton> tempVal1 = getButtons(menuSender);
+        if (tempVal1 == null) {
+            return menuItems.get(MenuSender.empty);
+        }
+        return tempVal1;
     }
 
     public ObjectCondition getCondition() {
@@ -295,6 +306,23 @@ public class ObjectMenu {
 
     public boolean isDynamicLayout() {
         return dynamicLayout;
+    }
+
+    public Map<Integer, AbstractButton> getButtons() {
+        return getButtons(MenuSender.empty);
+    }
+
+    public Map<Integer, AbstractButton> getButtons(MenuSender menuSender) {
+        if (!dynamicLayout) {
+            menuSender = MenuSender.empty;
+        }
+
+        Map<Integer, AbstractButton> tempVal1 = menuItems.get(menuSender);
+        if (tempVal1 == null) {
+            menuItems.put(menuSender, new TreeMap<>());
+            tempVal1 = menuItems.get(menuSender);
+        }
+        return tempVal1;
     }
 
     protected void parseLayout(List<String> layout, BiConsumer<Integer, String> itemHandler) {

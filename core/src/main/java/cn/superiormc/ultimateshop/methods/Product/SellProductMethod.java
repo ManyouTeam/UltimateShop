@@ -211,7 +211,7 @@ public class SellProductMethod {
                 UltimateShop.methodUtil.sendMessage(null, TextUtil.pluginPrefix() + " §aSet player limit value to " + tempVal9.getSellUseTimes() + multi + "!");
             }
             tempVal9.setSellUseTimes(tempVal9.getSellUseTimes() + multi);
-            tempVal9.setLastSellTime(LocalDateTime.now());
+            tempVal9.setLastSellTime(CommonUtil.getNowTime());
             tempVal9.setCooldownSellTime();
             tempVal3.getUseTimesCache().put(item, tempVal9);
         }
@@ -220,7 +220,7 @@ public class SellProductMethod {
                 UltimateShop.methodUtil.sendMessage(null, TextUtil.pluginPrefix() + " §aSet server limit value to " + tempVal8.getSellUseTimes() + multi + "!");
             }
             tempVal8.setSellUseTimes(tempVal8.getSellUseTimes() + multi);
-            tempVal8.setLastSellTime(LocalDateTime.now());
+            tempVal8.setLastSellTime(CommonUtil.getNowTime());
             tempVal8.setCooldownSellTime();
             tempVal11.getUseTimesCache().put(item, tempVal8);
         }
@@ -245,14 +245,15 @@ public class SellProductMethod {
                     "shop", item.getShop(),
                     "shop-name", item.getShopObject().getShopDisplayName(),
                     "item", item.getProduct(),
-                    "item-name", item.getDisplayName(player),
+                    "item-name", TextUtil.parse(item.getDisplayName(player)),
                     "amount", String.valueOf(calculateAmount),
                     "price", ObjectPrices.getDisplayNameInLine(player,
                             multi,
                             giveResult.getResultMap(),
                             item.getSellPrice().getMode(),
                             !ConfigManager.configManager.getBoolean("placeholder.status.can-used-everywhere")),
-                    "buy-or-sell", "SELL");
+                    "buy-or-sell", "SELL",
+                    "time", CommonUtil.timeToString(CommonUtil.getNowTime(), ConfigManager.configManager.getString("log-transaction.time-format")));
             String filePath = ConfigManager.configManager.getString("log-transaction.file");
             if (filePath.isEmpty()) {
                 UltimateShop.methodUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fLog: " + log);

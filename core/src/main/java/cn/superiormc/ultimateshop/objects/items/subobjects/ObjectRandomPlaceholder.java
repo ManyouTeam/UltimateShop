@@ -207,17 +207,17 @@ public class ObjectRandomPlaceholder {
 
     public static LocalDateTime getRefreshDoneTimeObject(Player player, String id) {
         if (UltimateShop.freeVersion) {
-            return LocalDateTime.now().withYear(2999);
+            return CommonUtil.getNowTime().withYear(2999);
         }
         ObjectRandomPlaceholder tempVal1 = ConfigManager.configManager.getRandomPlaceholder(id);
         if (tempVal1 == null) {
-            return LocalDateTime.now().withYear(2999);
+            return CommonUtil.getNowTime().withYear(2999);
         }
         ServerCache cache;
         if (tempVal1.perPlayer) {
             if (player == null) {
                 ErrorManager.errorManager.sendErrorMessage("§cThe random placeholder is per player and can not sync data with server cache.");
-                return LocalDateTime.now().withYear(2999);
+                return CommonUtil.getNowTime().withYear(2999);
             }
             cache = CacheManager.cacheManager.getPlayerCache(player);
         } else {
@@ -229,7 +229,7 @@ public class ObjectRandomPlaceholder {
             tempVal2 = cache.getRandomPlaceholderCache().get(tempVal1);
         }
         if (tempVal2 == null) {
-            return LocalDateTime.now().withYear(2999);
+            return CommonUtil.getNowTime().withYear(2999);
         }
         return tempVal2.getRefreshDoneTime();
     }
@@ -246,7 +246,7 @@ public class ObjectRandomPlaceholder {
         if (tempVal1 == null || tempVal1.getYear() == 2999) {
             return ConfigManager.configManager.getString("placeholder.next.never");
         }
-        Duration duration = Duration.between(LocalDateTime.now(), tempVal1);
+        Duration duration = Duration.between(CommonUtil.getNowTime(), tempVal1);
         long totalSeconds = duration.getSeconds();
         if (totalSeconds < 0) {
             return ConfigManager.configManager.getString("placeholder.next.never");

@@ -9,6 +9,7 @@ import cn.superiormc.ultimateshop.objects.ObjectShop;
 import cn.superiormc.ultimateshop.objects.caches.ObjectRandomPlaceholderCache;
 import cn.superiormc.ultimateshop.objects.caches.ObjectUseTimesCache;
 import cn.superiormc.ultimateshop.objects.items.subobjects.ObjectRandomPlaceholder;
+import cn.superiormc.ultimateshop.objects.menus.MenuSender;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
 import org.bukkit.entity.Player;
 
@@ -29,8 +30,8 @@ public class ServerCache {
     public Player player = null;
 
     public ServerCache() {
-        this.server = true;
         serverCache = this;
+        this.server = true;
         initServerCache();
     }
 

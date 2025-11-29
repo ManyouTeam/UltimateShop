@@ -109,7 +109,7 @@ public class SubResetRandomPlaceholder extends AbstractCommand {
     }
 
     @Override
-    public List<String> getTabResult(String[] args) {
+    public List<String> getTabResult(String[] args, Player player) {
         List<String> tempVal1 = new ArrayList<>();
         switch (args.length) {
             case 2:
@@ -118,8 +118,8 @@ public class SubResetRandomPlaceholder extends AbstractCommand {
                 }
                 break;
             case 3:
-                for (Player player : Bukkit.getOnlinePlayers()) {
-                    tempVal1.add(player.getName());
+                for (Player tempVal2 : Bukkit.getOnlinePlayers()) {
+                    tempVal1.add(tempVal2.getName());
                 }
                 tempVal1.add("global");
                 break;

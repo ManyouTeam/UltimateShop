@@ -8,7 +8,7 @@
     <parent>
         <groupId>cn.superiormc</groupId>
         <artifactId>UltimateShop</artifactId>
-        <version>3.13.4</version>
+        <version>3.13.7</version>
         <relativePath>../pom.xml</relativePath> <!-- 如果 plugin 和根目录同级 -->
     </parent>
 
@@ -18,7 +18,7 @@
 
     <artifactId>plugin</artifactId>
     <packaging>jar</packaging>
-    <version>3.13.4</version>
+    <version>3.13.7</version>
     <name>UltimateShop</name>
 
     <dependencies>

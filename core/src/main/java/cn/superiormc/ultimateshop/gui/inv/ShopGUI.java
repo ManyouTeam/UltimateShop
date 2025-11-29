@@ -73,7 +73,7 @@ public class ShopGUI extends InvGUI {
                     shop.getShopMenu());
             return;
         }
-        for (ObjectItem tempVal5 : shop.getProductListNotHidden()) {
+        for (ObjectItem tempVal5 : shop.getProductListNotHidden(player)) {
             ObjectUseTimesCache tempVal3 = tempVal1.getUseTimesCache().get(tempVal5);
             if (tempVal3 != null) {
                 tempVal3.refreshBuyTimes();

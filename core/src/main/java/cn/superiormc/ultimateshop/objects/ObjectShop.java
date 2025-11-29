@@ -8,6 +8,7 @@ import cn.superiormc.ultimateshop.managers.LanguageManager;
 import cn.superiormc.ultimateshop.objects.buttons.AbstractButton;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectButton;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectCopyItem;
+import cn.superiormc.ultimateshop.objects.menus.MenuSender;
 import cn.superiormc.ultimateshop.objects.menus.ObjectMenu;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import cn.superiormc.ultimateshop.utils.CommandUtil;
@@ -155,12 +156,16 @@ public class ObjectShop {
         return items.get(productID);
     }
 
-    public ObjectItem getProductNotHidden(String productID) {
+    public ObjectItem getProductNotHidden(Player player, String productID) {
+        return getProductNotHidden(MenuSender.of(player), productID);
+    }
+
+    public ObjectItem getProductNotHidden(MenuSender menuSender, String productID) {
         if (productID == null) {
             return null;
         }
         ObjectItem item = items.get(productID);
-        if (menu != null && !menu.menuItems.containsValue(item) && ConfigManager.configManager.getBoolean("menu.secret-shop-items")) {
+        if (menu != null && !menu.getButtons(menuSender).containsValue(item) && ConfigManager.configManager.getBoolean("menu.secret-shop-items")) {
             return null;
         }
         return item;
@@ -182,11 +187,15 @@ public class ObjectShop {
         return resultItems;
     }
 
-    public List<ObjectItem> getProductListNotHidden() {
+    public List<ObjectItem> getProductListNotHidden(Player player) {
+        return getProductListNotHidden(MenuSender.of(player));
+    }
+
+    public List<ObjectItem> getProductListNotHidden(MenuSender sender) {
         List<ObjectItem> resultItems = new ArrayList<>();
         for (String key : items.keySet()) {
             ObjectItem item = items.get(key);
-            if (menu != null && !menu.menuItems.containsValue(item) && ConfigManager.configManager.getBoolean("menu.secret-shop-items")) {
+            if (menu != null && !menu.getButtons(sender).containsValue(item) && ConfigManager.configManager.getBoolean("menu.secret-shop-items")) {
                 continue;
             }
             resultItems.add(item);

@@ -1,8 +1,7 @@
 package cn.superiormc.ultimateshop.methods.Items;
 
-import cn.superiormc.mythicchanger.MythicChanger;
 import cn.superiormc.mythicchanger.manager.ConfigManager;
-import cn.superiormc.mythicchanger.manager.ErrorManager;
+import cn.superiormc.ultimateshop.managers.ErrorManager;
 import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.managers.HookManager;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
@@ -355,7 +354,7 @@ public class DebuildItem {
                 } else {
                     Field field = skullMeta.getClass().getDeclaredField("profile");
                     field.setAccessible(true);
-                    if (MythicChanger.newSkullMethod) {
+                    if (UltimateShop.newSkullMethod) {
                         Object playerProfile = field.get(skullMeta);
                         if (playerProfile != null) {
                             Field field2 = playerProfile.getClass().getDeclaredField("f");

@@ -233,7 +233,7 @@ public class ObjectUseTimesCache {
     }
 
     public void setCooldownBuyTime(boolean notUseBungee) {
-        if (cooldownBuyTime == null || !cooldownBuyTime.isBefore(LocalDateTime.now())) {
+        if (cooldownBuyTime == null || !cooldownBuyTime.isBefore(CommonUtil.getNowTime())) {
             String mode = product.getBuyTimesResetMode();
             String tempVal1 = TextUtil.withPAPI(product.getBuyTimesResetTime(), cache.player);
             if (mode == null || tempVal1.isEmpty()) {
@@ -275,7 +275,7 @@ public class ObjectUseTimesCache {
     }
 
     public void setCooldownSellTime(boolean notUseBungee) {
-        if (cooldownSellTime == null || !cooldownSellTime.isBefore(LocalDateTime.now())) {
+        if (cooldownSellTime == null || !cooldownSellTime.isBefore(CommonUtil.getNowTime())) {
             String mode = product.getSellTimesResetMode();
             String tempVal1 = TextUtil.withPAPI(product.getSellTimesResetTime(), cache.player);
             if (mode == null || tempVal1.isEmpty()) {
@@ -384,7 +384,7 @@ public class ObjectUseTimesCache {
         if (tempVal1 == null || tempVal1.getYear() == 2999) {
             return ConfigManager.configManager.getString("placeholder.next.never");
         }
-        Duration duration = Duration.between(LocalDateTime.now(), tempVal1);
+        Duration duration = Duration.between(CommonUtil.getNowTime(), tempVal1);
         long totalSeconds = duration.getSeconds();
         if (totalSeconds < 0) {
             return ConfigManager.configManager.getString("placeholder.next.never");
@@ -412,7 +412,7 @@ public class ObjectUseTimesCache {
         if (tempVal1 == null || tempVal1.getYear() == 2999) {
             return "0";
         }
-        Duration duration = Duration.between(tempVal1, LocalDateTime.now());
+        Duration duration = Duration.between(tempVal1, CommonUtil.getNowTime());
         return String.valueOf(duration.getSeconds());
     }
 
@@ -424,7 +424,7 @@ public class ObjectUseTimesCache {
         if (tempVal1 == null || tempVal1.getYear() == 2999) {
             return getBuyLastTimeName();
         }
-        Duration duration = Duration.between(tempVal1, LocalDateTime.now());
+        Duration duration = Duration.between(tempVal1, CommonUtil.getNowTime());
         return String.valueOf(duration.getSeconds());
     }
 
@@ -444,7 +444,7 @@ public class ObjectUseTimesCache {
         if (tempVal1 == null || tempVal1.getYear() == 2999) {
             return ConfigManager.configManager.getString("placeholder.next.never");
         }
-        Duration duration = Duration.between(LocalDateTime.now(), tempVal1);
+        Duration duration = Duration.between(CommonUtil.getNowTime(), tempVal1);
         long totalSeconds = duration.getSeconds();
         if (totalSeconds < 0) {
             return ConfigManager.configManager.getString("placeholder.next.never");
@@ -472,7 +472,7 @@ public class ObjectUseTimesCache {
         if (tempVal1 == null || tempVal1.getYear() == 2999) {
             return "0";
         }
-        Duration duration = Duration.between(tempVal1, LocalDateTime.now());
+        Duration duration = Duration.between(tempVal1, CommonUtil.getNowTime());
         return String.valueOf(duration.getSeconds());
     }
 
@@ -484,7 +484,7 @@ public class ObjectUseTimesCache {
         if (tempVal1 == null || tempVal1.getYear() == 2999) {
             return getSellLastTimeName();
         }
-        Duration duration = Duration.between(tempVal1, LocalDateTime.now());
+        Duration duration = Duration.between(tempVal1, CommonUtil.getNowTime());
         return String.valueOf(duration.getSeconds());
     }
 
@@ -498,7 +498,7 @@ public class ObjectUseTimesCache {
             int day = 0;
             if (tempVal2.length < 3) {
                 ErrorManager.errorManager.sendErrorMessage("§cError: Your reset time " + tempVal4 + " is invalid.");
-                return LocalDateTime.now();
+                return CommonUtil.getNowTime();
             }
             if (tempVal2.length == 5) {
                 month = Integer.parseInt(tempVal2[0]);
@@ -508,7 +508,7 @@ public class ObjectUseTimesCache {
             }
             LocalDateTime checkTime = lastBuyTime;
             if (lastBuyTime == null) {
-                checkTime = LocalDateTime.now();
+                checkTime = CommonUtil.getNowTime();
             }
             thisResult = checkTime.withHour(Integer.parseInt(tempVal2[tempVal2.length - 3])).withMinute(
                     Integer.parseInt(tempVal2[tempVal2.length - 2])).withSecond(
@@ -537,7 +537,7 @@ public class ObjectUseTimesCache {
             int day = 0;
             if (tempVal2.length < 3) {
                 ErrorManager.errorManager.sendErrorMessage("§cError: Your reset time " + tempVal4 + " is invalid.");
-                return LocalDateTime.now();
+                return CommonUtil.getNowTime();
             }
             if (tempVal2.length == 5) {
                 month = Integer.parseInt(tempVal2[0]);
@@ -547,7 +547,7 @@ public class ObjectUseTimesCache {
             }
             LocalDateTime checkTime = lastSellTime;
             if (lastSellTime == null) {
-                checkTime = LocalDateTime.now();
+                checkTime = CommonUtil.getNowTime();
             }
             thisResult = checkTime.withHour(Integer.parseInt(tempVal2[tempVal2.length - 3])).withMinute(
                     Integer.parseInt(tempVal2[tempVal2.length - 2])).withSecond(
@@ -569,12 +569,12 @@ public class ObjectUseTimesCache {
     private LocalDateTime getTimerBuyRefreshTime(String time) {
         LocalDateTime refreshResult = lastBuyTime;
         if (refreshResult == null) {
-            refreshResult = LocalDateTime.now();
+            refreshResult = CommonUtil.getNowTime();
         }
         String[] tempVal2 = time.split(":");
         if (tempVal2.length < 3) {
             ErrorManager.errorManager.sendErrorMessage("§cError: Your reset time " + time + " is invalid.");
-            return LocalDateTime.now();
+            return CommonUtil.getNowTime();
         }
         int month = 0;
         int day = 0;
@@ -596,12 +596,12 @@ public class ObjectUseTimesCache {
     private LocalDateTime getTimerSellRefreshTime(String time) {
         LocalDateTime refreshResult = lastSellTime;
         if (refreshResult == null) {
-            refreshResult = LocalDateTime.now();
+            refreshResult = CommonUtil.getNowTime();
         }
         String[] tempVal2 = time.split(":");
         if (tempVal2.length < 3) {
             ErrorManager.errorManager.sendErrorMessage("§cError: Your reset time " + time + " is invalid.");
-            return LocalDateTime.now();
+            return CommonUtil.getNowTime();
         }
         int month = 0;
         int day = 0;
@@ -633,7 +633,7 @@ public class ObjectUseTimesCache {
                     setCooldownSellTime();
                     return cooldownSellTime;
                 }
-                return LocalDateTime.now();
+                return CommonUtil.getNowTime();
             case "TIMED":
                 if (buyOrSell) {
                     return getTimedBuyRefreshTime(time);
@@ -655,13 +655,13 @@ public class ObjectUseTimesCache {
             case "RANDOM_PLACEHOLDER":
                 return ObjectRandomPlaceholder.getRefreshDoneTimeObject(cache.player, time);
             default:
-                return LocalDateTime.now().withYear(2999);
+                return CommonUtil.getNowTime().withYear(2999);
         }
     }
 
     public void refreshBuyTimes() {
         LocalDateTime tempVal1 = getBuyRefreshTime();
-        if (tempVal1 != null && tempVal1.isBefore(LocalDateTime.now())) {
+        if (tempVal1 != null && tempVal1.isBefore(CommonUtil.getNowTime())) {
             setBuyUseTimes(product.getBuyTimesResetValue(cache.player), true);
             setLastBuyTime(null);
             resetCooldownBuyTime();
@@ -670,7 +670,7 @@ public class ObjectUseTimesCache {
 
     public void refreshSellTimes() {
         LocalDateTime tempVal1 = getSellRefreshTime();
-        if (tempVal1 != null && tempVal1.isBefore(LocalDateTime.now())) {
+        if (tempVal1 != null && tempVal1.isBefore(CommonUtil.getNowTime())) {
             setSellUseTimes(product.getSellTimesResetValue(cache.player), true);
             setLastSellTime(null);
             resetCooldownSellTime();

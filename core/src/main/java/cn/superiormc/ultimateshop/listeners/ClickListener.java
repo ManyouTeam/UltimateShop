@@ -91,7 +91,7 @@ public class ClickListener implements Listener {
                 }
                 playerList.add(event.getPlayer());
                 for (String shop : ConfigManager.configManager.shopConfigs.keySet()) {
-                    for (ObjectItem products : ConfigManager.configManager.getShop(shop).getProductListNotHidden()) {
+                    for (ObjectItem products : ConfigManager.configManager.getShop(shop).getProductListNotHidden(event.getPlayer())) {
                         if (ConfigManager.configManager.getStringListOrDefault("menu.sell-all.ignore-items",
                                 "sell.sell-all.ignore-items").contains(shop + ";;" + products.getProduct())) {
                             continue;

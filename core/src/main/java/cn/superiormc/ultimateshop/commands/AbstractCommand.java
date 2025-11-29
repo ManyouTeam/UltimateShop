@@ -63,7 +63,7 @@ public abstract class AbstractCommand {
         return false;
     }
 
-    public List<String> getTabResult(String[] args) {
+    public List<String> getTabResult(String[] args, Player player) {
         return new ArrayList<>();
     }
 }

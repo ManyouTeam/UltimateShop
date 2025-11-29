@@ -1,8 +1,6 @@
 package cn.superiormc.ultimateshop.commands;
 
 import cn.superiormc.ultimateshop.managers.LanguageManager;
-import cn.superiormc.ultimateshop.methods.ReloadPlugin;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 public class SubHelp extends AbstractCommand {
