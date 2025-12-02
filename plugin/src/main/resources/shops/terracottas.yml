@@ -3,6 +3,7 @@ settings:
   buy-more: true
   shop-name: 'Terracotta Shop'
   hide-message: false
+  secret-shop-items: true
 
 items:
   A:

@@ -6,7 +6,7 @@
     <parent>
         <groupId>cn.superiormc</groupId>
         <artifactId>UltimateShop</artifactId>
-        <version>3.13.7</version>
+        <version>3.13.9</version>
     </parent>
 
     <artifactId>core</artifactId>

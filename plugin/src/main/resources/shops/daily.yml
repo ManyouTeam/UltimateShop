@@ -3,6 +3,7 @@ settings:
   buy-more: true
   shop-name: 'Daily Shop (Require Premium)'
   hide-message: false
+  secret-shop-items: true
 
 general-configs:
   price-mode: CLASSIC_ANY

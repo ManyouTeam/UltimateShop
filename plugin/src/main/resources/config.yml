@@ -56,8 +56,6 @@ give-item:
   check-full: false
 
 menu:
-  # If enabled, products will auto be hidden in quickbuy & quicksell command, sell all if they are not display in shop menu.
-  secret-shop-items: true
   # Recommend use when you are running big server, it will make player no longer quickly click
   # and reopen shop menu to make sure UltimateShop not lag your server.
   # In ticks.
@@ -159,6 +157,10 @@ menu:
         shop: '{shop}'
         item: '{item}'
         amount: 64
+
+secret-shop-items:
+  require-display-in-menu: true
+  require-meet-menu-open-conditions: true
 
 use-times:
   default-reset-mode: 'NEVER'

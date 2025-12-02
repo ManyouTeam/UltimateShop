@@ -1,9 +1,8 @@
 package cn.superiormc.ultimateshop.managers;
 
 import cn.superiormc.ultimateshop.UltimateShop;
+import cn.superiormc.ultimateshop.utils.SchedulerUtil;
 import cn.superiormc.ultimateshop.utils.TextUtil;
-import org.bukkit.Bukkit;
-import org.bukkit.scheduler.BukkitRunnable;
 
 public class ErrorManager {
 
@@ -23,12 +22,7 @@ public class ErrorManager {
             lastErrorMessage = message;
             getError = true;
             try {
-                new BukkitRunnable() {
-                    @Override
-                    public void run() {
-                        getError = false;
-                    }
-                }.runTaskLater(UltimateShop.instance, 100);
+                SchedulerUtil.runTaskLater(() -> getError = false, 100);
             } catch (Exception ignored) {
             }
         }

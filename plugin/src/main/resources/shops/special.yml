@@ -3,6 +3,7 @@ settings:
   buy-more: true
   shop-name: 'Special Items Shop'
   hide-message: false
+  secret-shop-items: true
 
 items:
   A:

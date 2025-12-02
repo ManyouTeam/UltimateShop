@@ -6,6 +6,7 @@ settings:
   buy-more: true
   shop-name: 'Example Shop'
   hide-message: false
+  secret-shop-items: true
 
 # General Configs means the section below will work for all products inside this shop.
 general-configs:

@@ -48,6 +48,9 @@ public class BuyProductMethod {
         if (item == null) {
             return ProductTradeStatus.ERROR;
         }
+        if (item.getShopObject().getProductNotHidden(player, item) == null) {
+            return ProductTradeStatus.ERROR;
+        }
         boolean shouldSendMessage = inventory instanceof PlayerInventory && !notCost && (forceDisplayMessage ||
                 !item.getShopObject().getShopConfig().getBoolean("settings.hide-message", false));
         if (!item.getBuyCondition(player)) {

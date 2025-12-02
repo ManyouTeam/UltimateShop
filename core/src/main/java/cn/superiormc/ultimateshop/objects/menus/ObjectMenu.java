@@ -12,7 +12,6 @@ import cn.superiormc.ultimateshop.objects.items.ObjectAction;
 import cn.superiormc.ultimateshop.objects.items.ObjectCondition;
 import cn.superiormc.ultimateshop.utils.CommandUtil;
 import cn.superiormc.ultimateshop.utils.TextUtil;
-import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.BukkitCommand;
 import org.bukkit.configuration.Configuration;
@@ -59,8 +58,8 @@ public class ObjectMenu {
         initMenu();
         if (!dynamicLayout) {
             initShopItems(MenuSender.empty);
-            initButtonItems(MenuSender.empty);
         }
+        initButtons();
     }
 
     public ObjectMenu(String fileName, ObjectItem item) {
@@ -68,18 +67,14 @@ public class ObjectMenu {
         this.shop = item.getShopObject();
         this.type = MenuType.More;
         initMenu();
-        if (!dynamicLayout) {
-            initButtonItems(MenuSender.empty);
-        }
+        initButtons();
     }
 
     public ObjectMenu(String fileName) {
         this.fileName = fileName;
         this.type = MenuType.Common;
         initMenu();
-        if (!dynamicLayout) {
-            initButtonItems(MenuSender.empty);
-        }
+        initButtons();
         if (!UltimateShop.freeVersion) {
             initCustomCommand();
         }
@@ -171,12 +166,9 @@ public class ObjectMenu {
         }
     }
 
-    public void initButtonItems(MenuSender menuSender) {
+    public void initButtons() {
         if (menuConfigs == null) {
             return;
-        }
-        if (!dynamicLayout) {
-            menuSender = MenuSender.empty;
         }
 
         ConfigurationSection tempVal1 = menuConfigs.getConfigurationSection("buttons");
@@ -190,6 +182,16 @@ public class ObjectMenu {
             } else {
                 buttonItems.put(button, new ObjectButton(tempVal1.getConfigurationSection(button), shop));
             }
+        }
+
+        if (!dynamicLayout) {
+            initButtonItems(MenuSender.empty);
+        }
+    }
+
+    public void initButtonItems(MenuSender menuSender) {
+        if (!dynamicLayout) {
+            menuSender = MenuSender.empty;
         }
 
         int slot = 0;
@@ -308,11 +310,11 @@ public class ObjectMenu {
         return dynamicLayout;
     }
 
-    public Map<Integer, AbstractButton> getButtons() {
+    protected Map<Integer, AbstractButton> getButtons() {
         return getButtons(MenuSender.empty);
     }
 
-    public Map<Integer, AbstractButton> getButtons(MenuSender menuSender) {
+    protected Map<Integer, AbstractButton> getButtons(MenuSender menuSender) {
         if (!dynamicLayout) {
             menuSender = MenuSender.empty;
         }

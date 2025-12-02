@@ -165,7 +165,21 @@ public class ObjectShop {
             return null;
         }
         ObjectItem item = items.get(productID);
-        if (menu != null && !menu.getButtons(menuSender).containsValue(item) && ConfigManager.configManager.getBoolean("menu.secret-shop-items")) {
+        return getProductNotHidden(menuSender, item);
+    }
+
+    public ObjectItem getProductNotHidden(Player player, ObjectItem item) {
+        return getProductNotHidden(MenuSender.of(player), item);
+    }
+
+    public ObjectItem getProductNotHidden(MenuSender menuSender, ObjectItem item) {
+        if (ConfigManager.configManager.getBoolean("secret-shop-items.require-meet-menu-open-conditions") &&
+                menu != null && menuSender.getPlayer() != null && !menu.getCondition().getAllBoolean(new ObjectThingRun(menuSender.getPlayer())) &&
+                config.getBoolean("settings.secret-shop-items", true)) {
+            return null;
+        }
+        if (ConfigManager.configManager.getBoolean("secret-shop-items.require-display-in-menu") &&
+                menu != null && !menu.getMenu(menuSender).containsValue(item) && config.getBoolean("settings.secret-shop-items", true)) {
             return null;
         }
         return item;
@@ -193,9 +207,15 @@ public class ObjectShop {
 
     public List<ObjectItem> getProductListNotHidden(MenuSender sender) {
         List<ObjectItem> resultItems = new ArrayList<>();
+        if (ConfigManager.configManager.getBoolean("secret-shop-items.require-meet-menu-open-conditions") &&
+                menu != null && sender.getPlayer() != null && !menu.getCondition().getAllBoolean(new ObjectThingRun(sender.getPlayer()))
+                && config.getBoolean("settings.secret-shop-items", true)) {
+            return resultItems;
+        }
         for (String key : items.keySet()) {
             ObjectItem item = items.get(key);
-            if (menu != null && !menu.getButtons(sender).containsValue(item) && ConfigManager.configManager.getBoolean("menu.secret-shop-items")) {
+            if (ConfigManager.configManager.getBoolean("secret-shop-items.require-display-in-menu") &&
+                    menu != null && !menu.getMenu(sender).containsValue(item) && config.getBoolean("settings.secret-shop-items", true)) {
                 continue;
             }
             resultItems.add(item);
