@@ -79,13 +79,6 @@ menu:
   sell-all:
     size: 54
     title: '&fSell All &7- Esc to confirm sell!'
-    dynamic-title:
-      enabled: false
-      titles:
-        - "§aUltimateShop §7| §fSell All here~"
-        - "§bUltimateShop §7| §fSell All here~"
-        - "§dUltimateShop §7| §fSell All here~"
-      interval: 15
     black-slots: []
   # Premium version only
   bedrock:
@@ -217,13 +210,13 @@ display-item:
     - '@j&#ff3300Can not sell more for server!'
     - '@j&8Refresh Time: {sell-refresh-server}'
     - '@n '
-    - '@a{buy-click}-b'
-    - '@b{sell-click}-b'
-    - '@k&#FFFACDRight-Shift click to pick amount!-b'
-    - '@m&#FFFACDDrop (Q key) to sell all!-b'
-    - '@n&c&l:( Can not do this-i'
-    - '@a&cThis item can not be sold-i-m'
-    - '@b&cThis item can not be purchased-i-m'
+    - '@a@u@y{buy-click}'
+    - '@b@v@y{sell-click}'
+    - '@k@q@y&#FFFACDRight-Shift click to pick amount!'
+    - '@m@y&#FFFACDDrop (Q key) to sell all!'
+    - '(@n)&c&l:( Can not do this'
+    - '(@a)@u@p&cThis item can not be purchased'
+    - '(@b)@v@p&cThis item can not be sold'
 
 placeholder:
   auto-settings:

@@ -3,7 +3,6 @@ package cn.superiormc.ultimateshop.methods;
 import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.managers.CacheManager;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
-import cn.superiormc.ultimateshop.managers.LanguageManager;
 import cn.superiormc.ultimateshop.methods.Product.BuyProductMethod;
 import cn.superiormc.ultimateshop.methods.Product.SellProductMethod;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
@@ -11,13 +10,13 @@ import cn.superiormc.ultimateshop.objects.buttons.subobjects.ObjectDisplayItemSt
 import cn.superiormc.ultimateshop.objects.caches.ObjectUseTimesCache;
 import cn.superiormc.ultimateshop.objects.items.prices.ObjectPrices;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
-import cn.superiormc.ultimateshop.utils.TextUtil;
 import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ModifyDisplayItem {
 
@@ -64,285 +63,245 @@ public class ModifyDisplayItem {
         addLoreDisplayItem.setItemMeta(tempVal2);
         return addLoreDisplayItem;
     }
-    
-    public static List<String> getModifiedLore(Player player,
-                                                int multi,
-                                                ObjectItem item,
-                                                boolean buyMore,
-                                                boolean bedrock,
-                                                String clickType) {
-        List<String> addLore = new ArrayList<>();
-        int buyTimes = 0;
-        int sellTimes = 0;
-        ObjectUseTimesCache tempVal9 = CacheManager.cacheManager.getPlayerCache(player).getUseTimesCache().get(item);
-        ObjectUseTimesCache tempVal10 = CacheManager.cacheManager.serverCache.getUseTimesCache().get(item);
-        if (tempVal9 != null) {
-            buyTimes = tempVal9.getBuyUseTimes();
-            sellTimes = tempVal9.getSellUseTimes();
-        } else {
-            tempVal9 = CacheManager.cacheManager.getPlayerCache(player).createUseTimesCache(item);
+
+    public static List<String> getModifiedLore(
+            Player player,
+            int multi,
+            ObjectItem item,
+            boolean buyMore,
+            boolean bedrock,
+            String clickType
+    ) {
+
+        List<String> resultLore = new ArrayList<>();
+
+        ObjectUseTimesCache playerCache =
+                CacheManager.cacheManager.getPlayerCache(player).getUseTimesCache().get(item);
+        ObjectUseTimesCache serverCache =
+                CacheManager.cacheManager.serverCache.getUseTimesCache().get(item);
+
+        if (playerCache == null) {
+            playerCache = CacheManager.cacheManager.getPlayerCache(player).createUseTimesCache(item);
         }
-        if (tempVal10 == null) {
-            tempVal10 = CacheManager.cacheManager.serverCache.createUseTimesCache(item);
+        if (serverCache == null) {
+            serverCache = CacheManager.cacheManager.serverCache.createUseTimesCache(item);
         }
-        for (String tempVal3 : item.getAddLore()) {
-            String tempVal4 = tempVal3;
-            if (bedrock) {
-                tempVal4 = TextUtil.parse(tempVal4);
+
+        Map<Character, Boolean> prefixConditions =
+                buildPrefixMap(player, item, clickType, buyMore, bedrock, playerCache, serverCache);
+
+        for (String rawLine : item.getAddLore()) {
+
+            ParsedLine parsed = ParsedLine.parse(rawLine);
+
+            if (!parsed.isConditional()) {
+                resultLore.add(parsed.getPureText());
+                continue;
             }
-            boolean not = false;
-            if (tempVal4.endsWith("-b")) {
-                if (bedrock) {
+
+            boolean condition = parsed.conditions.stream().allMatch(c -> {
+                Boolean val = prefixConditions.get(c.key);
+                if (val == null) {
+                    val = false;
+                }
+                return c.negate ? !val : val;
+            });
+
+            if (condition) {
+                resultLore.add(parsed.getPureText());
+            }
+        }
+
+        if (!resultLore.isEmpty()) {
+            resultLore = CommonUtil.modifyList(player, resultLore,
+                    "buy-price",
+                    ObjectPrices.getDisplayNameInLine(player, multi,
+                            item.getBuyPrice().take(player.getInventory(), player,
+                                    playerCache.getBuyUseTimes(), multi, true).getResultMap(),
+                            item.getBuyPrice().getMode(), false),
+
+                    "sell-price",
+                    ObjectPrices.getDisplayNameInLine(player, multi,
+                            item.getSellPrice().give(player, playerCache.getBuyUseTimes(), multi).getResultMap(),
+                            item.getSellPrice().getMode(), false),
+
+                    "buy-limit-player", String.valueOf(item.getPlayerBuyLimit(player)),
+                    "sell-limit-player", String.valueOf(item.getPlayerSellLimit(player)),
+                    "buy-limit-server", String.valueOf(item.getServerBuyLimit(player)),
+                    "sell-limit-server", String.valueOf(item.getServerSellLimit(player)),
+
+                    "buy-total-player", String.valueOf(playerCache.getTotalBuyUseTimes()),
+                    "sell-total-player", String.valueOf(playerCache.getTotalSellUseTimes()),
+                    "buy-total-server", String.valueOf(serverCache.getTotalBuyUseTimes()),
+                    "sell-total-server", String.valueOf(serverCache.getTotalSellUseTimes()),
+
+                    "buy-times-player", String.valueOf(playerCache.getBuyUseTimes()),
+                    "sell-times-player", String.valueOf(playerCache.getSellUseTimes()),
+
+                    "buy-refresh-player", playerCache.getBuyRefreshTimeDisplayName(),
+                    "sell-refresh-player", playerCache.getSellRefreshTimeDisplayName(),
+                    "buy-next-player", playerCache.getBuyRefreshTimeNextName(),
+                    "sell-next-player", playerCache.getSellRefreshTimeNextName(),
+
+                    "buy-times-server", String.valueOf(serverCache.getBuyUseTimes()),
+                    "sell-times-server", String.valueOf(serverCache.getSellUseTimes()),
+
+                    "buy-refresh-server", serverCache.getBuyRefreshTimeDisplayName(),
+                    "sell-refresh-server", serverCache.getSellRefreshTimeDisplayName(),
+                    "buy-next-server", serverCache.getBuyRefreshTimeNextName(),
+                    "sell-next-server", serverCache.getSellRefreshTimeNextName(),
+
+                    "last-buy-player", playerCache.getBuyLastTimeName(),
+                    "last-sell-player", playerCache.getSellLastTimeName(),
+                    "last-buy-server", serverCache.getBuyLastTimeName(),
+                    "last-sell-server", serverCache.getSellLastTimeName(),
+
+                    "last-reset-buy-player", playerCache.getBuyLastResetTimeName(),
+                    "last-reset-sell-player", playerCache.getSellLastResetTimeName(),
+                    "last-reset-buy-server", serverCache.getBuyLastResetTimeName(),
+                    "last-reset-sell-server", serverCache.getSellLastResetTimeName(),
+
+                    "buy-click", getBuyClickPlaceholder(player, multi, item, clickType),
+                    "sell-click", getSellClickPlaceholder(player, multi, item, clickType),
+                    "amount", String.valueOf(multi),
+                    "item-name", item.getDisplayName(player)
+            );
+        }
+
+        return resultLore;
+    }
+
+    private static class ConditionElement {
+        final char key;
+        final boolean negate;
+
+        ConditionElement(char key, boolean negate) {
+            this.key = key;
+            this.negate = negate;
+        }
+    }
+
+    private static class ParsedLine {
+
+        final List<ConditionElement> conditions;
+        final boolean conditional;
+        final String text;
+
+        ParsedLine(List<ConditionElement> conditions, String text) {
+            this.conditions = conditions;
+            this.conditional = !conditions.isEmpty();
+            this.text = text;
+        }
+
+        boolean isConditional() { return conditional; }
+        String getPureText() { return text; }
+
+        static ParsedLine parse(String line) {
+            if (line == null) line = "";
+
+            List<ConditionElement> list = new ArrayList<>();
+            StringBuilder out = new StringBuilder();
+
+            int idx = 0;
+            int len = line.length();
+
+            while (idx < len) {
+                char ch = line.charAt(idx);
+
+                if (ch == '(' && idx + 2 < len && line.charAt(idx + 1) == '@') {
+                    int end = line.indexOf(')', idx);
+                    if (end != -1) {
+                        String inside = line.substring(idx + 2, end);
+                        extractConditions(inside, list, true);
+                        idx = end + 1;
+                        continue;
+                    }
+                }
+
+                if (ch == '@' && idx + 1 < len) {
+                    char key = line.charAt(idx + 1);
+                    if (Character.isLetter(key)) {
+                        list.add(new ConditionElement(key, false));
+                        idx += 2;
+                        continue;
+                    }
+                }
+
+                out.append(ch);
+                idx++;
+            }
+
+            if (out.toString().trim().isEmpty() && !list.isEmpty()) {
+                return new ParsedLine(list, "");
+            }
+
+            return new ParsedLine(list, out.toString());
+        }
+
+        private static void extractConditions(String inside, List<ConditionElement> list, boolean negate) {
+            int i = 0;
+            while (i < inside.length()) {
+                char c = inside.charAt(i);
+
+                if (Character.isLetter(c)) {
+                    list.add(new ConditionElement(c, negate));
+                    i++;
                     continue;
-                } else {
-                    tempVal4 = tempVal4.substring(0, tempVal4.length() - 2);
                 }
-            }
-            if (tempVal4.endsWith("-m")) {
-                if (!buyMore) {
-                    continue;
-                } else {
-                    tempVal4 = tempVal4.substring(0, tempVal4.length() - 2);
+
+                if (c == '@' && i + 1 < inside.length()) {
+                    char k = inside.charAt(i + 1);
+                    if (Character.isLetter(k)) {
+                        list.add(new ConditionElement(k, negate));
+                        i += 2;
+                        continue;
+                    }
                 }
-            }
-            if (tempVal4.endsWith("-i")) {
-                not = true;
-                tempVal4 = tempVal4.substring(0, tempVal4.length() - 2);
-            }
-            if (tempVal3.startsWith("@") && tempVal4.length() >= 2) {
-                tempVal4 = tempVal4.substring(2);
-                switch (tempVal3.charAt(1)) {
-                    case 'a':
-                        if (!parseClickType(item, clickType, true)) {
-                            continue;
-                        }
-                        if (!item.getBuyPrice().empty) {
-                            if (not) {
-                                continue;
-                            }
-                            addLore.add(tempVal4);
-                        } else if (not) {
-                            addLore.add(tempVal4);
-                        }
-                        break;
-                    case 'b':
-                        if (!parseClickType(item, clickType, false)) {
-                            continue;
-                        }
-                        if (!item.getSellPrice().empty) {
-                            if (not) {
-                                continue;
-                            }
-                            addLore.add(tempVal4);
-                        } else if (not) {
-                            addLore.add(tempVal4);
-                        }
-                        break;
-                    case 'c':
-                        if (item.getPlayerBuyLimit(player) != -1) {
-                            if (not) {
-                                continue;
-                            }
-                            addLore.add(tempVal4);
-                        } else if (not) {
-                            addLore.add(tempVal4);
-                        }
-                        break;
-                    case 'd':
-                        if (item.getServerBuyLimit(player) != -1) {
-                            if (not) {
-                                continue;
-                            }
-                            addLore.add(tempVal4);
-                        } else if (not) {
-                            addLore.add(tempVal4);
-                        }
-                        break;
-                    case 'e':
-                        if (item.getPlayerSellLimit(player) != -1) {
-                            if (not) {
-                                continue;
-                            }
-                            addLore.add(tempVal4);
-                        } else if (not) {
-                            addLore.add(tempVal4);
-                        }
-                        break;
-                    case 'f':
-                        if (item.getServerSellLimit(player) != -1) {
-                            if (not) {
-                                continue;
-                            }
-                            addLore.add(tempVal4);
-                        } else if (not) {
-                            addLore.add(tempVal4);
-                        }
-                        break;
-                    case 'g':
-                        if (tempVal9 != null &&
-                                item.getPlayerBuyLimit(player) > 0 &&
-                                tempVal9.getBuyUseTimes() >= item.getPlayerBuyLimit(player)) {
-                            if (not) {
-                                continue;
-                            }
-                            addLore.add(tempVal4);
-                        } else if (not) {
-                            addLore.add(tempVal4);
-                        }
-                        break;
-                    case 'h':
-                        if (tempVal9 != null &&
-                                item.getPlayerSellLimit(player) > 0 &&
-                                tempVal9.getSellUseTimes() >= item.getPlayerSellLimit(player)) {
-                            if (not) {
-                                continue;
-                            }
-                            addLore.add(tempVal4);
-                        } else if (not) {
-                            addLore.add(tempVal4);
-                        }
-                        break;
-                    case 'i':
-                        if (tempVal10 != null &&
-                                item.getServerBuyLimit(player) > 0 &&
-                                tempVal10.getBuyUseTimes() >= item.getServerBuyLimit(player)) {
-                            if (not) {
-                                continue;
-                            }
-                            addLore.add(tempVal4);
-                        } else if (not) {
-                            addLore.add(tempVal4);
-                        }
-                        break;
-                    case 'j':
-                        if (tempVal10 != null &&
-                                item.getServerSellLimit(player) > 0 &&
-                                tempVal10.getSellUseTimes() >= item.getServerSellLimit(player)) {
-                            if (not) {
-                                continue;
-                            }
-                            addLore.add(tempVal4);
-                        } else if (not) {
-                            addLore.add(tempVal4);
-                        }
-                        break;
-                    case 'k':
-                        if (!buyMore && item.getBuyMore()) {
-                            if (not) {
-                                continue;
-                            }
-                            addLore.add(tempVal4);
-                        } else if (not) {
-                            addLore.add(tempVal4);
-                        }
-                        break;
-                    case 'm':
-                        if (!parseClickType(item, clickType, false)) {
-                            continue;
-                        }
-                        if (!item.getSellPrice().empty && item.isEnableSellAll()) {
-                            if (not) {
-                                continue;
-                            }
-                            addLore.add(tempVal4);
-                        } else if (not) {
-                            addLore.add(tempVal4);
-                        }
-                        break;
-                    case 'n':
-                        if ((!item.getBuyPrice().empty && parseClickType(item, clickType, true)) ||
-                                (!item.getSellPrice().empty && parseClickType(item, clickType, false))){
-                            if (not) {
-                                continue;
-                            }
-                            addLore.add(tempVal4);
-                        } else if (not) {
-                            addLore.add(tempVal4);
-                        }
-                        break;
-                }
-            } else {
-                addLore.add(tempVal3);
+
+                i++;
             }
         }
-        if (!addLore.isEmpty()) {
-            if (tempVal9 != null && tempVal10 != null) {
-                addLore = CommonUtil.modifyList(player, addLore,
-                        "buy-price",
-                        ObjectPrices.getDisplayNameInLine(player,
-                                multi,
-                                item.getBuyPrice().take(player.getInventory(), player, tempVal9.getBuyUseTimes(), multi, true).getResultMap(),
-                                item.getBuyPrice().getMode(),
-                                false),
-                        "sell-price",
-                        ObjectPrices.getDisplayNameInLine(player,
-                                multi,
-                                item.getSellPrice().give(player, tempVal9.getBuyUseTimes(), multi).getResultMap(),
-                                item.getSellPrice().getMode(),
-                                false),
-                        "buy-limit-player",
-                        String.valueOf(item.getPlayerBuyLimit(player)),
-                        "sell-limit-player",
-                        String.valueOf(item.getPlayerSellLimit(player)),
-                        "buy-limit-server",
-                        String.valueOf(item.getServerBuyLimit(player)),
-                        "sell-limit-server",
-                        String.valueOf(item.getServerSellLimit(player)),
-                        "buy-total-player",
-                        String.valueOf(tempVal9.getTotalBuyUseTimes()),
-                        "sell-total-player",
-                        String.valueOf(tempVal9.getTotalSellUseTimes()),
-                        "buy-total-server",
-                        String.valueOf(tempVal10.getTotalBuyUseTimes()),
-                        "sell-total-server",
-                        String.valueOf(tempVal10.getTotalSellUseTimes()),
-                        "buy-times-player",
-                        String.valueOf(buyTimes),
-                        "sell-times-player",
-                        String.valueOf(sellTimes),
-                        "buy-refresh-player",
-                        String.valueOf(tempVal9.getBuyRefreshTimeDisplayName()),
-                        "sell-refresh-player",
-                        String.valueOf(tempVal9.getSellRefreshTimeDisplayName()),
-                        "buy-next-player",
-                        String.valueOf(tempVal9.getBuyRefreshTimeNextName()),
-                        "sell-next-player",
-                        String.valueOf(tempVal9.getSellRefreshTimeNextName()),
-                        "buy-times-server",
-                        String.valueOf(tempVal10.getBuyUseTimes()),
-                        "sell-times-server",
-                        String.valueOf(tempVal10.getSellUseTimes()),
-                        "buy-refresh-server",
-                        String.valueOf(tempVal10.getBuyRefreshTimeDisplayName()),
-                        "sell-refresh-server",
-                        String.valueOf(tempVal10.getSellRefreshTimeDisplayName()),
-                        "buy-next-server",
-                        String.valueOf(tempVal10.getBuyRefreshTimeNextName()),
-                        "sell-next-server",
-                        String.valueOf(tempVal10.getSellRefreshTimeNextName()),
-                        "last-buy-player", tempVal9.getBuyLastTimeName(),
-                        "last-sell-player", tempVal9.getSellLastTimeName(),
-                        "last-buy-server", tempVal10.getBuyLastTimeName(),
-                        "last-sell-server", tempVal10.getSellLastTimeName(),
-                        "last-reset-buy-player", tempVal9.getBuyLastResetTimeName(),
-                        "last-reset-sell-player", tempVal9.getSellLastResetTimeName(),
-                        "last-reset-buy-server", tempVal10.getBuyLastResetTimeName(),
-                        "last-reset-sell-server", tempVal10.getSellLastResetTimeName(),
-                        "buy-click",
-                        getBuyClickPlaceholder(player, multi, item, clickType),
-                        "sell-click",
-                        getSellClickPlaceholder(player, multi, item, clickType),
-                        "amount",
-                        String.valueOf(multi),
-                        "item-name",
-                        item.getDisplayName(player)
-                );
-            } else if (player.getOpenInventory().getType() == InventoryType.CHEST) {
-                player.closeInventory();
-                LanguageManager.languageManager.sendStringText(player, "plugin.reload-close-gui");
-            }
-        }
-        return addLore;
+    }
+
+    private static Map<Character, Boolean> buildPrefixMap(
+            Player player,
+            ObjectItem item,
+            String clickType,
+            boolean buyMore,
+            boolean bedrock,
+            ObjectUseTimesCache p,
+            ObjectUseTimesCache s
+    ) {
+        Map<Character, Boolean> map = new HashMap<>();
+
+        map.put('a', !item.getBuyPrice().empty);
+        map.put('b', !item.getSellPrice().empty);
+        map.put('c', item.getPlayerBuyLimit(player) != -1);
+        map.put('d', item.getServerBuyLimit(player) != -1);
+        map.put('e', item.getPlayerSellLimit(player) != -1);
+        map.put('f', item.getServerSellLimit(player) != -1);
+
+        map.put('g', item.getPlayerBuyLimit(player) > 0 && p.getBuyUseTimes() >= item.getPlayerBuyLimit(player));
+        map.put('h', item.getPlayerSellLimit(player) > 0 && p.getSellUseTimes() >= item.getPlayerSellLimit(player));
+
+        map.put('i', item.getServerBuyLimit(player) > 0 && s.getBuyUseTimes() >= item.getServerBuyLimit(player));
+        map.put('j', item.getServerSellLimit(player) > 0 && s.getSellUseTimes() >= item.getServerSellLimit(player));
+
+        map.put('k', item.getBuyMore());
+        map.put('m', !item.getSellPrice().empty && item.isEnableSellAll());
+        map.put('n', (!item.getBuyPrice().empty && parseClickType(item, clickType, true)) ||
+                (!item.getSellPrice().empty && parseClickType(item, clickType, false)));
+
+        map.put('p', buyMore);
+        map.put('q', !buyMore);
+
+        map.put('x', bedrock);
+        map.put('y', !bedrock);
+
+        map.put('u', parseClickType(item, clickType, true));
+        map.put('v', parseClickType(item, clickType, false));
+
+        return map;
     }
 
     private static String getBuyClickPlaceholder(Player player, int multi, ObjectItem item, String clickType) {

@@ -38,6 +38,9 @@ public class ObjectMoreBuyButton extends AbstractButton {
     }
 
     public boolean isInvalid() {
+        if (getClickType() == null) {
+            return false;
+        }
         return switch (getClickType()) {
             case "buy" -> item.getBuyPrice().empty;
             case "sell" -> item.getSellPrice().empty;
