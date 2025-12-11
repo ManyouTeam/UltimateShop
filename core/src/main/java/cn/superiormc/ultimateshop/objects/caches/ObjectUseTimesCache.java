@@ -4,17 +4,16 @@ import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.cache.ServerCache;
 import cn.superiormc.ultimateshop.gui.AbstractGUI;
 import cn.superiormc.ultimateshop.gui.GUIStatus;
-import cn.superiormc.ultimateshop.gui.inv.ShopGUI;
 import cn.superiormc.ultimateshop.managers.BungeeCordManager;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.ErrorManager;
-import cn.superiormc.ultimateshop.objects.buttons.AbstractButton;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import cn.superiormc.ultimateshop.objects.items.subobjects.ObjectRandomPlaceholder;
+import cn.superiormc.ultimateshop.utils.CommandUtil;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
 import cn.superiormc.ultimateshop.utils.SchedulerUtil;
 import cn.superiormc.ultimateshop.utils.TextUtil;
-import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -52,8 +51,6 @@ public class ObjectUseTimesCache {
     private SchedulerUtil buyResetTask;
 
     private SchedulerUtil sellResetTask;
-
-    private SchedulerUtil guiUpdateTask;
 
     public ObjectUseTimesCache(ServerCache cache,
                                int buyUseTimes,
@@ -744,7 +741,7 @@ public class ObjectUseTimesCache {
             setBuyUseTimes(product.getBuyTimesResetValue(cache.player), true);
             setLastBuyTime(null);
             resetCooldownBuyTime();
-            updateGUI();
+            CommandUtil.updateGUI(cache.player);
         }
     }
 
@@ -754,20 +751,7 @@ public class ObjectUseTimesCache {
             setSellUseTimes(product.getSellTimesResetValue(cache.player), true);
             setLastSellTime(null);
             resetCooldownSellTime();
-            updateGUI();
-        }
-    }
-
-    public void updateGUI() {
-        if (cache.player != null) {
-            GUIStatus guiStatus = AbstractGUI.playerList.get(cache.player);
-            if (guiStatus != null && guiStatus.getGUI() != null) {
-                if (guiUpdateTask != null) {
-                    guiUpdateTask.cancel();
-                    guiUpdateTask = null;
-                }
-                guiUpdateTask = SchedulerUtil.runTaskLater(() -> guiStatus.getGUI().constructGUI(), 20L);
-            }
+            CommandUtil.updateGUI(cache.player);
         }
     }
 

@@ -1,12 +1,11 @@
 package cn.superiormc.ultimateshop.objects.caches;
 
 import cn.superiormc.ultimateshop.cache.ServerCache;
-import cn.superiormc.ultimateshop.gui.AbstractGUI;
-import cn.superiormc.ultimateshop.gui.GUIStatus;
 import cn.superiormc.ultimateshop.managers.BungeeCordManager;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.ErrorManager;
 import cn.superiormc.ultimateshop.objects.items.subobjects.ObjectRandomPlaceholder;
+import cn.superiormc.ultimateshop.utils.CommandUtil;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
 import cn.superiormc.ultimateshop.utils.SchedulerUtil;
 import cn.superiormc.ultimateshop.utils.TextUtil;
@@ -23,8 +22,6 @@ public class ObjectRandomPlaceholderCache {
     private LocalDateTime refreshDoneTime = null;
 
     private SchedulerUtil resetTask;
-
-    private SchedulerUtil guiUpdateTask;
 
     private final ObjectRandomPlaceholder placeholder;
 
@@ -149,7 +146,7 @@ public class ObjectRandomPlaceholderCache {
                 resetTask = SchedulerUtil.runTaskLater((this::setRefreshTime), delayTicks + 20);
             }
             setPlaceholder(notUseBungee);
-            updateGUI();
+            CommandUtil.updateGUI(cache.player);
         }
     }
 
@@ -226,19 +223,6 @@ public class ObjectRandomPlaceholderCache {
                 .plusMinutes(Integer.parseInt(tempVal2[tempVal2.length - 2]))
                 .plusSeconds(Integer.parseInt(tempVal2[tempVal2.length - 1]));
         return refreshResult;
-    }
-
-    public void updateGUI() {
-        if (cache.player != null) {
-            GUIStatus guiStatus = AbstractGUI.playerList.get(cache.player);
-            if (guiStatus != null && guiStatus.getGUI() != null) {
-                if (guiUpdateTask != null) {
-                    guiUpdateTask.cancel();
-                    guiUpdateTask = null;
-                }
-                guiUpdateTask = SchedulerUtil.runTaskLater(() -> guiStatus.getGUI().constructGUI(), 20L);
-            }
-        }
     }
 
 }
