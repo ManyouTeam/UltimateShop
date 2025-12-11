@@ -1,12 +1,17 @@
 package cn.superiormc.ultimateshop.objects.caches;
 
 import cn.superiormc.ultimateshop.cache.ServerCache;
+import cn.superiormc.ultimateshop.gui.AbstractGUI;
+import cn.superiormc.ultimateshop.gui.GUIStatus;
 import cn.superiormc.ultimateshop.managers.BungeeCordManager;
+import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.ErrorManager;
 import cn.superiormc.ultimateshop.objects.items.subobjects.ObjectRandomPlaceholder;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
+import cn.superiormc.ultimateshop.utils.SchedulerUtil;
 import cn.superiormc.ultimateshop.utils.TextUtil;
 
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -16,6 +21,10 @@ public class ObjectRandomPlaceholderCache {
     private List<String> nowValue = null;
 
     private LocalDateTime refreshDoneTime = null;
+
+    private SchedulerUtil resetTask;
+
+    private SchedulerUtil guiUpdateTask;
 
     private final ObjectRandomPlaceholder placeholder;
 
@@ -116,7 +125,31 @@ public class ObjectRandomPlaceholderCache {
                     refreshDoneTime = CommonUtil.getNowTime().withYear(2999);
                     break;
             }
+
+            if (ConfigManager.configManager.getBoolean("use-times.auto-reset-mode")) {
+                LocalDateTime refreshTime = getRefreshDoneTime();
+                if (refreshTime == null || refreshTime.getYear() == 2999) {
+                    return;
+                }
+
+                if (resetTask != null) {
+                    resetTask.cancel();
+                    resetTask = null;
+                }
+
+                long delayMillis = Duration.between(CommonUtil.getNowTime(), refreshTime).toMillis();
+
+                if (delayMillis <= 0) {
+                    setRefreshTime();
+                    return;
+                }
+
+                long delayTicks = delayMillis / 50;
+
+                resetTask = SchedulerUtil.runTaskLater((this::setRefreshTime), delayTicks + 20);
+            }
             setPlaceholder(notUseBungee);
+            updateGUI();
         }
     }
 
@@ -193,6 +226,19 @@ public class ObjectRandomPlaceholderCache {
                 .plusMinutes(Integer.parseInt(tempVal2[tempVal2.length - 2]))
                 .plusSeconds(Integer.parseInt(tempVal2[tempVal2.length - 1]));
         return refreshResult;
+    }
+
+    public void updateGUI() {
+        if (cache.player != null) {
+            GUIStatus guiStatus = AbstractGUI.playerList.get(cache.player);
+            if (guiStatus != null && guiStatus.getGUI() != null) {
+                if (guiUpdateTask != null) {
+                    guiUpdateTask.cancel();
+                    guiUpdateTask = null;
+                }
+                guiUpdateTask = SchedulerUtil.runTaskLater(() -> guiStatus.getGUI().constructGUI(), 20L);
+            }
+        }
     }
 
 }

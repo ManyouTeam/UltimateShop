@@ -15,7 +15,6 @@ import cn.superiormc.ultimateshop.objects.caches.ObjectUseTimesCache;
 import cn.superiormc.ultimateshop.objects.menus.MenuSender;
 import cn.superiormc.ultimateshop.objects.menus.ObjectMenu;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
-import cn.superiormc.ultimateshop.utils.PacketInventoryUtil;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.Inventory;
@@ -56,7 +55,7 @@ public class ShopGUI extends InvGUI {
     }
 
     @Override
-    protected void constructGUI() {
+    public void constructGUI() {
         PlayerCache tempVal1 = CacheManager.cacheManager.getPlayerCache(player.getPlayer());
         ServerCache tempVal2 = ServerCache.serverCache;
         if (tempVal1 == null) {
@@ -76,13 +75,11 @@ public class ShopGUI extends InvGUI {
         for (ObjectItem tempVal5 : shop.getProductListNotHidden(player)) {
             ObjectUseTimesCache tempVal3 = tempVal1.getUseTimesCache().get(tempVal5);
             if (tempVal3 != null) {
-                tempVal3.refreshBuyTimes();
-                tempVal3.refreshSellTimes();
+                tempVal3.initAutoResetTask();
             }
             ObjectUseTimesCache tempVal4 = tempVal2.getUseTimesCache().get(tempVal5);
             if (tempVal4 != null) {
-                tempVal4.refreshBuyTimes();
-                tempVal4.refreshSellTimes();
+                tempVal4.initAutoResetTask();
             }
         }
         menuButtons = shopMenu.getMenu(MenuSender.of(player));
@@ -110,8 +107,7 @@ public class ShopGUI extends InvGUI {
         if (ConfigManager.configManager.getBoolean("menu.shop.click-update")) {
             constructGUI();
         } else {
-            menuItems.put(slot, getMenuItem(player, slot));
-            inv.setItem(slot, menuItems.get(slot));
+            updateSlot(slot);
         }
         return true;
     }
@@ -127,6 +123,11 @@ public class ShopGUI extends InvGUI {
     @Override
     public ObjectMenu getMenu() {
         return shop.getShopMenuObject();
+    }
+
+    public void updateSlot(int slot) {
+        menuItems.put(slot, getMenuItem(player, slot));
+        inv.setItem(slot, menuItems.get(slot));
     }
 
     public static void openGUI(Player player, ObjectShop shop, boolean bypass, boolean reopen) {

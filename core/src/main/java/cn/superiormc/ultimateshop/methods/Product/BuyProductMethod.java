@@ -80,7 +80,7 @@ public class BuyProductMethod {
         ObjectUseTimesCache tempVal9 = tempVal3.getUseTimesCache().get(item);
         ObjectUseTimesCache tempVal8 = tempVal11.getUseTimesCache().get(item);
         if (tempVal9 != null) {
-            tempVal9.refreshBuyTimes();
+            tempVal9.initAutoResetTask();
             playerUseTimes = tempVal9.getBuyUseTimes();
         } else {
             tempVal9 = tempVal3.createUseTimesCache(item);
@@ -106,7 +106,7 @@ public class BuyProductMethod {
         }
         ObjectPrices tempVal5 = item.getBuyPrice();
         if (tempVal8 != null) {
-            tempVal8.refreshBuyTimes();
+            tempVal8.initAutoResetTask();
             serverUseTimes = tempVal8.getBuyUseTimes();
         } else {
             tempVal8 = tempVal11.createUseTimesCache(item);
@@ -171,7 +171,8 @@ public class BuyProductMethod {
         // limit+1
         if (tempVal9 != null) {
             if (ConfigManager.configManager.getBoolean("debug")) {
-                UltimateShop.methodUtil.sendMessage(null, TextUtil.pluginPrefix() + " §aSet player limit value to " + tempVal9.getBuyUseTimes() + multi + "!");
+                int newValue = tempVal9.getBuyUseTimes() + multi;
+                UltimateShop.methodUtil.sendMessage(null, TextUtil.pluginPrefix() + " §aSet player limit value to " + newValue + "!");
             }
             tempVal9.setBuyUseTimes(tempVal9.getBuyUseTimes() + multi);
             tempVal9.setLastBuyTime(CommonUtil.getNowTime());
@@ -180,7 +181,8 @@ public class BuyProductMethod {
         }
         if (tempVal8 != null) {
             if (ConfigManager.configManager.getBoolean("debug")) {
-                UltimateShop.methodUtil.sendMessage(null, TextUtil.pluginPrefix() + " §aSet server limit value to " + tempVal8.getBuyUseTimes() + multi + "!");
+                int newValue = tempVal8.getBuyUseTimes() + multi;
+                UltimateShop.methodUtil.sendMessage(null, TextUtil.pluginPrefix() + " §aSet server limit value to " + newValue + "!");
             }
             tempVal8.setBuyUseTimes(tempVal8.getBuyUseTimes() + multi);
             tempVal8.setLastBuyTime(CommonUtil.getNowTime());

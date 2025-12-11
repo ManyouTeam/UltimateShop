@@ -1,9 +1,6 @@
 package cn.superiormc.ultimateshop.cache;
 
-import cn.superiormc.ultimateshop.database.SQLDatabase;
-import cn.superiormc.ultimateshop.database.YamlDatabase;
-import cn.superiormc.ultimateshop.managers.ConfigManager;
-import cn.superiormc.ultimateshop.objects.menus.MenuSender;
+import cn.superiormc.ultimateshop.managers.CacheManager;
 import cn.superiormc.ultimateshop.utils.SchedulerUtil;
 import org.bukkit.entity.Player;
 
@@ -17,31 +14,15 @@ public class PlayerCache extends ServerCache {
     }
 
     public void initPlayerCache() {
-        SchedulerUtil.runTaskAsynchronously(() -> {
-            if (ConfigManager.configManager.getBoolean("database.enabled")) {
-                SQLDatabase.checkData(this);
-            } else {
-                YamlDatabase.checkData(this);
-            }
-        });
+        SchedulerUtil.runTaskAsynchronously(() -> CacheManager.cacheManager.database.checkData(this));
     }
 
     public void shutPlayerCache(boolean quitServer) {
-        SchedulerUtil.runTaskAsynchronously(() -> {
-            if (ConfigManager.configManager.getBoolean("database.enabled")) {
-                SQLDatabase.updateData(this, quitServer);
-            } else {
-                YamlDatabase.updateData(this, quitServer);
-            }
-        });
+        SchedulerUtil.runTaskAsynchronously(() -> CacheManager.cacheManager.database.updateData(this, quitServer));
     }
 
     public void shutPlayerCacheOnDisable(boolean disable) {
-        if (ConfigManager.configManager.getBoolean("database.enabled")) {
-            SQLDatabase.updateDataOnDisable(this, disable);
-        } else {
-            YamlDatabase.updateData(this, true);
-        }
+        CacheManager.cacheManager.database.updateDataOnDisable(this, disable);
     }
 
     public Player getPlayer() {

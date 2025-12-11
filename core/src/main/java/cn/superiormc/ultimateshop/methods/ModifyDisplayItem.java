@@ -3,6 +3,7 @@ package cn.superiormc.ultimateshop.methods;
 import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.managers.CacheManager;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
+import cn.superiormc.ultimateshop.managers.ErrorManager;
 import cn.superiormc.ultimateshop.methods.Product.BuyProductMethod;
 import cn.superiormc.ultimateshop.methods.Product.SellProductMethod;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
@@ -91,6 +92,11 @@ public class ModifyDisplayItem {
                 buildPrefixMap(player, item, clickType, buyMore, bedrock, playerCache, serverCache);
 
         for (String rawLine : item.getAddLore()) {
+
+            if (rawLine.endsWith("-i") || rawLine.endsWith("-m") || rawLine.endsWith("-b")) {
+                ErrorManager.errorManager.sendErrorMessage("§cYour display item add lore config is not updated, please reconfigure your " +
+                        "display item add lore configs at config.yml file! You can get latest config at plugin Wiki: https://ultimateshop.superiormc.cn/info/configuration-files .");
+            }
 
             ParsedLine parsed = ParsedLine.parse(rawLine);
 

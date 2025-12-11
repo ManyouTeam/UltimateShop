@@ -39,7 +39,7 @@ public class FormShopGUI extends FormGUI {
     }
 
     @Override
-    protected void constructGUI() {
+    public void constructGUI() {
         PlayerCache tempVal1 = CacheManager.cacheManager.getPlayerCache(player);
         ServerCache tempVal2 = ServerCache.serverCache;
         if (tempVal1 == null) {
@@ -75,13 +75,11 @@ public class FormShopGUI extends FormGUI {
         for (ObjectItem tempVal5 : shop.getProductList()) {
             ObjectUseTimesCache tempVal3 = tempVal1.getUseTimesCache().get(tempVal5);
             if (tempVal3 != null) {
-                tempVal3.refreshBuyTimes();
-                tempVal3.refreshSellTimes();
+                tempVal3.initAutoResetTask();
             }
             ObjectUseTimesCache tempVal4 = tempVal2.getUseTimesCache().get(tempVal5);
             if (tempVal4 != null) {
-                tempVal4.refreshBuyTimes();
-                tempVal4.refreshSellTimes();
+                tempVal4.initAutoResetTask();
             }
         }
         menuButtons = shop.getShopMenuObject().getMenu(MenuSender.of(player));

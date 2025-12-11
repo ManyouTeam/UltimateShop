@@ -44,6 +44,7 @@ public class CommandManager {
        registerNewSubCommand(new SubSetRandomPlaceholder());
        registerNewSubCommand(new SubSearch());
        registerNewSubCommand(new SubSellAllHand());
+       registerNewSubCommand(new SubUpdateGUI());
     }
 
     public Map<String, AbstractCommand> getSubCommandsMap() {

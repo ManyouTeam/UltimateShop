@@ -1,11 +1,37 @@
 package cn.superiormc.ultimateshop.gui;
 
-public enum GUIStatus {
+public class GUIStatus {
 
-    ALREADY_IN_COOLDOWN,
+    private final Status status;
 
-    ACTION_OPEN_MENU,
+    private final AbstractGUI gui;
 
-    CAN_REOPEN
+    private GUIStatus(Status status, AbstractGUI gui) {
+        this.status = status;
+        this.gui = gui;
+    }
+
+    public Status getStatus() {
+        return status;
+    }
+
+    public AbstractGUI getGUI() {
+        return gui;
+    }
+
+    public enum Status {
+        CAN_REOPEN,
+        ACTION_OPEN_MENU,
+        ALREADY_IN_COOLDOWN
+    }
+
+    @Override
+    public String toString() {
+        return "GUI Status: " + status + " GUI: " + gui;
+    }
+
+    public static GUIStatus of(AbstractGUI gui, Status status) {
+        return new GUIStatus(status, gui);
+    }
 
 }

@@ -17,7 +17,6 @@ import cn.superiormc.ultimateshop.objects.items.ObjectAction;
 import cn.superiormc.ultimateshop.objects.menus.ObjectMoreMenu;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
 import cn.superiormc.ultimateshop.utils.TextUtil;
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
@@ -54,7 +53,7 @@ public class FormInfoGUI extends FormGUI {
     }
 
     @Override
-    protected void constructGUI() {
+    public void constructGUI() {
         PlayerCache tempVal1 = CacheManager.cacheManager.getPlayerCache(player.getPlayer());
         if (tempVal1 == null) {
             LanguageManager.languageManager.sendStringText(player.getPlayer(),

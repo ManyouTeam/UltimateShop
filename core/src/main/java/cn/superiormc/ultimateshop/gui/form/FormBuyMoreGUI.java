@@ -21,7 +21,7 @@ public class FormBuyMoreGUI extends FormGUI {
     }
 
     @Override
-    protected void constructGUI() {
+    public void constructGUI() {
         PlayerCache tempVal1 = CacheManager.cacheManager.getPlayerCache(player.getPlayer());
         if (tempVal1 == null) {
             LanguageManager.languageManager.sendStringText(player.getPlayer(),

@@ -389,7 +389,7 @@ public class BuildItem {
         if (meta instanceof Damageable) {
             Damageable damageable = (Damageable) meta;
             int damageKey = section.getInt("damage", -1);
-            if (damageKey > 0) {
+            if (damageKey >= 0) {
                 damageable.setDamage(damageKey);
             }
             if (CommonUtil.getMinorVersion(20, 5)) {

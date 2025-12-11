@@ -3,7 +3,9 @@ package cn.superiormc.ultimateshop.managers;
 import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.cache.PlayerCache;
 import cn.superiormc.ultimateshop.cache.ServerCache;
+import cn.superiormc.ultimateshop.database.AbstractDatabase;
 import cn.superiormc.ultimateshop.database.SQLDatabase;
+import cn.superiormc.ultimateshop.database.YamlDatabase;
 import cn.superiormc.ultimateshop.utils.TextUtil;
 import org.bukkit.entity.Player;
 
@@ -18,12 +20,16 @@ public class CacheManager {
 
     public ServerCache serverCache;
 
+    public AbstractDatabase database;
+
     public CacheManager() {
         cacheManager = this;
         if (ConfigManager.configManager.getBoolean("database.enabled")) {
-            SQLDatabase.closeSQL();
-            SQLDatabase.initSQL();
+            database = new SQLDatabase();
+        } else {
+            database = new YamlDatabase();
         }
+        database.onInit();
         serverCache = new ServerCache();
     }
 

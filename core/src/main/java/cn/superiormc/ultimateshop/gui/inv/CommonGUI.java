@@ -10,7 +10,6 @@ import cn.superiormc.ultimateshop.objects.menus.MenuSender;
 import cn.superiormc.ultimateshop.objects.menus.MenuType;
 import cn.superiormc.ultimateshop.objects.menus.ObjectMenu;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
-import cn.superiormc.ultimateshop.utils.PacketInventoryUtil;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.Inventory;
@@ -30,7 +29,7 @@ public class CommonGUI extends InvGUI {
     }
 
     @Override
-    protected void constructGUI() {
+    public void constructGUI() {
         if (!bypass && !commonMenu.getCondition().getAllBoolean(new ObjectThingRun(player))) {
             LanguageManager.languageManager.sendStringText(player,
                     "menu-condition-not-meet",

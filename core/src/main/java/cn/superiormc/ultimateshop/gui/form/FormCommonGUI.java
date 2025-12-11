@@ -27,7 +27,7 @@ public class FormCommonGUI extends FormGUI {
     }
 
     @Override
-    protected void constructGUI() {
+    public void constructGUI() {
         if (!bypass && !commonMenu.getCondition().getAllBoolean(new ObjectThingRun(player))) {
             LanguageManager.languageManager.sendStringText(player,
                     "menu-condition-not-meet",

@@ -104,3 +104,5 @@ sell-products-not-enough: "&#98FB98[UltimateShop] &cYou do not have enough {item
 parsed-value: "&#98FB98[UltimateShop] &fParsed Value: {text}"
 reset-random-placeholder: "&#98FB98[UltimateShop] &fSuccessfully reset random placeholder {placeholder} and it's new value is {value}."
 set-random-placeholder: "&#98FB98[UltimateShop] &fSuccessfully set random placeholder {placeholder}'s new value to: {value}. Please note that the refresh time does not be reset!"
+gui-updated: "&#98FB98[UltimateShop] &fGUI updated for player {player}!"
+gui-not-opened: "&#98FB98[UltimateShop] &c{player} didn't open any GUI!"

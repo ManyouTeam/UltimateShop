@@ -12,7 +12,6 @@ import cn.superiormc.ultimateshop.objects.buttons.*;
 import cn.superiormc.ultimateshop.objects.items.ObjectAction;
 import cn.superiormc.ultimateshop.objects.menus.MenuSender;
 import cn.superiormc.ultimateshop.objects.menus.ObjectMoreMenu;
-import cn.superiormc.ultimateshop.utils.PacketInventoryUtil;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.Inventory;
@@ -45,7 +44,7 @@ public class BuyMoreGUI extends InvGUI {
     }
 
     @Override
-    protected void constructGUI() {
+    public void constructGUI() {
         if (menu == null) {
             return;
         }

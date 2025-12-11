@@ -267,7 +267,7 @@ public class BuildItemPaper {
 
         // Damage
         int damageKey = section.getInt("damage", -1);
-        if (damageKey > 0) {
+        if (damageKey >= 0) {
             item.setData(DataComponentTypes.DAMAGE, damageKey);
         }
 

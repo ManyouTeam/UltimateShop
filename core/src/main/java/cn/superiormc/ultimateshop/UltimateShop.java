@@ -1,7 +1,6 @@
 package cn.superiormc.ultimateshop;
 
 import cn.superiormc.ultimateshop.cache.ServerCache;
-import cn.superiormc.ultimateshop.database.SQLDatabase;
 import cn.superiormc.ultimateshop.libs.bstats.Metrics;
 import cn.superiormc.ultimateshop.managers.*;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
@@ -112,7 +111,7 @@ public final class UltimateShop extends JavaPlugin {
         for (Player player : Bukkit.getOnlinePlayers()) {
             CacheManager.cacheManager.savePlayerCacheOnDisable(player, true);
         }
-        SQLDatabase.closeSQL();
+        CacheManager.cacheManager.database.onClose();
         if (BungeeCordManager.enableThis()) {
             BungeeCordManager.bungeeCordManager.disable();
         }

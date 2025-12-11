@@ -22,29 +22,26 @@ public abstract class AbstractGUI {
         this.player = owner;
     }
 
-    protected abstract void constructGUI();
+    public abstract void constructGUI();
 
     public boolean canOpenGUI(boolean reopen) {
-        if (ConfigManager.configManager.getLong("menu.cooldown.reopen", -1L) <= 0L) {
-            return true;
-        }
+        boolean result = true;
         if (playerList.containsKey(player)) {
-            if (reopen && playerList.get(player) != GUIStatus.ACTION_OPEN_MENU) {
-                playerList.replace(player, GUIStatus.ACTION_OPEN_MENU);
-            } else {
-                return false;
+            if (reopen && playerList.get(player).getStatus() != GUIStatus.Status.ACTION_OPEN_MENU) {
+                playerList.replace(player, GUIStatus.of(this, GUIStatus.Status.ACTION_OPEN_MENU));
+            } else if (ConfigManager.configManager.getLong("menu.cooldown.reopen", -1L) > 0L) {
+                result = false;
             }
         } else {
-            playerList.put(player, GUIStatus.CAN_REOPEN);
-            return true;
+            playerList.put(player, GUIStatus.of(this, GUIStatus.Status.CAN_REOPEN));
         }
-        return true;
+        return result;
     }
 
     public void removeOpenGUIStatus() {
         long time = ConfigManager.configManager.getLong("menu.cooldown.reopen", 3L);
-        if (time > 0L && playerList.containsKey(player) && playerList.get(player) != GUIStatus.ALREADY_IN_COOLDOWN) {
-            playerList.replace(player, GUIStatus.ALREADY_IN_COOLDOWN);
+        if (time > 0L && playerList.containsKey(player) && playerList.get(player).getStatus() != GUIStatus.Status.ALREADY_IN_COOLDOWN) {
+            playerList.replace(player, GUIStatus.of(this, GUIStatus.Status.ALREADY_IN_COOLDOWN));
             SchedulerUtil.runTaskLater(() -> playerList.remove(player), time);
         }
     }

@@ -17,11 +17,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
-public class SQLDatabase {
+public class SQLDatabase extends AbstractDatabase {
 
-    public static HikariDataSource dataSource;
+    public HikariDataSource dataSource;
 
-    public static void initSQL() {
+    public void onInIt() {
+        onClose();
         UltimateShop.methodUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fTrying connect to SQL database...");
         HikariConfig config = new HikariConfig();
         config.setDriverClassName(ConfigManager.configManager.getString("database.jdbc-class"));
@@ -41,13 +42,13 @@ public class SQLDatabase {
         createTable();
     }
 
-    public static void closeSQL() {
+    public void onClose() {
         if (dataSource != null && !dataSource.isClosed()) {
             dataSource.close();
         }
     }
 
-    public static void createTable() {
+    public void createTable() {
         try (Connection conn = dataSource.getConnection();
              Statement stmt = conn.createStatement()) {
 
@@ -87,7 +88,7 @@ public class SQLDatabase {
         }
     }
 
-    public static void checkData(ServerCache cache) {
+    public void checkData(ServerCache cache) {
         CompletableFuture.supplyAsync(() -> {
             try (Connection conn = dataSource.getConnection()) {
                 if (!UltimateShop.freeVersion) {
@@ -146,7 +147,7 @@ public class SQLDatabase {
     }
 
 
-    public static void updateData(ServerCache cache, boolean quitServer) {
+    public void updateData(ServerCache cache, boolean quitServer) {
         String playerUUID;
         if (cache.server) {
             playerUUID = "Global-Server";
@@ -231,7 +232,7 @@ public class SQLDatabase {
         }
     }
 
-    public static void updateDataOnDisable(ServerCache cache, boolean disable) {
+    public void updateDataOnDisable(ServerCache cache, boolean disable) {
         String playerUUID;
         if (cache.server) {
             playerUUID = "Global-Server";

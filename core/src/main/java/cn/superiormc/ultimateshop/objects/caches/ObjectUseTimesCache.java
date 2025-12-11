@@ -2,16 +2,23 @@ package cn.superiormc.ultimateshop.objects.caches;
 
 import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.cache.ServerCache;
+import cn.superiormc.ultimateshop.gui.AbstractGUI;
+import cn.superiormc.ultimateshop.gui.GUIStatus;
+import cn.superiormc.ultimateshop.gui.inv.ShopGUI;
 import cn.superiormc.ultimateshop.managers.BungeeCordManager;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.ErrorManager;
+import cn.superiormc.ultimateshop.objects.buttons.AbstractButton;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import cn.superiormc.ultimateshop.objects.items.subobjects.ObjectRandomPlaceholder;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
+import cn.superiormc.ultimateshop.utils.SchedulerUtil;
 import cn.superiormc.ultimateshop.utils.TextUtil;
+import org.bukkit.Bukkit;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.Map;
 import java.util.Objects;
 
 public class ObjectUseTimesCache {
@@ -41,6 +48,12 @@ public class ObjectUseTimesCache {
     private final ServerCache cache;
 
     private final boolean firstInsert;
+
+    private SchedulerUtil buyResetTask;
+
+    private SchedulerUtil sellResetTask;
+
+    private SchedulerUtil guiUpdateTask;
 
     public ObjectUseTimesCache(ServerCache cache,
                                int buyUseTimes,
@@ -86,6 +99,72 @@ public class ObjectUseTimesCache {
             this.cooldownSellTime = CommonUtil.stringToTime(cooldownSellTime);
         }
         this.product = product;
+        initAutoResetTask();
+    }
+
+    public void initAutoResetTask() {
+        if (!ConfigManager.configManager.getBoolean("use-times.auto-reset-mode")) {
+            refreshBuyTimes();
+            refreshSellTimes();
+        } else {
+            initBuyResetTask();
+            initSellResetTask();
+        }
+    }
+
+    public void initBuyResetTask() {
+        LocalDateTime refreshTime = getBuyRefreshTime();
+        if (refreshTime == null || refreshTime.getYear() == 2999) {
+            return;
+        }
+
+        if (buyResetTask != null) {
+            buyResetTask.cancel();
+            buyResetTask = null;
+        }
+
+        long delayMillis = Duration.between(CommonUtil.getNowTime(), refreshTime).toMillis();
+
+        if (delayMillis <= 0) {
+            refreshBuyTimes();
+            return;
+        }
+
+        long delayTicks = delayMillis / 50;
+
+        buyResetTask = SchedulerUtil.runTaskLater(this::refreshBuyTimes, delayTicks + 20);
+    }
+
+    public void initSellResetTask() {
+        LocalDateTime refreshTime = getSellRefreshTime();
+        if (refreshTime == null || refreshTime.getYear() == 2999) {
+            return;
+        }
+
+        if (sellResetTask != null) {
+            sellResetTask.cancel();
+            sellResetTask = null;
+        }
+
+        long delayMillis = Duration.between(CommonUtil.getNowTime(), refreshTime).toMillis();
+
+        if (delayMillis <= 0) {
+            refreshSellTimes();
+            return;
+        }
+
+        long delayTicks = delayMillis / 50;
+
+        sellResetTask = SchedulerUtil.runTaskLater(this::refreshSellTimes, delayTicks + 20);
+    }
+
+    public void cancelAutoResetTask() {
+        if (buyResetTask != null) {
+            buyResetTask.cancel();
+        }
+        if (sellResetTask != null) {
+            sellResetTask.cancel();
+        }
     }
 
     public int getBuyUseTimes() {
@@ -665,6 +744,7 @@ public class ObjectUseTimesCache {
             setBuyUseTimes(product.getBuyTimesResetValue(cache.player), true);
             setLastBuyTime(null);
             resetCooldownBuyTime();
+            updateGUI();
         }
     }
 
@@ -674,6 +754,20 @@ public class ObjectUseTimesCache {
             setSellUseTimes(product.getSellTimesResetValue(cache.player), true);
             setLastSellTime(null);
             resetCooldownSellTime();
+            updateGUI();
+        }
+    }
+
+    public void updateGUI() {
+        if (cache.player != null) {
+            GUIStatus guiStatus = AbstractGUI.playerList.get(cache.player);
+            if (guiStatus != null && guiStatus.getGUI() != null) {
+                if (guiUpdateTask != null) {
+                    guiUpdateTask.cancel();
+                    guiUpdateTask = null;
+                }
+                guiUpdateTask = SchedulerUtil.runTaskLater(() -> guiStatus.getGUI().constructGUI(), 20L);
+            }
         }
     }
 

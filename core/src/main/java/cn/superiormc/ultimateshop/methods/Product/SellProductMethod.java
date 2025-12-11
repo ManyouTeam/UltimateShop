@@ -95,7 +95,7 @@ public class SellProductMethod {
         ObjectUseTimesCache tempVal8 = tempVal11.getUseTimesCache().get(item);
         if (tempVal9 != null) {
             // 重置
-            tempVal9.refreshSellTimes();
+            tempVal9.initAutoResetTask();
             playerUseTimes = tempVal9.getSellUseTimes();
         } else {
             tempVal9 = tempVal3.createUseTimesCache(item);
@@ -145,7 +145,7 @@ public class SellProductMethod {
             return ProductTradeStatus.PLAYER_MAX;
         }
         if (tempVal8 != null) {
-            tempVal8.refreshSellTimes();
+            tempVal8.initAutoResetTask();
             serverUseTimes = tempVal8.getSellUseTimes();
         } else {
             tempVal8 = tempVal11.createUseTimesCache(item);
@@ -211,7 +211,8 @@ public class SellProductMethod {
         // limit+1
         if (tempVal9 != null) {
             if (ConfigManager.configManager.getBoolean("debug")) {
-                UltimateShop.methodUtil.sendMessage(null, TextUtil.pluginPrefix() + " §aSet player limit value to " + tempVal9.getSellUseTimes() + multi + "!");
+                int newValue = tempVal9.getSellUseTimes() + multi;
+                UltimateShop.methodUtil.sendMessage(null, TextUtil.pluginPrefix() + " §aSet player limit value to " + newValue + "!");
             }
             tempVal9.setSellUseTimes(tempVal9.getSellUseTimes() + multi);
             tempVal9.setLastSellTime(CommonUtil.getNowTime());
@@ -220,7 +221,8 @@ public class SellProductMethod {
         }
         if (tempVal8 != null) {
             if (ConfigManager.configManager.getBoolean("debug")) {
-                UltimateShop.methodUtil.sendMessage(null, TextUtil.pluginPrefix() + " §aSet server limit value to " + tempVal8.getSellUseTimes() + multi + "!");
+                int newValue = tempVal8.getSellUseTimes() + multi;
+                UltimateShop.methodUtil.sendMessage(null, TextUtil.pluginPrefix() + " §aSet server limit value to " + newValue + "!");
             }
             tempVal8.setSellUseTimes(tempVal8.getSellUseTimes() + multi);
             tempVal8.setLastSellTime(CommonUtil.getNowTime());

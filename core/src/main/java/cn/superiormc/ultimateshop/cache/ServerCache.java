@@ -1,7 +1,6 @@
 package cn.superiormc.ultimateshop.cache;
 
-import cn.superiormc.ultimateshop.database.SQLDatabase;
-import cn.superiormc.ultimateshop.database.YamlDatabase;
+import cn.superiormc.ultimateshop.managers.CacheManager;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.ErrorManager;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
@@ -9,7 +8,6 @@ import cn.superiormc.ultimateshop.objects.ObjectShop;
 import cn.superiormc.ultimateshop.objects.caches.ObjectRandomPlaceholderCache;
 import cn.superiormc.ultimateshop.objects.caches.ObjectUseTimesCache;
 import cn.superiormc.ultimateshop.objects.items.subobjects.ObjectRandomPlaceholder;
-import cn.superiormc.ultimateshop.objects.menus.MenuSender;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
 import org.bukkit.entity.Player;
 
@@ -41,26 +39,24 @@ public class ServerCache {
     }
 
     public void initServerCache() {
-        if (ConfigManager.configManager.getBoolean("database.enabled")) {
-            SQLDatabase.checkData(this);
-        } else {
-            YamlDatabase.checkData(this);
-        }
+        CacheManager.cacheManager.database.checkData(this);
     }
 
     public void shutServerCache(boolean quitServer) {
-        if (ConfigManager.configManager.getBoolean("database.enabled")) {
-            SQLDatabase.updateData(this, quitServer);
-        } else {
-            YamlDatabase.updateData(this, quitServer);
+        CacheManager.cacheManager.database.updateData(this, quitServer);
+        if (quitServer && ConfigManager.configManager.getBoolean("use-times.auto-reset-mode")) {
+            for (ObjectUseTimesCache cache : useTimesCache.values()) {
+                cache.cancelAutoResetTask();
+            }
         }
     }
 
     public void shutServerCacheOnDisable(boolean disable) {
-        if (ConfigManager.configManager.getBoolean("database.enabled")) {
-            SQLDatabase.updateDataOnDisable(this, disable);
-        } else {
-            YamlDatabase.updateData(this, true);
+        CacheManager.cacheManager.database.updateDataOnDisable(this, disable);
+        if (disable && ConfigManager.configManager.getBoolean("use-times.auto-reset-mode")) {
+            for (ObjectUseTimesCache cache : useTimesCache.values()) {
+                cache.cancelAutoResetTask();
+            }
         }
     }
 

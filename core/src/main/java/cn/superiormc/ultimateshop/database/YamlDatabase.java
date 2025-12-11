@@ -8,19 +8,19 @@ import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import cn.superiormc.ultimateshop.objects.caches.ObjectRandomPlaceholderCache;
 import cn.superiormc.ultimateshop.objects.caches.ObjectUseTimesCache;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
 import java.io.IOException;
-import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-public class YamlDatabase {
+public class YamlDatabase extends AbstractDatabase {
 
-    public static void checkData(ServerCache cache) {
+    public void checkData(ServerCache cache) {
         File dir = new File(UltimateShop.instance.getDataFolder() + "/datas");
         if (!dir.exists()) {
             dir.mkdir();
@@ -106,7 +106,7 @@ public class YamlDatabase {
         }
     }
 
-    public static void updateData(ServerCache cache, boolean quitServer) {
+    public void updateData(ServerCache cache, boolean quitServer) {
         boolean needDelete = false;
         File dir = new File(UltimateShop.instance.getDataFolder()+"/datas");
         if (!dir.exists()) {
