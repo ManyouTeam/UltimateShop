@@ -20,6 +20,7 @@ import java.util.Map;
 
 public class YamlDatabase extends AbstractDatabase {
 
+    @Override
     public void checkData(ServerCache cache) {
         File dir = new File(UltimateShop.instance.getDataFolder() + "/datas");
         if (!dir.exists()) {
@@ -106,6 +107,7 @@ public class YamlDatabase extends AbstractDatabase {
         }
     }
 
+    @Override
     public void updateData(ServerCache cache, boolean quitServer) {
         boolean needDelete = false;
         File dir = new File(UltimateShop.instance.getDataFolder()+"/datas");

@@ -21,7 +21,8 @@ public class SQLDatabase extends AbstractDatabase {
 
     public HikariDataSource dataSource;
 
-    public void onInIt() {
+    @Override
+    public void onInit() {
         onClose();
         UltimateShop.methodUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fTrying connect to SQL database...");
         HikariConfig config = new HikariConfig();
@@ -42,6 +43,7 @@ public class SQLDatabase extends AbstractDatabase {
         createTable();
     }
 
+    @Override
     public void onClose() {
         if (dataSource != null && !dataSource.isClosed()) {
             dataSource.close();
@@ -88,6 +90,7 @@ public class SQLDatabase extends AbstractDatabase {
         }
     }
 
+    @Override
     public void checkData(ServerCache cache) {
         CompletableFuture.supplyAsync(() -> {
             try (Connection conn = dataSource.getConnection()) {
@@ -147,6 +150,7 @@ public class SQLDatabase extends AbstractDatabase {
     }
 
 
+    @Override
     public void updateData(ServerCache cache, boolean quitServer) {
         String playerUUID;
         if (cache.server) {
@@ -232,6 +236,7 @@ public class SQLDatabase extends AbstractDatabase {
         }
     }
 
+    @Override
     public void updateDataOnDisable(ServerCache cache, boolean disable) {
         String playerUUID;
         if (cache.server) {
