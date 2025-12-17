@@ -17,8 +17,6 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.util.HashMap;
 import java.util.Map;
 
-import static cn.superiormc.ultimateshop.utils.PacketInventoryUtil.packetInventoryUtil;
-
 public abstract class InvGUI extends AbstractGUI {
 
     protected Inventory inv;
@@ -79,8 +77,8 @@ public abstract class InvGUI extends AbstractGUI {
                     if (ConfigManager.configManager.getBooleanOrDefault("menu.shop.update", "menu.menu-update.circle-update")) {
                         constructGUI();
                     }
-                    if (ConfigManager.configManager.getBoolean("menu.title-update.circle-update") && packetInventoryUtil != null) {
-                        packetInventoryUtil.updateTitle(player, InvGUI.this);
+                    if (ConfigManager.configManager.getBoolean("menu.title-update.circle-update") && UltimateShop.usePacketEvents) {
+                        PacketInventoryUtil.packetInventoryUtil.updateTitle(player, InvGUI.this);
                     }
                 }
             };
