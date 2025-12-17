@@ -44,6 +44,9 @@ public class SellAllGUI extends InvGUI {
 
     @Override
     public boolean closeEventHandle(Inventory inventory) {
+        if (runTask != null) {
+            runTask.cancel();
+        }
         if (player == null) {
             return true;
         }
@@ -64,7 +67,7 @@ public class SellAllGUI extends InvGUI {
                 }
                 ProductTradeStatus status = SellProductMethod.startSell(inv,
                         products,
-                        player.getPlayer(),
+                        player,
                         false,
                         false,
                         true,
@@ -85,7 +88,7 @@ public class SellAllGUI extends InvGUI {
                     afterAmount = afterAmount + item.getAmount();
                 }
             }
-            LanguageManager.languageManager.sendStringText(player.getPlayer(), "start-sell-all", "amount", String.valueOf(nowAmount - afterAmount),
+            LanguageManager.languageManager.sendStringText(player, "start-sell-all", "amount", String.valueOf(nowAmount - afterAmount),
                     "reward", ObjectPrices.getDisplayNameInLine(player, 1,
                     result, ThingMode.ALL, true
             ));

@@ -379,6 +379,7 @@ public class ObjectItem extends AbstractButton {
                 failAction.runAllActions(new ObjectThingRun(player, type));
             }
         }
+        super.clickEvent(type, player);
     }
 
     @Override

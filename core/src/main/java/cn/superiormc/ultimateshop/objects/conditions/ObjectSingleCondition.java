@@ -8,6 +8,7 @@ import cn.superiormc.ultimateshop.objects.ObjectThingRun;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import cn.superiormc.ultimateshop.objects.items.ObjectAction;
 import cn.superiormc.ultimateshop.objects.items.ObjectCondition;
+import cn.superiormc.ultimateshop.utils.CommonUtil;
 import org.bukkit.configuration.ConfigurationSection;
 
 public class ObjectSingleCondition extends AbstractSingleRun {
@@ -52,6 +53,12 @@ public class ObjectSingleCondition extends AbstractSingleRun {
             return true;
         }
         if (clickType != null && !clickType.equals(thingRun.getType().name())) {
+            return true;
+        }
+        if (thingRun.getPlayer() != null && bedrockOnly && !CommonUtil.isBedrockPlayer(thingRun.getPlayer())) {
+            return true;
+        }
+        if (thingRun.getPlayer() != null && javaOnly && CommonUtil.isBedrockPlayer(thingRun.getPlayer())) {
             return true;
         }
         boolean result = ConditionManager.conditionManager.checkBoolean(this, thingRun);

@@ -34,7 +34,8 @@ public class PacketInventoryUtil {
         PacketEvents.getAPI().getEventManager().registerListener(new PacketListener());
     }
 
-    public void updateTitle(Player player, String newTitle, InvGUI gui) {
+    public void updateTitle(Player player, InvGUI gui) {
+        String newTitle = TextUtil.withPAPI(gui.title, player);
         UUID uuid = player.getUniqueId();
         Integer windowId = WINDOW_IDS.get(uuid);
         Integer windowType = WINDOW_TYPES.get(uuid);

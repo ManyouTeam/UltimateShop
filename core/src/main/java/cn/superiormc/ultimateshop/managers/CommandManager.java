@@ -1,5 +1,6 @@
 package cn.superiormc.ultimateshop.managers;
 
+import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.commands.*;
 import org.bukkit.Bukkit;
 
@@ -45,6 +46,9 @@ public class CommandManager {
        registerNewSubCommand(new SubSearch());
        registerNewSubCommand(new SubSellAllHand());
        registerNewSubCommand(new SubUpdateGUI());
+       if (!UltimateShop.freeVersion) {
+           registerNewSubCommand(new SubUpdateGUITitle());
+       }
     }
 
     public Map<String, AbstractCommand> getSubCommandsMap() {

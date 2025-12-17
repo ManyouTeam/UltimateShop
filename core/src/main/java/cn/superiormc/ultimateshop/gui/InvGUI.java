@@ -2,7 +2,9 @@ package cn.superiormc.ultimateshop.gui;
 
 import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.listeners.GUIListener;
+import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.objects.buttons.AbstractButton;
+import cn.superiormc.ultimateshop.utils.PacketInventoryUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -14,6 +16,8 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import static cn.superiormc.ultimateshop.utils.PacketInventoryUtil.packetInventoryUtil;
 
 public abstract class InvGUI extends AbstractGUI {
 
@@ -40,6 +44,9 @@ public abstract class InvGUI extends AbstractGUI {
     public abstract boolean clickEventHandle(Inventory inventory, ClickType type, int slot);
 
     public boolean closeEventHandle(Inventory inventory) {
+        if (runTask != null) {
+            runTask.cancel();
+        }
         return true;
     }
 
@@ -63,6 +70,21 @@ public abstract class InvGUI extends AbstractGUI {
             if (getMenu() != null) {
                 getMenu().doOpenAction(player, reopen);
             }
+        }
+        if (ConfigManager.configManager.getBooleanOrDefault("menu.shop.update", "menu.menu-update.circle-update") ||
+        ConfigManager.configManager.getBoolean("menu.title-update.circle-update")) {
+            runTask = new BukkitRunnable() {
+                @Override
+                public void run() {
+                    if (ConfigManager.configManager.getBooleanOrDefault("menu.shop.update", "menu.menu-update.circle-update")) {
+                        constructGUI();
+                    }
+                    if (ConfigManager.configManager.getBoolean("menu.title-update.circle-update") && packetInventoryUtil != null) {
+                        packetInventoryUtil.updateTitle(player, InvGUI.this);
+                    }
+                }
+            };
+            runTask.runTaskTimer(UltimateShop.instance, 20L, 20L);
         }
     }
 

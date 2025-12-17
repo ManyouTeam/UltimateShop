@@ -44,6 +44,8 @@ public class ActionManager {
         registerNewAction("any", new ActionAny());
         registerNewAction("conditional", new ActionConditional());
         registerNewAction("connect", new ActionConnect());
+        registerNewAction("update_title", new ActionUpdateTitle());
+        registerNewAction("update_gui", new ActionUpdateGUI());
     }
 
     public void registerNewAction(String actionID,

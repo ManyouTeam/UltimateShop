@@ -151,7 +151,7 @@ public class BuyMoreGUI extends InvGUI {
                 }
                 break;
             default:
-                menuButtons.get(slot).clickEvent(type, player.getPlayer());
+                menuButtons.get(slot).clickEvent(type, player);
                 break;
         }
         constructGUI();

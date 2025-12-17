@@ -26,9 +26,13 @@ public abstract class AbstractSingleRun {
 
     protected String clickType;
 
-    private ObjectShop shop;
+    protected ObjectShop shop;
 
-    private ObjectItem item;
+    protected ObjectItem item;
+
+    protected boolean bedrockOnly;
+
+    protected boolean javaOnly;
 
     public AbstractSingleRun(ConfigurationSection section) {
         this.section = section;
@@ -39,6 +43,8 @@ public abstract class AbstractSingleRun {
         sellAllOnce = section.getBoolean("sell-all-once", false);
         openOnce = section.getBoolean("open-once", false);
         clickType = section.getString("click-type", null);
+        bedrockOnly = section.getBoolean("bedrock-only", false);
+        javaOnly = section.getBoolean("java-only", false);
     }
 
     public AbstractSingleRun(ConfigurationSection section, ObjectItem item) {
@@ -52,6 +58,8 @@ public abstract class AbstractSingleRun {
         sellAllOnce = section.getBoolean("sell-all-once", false);
         openOnce = section.getBoolean("open-once", false);
         clickType = section.getString("click-type", null);
+        bedrockOnly = section.getBoolean("bedrock-only", false);
+        javaOnly = section.getBoolean("java-only", false);
     }
 
     public AbstractSingleRun(ConfigurationSection section, ObjectShop shop) {
@@ -64,6 +72,8 @@ public abstract class AbstractSingleRun {
         sellAllOnce = section.getBoolean("sell-all-once", false);
         openOnce = section.getBoolean("open-once", false);
         clickType = section.getString("click-type", null);
+        bedrockOnly = section.getBoolean("bedrock-only", false);
+        javaOnly = section.getBoolean("java-only", false);
     }
 
     protected String replacePlaceholder(String content, Player player, double amount) {

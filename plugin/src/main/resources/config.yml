@@ -62,17 +62,24 @@ menu:
   cooldown:
     click: -1
     reopen: -1
+  ignore-click-outside: false
   # PREMIUM version only, if enabled, can update dynamic value used in GUI title.
   title-update:
-    enabled: false
+    # Require packetevents and MythicChanger.
+    enabled: true
+    # Whether gui title will refresh every buttons every 1 second.
+    # This will refresh placeholder that displayed in menu title.
+    circle-update: false
+    # Whether gui title will refresh every buttons when click any of them.
+    # This will refresh placeholder that displayed in menu title.
+    click-update: true
     resend-items-pack: false
-  ignore-click-outside: false
-  shop:
-    # Whether shop menu will refresh every 1 second.
+  menu-update:
+    # Whether menu will refresh every buttons every 1 second.
     # This will refresh placeholder that displayed in display item lore.
     # But maybe lead to server lag if you have much online players, and they are all opening shop GUI.
-    update: false
-    # Whether shop menu will refresh every click in it.
+    circle-update: false
+    # Whether menu will refresh every buttons when click any of them.
     # This will refresh placeholder that displayed in display item lore.
     # But maybe lead to server lag if you have much online players, and they are all opening shop GUI.
     click-update: false

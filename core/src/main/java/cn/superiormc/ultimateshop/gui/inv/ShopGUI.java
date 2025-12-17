@@ -38,28 +38,11 @@ public class ShopGUI extends InvGUI {
     }
 
     @Override
-    public void openGUI(boolean reopen) {
-        super.openGUI(reopen);
-        if (!super.canOpenGUI(reopen)) {
-            return;
-        }
-        if (ConfigManager.configManager.getBoolean("menu.shop.update")) {
-            runTask = new BukkitRunnable() {
-                @Override
-                public void run() {
-                    constructGUI();
-                }
-            };
-            runTask.runTaskTimer(UltimateShop.instance, 20L, 20L);
-        }
-    }
-
-    @Override
     public void constructGUI() {
-        PlayerCache tempVal1 = CacheManager.cacheManager.getPlayerCache(player.getPlayer());
+        PlayerCache tempVal1 = CacheManager.cacheManager.getPlayerCache(player);
         ServerCache tempVal2 = ServerCache.serverCache;
         if (tempVal1 == null) {
-            LanguageManager.languageManager.sendStringText(player.getPlayer(),
+            LanguageManager.languageManager.sendStringText(player,
                     "error.player-not-found",
                     "player",
                     player.getName());
@@ -87,9 +70,8 @@ public class ShopGUI extends InvGUI {
 
         ObjectMenu menu = shop.getShopMenuObject();
         if (menu != null) {
-            title = menu.getString("title", "Shop");
+            title = shop.getShopMenuObject().getString("title", shop.getShopDisplayName()).replace("{shop-name}", shop.getShopDisplayName());
             if (Objects.isNull(inv)) {
-                title = shop.getShopMenuObject().getString("title", shop.getShopDisplayName()).replace("{shop-name}", shop.getShopDisplayName());
                 inv = UltimateShop.methodUtil.createNewInv(player, shop.getShopMenuObject().getInt("size", 54), title);
             }
         }
@@ -103,21 +85,13 @@ public class ShopGUI extends InvGUI {
         if (menuButtons.get(slot) == null) {
             return true;
         }
-        menuButtons.get(slot).clickEvent(type, player.getPlayer());
-        if (ConfigManager.configManager.getBoolean("menu.shop.click-update")) {
+        menuButtons.get(slot).clickEvent(type, player);
+        if (ConfigManager.configManager.getBooleanOrDefault("menu.shop.click-update", "menu.menu-update.click-update")) {
             constructGUI();
         } else {
             updateSlot(slot);
         }
         return true;
-    }
-
-    @Override
-    public boolean closeEventHandle(Inventory inventory) {
-        if (runTask != null) {
-            runTask.cancel();
-        }
-        return super.closeEventHandle(inventory);
     }
 
     @Override
@@ -137,14 +111,14 @@ public class ShopGUI extends InvGUI {
 
         ObjectMenu shopMenu = shop.getShopMenuObject();
         if (shopMenu == null) {
-            LanguageManager.languageManager.sendStringText(player.getPlayer(),
+            LanguageManager.languageManager.sendStringText(player,
                     "error.shop-does-not-have-menu",
                     "shop",
                     shop.getShopName());
             return;
         }
         if (shopMenu.menuConfigs == null) {
-            LanguageManager.languageManager.sendStringText(player.getPlayer(),
+            LanguageManager.languageManager.sendStringText(player,
                     "error.shop-menu-not-found",
                     "shop",
                     shop.getShopName(),

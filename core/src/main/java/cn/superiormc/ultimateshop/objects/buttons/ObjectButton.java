@@ -75,6 +75,7 @@ public class ObjectButton extends AbstractButton {
         if (action != null) {
             action.runAllActions(new ObjectThingRun(player, type));
         }
+        super.clickEvent(type, player);
     }
 
     @Override

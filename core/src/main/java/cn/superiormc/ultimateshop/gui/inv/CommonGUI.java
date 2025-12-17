@@ -53,8 +53,8 @@ public class CommonGUI extends InvGUI {
         if (menuButtons.get(slot) == null) {
             return true;
         }
-        menuButtons.get(slot).clickEvent(type, player.getPlayer());
-        if (ConfigManager.configManager.getBoolean("menu.shop.click-update")) {
+        menuButtons.get(slot).clickEvent(type, player);
+        if (ConfigManager.configManager.getBooleanOrDefault("menu.shop.click-update", "menu.menu-update.click-update")) {
             constructGUI();
         } else {
             menuItems.put(slot, getMenuItem(player, slot));

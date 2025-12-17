@@ -7,6 +7,7 @@ import cn.superiormc.ultimateshop.objects.ObjectShop;
 import cn.superiormc.ultimateshop.objects.ObjectThingRun;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import cn.superiormc.ultimateshop.objects.items.ObjectAction;
+import cn.superiormc.ultimateshop.utils.CommonUtil;
 import org.bukkit.configuration.ConfigurationSection;
 
 public class ObjectSingleAction extends AbstractSingleRun {
@@ -45,6 +46,12 @@ public class ObjectSingleAction extends AbstractSingleRun {
             return;
         }
         if (openOnce && thingRun.isReopen()) {
+            return;
+        }
+        if (thingRun.getPlayer() != null && bedrockOnly && !CommonUtil.isBedrockPlayer(thingRun.getPlayer())) {
+            return;
+        }
+        if (thingRun.getPlayer() != null && javaOnly && CommonUtil.isBedrockPlayer(thingRun.getPlayer())) {
             return;
         }
         ActionManager.actionManager.doAction(this, thingRun);

@@ -54,9 +54,9 @@ public class FormInfoGUI extends FormGUI {
 
     @Override
     public void constructGUI() {
-        PlayerCache tempVal1 = CacheManager.cacheManager.getPlayerCache(player.getPlayer());
+        PlayerCache tempVal1 = CacheManager.cacheManager.getPlayerCache(player);
         if (tempVal1 == null) {
-            LanguageManager.languageManager.sendStringText(player.getPlayer(),
+            LanguageManager.languageManager.sendStringText(player,
                     "error.player-not-found",
                     "player",
                     player.getName());
@@ -72,7 +72,7 @@ public class FormInfoGUI extends FormGUI {
             content.addAll(UltimateShop.methodUtil.getItemLore(item.getDisplayItem(player).getItemMeta()));
             content.add(" ");
         }
-        content.addAll(ModifyDisplayItem.getModifiedLore(player.getPlayer(),
+        content.addAll(ModifyDisplayItem.getModifiedLore(player,
                 getAmount(),
                 item,
                 false,

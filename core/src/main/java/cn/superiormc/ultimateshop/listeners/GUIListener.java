@@ -58,8 +58,8 @@ public class GUIListener implements Listener {
                 if (CommonUtil.getMajorVersion(16) && e.getClick() == ClickType.SWAP_OFFHAND && e.isCancelled()) {
                     player.getInventory().setItemInOffHand(player.getInventory().getItemInOffHand());
                 }
-                if (UltimateShop.usePacketEvents) {
-                    PacketInventoryUtil.packetInventoryUtil.updateTitle(player, TextUtil.withPAPI(gui.title, player), gui);
+                if (ConfigManager.configManager.getBooleanOrDefault("menu.title-update.enabled", "menu.title-update.click-update") &&UltimateShop.usePacketEvents) {
+                    PacketInventoryUtil.packetInventoryUtil.updateTitle(player, gui);
                 }
             }
         } catch (Throwable throwable) {
