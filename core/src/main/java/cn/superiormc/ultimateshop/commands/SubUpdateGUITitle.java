@@ -1,5 +1,6 @@
 package cn.superiormc.ultimateshop.commands;
 
+import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.gui.AbstractGUI;
 import cn.superiormc.ultimateshop.gui.GUIStatus;
 import cn.superiormc.ultimateshop.gui.InvGUI;
@@ -33,7 +34,7 @@ public class SubUpdateGUITitle extends AbstractCommand {
                 LanguageManager.languageManager.sendStringText(player, "gui-not-opened", "player", whoNeed.getName());
                 return;
             }
-            if (PacketInventoryUtil.packetInventoryUtil != null) {
+            if (UltimateShop.usePacketEvents) {
                 PacketInventoryUtil.packetInventoryUtil.updateTitle(whoNeed, invGUI);
                 LanguageManager.languageManager.sendStringText(player, "gui-updated", "player", whoNeed.getName());
             }
@@ -59,7 +60,7 @@ public class SubUpdateGUITitle extends AbstractCommand {
                 LanguageManager.languageManager.sendStringText("gui-not-opened", "player", whoNeed.getName());
                 return;
             }
-            if (PacketInventoryUtil.packetInventoryUtil != null) {
+            if (UltimateShop.usePacketEvents) {
                 PacketInventoryUtil.packetInventoryUtil.updateTitle(whoNeed, invGUI);
                 LanguageManager.languageManager.sendStringText("gui-updated", "player", whoNeed.getName());
             }
