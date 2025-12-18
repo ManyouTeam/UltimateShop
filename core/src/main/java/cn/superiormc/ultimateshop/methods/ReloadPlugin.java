@@ -24,7 +24,7 @@ public class ReloadPlugin {
             }
         }
         if (ServerCache.serverCache != null) {
-            ServerCache.serverCache.shutServerCacheOnDisable(false);
+            ServerCache.serverCache.shutCacheOnDisable(false);
         }
         TaskManager.taskManager.cancelTask();
         ObjectMenu.commonMenus.clear();

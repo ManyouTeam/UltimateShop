@@ -35,7 +35,7 @@ public class CacheManager {
 
     public void addPlayerCache(Player player) {
         playerCacheMap.put(player, new PlayerCache(player));
-        playerCacheMap.get(player).initPlayerCache();
+        playerCacheMap.get(player).initCache();
     }
 
     public PlayerCache getPlayerCache(Player player) {
@@ -54,7 +54,7 @@ public class CacheManager {
                     ", ask him rejoin the server.");
             return;
         }
-        playerCacheMap.get(player).shutPlayerCache(true);
+        playerCacheMap.get(player).shutCache(true);
     }
 
     public void savePlayerCacheOnDisable(Player player, boolean disable) {
@@ -64,7 +64,7 @@ public class CacheManager {
                     ", ask him rejoin the server.");
             return;
         }
-        playerCacheMap.get(player).shutPlayerCacheOnDisable(disable);
+        playerCacheMap.get(player).shutCacheOnDisable(disable);
     }
 
     public void removePlayerCache(Player player) {

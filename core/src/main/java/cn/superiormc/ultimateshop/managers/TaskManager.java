@@ -27,10 +27,10 @@ public class TaskManager {
                 UltimateShop.methodUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fIf this lead to server TPS drop, " +
                         "you should consider disable auto save feature at config.yml!");
             }
-            ServerCache.serverCache.shutServerCache(false);
+            ServerCache.serverCache.shutCache(false);
             for (Player player : Bukkit.getOnlinePlayers()) {
                 if (CacheManager.cacheManager.getPlayerCache(player) != null) {
-                    CacheManager.cacheManager.getPlayerCache(player).shutPlayerCache(false);
+                    CacheManager.cacheManager.getPlayerCache(player).shutCache(false);
                 }
             }
         }, 180L, ConfigManager.configManager.config.getLong("auto-save.period-tick", 600));

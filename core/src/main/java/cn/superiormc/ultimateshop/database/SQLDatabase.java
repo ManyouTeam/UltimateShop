@@ -1,7 +1,5 @@
 package cn.superiormc.ultimateshop.database;
 
-import com.zaxxer.hikari.HikariConfig;
-import com.zaxxer.hikari.HikariDataSource;
 import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.cache.ServerCache;
 import cn.superiormc.ultimateshop.managers.CacheManager;
@@ -11,35 +9,42 @@ import cn.superiormc.ultimateshop.objects.caches.ObjectRandomPlaceholderCache;
 import cn.superiormc.ultimateshop.objects.caches.ObjectUseTimesCache;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
 import cn.superiormc.ultimateshop.utils.TextUtil;
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 
 import java.sql.*;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 public class SQLDatabase extends AbstractDatabase {
 
-    public HikariDataSource dataSource;
+    private HikariDataSource dataSource;
 
     @Override
     public void onInit() {
         onClose();
-        UltimateShop.methodUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fTrying connect to SQL database...");
+
+        UltimateShop.methodUtil.sendMessage(
+                null,
+                TextUtil.pluginPrefix() + " §fConnecting to SQL database..."
+        );
+
         HikariConfig config = new HikariConfig();
         config.setDriverClassName(ConfigManager.configManager.getString("database.jdbc-class"));
         config.setJdbcUrl(ConfigManager.configManager.getString("database.jdbc-url"));
-        if (ConfigManager.configManager.getString("database.properties.user") != null) {
-            config.setUsername(ConfigManager.configManager.getString("database.properties.user"));
+
+        String user = ConfigManager.configManager.getString("database.properties.user");
+        if (user != null) {
+            config.setUsername(user);
             config.setPassword(ConfigManager.configManager.getString("database.properties.password"));
         }
+
+        // Hikari 推荐设置（安全）
+        config.setMaximumPoolSize(10);
+        config.setMinimumIdle(2);
+        config.setPoolName("UltimateShop-Hikari");
+
         dataSource = new HikariDataSource(config);
-        try (Connection conn = dataSource.getConnection()) {
-            if (!conn.isValid(5)) {
-                UltimateShop.methodUtil.sendMessage(null, TextUtil.pluginPrefix() + " §cFailed connect to SQL database!");
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
         createTable();
     }
 
@@ -50,11 +55,10 @@ public class SQLDatabase extends AbstractDatabase {
         }
     }
 
-    public void createTable() {
+    private void createTable() {
         try (Connection conn = dataSource.getConnection();
              Statement stmt = conn.createStatement()) {
 
-            // 主表：使用唯一索引避免重复
             stmt.execute("""
                 CREATE TABLE IF NOT EXISTS ultimateshop_useTimes (
                     playerUUID VARCHAR(36) NOT NULL,
@@ -72,17 +76,17 @@ public class SQLDatabase extends AbstractDatabase {
                     cooldownSellTime DATETIME NULL,
                     PRIMARY KEY (playerUUID, shop, product)
                 )
-                """);
+            """);
 
             if (!UltimateShop.freeVersion) {
                 stmt.execute("""
-                CREATE TABLE IF NOT EXISTS ultimateshop_randomPlaceholders (
-                    playerUUID VARCHAR(36) NOT NULL,
-                    placeholderID VARCHAR(48) NOT NULL,
-                    nowValue TEXT,
-                    refreshDoneTime DATETIME,
-                    PRIMARY KEY (playerUUID, placeholderID)
-                )
+                    CREATE TABLE IF NOT EXISTS ultimateshop_randomPlaceholders (
+                        playerUUID VARCHAR(36) NOT NULL,
+                        placeholderID VARCHAR(48) NOT NULL,
+                        nowValue TEXT,
+                        refreshDoneTime DATETIME,
+                        PRIMARY KEY (playerUUID, placeholderID)
+                    )
                 """);
             }
         } catch (SQLException e) {
@@ -92,165 +96,115 @@ public class SQLDatabase extends AbstractDatabase {
 
     @Override
     public void checkData(ServerCache cache) {
-        CompletableFuture.supplyAsync(() -> {
-            try (Connection conn = dataSource.getConnection()) {
-                if (!UltimateShop.freeVersion) {
-                    try (PreparedStatement ps = conn.prepareStatement(
-                            "SELECT placeholderID, nowValue, refreshDoneTime FROM ultimateshop_randomPlaceholders WHERE playerUUID = ?"
-                    )) {
-                        ps.setString(1, cache.server ? "Global-Server" : cache.player.getUniqueId().toString());
-                        try (ResultSet rs = ps.executeQuery()) {
-                            while (rs.next()) {
-                                String placeholderID = rs.getString("placeholderID");
-                                List<String> nowValue = CommonUtil.translateString(rs.getString("nowValue"));
-                                String refreshDoneTime = rs.getString("refreshDoneTime");
-                                if (nowValue != null && refreshDoneTime != null) {
-                                    cache.setRandomPlaceholderCache(placeholderID, refreshDoneTime, nowValue);
-                                }
-                            }
+        CompletableFuture
+                .runAsync(() -> loadData(cache), DatabaseExecutor.EXECUTOR);
+    }
+
+    private void loadData(ServerCache cache) {
+        String playerUUID = cache.server
+                ? "Global-Server"
+                : cache.player.getUniqueId().toString();
+
+        try (Connection conn = dataSource.getConnection()) {
+
+            loadUseTimes(conn, cache, playerUUID);
+
+            if (!UltimateShop.freeVersion) {
+                loadPlaceholders(conn, cache, playerUUID);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void loadUseTimes(Connection conn, ServerCache cache, String playerUUID) throws SQLException {
+        String sql = "SELECT * FROM ultimateshop_useTimes WHERE playerUUID = ?";
+
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, playerUUID);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    {
+                        try {
+                            cache.setUseTimesCache(
+                                    rs.getString("shop"),
+                                    rs.getString("product"),
+                                    rs.getInt("buyUseTimes"),
+                                    rs.getInt("totalBuyUseTimes"),
+                                    rs.getInt("sellUseTimes"),
+                                    rs.getInt("totalSellUseTimes"),
+                                    rs.getString("lastBuyTime"),
+                                    rs.getString("lastSellTime"),
+                                    rs.getString("lastResetBuyTime"),
+                                    rs.getString("lastResetSellTime"),
+                                    rs.getString("cooldownBuyTime"),
+                                    rs.getString("cooldownSellTime")
+                            );
+                        } catch (SQLException e) {
+                            throw new RuntimeException(e);
                         }
                     }
                 }
-
-                PreparedStatement ps;
-                if (cache.server) {
-                    ps = conn.prepareStatement(
-                            "SELECT * FROM ultimateshop_useTimes WHERE playerUUID = 'Global-Server'"
-                    );
-                } else {
-                    ps = conn.prepareStatement(
-                            "SELECT * FROM ultimateshop_useTimes WHERE playerUUID = ?"
-                    );
-                    ps.setString(1, cache.player.getUniqueId().toString());
-                }
-
-                try (ResultSet rs = ps.executeQuery()) {
-                    while (rs.next()) {
-                        cache.setUseTimesCache(
-                                rs.getString("shop"),
-                                rs.getString("product"),
-                                rs.getInt("buyUseTimes"),
-                                rs.getInt("totalBuyUseTimes"),
-                                rs.getInt("sellUseTimes"),
-                                rs.getInt("totalSellUseTimes"),
-                                rs.getString("lastBuyTime"),
-                                rs.getString("lastSellTime"),
-                                rs.getString("lastResetBuyTime"),
-                                rs.getString("lastResetSellTime"),
-                                rs.getString("cooldownBuyTime"),
-                                rs.getString("cooldownSellTime")
-                        );
-                    }
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
             }
-            return null;
-        });
+        }
     }
 
+    private void loadPlaceholders(Connection conn, ServerCache cache, String playerUUID) throws SQLException {
+        String sql = """
+            SELECT placeholderID, nowValue, refreshDoneTime
+            FROM ultimateshop_randomPlaceholders
+            WHERE playerUUID = ?
+        """;
+
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, playerUUID);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    String placeholderID = rs.getString("placeholderID");
+                    String nowValue = rs.getString("nowValue");
+                    String refreshDoneTime = rs.getString("refreshDoneTime");
+
+                    if (nowValue == null || refreshDoneTime == null) continue;
+
+                    cache.setRandomPlaceholderCache(
+                            placeholderID,
+                            refreshDoneTime,
+                            CommonUtil.translateString(nowValue)
+                    );
+                }
+            }
+        }
+    }
 
     @Override
     public void updateData(ServerCache cache, boolean quitServer) {
-        String playerUUID;
-        if (cache.server) {
-            playerUUID = "Global-Server";
-        } else {
-            playerUUID = cache.player.getUniqueId().toString();
+        if (quitServer) {
+            updateDataOnDisable(cache, false);
+            return;
         }
-        Map<ObjectItem, ObjectUseTimesCache> tempVal1 = cache.getUseTimesCache();
-        for (ObjectItem item : tempVal1.keySet()) {
-            ObjectUseTimesCache tempCache = tempVal1.get(item);
-            if (tempCache == null || tempCache.isEmpty()) {
-                continue;
-            }
-            CompletableFuture.runAsync(() -> {
-                String sql = """
-                        INSERT INTO ultimateshop_useTimes
-                        (playerUUID, shop, product, buyUseTimes, totalBuyUseTimes, sellUseTimes, totalSellUseTimes,
-                         lastBuyTime, lastSellTime, lastResetBuyTime, lastResetSellTime, cooldownBuyTime, cooldownSellTime)
-                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                        ON DUPLICATE KEY UPDATE
-                            buyUseTimes = VALUES(buyUseTimes),
-                            totalBuyUseTimes = VALUES(totalBuyUseTimes),
-                            sellUseTimes = VALUES(sellUseTimes),
-                            totalSellUseTimes = VALUES(totalSellUseTimes),
-                            lastBuyTime = VALUES(lastBuyTime),
-                            lastSellTime = VALUES(lastSellTime),
-                            lastResetBuyTime = VALUES(lastResetBuyTime),
-                            lastResetSellTime = VALUES(lastResetSellTime),
-                            cooldownBuyTime = VALUES(cooldownBuyTime),
-                            cooldownSellTime = VALUES(cooldownSellTime)
-                        """;
 
-                try (Connection conn = dataSource.getConnection();
-                     PreparedStatement ps = conn.prepareStatement(sql)) {
-                    ps.setString(1, playerUUID);
-                    ps.setString(2, item.getShop());
-                    ps.setString(3, item.getProduct());
-                    ps.setInt(4, tempCache.getBuyUseTimes());
-                    ps.setInt(5, tempCache.getTotalBuyUseTimes());
-                    ps.setInt(6, tempCache.getSellUseTimes());
-                    ps.setInt(7, tempCache.getTotalSellUseTimes());
-                    ps.setString(8, tempCache.getLastBuyTime());
-                    ps.setString(9, tempCache.getLastSellTime());
-                    ps.setString(10, tempCache.getLastResetBuyTime());
-                    ps.setString(11, tempCache.getLastResetSellTime());
-                    ps.setString(12, tempCache.getCooldownBuyTime());
-                    ps.setString(13, tempCache.getCooldownSellTime());
-                    ps.executeUpdate();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            });
-        }
+        CompletableFuture.runAsync(
+                () -> saveUseTimes(cache),
+                DatabaseExecutor.EXECUTOR
+        );
 
         if (!UltimateShop.freeVersion) {
-            for (ObjectRandomPlaceholderCache phCache : cache.getRandomPlaceholderCache().values()) {
-                if ("ONCE".equals(phCache.getPlaceholder().getMode())) {
-                    continue;
-                }
-
-                String sql = """
-                      INSERT INTO ultimateshop_randomPlaceholders (playerUUID, placeholderID, nowValue, refreshDoneTime)
-                      VALUES (?, ?, ?, ?)
-                      ON DUPLICATE KEY UPDATE
-                          nowValue = VALUES(nowValue),
-                          refreshDoneTime = VALUES(refreshDoneTime)
-                      """;
-                try (Connection conn = dataSource.getConnection();
-                     PreparedStatement ps = conn.prepareStatement(sql)) {
-                    ps.setString(1, playerUUID);  // 新增 playerUUID
-                    ps.setString(2, phCache.getPlaceholder().getID());
-                    ps.setString(3, CommonUtil.translateStringList(phCache.getNowValue()));
-                    ps.setString(4, CommonUtil.timeToString(phCache.getRefreshDoneTime()));
-                    ps.executeUpdate();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-
-        if (quitServer) {
-            CacheManager.cacheManager.removePlayerCache(cache.player);
+            CompletableFuture.runAsync(
+                    () -> savePlaceholders(cache),
+                    DatabaseExecutor.EXECUTOR
+            );
         }
     }
 
-    @Override
-    public void updateDataOnDisable(ServerCache cache, boolean disable) {
-        String playerUUID;
-        if (cache.server) {
-            playerUUID = "Global-Server";
-        } else {
-            playerUUID = cache.player.getUniqueId().toString();
-        }
-        Map<ObjectItem, ObjectUseTimesCache> tempVal1 = cache.getUseTimesCache();
-        for (ObjectItem item : tempVal1.keySet()) {
-            ObjectUseTimesCache tempCache = tempVal1.get(item);
-            if (tempCache == null || tempCache.isEmpty()) {
-                continue;
-            }
-            String sql = """
+    private void saveUseTimes(ServerCache cache) {
+        String playerUUID = cache.server
+                ? "Global-Server"
+                : cache.player.getUniqueId().toString();
+
+        String sql = """
             INSERT INTO ultimateshop_useTimes
             (playerUUID, shop, product, buyUseTimes, totalBuyUseTimes, sellUseTimes, totalSellUseTimes,
              lastBuyTime, lastSellTime, lastResetBuyTime, lastResetSellTime, cooldownBuyTime, cooldownSellTime)
@@ -266,56 +220,79 @@ public class SQLDatabase extends AbstractDatabase {
                 lastResetSellTime = VALUES(lastResetSellTime),
                 cooldownBuyTime = VALUES(cooldownBuyTime),
                 cooldownSellTime = VALUES(cooldownSellTime)
-            """;
+        """;
 
-            try (Connection conn = dataSource.getConnection();
-                 PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            for (Map.Entry<ObjectItem, ObjectUseTimesCache> e : cache.getUseTimesCache().entrySet()) {
+                ObjectUseTimesCache c = e.getValue();
+                if (c == null || c.isEmpty()) continue;
+
                 ps.setString(1, playerUUID);
-                ps.setString(2, item.getShop());
-                ps.setString(3, item.getProduct());
-                ps.setInt(4, tempCache.getBuyUseTimes());
-                ps.setInt(5, tempCache.getTotalBuyUseTimes());
-                ps.setInt(6, tempCache.getSellUseTimes());
-                ps.setInt(7, tempCache.getTotalSellUseTimes());
-                ps.setString(8, tempCache.getLastBuyTime());
-                ps.setString(9, tempCache.getLastSellTime());
-                ps.setString(10, tempCache.getLastResetBuyTime());
-                ps.setString(11, tempCache.getLastResetSellTime());
-                ps.setString(12, tempCache.getCooldownBuyTime());
-                ps.setString(13, tempCache.getCooldownSellTime());
-                ps.executeUpdate();
-            } catch (SQLException e) {
-                e.printStackTrace();
+                ps.setString(2, e.getKey().getShop());
+                ps.setString(3, e.getKey().getProduct());
+                ps.setInt(4, c.getBuyUseTimes());
+                ps.setInt(5, c.getTotalBuyUseTimes());
+                ps.setInt(6, c.getSellUseTimes());
+                ps.setInt(7, c.getTotalSellUseTimes());
+                ps.setString(8, c.getLastBuyTime());
+                ps.setString(9, c.getLastSellTime());
+                ps.setString(10, c.getLastResetBuyTime());
+                ps.setString(11, c.getLastResetSellTime());
+                ps.setString(12, c.getCooldownBuyTime());
+                ps.setString(13, c.getCooldownSellTime());
+
+                ps.addBatch();
             }
+
+            ps.executeBatch();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
+    }
+
+    private void savePlaceholders(ServerCache cache) {
+        String playerUUID = cache.server
+                ? "Global-Server"
+                : cache.player.getUniqueId().toString();
+
+        String sql = """
+            INSERT INTO ultimateshop_randomPlaceholders
+            (playerUUID, placeholderID, nowValue, refreshDoneTime)
+            VALUES (?, ?, ?, ?)
+            ON DUPLICATE KEY UPDATE
+                nowValue = VALUES(nowValue),
+                refreshDoneTime = VALUES(refreshDoneTime)
+        """;
+
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            for (ObjectRandomPlaceholderCache ph : cache.getRandomPlaceholderCache().values()) {
+                if ("ONCE".equals(ph.getPlaceholder().getMode())) continue;
+
+                ps.setString(1, playerUUID);
+                ps.setString(2, ph.getPlaceholder().getID());
+                ps.setString(3, CommonUtil.translateStringList(ph.getNowValue()));
+                ps.setString(4, CommonUtil.timeToString(ph.getRefreshDoneTime()));
+                ps.addBatch();
+            }
+
+            ps.executeBatch();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void updateDataOnDisable(ServerCache cache, boolean disable) {
+        saveUseTimes(cache);
 
         if (cache.server && !UltimateShop.freeVersion) {
-            for (ObjectRandomPlaceholderCache phCache : cache.getRandomPlaceholderCache().values()) {
-                if ("ONCE".equals(phCache.getPlaceholder().getMode())) {
-                    continue;
-                }
-
-                String sql = """
-                      INSERT INTO ultimateshop_randomPlaceholders (playerUUID, placeholderID, nowValue, refreshDoneTime)
-                      VALUES (?, ?, ?, ?)
-                      ON DUPLICATE KEY UPDATE
-                          nowValue = VALUES(nowValue),
-                          refreshDoneTime = VALUES(refreshDoneTime)
-                      """;
-                try (Connection conn = dataSource.getConnection();
-                     PreparedStatement ps = conn.prepareStatement(sql)) {
-                    ps.setString(1, playerUUID);  // 新增 playerUUID
-                    ps.setString(2, phCache.getPlaceholder().getID());
-                    ps.setString(3, CommonUtil.translateStringList(phCache.getNowValue()));
-                    ps.setString(4, CommonUtil.timeToString(phCache.getRefreshDoneTime()));
-                    ps.executeUpdate();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
+            savePlaceholders(cache);
         }
 
         CacheManager.cacheManager.removePlayerCache(cache.player);
     }
-
 }

@@ -17,7 +17,7 @@ public class CacheListener implements Listener {
         SchedulerUtil.runTaskLater(() -> {
             CacheManager.cacheManager.addPlayerCache(event.getPlayer());
             if (ConfigManager.configManager.getBoolean("bungeecord-sync.enabled") && ServerCache.serverCache != null) {
-                ServerCache.serverCache.initServerCache();
+                ServerCache.serverCache.initCache();
             }
         }, ConfigManager.configManager.getLong("cache.load-delay", 7L));
     }
@@ -26,7 +26,7 @@ public class CacheListener implements Listener {
     public void onExit(PlayerQuitEvent event) {
         CacheManager.cacheManager.savePlayerCache(event.getPlayer());
         if (ConfigManager.configManager.getBoolean("bungeecord-sync.enabled") && ServerCache.serverCache != null) {
-            ServerCache.serverCache.shutServerCache(false);
+            ServerCache.serverCache.shutCache(false);
         }
         AbstractGUI.playerList.remove(event.getPlayer());
     }

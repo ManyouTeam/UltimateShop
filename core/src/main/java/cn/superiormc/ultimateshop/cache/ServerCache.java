@@ -9,6 +9,7 @@ import cn.superiormc.ultimateshop.objects.caches.ObjectRandomPlaceholderCache;
 import cn.superiormc.ultimateshop.objects.caches.ObjectUseTimesCache;
 import cn.superiormc.ultimateshop.objects.items.subobjects.ObjectRandomPlaceholder;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
+import cn.superiormc.ultimateshop.utils.SchedulerUtil;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
@@ -30,19 +31,20 @@ public class ServerCache {
     public ServerCache() {
         serverCache = this;
         this.server = true;
-        initServerCache();
+        initCache();
     }
 
     public ServerCache(Player player) {
         this.server = false;
         this.player = player;
+        initCache();
     }
 
-    public void initServerCache() {
+    public void initCache() {
         CacheManager.cacheManager.database.checkData(this);
     }
 
-    public void shutServerCache(boolean quitServer) {
+    public void shutCache(boolean quitServer) {
         CacheManager.cacheManager.database.updateData(this, quitServer);
         if (quitServer && ConfigManager.configManager.getBoolean("use-times.auto-reset-mode")) {
             for (ObjectUseTimesCache cache : useTimesCache.values()) {
@@ -51,7 +53,7 @@ public class ServerCache {
         }
     }
 
-    public void shutServerCacheOnDisable(boolean disable) {
+    public void shutCacheOnDisable(boolean disable) {
         CacheManager.cacheManager.database.updateDataOnDisable(this, disable);
         if (disable && ConfigManager.configManager.getBoolean("use-times.auto-reset-mode")) {
             for (ObjectUseTimesCache cache : useTimesCache.values()) {
