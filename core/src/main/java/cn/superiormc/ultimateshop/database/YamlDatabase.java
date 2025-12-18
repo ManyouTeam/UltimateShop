@@ -97,12 +97,12 @@ public class YamlDatabase extends AbstractDatabase {
 
     @Override
     public void updateData(ServerCache cache, boolean quitServer) {
-        if (quitServer) {
-            updateDataOnDisable(cache, false);
-            return;
-        }
-
-        CompletableFuture.runAsync(() -> saveData(cache), DatabaseExecutor.EXECUTOR);
+        CompletableFuture.runAsync(() -> {
+            saveData(cache);
+            if (quitServer) {
+                CacheManager.cacheManager.removePlayerCache(cache.player);
+            }
+        }, DatabaseExecutor.EXECUTOR);
     }
 
     private void saveData(ServerCache cache) {

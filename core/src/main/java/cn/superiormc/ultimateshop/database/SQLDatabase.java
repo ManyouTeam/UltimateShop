@@ -181,22 +181,18 @@ public class SQLDatabase extends AbstractDatabase {
 
     @Override
     public void updateData(ServerCache cache, boolean quitServer) {
-        if (quitServer) {
-            updateDataOnDisable(cache, false);
-            return;
-        }
-
         CompletableFuture.runAsync(
-                () -> saveUseTimes(cache),
+                () -> {
+                    saveUseTimes(cache);
+                    if (!UltimateShop.freeVersion) {
+                        savePlaceholders(cache);
+                    }
+                    if (quitServer) {
+                        CacheManager.cacheManager.removePlayerCache(cache.player);
+                    }
+                },
                 DatabaseExecutor.EXECUTOR
         );
-
-        if (!UltimateShop.freeVersion) {
-            CompletableFuture.runAsync(
-                    () -> savePlaceholders(cache),
-                    DatabaseExecutor.EXECUTOR
-            );
-        }
     }
 
     private void saveUseTimes(ServerCache cache) {
@@ -289,7 +285,7 @@ public class SQLDatabase extends AbstractDatabase {
     public void updateDataOnDisable(ServerCache cache, boolean disable) {
         saveUseTimes(cache);
 
-        if (cache.server && !UltimateShop.freeVersion) {
+        if (!UltimateShop.freeVersion) {
             savePlaceholders(cache);
         }
 
