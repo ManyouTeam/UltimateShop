@@ -75,11 +75,11 @@ public class FormShopGUI extends FormGUI {
         for (ObjectItem tempVal5 : shop.getProductList()) {
             ObjectUseTimesCache tempVal3 = tempVal1.getUseTimesCache().get(tempVal5);
             if (tempVal3 != null) {
-                tempVal3.initAutoResetTask();
+                tempVal3.refreshTimes();
             }
             ObjectUseTimesCache tempVal4 = tempVal2.getUseTimesCache().get(tempVal5);
             if (tempVal4 != null) {
-                tempVal4.initAutoResetTask();
+                tempVal4.refreshTimes();
             }
         }
         menuButtons = shop.getShopMenuObject().getMenu(MenuSender.of(player));

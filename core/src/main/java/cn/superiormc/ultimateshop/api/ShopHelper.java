@@ -34,20 +34,28 @@ public class ShopHelper {
         return tempVal1.getProduct(product);
     }
 
-    public static int getBuyUseTimes(ObjectItem item, Player player) {
+    public static ObjectUseTimesCache getPlayerUseTimesCache(ObjectItem item, Player player) {
         ObjectUseTimesCache useTimesCache = CacheManager.cacheManager.getPlayerCache(player).getUseTimesCache().get(item);
         if (useTimesCache == null) {
             useTimesCache = CacheManager.cacheManager.getPlayerCache(player).createUseTimesCache(item);
         }
-        return useTimesCache.getBuyUseTimes();
+        return useTimesCache;
+    }
+
+    public static ObjectUseTimesCache getServerUseTimesCache(ObjectItem item) {
+        ObjectUseTimesCache useTimesCache = CacheManager.cacheManager.serverCache.getUseTimesCache().get(item);
+        if (useTimesCache == null) {
+            useTimesCache = CacheManager.cacheManager.serverCache.createUseTimesCache(item);
+        }
+        return useTimesCache;
+    }
+
+    public static int getBuyUseTimes(ObjectItem item, Player player) {
+        return getPlayerUseTimesCache(item, player).getBuyUseTimes();
     }
 
     public static int getSellUseTimes(ObjectItem item, Player player) {
-        ObjectUseTimesCache useTimesCache = CacheManager.cacheManager.getPlayerCache(player).getUseTimesCache().get(item);
-        if (useTimesCache == null) {
-            useTimesCache = CacheManager.cacheManager.getPlayerCache(player).createUseTimesCache(item);
-        }
-        return useTimesCache.getSellUseTimes();
+        return getPlayerUseTimesCache(item, player).getSellUseTimes();
     }
 
     @Nullable

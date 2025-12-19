@@ -9,7 +9,6 @@ import cn.superiormc.ultimateshop.objects.caches.ObjectRandomPlaceholderCache;
 import cn.superiormc.ultimateshop.objects.caches.ObjectUseTimesCache;
 import cn.superiormc.ultimateshop.objects.items.subobjects.ObjectRandomPlaceholder;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
-import cn.superiormc.ultimateshop.utils.SchedulerUtil;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
@@ -48,7 +47,7 @@ public class ServerCache {
         CacheManager.cacheManager.database.updateData(this, quitServer);
         if (quitServer && ConfigManager.configManager.getBoolean("use-times.auto-reset-mode")) {
             for (ObjectUseTimesCache cache : useTimesCache.values()) {
-                cache.cancelAutoResetTask();
+                cache.cancelResetTime();
             }
         }
     }
@@ -57,14 +56,27 @@ public class ServerCache {
         CacheManager.cacheManager.database.updateDataOnDisable(this, disable);
         if (disable && ConfigManager.configManager.getBoolean("use-times.auto-reset-mode")) {
             for (ObjectUseTimesCache cache : useTimesCache.values()) {
-                cache.cancelAutoResetTask();
+                cache.cancelResetTime();
             }
         }
     }
 
     public ObjectUseTimesCache createUseTimesCache(ObjectItem product) {
         if (product == null) {
-            return null;
+            ErrorManager.errorManager.sendErrorMessage("§cThe product is null.");
+            return new ObjectUseTimesCache(this,
+                    0,
+                    0,
+                    0,
+                    0,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    product,
+                    true);
         }
         int defaultBuyTimes = 0;
         int defaultSellTimes = 0;

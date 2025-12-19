@@ -23,8 +23,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.PlayerInventory;
 
-import java.time.LocalDateTime;
-
 public class BuyProductMethod {
 
     public static ProductTradeStatus startBuy(ObjectItem item, Player player, boolean forceDisplayMessage) {
@@ -80,7 +78,7 @@ public class BuyProductMethod {
         ObjectUseTimesCache tempVal9 = tempVal3.getUseTimesCache().get(item);
         ObjectUseTimesCache tempVal8 = tempVal11.getUseTimesCache().get(item);
         if (tempVal9 != null) {
-            tempVal9.initAutoResetTask();
+            tempVal9.refreshTimes();
             playerUseTimes = tempVal9.getBuyUseTimes();
         } else {
             tempVal9 = tempVal3.createUseTimesCache(item);
@@ -106,7 +104,7 @@ public class BuyProductMethod {
         }
         ObjectPrices tempVal5 = item.getBuyPrice();
         if (tempVal8 != null) {
-            tempVal8.initAutoResetTask();
+            tempVal8.refreshTimes();
             serverUseTimes = tempVal8.getBuyUseTimes();
         } else {
             tempVal8 = tempVal11.createUseTimesCache(item);

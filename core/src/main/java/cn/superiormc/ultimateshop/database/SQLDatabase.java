@@ -2,6 +2,7 @@ package cn.superiormc.ultimateshop.database;
 
 import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.cache.ServerCache;
+import cn.superiormc.ultimateshop.database.sql.DatabaseDialect;
 import cn.superiormc.ultimateshop.managers.CacheManager;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
@@ -12,13 +13,27 @@ import cn.superiormc.ultimateshop.utils.TextUtil;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
+import java.io.InputStream;
+import java.lang.reflect.Method;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.sql.*;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import cn.superiormc.ultimateshop.database.sql.*;
+
+import java.sql.*;
+import java.util.List;
 
 public class SQLDatabase extends AbstractDatabase {
 
     private HikariDataSource dataSource;
+
+    private DatabaseDialect dialect;
 
     @Override
     public void onInit() {
@@ -29,23 +44,29 @@ public class SQLDatabase extends AbstractDatabase {
                 TextUtil.pluginPrefix() + " §fConnecting to SQL database..."
         );
 
+        String jdbcUrl = ConfigManager.configManager.getString("database.jdbc-url");
+        initDialect(jdbcUrl);
+        dialect.needExtraDownload(jdbcUrl);
+
         HikariConfig config = new HikariConfig();
-        config.setDriverClassName(ConfigManager.configManager.getString("database.jdbc-class"));
-        config.setJdbcUrl(ConfigManager.configManager.getString("database.jdbc-url"));
+        //config.setDriverClassName(ConfigManager.configManager.getString("database.jdbc-class"));
+        config.setJdbcUrl(jdbcUrl);
 
         String user = ConfigManager.configManager.getString("database.properties.user");
         if (user != null) {
             config.setUsername(user);
-            config.setPassword(ConfigManager.configManager.getString("database.properties.password"));
+            config.setPassword(
+                    ConfigManager.configManager.getString("database.properties.password")
+            );
         }
 
-        // Hikari 推荐设置（安全）
-        config.setMaximumPoolSize(10);
-        config.setMinimumIdle(2);
         config.setPoolName("UltimateShop-Hikari");
+        config.setMaximumPoolSize(dialect.maxPoolSize());
+        config.setMinimumIdle(dialect.minIdle());
 
         dataSource = new HikariDataSource(config);
-        createTable();
+
+        createTables();
     }
 
     @Override
@@ -55,39 +76,32 @@ public class SQLDatabase extends AbstractDatabase {
         }
     }
 
-    private void createTable() {
+    /* =========================
+       Dialect
+     ========================= */
+
+    private void initDialect(String jdbcUrl) {
+        List<DatabaseDialect> dialects = List.of(
+                new MySQLDialect(),
+                new H2Dialect(),
+                new PostgreSQLDialect(),
+                new SQLiteDialect()
+        );
+
+        this.dialect = dialects.stream()
+                .filter(d -> d.matches(jdbcUrl))
+                .findFirst()
+                .orElse(new MySQLDialect());
+    }
+
+    private void createTables() {
         try (Connection conn = dataSource.getConnection();
              Statement stmt = conn.createStatement()) {
 
-            stmt.execute("""
-                CREATE TABLE IF NOT EXISTS ultimateshop_useTimes (
-                    playerUUID VARCHAR(36) NOT NULL,
-                    shop VARCHAR(48) NOT NULL,
-                    product VARCHAR(48) NOT NULL,
-                    buyUseTimes INT DEFAULT 0,
-                    totalBuyUseTimes INT DEFAULT 0,
-                    sellUseTimes INT DEFAULT 0,
-                    totalSellUseTimes INT DEFAULT 0,
-                    lastBuyTime DATETIME NULL,
-                    lastSellTime DATETIME NULL,
-                    lastResetBuyTime DATETIME NULL,
-                    lastResetSellTime DATETIME NULL,
-                    cooldownBuyTime DATETIME NULL,
-                    cooldownSellTime DATETIME NULL,
-                    PRIMARY KEY (playerUUID, shop, product)
-                )
-            """);
+            stmt.execute(dialect.createUseTimesTable());
 
             if (!UltimateShop.freeVersion) {
-                stmt.execute("""
-                    CREATE TABLE IF NOT EXISTS ultimateshop_randomPlaceholders (
-                        playerUUID VARCHAR(36) NOT NULL,
-                        placeholderID VARCHAR(48) NOT NULL,
-                        nowValue TEXT,
-                        refreshDoneTime DATETIME,
-                        PRIMARY KEY (playerUUID, placeholderID)
-                    )
-                """);
+                stmt.execute(dialect.createRandomPlaceholderTable());
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -96,8 +110,10 @@ public class SQLDatabase extends AbstractDatabase {
 
     @Override
     public void checkData(ServerCache cache) {
-        CompletableFuture
-                .runAsync(() -> loadData(cache), DatabaseExecutor.EXECUTOR);
+        CompletableFuture.runAsync(
+                () -> loadData(cache),
+                DatabaseExecutor.EXECUTOR
+        );
     }
 
     private void loadData(ServerCache cache) {
@@ -118,7 +134,9 @@ public class SQLDatabase extends AbstractDatabase {
         }
     }
 
-    private void loadUseTimes(Connection conn, ServerCache cache, String playerUUID) throws SQLException {
+    private void loadUseTimes(Connection conn, ServerCache cache, String playerUUID)
+            throws SQLException {
+
         String sql = "SELECT * FROM ultimateshop_useTimes WHERE playerUUID = ?";
 
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -126,51 +144,45 @@ public class SQLDatabase extends AbstractDatabase {
 
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
-                    {
-                        try {
-                            cache.setUseTimesCache(
-                                    rs.getString("shop"),
-                                    rs.getString("product"),
-                                    rs.getInt("buyUseTimes"),
-                                    rs.getInt("totalBuyUseTimes"),
-                                    rs.getInt("sellUseTimes"),
-                                    rs.getInt("totalSellUseTimes"),
-                                    rs.getString("lastBuyTime"),
-                                    rs.getString("lastSellTime"),
-                                    rs.getString("lastResetBuyTime"),
-                                    rs.getString("lastResetSellTime"),
-                                    rs.getString("cooldownBuyTime"),
-                                    rs.getString("cooldownSellTime")
-                            );
-                        } catch (SQLException e) {
-                            throw new RuntimeException(e);
-                        }
-                    }
+                    cache.setUseTimesCache(
+                            rs.getString("shop"),
+                            rs.getString("product"),
+                            rs.getInt("buyUseTimes"),
+                            rs.getInt("totalBuyUseTimes"),
+                            rs.getInt("sellUseTimes"),
+                            rs.getInt("totalSellUseTimes"),
+                            rs.getString("lastBuyTime"),
+                            rs.getString("lastSellTime"),
+                            rs.getString("lastResetBuyTime"),
+                            rs.getString("lastResetSellTime"),
+                            rs.getString("cooldownBuyTime"),
+                            rs.getString("cooldownSellTime")
+                    );
                 }
             }
         }
     }
 
-    private void loadPlaceholders(Connection conn, ServerCache cache, String playerUUID) throws SQLException {
+    private void loadPlaceholders(Connection conn, ServerCache cache, String playerUUID)
+            throws SQLException {
+
         String sql = """
-            SELECT placeholderID, nowValue, refreshDoneTime
-            FROM ultimateshop_randomPlaceholders
-            WHERE playerUUID = ?
-        """;
+                SELECT placeholderID, nowValue, refreshDoneTime
+                FROM ultimateshop_randomPlaceholders
+                WHERE playerUUID = ?
+                """;
 
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, playerUUID);
 
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
-                    String placeholderID = rs.getString("placeholderID");
                     String nowValue = rs.getString("nowValue");
                     String refreshDoneTime = rs.getString("refreshDoneTime");
-
                     if (nowValue == null || refreshDoneTime == null) continue;
 
                     cache.setRandomPlaceholderCache(
-                            placeholderID,
+                            rs.getString("placeholderID"),
                             refreshDoneTime,
                             CommonUtil.translateString(nowValue)
                     );
@@ -181,18 +193,15 @@ public class SQLDatabase extends AbstractDatabase {
 
     @Override
     public void updateData(ServerCache cache, boolean quitServer) {
-        CompletableFuture.runAsync(
-                () -> {
-                    saveUseTimes(cache);
-                    if (!UltimateShop.freeVersion) {
-                        savePlaceholders(cache);
-                    }
-                    if (quitServer) {
-                        CacheManager.cacheManager.removePlayerCache(cache.player);
-                    }
-                },
-                DatabaseExecutor.EXECUTOR
-        );
+        CompletableFuture.runAsync(() -> {
+            saveUseTimes(cache);
+            if (!UltimateShop.freeVersion) {
+                savePlaceholders(cache);
+            }
+            if (quitServer) {
+                CacheManager.cacheManager.removePlayerCache(cache.player);
+            }
+        }, DatabaseExecutor.EXECUTOR);
     }
 
     private void saveUseTimes(ServerCache cache) {
@@ -200,28 +209,14 @@ public class SQLDatabase extends AbstractDatabase {
                 ? "Global-Server"
                 : cache.player.getUniqueId().toString();
 
-        String sql = """
-            INSERT INTO ultimateshop_useTimes
-            (playerUUID, shop, product, buyUseTimes, totalBuyUseTimes, sellUseTimes, totalSellUseTimes,
-             lastBuyTime, lastSellTime, lastResetBuyTime, lastResetSellTime, cooldownBuyTime, cooldownSellTime)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            ON DUPLICATE KEY UPDATE
-                buyUseTimes = VALUES(buyUseTimes),
-                totalBuyUseTimes = VALUES(totalBuyUseTimes),
-                sellUseTimes = VALUES(sellUseTimes),
-                totalSellUseTimes = VALUES(totalSellUseTimes),
-                lastBuyTime = VALUES(lastBuyTime),
-                lastSellTime = VALUES(lastSellTime),
-                lastResetBuyTime = VALUES(lastResetBuyTime),
-                lastResetSellTime = VALUES(lastResetSellTime),
-                cooldownBuyTime = VALUES(cooldownBuyTime),
-                cooldownSellTime = VALUES(cooldownSellTime)
-        """;
+        String sql = dialect.upsertUseTimes();
 
         try (Connection conn = dataSource.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
-            for (Map.Entry<ObjectItem, ObjectUseTimesCache> e : cache.getUseTimesCache().entrySet()) {
+            for (Map.Entry<ObjectItem, ObjectUseTimesCache> e
+                    : cache.getUseTimesCache().entrySet()) {
+
                 ObjectUseTimesCache c = e.getValue();
                 if (c == null || c.isEmpty()) continue;
 
@@ -239,10 +234,17 @@ public class SQLDatabase extends AbstractDatabase {
                 ps.setString(12, c.getCooldownBuyTime());
                 ps.setString(13, c.getCooldownSellTime());
 
-                ps.addBatch();
+                if (dialect.supportBatch()) {
+                    ps.addBatch();
+                } else {
+                    ps.executeUpdate();
+                }
             }
 
-            ps.executeBatch();
+            if (dialect.supportBatch()) {
+                ps.executeBatch();
+            }
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -253,29 +255,34 @@ public class SQLDatabase extends AbstractDatabase {
                 ? "Global-Server"
                 : cache.player.getUniqueId().toString();
 
-        String sql = """
-            INSERT INTO ultimateshop_randomPlaceholders
-            (playerUUID, placeholderID, nowValue, refreshDoneTime)
-            VALUES (?, ?, ?, ?)
-            ON DUPLICATE KEY UPDATE
-                nowValue = VALUES(nowValue),
-                refreshDoneTime = VALUES(refreshDoneTime)
-        """;
+        String sql = dialect.upsertRandomPlaceholder();
 
         try (Connection conn = dataSource.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
-            for (ObjectRandomPlaceholderCache ph : cache.getRandomPlaceholderCache().values()) {
+            for (ObjectRandomPlaceholderCache ph
+                    : cache.getRandomPlaceholderCache().values()) {
+
                 if ("ONCE".equals(ph.getPlaceholder().getMode())) continue;
 
                 ps.setString(1, playerUUID);
                 ps.setString(2, ph.getPlaceholder().getID());
-                ps.setString(3, CommonUtil.translateStringList(ph.getNowValue()));
-                ps.setString(4, CommonUtil.timeToString(ph.getRefreshDoneTime()));
-                ps.addBatch();
+                ps.setString(3,
+                        CommonUtil.translateStringList(ph.getNowValue()));
+                ps.setString(4,
+                        CommonUtil.timeToString(ph.getRefreshDoneTime()));
+
+                if (dialect.supportBatch()) {
+                    ps.addBatch();
+                } else {
+                    ps.executeUpdate();
+                }
             }
 
-            ps.executeBatch();
+            if (dialect.supportBatch()) {
+                ps.executeBatch();
+            }
+
         } catch (SQLException e) {
             e.printStackTrace();
         }

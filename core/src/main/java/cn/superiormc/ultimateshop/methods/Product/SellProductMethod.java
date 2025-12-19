@@ -25,8 +25,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.PlayerInventory;
 
-import java.time.LocalDateTime;
-
 public class SellProductMethod {
 
     public static ProductTradeStatus startSell(ObjectItem item, Player player, boolean forceDisplayMessage) {
@@ -95,7 +93,7 @@ public class SellProductMethod {
         ObjectUseTimesCache tempVal8 = tempVal11.getUseTimesCache().get(item);
         if (tempVal9 != null) {
             // 重置
-            tempVal9.initAutoResetTask();
+            tempVal9.refreshTimes();
             playerUseTimes = tempVal9.getSellUseTimes();
         } else {
             tempVal9 = tempVal3.createUseTimesCache(item);
@@ -145,7 +143,7 @@ public class SellProductMethod {
             return ProductTradeStatus.PLAYER_MAX;
         }
         if (tempVal8 != null) {
-            tempVal8.initAutoResetTask();
+            tempVal8.refreshTimes();
             serverUseTimes = tempVal8.getSellUseTimes();
         } else {
             tempVal8 = tempVal11.createUseTimesCache(item);

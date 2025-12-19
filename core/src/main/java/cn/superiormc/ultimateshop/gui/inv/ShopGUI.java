@@ -18,7 +18,6 @@ import cn.superiormc.ultimateshop.utils.CommonUtil;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.Objects;
 
@@ -58,11 +57,11 @@ public class ShopGUI extends InvGUI {
         for (ObjectItem tempVal5 : shop.getProductListNotHidden(player)) {
             ObjectUseTimesCache tempVal3 = tempVal1.getUseTimesCache().get(tempVal5);
             if (tempVal3 != null) {
-                tempVal3.initAutoResetTask();
+                tempVal3.refreshTimes();
             }
             ObjectUseTimesCache tempVal4 = tempVal2.getUseTimesCache().get(tempVal5);
             if (tempVal4 != null) {
-                tempVal4.initAutoResetTask();
+                tempVal4.refreshTimes();
             }
         }
         menuButtons = shopMenu.getMenu(MenuSender.of(player));
