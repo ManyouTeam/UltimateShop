@@ -76,20 +76,20 @@ public class ModifyDisplayItem {
 
         List<String> resultLore = new ArrayList<>();
 
-        ObjectUseTimesCache playerCache =
-                CacheManager.cacheManager.getPlayerCache(player).getUseTimesCache().get(item);
+        ObjectUseTimesCache ObjectCache =
+                CacheManager.cacheManager.getObjectCache(player).getUseTimesCache().get(item);
         ObjectUseTimesCache serverCache =
                 CacheManager.cacheManager.serverCache.getUseTimesCache().get(item);
 
-        if (playerCache == null) {
-            playerCache = CacheManager.cacheManager.getPlayerCache(player).createUseTimesCache(item);
+        if (ObjectCache == null) {
+            ObjectCache = CacheManager.cacheManager.getObjectCache(player).createUseTimesCache(item);
         }
         if (serverCache == null) {
             serverCache = CacheManager.cacheManager.serverCache.createUseTimesCache(item);
         }
 
         Map<Character, Boolean> prefixConditions =
-                buildPrefixMap(player, item, clickType, buyMore, bedrock, playerCache, serverCache);
+                buildPrefixMap(player, item, clickType, buyMore, bedrock, ObjectCache, serverCache);
 
         for (String rawLine : item.getAddLore()) {
 
@@ -123,12 +123,12 @@ public class ModifyDisplayItem {
                     "buy-price",
                     ObjectPrices.getDisplayNameInLine(player, multi,
                             item.getBuyPrice().take(player.getInventory(), player,
-                                    playerCache.getBuyUseTimes(), multi, true).getResultMap(),
+                                    ObjectCache.getBuyUseTimes(), multi, true).getResultMap(),
                             item.getBuyPrice().getMode(), false),
 
                     "sell-price",
                     ObjectPrices.getDisplayNameInLine(player, multi,
-                            item.getSellPrice().give(player, playerCache.getBuyUseTimes(), multi).getResultMap(),
+                            item.getSellPrice().give(player, ObjectCache.getBuyUseTimes(), multi).getResultMap(),
                             item.getSellPrice().getMode(), false),
 
                     "buy-limit-player", String.valueOf(item.getPlayerBuyLimit(player)),
@@ -136,18 +136,18 @@ public class ModifyDisplayItem {
                     "buy-limit-server", String.valueOf(item.getServerBuyLimit(player)),
                     "sell-limit-server", String.valueOf(item.getServerSellLimit(player)),
 
-                    "buy-total-player", String.valueOf(playerCache.getTotalBuyUseTimes()),
-                    "sell-total-player", String.valueOf(playerCache.getTotalSellUseTimes()),
+                    "buy-total-player", String.valueOf(ObjectCache.getTotalBuyUseTimes()),
+                    "sell-total-player", String.valueOf(ObjectCache.getTotalSellUseTimes()),
                     "buy-total-server", String.valueOf(serverCache.getTotalBuyUseTimes()),
                     "sell-total-server", String.valueOf(serverCache.getTotalSellUseTimes()),
 
-                    "buy-times-player", String.valueOf(playerCache.getBuyUseTimes()),
-                    "sell-times-player", String.valueOf(playerCache.getSellUseTimes()),
+                    "buy-times-player", String.valueOf(ObjectCache.getBuyUseTimes()),
+                    "sell-times-player", String.valueOf(ObjectCache.getSellUseTimes()),
 
-                    "buy-refresh-player", playerCache.getBuyRefreshTimeDisplayName(),
-                    "sell-refresh-player", playerCache.getSellRefreshTimeDisplayName(),
-                    "buy-next-player", playerCache.getBuyRefreshTimeNextName(),
-                    "sell-next-player", playerCache.getSellRefreshTimeNextName(),
+                    "buy-refresh-player", ObjectCache.getBuyRefreshTimeDisplayName(),
+                    "sell-refresh-player", ObjectCache.getSellRefreshTimeDisplayName(),
+                    "buy-next-player", ObjectCache.getBuyRefreshTimeNextName(),
+                    "sell-next-player", ObjectCache.getSellRefreshTimeNextName(),
 
                     "buy-times-server", String.valueOf(serverCache.getBuyUseTimes()),
                     "sell-times-server", String.valueOf(serverCache.getSellUseTimes()),
@@ -157,13 +157,13 @@ public class ModifyDisplayItem {
                     "buy-next-server", serverCache.getBuyRefreshTimeNextName(),
                     "sell-next-server", serverCache.getSellRefreshTimeNextName(),
 
-                    "last-buy-player", playerCache.getBuyLastTimeName(),
-                    "last-sell-player", playerCache.getSellLastTimeName(),
+                    "last-buy-player", ObjectCache.getBuyLastTimeName(),
+                    "last-sell-player", ObjectCache.getSellLastTimeName(),
                     "last-buy-server", serverCache.getBuyLastTimeName(),
                     "last-sell-server", serverCache.getSellLastTimeName(),
 
-                    "last-reset-buy-player", playerCache.getBuyLastResetTimeName(),
-                    "last-reset-sell-player", playerCache.getSellLastResetTimeName(),
+                    "last-reset-buy-player", ObjectCache.getBuyLastResetTimeName(),
+                    "last-reset-sell-player", ObjectCache.getSellLastResetTimeName(),
                     "last-reset-buy-server", serverCache.getBuyLastResetTimeName(),
                     "last-reset-sell-server", serverCache.getSellLastResetTimeName(),
 

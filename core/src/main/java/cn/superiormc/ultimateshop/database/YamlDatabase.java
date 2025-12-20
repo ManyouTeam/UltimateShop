@@ -1,7 +1,7 @@
 package cn.superiormc.ultimateshop.database;
 
 import cn.superiormc.ultimateshop.UltimateShop;
-import cn.superiormc.ultimateshop.cache.ServerCache;
+import cn.superiormc.ultimateshop.objects.caches.ObjectCache;
 import cn.superiormc.ultimateshop.managers.CacheManager;
 import cn.superiormc.ultimateshop.managers.ErrorManager;
 import cn.superiormc.ultimateshop.objects.caches.ObjectRandomPlaceholderCache;
@@ -19,21 +19,21 @@ public class YamlDatabase extends AbstractDatabase {
     private final File dataDir = new File(UltimateShop.instance.getDataFolder(), "datas");
 
     @Override
-    public void checkData(ServerCache cache) {
+    public void checkData(ObjectCache cache) {
         CompletableFuture.runAsync(() -> loadData(cache), DatabaseExecutor.EXECUTOR);
     }
 
-    private void loadData(ServerCache cache) {
+    private void loadData(ObjectCache cache) {
         if (!dataDir.exists()) dataDir.mkdirs();
 
-        File file = cache.server
+        File file = cache.isServer()
                 ? new File(dataDir, "global.yml")
-                : new File(dataDir, cache.player.getUniqueId() + ".yml");
+                : new File(dataDir, cache.getPlayer().getUniqueId() + ".yml");
 
         try {
             if (!file.exists()) {
                 YamlConfiguration config = new YamlConfiguration();
-                config.set("playerName", cache.server ? "global" : cache.player.getName());
+                config.set("playerName", cache.isServer() ? "global" : cache.getPlayer().getName());
                 config.save(file);
             }
         } catch (IOException e) {
@@ -96,21 +96,21 @@ public class YamlDatabase extends AbstractDatabase {
     }
 
     @Override
-    public void updateData(ServerCache cache, boolean quitServer) {
+    public void updateData(ObjectCache cache, boolean quitServer) {
         CompletableFuture.runAsync(() -> {
             saveData(cache);
             if (quitServer) {
-                CacheManager.cacheManager.removePlayerCache(cache.player);
+                CacheManager.cacheManager.removeObjectCache(cache.getPlayer());
             }
         }, DatabaseExecutor.EXECUTOR);
     }
 
-    private void saveData(ServerCache cache) {
+    private void saveData(ObjectCache cache) {
         if (!dataDir.exists()) dataDir.mkdirs();
 
-        File file = cache.server
+        File file = cache.isServer()
                 ? new File(dataDir, "global.yml")
-                : new File(dataDir, cache.player.getUniqueId() + ".yml");
+                : new File(dataDir, cache.getPlayer().getUniqueId() + ".yml");
 
         YamlConfiguration config = new YamlConfiguration();
 
@@ -157,8 +157,8 @@ public class YamlDatabase extends AbstractDatabase {
     }
 
     @Override
-    public void updateDataOnDisable(ServerCache cache, boolean disable) {
+    public void updateDataOnDisable(ObjectCache cache, boolean disable) {
         saveData(cache);
-        CacheManager.cacheManager.removePlayerCache(cache.player);
+        CacheManager.cacheManager.removeObjectCache(cache.getPlayer());
     }
 }

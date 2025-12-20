@@ -35,9 +35,9 @@ public class ShopHelper {
     }
 
     public static ObjectUseTimesCache getPlayerUseTimesCache(ObjectItem item, Player player) {
-        ObjectUseTimesCache useTimesCache = CacheManager.cacheManager.getPlayerCache(player).getUseTimesCache().get(item);
+        ObjectUseTimesCache useTimesCache = CacheManager.cacheManager.getObjectCache(player).getUseTimesCache().get(item);
         if (useTimesCache == null) {
-            useTimesCache = CacheManager.cacheManager.getPlayerCache(player).createUseTimesCache(item);
+            useTimesCache = CacheManager.cacheManager.getObjectCache(player).createUseTimesCache(item);
         }
         return useTimesCache;
     }

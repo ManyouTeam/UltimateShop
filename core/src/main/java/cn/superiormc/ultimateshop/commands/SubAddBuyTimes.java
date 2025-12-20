@@ -1,7 +1,7 @@
 package cn.superiormc.ultimateshop.commands;
 
 import cn.superiormc.ultimateshop.UltimateShop;
-import cn.superiormc.ultimateshop.cache.ServerCache;
+import cn.superiormc.ultimateshop.objects.caches.ObjectCache;
 import cn.superiormc.ultimateshop.managers.CacheManager;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.LanguageManager;
@@ -32,9 +32,9 @@ public class SubAddBuyTimes extends AbstractCommand {
                     args[1]);
             return;
         }
-        ServerCache tempVal3;
+        ObjectCache tempVal3;
         if (args[3].equals("global")) {
-            tempVal3 = ServerCache.serverCache;
+            tempVal3 = CacheManager.cacheManager.serverCache;
         } else {
             Player changePlayer = Bukkit.getPlayer(args[3]);
             if (changePlayer == null) {
@@ -44,7 +44,7 @@ public class SubAddBuyTimes extends AbstractCommand {
                                 args[3]);
                 return;
             }
-            tempVal3 = CacheManager.cacheManager.getPlayerCache(changePlayer);
+            tempVal3 = CacheManager.cacheManager.getObjectCache(changePlayer);
         }
         if (tempVal3 == null) {
             LanguageManager.languageManager.sendStringText(player,
@@ -112,9 +112,9 @@ public class SubAddBuyTimes extends AbstractCommand {
                     args[1]);
             return;
         }
-        ServerCache tempVal3;
+        ObjectCache tempVal3;
         if (args[3].equals("global")) {
-            tempVal3 = ServerCache.serverCache;
+            tempVal3 = CacheManager.cacheManager.serverCache;
         } else {
             Player changePlayer = Bukkit.getPlayer(args[3]);
             if (changePlayer == null) {
@@ -123,7 +123,7 @@ public class SubAddBuyTimes extends AbstractCommand {
                         args[3]);
                 return;
             }
-            tempVal3 = CacheManager.cacheManager.getPlayerCache(changePlayer);
+            tempVal3 = CacheManager.cacheManager.getObjectCache(changePlayer);
         }
         if (tempVal3 == null) {
             LanguageManager.languageManager.sendStringText("error.player-not-found",

@@ -3,8 +3,8 @@ package cn.superiormc.ultimateshop.methods.Product;
 import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.api.ItemFinishTransactionEvent;
 import cn.superiormc.ultimateshop.api.ItemPreTransactionEvent;
-import cn.superiormc.ultimateshop.cache.PlayerCache;
-import cn.superiormc.ultimateshop.cache.ServerCache;
+
+import cn.superiormc.ultimateshop.objects.caches.ObjectCache;
 import cn.superiormc.ultimateshop.managers.CacheManager;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.LanguageManager;
@@ -77,8 +77,8 @@ public class SellProductMethod {
         if (item.getSellPrice().empty) {
             return ProductTradeStatus.ERROR;
         }
-        PlayerCache tempVal3 = CacheManager.cacheManager.getPlayerCache(player);
-        ServerCache tempVal11 = ServerCache.serverCache;
+        ObjectCache tempVal3 = CacheManager.cacheManager.getObjectCache(player);
+        ObjectCache tempVal11 = CacheManager.cacheManager.serverCache;
         if (tempVal3 == null) {
             LanguageManager.languageManager.sendStringText(player,
                     "error.player-not-found",
@@ -215,7 +215,6 @@ public class SellProductMethod {
             tempVal9.setSellUseTimes(tempVal9.getSellUseTimes() + multi);
             tempVal9.setLastSellTime(CommonUtil.getNowTime());
             tempVal9.setCooldownSellTime();
-            tempVal3.getUseTimesCache().put(item, tempVal9);
         }
         if (tempVal8 != null) {
             if (ConfigManager.configManager.getBoolean("debug")) {
@@ -225,7 +224,6 @@ public class SellProductMethod {
             tempVal8.setSellUseTimes(tempVal8.getSellUseTimes() + multi);
             tempVal8.setLastSellTime(CommonUtil.getNowTime());
             tempVal8.setCooldownSellTime();
-            tempVal11.getUseTimesCache().put(item, tempVal8);
         }
         if (!item.getShopObject().getShopConfig().getBoolean("settings.hide-message", false) && !giveResult.empty && !takeResult.empty) {
             LanguageManager.languageManager.sendStringText(player,

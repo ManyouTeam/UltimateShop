@@ -1,6 +1,5 @@
 package cn.superiormc.ultimateshop;
 
-import cn.superiormc.ultimateshop.cache.ServerCache;
 import cn.superiormc.ultimateshop.libs.bstats.Metrics;
 import cn.superiormc.ultimateshop.managers.*;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
@@ -105,11 +104,11 @@ public final class UltimateShop extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        if (ServerCache.serverCache != null) {
-            ServerCache.serverCache.shutCacheOnDisable(true);
+        if (CacheManager.cacheManager.serverCache != null) {
+            CacheManager.cacheManager.serverCache.shutCacheOnDisable(true);
         }
         for (Player player : Bukkit.getOnlinePlayers()) {
-            CacheManager.cacheManager.savePlayerCacheOnDisable(player, true);
+            CacheManager.cacheManager.saveObjectCacheOnDisable(player, true);
         }
         CacheManager.cacheManager.database.onClose();
         if (BungeeCordManager.enableThis()) {

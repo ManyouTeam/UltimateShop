@@ -1,6 +1,6 @@
 package cn.superiormc.ultimateshop.commands;
 
-import cn.superiormc.ultimateshop.cache.ServerCache;
+import cn.superiormc.ultimateshop.objects.caches.ObjectCache;
 import cn.superiormc.ultimateshop.managers.CacheManager;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.LanguageManager;
@@ -31,9 +31,9 @@ public class SubSetRandomPlaceholder extends AbstractCommand {
             LanguageManager.languageManager.sendStringText(player, "error.random-placeholder-not-found", "placeholder", args[1]);
             return;
         }
-        ServerCache tempVal1;
+        ObjectCache tempVal1;
         if (args.length < 3 || args[args.length - 1].equals("global")) {
-            tempVal1 = ServerCache.serverCache;
+            tempVal1 = CacheManager.cacheManager.serverCache;
         } else {
             Player changePlayer = Bukkit.getPlayer(args[3]);
             if (changePlayer == null) {
@@ -47,7 +47,7 @@ public class SubSetRandomPlaceholder extends AbstractCommand {
                     return;
                 }
             }
-            tempVal1 = CacheManager.cacheManager.getPlayerCache(changePlayer);
+            tempVal1 = CacheManager.cacheManager.getObjectCache(changePlayer);
         }
         ObjectRandomPlaceholderCache cache = tempVal1.getRandomPlaceholderCache().get(placeholder);
         if (cache == null) {
@@ -90,9 +90,9 @@ public class SubSetRandomPlaceholder extends AbstractCommand {
             LanguageManager.languageManager.sendStringText("error.random-placeholder-not-found", "placeholder", args[1]);
             return;
         }
-        ServerCache tempVal1;
+        ObjectCache tempVal1;
         if (args.length < 4 || args[args.length - 1].equals("global")) {
-            tempVal1 = ServerCache.serverCache;
+            tempVal1 = CacheManager.cacheManager.serverCache;
         } else {
             Player changePlayer = Bukkit.getPlayer(args[args.length - 1]);
             if (changePlayer == null) {
@@ -102,7 +102,7 @@ public class SubSetRandomPlaceholder extends AbstractCommand {
                         args[3]);
                 return;
             }
-            tempVal1 = CacheManager.cacheManager.getPlayerCache(changePlayer);
+            tempVal1 = CacheManager.cacheManager.getObjectCache(changePlayer);
         }
         ObjectRandomPlaceholderCache cache = tempVal1.getRandomPlaceholderCache().get(placeholder);
         if (cache == null) {

@@ -152,7 +152,7 @@ public class ObjectSinglePrice extends AbstractSingleThing {
                 int serverSellTimes = 0;
                 int serverTotalBuyTimes = 0;
                 int serverTotalSellTimes = 0;
-                ObjectUseTimesCache tempVal3 = CacheManager.cacheManager.getPlayerCache(player).getUseTimesCache().get(item);
+                ObjectUseTimesCache tempVal3 = CacheManager.cacheManager.getObjectCache(player).getUseTimesCache().get(item);
                 ObjectUseTimesCache tempVal4 = CacheManager.cacheManager.serverCache.getUseTimesCache().get(item);
                 if (tempVal3 != null) {
                     playerBuyTimes = tempVal3.getBuyUseTimes();

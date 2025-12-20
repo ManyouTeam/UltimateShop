@@ -2,12 +2,12 @@ package cn.superiormc.ultimateshop.papi;
 
 import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.api.ShopHelper;
-import cn.superiormc.ultimateshop.cache.PlayerCache;
 import cn.superiormc.ultimateshop.managers.CacheManager;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.LanguageManager;
 import cn.superiormc.ultimateshop.objects.ObjectShop;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
+import cn.superiormc.ultimateshop.objects.caches.ObjectCache;
 import cn.superiormc.ultimateshop.objects.caches.ObjectUseTimesCache;
 import cn.superiormc.ultimateshop.objects.items.prices.ObjectPrices;
 import cn.superiormc.ultimateshop.utils.TextUtil;
@@ -79,10 +79,10 @@ public class PlaceholderAPIExpansion extends PlaceholderExpansion {
             if (item == null) {
                 return LanguageManager.languageManager.getStringText("placeholderapi.unknown-product");
             }
-            PlayerCache playerCache = CacheManager.cacheManager.getPlayerCache(player);
-            ObjectUseTimesCache playerTimesCache = playerCache.getUseTimesCache().get(item);
+            ObjectCache ObjectCache = CacheManager.cacheManager.getObjectCache(player);
+            ObjectUseTimesCache playerTimesCache = ObjectCache.getUseTimesCache().get(item);
             if (playerTimesCache == null) {
-                playerTimesCache = playerCache.createUseTimesCache(item);
+                playerTimesCache = ObjectCache.createUseTimesCache(item);
                 if (playerTimesCache == null) {
                     return "ERROR: Can not found player cache.";
                 }

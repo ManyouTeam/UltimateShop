@@ -1,7 +1,6 @@
 package cn.superiormc.ultimateshop.methods;
 
 import cn.superiormc.ultimateshop.UltimateShop;
-import cn.superiormc.ultimateshop.cache.ServerCache;
 import cn.superiormc.ultimateshop.gui.AbstractGUI;
 import cn.superiormc.ultimateshop.listeners.ClickListener;
 import cn.superiormc.ultimateshop.managers.*;
@@ -17,14 +16,14 @@ public class ReloadPlugin {
         LanguageManager.languageManager.sendStringText(sender, "plugin.reloading");
         UltimateShop.instance.reloadConfig();
         for (Player player : Bukkit.getOnlinePlayers()) {
-            CacheManager.cacheManager.savePlayerCacheOnDisable(player, false);
+            CacheManager.cacheManager.saveObjectCacheOnDisable(player, false);
             AbstractGUI.playerList.remove(player);
             if (!UltimateShop.freeVersion) {
                 ClickListener.playerList.remove(player);
             }
         }
-        if (ServerCache.serverCache != null) {
-            ServerCache.serverCache.shutCacheOnDisable(false);
+        if (CacheManager.cacheManager.serverCache != null) {
+            CacheManager.cacheManager.serverCache.shutCacheOnDisable(false);
         }
         TaskManager.taskManager.cancelTask();
         ObjectMenu.commonMenus.clear();
@@ -35,7 +34,7 @@ public class ReloadPlugin {
         new CacheManager();
         new TaskManager();
         for (Player player : Bukkit.getOnlinePlayers()) {
-            CacheManager.cacheManager.addPlayerCache(player);
+            CacheManager.cacheManager.addObjectCache(player);
         }
         MathUtil.scale = ConfigManager.configManager.getInt("math.scale", 2);
         LanguageManager.languageManager.sendStringText(sender, "plugin.reloaded");

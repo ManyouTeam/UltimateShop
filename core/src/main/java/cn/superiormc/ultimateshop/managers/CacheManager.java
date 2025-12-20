@@ -1,8 +1,7 @@
 package cn.superiormc.ultimateshop.managers;
 
 import cn.superiormc.ultimateshop.UltimateShop;
-import cn.superiormc.ultimateshop.cache.PlayerCache;
-import cn.superiormc.ultimateshop.cache.ServerCache;
+import cn.superiormc.ultimateshop.objects.caches.ObjectCache;
 import cn.superiormc.ultimateshop.database.AbstractDatabase;
 import cn.superiormc.ultimateshop.database.SQLDatabase;
 import cn.superiormc.ultimateshop.database.YamlDatabase;
@@ -16,9 +15,9 @@ public class CacheManager {
 
     public static CacheManager cacheManager;
 
-    private final Map<Player, PlayerCache> playerCacheMap = new ConcurrentHashMap<>();
+    private final Map<Player, ObjectCache> ObjectCacheMap = new ConcurrentHashMap<>();
 
-    public ServerCache serverCache;
+    public ObjectCache serverCache;
 
     public AbstractDatabase database;
 
@@ -30,46 +29,46 @@ public class CacheManager {
             database = new YamlDatabase();
         }
         database.onInit();
-        serverCache = new ServerCache();
+        serverCache = new ObjectCache();
     }
 
-    public void addPlayerCache(Player player) {
-        playerCacheMap.put(player, new PlayerCache(player));
-        playerCacheMap.get(player).initCache();
+    public void addObjectCache(Player player) {
+        ObjectCacheMap.put(player, new ObjectCache(player));
+        ObjectCacheMap.get(player).initCache();
     }
 
-    public PlayerCache getPlayerCache(Player player) {
-        PlayerCache tempVal1 = playerCacheMap.get(player);
+    public ObjectCache getObjectCache(Player player) {
+        ObjectCache tempVal1 = ObjectCacheMap.get(player);
         if (tempVal1 == null) {
-            addPlayerCache(player);
-            tempVal1 = playerCacheMap.get(player);
+            addObjectCache(player);
+            tempVal1 = ObjectCacheMap.get(player);
         }
         return tempVal1;
     }
 
-    public void savePlayerCache(Player player) {
-        if (playerCacheMap.get(player) == null) {
+    public void saveObjectCache(Player player) {
+        if (ObjectCacheMap.get(player) == null) {
             UltimateShop.methodUtil.sendMessage(null, TextUtil.pluginPrefix() + " §cCan not save player data: " + player.getName() + "! " +
                     "This is usually because this player joined the server before server fully started OR other plugins kicked this player" +
                     ", ask him rejoin the server.");
             return;
         }
-        playerCacheMap.get(player).shutCache(true);
+        ObjectCacheMap.get(player).shutCache(true);
     }
 
-    public void savePlayerCacheOnDisable(Player player, boolean disable) {
-        if (playerCacheMap.get(player) == null) {
+    public void saveObjectCacheOnDisable(Player player, boolean disable) {
+        if (ObjectCacheMap.get(player) == null) {
             UltimateShop.methodUtil.sendMessage(null, TextUtil.pluginPrefix() + " §cCan not save player data: " + player.getName() + "! " +
                     "This is usually because this player joined the server before server fully started OR other plugins kicked this player" +
                     ", ask him rejoin the server.");
             return;
         }
-        playerCacheMap.get(player).shutCacheOnDisable(disable);
+        ObjectCacheMap.get(player).shutCacheOnDisable(disable);
     }
 
-    public void removePlayerCache(Player player) {
+    public void removeObjectCache(Player player) {
         if (player != null) {
-            playerCacheMap.remove(player);
+            ObjectCacheMap.remove(player);
         }
     }
 

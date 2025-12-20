@@ -1,6 +1,5 @@
 package cn.superiormc.ultimateshop.objects.caches;
 
-import cn.superiormc.ultimateshop.cache.ServerCache;
 import cn.superiormc.ultimateshop.managers.BungeeCordManager;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.ErrorManager;
@@ -25,16 +24,16 @@ public class ObjectRandomPlaceholderCache {
 
     private final ObjectRandomPlaceholder placeholder;
 
-    private final ServerCache cache;
+    private final ObjectCache cache;
 
-    public ObjectRandomPlaceholderCache(ServerCache cache,
+    public ObjectRandomPlaceholderCache(ObjectCache cache,
                                         ObjectRandomPlaceholder placeholder) {
         this.cache = cache;
         this.placeholder = placeholder;
         setRefreshTime();
     }
 
-    public ObjectRandomPlaceholderCache(ServerCache cache,
+    public ObjectRandomPlaceholderCache(ObjectCache cache,
                                         ObjectRandomPlaceholder placeholder,
                                         List<String> nowValue,
                                         LocalDateTime refreshDoneTime) {
@@ -55,7 +54,7 @@ public class ObjectRandomPlaceholderCache {
         return refreshDoneTime;
     }
 
-    public void removeRefreshDoneTime() {
+    public synchronized void removeRefreshDoneTime() {
         refreshDoneTime = null;
     }
 
@@ -74,11 +73,11 @@ public class ObjectRandomPlaceholderCache {
         return nowValue;
     }
 
-    public void setRefreshTime() {
+    public synchronized void setRefreshTime() {
         setRefreshTime(false);
     }
 
-    public void setRefreshTime(boolean notUseBungee) {
+    public synchronized void setRefreshTime(boolean notUseBungee) {
         String mode = placeholder.getMode();
         String time = TextUtil.withPAPI(placeholder.getConfig().getString("reset-time"), null);
         if (mode == null || time.isEmpty()) {
@@ -115,7 +114,7 @@ public class ObjectRandomPlaceholderCache {
                     if (time.equals(placeholder.getID())) {
                         refreshDoneTime = CommonUtil.getNowTime().withYear(2999);
                     } else {
-                        refreshDoneTime = ObjectRandomPlaceholder.getRefreshDoneTimeObject(cache.player, time);
+                        refreshDoneTime = ObjectRandomPlaceholder.getRefreshDoneTimeObject(cache.getPlayer(), time);
                     }
                     break;
                 default:
@@ -146,7 +145,7 @@ public class ObjectRandomPlaceholderCache {
                 resetTask = SchedulerUtil.runTaskLater((this::setRefreshTime), delayTicks + 20);
             }
             setPlaceholder(notUseBungee);
-            CommandUtil.updateGUI(cache.player);
+            CommandUtil.updateGUI(cache.getPlayer());
         }
     }
 
@@ -154,7 +153,7 @@ public class ObjectRandomPlaceholderCache {
         setPlaceholder(placeholder.getNewValue(cache), notUseBungee);
     }
 
-    public void setPlaceholder(List<String> element, boolean notUseBungee) {
+    public synchronized void setPlaceholder(List<String> element, boolean notUseBungee) {
         if (element == null) {
             return;
         }

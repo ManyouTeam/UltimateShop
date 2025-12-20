@@ -1,7 +1,6 @@
 package cn.superiormc.ultimateshop.gui.form;
 
 import cn.superiormc.ultimateshop.UltimateShop;
-import cn.superiormc.ultimateshop.cache.PlayerCache;
 import cn.superiormc.ultimateshop.gui.FormGUI;
 import cn.superiormc.ultimateshop.gui.inv.ShopGUI;
 import cn.superiormc.ultimateshop.managers.CacheManager;
@@ -13,6 +12,7 @@ import cn.superiormc.ultimateshop.methods.Product.SellProductMethod;
 import cn.superiormc.ultimateshop.methods.ProductTradeStatus;
 import cn.superiormc.ultimateshop.objects.ObjectThingRun;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
+import cn.superiormc.ultimateshop.objects.caches.ObjectCache;
 import cn.superiormc.ultimateshop.objects.items.ObjectAction;
 import cn.superiormc.ultimateshop.objects.menus.ObjectMoreMenu;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
@@ -54,7 +54,7 @@ public class FormInfoGUI extends FormGUI {
 
     @Override
     public void constructGUI() {
-        PlayerCache tempVal1 = CacheManager.cacheManager.getPlayerCache(player);
+        ObjectCache tempVal1 = CacheManager.cacheManager.getObjectCache(player);
         if (tempVal1 == null) {
             LanguageManager.languageManager.sendStringText(player,
                     "error.player-not-found",

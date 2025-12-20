@@ -1,7 +1,7 @@
 package cn.superiormc.ultimateshop.objects.items.subobjects;
 
 import cn.superiormc.ultimateshop.UltimateShop;
-import cn.superiormc.ultimateshop.cache.ServerCache;
+import cn.superiormc.ultimateshop.objects.caches.ObjectCache;
 import cn.superiormc.ultimateshop.managers.CacheManager;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.ErrorManager;
@@ -79,7 +79,7 @@ public class ObjectRandomPlaceholder {
         return elements;
     }
 
-    public List<String> getNewValue(ServerCache cache) {
+    public List<String> getNewValue(ObjectCache cache) {
         List<String> result = new ArrayList<>();
         if (elements.isEmpty()) {
             result.add("ERROR: Value Empty");
@@ -88,7 +88,7 @@ public class ObjectRandomPlaceholder {
 
         List<RandomElement> available = new ArrayList<>();
         for (RandomElement elem : elements) {
-            if (cache.server || elem.isAvailable(cache.player)) {
+            if (cache.isServer() || elem.isAvailable(cache.getPlayer())) {
                 available.add(elem);
             }
         }
@@ -148,7 +148,7 @@ public class ObjectRandomPlaceholder {
         return tempVal1.toUpperCase();
     }
 
-    public List<String> getNowValue(ServerCache cache) {
+    public List<String> getNowValue(ObjectCache cache) {
         ObjectRandomPlaceholderCache tempVal1 = cache.getRandomPlaceholderCache().get(this);
         if (tempVal1 == null) {
             cache.addRandomPlaceholderCache(this);
@@ -180,13 +180,13 @@ public class ObjectRandomPlaceholder {
         if (tempVal1 == null) {
             return "Error: Unknown Placeholder";
         }
-        ServerCache cache;
+        ObjectCache cache;
         if (tempVal1.perPlayer) {
             if (player == null) {
                 ErrorManager.errorManager.sendErrorMessage("§cThe random placeholder is per player and can not sync data with server cache.");
                 return "Error: Sync Error";
             }
-            cache = CacheManager.cacheManager.getPlayerCache(player);
+            cache = CacheManager.cacheManager.getObjectCache(player);
         } else {
             cache = CacheManager.cacheManager.serverCache;
         }
@@ -213,13 +213,13 @@ public class ObjectRandomPlaceholder {
         if (tempVal1 == null) {
             return CommonUtil.getNowTime().withYear(2999);
         }
-        ServerCache cache;
+        ObjectCache cache;
         if (tempVal1.perPlayer) {
             if (player == null) {
                 ErrorManager.errorManager.sendErrorMessage("§cThe random placeholder is per player and can not sync data with server cache.");
                 return CommonUtil.getNowTime().withYear(2999);
             }
-            cache = CacheManager.cacheManager.getPlayerCache(player);
+            cache = CacheManager.cacheManager.getObjectCache(player);
         } else {
             cache = CacheManager.cacheManager.serverCache;
         }

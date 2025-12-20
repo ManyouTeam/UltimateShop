@@ -1,7 +1,6 @@
 package cn.superiormc.ultimateshop.gui.form;
 
-import cn.superiormc.ultimateshop.cache.PlayerCache;
-import cn.superiormc.ultimateshop.cache.ServerCache;
+import cn.superiormc.ultimateshop.objects.caches.ObjectCache;
 import cn.superiormc.ultimateshop.gui.FormGUI;
 import cn.superiormc.ultimateshop.managers.CacheManager;
 import cn.superiormc.ultimateshop.managers.LanguageManager;
@@ -40,8 +39,8 @@ public class FormShopGUI extends FormGUI {
 
     @Override
     public void constructGUI() {
-        PlayerCache tempVal1 = CacheManager.cacheManager.getPlayerCache(player);
-        ServerCache tempVal2 = ServerCache.serverCache;
+        ObjectCache tempVal1 = CacheManager.cacheManager.getObjectCache(player);
+        ObjectCache tempVal2 = CacheManager.cacheManager.serverCache;
         if (tempVal1 == null) {
             LanguageManager.languageManager.sendStringText(player,
                     "error.player-not-found",

@@ -1,7 +1,7 @@
 package cn.superiormc.ultimateshop.database;
 
 import cn.superiormc.ultimateshop.UltimateShop;
-import cn.superiormc.ultimateshop.cache.ServerCache;
+import cn.superiormc.ultimateshop.objects.caches.ObjectCache;
 import cn.superiormc.ultimateshop.database.sql.DatabaseDialect;
 import cn.superiormc.ultimateshop.managers.CacheManager;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
@@ -13,20 +13,11 @@ import cn.superiormc.ultimateshop.utils.TextUtil;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
-import java.io.InputStream;
-import java.lang.reflect.Method;
-import java.net.URL;
-import java.net.URLClassLoader;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.sql.*;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import cn.superiormc.ultimateshop.database.sql.*;
 
-import java.sql.*;
 import java.util.List;
 
 public class SQLDatabase extends AbstractDatabase {
@@ -109,17 +100,17 @@ public class SQLDatabase extends AbstractDatabase {
     }
 
     @Override
-    public void checkData(ServerCache cache) {
+    public void checkData(ObjectCache cache) {
         CompletableFuture.runAsync(
                 () -> loadData(cache),
                 DatabaseExecutor.EXECUTOR
         );
     }
 
-    private void loadData(ServerCache cache) {
-        String playerUUID = cache.server
+    private void loadData(ObjectCache cache) {
+        String playerUUID = cache.isServer()
                 ? "Global-Server"
-                : cache.player.getUniqueId().toString();
+                : cache.getPlayer().getUniqueId().toString();
 
         try (Connection conn = dataSource.getConnection()) {
 
@@ -134,7 +125,7 @@ public class SQLDatabase extends AbstractDatabase {
         }
     }
 
-    private void loadUseTimes(Connection conn, ServerCache cache, String playerUUID)
+    private void loadUseTimes(Connection conn, ObjectCache cache, String playerUUID)
             throws SQLException {
 
         String sql = "SELECT * FROM ultimateshop_useTimes WHERE playerUUID = ?";
@@ -163,7 +154,7 @@ public class SQLDatabase extends AbstractDatabase {
         }
     }
 
-    private void loadPlaceholders(Connection conn, ServerCache cache, String playerUUID)
+    private void loadPlaceholders(Connection conn, ObjectCache cache, String playerUUID)
             throws SQLException {
 
         String sql = """
@@ -192,22 +183,22 @@ public class SQLDatabase extends AbstractDatabase {
     }
 
     @Override
-    public void updateData(ServerCache cache, boolean quitServer) {
+    public void updateData(ObjectCache cache, boolean quitServer) {
         CompletableFuture.runAsync(() -> {
             saveUseTimes(cache);
             if (!UltimateShop.freeVersion) {
                 savePlaceholders(cache);
             }
             if (quitServer) {
-                CacheManager.cacheManager.removePlayerCache(cache.player);
+                CacheManager.cacheManager.removeObjectCache(cache.getPlayer());
             }
         }, DatabaseExecutor.EXECUTOR);
     }
 
-    private void saveUseTimes(ServerCache cache) {
-        String playerUUID = cache.server
+    private void saveUseTimes(ObjectCache cache) {
+        String playerUUID = cache.isServer()
                 ? "Global-Server"
-                : cache.player.getUniqueId().toString();
+                : cache.getPlayer().getUniqueId().toString();
 
         String sql = dialect.upsertUseTimes();
 
@@ -250,10 +241,10 @@ public class SQLDatabase extends AbstractDatabase {
         }
     }
 
-    private void savePlaceholders(ServerCache cache) {
-        String playerUUID = cache.server
+    private void savePlaceholders(ObjectCache cache) {
+        String playerUUID = cache.isServer()
                 ? "Global-Server"
-                : cache.player.getUniqueId().toString();
+                : cache.getPlayer().getUniqueId().toString();
 
         String sql = dialect.upsertRandomPlaceholder();
 
@@ -289,13 +280,13 @@ public class SQLDatabase extends AbstractDatabase {
     }
 
     @Override
-    public void updateDataOnDisable(ServerCache cache, boolean disable) {
+    public void updateDataOnDisable(ObjectCache cache, boolean disable) {
         saveUseTimes(cache);
 
         if (!UltimateShop.freeVersion) {
             savePlaceholders(cache);
         }
 
-        CacheManager.cacheManager.removePlayerCache(cache.player);
+        CacheManager.cacheManager.removeObjectCache(cache.getPlayer());
     }
 }

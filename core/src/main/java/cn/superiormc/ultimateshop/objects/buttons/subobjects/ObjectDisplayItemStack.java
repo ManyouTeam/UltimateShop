@@ -83,7 +83,7 @@ public class ObjectDisplayItemStack {
                 }
             }
             if (tempVal4 != null && !tempVal4.isEmpty()) {
-                ObjectUseTimesCache tempVal9 = CacheManager.cacheManager.getPlayerCache(player).getUseTimesCache().get(item);
+                ObjectUseTimesCache tempVal9 = CacheManager.cacheManager.getObjectCache(player).getUseTimesCache().get(item);
                 tempVal3 = tempVal3 + "\n" + TextUtil.parse(player, CommonUtil.modifyString(tempVal4,
                         "buy-price",
                         ObjectPrices.getDisplayNameInLine(player,
