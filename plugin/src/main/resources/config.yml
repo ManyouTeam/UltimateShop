@@ -175,6 +175,8 @@ use-times:
   set-reset-value-by-default: true
   # If set to true, max value set in product configs or default value set above will only work for total placeholder.
   max-value-for-total-only: true
+  # If your placeholder display wrong reset time, try set it to true.
+  update-use-times-in-placeholder: false
   auto-reset-mode: true
 
 math:

@@ -1,8 +1,11 @@
 package cn.superiormc.ultimateshop.objects.caches;
 
 
+import cn.superiormc.ultimateshop.UltimateShop;
+import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
 import cn.superiormc.ultimateshop.utils.SchedulerUtil;
+import cn.superiormc.ultimateshop.utils.TextUtil;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -43,6 +46,13 @@ public final class ResetTaskPool {
 
         ResetTaskGroup group = findOrCreateGroup(refreshTime, buy);
         group.add(cache);
+
+        if (ConfigManager.configManager.getBoolean("debug-2")) {
+            UltimateShop.methodUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fReset Time: " + group.triggerTime + " Cache: " + cache + " Group Amount: " + GROUPS.size() + "!");
+            for (ObjectUseTimesCache dc : group.caches) {
+                UltimateShop.methodUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fOther Caches: " + dc + "!");
+            }
+        }
     }
 
     public static void unregisterBuy(
@@ -108,6 +118,9 @@ public final class ResetTaskPool {
         }
 
         boolean isNear(LocalDateTime time) {
+            if (ConfigManager.configManager.getBoolean("debug-2")) {
+                UltimateShop.methodUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fTrigger Time: " + triggerTime + " Object Time: " + time + "!");
+            }
             long diff = Math.abs(
                     Duration.between(triggerTime, time).toSeconds()
             );
@@ -152,6 +165,9 @@ public final class ResetTaskPool {
             }
 
             long delayTicks = delayMillis / 50;
+            if (ConfigManager.configManager.getBoolean("debug-2")) {
+                UltimateShop.methodUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fDelay: " + delayTicks + "!");
+            }
             task = SchedulerUtil.runTaskLater(this::run, delayTicks + 10);
         }
 
@@ -167,9 +183,15 @@ public final class ResetTaskPool {
                 } else {
                     cache.refreshSellTimes();
                 }
+                if (ConfigManager.configManager.getBoolean("debug-2")) {
+                    UltimateShop.methodUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fAuto reset actived for cache: " + cache + "!");
+                }
             }
             caches.clear();
             GROUPS.remove(this);
+            if (ConfigManager.configManager.getBoolean("debug-2")) {
+                UltimateShop.methodUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fGroup removed, left amount: " + GROUPS.size() + "!");
+            }
         }
     }
 }
