@@ -8,7 +8,7 @@
     <parent>
         <groupId>cn.superiormc</groupId>
         <artifactId>UltimateShop</artifactId>
-        <version>4.1.5</version>
+        <version>4.1.6</version>
         <relativePath>../pom.xml</relativePath> <!-- 如果 plugin 和根目录同级 -->
     </parent>
 
@@ -18,7 +18,7 @@
 
     <artifactId>plugin</artifactId>
     <packaging>jar</packaging>
-    <version>4.1.5</version>
+    <version>4.1.6</version>
     <name>UltimateShop</name>
 
     <dependencies>
@@ -47,7 +47,7 @@
         <dependency>
             <groupId>io.papermc.paper</groupId>
             <artifactId>paper-api</artifactId>
-            <version>1.21.5-R0.1-SNAPSHOT</version>
+            <version>1.21.11-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>

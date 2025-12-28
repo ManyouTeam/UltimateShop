@@ -94,7 +94,7 @@ public class MySQLDialect extends DatabaseDialect {
     public void needExtraDownload(String jdbcUrl) {
         if (jdbcUrl.startsWith("jdbc:mariadb:")) {
             loadDriver("mariadb-java-client",
-                    "https://repo1.maven.org/maven2/org/mariadb/jdbc/mariadb-java-client/3.1.6/mariadb-java-client-3.1.6.jar",
+                    "https://repo1.maven.org/maven2/org/mariadb/jdbc/mariadb-java-client/3.1.4/mariadb-java-client-3.1.4.jar",
                     "org.mariadb.jdbc.Driver");
         }
     }
