@@ -4,12 +4,10 @@ import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.objects.ObjectSellStick;
 import cn.superiormc.ultimateshop.objects.ObjectShop;
 import cn.superiormc.ultimateshop.objects.buttons.AbstractButton;
-import cn.superiormc.ultimateshop.objects.items.ObjectAction;
 import cn.superiormc.ultimateshop.objects.items.subobjects.ObjectConditionalPlaceholder;
 import cn.superiormc.ultimateshop.objects.items.subobjects.ObjectRandomPlaceholder;
 import cn.superiormc.ultimateshop.objects.menus.ObjectMenu;
 import cn.superiormc.ultimateshop.utils.TextUtil;
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -67,7 +65,7 @@ public class ConfigManager {
                 String substring = fileName.substring(0, fileName.length() - 4);
                 shopConfigs.put(substring,
                         new ObjectShop(substring, YamlConfiguration.loadConfiguration(file)));
-                UltimateShop.methodUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fLoaded shop: " + fileName + "!");
+                TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fLoaded shop: " + fileName + "!");
             }
         }
     }
@@ -197,11 +195,29 @@ public class ConfigManager {
         return config.getStringList(path);
     }
 
+    public List<String> getStringList(Player player, String path) {
+        List<String> tempVal1 = config.getStringList(path);
+        if (tempVal1.contains("{lang}")) {
+            List<String> tempVal2 = LanguageManager.languageManager.getStringListText(player, "override-lang." + path);
+            if (tempVal2 != null) {
+                return tempVal2;
+            }
+        }
+        return tempVal1;
+    }
+
     public List<String> getStringListOrDefault(String originalPath, String newPath) {
         if (config.getStringList(originalPath).isEmpty()) {
-            return config.getStringList(newPath);
+            return getStringList(newPath);
         }
-        return config.getStringList(originalPath);
+        return getStringList(originalPath);
+    }
+
+    public List<String> getStringListOrDefault(Player player, String originalPath, String newPath) {
+        if (config.getStringList(originalPath).isEmpty()) {
+            return getStringList(player, newPath);
+        }
+        return getStringList(player, originalPath);
     }
 
     public List<Integer> getIntList(String path) {
@@ -247,7 +263,6 @@ public class ConfigManager {
         }
         return tempVal1;
     }
-
     public String getString(String path, String... args) {
         String s = config.getString(path);
         if (s == null) {
@@ -265,6 +280,17 @@ public class ConfigManager {
             }
         }
         return s.replace("{plugin_folder}", String.valueOf(UltimateShop.instance.getDataFolder()));
+    }
+
+    public String getString(Player player, String path, String... args) {
+        String tempVal1 = getString(path, args);
+        if (tempVal1.equalsIgnoreCase("{lang}")) {
+            String tempVal2 = LanguageManager.languageManager.getStringText(player, "override-lang." + path, args);
+            if (tempVal2 != null) {
+                return tempVal2;
+            }
+        }
+        return tempVal1;
     }
 
     public String getStringOrDefault(String originalPath, String newPath, String defaultValue) {

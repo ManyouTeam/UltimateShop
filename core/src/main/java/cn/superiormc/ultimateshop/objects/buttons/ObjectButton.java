@@ -8,15 +8,9 @@ import cn.superiormc.ultimateshop.objects.buttons.subobjects.ObjectDisplayItem;
 import cn.superiormc.ultimateshop.objects.buttons.subobjects.ObjectDisplayItemStack;
 import cn.superiormc.ultimateshop.objects.items.ObjectAction;
 import cn.superiormc.ultimateshop.objects.items.ObjectCondition;
-import cn.superiormc.ultimateshop.utils.ItemUtil;
-import cn.superiormc.ultimateshop.utils.TextUtil;
-import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
-import org.bukkit.inventory.ItemStack;
-import org.geysermc.cumulus.component.ButtonComponent;
-import org.geysermc.cumulus.util.FormImage;
 
 public class ObjectButton extends AbstractButton {
 

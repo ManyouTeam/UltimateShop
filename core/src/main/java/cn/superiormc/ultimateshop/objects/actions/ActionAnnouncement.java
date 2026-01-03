@@ -1,7 +1,7 @@
 package cn.superiormc.ultimateshop.objects.actions;
 
-import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.objects.ObjectThingRun;
+import cn.superiormc.ultimateshop.utils.TextUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -20,7 +20,7 @@ public class ActionAnnouncement extends AbstractRunAction {
         double amount = thingRun.getAmount();
         Collection<? extends Player> players = Bukkit.getOnlinePlayers();
         for (Player p : players) {
-            UltimateShop.methodUtil.sendMessage(p, singleAction.getString("message", player, amount));
+            TextUtil.sendMessage(p, singleAction.getString("message", player, amount));
         }
     }
 }

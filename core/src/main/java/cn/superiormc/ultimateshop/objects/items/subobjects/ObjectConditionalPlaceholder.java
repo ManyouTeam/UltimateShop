@@ -36,7 +36,7 @@ public class ObjectConditionalPlaceholder {
         } else {
             this.mode = ConditionalPlaceholderType.MIN;
         }
-        UltimateShop.methodUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fLoaded conditional placeholder: " + id + ".yml!");
+        TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fLoaded conditional placeholder: " + id + ".yml!");
     }
 
     public String getID() {

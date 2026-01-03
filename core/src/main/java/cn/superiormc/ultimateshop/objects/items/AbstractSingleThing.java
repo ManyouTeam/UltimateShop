@@ -178,7 +178,7 @@ public abstract class AbstractSingleThing implements Comparable<AbstractSingleTh
             case FREE: case RESERVE:
                 return 0;
             case UNKNOWN:
-                UltimateShop.methodUtil.sendMessage(null, TextUtil.pluginPrefix() + " §c" +
+                TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §c" +
                         "There is something wrong in your shop configs!");
                 return 0;
         }
@@ -251,7 +251,7 @@ public abstract class AbstractSingleThing implements Comparable<AbstractSingleTh
             case FREE: case RESERVE:
                 return true;
             case UNKNOWN:
-                UltimateShop.methodUtil.sendMessage(null, TextUtil.pluginPrefix() + " §cThere is something wrong in your shop configs!");
+                TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §cThere is something wrong in your shop configs!");
                 return false;
         }
         return false;
@@ -316,7 +316,7 @@ public abstract class AbstractSingleThing implements Comparable<AbstractSingleTh
         return new GiveItemStack(result, targetItem, displayItem, emptySlots >= requiredSlots, this);
     }
 
-    public abstract String getDisplayName(int multi, BigDecimal amount, boolean alwaysStatic);
+    public abstract String getDisplayName(Player player, int multi, BigDecimal amount, boolean alwaysStatic);
 
     public String getId() {
         return id;

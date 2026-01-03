@@ -31,7 +31,7 @@ public class SubSaveItem extends AbstractCommand {
         List<String> tempVal1 = new ArrayList<>();
         switch (args.length) {
             case 2:
-                tempVal1.add(LanguageManager.languageManager.getStringText("command-tab.type-item-id"));
+                tempVal1.add(LanguageManager.languageManager.getStringText(player, "command-tab.type-item-id"));
                 break;
             case 3:
                 tempVal1.add("bukkit");

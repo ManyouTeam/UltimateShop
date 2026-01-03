@@ -95,9 +95,9 @@ public class BuyProductMethod {
                         "limit",
                         String.valueOf(item.getPlayerBuyLimit(player)),
                         "refresh",
-                        tempVal9.getBuyRefreshTimeDisplayName(),
+                        tempVal9.getBuyRefreshTimeDisplayName(player),
                         "next",
-                        tempVal9.getBuyRefreshTimeNextName());
+                        tempVal9.getBuyRefreshTimeNextName(player));
 
             }
             return ProductTradeStatus.PLAYER_MAX;
@@ -121,9 +121,9 @@ public class BuyProductMethod {
                         "limit",
                         String.valueOf(item.getServerBuyLimit(player)),
                         "refresh",
-                        tempVal8.getBuyRefreshTimeDisplayName(),
+                        tempVal8.getBuyRefreshTimeDisplayName(player),
                         "next",
-                        tempVal8.getBuyRefreshTimeNextName());
+                        tempVal8.getBuyRefreshTimeNextName(player));
             }
             return ProductTradeStatus.SERVER_MAX;
         }
@@ -170,7 +170,7 @@ public class BuyProductMethod {
         if (tempVal9 != null) {
             if (ConfigManager.configManager.getBoolean("debug")) {
                 int newValue = tempVal9.getBuyUseTimes() + multi;
-                UltimateShop.methodUtil.sendMessage(null, TextUtil.pluginPrefix() + " §aSet player limit value to " + newValue + "!");
+                TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §aSet player limit value to " + newValue + "!");
             }
             tempVal9.setBuyUseTimes(tempVal9.getBuyUseTimes() + multi);
             tempVal9.setLastBuyTime(CommonUtil.getNowTime());
@@ -179,7 +179,7 @@ public class BuyProductMethod {
         if (tempVal8 != null) {
             if (ConfigManager.configManager.getBoolean("debug")) {
                 int newValue = tempVal8.getBuyUseTimes() + multi;
-                UltimateShop.methodUtil.sendMessage(null, TextUtil.pluginPrefix() + " §aSet server limit value to " + newValue + "!");
+                TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §aSet server limit value to " + newValue + "!");
             }
             tempVal8.setBuyUseTimes(tempVal8.getBuyUseTimes() + multi);
             tempVal8.setLastBuyTime(CommonUtil.getNowTime());
@@ -217,7 +217,7 @@ public class BuyProductMethod {
                     "time", CommonUtil.timeToString(CommonUtil.getNowTime(), ConfigManager.configManager.getString("log-transaction.time-format")));
             String filePath = ConfigManager.configManager.getString("log-transaction.file");
             if (filePath.isEmpty()) {
-                UltimateShop.methodUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fLog: " + log);
+                TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fLog: " + log);
             } else {
                 SchedulerUtil.runTaskAsynchronously(() -> CommonUtil.logFile(filePath, log));
             }

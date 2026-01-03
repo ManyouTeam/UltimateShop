@@ -30,7 +30,7 @@ public class SQLDatabase extends AbstractDatabase {
     public void onInit() {
         onClose();
 
-        UltimateShop.methodUtil.sendMessage(
+        TextUtil.sendMessage(
                 null,
                 TextUtil.pluginPrefix() + " §fConnecting to SQL database..."
         );

@@ -5,6 +5,7 @@ import cn.superiormc.ultimateshop.objects.items.AbstractSingleThing;
 import cn.superiormc.ultimateshop.objects.items.ThingType;
 import cn.superiormc.ultimateshop.objects.items.prices.ObjectSinglePrice;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.math.BigDecimal;
@@ -27,8 +28,8 @@ public class ObjectDisplayPlaceholder implements Comparable<ObjectDisplayPlaceho
         }
     }
 
-    public String getDisplayName(int multi, BigDecimal amount, boolean alwaysStatic) {
-        return thing.getDisplayName(multi, amount, alwaysStatic);
+    public String getDisplayName(Player player, int multi, BigDecimal amount, boolean alwaysStatic) {
+        return thing.getDisplayName(player, multi, amount, alwaysStatic);
     }
 
     @Override

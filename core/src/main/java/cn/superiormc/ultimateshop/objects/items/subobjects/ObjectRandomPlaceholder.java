@@ -51,12 +51,12 @@ public class ObjectRandomPlaceholder {
                 }
 
                 int rate = single.getInt("rate", 1);
-                UltimateShop.methodUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fAdded element " + key + " for random placeholder: " + id + ".yml!");
+                TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fAdded element " + key + " for random placeholder: " + id + ".yml!");
 
                 elements.add(new RandomElement(key, rate, new ObjectCondition(single.getConfigurationSection("conditions"))));
             }
         }
-        UltimateShop.methodUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fLoaded random placeholder: " + id + ".yml!");
+        TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fLoaded random placeholder: " + id + ".yml!");
     }
 
     public Collection<ObjectRandomPlaceholder> getNotSameAs() {
@@ -244,24 +244,24 @@ public class ObjectRandomPlaceholder {
         }
         LocalDateTime tempVal1 = getRefreshDoneTimeObject(player, id);
         if (tempVal1 == null || tempVal1.getYear() == 2999) {
-            return ConfigManager.configManager.getString("placeholder.next.never");
+            return ConfigManager.configManager.getString(player, "placeholder.next.never");
         }
         Duration duration = Duration.between(CommonUtil.getNowTime(), tempVal1);
         long totalSeconds = duration.getSeconds();
         if (totalSeconds < 0) {
-            return ConfigManager.configManager.getString("placeholder.next.never");
+            return ConfigManager.configManager.getString(player, "placeholder.next.never");
         }
         long days = totalSeconds / (24 * 3600);
         long hours = (totalSeconds % (24 * 3600)) / 3600;
         long minutes = (totalSeconds % 3600) / 60;
         long seconds = totalSeconds % 60;
         if (days > 0) {
-            return ConfigManager.configManager.getString("placeholder.next.with-day-format").replace("{d}", String.valueOf(days))
+            return ConfigManager.configManager.getString(player, "placeholder.next.with-day-format").replace("{d}", String.valueOf(days))
                     .replace("{h}", String.format("%02d", hours))
                     .replace("{m}", String.format("%02d", minutes))
                     .replace("{s}", String.format("%02d", seconds));
         }
-        return ConfigManager.configManager.getString("placeholder.next.without-day-format").replace("{h}", String.valueOf(hours))
+        return ConfigManager.configManager.getString(player, "placeholder.next.without-day-format").replace("{h}", String.valueOf(hours))
                 .replace("{m}", String.format("%02d", minutes))
                 .replace("{s}", String.format("%02d", seconds));
     }

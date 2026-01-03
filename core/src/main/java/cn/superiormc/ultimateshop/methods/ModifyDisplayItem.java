@@ -91,7 +91,7 @@ public class ModifyDisplayItem {
         Map<Character, Boolean> prefixConditions =
                 buildPrefixMap(player, item, clickType, buyMore, bedrock, ObjectCache, serverCache);
 
-        for (String rawLine : item.getAddLore()) {
+        for (String rawLine : item.getAddLore(player)) {
 
             if (rawLine.endsWith("-i") || rawLine.endsWith("-m") || rawLine.endsWith("-b")) {
                 ErrorManager.errorManager.sendErrorMessage("§cYour display item add lore config is not updated, please reconfigure your " +
@@ -144,18 +144,18 @@ public class ModifyDisplayItem {
                     "buy-times-player", String.valueOf(ObjectCache.getBuyUseTimes()),
                     "sell-times-player", String.valueOf(ObjectCache.getSellUseTimes()),
 
-                    "buy-refresh-player", ObjectCache.getBuyRefreshTimeDisplayName(),
-                    "sell-refresh-player", ObjectCache.getSellRefreshTimeDisplayName(),
-                    "buy-next-player", ObjectCache.getBuyRefreshTimeNextName(),
-                    "sell-next-player", ObjectCache.getSellRefreshTimeNextName(),
+                    "buy-refresh-player", ObjectCache.getBuyRefreshTimeDisplayName(player),
+                    "sell-refresh-player", ObjectCache.getSellRefreshTimeDisplayName(player),
+                    "buy-next-player", ObjectCache.getBuyRefreshTimeNextName(player),
+                    "sell-next-player", ObjectCache.getSellRefreshTimeNextName(player),
 
                     "buy-times-server", String.valueOf(serverCache.getBuyUseTimes()),
                     "sell-times-server", String.valueOf(serverCache.getSellUseTimes()),
 
-                    "buy-refresh-server", serverCache.getBuyRefreshTimeDisplayName(),
-                    "sell-refresh-server", serverCache.getSellRefreshTimeDisplayName(),
-                    "buy-next-server", serverCache.getBuyRefreshTimeNextName(),
-                    "sell-next-server", serverCache.getSellRefreshTimeNextName(),
+                    "buy-refresh-server", serverCache.getBuyRefreshTimeDisplayName(player),
+                    "sell-refresh-server", serverCache.getSellRefreshTimeDisplayName(player),
+                    "buy-next-server", serverCache.getBuyRefreshTimeNextName(player),
+                    "sell-next-server", serverCache.getSellRefreshTimeNextName(player),
 
                     "last-buy-player", ObjectCache.getBuyLastTimeName(),
                     "last-sell-player", ObjectCache.getSellLastTimeName(),
@@ -313,33 +313,33 @@ public class ModifyDisplayItem {
     private static String getBuyClickPlaceholder(Player player, int multi, ObjectItem item, String clickType) {
         if (!ConfigManager.configManager.getBoolean("placeholder.click.enabled")) {
             if (item.getSellPrice().empty || clickType.equals("buy")) {
-                return ConfigManager.configManager.getString("placeholder.click.buy-with-no-sell", "", "amount", String.valueOf(multi));
+                return ConfigManager.configManager.getString(player, "placeholder.click.buy-with-no-sell", "", "amount", String.valueOf(multi));
             } else {
-                return ConfigManager.configManager.getString("placeholder.click.buy", "", "amount", String.valueOf(multi));
+                return ConfigManager.configManager.getString(player, "placeholder.click.buy", "", "amount", String.valueOf(multi));
             }
         }
         String s = "";
         switch (BuyProductMethod.startBuy(item, player, false, true, multi).getStatus()) {
             case ERROR:
-                s = ConfigManager.configManager.getString("placeholder.click.error", "",  "amount", String.valueOf(multi));
+                s = ConfigManager.configManager.getString(player, "placeholder.click.error", "",  "amount", String.valueOf(multi));
                 break;
             case PERMISSION:
-                s = ConfigManager.configManager.getString("placeholder.click.buy-condition-not-meet", "",  "amount", String.valueOf(multi));
+                s = ConfigManager.configManager.getString(player, "placeholder.click.buy-condition-not-meet", "",  "amount", String.valueOf(multi));
                 break;
             case PLAYER_MAX:
-                s = ConfigManager.configManager.getString("placeholder.click.buy-max-limit-player", "", "amount", String.valueOf(multi));
+                s = ConfigManager.configManager.getString(player, "placeholder.click.buy-max-limit-player", "", "amount", String.valueOf(multi));
                 break;
             case SERVER_MAX:
-                s = ConfigManager.configManager.getString("placeholder.click.buy-max-limit-server", "", "amount", String.valueOf(multi));
+                s = ConfigManager.configManager.getString(player, "placeholder.click.buy-max-limit-server", "", "amount", String.valueOf(multi));
                 break;
             case NOT_ENOUGH :
-                s = ConfigManager.configManager.getString("placeholder.click.buy-price-not-enough", "", "amount", String.valueOf(multi));
+                s = ConfigManager.configManager.getString(player, "placeholder.click.buy-price-not-enough", "", "amount", String.valueOf(multi));
                 break;
             case DONE :
                 if (item.getSellPrice().empty || clickType.equals("buy")) {
-                    s = ConfigManager.configManager.getString("placeholder.click.buy-with-no-sell", "", "amount", String.valueOf(multi));
+                    s = ConfigManager.configManager.getString(player, "placeholder.click.buy-with-no-sell", "", "amount", String.valueOf(multi));
                 } else {
-                    s = ConfigManager.configManager.getString("placeholder.click.buy", "", "amount", String.valueOf(multi));
+                    s = ConfigManager.configManager.getString(player, "placeholder.click.buy", "", "amount", String.valueOf(multi));
                 }
                 break;
         }
@@ -349,33 +349,33 @@ public class ModifyDisplayItem {
     private static String getSellClickPlaceholder(Player player, int multi, ObjectItem item, String clickType) {
         if (!ConfigManager.configManager.getBoolean("placeholder.click.enabled")) {
             if (item.getBuyPrice().empty || clickType.equals("sell")) {
-                return ConfigManager.configManager.getString("placeholder.click.sell-with-no-buy", "",  "amount", String.valueOf(multi));
+                return ConfigManager.configManager.getString(player, "placeholder.click.sell-with-no-buy", "",  "amount", String.valueOf(multi));
             } else {
-                return ConfigManager.configManager.getString("placeholder.click.sell", "",  "amount", String.valueOf(multi));
+                return ConfigManager.configManager.getString(player, "placeholder.click.sell", "",  "amount", String.valueOf(multi));
             }
         }
         String s;
         switch (SellProductMethod.startSell(item, player, false, true, multi).getStatus()) {
             case ERROR :
-                s = ConfigManager.configManager.getString("placeholder.click.error", "",  "amount", String.valueOf(multi));
+                s = ConfigManager.configManager.getString(player, "placeholder.click.error", "",  "amount", String.valueOf(multi));
                 break;
             case PERMISSION:
-                s = ConfigManager.configManager.getString("placeholder.click.sell-condition-not-meet", "",  "amount", String.valueOf(multi));
+                s = ConfigManager.configManager.getString(player, "placeholder.click.sell-condition-not-meet", "",  "amount", String.valueOf(multi));
                 break;
             case PLAYER_MAX:
-                s = ConfigManager.configManager.getString("placeholder.click.sell-max-limit-player", "",  "amount", String.valueOf(multi));
+                s = ConfigManager.configManager.getString(player, "placeholder.click.sell-max-limit-player", "",  "amount", String.valueOf(multi));
                 break;
             case SERVER_MAX:
-                s = ConfigManager.configManager.getString("placeholder.click.sell-max-limit-server", "",  "amount", String.valueOf(multi));
+                s = ConfigManager.configManager.getString(player, "placeholder.click.sell-max-limit-server", "",  "amount", String.valueOf(multi));
                 break;
             case NOT_ENOUGH :
-                s = ConfigManager.configManager.getString("placeholder.click.sell-price-not-enough", "",  "amount", String.valueOf(multi));
+                s = ConfigManager.configManager.getString(player, "placeholder.click.sell-price-not-enough", "",  "amount", String.valueOf(multi));
                 break;
             case DONE :
                 if (item.getBuyPrice().empty || clickType.equals("sell")) {
-                    s = ConfigManager.configManager.getString("placeholder.click.sell-with-no-buy", "",  "amount", String.valueOf(multi));
+                    s = ConfigManager.configManager.getString(player, "placeholder.click.sell-with-no-buy", "",  "amount", String.valueOf(multi));
                 } else {
-                    s = ConfigManager.configManager.getString("placeholder.click.sell", "",  "amount", String.valueOf(multi));
+                    s = ConfigManager.configManager.getString(player, "placeholder.click.sell", "",  "amount", String.valueOf(multi));
                 }
                 break;
             default :

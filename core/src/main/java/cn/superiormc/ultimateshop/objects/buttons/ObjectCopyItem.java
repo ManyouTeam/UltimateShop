@@ -24,7 +24,7 @@ public class ObjectCopyItem extends AbstractButton {
         this.section = section;
         this.item = item;
         initDisplayItem();
-        UltimateShop.methodUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fLoaded sub button for product " + item.getProduct() + " in shop " +
+        TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fLoaded sub button for product " + item.getProduct() + " in shop " +
                 item.getShop() + "!");
     }
 

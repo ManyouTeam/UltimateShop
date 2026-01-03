@@ -92,11 +92,11 @@ public class ObjectMenu {
         }
         File file = new File(UltimateShop.instance.getDataFolder() + "/menus/" + fileName + ".yml");
         if (!file.exists()){
-            UltimateShop.methodUtil.sendMessage(null, TextUtil.pluginPrefix() + " §cError: We can not found your menu file: " +
+            TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §cError: We can not found your menu file: " +
                     fileName + ".yml!");
         } else {
             if (type == MenuType.Common) {
-                UltimateShop.methodUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fLoaded menu: " + fileName + ".yml!");
+                TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fLoaded menu: " + fileName + ".yml!");
             }
             this.menuConfigs = YamlConfiguration.loadConfiguration(file);
         }
@@ -249,7 +249,7 @@ public class ObjectMenu {
             };
             command.setDescription(menu.getString("custom-command.description", "UltimateShop Custom Command for " + commandName));
             CommandUtil.registerCustomCommand(command);
-            UltimateShop.methodUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fRegistered custom command for menu: " + fileName + ".");
+            TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fRegistered custom command for menu: " + fileName + ".");
         }
     }
 

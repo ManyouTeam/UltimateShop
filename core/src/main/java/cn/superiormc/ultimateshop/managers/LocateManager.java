@@ -49,7 +49,7 @@ public class LocateManager {
         if (!InitManager.initManager.isFirstLoad() && !ConfigManager.configManager.getBoolean("config-files.minecraft-locate-file.generate-new-one")) {
             return;
         }
-        UltimateShop.methodUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fDownloading Minecraft locate file, this will cost some time...");
+        TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fDownloading Minecraft locate file, this will cost some time...");
         String MINECRAFT_VERSION = "1." + UltimateShop.majorVersion + "." + UltimateShop.minorVersion;
         if (MINECRAFT_VERSION.endsWith(".0")) {
             MINECRAFT_VERSION = MINECRAFT_VERSION.substring(0, MINECRAFT_VERSION.length() -2);

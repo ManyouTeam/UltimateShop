@@ -423,10 +423,10 @@ public class ObjectItem extends AbstractButton {
         return buyMoreMenu;
     }
 
-    public List<String> getAddLore() {
+    public List<String> getAddLore(Player player) {
         List<String> resultString = itemConfig.getStringList("add-lore");
         if (resultString.isEmpty()) {
-            return ConfigManager.configManager.getStringList("display-item.add-lore");
+            return ConfigManager.configManager.getStringList(player, "display-item.add-lore");
         } else {
             return resultString;
         }

@@ -25,7 +25,7 @@ buttons:
   3:
     display-item:
       material: ARROW
-      name: '&c« Go back'
+      name: '{lang:back-button}'
     actions:
       1:
         type: open_menu

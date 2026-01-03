@@ -57,8 +57,8 @@ public class ItemUtil {
     public static boolean isSameItem(ItemStack item1, ItemStack item2) {
         if (ConfigManager.configManager.getStringOrDefault("sell-mode", "sell.sell-method", "Bukkit").equals("Bukkit")) {
             if (ConfigManager.configManager.getBoolean("debug")) {
-                UltimateShop.methodUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fItem in player inventory: " + item1);
-                UltimateShop.methodUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fItem in shop: " + item2);
+                TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fItem in player inventory: " + item1);
+                TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fItem in shop: " + item2);
             }
             return item1.isSimilar(item2);
         }

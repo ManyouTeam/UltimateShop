@@ -18,7 +18,7 @@ public class ErrorManager {
 
     public void sendErrorMessage(String message){
         if (!getError || !message.equals(lastErrorMessage)) {
-            UltimateShop.methodUtil.sendMessage(null, TextUtil.pluginPrefix() + " " + message);
+            TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " " + message);
             lastErrorMessage = message;
             getError = true;
             try {

@@ -192,7 +192,7 @@ public class SubAddBuyTimes extends AbstractCommand {
             case 3:
                 ObjectShop tempVal3 = ConfigManager.configManager.getShop(args[1]);
                 if (tempVal3 == null) {
-                    tempVal1.add(LanguageManager.languageManager.getStringText("command-tab.unknown-shop"));
+                    tempVal1.add(LanguageManager.languageManager.getStringText(player, "command-tab.unknown-shop"));
                     break;
                 }
                 for (ObjectItem tempVal4 : tempVal3.getProductList()) {

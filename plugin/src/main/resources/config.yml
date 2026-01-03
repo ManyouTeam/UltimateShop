@@ -8,6 +8,8 @@ debug: false
 
 config-files:
   language: en_US
+  # Premium version only.
+  per-player-language: true
   force-parse-mini-message: true
   # Premium version only.
   minecraft-locate-file:
@@ -85,7 +87,7 @@ menu:
     click-update: false
   sell-all:
     size: 54
-    title: '&fSell All &7- Esc to confirm sell!'
+    title: '{lang}'
     black-slots: []
   # Premium version only
   bedrock:
@@ -96,24 +98,24 @@ menu:
     not-auto-close: true
     # Make this option be empty to disable.
     price-extra-line:
-      default: '&6Buy: {buy-price} &6| Sell: {sell-price}'
-      only-buy: '&6Buy: {buy-price}'
-      only-sell: '&6Sell: {sell-price}'
+      default: '{lang}'
+      only-buy: '{lang}'
+      only-sell: '{lang}'
     buy-or-sell:
-      title: 'Select Amount: {item-name}'
+      title: '{lang}'
       buttons:
         amount:
-          name: 'Amount'
-          tip: 'Type amount here!'
+          name: '{lang}'
+          tip: '{lang}'
     info:
-      title: 'Product Info: {item-name} x{amount}'
+      title: '{lang}'
       buttons:
-        buy: 'Buy'
-        sell: 'Sell'
-        buy-more: 'Select Amount'
-        sell-all: 'Sell All'
+        buy: '{lang}'
+        sell: '{lang}'
+        buy-more: '{lang}'
+        sell-all: '{lang}'
         # Remove this option if you don't want this button.
-        back: '&cBack'
+        back: '{lang}'
   buy-more-menu:
     not-open-when-invalid: true
     display-item-max-stack: true
@@ -199,33 +201,7 @@ display-item:
   # @+lower case means conditional lore, do not remove them here.
   # Otherwise, the line without this will always display it.
   add-lore:
-    - '@n '
-    - '@a&ePurchase: {buy-price}'
-    - '@b&eSell: {sell-price}'
-    - '@c&#FF7777Player Buy Stock: {buy-times-player}/{buy-limit-player}'
-    - '@d&#FF7777Server Buy Stock: {buy-times-server}/{buy-limit-server}'
-    - '@e&#FF7777Player Sell Limit: {sell-times-player}/{sell-limit-player}'
-    - '@f&#FF7777Server Sell Limit: {sell-times-server}/{sell-limit-server}'
-    - '@g '
-    - '@g&#ff3300cCan not buy more!'
-    - '@g&8Refresh Time: {buy-refresh-player}'
-    - '@i '
-    - '@i&#ff3300Sold Out!'
-    - '@i&8Refresh Time: {buy-refresh-server}'
-    - '@h '
-    - '@h&#ff3300Can not sell more!'
-    - '@h&8Refresh Time: {sell-refresh-player}'
-    - '@j'
-    - '@j&#ff3300Can not sell more for server!'
-    - '@j&8Refresh Time: {sell-refresh-server}'
-    - '@n '
-    - '@a@u@y{buy-click}'
-    - '@b@v@y{sell-click}'
-    - '@k@q@y&#FFFACDRight-Shift click to pick amount!'
-    - '@m@v@y&#FFFACDDrop (Q key) to sell all!'
-    - '(@n)&c&l:( Can not do this'
-    - '(@a)@u@p&cThis item can not be purchased'
-    - '(@b)@v@p&cThis item can not be sold'
+    - '{lang}'
 
 placeholder:
   auto-settings:
@@ -249,58 +225,50 @@ placeholder:
       replace-value: '%formatter_number_format_{amount}%'
   # Premium version only
   compare:
-    up: '↑'
-    down: '↓'
-    same: '-'
-  # Premium version only
-  status:
-    # If disabled, status placeholder will only display in shop GUI.
-    # For sell all, sell stick etc. still can not use status placeholder because it will sell not only 1 type product
-    # and we can not know whether total price is cheaper or higher.
-    can-used-everywhere: false
-  math:
-    scale: 0
+    up: '{lang}'
+    down: '{lang}'
+    same: '{lang}'
   cron:
-    format: "yyyy-MM-dd HH:mm:ss"
+    format: "{lang}"
   data:
     # If your server never use dynamic value in prices or similar things, you can set this option to false.
     # This will improve little plugin performance.
     can-used-in-amount: true
   refresh:
-    format: "yyyy-MM-dd HH:mm:ss"
-    never: "Never"
+    format: "{lang}"
+    never: "{lang}"
   # Premium version only
   next:
-    with-day-format: "{d}d {h}h {m}m {s}s"
-    without-day-format: "{h}h {m}m {s}s"
-    never: "Waiting for next refresh"
+    with-day-format: "{lang}"
+    without-day-format: "{lang}"
+    never: "{lang}"
   price:
-    split-symbol-any: ', '
-    split-symbol-all: ', '
-    replace-new-line-symbol: ', '
-    unknown: "Unknown"
-    unknown-price-type: "Unknown Price Type"
-    empty: "Price is empty!"
+    split-symbol-any: '{lang}'
+    split-symbol-all: '{lang}'
+    replace-new-line-symbol: '{lang}'
+    unknown: "{lang}"
+    unknown-price-type: "{lang}"
+    empty: "{lang}"
   click:
     # If enabled, {buy-click} and {sell-stick} will display different value according to product status.
     # But, it will maybe make server lag if you are running big server and have many products in your shop.
     enabled: false
-    buy: '&#FFFACDLeft-click to buy!'
-    sell: '&#FFFACDRight-click to sell!'
-    buy-with-no-sell: '&#FFFACDClick to buy!'
-    sell-with-no-buy: '&#FFFACDClick to sell!'
-    buy-max-limit-player: '&#ff3300You can not buy more!'
-    buy-max-limit-server: '&#ff3300SOLD OUT!'
-    sell-max-limit-player: '&#ff3300Can not sell more!'
-    sell-max-limit-server: '&#ff3300THIS ITEM CAN NOT BE SOLD!'
-    buy-price-not-enough: '&#ff3300Do not have enough money to buy!'
-    sell-price-not-enough: '&#ff3300Do not have enough item to sell!'
-    error: '&#ff3300Error!'
-    buy-condition-not-meet: '&#ff3300Not meet the buy condition!'
-    sell-condition-not-meet: '&#ff3300Not meet the sell condition!'
+    buy: '{lang}'
+    sell: '{lang}'
+    buy-with-no-sell: '{lang}'
+    sell-with-no-buy: '{lang}'
+    buy-max-limit-player: '{lang}'
+    buy-max-limit-server: '{lang}'
+    sell-max-limit-player: '{lang}'
+    sell-max-limit-server: '{lang}'
+    buy-price-not-enough: '{lang}'
+    sell-price-not-enough: '{lang}'
+    error: '{lang}'
+    buy-condition-not-meet: '{lang}'
+    sell-condition-not-meet: '{lang}'
   # Premium version only.
   sell-stick:
-    infinite: "&cInfinite"
+    infinite: "{lang}"
 
 database:
   enabled: false

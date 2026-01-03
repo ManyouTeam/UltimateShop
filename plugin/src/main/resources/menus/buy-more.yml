@@ -1,4 +1,4 @@
-title: 'Select Quantity'
+title: '{lang:buy-more-title}'
 
 layout:
   - '000000000'
@@ -14,7 +14,7 @@ amount-items:
       material: GREEN_WOOL
       name: '&a+1'
       lore:
-        - '&7Click to add 1 more.'
+        - '{lang:buy-more-add-1}'
     add-amount: 1
   2:
     display-item:
@@ -22,7 +22,7 @@ amount-items:
       amount: 10
       name: '&a+10'
       lore:
-        - '&7Click to add 10 more.'
+        - '{lang:buy-more-add-10}'
     add-amount: 10
   3:
     display-item:
@@ -30,14 +30,14 @@ amount-items:
       amount: 32
       name: '&a+32'
       lore:
-        - '&7Click to add 32 more.'
+        - '{lang:buy-more-add-32}'
     add-amount: 32
   4:
     display-item:
       material: RED_WOOL
       name: '&c-1'
       lore:
-        - '&7Click to add 1 more.'
+        - '{lang:buy-more-reduce-1}'
     add-amount: -1
   5:
     display-item:
@@ -45,7 +45,7 @@ amount-items:
       amount: 10
       name: '&c-10'
       lore:
-        - '&7Click to add 10 more.'
+        - '{lang:buy-more-reduce-10}'
     add-amount: -10
   6:
     display-item:
@@ -53,7 +53,7 @@ amount-items:
       amount: 32
       name: '&c-32'
       lore:
-        - '&7Click to add 32 more.'
+        - '{lang:buy-more-reduce-32}'
     add-amount: -32
     # Support replace add-amount option to set-amount.
     # set-amount: 32
@@ -64,27 +64,27 @@ confirm-items:
   D:
     display-item:
       material: PAPER
-      name: '&a&lCLICK TO BUY x{amount}'
+      name: '{lang:buy-more-buy-button} x{amount}'
       lore:
-        - '&aClick to confirm and purchase'
-        - '&athe quantity you have selected.'
+        - '{lang:buy-more-buy-button-lore-1}'
+        - '{lang:buy-more-buy-button-lore-2}'
     # You can remove click-action option, then confirm button can do all things, like buy, sell, sell all.
     # If this option exists, then this confirm button can only do the thing.
     click-action: buy
   E:
     display-item:
       material: PAPER
-      name: '&c&lCLICK TO SELL x{amount}'
+      name: '{lang:buy-more-sell-button} x{amount}'
       lore:
-        - '&cClick to confirm and sell'
-        - '&cthe quantity you have selected.'
+        - '{lang:buy-more-sell-button-lore-1}'
+        - '{lang:buy-more-sell-button-lore-2}'
     click-action: sell
 
 buttons:
   A:
     display-item:
       material: ARROW
-      name: '&c« Go back'
+      name: '{lang:back-button}'
     actions:
       1:
         type: shop_menu

@@ -134,7 +134,7 @@ public class ObjectShop {
             };
             command.setDescription(config.getString("settings.custom-command.description", "UltimateShop Custom Command for " + commandName));
             CommandUtil.registerCustomCommand(command);
-            UltimateShop.methodUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fRegistered custom command for shop: " + shopName + ".");
+            TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fRegistered custom command for shop: " + shopName + ".");
         }
     }
 

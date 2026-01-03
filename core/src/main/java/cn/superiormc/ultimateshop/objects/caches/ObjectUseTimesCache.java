@@ -9,6 +9,7 @@ import cn.superiormc.ultimateshop.objects.items.subobjects.ObjectRandomPlacehold
 import cn.superiormc.ultimateshop.utils.CommandUtil;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
 import cn.superiormc.ultimateshop.utils.TextUtil;
+import org.bukkit.entity.Player;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -75,13 +76,13 @@ public class ObjectUseTimesCache {
         }
         if (cooldownBuyTime != null) {
             if (ConfigManager.configManager.getBoolean("debug")) {
-                UltimateShop.methodUtil.sendMessage(null, TextUtil.pluginPrefix() + " §cSet cooldown time to " + product);
+                TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §cSet cooldown time to " + product);
             }
             this.cooldownBuyTime = CommonUtil.stringToTime(cooldownBuyTime);
         }
         if (cooldownSellTime != null) {
             if (ConfigManager.configManager.getBoolean("debug")) {
-                UltimateShop.methodUtil.sendMessage(null, TextUtil.pluginPrefix() + " §cSet cooldown time to " + product);
+                TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §cSet cooldown time to " + product);
             }
             this.cooldownSellTime = CommonUtil.stringToTime(cooldownSellTime);
         }
@@ -384,7 +385,7 @@ public class ObjectUseTimesCache {
             return null;
         }
         if (ConfigManager.configManager.getBoolean("debug")) {
-            UltimateShop.methodUtil.sendMessage(null, TextUtil.pluginPrefix() + " §cCooldown time: " + cooldownBuyTime);
+            TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §cCooldown time: " + cooldownBuyTime);
         }
         return CommonUtil.timeToString(cooldownBuyTime);
     }
@@ -394,7 +395,7 @@ public class ObjectUseTimesCache {
             return null;
         }
         if (ConfigManager.configManager.getBoolean("debug")) {
-            UltimateShop.methodUtil.sendMessage(null, TextUtil.pluginPrefix() + " §cCooldown time: " + cooldownSellTime);
+            TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §cCooldown time: " + cooldownSellTime);
         }
         return CommonUtil.timeToString(cooldownSellTime);
     }
@@ -448,38 +449,38 @@ public class ObjectUseTimesCache {
         return result;
     }
 
-    public String getBuyRefreshTimeDisplayName() {
+    public String getBuyRefreshTimeDisplayName(Player player) {
         LocalDateTime tempVal1 = getBuyRefreshTimeWithUpdate();
         if (tempVal1 == null || tempVal1.getYear() == 2999) {
-            return ConfigManager.configManager.getString("placeholder.refresh.never");
+            return ConfigManager.configManager.getString(player, "placeholder.refresh.never");
         }
-        return CommonUtil.timeToString(tempVal1, ConfigManager.configManager.getString("placeholder.refresh.format"));
+        return CommonUtil.timeToString(tempVal1, ConfigManager.configManager.getString(player, "placeholder.refresh.format"));
     }
 
-    public String getBuyRefreshTimeNextName() {
+    public String getBuyRefreshTimeNextName(Player player) {
         if (UltimateShop.freeVersion) {
             return "";
         }
         LocalDateTime tempVal1 = getBuyRefreshTimeWithUpdate();
         if (tempVal1 == null || tempVal1.getYear() == 2999) {
-            return ConfigManager.configManager.getString("placeholder.next.never");
+            return ConfigManager.configManager.getString(player, "placeholder.next.never");
         }
         Duration duration = Duration.between(CommonUtil.getNowTime(), tempVal1);
         long totalSeconds = duration.getSeconds();
         if (totalSeconds < 0) {
-            return ConfigManager.configManager.getString("placeholder.next.never");
+            return ConfigManager.configManager.getString(player, "placeholder.next.never");
         }
         long days = totalSeconds / (24 * 3600);
         long hours = (totalSeconds % (24 * 3600)) / 3600;
         long minutes = (totalSeconds % 3600) / 60;
         long seconds = totalSeconds % 60;
         if (days > 0) {
-            return ConfigManager.configManager.getString("placeholder.next.with-day-format").replace("{d}", String.valueOf(days))
+            return ConfigManager.configManager.getString(player, "placeholder.next.with-day-format").replace("{d}", String.valueOf(days))
                     .replace("{h}", String.format("%02d", hours))
                     .replace("{m}", String.format("%02d", minutes))
                     .replace("{s}", String.format("%02d", seconds));
         }
-        return ConfigManager.configManager.getString("placeholder.next.without-day-format").replace("{h}", String.valueOf(hours))
+        return ConfigManager.configManager.getString(player, "placeholder.next.without-day-format").replace("{h}", String.valueOf(hours))
                 .replace("{m}", String.format("%02d", minutes))
                 .replace("{s}", String.format("%02d", seconds));
     }
@@ -508,38 +509,38 @@ public class ObjectUseTimesCache {
         return String.valueOf(duration.getSeconds());
     }
 
-    public String getSellRefreshTimeDisplayName() {
+    public String getSellRefreshTimeDisplayName(Player player) {
         LocalDateTime tempVal1 = getSellRefreshTimeWithUpdate();
         if (tempVal1 == null || tempVal1.getYear() == 2999) {
-            return ConfigManager.configManager.getString("placeholder.refresh.never");
+            return ConfigManager.configManager.getString(player, "placeholder.refresh.never");
         }
-        return CommonUtil.timeToString(tempVal1, ConfigManager.configManager.getString("placeholder.refresh.format"));
+        return CommonUtil.timeToString(tempVal1, ConfigManager.configManager.getString(player, "placeholder.refresh.format"));
     }
 
-    public String getSellRefreshTimeNextName() {
+    public String getSellRefreshTimeNextName(Player player) {
         if (UltimateShop.freeVersion) {
             return "0";
         }
         LocalDateTime tempVal1 = getSellRefreshTimeWithUpdate();
         if (tempVal1 == null || tempVal1.getYear() == 2999) {
-            return ConfigManager.configManager.getString("placeholder.next.never");
+            return ConfigManager.configManager.getString(player, "placeholder.next.never");
         }
         Duration duration = Duration.between(CommonUtil.getNowTime(), tempVal1);
         long totalSeconds = duration.getSeconds();
         if (totalSeconds < 0) {
-            return ConfigManager.configManager.getString("placeholder.next.never");
+            return ConfigManager.configManager.getString(player, "placeholder.next.never");
         }
         long days = totalSeconds / (24 * 3600);
         long hours = (totalSeconds % (24 * 3600)) / 3600;
         long minutes = (totalSeconds % 3600) / 60;
         long seconds = totalSeconds % 60;
         if (days > 0) {
-            return ConfigManager.configManager.getString("placeholder.next.with-day-format").replace("{d}", String.valueOf(days))
+            return ConfigManager.configManager.getString(player, "placeholder.next.with-day-format").replace("{d}", String.valueOf(days))
                     .replace("{h}", String.format("%02d", hours))
                     .replace("{m}", String.format("%02d", minutes))
                     .replace("{s}", String.format("%02d", seconds));
         }
-        return ConfigManager.configManager.getString("placeholder.next.without-day-format").replace("{h}", String.valueOf(hours))
+        return ConfigManager.configManager.getString(player, "placeholder.next.without-day-format").replace("{h}", String.valueOf(hours))
                 .replace("{m}", String.format("%02d", minutes))
                 .replace("{s}", String.format("%02d", seconds));
     }

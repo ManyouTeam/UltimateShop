@@ -55,7 +55,7 @@ public abstract class DatabaseDialect {
 
             // 如果本地不存在，则下载
             if (!Files.exists(jarPath)) {
-                UltimateShop.methodUtil.sendMessage(
+                TextUtil.sendMessage(
                         null,
                         TextUtil.pluginPrefix() + " §fDownloading " + jarName + " ...");
                 try (InputStream in = new URL(mavenUrl).openStream()) {
@@ -71,11 +71,11 @@ public abstract class DatabaseDialect {
             Driver driverInstance = (Driver) driverClass.getDeclaredConstructor().newInstance();
             DriverManager.registerDriver(new DriverShim(driverInstance));
 
-            UltimateShop.methodUtil.sendMessage(
+            TextUtil.sendMessage(
                     null,
                     TextUtil.pluginPrefix() + " §f" + driverName + " loaded!");
         } catch (Throwable e) {
-            UltimateShop.methodUtil.sendMessage(
+            TextUtil.sendMessage(
                     null,
                     TextUtil.pluginPrefix() + " §fFailed to load " + driverName + "!");
             e.printStackTrace();

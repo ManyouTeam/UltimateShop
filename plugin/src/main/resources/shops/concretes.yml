@@ -1,7 +1,7 @@
 settings:
   menu: 'example-shop-menu'
   buy-more: true
-  shop-name: 'Concrete Shop'
+  shop-name: '{lang:concretes-shop-name}'
   hide-message: false
   secret-shop-items: true
 

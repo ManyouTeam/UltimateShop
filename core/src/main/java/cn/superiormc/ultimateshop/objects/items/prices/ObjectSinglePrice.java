@@ -215,34 +215,34 @@ public class ObjectSinglePrice extends AbstractSingleThing {
     }
 
     @Override
-    public String getDisplayName(int multi, BigDecimal amount, boolean alwaysStatic) {
+    public String getDisplayName(Player player, int multi, BigDecimal amount, boolean alwaysStatic) {
         if (empty) {
-            return ConfigManager.configManager.getString("placeholder.price.empty");
+            return ConfigManager.configManager.getString(player, "placeholder.price.empty");
         }
         if (singleSection == null) {
-            return ConfigManager.configManager.getString("placeholder.price.unknown");
+            return ConfigManager.configManager.getString(player, "placeholder.price.unknown");
         }
         String tempVal1 = singleSection.getString("placeholder",
-                ConfigManager.configManager.getString("placeholder.price.unknown"));
+                ConfigManager.configManager.getString(player, "placeholder.price.unknown"));
         String tempVal2;
         if (customPrice) {
-            tempVal2 = ConfigManager.configManager.getString("prices." +
+            tempVal2 = ConfigManager.configManager.getString(player, "prices." +
                     singleSection.getString("custom-type") + ".placeholder", tempVal1);
         } else {
             tempVal2 = singleSection.getString("placeholder", tempVal1);
         }
         if (!alwaysStatic && !tempVal2.contains("{status}") && !isStatic && baseAmount != null && !UltimateShop.freeVersion &&
                 ConfigManager.configManager.getBoolean("placeholder.auto-settings.add-status-in-dynamic-price-placeholder.enabled")) {
-            tempVal2 = tempVal2 + " " + StaticPlaceholder.getCompareValue(baseAmount.multiply(new BigDecimal(multi)), amount);
+            tempVal2 = tempVal2 + " " + StaticPlaceholder.getCompareValue(player, baseAmount.multiply(new BigDecimal(multi)), amount);
         }
         if (tempVal2.contains("{amount}") && ConfigManager.configManager.getBoolean("placeholder.auto-settings.change-amount-in-all-price-placeholder.enabled")) {
-            tempVal2 = tempVal2.replace("{amount}", ConfigManager.configManager.getString("placeholder.auto-settings.change-amount-in-all-price-placeholder.replace-value", "{amount}"));
+            tempVal2 = tempVal2.replace("{amount}", ConfigManager.configManager.getString(player, "placeholder.auto-settings.change-amount-in-all-price-placeholder.replace-value", "{amount}"));
         }
         return CommonUtil.modifyString(tempVal2,
                         "amount",
                         String.valueOf(amount),
                         "status",
-                        alwaysStatic || baseAmount == null ? "" : StaticPlaceholder.getCompareValue(baseAmount.multiply(new BigDecimal(multi)), amount));
+                        alwaysStatic || baseAmount == null ? "" : StaticPlaceholder.getCompareValue(player, baseAmount.multiply(new BigDecimal(multi)), amount));
     }
 
     public int getStartApply() {

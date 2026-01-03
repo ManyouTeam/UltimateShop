@@ -1,7 +1,7 @@
 settings:
   menu: 'example-shop-menu'
   buy-more: true
-  shop-name: 'Transport things Shop'
+  shop-name: '{lang:transport-shop-name}'
   hide-message: false
   secret-shop-items: true
 

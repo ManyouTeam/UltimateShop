@@ -73,11 +73,11 @@ public class PlaceholderAPIExpansion extends PlaceholderExpansion {
         } else {
             ObjectShop shop = ConfigManager.configManager.getShop(args[0]);
             if (shop == null) {
-                return LanguageManager.languageManager.getStringText("placeholderapi.unknown-shop");
+                return LanguageManager.languageManager.getStringText(player, "placeholderapi.unknown-shop");
             }
             ObjectItem item = shop.getProduct(args[1]);
             if (item == null) {
-                return LanguageManager.languageManager.getStringText("placeholderapi.unknown-product");
+                return LanguageManager.languageManager.getStringText(player, "placeholderapi.unknown-product");
             }
             ObjectCache ObjectCache = CacheManager.cacheManager.getObjectCache(player);
             ObjectUseTimesCache playerTimesCache = ObjectCache.getUseTimesCache().get(item);
@@ -128,13 +128,13 @@ public class PlaceholderAPIExpansion extends PlaceholderExpansion {
                 case "sell-total-player":
                     return String.valueOf(playerTimesCache.getTotalSellUseTimes());
                 case "buy-refresh-player":
-                    return String.valueOf(playerTimesCache.getBuyRefreshTimeDisplayName());
+                    return String.valueOf(playerTimesCache.getBuyRefreshTimeDisplayName(player));
                 case "sell-refresh-player":
-                    return String.valueOf(playerTimesCache.getSellRefreshTimeDisplayName());
+                    return String.valueOf(playerTimesCache.getSellRefreshTimeDisplayName(player));
                 case "buy-next-player":
-                    return String.valueOf(playerTimesCache.getBuyRefreshTimeNextName());
+                    return String.valueOf(playerTimesCache.getBuyRefreshTimeNextName(player));
                 case "sell-next-player":
-                    return String.valueOf(playerTimesCache.getSellRefreshTimeNextName());
+                    return String.valueOf(playerTimesCache.getSellRefreshTimeNextName(player));
                 case "buy-times-server":
                     return String.valueOf(serverTimesCache.getBuyUseTimes());
                 case "sell-times-server":
@@ -144,13 +144,13 @@ public class PlaceholderAPIExpansion extends PlaceholderExpansion {
                 case "sell-total-server":
                     return String.valueOf(serverTimesCache.getTotalSellUseTimes());
                 case "buy-refresh-server":
-                    return String.valueOf(serverTimesCache.getBuyRefreshTimeDisplayName());
+                    return String.valueOf(serverTimesCache.getBuyRefreshTimeDisplayName(player));
                 case "sell-refresh-server":
-                    return String.valueOf(serverTimesCache.getSellRefreshTimeDisplayName());
+                    return String.valueOf(serverTimesCache.getSellRefreshTimeDisplayName(player));
                 case "buy-next-server":
-                    return String.valueOf(serverTimesCache.getBuyRefreshTimeNextName());
+                    return String.valueOf(serverTimesCache.getBuyRefreshTimeNextName(player));
                 case "sell-next-server":
-                    return String.valueOf(serverTimesCache.getSellRefreshTimeNextName());
+                    return String.valueOf(serverTimesCache.getSellRefreshTimeNextName(player));
                 case "last-buy-player":
                     return playerTimesCache.getBuyLastTimeName();
                 case "last-sell-player":

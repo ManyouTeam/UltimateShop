@@ -35,13 +35,13 @@ public class HookManager {
     private void initNormalHook() {
         if (CommonUtil.checkPluginLoad("PlaceholderAPI")) {
             PlaceholderAPIExpansion.papi = new PlaceholderAPIExpansion(UltimateShop.instance);
-            UltimateShop.methodUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fHooking into PlaceholderAPI...");
+            TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fHooking into PlaceholderAPI...");
             if (PlaceholderAPIExpansion.papi.register()){
-                UltimateShop.methodUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fFinished hook!");
+                TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fFinished hook!");
             }
         }
         if (!UltimateShop.freeVersion && CommonUtil.getClass("org.geysermc.floodgate.api.FloodgateApi")) {
-            UltimateShop.methodUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fHooking into Floodgate...");
+            TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fHooking into Floodgate...");
             UltimateShop.useGeyser = true;
         }
     }
@@ -154,7 +154,7 @@ public class HookManager {
     public void registerNewEconomyHook(String pluginName,
                                        AbstractEconomyHook economyHook) {
         if (!economyHooks.containsKey(pluginName)) {
-            UltimateShop.methodUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fHooking into " + pluginName + "...");
+            TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fHooking into " + pluginName + "...");
             economyHooks.put(pluginName, economyHook);
         }
     }
@@ -162,7 +162,7 @@ public class HookManager {
     public void registerNewItemHook(String pluginName,
                                     AbstractItemHook itemHook) {
         if (!itemHooks.containsKey(pluginName)) {
-            UltimateShop.methodUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fHooking into " + pluginName + "...");
+            TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fHooking into " + pluginName + "...");
             itemHooks.put(pluginName, itemHook);
         }
     }
@@ -170,7 +170,7 @@ public class HookManager {
     public void registerNewProtectionHook(String pluginName,
                                           AbstractProtectionHook protectionHook) {
         if (!protectionHooks.containsKey(pluginName)) {
-            UltimateShop.methodUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fHooking into " + pluginName + "...");
+            TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fHooking into " + pluginName + "...");
             protectionHooks.put(pluginName, protectionHook);
         }
     }

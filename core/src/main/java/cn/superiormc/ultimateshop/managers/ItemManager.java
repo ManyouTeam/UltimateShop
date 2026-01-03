@@ -50,10 +50,10 @@ public class ItemManager {
                 try {
                     if (section.getKeys(false).size() == 1 && object != null) {
                         savedItemMap.put(key, UltimateShop.methodUtil.getItemObject(object));
-                        UltimateShop.methodUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fLoaded Bukkit Saved Item: " + key + ".yml!");
+                        TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fLoaded Bukkit Saved Item: " + key + ".yml!");
                     } else {
                         savedItemFormatMap.put(key, section);
-                        UltimateShop.methodUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fLoaded ItemFormat Saved Item: " + key + ".yml!");
+                        TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fLoaded ItemFormat Saved Item: " + key + ".yml!");
                     }
                 } catch (Throwable throwable) {
                     ErrorManager.errorManager.sendErrorMessage("§cError: Failed to load Saved Item: " + key + ". If this error always happens, try delete this save item because this save item file maybe break or not support new server or plugin version.");

@@ -64,7 +64,7 @@ public class FormInfoGUI extends FormGUI {
         }
         SimpleForm.Builder tempVal2 = SimpleForm.builder();
 
-        tempVal2.title(TextUtil.parse(player, ConfigManager.configManager.getString("menu.bedrock.info.title", "Shop",
+        tempVal2.title(TextUtil.parse(player, ConfigManager.configManager.getString(player, "menu.bedrock.info.title", "Shop",
                         "item-name", item.getDisplayName(player),
                         "amount", amount)));
         List<String> content = new ArrayList<>();
@@ -82,17 +82,17 @@ public class FormInfoGUI extends FormGUI {
         tempVal2.content(TextUtil.parse(bedrockTransfer(content)));
         String itemName = item.getDisplayName(player);
         // 购买
-        ButtonComponent buy = ButtonComponent.of(TextUtil.parse(player, ConfigManager.configManager.getString(
+        ButtonComponent buy = ButtonComponent.of(TextUtil.parse(player, ConfigManager.configManager.getString(player,
                 "menu.bedrock.info.buttons.buy", "Buy", "item-name", itemName)));
         // 回收
-        ButtonComponent sell = ButtonComponent.of(TextUtil.parse(player, ConfigManager.configManager.getString(
-                        "menu.bedrock.info.buttons.sell", "Sell", "item-name", itemName)));
+        ButtonComponent sell = ButtonComponent.of(TextUtil.parse(player, ConfigManager.configManager.getString(player,
+                "menu.bedrock.info.buttons.sell", "Sell", "item-name", itemName)));
         // 一键回收
-        ButtonComponent sellAll = ButtonComponent.of(TextUtil.parse(player, ConfigManager.configManager.getString(
+        ButtonComponent sellAll = ButtonComponent.of(TextUtil.parse(player, ConfigManager.configManager.getString(player,
                 "menu.bedrock.info.buttons.sell-all", "Sell All", "item-name", itemName)));
         // 选择数量
-        ButtonComponent buyMore = ButtonComponent.of(TextUtil.parse(player, ConfigManager.configManager.getString(
-                        "menu.bedrock.info.buttons.buy-more", "Buy More", "item-name", itemName)));
+        ButtonComponent buyMore = ButtonComponent.of(TextUtil.parse(player, ConfigManager.configManager.getString(player,
+                "menu.bedrock.info.buttons.buy-more", "Buy More", "item-name", itemName)));
         Map<ClickType, ButtonComponent> clickEvents = new HashMap<>();
         for (ClickType type : ClickType.values()) {
             String clickType = ConfigManager.configManager.getClickAction(type, item);
@@ -113,7 +113,7 @@ public class FormInfoGUI extends FormGUI {
             clickEvents.put(type, clickEvent);
         }
         // 返回
-        ButtonComponent back = ButtonComponent.of(TextUtil.parse(player, ConfigManager.configManager.getString(
+        ButtonComponent back = ButtonComponent.of(TextUtil.parse(player, ConfigManager.configManager.getString(player,
                 "menu.bedrock.info.buttons.back", "Back"
         )));
         if (!item.getBuyPrice().empty) {

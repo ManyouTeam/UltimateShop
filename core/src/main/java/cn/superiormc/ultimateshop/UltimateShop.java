@@ -44,7 +44,7 @@ public final class UltimateShop extends JavaPlugin {
             try {
                 Class<?> paperClass = Class.forName("cn.superiormc.ultimateshop.paper.PaperMethodUtil");
                 methodUtil = (SpecialMethodUtil) paperClass.getDeclaredConstructor().newInstance();
-                UltimateShop.methodUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fPaper is found, entering Paper plugin mode...!");
+                TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fPaper is found, entering Paper plugin mode...!");
             } catch (Throwable throwable) {
                 Bukkit.getConsoleSender().sendMessage(TextUtil.pluginPrefix() + " §cError: The plugin seems break, please download it again from site.");
                 Bukkit.getPluginManager().disablePlugin(this);
@@ -53,20 +53,20 @@ public final class UltimateShop extends JavaPlugin {
             try {
                 Class<?> spigotClass = Class.forName("cn.superiormc.ultimateshop.spigot.SpigotMethodUtil");
                 methodUtil = (SpecialMethodUtil) spigotClass.getDeclaredConstructor().newInstance();
-                UltimateShop.methodUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fSpigot is found, entering Spigot plugin mode...!");
+                TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fSpigot is found, entering Spigot plugin mode...!");
             } catch (Throwable throwable) {
                 Bukkit.getConsoleSender().sendMessage(TextUtil.pluginPrefix() + " §cError: The plugin seems break, please download it again from site.");
                 Bukkit.getPluginManager().disablePlugin(this);
             }
         }
         if (CommonUtil.getClass("io.papermc.paper.threadedregions.RegionizedServer")) {
-            UltimateShop.methodUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fFolia is found, enabled Folia compatibility feature!");
-            UltimateShop.methodUtil.sendMessage(null, TextUtil.pluginPrefix() + " §6Warning: Folia support is not fully test, major bugs maybe found! " +
+            TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fFolia is found, enabled Folia compatibility feature!");
+            TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §6Warning: Folia support is not fully test, major bugs maybe found! " +
                     "Please do not use in production environment!");
             isFolia = true;
         }
         if (!UltimateShop.freeVersion) {
-            UltimateShop.methodUtil.sendMessage(null, TextUtil.pluginPrefix() + " §cPREMIUM version found, thanks for your support and we hope you have good experience with this plugin!");
+            TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §cPREMIUM version found, thanks for your support and we hope you have good experience with this plugin!");
         }
         new ErrorManager();
         new InitManager();
@@ -91,15 +91,15 @@ public final class UltimateShop extends JavaPlugin {
                 CommonUtil.checkPluginLoad("MythicChanger") && !UltimateShop.freeVersion) {
             usePacketEvents = true;
             new PacketInventoryUtil();
-            UltimateShop.methodUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fDynamic title enabled. Hooking into packetevents...");
+            TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fDynamic title enabled. Hooking into packetevents...");
         }
         if (!CommonUtil.checkClass("com.mojang.authlib.properties.Property", "getValue") && CommonUtil.getMinorVersion(21, 1)) {
             newSkullMethod = true;
-            UltimateShop.methodUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fNew AuthLib found, enabled new skull get method!");
+            TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fNew AuthLib found, enabled new skull get method!");
         }
         new Metrics(UltimateShop.instance, 20783);
-        UltimateShop.methodUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fYour Minecraft version is: 1." + majorVersion + "." + minorVersion + "!");
-        UltimateShop.methodUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fPlugin is loaded. Author: PQguanfang.");
+        TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fYour Minecraft version is: 1." + majorVersion + "." + minorVersion + "!");
+        TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fPlugin is loaded. Author: PQguanfang.");
     }
 
     @Override
@@ -114,7 +114,7 @@ public final class UltimateShop extends JavaPlugin {
         if (BungeeCordManager.enableThis()) {
             BungeeCordManager.bungeeCordManager.disable();
         }
-        UltimateShop.methodUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fPlugin is disabled. Author: PQguanfang.");
+        TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fPlugin is disabled. Author: PQguanfang.");
     }
 
 }

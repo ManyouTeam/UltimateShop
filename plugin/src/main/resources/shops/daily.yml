@@ -1,7 +1,7 @@
 settings:
   menu: 'daily-shop-menu'
   buy-more: true
-  shop-name: 'Daily Shop (Require Premium)'
+  shop-name: '{lang:daily-shop-name}'
   hide-message: false
   secret-shop-items: true
 

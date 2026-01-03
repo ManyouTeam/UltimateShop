@@ -149,7 +149,7 @@ public class SubSetRandomPlaceholder extends AbstractCommand {
             case 3:
                 ObjectRandomPlaceholder tempVal3 = ConfigManager.configManager.getRandomPlaceholder(args[1]);
                 if (tempVal3 == null) {
-                    tempVal1.add(LanguageManager.languageManager.getStringText("command-tab.unknown-random-placeholder"));
+                    tempVal1.add(LanguageManager.languageManager.getStringText(player, "command-tab.unknown-random-placeholder"));
                 } else {
                     tempVal1.addAll(tempVal3.getConfigElements());
                 }

@@ -1,9 +1,9 @@
-title: 'Items Shop'
+title: '{lang:shop-title}'
 size: 54
 
 bedrock:
   enabled: true
-  content: '&fWelcome to shop.'
+  content: '{lang:welcome-message}'
 
 open-actions:
   1:
@@ -23,10 +23,10 @@ buttons:
   A:
     display-item:
       material: wheat
-      name: '&a&lFARMING'
+      name: '{lang:farming-name}'
       lore:
-        - '&7Sell and buy various items'
-        - '&7such as seeds.'
+        - '{lang:farming-lore-1}'
+        - '{lang:farming-lore-2}'
     actions:
       1:
         type: shop_menu
@@ -34,10 +34,10 @@ buttons:
   B:
     display-item:
       material: bone
-      name: '&b&lDROPS'
+      name: '{lang:drops-name}'
       lore:
-        - '&7Sell and buy related items'
-        - '&7to mob drops as strings.'
+        - '{lang:drops-lore-1}'
+        - '{lang:drops-lore-2}'
     actions:
       1:
         type: shop_menu
@@ -45,10 +45,10 @@ buttons:
   C:
     display-item:
       material: ORANGE_CONCRETE
-      name: '&a&lCONCRETES'
+      name: '{lang:concretes-name}'
       lore:
-        - '&7Sell and buy blocks of concrete'
-        - '&7and all their color variants.'
+        - '{lang:concretes-lore-1}'
+        - '{lang:concretes-lore-2}'
     actions:
       1:
         type: shop_menu
@@ -56,10 +56,10 @@ buttons:
   D:
     display-item:
       material: LILAC
-      name: '&a&lFLOWERS'
+      name: '{lang:flowers-name}'
       lore:
-        - '&7Sell and buy many types of'
-        - '&7flowers in this section.'
+        - '{lang:flowers-lore-1}'
+        - '{lang:flowers-lore-2}'
     actions:
       1:
         type: shop_menu
@@ -67,10 +67,10 @@ buttons:
   E:
     display-item:
       material: oak_log
-      name: '&a&lLOGS AND SAPLING'
+      name: '{lang:logs-name}'
       lore:
-        - '&7Sell and buy all variants of overworld'
-        - '&7logs and their saplings.'
+        - '{lang:logs-lore-1}'
+        - '{lang:logs-lore-2}'
     actions:
       1:
         type: shop_menu
@@ -78,10 +78,10 @@ buttons:
   F:
     display-item:
       material: diamond
-      name: '&a&lMINERALS'
+      name: '{lang:minerals-name}'
       lore:
-        - '&7Sell and buy different minerals'
-        - '&7such as diamond, iron and more.'
+        - '{lang:minerals-lore-1}'
+        - '{lang:minerals-lore-2}'
     actions:
       1:
         type: shop_menu
@@ -89,10 +89,10 @@ buttons:
   G:
     display-item:
       material: GRASS_BLOCK
-      name: '&a&lBLOCKS'
+      name: '{lang:blocks-name}'
       lore:
-        - '&7Sell and buy different types'
-        - '&7of varied blocks.'
+        - '{lang:blocks-lore-1}'
+        - '{lang:blocks-lore-2}'
     actions:
       1:
         type: shop_menu
@@ -100,10 +100,10 @@ buttons:
   H:
     display-item:
       material: LIME_TERRACOTTA
-      name: '&a&lTERRACOTTA'
+      name: '{lang:terracotta-name}'
       lore:
-        - '&7Sell and buy blocks of terracotta'
-        - '&7and all their color variants.'
+        - '{lang:terracotta-lore-1}'
+        - '{lang:terracotta-lore-2}'
     actions:
       1:
         type: shop_menu
@@ -111,10 +111,10 @@ buttons:
   I:
     display-item:
       material: GLASS
-      name: '&7&lGLASS'
+      name: '{lang:glass-name}'
       lore:
-        - '&7Sell and buy blocks of glass and panels'
-        - '&7and all their color variants.'
+        - '{lang:glass-lore-1}'
+        - '{lang:glass-lore-2}'
     actions:
       1:
         type: shop_menu
@@ -122,10 +122,10 @@ buttons:
   J:
     display-item:
       material: LIME_WOOL
-      name: '&a&lWOOL'
+      name: '{lang:wool-name}'
       lore:
-        - '&7Sell and buy blocks of wools'
-        - '&7and all their color variants.'
+        - '{lang:wool-lore-1}'
+        - '{lang:wool-lore-2}'
     actions:
       1:
         type: shop_menu
@@ -133,10 +133,10 @@ buttons:
   K:
     display-item:
       material: EXPERIENCE_BOTTLE
-      name: '&d&lSPECIAL ITEMS'
+      name: '{lang:special-items-name}'
       lore:
-        - '&7Sell and buy some special'
-        - '&7or rare items.'
+        - '{lang:special-items-lore-1}'
+        - '{lang:special-items-lore-2}'
     actions:
       1:
         type: shop_menu
@@ -144,10 +144,10 @@ buttons:
   L:
     display-item:
       material: REDSTONE
-      name: '&c&lREDSTONE'
+      name: '{lang:redstone-name}'
       lore:
-        - '&7Sell and buy everything related'
-        - '&7to redstone as comparators.'
+        - '{lang:redstone-lore-1}'
+        - '{lang:redstone-lore-2}'
     actions:
       1:
         type: shop_menu
@@ -155,10 +155,10 @@ buttons:
   M:
     display-item:
       material: FISHING_ROD
-      name: '&9&lFISH SHOP'
+      name: '{lang:fish-name}'
       lore:
-        - '&7Sell or buy different raw'
-        - '&7or cooked fish.'
+        - '{lang:fish-lore-1}'
+        - '{lang:fish-lore-2}'
     actions:
       1:
         type: shop_menu
@@ -166,10 +166,10 @@ buttons:
   N:
     display-item:
       material: RAIL
-      name: '&a&lTRANSPORTS'
+      name: '{lang:transports-name}'
       lore:
-        - '&7Some things related to'
-        - '&7transport like rails.'
+        - '{lang:transports-lore-1}'
+        - '{lang:transports-lore-2}'
     actions:
       1:
         type: shop_menu
@@ -177,7 +177,7 @@ buttons:
   Z:
     display-item:
       material: BARRIER
-      name: '&cClose this menu'
+      name: '{lang:close-button}'
     actions:
       1:
         type: close

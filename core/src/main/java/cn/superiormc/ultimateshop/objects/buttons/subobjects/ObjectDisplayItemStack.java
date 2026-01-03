@@ -74,12 +74,12 @@ public class ObjectDisplayItemStack {
             if (tempVal4 == null) {
                 if (item.getBuyPrice().empty) {
                     if (!item.getSellPrice().empty) {
-                        tempVal4 = ConfigManager.configManager.getString("menu.bedrock.price-extra-line.only-sell", "");
+                        tempVal4 = ConfigManager.configManager.getString(player, "menu.bedrock.price-extra-line.only-sell", "");
                     }
                 } else if (item.getSellPrice().empty) {
-                    tempVal4 = ConfigManager.configManager.getString("menu.bedrock.price-extra-line.only-buy", "");
+                    tempVal4 = ConfigManager.configManager.getString(player, "menu.bedrock.price-extra-line.only-buy", "");
                 } else {
-                    tempVal4 = ConfigManager.configManager.getString("menu.bedrock.price-extra-line.default", "");
+                    tempVal4 = ConfigManager.configManager.getString(player, "menu.bedrock.price-extra-line.default", "");
                 }
             }
             if (tempVal4 != null && !tempVal4.isEmpty()) {

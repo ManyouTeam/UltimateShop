@@ -48,7 +48,7 @@ public class CacheManager {
 
     public void saveObjectCache(Player player) {
         if (ObjectCacheMap.get(player) == null) {
-            UltimateShop.methodUtil.sendMessage(null, TextUtil.pluginPrefix() + " §cCan not save player data: " + player.getName() + "! " +
+            TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §cCan not save player data: " + player.getName() + "! " +
                     "This is usually because this player joined the server before server fully started OR other plugins kicked this player" +
                     ", ask him rejoin the server.");
             return;
@@ -58,7 +58,7 @@ public class CacheManager {
 
     public void saveObjectCacheOnDisable(Player player, boolean disable) {
         if (ObjectCacheMap.get(player) == null) {
-            UltimateShop.methodUtil.sendMessage(null, TextUtil.pluginPrefix() + " §cCan not save player data: " + player.getName() + "! " +
+            TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §cCan not save player data: " + player.getName() + "! " +
                     "This is usually because this player joined the server before server fully started OR other plugins kicked this player" +
                     ", ask him rejoin the server.");
             return;

@@ -46,7 +46,7 @@ public class ObjectSellStick {
         this.usageTimes = section.getInt("usage-times");
         this.multiplier = section.getDouble("multiplier");
         this.infinite = usageTimes < 0 || section.getBoolean("infinite");
-        UltimateShop.methodUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fLoaded sell stick: " + id + ".yml!");
+        TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fLoaded sell stick: " + id + ".yml!");
     }
 
     public String getID() {
@@ -75,7 +75,7 @@ public class ObjectSellStick {
                 if (!infinite) {
                     str = CommonUtil.modifyString(str, "times", String.valueOf(times));
                 } else {
-                    str = CommonUtil.modifyString(str, "times", ConfigManager.configManager.getString("placeholder.sell-stick.infinite"));
+                    str = CommonUtil.modifyString(str, "times", ConfigManager.configManager.getString(player, "placeholder.sell-stick.infinite"));
                 }
                 newLore.add(str);
             }

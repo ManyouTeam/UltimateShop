@@ -100,3 +100,170 @@ sell-products-not-enough: '&#98FB98[UltimateShop] &c您没有足够的 {item} &c
 parsed-value: "&#98FB98[UltimateShop] &f解析后的文本: {text}"
 reset-random-placeholder: "&#98FB98[UltimateShop] &f成功重置随机变量符 {placeholder}，其新的值是 {value}."
 set-random-placeholder: "&#98FB98[UltimateShop] &f成功设置随机变量符 {placeholder} 新的值为 {value}，请注意，变量符的刷新时间并未重置."
+gui-updated: "&#98FB98[UltimateShop] &f已为玩家 {player} 刷新GUI!"
+gui-not-opened: "&#98FB98[UltimateShop] &c{player} 没有打开任何的GUI!"
+
+override-lang:
+  shop-title: '物品商店'
+  buy-more-title: '选择数量'
+  buy-more-add-1: '&7点击增加 1 个'
+  buy-more-add-10: '&7点击增加 10 个'
+  buy-more-add-32: '&7点击增加 32 个'
+  buy-more-reduce-1: '&7点击减少 1 个'
+  buy-more-reduce-10: '&7点击减少 10 个'
+  buy-more-reduce-32: '&7点击减少 32 个'
+  buy-more-buy-button: '&a&l点击购买'
+  buy-more-sell-button: '&c&l点击出售'
+  buy-more-buy-button-lore-1: '&a点击确认并购买'
+  buy-more-buy-button-lore-2: '&a你已选择的数量'
+  buy-more-sell-button-lore-1: '&c点击确认并出售'
+  buy-more-sell-button-lore-2: '&c你已选择的数量'
+  back-button: '&c« 返回'
+  close-button: '&c关闭此菜单'
+  next-page-button: '§c下一页 »'
+  previous-page-button: '§c« 上一页'
+  welcome-message: '§f欢迎来到商店。'
+  farming-name: '§a&l农作物'
+  farming-lore-1: '§7出售和购买各种物品'
+  farming-lore-2: '§7例如种子。'
+  drops-name: '§b&l掉落物'
+  drops-lore-1: '§7出售和购买与掉落相关的物品'
+  drops-lore-2: '§7例如怪物掉落的线。'
+  concretes-name: '§a&l混凝土'
+  concretes-lore-1: '§7出售和购买混凝土方块'
+  concretes-lore-2: '§7及其所有颜色变体。'
+  flowers-name: '§a&l花卉'
+  flowers-lore-1: '§7出售和购买多种类型'
+  flowers-lore-2: '§7的花卉。'
+  logs-name: '§a&l木材与树苗'
+  logs-lore-1: '§7出售和购买所有地表木材'
+  logs-lore-2: '§7及其树苗。'
+  minerals-name: '§a&l矿物'
+  minerals-lore-1: '§7出售和购买不同矿物'
+  minerals-lore-2: '§7例如钻石、铁矿等。'
+  blocks-name: '§a&l方块'
+  blocks-lore-1: '§7出售和购买不同类型的'
+  blocks-lore-2: '§7各类方块。'
+  terracotta-name: '§a&l彩陶'
+  terracotta-lore-1: '§7出售和购买彩陶方块'
+  terracotta-lore-2: '§7及其所有颜色变体。'
+  glass-name: '§7&l玻璃'
+  glass-lore-1: '§7出售和购买玻璃方块及面板'
+  glass-lore-2: '§7及其所有颜色变体。'
+  wool-name: '§a&l羊毛'
+  wool-lore-1: '§7出售和购买羊毛方块'
+  wool-lore-2: '§7及其所有颜色变体。'
+  special-items-name: '§d&l特殊物品'
+  special-items-lore-1: '§7出售和购买一些特殊'
+  special-items-lore-2: '§7或稀有物品。'
+  redstone-name: '§c&l红石'
+  redstone-lore-1: '§7出售和购买所有与红石相关的物品'
+  redstone-lore-2: '§7例如比较器。'
+  fish-name: '§9&l鱼类商店'
+  fish-lore-1: '§7出售或购买不同的生鱼'
+  fish-lore-2: '§7或熟鱼。'
+  transports-name: '§a&l运输'
+  transports-lore-1: '§7与运输相关的一些物品'
+  transports-lore-2: '§7例如铁轨。'
+  blocks-shop-name: '方块商店'
+  concretes-shop-name: '混凝土商店'
+  drops-shop-name: '掉落物商店'
+  farming-shop-name: '农作物商店'
+  fish-shop-name: '鱼类商店'
+  flowers-shop-name: '花卉商店'
+  glass-shop-name: '玻璃商店'
+  logs-shop-name: '木材商店'
+  minerals-shop-name: '矿物商店'
+  redstone-shop-name: '红石商店'
+  special-items-shop-name: '特殊物品商店'
+  terracotta-shop-name: '彩陶商店'
+  wools-shop-name: '羊毛商店'
+  daily-shop-name: '每日商店 （需要付费版本）'
+  menu:
+    sell-all:
+      title: '&f一键回收菜单 &7- 按下ESC开始回收!'
+    bedrock:
+      price-extra-line:
+        default: '&6购买: {buy-price} &6| 回收: {sell-price}'
+        only-buy: '&6购买: {buy-price}'
+        only-sell: '&6回收: {sell-price}'
+      buy-or-sell:
+        title: '选择物品数量: {item-name}'
+        buttons:
+          amount:
+            name: '数量'
+            tip: '在这里输入数量!'
+      info:
+        title: '物品信息: {item-name} x{amount}'
+        buttons:
+          buy: '购买'
+          sell: '回收'
+          buy-more: '选择数量'
+          sell-all: '回收全部'
+          back: '&c返回'
+  placeholder:
+    compare:
+      up: '↑'
+      down: '↓'
+      same: '-'
+    cron:
+      format: "yyyy-MM-dd HH:mm:ss"
+    refresh:
+      format: "yyyy-MM-dd HH:mm:ss"
+      never: "永不"
+    next:
+      with-day-format: "{d}d {h}h {m}m {s}s"
+      without-day-format: "{h}h {m}m {s}s"
+      never: "等待下一次重置"
+    price:
+      split-symbol-any: ', '
+      split-symbol-all: ', '
+      replace-new-line-symbol: ', '
+      unknown: "未知"
+      unknown-price-type: "未知价格类型"
+      empty: "价格为空!"
+    click:
+      buy: '&#FFFACD左键点击购买!'
+      sell: '&#FFFACD右键点击出售!'
+      buy-with-no-sell: '&#FFFACD点击购买!'
+      sell-with-no-buy: '&#FFFACD点击出售!'
+      buy-max-limit-player: '&#ff3300你不能再买更多了!'
+      buy-max-limit-server: '&#ff3300已售罄!'
+      sell-max-limit-player: '&#ff3300不能再出售更多了!'
+      sell-max-limit-server: '&#ff3300该物品不可出手!'
+      buy-price-not-enough: '&#ff3300你没有足够的钱!'
+      sell-price-not-enough: '&#ff3300你没有足够的物品!'
+      error: '&#ff3300错误!'
+      buy-condition-not-meet: '&#ff3300未达到购买条件!'
+      sell-condition-not-meet: '&#ff3300未达到出售条件!'
+    sell-stick:
+      infinite: "&c无限"
+  display-item:
+    add-lore:
+      - '@n '
+      - '@a&e买价: {buy-price}'
+      - '@b&e卖价: {sell-price}'
+      - '@c&#FF7777玩家购买余量: {buy-times-player}/{buy-limit-player}'
+      - '@d&#FF7777全服购买余量: {buy-times-server}/{buy-limit-server}'
+      - '@e&#FF7777玩家出售限量: {sell-times-player}/{sell-limit-player}'
+      - '@f&#FF7777全服出售限量: {sell-times-server}/{sell-limit-server}'
+      - '@g '
+      - '@g&#ff3300c不能再买更多了!'
+      - '@g&8补货时间: {buy-refresh-player}'
+      - '@i '
+      - '@i&#ff3300已售罄!'
+      - '@i&8补货时间: {buy-refresh-server}'
+      - '@h '
+      - '@h&#ff3300不能再卖更多了!'
+      - '@h&8补货时间: {sell-refresh-player}'
+      - '@j'
+      - '@j&#ff3300不能再向服务器出售了!'
+      - '@j&8补货时间: {sell-refresh-server}'
+      - '@n '
+      - '@a@u@y{buy-click}'
+      - '@b@v@y{sell-click}'
+      - '@k@q@y&#FFFACDShift + 鼠标右键选择数量！'
+      - '@m@y&#FFFACD键盘 Q 键选择全部！'
+      - '(@n)&c&l:( 不能这么做'
+      - '(@a)@u@p&c物品无法购买'
+      - '(@b)@v@p&c物品无法出售'
