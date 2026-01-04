@@ -153,11 +153,19 @@ public class SpigotMethodUtil implements SpecialMethodUtil {
 
     @Override
     public void sendTitle(Player player, String title, String subTitle, int fadeIn, int stay, int fadeOut) {
+        if (player == null) {
+            return;
+        }
+
         player.sendTitle(TextUtil.parse(title, player), TextUtil.parse(subTitle, player), fadeIn, stay, fadeOut);
     }
 
     @Override
     public void sendActionBar(Player player, String message) {
+        if (player == null) {
+            return;
+        }
+
         player.spigot().sendMessage(
                 net.md_5.bungee.api.ChatMessageType.ACTION_BAR,
                 net.md_5.bungee.api.chat.TextComponent.fromLegacyText(TextUtil.parse(message, player))
@@ -170,6 +178,10 @@ public class SpigotMethodUtil implements SpecialMethodUtil {
                             float progress,
                             String color,
                             String style) {
+        if (player == null) {
+            return;
+        }
+
         BossBar bar = Bukkit.createBossBar(
                 title,
                 color == null ? BarColor.WHITE : BarColor.valueOf(color.toUpperCase()),

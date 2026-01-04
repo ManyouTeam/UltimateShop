@@ -40,6 +40,7 @@ sell:
     ignore-items:
       # Format: Shop ID;;Item ID
       - 'hideshop;;A'
+  # PREMIUM version only.
   sell-stick:
     # The min value here is 5, if you set value less than 5, we will auto set the cooldown to 5 tick.
     # In ticks.
@@ -48,6 +49,11 @@ sell:
     # Support value: LEFT, RIGHT and LEFT;;RIGHT
     # Do not change this value unless you are know what you are doing!
     click-type: RIGHT
+  # PREMIUM version only.
+  sell-chest:
+    period-ticks: 60
+    hologram:
+      enabled: true
   max-amount: 128
 
 give-item:

@@ -32,6 +32,7 @@ public class CommandManager {
        registerNewSubCommand(new SubQuickBuy());
        registerNewSubCommand(new SubReload());
        registerNewSubCommand(new SubGiveSellStick());
+       registerNewSubCommand(new SubGiveSellChest());
        registerNewSubCommand(new SubGiveSaveItem());
        registerNewSubCommand(new SubSellAll());
        registerNewSubCommand(new SubAddBuyTimes());
@@ -46,9 +47,7 @@ public class CommandManager {
        registerNewSubCommand(new SubSearch());
        registerNewSubCommand(new SubSellAllHand());
        registerNewSubCommand(new SubUpdateGUI());
-       if (!UltimateShop.freeVersion) {
-           registerNewSubCommand(new SubUpdateGUITitle());
-       }
+       registerNewSubCommand(new SubUpdateGUITitle());
     }
 
     public Map<String, AbstractCommand> getSubCommandsMap() {

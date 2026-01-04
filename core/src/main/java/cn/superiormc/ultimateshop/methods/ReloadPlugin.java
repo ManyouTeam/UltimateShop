@@ -2,7 +2,7 @@ package cn.superiormc.ultimateshop.methods;
 
 import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.gui.AbstractGUI;
-import cn.superiormc.ultimateshop.listeners.ClickListener;
+import cn.superiormc.ultimateshop.listeners.SellStickListener;
 import cn.superiormc.ultimateshop.managers.*;
 import cn.superiormc.ultimateshop.objects.menus.ObjectMenu;
 import cn.superiormc.ultimateshop.utils.MathUtil;
@@ -19,7 +19,7 @@ public class ReloadPlugin {
             CacheManager.cacheManager.saveObjectCacheOnDisable(player, false);
             AbstractGUI.playerList.remove(player);
             if (!UltimateShop.freeVersion) {
-                ClickListener.playerList.remove(player);
+                SellStickListener.playerList.remove(player);
             }
         }
         if (CacheManager.cacheManager.serverCache != null) {

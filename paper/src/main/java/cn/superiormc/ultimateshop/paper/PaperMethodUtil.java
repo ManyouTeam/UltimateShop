@@ -175,6 +175,9 @@ public class PaperMethodUtil implements SpecialMethodUtil {
 
     @Override
     public void sendTitle(Player player, String title, String subTitle, int fadeIn, int stay, int fadeOut) {
+        if (player == null) {
+            return;
+        }
         player.showTitle(Title.title(PaperTextUtil.modernParse(title, player),
                 PaperTextUtil.modernParse(subTitle, player),
                 Title.Times.times(Ticks.duration(fadeIn),
@@ -184,6 +187,9 @@ public class PaperMethodUtil implements SpecialMethodUtil {
 
     @Override
     public void sendActionBar(Player player, String message) {
+        if (player == null) {
+            return;
+        }
         player.sendActionBar(PaperTextUtil.modernParse(message, player));
     }
 
@@ -193,6 +199,9 @@ public class PaperMethodUtil implements SpecialMethodUtil {
                             float progress,
                             String color,
                             String style) {
+        if (player == null) {
+            return;
+        }
 
         if (style != null && style.equalsIgnoreCase("SOLID")) {
             style = "PROGRESS";

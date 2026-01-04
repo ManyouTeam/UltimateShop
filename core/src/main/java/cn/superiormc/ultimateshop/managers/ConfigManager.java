@@ -1,6 +1,7 @@
 package cn.superiormc.ultimateshop.managers;
 
 import cn.superiormc.ultimateshop.UltimateShop;
+import cn.superiormc.ultimateshop.objects.sellchests.ObjectSellChest;
 import cn.superiormc.ultimateshop.objects.ObjectSellStick;
 import cn.superiormc.ultimateshop.objects.ObjectShop;
 import cn.superiormc.ultimateshop.objects.buttons.AbstractButton;
@@ -20,6 +21,7 @@ import org.bukkit.persistence.PersistentDataType;
 import java.io.File;
 import java.util.*;
 
+import static cn.superiormc.ultimateshop.managers.SellChestManager.SELL_CHEST_ID;
 import static cn.superiormc.ultimateshop.objects.ObjectSellStick.SELL_STICK_ID;
 
 public class ConfigManager {
@@ -36,6 +38,8 @@ public class ConfigManager {
 
     public Map<String, ObjectSellStick> sellStickMap = new HashMap<>();
 
+    public Map<String, ObjectSellChest> sellChestMap = new HashMap<>();
+
     public ConfigManager() {
         configManager = this;
         UltimateShop.instance.saveDefaultConfig();
@@ -47,6 +51,7 @@ public class ConfigManager {
             initRandomPlaceholder();
             initConditionalPlaceholder();
             initSellStickConfigs();
+            initSellChestConfigs();
         }
     }
 
@@ -115,6 +120,24 @@ public class ConfigManager {
             if (fileName.endsWith(".yml")) {
                 String substring = fileName.substring(0, fileName.length() - 4);
                 sellStickMap.put(substring, new ObjectSellStick(substring, YamlConfiguration.loadConfiguration(file)));
+            }
+        }
+    }
+
+    private void initSellChestConfigs() {
+        File dir = new File(UltimateShop.instance.getDataFolder(), "sell_chests");
+        if (!dir.exists()) {
+            dir.mkdir();
+        }
+        File[] files = dir.listFiles();
+        if (!Objects.nonNull(files) && files.length != 0) {
+            return;
+        }
+        for (File file : files) {
+            String fileName = file.getName();
+            if (fileName.endsWith(".yml")) {
+                String substring = fileName.substring(0, fileName.length() - 4);
+                sellChestMap.put(substring, new ObjectSellChest(substring, YamlConfiguration.loadConfiguration(file)));
             }
         }
     }
@@ -354,5 +377,22 @@ public class ConfigManager {
 
     public Collection<ObjectSellStick> getSellSticks() {
         return sellStickMap.values();
+    }
+
+    public ObjectSellChest getSellChest(String id) {
+        return sellChestMap.get(id);
+    }
+
+    public ObjectSellChest getSellChestID(ItemStack item) {
+        ItemMeta meta = item.getItemMeta();
+        if (meta == null || !meta.getPersistentDataContainer().has(SELL_CHEST_ID, PersistentDataType.STRING)) {
+            return null;
+        }
+        String id = meta.getPersistentDataContainer().get(SELL_CHEST_ID, PersistentDataType.STRING);
+        return getSellChest(id);
+    }
+
+    public Collection<ObjectSellChest> getSellChests() {
+        return sellChestMap.values();
     }
 }

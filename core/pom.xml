@@ -153,12 +153,6 @@
             </exclusions>
         </dependency>
         <dependency>
-            <groupId>io.lumine.xikage</groupId>
-            <artifactId>MythicMobs</artifactId>
-            <version>4.11.0</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
             <groupId>com.github.ankhorg</groupId>
             <artifactId>NeigeItems-Kotlin</artifactId>
             <version>1.16.8</version>
@@ -206,6 +200,12 @@
             <artifactId>votingplugin</artifactId>
             <version>6.16.3</version>
             <scope>provided</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>*</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>com.ssomar.score</groupId>
@@ -343,6 +343,12 @@
             <groupId>com.github.retrooper</groupId>
             <artifactId>packetevents-spigot</artifactId>
             <version>2.9.3</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.github.decentsoftware-eu</groupId>
+            <artifactId>decentholograms</artifactId>
+            <version>2.9.9</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>

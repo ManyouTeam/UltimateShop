@@ -1,0 +1,24 @@
+display-item:
+  material: CHEST
+  name: '&dSell Chest &7(500 times)'
+  lore:
+    - '&fPlace this chest in your world to sell items!'
+    - ''
+    - '&cLeft usages: {times}'
+
+usage-times: 500
+
+multiplier: 1.2
+
+holograms:
+  - '&e&lSell chest'
+  - '&7ID: {id}'
+  - '&7Left Times: {usage}'
+  - '&7Multiplier: {multiplier}'
+
+actions:
+  1:
+    type: sound
+    sound: 'block.note_block.pling'
+
+conditions: []

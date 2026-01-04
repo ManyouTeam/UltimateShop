@@ -78,6 +78,9 @@ public final class UltimateShop extends JavaPlugin {
         new LanguageManager();
         new CacheManager();
         new CommandManager();
+        if (!UltimateShop.freeVersion) {
+            new SellChestManager();
+        }
         new ListenerManager();
         new TaskManager();
         if (LocateManager.enableThis()) {

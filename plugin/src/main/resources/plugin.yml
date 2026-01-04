@@ -43,6 +43,7 @@ softdepend:
   - MythicChanger
   - NBTAPI
   - packetevents
+  - DecentHolograms
 commands:
   ultimateshop:
     aliases:

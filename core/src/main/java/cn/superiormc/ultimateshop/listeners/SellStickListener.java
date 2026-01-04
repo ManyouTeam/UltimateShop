@@ -13,10 +13,7 @@ import cn.superiormc.ultimateshop.objects.items.ThingMode;
 import cn.superiormc.ultimateshop.objects.items.prices.ObjectPrices;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
 import cn.superiormc.ultimateshop.utils.SchedulerUtil;
-import org.bukkit.block.Block;
-import org.bukkit.block.BlockState;
-import org.bukkit.block.Container;
-import org.bukkit.block.EnderChest;
+import org.bukkit.block.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
@@ -33,7 +30,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ClickListener implements Listener {
+public class SellStickListener implements Listener {
 
     public static List<Player> playerList = new ArrayList<>();
 
@@ -69,7 +66,7 @@ public class ClickListener implements Listener {
             return;
         }
         BlockState state = block.getState();
-        SchedulerUtil.runTaskLater(block, () -> {
+        SchedulerUtil.runTaskLater(block.getLocation(), () -> {
             Inventory inventory = null;
             if (state instanceof Container) {
                 inventory = ((Container) state).getInventory();
@@ -131,6 +128,4 @@ public class ClickListener implements Listener {
             }
         }, 2L);
     }
-
-
 }

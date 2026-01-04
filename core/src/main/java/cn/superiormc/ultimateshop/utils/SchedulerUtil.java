@@ -3,6 +3,7 @@ package cn.superiormc.ultimateshop.utils;
 import cn.superiormc.ultimateshop.UltimateShop;
 import io.papermc.paper.threadedregions.scheduler.ScheduledTask;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
@@ -70,6 +71,20 @@ public class SchedulerUtil {
         }
     }
 
+    public static SchedulerUtil runTaskTimer(Location location, Runnable task, long delayTicks, long periodTicks) {
+        if (UltimateShop.isFolia) {
+            return new SchedulerUtil(Bukkit.getRegionScheduler().runAtFixedRate(
+                    UltimateShop.instance,
+                    location,
+                    scheduledTask -> task.run(),
+                    delayTicks,
+                    periodTicks
+            ));
+        } else {
+            return runTaskTimer(task, delayTicks, periodTicks);
+        }
+    }
+
     // 延迟执行任务
     public static SchedulerUtil runTaskLaterAsynchronously(Runnable task, long delayTicks) {
         if (UltimateShop.isFolia) {
@@ -80,11 +95,11 @@ public class SchedulerUtil {
         }
     }
 
-    public static SchedulerUtil runTaskLater(Block block, Runnable task, long delayTicks) {
+    public static SchedulerUtil runTaskLater(Location location, Runnable task, long delayTicks) {
         if (UltimateShop.isFolia) {
             if (delayTicks <= 0) delayTicks = 1;
             return new SchedulerUtil(Bukkit.getRegionScheduler().runDelayed(
-                    UltimateShop.instance, block.getLocation(), scheduledTask -> task.run(), delayTicks));
+                    UltimateShop.instance, location, scheduledTask -> task.run(), delayTicks));
         } else {
             return new SchedulerUtil(Bukkit.getScheduler().runTaskLater(UltimateShop.instance, task, delayTicks));
         }

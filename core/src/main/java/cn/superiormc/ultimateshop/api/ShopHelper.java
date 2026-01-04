@@ -2,14 +2,14 @@ package cn.superiormc.ultimateshop.api;
 
 import cn.superiormc.ultimateshop.managers.CacheManager;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
+import cn.superiormc.ultimateshop.managers.LanguageManager;
+import cn.superiormc.ultimateshop.methods.Product.SellProductMethod;
+import cn.superiormc.ultimateshop.methods.ProductTradeStatus;
 import cn.superiormc.ultimateshop.objects.ObjectShop;
 import cn.superiormc.ultimateshop.objects.ObjectThingRun;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import cn.superiormc.ultimateshop.objects.caches.ObjectUseTimesCache;
-import cn.superiormc.ultimateshop.objects.items.AbstractSingleThing;
-import cn.superiormc.ultimateshop.objects.items.GiveItemStack;
-import cn.superiormc.ultimateshop.objects.items.GiveResult;
-import cn.superiormc.ultimateshop.objects.items.TakeResult;
+import cn.superiormc.ultimateshop.objects.items.*;
 import cn.superiormc.ultimateshop.objects.items.prices.ObjectPrices;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -21,6 +21,7 @@ import org.jetbrains.annotations.Nullable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 
 public class ShopHelper {
@@ -162,5 +163,59 @@ public class ShopHelper {
             giveItemStack.giveToPlayer(times, multi, multiplier, player);
         }
         return true;
+    }
+
+    public static Map<AbstractSingleThing, BigDecimal> sellAll(Player player, Inventory inventory, double multiplier) {
+
+        if (inventory.isEmpty()) {
+            return new HashMap<>();
+        }
+
+        Map<AbstractSingleThing, BigDecimal> result = new HashMap<>();
+        boolean firstSell = false;
+
+        for (String shop : ConfigManager.configManager.shopConfigs.keySet()) {
+            for (ObjectItem products :
+                    ConfigManager.configManager
+                            .getShop(shop)
+                            .getProductListNotHidden(player)) {
+
+                ProductTradeStatus status =
+                        SellProductMethod.startSell(
+                                inventory,
+                                products,
+                                player,
+                                false,
+                                false,
+                                true,
+                                firstSell,
+                                1,
+                                multiplier
+                        );
+
+                if (status.getStatus() == ProductTradeStatus.Status.DONE
+                        && status.getGiveResult() != null) {
+                    result.putAll(status.getGiveResult().getResultMap());
+                }
+
+                if (!products.getSellAction().isEmpty()) {
+                    firstSell = true;
+                }
+            }
+        }
+
+        if (!result.isEmpty()) {
+            LanguageManager.languageManager.sendStringText(
+                    player,
+                    "start-sell-all",
+                    "reward",
+                    ObjectPrices.getDisplayNameInLine(
+                            player, 1, result, ThingMode.ALL, true),
+                    "multiplier",
+                    String.valueOf(multiplier)
+            );
+        }
+
+        return result;
     }
 }

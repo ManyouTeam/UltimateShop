@@ -5,7 +5,6 @@ import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.ErrorManager;
 import io.lumine.mythic.bukkit.BukkitAdapter;
 import io.lumine.mythic.bukkit.MythicBukkit;
-import io.lumine.xikage.mythicmobs.MythicMobs;
 import net.luckperms.api.LuckPermsProvider;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
@@ -66,15 +65,7 @@ public class CommonUtil {
     }
     
     public static void summonMythicMobs(Location location, String mobID, int level) {
-        try {
-            MythicBukkit.inst().getMobManager().getMythicMob(mobID).ifPresent(mob -> mob.spawn(BukkitAdapter.adapt(location), level));
-        }
-        catch (NoClassDefFoundError ep) {
-            io.lumine.xikage.mythicmobs.mobs.MythicMob mob = MythicMobs.inst().getMobManager().getMythicMob(mobID);
-            if (mob != null) {
-                mob.spawn(io.lumine.xikage.mythicmobs.adapters.bukkit.BukkitAdapter.adapt(location), level);
-            }
-        }
+        MythicBukkit.inst().getMobManager().getMythicMob(mobID).ifPresent(mob -> mob.spawn(BukkitAdapter.adapt(location), level));
     }
 
     public static String modifyString(String text, String... args) {

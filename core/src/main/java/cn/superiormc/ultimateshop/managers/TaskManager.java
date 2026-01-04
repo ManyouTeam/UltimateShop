@@ -11,11 +11,14 @@ public class TaskManager {
 
     private SchedulerUtil saveTask;
 
+    private SchedulerUtil sellChestTask;
+
     public TaskManager() {
         taskManager = this;
         if (ConfigManager.configManager.getBoolean("auto-save.enabled")) {
             initSaveTasks();
         }
+        initSellChestTasks();
     }
 
     public void initSaveTasks() {
@@ -34,9 +37,22 @@ public class TaskManager {
         }, 180L, ConfigManager.configManager.config.getLong("auto-save.period-tick", 600));
     }
 
+    public void initSellChestTasks() {
+        if (!ConfigManager.configManager.getSellChests().isEmpty()) {
+            sellChestTask = SchedulerUtil.runTaskTimer(
+                    () -> SellChestManager.sellChestManager.tick(),
+                    20L,
+                    ConfigManager.configManager.getLong("sell.sell-chest.period-ticks", 60L)
+            );
+        }
+    }
+
     public void cancelTask() {
         if (saveTask != null) {
             saveTask.cancel();
+        }
+        if (sellChestTask != null) {
+            sellChestTask.cancel();
         }
     }
 }
