@@ -32,7 +32,9 @@ public class CommandManager {
        registerNewSubCommand(new SubQuickBuy());
        registerNewSubCommand(new SubReload());
        registerNewSubCommand(new SubGiveSellStick());
-       registerNewSubCommand(new SubGiveSellChest());
+       if (!UltimateShop.isFolia) {
+           registerNewSubCommand(new SubGiveSellChest());
+       }
        registerNewSubCommand(new SubGiveSaveItem());
        registerNewSubCommand(new SubSellAll());
        registerNewSubCommand(new SubAddBuyTimes());

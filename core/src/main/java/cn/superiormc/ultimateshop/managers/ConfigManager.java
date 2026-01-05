@@ -51,7 +51,9 @@ public class ConfigManager {
             initRandomPlaceholder();
             initConditionalPlaceholder();
             initSellStickConfigs();
-            initSellChestConfigs();
+            if (!UltimateShop.isFolia) {
+                initSellChestConfigs();
+            }
         }
     }
 

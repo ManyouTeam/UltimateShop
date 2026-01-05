@@ -192,7 +192,7 @@ public class ShopHelper {
                                 1,
                                 multiplier
                         );
-                Bukkit.getConsoleSender().sendMessage(inventory.isEmpty() + "");
+
                 if (status.getStatus() == ProductTradeStatus.Status.DONE
                         && status.getGiveResult() != null) {
                     result.putAll(status.getGiveResult().getResultMap());

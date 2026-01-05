@@ -5,6 +5,7 @@ import cn.superiormc.ultimateshop.managers.SellChestManager;
 import cn.superiormc.ultimateshop.objects.ObjectThingRun;
 import cn.superiormc.ultimateshop.objects.sellchests.ObjectSellChest;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.*;
 import org.bukkit.event.EventHandler;
@@ -14,6 +15,7 @@ import org.bukkit.event.entity.EntityChangeBlockEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.event.world.ChunkUnloadEvent;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
@@ -24,6 +26,25 @@ public class SellChestListener implements Listener {
     public void onPlace(BlockPlaceEvent event) {
         if (event.getBlockPlaced().getType() != Material.CHEST) {
             return;
+        }
+
+        Block block = event.getBlockPlaced();
+        Block[] adjacent = {
+                block.getRelative(BlockFace.NORTH),
+                block.getRelative(BlockFace.SOUTH),
+                block.getRelative(BlockFace.EAST),
+                block.getRelative(BlockFace.WEST)
+        };
+
+        for (Block b : adjacent) {
+            if (isSellChest(b)) {
+                if (block.getState() instanceof Chest chest) {
+                    org.bukkit.block.data.type.Chest chestData = (org.bukkit.block.data.type.Chest) chest.getBlockData();
+                    chestData.setType(org.bukkit.block.data.type.Chest.Type.SINGLE);
+                    chest.setBlockData(chestData);
+                    chest.update();
+                }
+            }
         }
 
         ItemStack item = event.getItemInHand();
@@ -50,6 +71,14 @@ public class SellChestListener implements Listener {
             return;
         }
 
+        org.bukkit.block.data.type.Chest chestData = (org.bukkit.block.data.type.Chest) chest.getBlockData();
+        chestData.setType(org.bukkit.block.data.type.Chest.Type.SINGLE);
+        chest.setBlockData(chestData);
+        chest.update();
+
+        chest.setCustomName(null);
+        chest.update();
+
         SellChestManager.sellChestManager.registerSellChest(chest, event.getPlayer(), sellChest, times);
     }
 
@@ -67,6 +96,19 @@ public class SellChestListener implements Listener {
         }
 
         event.setDropItems(false);
+
+        Inventory inventory = chest.getBlockInventory();
+        Location dropLoc = block.getLocation().add(0.5, 0.5, 0.5);
+
+        for (ItemStack item : inventory.getContents()) {
+            if (item == null || item.getType().isAir()) {
+                continue;
+            }
+            block.getWorld().dropItemNaturally(dropLoc, item);
+        }
+
+        inventory.clear();
+
         handleSellChestDestroy(block, true);
     }
 

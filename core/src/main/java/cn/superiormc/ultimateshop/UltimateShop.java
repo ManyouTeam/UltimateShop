@@ -14,7 +14,7 @@ public final class UltimateShop extends JavaPlugin {
 
     public static UltimateShop instance;
 
-    public static final boolean freeVersion = false;
+    public static final boolean freeVersion = true;
 
     public static SpecialMethodUtil methodUtil;
 
@@ -78,7 +78,7 @@ public final class UltimateShop extends JavaPlugin {
         new LanguageManager();
         new CacheManager();
         new CommandManager();
-        if (!UltimateShop.freeVersion) {
+        if (!UltimateShop.freeVersion && !UltimateShop.isFolia) {
             new SellChestManager();
         }
         new ListenerManager();

@@ -12,6 +12,7 @@ import cn.superiormc.ultimateshop.objects.sellchests.holograms.impl.DecentHologr
 import cn.superiormc.ultimateshop.utils.CommonUtil;
 import cn.superiormc.ultimateshop.utils.TextUtil;
 import org.bukkit.*;
+import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Chest;
 import org.bukkit.entity.Player;
@@ -24,6 +25,7 @@ import org.bukkit.persistence.PersistentDataType;
 
 import java.math.BigDecimal;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class SellChestManager {
 
@@ -39,7 +41,7 @@ public class SellChestManager {
 
     public static SellChestManager sellChestManager;
 
-    private final Map<Long, Set<Location>> chestLocations = new HashMap<>();
+    private final Map<Chunk, Set<Location>> chestLocations = new ConcurrentHashMap<>();
 
     private AbstractHologram hologram;
 
@@ -75,21 +77,27 @@ public class SellChestManager {
                 TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fSelling chest at location: " + loc);
 
                 BlockState state = loc.getBlock().getState();
-                if (!(state instanceof Chest chest)) {
+                if (!(state instanceof Chest)) {
                     unregisterSellChest(loc);
                     it.remove();
                     continue;
                 }
 
-                sell(chest);
+                sell(loc);
             }
         }
     }
 
-    private void sell(Chest chest) {
-        TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fTrying to sell...");
+    private void sell(Location loc) {
 
-        Inventory inventory = chest.getInventory();
+        Block block = loc.getBlock();
+        if (!(block.getState() instanceof Chest)) {
+            return;
+        }
+
+        Chest chest = (Chest) block.getState();
+        Inventory inventory = chest.getBlockInventory();
+
         if (inventory.isEmpty()) {
             return;
         }
@@ -117,69 +125,59 @@ public class SellChestManager {
             return;
         }
 
-        int usage = 0;
-        if (!sellChest.isInfinite()) {
-            usage = pdc.getOrDefault(
-                    SELL_CHEST_TIMES,
-                    PersistentDataType.INTEGER,
-                    sellChest.getUsageTimes()
-            );
+        int usage = sellChest.isInfinite()
+                ? Integer.MAX_VALUE
+                : pdc.getOrDefault(
+                SELL_CHEST_TIMES,
+                PersistentDataType.INTEGER,
+                -1
+        );
 
+        if (!sellChest.isInfinite() && usage <= 0) {
+            unregisterSellChest(loc);
+            pdc.remove(KEY_IS_SELL_CHEST);
+            pdc.remove(SELL_CHEST_ID);
+            pdc.remove(SELL_CHEST_TIMES);
+            pdc.remove(SELL_CHEST_PRICE);
+            chest.update();
+            return;
+        }
+
+        Map<AbstractSingleThing, BigDecimal> result =
+                ShopHelper.sellAll(player, inventory, sellChest.getMultiplier());
+
+        if (result.isEmpty()) {
+            return;
+        }
+
+        // Refresh
+        chest = (Chest) loc.getBlock().getState();
+        pdc = chest.getPersistentDataContainer();
+
+        if (!sellChest.isInfinite()) {
+            usage--;
+            pdc.set(SELL_CHEST_TIMES, PersistentDataType.INTEGER, usage);
             if (usage <= 0) {
-                unregisterSellChest(chest.getBlock().getLocation());
+                unregisterSellChest(loc);
                 pdc.remove(KEY_IS_SELL_CHEST);
                 pdc.remove(SELL_CHEST_ID);
                 pdc.remove(SELL_CHEST_TIMES);
-                chest.update();
-                return;
+                pdc.remove(SELL_CHEST_PRICE);
             }
-
-            pdc.set(SELL_CHEST_TIMES, PersistentDataType.INTEGER, usage - 1);
         }
 
-        TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fSell chest is selling item...");
-
-        Map<AbstractSingleThing, BigDecimal> result = ShopHelper.sellAll(
-                player,
-                inventory,
-                sellChest.getMultiplier()
+        pdc.set(
+                SELL_CHEST_PRICE,
+                PersistentDataType.STRING,
+                ObjectPrices.getDisplayNameInLine(
+                        player, 1, result, ThingMode.ALL, true
+                )
         );
 
-        if (!result.isEmpty()) {
-            if (ConfigManager.configManager.getBoolean("sell.sell-chest.send-sell-message")) {
-                LanguageManager.languageManager.sendStringText(
-                        player,
-                        "start-sell-stick",
-                        "reward",
-                        ObjectPrices.getDisplayNameInLine(
-                                player, 1, result, ThingMode.ALL, true),
-                        "multiplier",
-                        String.valueOf(sellChest.getMultiplier())
-                );
-            }
-            if (!sellChest.isInfinite()) {
-                if (usage - 1 <= 0) {
-                    unregisterSellChest(chest.getBlock().getLocation());
-                    pdc.remove(KEY_IS_SELL_CHEST);
-                    pdc.remove(SELL_CHEST_ID);
-                    pdc.remove(SELL_CHEST_TIMES);
-                }
-            }
-            pdc.set(SELL_CHEST_PRICE, PersistentDataType.STRING, ObjectPrices.getDisplayNameInLine(player,
-                    1,
-                    result,
-                    ThingMode.ALL,
-                    true));
-
-            sellChest.getAction().runAllActions(new ObjectThingRun(player));
-        } else {
-            pdc.set(SELL_CHEST_TIMES, PersistentDataType.INTEGER, usage);
-        }
+        sellChest.getAction().runAllActions(new ObjectThingRun(player));
 
         chest.update();
-        if (hologram != null) {
-            hologram.update(player, chest);
-        }
+        hologram.update(player, chest);
     }
 
     public void handleChunkLoad(ChunkLoadEvent event) {
@@ -197,12 +195,12 @@ public class SellChestManager {
 
             String ownerStr = pdc.get(KEY_OWNER, PersistentDataType.STRING);
             if (ownerStr == null) {
-                return;
+                continue;
             }
 
             Player player = Bukkit.getPlayer(UUID.fromString(ownerStr));
             if (player == null) {
-                return;
+                continue;
             }
 
             add(player, chest);
@@ -210,7 +208,7 @@ public class SellChestManager {
     }
 
     public void handleChunkUnload(ChunkUnloadEvent event) {
-        chestLocations.remove(chunkKey(event.getChunk()));
+        chestLocations.remove(event.getChunk());
     }
 
     public void registerSellChest(Chest chest, Player owner, ObjectSellChest sellChest, int times) {
@@ -228,35 +226,26 @@ public class SellChestManager {
     }
 
     public void unregisterSellChest(Location location) {
-        Set<Location> set = chestLocations.get(chunkKey(location));
+        if (hologram != null) {
+            hologram.remove(location);
+        }
+        Set<Location> set = chestLocations.get(location.getChunk());
         if (set != null) {
             set.remove(location);
-            if (hologram != null) {
-                hologram.remove(location);
-            }
         }
     }
 
     private void add(Player player, Chest chest) {
         TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fPlayer " + player.getName() + " placed sell chest at " + chest.getBlock().getLocation() + ".");
-        chestLocations.computeIfAbsent(chunkKey(chest.getBlock().getLocation()), k -> new HashSet<>()).add(chest.getBlock().getLocation());
+        chestLocations.computeIfAbsent(chest.getChunk(), k -> new HashSet<>()).add(chest.getBlock().getLocation());
         if (hologram != null) {
             hologram.create(player, chest);
         }
     }
 
-    private long chunkKey(Location loc) {
-        return chunkKey(loc.getChunk());
-    }
-
-    private long chunkKey(Chunk chunk) {
-        return (((long) chunk.getX()) << 32) ^ (chunk.getZ() & 0xffffffffL);
-    }
-
     public ItemStack createSellChestItem(Chest chest) {
 
         PersistentDataContainer chestPdc = chest.getPersistentDataContainer();
-
         String sellChestID = chestPdc.get(SELL_CHEST_ID, PersistentDataType.STRING);
         if (sellChestID == null) {
             return null;
@@ -266,16 +255,17 @@ public class SellChestManager {
         if (sellChest == null) {
             return null;
         }
-
-        if (chestPdc.has(SELL_CHEST_TIMES, PersistentDataType.INTEGER)) {
+        if (!chestPdc.has(SELL_CHEST_TIMES, PersistentDataType.INTEGER) && !sellChest.isInfinite()) {
             return null;
         }
 
         Integer times = chestPdc.get(SELL_CHEST_TIMES, PersistentDataType.INTEGER);
-        if (times == null || times < 0) {
+        if (!sellChest.isInfinite() && (times == null || times <= 0)) {
             return null;
         }
-
+        if (times == null) {
+            times = -1;
+        }
         return sellChest.getItemWithUsageTimes(1, times);
     }
 }

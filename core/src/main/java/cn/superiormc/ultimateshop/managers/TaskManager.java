@@ -1,5 +1,6 @@
 package cn.superiormc.ultimateshop.managers;
 
+import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.utils.SchedulerUtil;
 import cn.superiormc.ultimateshop.utils.TextUtil;
 import org.bukkit.Bukkit;
@@ -38,7 +39,7 @@ public class TaskManager {
     }
 
     public void initSellChestTasks() {
-        if (!ConfigManager.configManager.getSellChests().isEmpty()) {
+        if (!ConfigManager.configManager.getSellChests().isEmpty() && !UltimateShop.isFolia) {
             sellChestTask = SchedulerUtil.runTaskTimer(
                     () -> SellChestManager.sellChestManager.tick(),
                     20L,
