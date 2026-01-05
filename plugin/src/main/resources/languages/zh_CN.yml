@@ -179,6 +179,9 @@ override-lang:
   terracotta-shop-name: '彩陶商店'
   wools-shop-name: '羊毛商店'
   daily-shop-name: '每日商店 （需要付费版本）'
+  sell:
+    sell-chest:
+      price-empty: '没有交易历史'
   menu:
     sell-all:
       title: '&f一键回收菜单 &7- 按下ESC开始回收!'

@@ -192,7 +192,7 @@ public class ShopHelper {
                                 1,
                                 multiplier
                         );
-
+                Bukkit.getConsoleSender().sendMessage(inventory.isEmpty() + "");
                 if (status.getStatus() == ProductTradeStatus.Status.DONE
                         && status.getGiveResult() != null) {
                     result.putAll(status.getGiveResult().getResultMap());
@@ -203,19 +203,6 @@ public class ShopHelper {
                 }
             }
         }
-
-        if (!result.isEmpty()) {
-            LanguageManager.languageManager.sendStringText(
-                    player,
-                    "start-sell-all",
-                    "reward",
-                    ObjectPrices.getDisplayNameInLine(
-                            player, 1, result, ThingMode.ALL, true),
-                    "multiplier",
-                    String.valueOf(multiplier)
-            );
-        }
-
         return result;
     }
 }

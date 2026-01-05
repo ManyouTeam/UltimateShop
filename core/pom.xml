@@ -20,9 +20,15 @@
             <systemPath>${project.basedir}/lib/LegacyCodesCompatibility.jar</systemPath>
         </dependency>
         <dependency>
+            <groupId>net.kyori</groupId>
+            <artifactId>adventure-api</artifactId>
+            <version>4.25.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
             <groupId>io.papermc.paper</groupId>
             <artifactId>paper-api</artifactId>
-            <version>1.21.8-R0.1-SNAPSHOT</version>
+            <version>1.21.11-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -36,6 +42,12 @@
             <artifactId>api</artifactId>
             <version>2.2.2-SNAPSHOT</version>
             <scope>provided</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>*</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>com.cronutils</groupId>
@@ -46,20 +58,22 @@
         <dependency>
             <groupId>com.sk89q.worldguard</groupId>
             <artifactId>worldguard-bukkit</artifactId>
-            <version>7.0.2-SNAPSHOT</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>net.Indyuce</groupId>
-            <artifactId>MMOItems-API</artifactId>
-            <version>6.9.5-20231202.120258-16</version>
+            <version>7.0.14</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>io.lumine</groupId>
-            <artifactId>MythicLib-dist</artifactId>
-            <version>1.6.2-SNAPSHOT</version>
-            <scope>provided</scope>
+            <artifactId>MythicLib</artifactId>
+            <version>1.7.1</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/MythicLib-dist-1.7.1-20251205.145545-63.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>net.Indyuce</groupId>
+            <artifactId>MMOItems-API</artifactId>
+            <version>6.10.1-SNAPSHOT</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/MMOItems-API-6.10.1-20251204.191337-43.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>com.github.LoneDev6</groupId>
@@ -101,7 +115,7 @@
         <dependency>
             <groupId>com.github.Emibergo02</groupId>
             <artifactId>RedisEconomy</artifactId>
-            <version>main-370fa8da6d-1</version>
+            <version>4.3.19</version>
             <scope>provided</scope>
             <exclusions>
                 <exclusion>
@@ -133,11 +147,17 @@
             <artifactId>eco</artifactId>
             <version>6.65.4</version>
             <scope>provided</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>*</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>me.clip</groupId>
             <artifactId>placeholderapi</artifactId>
-            <version>2.11.2</version>
+            <version>2.11.7</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -161,7 +181,7 @@
         <dependency>
             <groupId>io.lumine</groupId>
             <artifactId>Mythic-Dist</artifactId>
-            <version>5.2.3</version>
+            <version>5.9.5</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -173,13 +193,13 @@
         <dependency>
             <groupId>me.TechsCode</groupId>
             <artifactId>UltraEconomyAPI</artifactId>
-            <version>2.6.4</version>
+            <version>1.1.2</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>com.github.Auxilor</groupId>
+            <groupId>com.willfp</groupId>
             <artifactId>EcoBits</artifactId>
-            <version>master-a55b59745f-1</version>
+            <version>1.8.4</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -229,9 +249,9 @@
         <dependency>
             <groupId>cn.superiormc</groupId>
             <artifactId>MythicChanger</artifactId>
-            <version>2.8.4</version>
+            <version>3.0.3</version>
             <scope>system</scope>
-            <systemPath>${project.basedir}/lib/MythicChanger-2.8.4.jar</systemPath>
+            <systemPath>${project.basedir}/lib/MythicChanger-3.0.3.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>com.nexomc</groupId>
@@ -303,6 +323,12 @@
             <artifactId>bentobox</artifactId>
             <version>2.7.0-SNAPSHOT</version>
             <scope>provided</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>*</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>cn.lunadeer</groupId>

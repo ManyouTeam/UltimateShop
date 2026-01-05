@@ -10,6 +10,7 @@ import org.bukkit.block.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.*;
+import org.bukkit.event.entity.EntityChangeBlockEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.event.world.ChunkUnloadEvent;
@@ -100,6 +101,14 @@ public class SellChestListener implements Listener {
                 event.setCancelled(true);
                 return;
             }
+        }
+    }
+
+    @EventHandler
+    public void onEntityGrief(EntityChangeBlockEvent event) {
+        Block block = event.getBlock();
+        if (isSellChest(block)) {
+            event.setCancelled(true);
         }
     }
 

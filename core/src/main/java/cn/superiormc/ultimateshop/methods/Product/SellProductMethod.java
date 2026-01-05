@@ -225,7 +225,7 @@ public class SellProductMethod {
             tempVal8.setLastSellTime(CommonUtil.getNowTime());
             tempVal8.setCooldownSellTime();
         }
-        if (!item.getShopObject().getShopConfig().getBoolean("settings.hide-message", false) && !giveResult.empty && !takeResult.empty) {
+        if ((!sellAll || !ConfigManager.configManager.getBoolean("sell.auto-hide-sell-all-message")) && !item.getShopObject().getShopConfig().getBoolean("settings.hide-message", false) && !giveResult.empty && !takeResult.empty) {
             LanguageManager.languageManager.sendStringText(player,
                     "success-sell",
                     "item",

@@ -14,8 +14,6 @@ import java.util.List;
 
 public abstract class AbstractHologram {
 
-    public static final double Y_OFFSET = 5.5;
-
     public abstract void create(Player player, Chest chest);
 
     public abstract void update(Player player, Chest chest);
@@ -24,9 +22,9 @@ public abstract class AbstractHologram {
 
     public abstract boolean isAvailable();
 
-    protected Location holoLocation(Chest chest) {
+    protected Location holoLocation(Chest chest, ObjectSellChest sellChest) {
         return chest.getBlock().getLocation()
-                .add(0.5, Y_OFFSET, 0.5);
+                .add(0.5, sellChest.getYOffset(), 0.5);
     }
 
     protected String holoId(Chest chest) {
@@ -45,13 +43,8 @@ public abstract class AbstractHologram {
                 + "_" + l.getBlockZ();
     }
 
-    protected List<String> getLines(Player player, Chest chest) {
+    protected List<String> getLines(Player player, Chest chest, ObjectSellChest sellChest) {
         PersistentDataContainer pdc = chest.getPersistentDataContainer();
-
-        String sellChestID =
-                pdc.get(SellChestManager.SELL_CHEST_ID, PersistentDataType.STRING);
-
-        ObjectSellChest sellChest = ConfigManager.configManager.getSellChest(sellChestID);
 
         int usage = pdc.getOrDefault(
                 SellChestManager.SELL_CHEST_TIMES,
@@ -60,9 +53,20 @@ public abstract class AbstractHologram {
         );
 
         return CommonUtil.modifyList(player, sellChest.getHolograms(),
-                "id", sellChestID,
+                "id", sellChest.getID(),
                 "multiplier", String.valueOf(sellChest.getMultiplier()),
+                "price", getPrice(player, chest),
                 "usage", sellChest.isInfinite() ? ConfigManager.configManager.getString(player, "placeholder.sell-stick.infinite") : String.valueOf(usage)
         );
+    }
+
+    protected String getPrice(Player player, Chest chest) {
+        PersistentDataContainer pdc = chest.getPersistentDataContainer();
+
+        if (!pdc.has(SellChestManager.SELL_CHEST_PRICE)) {
+            return ConfigManager.configManager.getString(player, "sell.sell-chest.price-empty");
+        }
+
+        return pdc.get(SellChestManager.SELL_CHEST_PRICE, PersistentDataType.STRING);
     }
 }

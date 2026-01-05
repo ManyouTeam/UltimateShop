@@ -183,6 +183,9 @@ override-lang:
   terracotta-shop-name: 'Terracotta Shop'
   wools-shop-name: 'Wools Shop'
   daily-shop-name: 'Daily Shop (Require PREMIUM)'
+  sell:
+    sell-chest:
+      price-empty: 'No sell history'
   menu:
     sell-all:
       title: '&fSell All &7- Esc to confirm sell!'

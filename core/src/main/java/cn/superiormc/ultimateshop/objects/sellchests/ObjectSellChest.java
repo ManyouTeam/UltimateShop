@@ -7,6 +7,7 @@ import cn.superiormc.ultimateshop.objects.items.ObjectAction;
 import cn.superiormc.ultimateshop.objects.items.ObjectCondition;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
 import cn.superiormc.ultimateshop.utils.TextUtil;
+import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -87,6 +88,9 @@ public class ObjectSellChest {
         } else {
             resultItem = BuildItem.buildItemStack(null, section, 1);
         }
+        if (resultItem.getType() != Material.CHEST) {
+            resultItem.setType(Material.CHEST);
+        }
         resultItem.setAmount(amount);
         if (!resultItem.hasItemMeta()) {
             return null;
@@ -130,5 +134,9 @@ public class ObjectSellChest {
             return 0;
         }
         return meta.getPersistentDataContainer().get(SELL_CHEST_TIMES, PersistentDataType.INTEGER);
+    }
+
+    public double getYOffset() {
+        return section.getDouble("y-offset", 2.25);
     }
 }

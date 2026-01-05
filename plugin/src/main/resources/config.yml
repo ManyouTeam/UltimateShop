@@ -36,6 +36,7 @@ sell:
       - 'enchants'
       - 'tool.damage-per-block'
       - 'nbt.string.CustomNBTKey'
+  auto-hide-sell-all-message: true
   sell-all:
     ignore-items:
       # Format: Shop ID;;Item ID
@@ -52,6 +53,8 @@ sell:
   # PREMIUM version only.
   sell-chest:
     period-ticks: 60
+    send-sell-message: true
+    price-empty: '{lang}'
     hologram:
       enabled: true
   max-amount: 128

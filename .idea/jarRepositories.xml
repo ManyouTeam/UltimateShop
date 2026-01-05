@@ -12,24 +12,24 @@
       <option name="url" value="https://repo.techscode.com/repository/maven-releases/" />
     </remote-repository>
     <remote-repository>
-      <option name="id" value="placeholderapi" />
-      <option name="name" value="placeholderapi" />
-      <option name="url" value="https://repo.extendedclip.com/content/repositories/placeholderapi/" />
-    </remote-repository>
-    <remote-repository>
       <option name="id" value="momirealms repo" />
       <option name="name" value="momirealms repo" />
       <option name="url" value="https://repo.momirealms.net/releases/" />
     </remote-repository>
     <remote-repository>
-      <option name="id" value="phoenix" />
-      <option name="name" value="phoenix" />
-      <option name="url" value="https://nexus.phoenixdevt.fr/repository/maven-public/" />
+      <option name="id" value="placeholderapi" />
+      <option name="name" value="placeholderapi" />
+      <option name="url" value="https://repo.extendedclip.com/content/repositories/placeholderapi/" />
     </remote-repository>
     <remote-repository>
       <option name="id" value="BenCodez Repo" />
       <option name="name" value="BenCodez Repo" />
       <option name="url" value="https://nexus.bencodez.com/repository/maven-public/" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="phoenix" />
+      <option name="name" value="phoenix" />
+      <option name="url" value="https://nexus.phoenixdevt.fr/repository/maven-public/" />
     </remote-repository>
     <remote-repository>
       <option name="id" value="sk89q-repo" />
@@ -50,6 +50,11 @@
       <option name="id" value="bs-repo-releases" />
       <option name="name" value="bs-repo-releases" />
       <option name="url" value="https://repo.bsdevelopment.org/releases" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="placeholderapi" />
+      <option name="name" value="placeholderapi" />
+      <option name="url" value="https://repo.extendedclip.com/releases/" />
     </remote-repository>
     <remote-repository>
       <option name="id" value="jboss.community" />
@@ -135,6 +140,11 @@
       <option name="id" value="spigotmc-repo" />
       <option name="name" value="spigotmc-repo" />
       <option name="url" value="https://hub.spigotmc.org/nexus/content/repositories/snapshots/" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="techscode" />
+      <option name="name" value="techscode" />
+      <option name="url" value="https://repo.techscode.com/repository/techscode-apis/" />
     </remote-repository>
     <remote-repository>
       <option name="id" value="william278.net" />

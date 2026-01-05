@@ -10,6 +10,7 @@ usage-times: 500
 
 multiplier: 1.2
 
+y-offset: 2.25
 holograms:
   - '&e&lSell chest'
   - '&7ID: {id}'

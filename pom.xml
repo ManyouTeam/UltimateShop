@@ -113,7 +113,7 @@
         </repository>
         <repository>
             <id>placeholderapi</id>
-            <url>https://repo.extendedclip.com/content/repositories/placeholderapi/</url>
+            <url>https://repo.extendedclip.com/releases/</url>
         </repository>
         <repository>
             <id>nexus</id>
@@ -137,17 +137,13 @@
             <url>https://repo.auxilor.io/repository/maven-public/</url>
         </repository>
         <repository>
-            <id>phoenix</id>
-            <url>https://nexus.phoenixdevt.fr/repository/maven-public/</url>
-        </repository>
-        <repository>
             <id>oraxen-releases</id>
             <name>Oraxen Repository</name>
             <url>https://repo.oraxen.com/releases</url>
         </repository>
         <repository>
             <id>techscode</id>
-            <url>https://repo.techscode.com/repository/maven-releases/</url>
+            <url>https://repo.techscode.com/repository/techscode-apis/</url>
         </repository>
         <repository>
             <id>bs-repo-releases</id>
