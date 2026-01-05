@@ -8,7 +8,7 @@ import cn.superiormc.ultimateshop.objects.items.prices.ObjectPrices;
 import cn.superiormc.ultimateshop.objects.sellchests.ObjectSellChest;
 import cn.superiormc.ultimateshop.objects.ObjectThingRun;
 import cn.superiormc.ultimateshop.objects.sellchests.holograms.AbstractHologram;
-import cn.superiormc.ultimateshop.objects.sellchests.holograms.impl.DecentHologramHook;
+import cn.superiormc.ultimateshop.objects.sellchests.holograms.impl.DecentHologramsHook;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
 import cn.superiormc.ultimateshop.utils.TextUtil;
 import org.bukkit.*;
@@ -43,6 +43,12 @@ public class SellChestManager {
 
     private final Map<Chunk, Set<Location>> chestLocations = new ConcurrentHashMap<>();
 
+    private int currentBatchIndex = 0;
+
+    private int activeBatchCount = 0;
+
+    private final List<Location> cycleLocations = new ArrayList<>();
+
     private AbstractHologram hologram;
 
     public SellChestManager() {
@@ -54,7 +60,7 @@ public class SellChestManager {
         if (ConfigManager.configManager.getBoolean("sell.sell-chest.hologram.enabled")) {
             if (CommonUtil.checkPluginLoad("DecentHolograms")) {
                 TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fHooking into DecentHolograms...");
-                hologram = new DecentHologramHook();
+                hologram = new DecentHologramsHook();
             }
         }
     }
@@ -64,27 +70,78 @@ public class SellChestManager {
     }
 
     public void tick() {
-        TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fSell chest task executed...");
-        for (Set<Location> locations : chestLocations.values()) {
-            if (locations == null || locations.isEmpty()) {
+
+        int batchCount = ConfigManager.configManager
+                .getInt("sell.sell-chest.batch-count", 5);
+        if (batchCount <= 0) {
+            batchCount = 1;
+        }
+
+        if (ConfigManager.configManager.getBoolean("debug-2")) {
+            TextUtil.sendMessage(null,
+                    TextUtil.pluginPrefix() + " §fSell chest tick, batch=" + currentBatchIndex);
+        }
+
+        if (currentBatchIndex == 0) {
+            cycleLocations.clear();
+
+            for (Set<Location> locations : chestLocations.values()) {
+                if (locations == null || locations.isEmpty()) {
+                    continue;
+                }
+                cycleLocations.addAll(locations);
+            }
+
+            if (cycleLocations.isEmpty()) {
                 return;
             }
 
-            Iterator<Location> it = locations.iterator();
-            while (it.hasNext()) {
-                Location loc = it.next();
+            activeBatchCount = Math.min(batchCount, cycleLocations.size());
 
-                TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fSelling chest at location: " + loc);
-
-                BlockState state = loc.getBlock().getState();
-                if (!(state instanceof Chest)) {
-                    unregisterSellChest(loc);
-                    it.remove();
-                    continue;
-                }
-
-                sell(loc);
+            if (ConfigManager.configManager.getBoolean("debug-2")) {
+                TextUtil.sendMessage(null,
+                        TextUtil.pluginPrefix() +
+                                " §fNew cycle started, total=" +
+                                cycleLocations.size() +
+                                ", activeBatches=" + activeBatchCount);
             }
+        }
+
+        if (currentBatchIndex >= activeBatchCount) {
+            advanceBatch(batchCount);
+            return;
+        }
+
+        int total = cycleLocations.size();
+        int batchSize = (int) Math.ceil(total / (double) activeBatchCount);
+
+        int fromIndex = currentBatchIndex * batchSize;
+        int toIndex = Math.min(fromIndex + batchSize, total);
+
+        for (int i = fromIndex; i < toIndex; i++) {
+            Location loc = cycleLocations.get(i);
+
+            if (ConfigManager.configManager.getBoolean("debug-2")) {
+                TextUtil.sendMessage(null,
+                        TextUtil.pluginPrefix() + " §fSelling chest at location: " + loc);
+            }
+
+            BlockState state = loc.getBlock().getState();
+            if (!(state instanceof Chest)) {
+                unregisterSellChest(loc);
+                continue;
+            }
+
+            sell(loc);
+        }
+
+        advanceBatch(batchCount);
+    }
+
+    private void advanceBatch(int batchCount) {
+        currentBatchIndex++;
+        if (currentBatchIndex >= batchCount) {
+            currentBatchIndex = 0;
         }
     }
 
@@ -236,7 +293,9 @@ public class SellChestManager {
     }
 
     private void add(Player player, Chest chest) {
-        TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fPlayer " + player.getName() + " placed sell chest at " + chest.getBlock().getLocation() + ".");
+        if (ConfigManager.configManager.getBoolean("debug-2")) {
+            TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fPlayer " + player.getName() + " placed sell chest at " + chest.getBlock().getLocation() + ".");
+        }
         chestLocations.computeIfAbsent(chest.getChunk(), k -> new HashSet<>()).add(chest.getBlock().getLocation());
         if (hologram != null) {
             hologram.create(player, chest);

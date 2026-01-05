@@ -12,7 +12,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
-public class DecentHologramHook extends AbstractHologram {
+public class DecentHologramsHook extends AbstractHologram {
 
     @Override
     public boolean isAvailable() {

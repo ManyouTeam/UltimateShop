@@ -52,7 +52,8 @@ sell:
     click-type: RIGHT
   # PREMIUM version only.
   sell-chest:
-    period-ticks: 60
+    period-ticks: 600
+    batch-count: 5
     send-sell-message: true
     price-empty: '{lang}'
     hologram:
