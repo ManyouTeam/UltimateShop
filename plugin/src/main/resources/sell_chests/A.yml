@@ -16,6 +16,7 @@ holograms:
   - '&7ID: {id}'
   - '&7Left Times: {usage}'
   - '&7Multiplier: {multiplier}'
+  - '&7Last Earn: {price}'
 
 actions:
   1:
