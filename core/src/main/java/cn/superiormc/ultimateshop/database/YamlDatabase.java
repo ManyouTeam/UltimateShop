@@ -24,7 +24,9 @@ public class YamlDatabase extends AbstractDatabase {
     }
 
     private void loadData(ObjectCache cache) {
-        if (!dataDir.exists()) dataDir.mkdirs();
+        if (!dataDir.exists()) {
+            dataDir.mkdirs();
+        }
 
         File file = cache.isServer()
                 ? new File(dataDir, "global.yml")
@@ -106,7 +108,9 @@ public class YamlDatabase extends AbstractDatabase {
     }
 
     private void saveData(ObjectCache cache) {
-        if (!dataDir.exists()) dataDir.mkdirs();
+        if (!dataDir.exists()) {
+            dataDir.mkdirs();
+        }
 
         File file = cache.isServer()
                 ? new File(dataDir, "global.yml")

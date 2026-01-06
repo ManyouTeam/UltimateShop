@@ -4,6 +4,8 @@ import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.ErrorManager;
 import cn.superiormc.ultimateshop.paper.utils.PaperTextUtil;
+import cn.superiormc.ultimateshop.paper.utils.methods.BuildItemPaper;
+import cn.superiormc.ultimateshop.paper.utils.methods.DebuildItemPaper;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
 import cn.superiormc.ultimateshop.utils.SchedulerUtil;
 import cn.superiormc.ultimateshop.utils.SpecialMethodUtil;
@@ -251,10 +253,18 @@ public class PaperMethodUtil implements SpecialMethodUtil {
 
     @Override
     public ItemStack editItemStack(ItemStack item, Player player, ConfigurationSection section, int amount, String... args) {
-        if (!CommonUtil.getMinorVersion(21, 5) || UltimateShop.freeVersion) {
+        if (!CommonUtil.getMinorVersion(21, 6) || UltimateShop.freeVersion) {
             return item;
         }
         return BuildItemPaper.editItemStack(item, player, section, amount, args);
+    }
+
+    @Override
+    public ConfigurationSection serializeItemStack(ItemStack item) {
+        if (!CommonUtil.getMinorVersion(21, 5) || UltimateShop.freeVersion) {
+            return null;
+        }
+        return DebuildItemPaper.serializeItemStack(item);
     }
 
 }

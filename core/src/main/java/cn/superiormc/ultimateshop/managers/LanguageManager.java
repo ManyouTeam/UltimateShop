@@ -142,7 +142,9 @@ public class LanguageManager {
     }
 
     public void sendStringText(Player player, String... args) {
-        if (args.length == 0) return;
+        if (args.length == 0) {
+            return;
+        }
         String text = getMessage(player, args[0]);
 
         // 替换变量 {key}

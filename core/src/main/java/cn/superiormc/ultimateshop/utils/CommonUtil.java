@@ -201,6 +201,13 @@ public class CommonUtil {
         return Color.fromRGB(Integer.parseInt(color));
     }
 
+    public static String colorToString(Color color) {
+        if (color == null) {
+            return "0,0,0";
+        }
+        return color.getRed() + "," + color.getGreen() + "," + color.getBlue();
+    }
+
     public static List<Color> parseColorList(List<String> rawList) {
         List<Color> colors = new ArrayList<>();
 

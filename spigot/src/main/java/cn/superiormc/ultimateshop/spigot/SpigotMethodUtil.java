@@ -226,4 +226,9 @@ public class SpigotMethodUtil implements SpecialMethodUtil {
     public ItemStack editItemStack(ItemStack item, Player player, ConfigurationSection section, int amount, String... args) {
         return item;
     }
+
+    @Override
+    public ConfigurationSection serializeItemStack(ItemStack item) {
+        return null;
+    }
 }

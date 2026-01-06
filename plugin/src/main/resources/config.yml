@@ -19,6 +19,10 @@ config-files:
     generate-new-one: false
     file: 'zh_cn.json'
 
+# Support value: COMPONENT or LEGACY
+# COMPONENT mode only supports 1.21.6+ Paper servers.
+debuild-item-method: 'COMPONENT'
+
 cache:
   # If you are facing multi servers sync issue, try greater this value.
   load-delay: 7
