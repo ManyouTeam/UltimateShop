@@ -1,0 +1,13 @@
+material: DIAMOND_PICKAXE
+component:
+  name: <yellow>超级镐子
+  lore:
+    - <gray>开采速度非常快
+  tool:
+    damage-per-block: 1
+    mining-speed: 15.0
+    destroy-blocks-in-creative: false
+    rules:
+      - minecraft:stone,1.0,true
+      - minecraft:dirt,2.0,false
+  damage: 5

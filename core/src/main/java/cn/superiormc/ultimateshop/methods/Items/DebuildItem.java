@@ -1,6 +1,6 @@
 package cn.superiormc.ultimateshop.methods.Items;
 
-import cn.superiormc.mythicchanger.manager.ConfigManager;
+import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.ErrorManager;
 import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.managers.HookManager;
@@ -47,14 +47,14 @@ public class DebuildItem {
             section.set("material", itemStack.getType().name());
         }
 
+        // Amount
+        section.set("amount", itemStack.getAmount());
+
         if (UltimateShop.methodUtil.methodID().equals("paper") &&
                 CommonUtil.getMinorVersion(21, 6) &&
-                ConfigManager.configManager.getBoolean("debuild-item-method")) {
+                ConfigManager.configManager.getString("debuild-item-method", "LEGACY").equalsIgnoreCase("COMPONENT")) {
             section.set("component", UltimateShop.methodUtil.serializeItemStack(itemStack));
         } else {
-            // Amount
-            section.set("amount", itemStack.getAmount());
-
             ItemMeta meta = itemStack.getItemMeta();
             if (meta == null) {
                 return section;
@@ -569,6 +569,21 @@ public class DebuildItem {
                     UseCooldownComponent useCooldownComponent = meta.getUseCooldown();
                     section.set("use-cooldown.cooldown-group", useCooldownComponent.getCooldownGroup());
                     section.set("use-cooldown.cooldown-seconds", useCooldownComponent.getCooldownSeconds());
+                }
+
+                // Use Cooldown
+                if (meta.hasUseCooldown()) {
+                    UseCooldownComponent useCooldownComponent = meta.getUseCooldown();
+                    ConfigurationSection cooldownSection = section.getConfigurationSection("use-cooldown");
+                    if (cooldownSection == null) {
+                        cooldownSection = section.createSection("use-cooldown");
+                    }
+                    if (useCooldownComponent.getCooldownGroup() != null) {
+                        cooldownSection.set("cooldown-group", useCooldownComponent.getCooldownGroup().asString());
+                    }
+                    if (useCooldownComponent.getCooldownSeconds() >= 0) {
+                        cooldownSection.set("cooldown-seconds", useCooldownComponent.getCooldownSeconds());
+                    }
                 }
 
                 // Equippable

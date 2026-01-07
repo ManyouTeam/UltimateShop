@@ -20,7 +20,7 @@ config-files:
     file: 'zh_cn.json'
 
 # Support value: COMPONENT or LEGACY
-# COMPONENT mode only supports 1.21.6+ Paper servers.
+# COMPONENT mode only supports 1.21.6+ Paper servers and PREMIUM version.
 debuild-item-method: 'COMPONENT'
 
 cache:

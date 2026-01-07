@@ -1,0 +1,10 @@
+material: SPLASH_POTION
+
+component:
+  name: "<blue>自制狂暴药水"
+  potion:
+    base-effect: STRONG_SWIFTNESS
+    effects:
+      - "minecraft:strength,3600,1"
+      - "minecraft:regeneration,400,2,true,false"
+    color: "#00FFAA"

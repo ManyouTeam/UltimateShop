@@ -1,4 +1,4 @@
-package cn.superiormc.ultimateshop.paper.utils.methods;
+package cn.superiormc.ultimateshop.paper.methods;
 
 import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
@@ -20,7 +20,6 @@ import io.papermc.paper.registry.TypedKey;
 import io.papermc.paper.registry.set.RegistryKeySet;
 import io.papermc.paper.registry.set.RegistrySet;
 import io.papermc.paper.registry.tag.TagKey;
-import net.kyori.adventure.key.Key;
 import net.kyori.adventure.util.TriState;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
@@ -168,7 +167,12 @@ public class BuildItemPaper {
                     i ++;
                 }
                 RegistryKeySet<@org.jetbrains.annotations.NotNull BlockType> blockTypes = RegistrySet.keySet(RegistryKey.BLOCK, blockTypeKeys);
-                Tool.Rule rule = Tool.rule(blockTypes, Float.parseFloat(ruleParseResult[i]), TriState.byBoolean(Boolean.parseBoolean(ruleParseResult[i + 1])));
+                String booleanValue = ruleParseResult[i + 1];
+                Boolean parsedBoolean = null;
+                if (!booleanValue.equalsIgnoreCase("null")) {
+                    parsedBoolean = Boolean.valueOf(booleanValue);
+                }
+                Tool.Rule rule = Tool.rule(blockTypes, Float.parseFloat(ruleParseResult[i]), TriState.byBoolean(parsedBoolean));
                 builder.addRule(rule);
             }
             item.setData(DataComponentTypes.TOOL, builder.build());
@@ -264,19 +268,14 @@ public class BuildItemPaper {
                     if (CommonUtil.getMinorVersion(21, 6)) {
                         AttributeModifierDisplay attributeModifierDisplay = AttributeModifierDisplay.hidden();
                         if (attribDisplayMode != null) {
-                            switch (attribDisplayMode.toUpperCase()) {
-                                case "HIDDEN":
-                                    attributeModifierDisplay = AttributeModifierDisplay.hidden();
-                                    break;
-                                case "RESET": case "DEFAULT":
-                                    attributeModifierDisplay = AttributeModifierDisplay.reset();
-                                    break;
-                                case "OVERRIDE": case "TEXT":
-                                    attributeModifierDisplay = AttributeModifierDisplay.override(PaperTextUtil.modernParse(
-                                            subSection.getString("display-text")
-                                    , player));
-
-                            }
+                            attributeModifierDisplay = switch (attribDisplayMode.toUpperCase()) {
+                                case "HIDDEN" -> AttributeModifierDisplay.hidden();
+                                case "RESET", "DEFAULT" -> AttributeModifierDisplay.reset();
+                                case "OVERRIDE", "TEXT" -> AttributeModifierDisplay.override(PaperTextUtil.modernParse(
+                                        subSection.getString("display-text")
+                                        , player));
+                                default -> attributeModifierDisplay;
+                            };
                         }
                         builder.addModifier(attributeInst, modifier, slot, attributeModifierDisplay);
                     } else {
@@ -317,8 +316,8 @@ public class BuildItemPaper {
         if (bannerPatternsKey != null) {
             BannerPatternLayers.Builder builder = BannerPatternLayers.bannerPatternLayers();
             for (String pattern : bannerPatternsKey.getKeys(false)) {
-                //PatternType type = RegistryAccess.registryAccess().getRegistry(RegistryKey.BANNER_PATTERN).get(CommonUtil.parseNamespacedKey(pattern));
-                PatternType type = Registry.BANNER_PATTERN.get(CommonUtil.parseNamespacedKey(pattern));
+                PatternType type = RegistryAccess.registryAccess().getRegistry(RegistryKey.BANNER_PATTERN).get(CommonUtil.parseNamespacedKey(pattern));
+                //PatternType type = Registry.BANNER_PATTERN.get(CommonUtil.parseNamespacedKey(pattern));
                 String bannerColor = bannerPatternsKey.getString(pattern);
                 if (type != null && bannerColor != null) {
                     DyeColor color = Enums.getIfPresent(DyeColor.class, bannerColor.toUpperCase()).or(DyeColor.WHITE);
@@ -593,15 +592,15 @@ public class BuildItemPaper {
                 Equippable.Builder builder = Equippable.equippable(slot);
                 String equipSound = equippable.getString("equip-sound");
                 if (equipSound != null) {
-                    builder.equipSound(Key.key(equipSound));
+                    builder.equipSound(CommonUtil.parseNamespacedKey(equipSound));
                 }
                 String assetId = equippable.getString("asset-id");
                 if (assetId != null) {
-                    builder.assetId(Key.key(assetId));
+                    builder.assetId(CommonUtil.parseNamespacedKey(assetId));
                 }
                 String cameraOverlay = equippable.getString("camera-overlay");
                 if (cameraOverlay != null) {
-                    builder.cameraOverlay(Key.key(cameraOverlay));
+                    builder.cameraOverlay(CommonUtil.parseNamespacedKey(cameraOverlay));
                 }
                 if (equippable.contains("allowed-entities")) {
                     List<TypedKey<EntityType>> keys = equippable.getStringList("allowed-entities")
@@ -631,7 +630,7 @@ public class BuildItemPaper {
                 }
                 String shearSound = equippable.getString("shear-sound");
                 if (shearSound != null && CommonUtil.getMinorVersion(21, 6)) {
-                    builder.shearSound(Key.key(shearSound));
+                    builder.shearSound(CommonUtil.parseNamespacedKey(shearSound));
                 }
                 item.setData(DataComponentTypes.EQUIPPABLE, builder.build());
             }
@@ -748,7 +747,7 @@ public class BuildItemPaper {
             // Damage Type
             String damageTypeKey = section.getString("damage-type");
             if (damageTypeKey != null) {
-                DamageType damageType = RegistryAccess.registryAccess().getRegistry(RegistryKey.DAMAGE_TYPE).get(Key.key(damageTypeKey));
+                DamageType damageType = RegistryAccess.registryAccess().getRegistry(RegistryKey.DAMAGE_TYPE).get(CommonUtil.parseNamespacedKey(damageTypeKey));
                 if (damageType != null) {
                     item.setData(DataComponentTypes.DAMAGE_TYPE, damageType);
                 }
@@ -776,11 +775,11 @@ public class BuildItemPaper {
                 }
                 String sound = kineticWeaponKey.getString("sound");
                 if (sound != null) {
-                    builder.sound(Key.key(sound));
+                    builder.sound(CommonUtil.parseNamespacedKey(sound));
                 }
                 String hitSound = kineticWeaponKey.getString("hit-sound");
                 if (hitSound != null) {
-                    builder.hitSound(Key.key(hitSound));
+                    builder.hitSound(CommonUtil.parseNamespacedKey(hitSound));
                 }
                 KineticWeapon.Condition damageCondition = parseKineticWeaponCondition(kineticWeaponKey, "damage-conditions");
                 if (damageCondition != null) {
@@ -815,11 +814,11 @@ public class BuildItemPaper {
                 }
                 String sound = piercingWeaponKey.getString("sound");
                 if (sound != null) {
-                    builder.sound(Key.key(sound));
+                    builder.sound(CommonUtil.parseNamespacedKey(sound));
                 }
                 String hitSound = piercingWeaponKey.getString("hit-sound");
                 if (hitSound != null) {
-                    builder.hitSound(Key.key(hitSound));
+                    builder.hitSound(CommonUtil.parseNamespacedKey(hitSound));
                 }
                 item.setData(DataComponentTypes.PIERCING_WEAPON, builder.build());
             }
@@ -850,7 +849,7 @@ public class BuildItemPaper {
                     builder.interactVibrations(useEffectsKey.getBoolean("interact-vibrations"));
                 }
                 double speedMultiplier = useEffectsKey.getDouble("speed-multiplier", -1);
-                if (speedMultiplier >= 0) {
+                if (speedMultiplier >= 0 && speedMultiplier <= 1) {
                     builder.speedMultiplier((float) speedMultiplier);
                 }
                 item.setData(DataComponentTypes.USE_EFFECTS, builder.build());

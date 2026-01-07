@@ -194,10 +194,28 @@ public class CommonUtil {
     }
 
     public static Color parseColor(String color) {
+        if (color == null || color.isEmpty()) {
+            return Color.fromRGB(0, 0, 0);
+        }
+
+        color = color.trim();
+
+        // 支持 #RRGGBB
+        if (color.startsWith("#")) {
+            return Color.fromRGB(Integer.parseInt(color.substring(1), 16));
+        }
+
+        // 支持 R,G,B
         String[] keySplit = color.replace(" ", "").split(",");
         if (keySplit.length == 3) {
-            return Color.fromRGB(Integer.parseInt(keySplit[0]), Integer.parseInt(keySplit[1]), Integer.parseInt(keySplit[2]));
+            return Color.fromRGB(
+                    Integer.parseInt(keySplit[0]),
+                    Integer.parseInt(keySplit[1]),
+                    Integer.parseInt(keySplit[2])
+            );
         }
+
+        // 默认：单值 RGB int
         return Color.fromRGB(Integer.parseInt(color));
     }
 

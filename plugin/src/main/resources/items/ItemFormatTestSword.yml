@@ -1,0 +1,25 @@
+material: NETHERITE_SWORD
+amount: 1
+name: "&c究极测试剑"
+lore:
+  - "&7测试全面属性覆盖"
+  - "&a非常危险！"
+glow: true
+rarity: EPIC
+unbreakable: true
+enchants:
+  sharpness: 5
+  unbreaking: 3
+attributes:
+  max_health:
+    name: test_damage
+    amount: 20
+    operation: ADD_NUMBER
+    slot: HAND
+max-stack: 1
+damage: 10
+max-damage: 2032
+skull: ""
+use-cooldown:
+  cooldown-seconds: 30
+  cooldown-group: "minecraft:sword"

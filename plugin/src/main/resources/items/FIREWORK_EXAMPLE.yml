@@ -1,0 +1,16 @@
+material: FIREWORK_ROCKET
+
+component:
+  firework:
+    fw1:
+      flicker: true
+      trail: true
+      type: BALL
+      colors:
+        base:
+          - "#FF0000"
+          - "#FFFF00"
+        fade:
+          - "#00FF00"
+          - "#0000FF"
+    duration: 3

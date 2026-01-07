@@ -1,5 +1,6 @@
-package cn.superiormc.ultimateshop.paper.utils.methods;
+package cn.superiormc.ultimateshop.paper.methods;
 
+import cn.superiormc.ultimateshop.methods.Items.DebuildItem;
 import cn.superiormc.ultimateshop.paper.utils.PaperTextUtil;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
 import com.destroystokyo.paper.profile.ProfileProperty;
@@ -12,10 +13,7 @@ import io.papermc.paper.registry.RegistryAccess;
 import io.papermc.paper.registry.RegistryKey;
 import io.papermc.paper.registry.TypedKey;
 import net.kyori.adventure.key.Key;
-import org.bukkit.DyeColor;
-import org.bukkit.FireworkEffect;
-import org.bukkit.JukeboxSong;
-import org.bukkit.MusicInstrument;
+import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.block.BlockType;
@@ -35,21 +33,22 @@ import java.util.stream.StreamSupport;
 public class DebuildItemPaper {
     public static ConfigurationSection serializeItemStack(ItemStack item) {
         ConfigurationSection section = new MemoryConfiguration();
+
         // Amount
-        section.set("amount", item.getAmount());
+        //section.set("amount", item.getAmount());
 
         // Custom Name
-        if (item.hasData(DataComponentTypes.CUSTOM_NAME)) {
+        if (item.isDataOverridden(DataComponentTypes.CUSTOM_NAME)) {
             section.set("name", PaperTextUtil.changeToString(item.getData(DataComponentTypes.CUSTOM_NAME)));
         }
 
         // Item Name
-        if (item.hasData(DataComponentTypes.ITEM_NAME)) {
+        if (item.isDataOverridden(DataComponentTypes.ITEM_NAME)) {
             section.set("item-name", PaperTextUtil.changeToString(item.getData(DataComponentTypes.ITEM_NAME)));
         }
 
         // Lore
-        if (item.hasData(DataComponentTypes.LORE)) {
+        if (item.isDataOverridden(DataComponentTypes.LORE)) {
             ItemLore lore = item.getData(DataComponentTypes.LORE);
             if (lore != null) {
                 List<String> lores = lore.lines().stream()
@@ -60,7 +59,7 @@ public class DebuildItemPaper {
         }
 
         // Custom Model Data
-        if (item.hasData(DataComponentTypes.CUSTOM_MODEL_DATA)) {
+        if (item.isDataOverridden(DataComponentTypes.CUSTOM_MODEL_DATA)) {
             CustomModelData cmd = item.getData(DataComponentTypes.CUSTOM_MODEL_DATA);
             if (cmd != null) {
                 ConfigurationSection cmdSection = section.createSection("custom-model-data");
@@ -72,12 +71,12 @@ public class DebuildItemPaper {
         }
 
         // Max Stack
-        if (item.hasData(DataComponentTypes.MAX_STACK_SIZE)) {
+        if (item.isDataOverridden(DataComponentTypes.MAX_STACK_SIZE)) {
             section.set("max-stack", item.getData(DataComponentTypes.MAX_STACK_SIZE));
         }
 
         // Food
-        if (item.hasData(DataComponentTypes.FOOD)) {
+        if (item.isDataOverridden(DataComponentTypes.FOOD)) {
             FoodProperties food = item.getData(DataComponentTypes.FOOD);
             if (food != null) {
                 ConfigurationSection foodSection = section.createSection("food");
@@ -88,7 +87,7 @@ public class DebuildItemPaper {
         }
 
         // Tool
-        if (item.hasData(DataComponentTypes.TOOL)) {
+        if (item.isDataOverridden(DataComponentTypes.TOOL)) {
             Tool tool = item.getData(DataComponentTypes.TOOL);
             if (tool != null) {
                 ConfigurationSection toolSection = section.createSection("tool");
@@ -108,7 +107,7 @@ public class DebuildItemPaper {
         }
 
         // Jukebox
-        if (item.hasData(DataComponentTypes.JUKEBOX_PLAYABLE)) {
+        if (item.isDataOverridden(DataComponentTypes.JUKEBOX_PLAYABLE)) {
             JukeboxPlayable jukeboxPlayable = item.getData(DataComponentTypes.JUKEBOX_PLAYABLE);
             if (jukeboxPlayable != null) {
                 JukeboxSong song = jukeboxPlayable.jukeboxSong();
@@ -117,17 +116,17 @@ public class DebuildItemPaper {
         }
 
         // Glow
-        if (item.hasData(DataComponentTypes.ENCHANTMENT_GLINT_OVERRIDE)) {
+        if (item.isDataOverridden(DataComponentTypes.ENCHANTMENT_GLINT_OVERRIDE)) {
             section.set("glow", item.getData(DataComponentTypes.ENCHANTMENT_GLINT_OVERRIDE));
         }
 
         // Unbreakable
-        if (item.hasData(DataComponentTypes.UNBREAKABLE)) {
+        if (item.isDataOverridden(DataComponentTypes.UNBREAKABLE)) {
             section.set("unbreakable", true);
         }
 
         // Rarity
-        if (item.hasData(DataComponentTypes.RARITY)) {
+        if (item.isDataOverridden(DataComponentTypes.RARITY)) {
             ItemRarity rarity = item.getData(DataComponentTypes.RARITY);
             if (rarity != null) {
                 section.set("rarity", rarity.name());
@@ -135,7 +134,7 @@ public class DebuildItemPaper {
         }
 
         // Flag
-        if (item.hasData(DataComponentTypes.TOOLTIP_DISPLAY)) {
+        if (item.isDataOverridden(DataComponentTypes.TOOLTIP_DISPLAY)) {
             TooltipDisplay tooltipDisplay = item.getData(DataComponentTypes.TOOLTIP_DISPLAY);
             if (tooltipDisplay != null) {
                 List<String> hiddenComponents = tooltipDisplay.hiddenComponents()
@@ -148,21 +147,21 @@ public class DebuildItemPaper {
         }
 
         // Enchantments
-        if (item.hasData(DataComponentTypes.ENCHANTMENTS)) {
+        if (item.isDataOverridden(DataComponentTypes.ENCHANTMENTS)) {
             ItemEnchantments enchants = item.getData(DataComponentTypes.ENCHANTMENTS);
             if (enchants != null) {
                 ConfigurationSection enchantsSection = section.createSection("enchants"); // 创建子节
                 enchants.enchantments().forEach((enchantment, level) -> {
                     Key key = RegistryAccess.registryAccess().getRegistry(RegistryKey.ENCHANTMENT).getKey(enchantment);
                     if (key != null) {
-                        enchantsSection.set(key.asString(), level); // 设置到配置
+                        enchantsSection.set(key.asString(), level);
                     }
                 });
             }
         }
 
         // Attribute Modifiers
-        if (item.hasData(DataComponentTypes.ATTRIBUTE_MODIFIERS)) {
+        if (item.isDataOverridden(DataComponentTypes.ATTRIBUTE_MODIFIERS)) {
             ItemAttributeModifiers attributes = item.getData(DataComponentTypes.ATTRIBUTE_MODIFIERS);
             if (attributes != null) {
                 ConfigurationSection attributesSection = section.createSection("attributes");
@@ -174,23 +173,22 @@ public class DebuildItemPaper {
                     EquipmentSlotGroup slot = entry.getGroup();
                     AttributeModifierDisplay display = entry.display();
                     ConfigurationSection attributeSection = attributesSection.createSection(attribute.getKey().getKey());
-                    ConfigurationSection modSection = attributeSection.createSection(modifier.getName());
-                    modSection.set("name", modifier.getName());
-                    modSection.set("amount", modifier.getAmount());
-                    modSection.set("operation", modifier.getOperation().name());
-                    modSection.set("slot", slot.toString());
+                    attributeSection.set("name", modifier.getName());
+                    attributeSection.set("amount", modifier.getAmount());
+                    attributeSection.set("operation", modifier.getOperation().name());
+                    attributeSection.set("slot", slot.toString());
 
                     // Paper 1.21+ 显示模式
                     if (CommonUtil.getMinorVersion(21, 6)) {
                         if (display instanceof AttributeModifierDisplay.Hidden) {
-                            modSection.set("display-mode", "HIDDEN");
+                            attributeSection.set("display-mode", "HIDDEN");
                         } else if (display instanceof AttributeModifierDisplay.Default) {
-                            modSection.set("display-mode", "RESET");
+                            attributeSection.set("display-mode", "RESET");
                         } else if (display instanceof AttributeModifierDisplay.OverrideText displayText) {
-                            modSection.set("display-mode", "OVERRIDE");
-                            modSection.set("display-text", displayText.text());
+                            attributeSection.set("display-mode", "OVERRIDE");
+                            attributeSection.set("display-text", displayText.text());
                         } else {
-                            modSection.set("display-mode", "DEFAULT");
+                            attributeSection.set("display-mode", "DEFAULT");
                         }
                     }
                 }
@@ -198,12 +196,17 @@ public class DebuildItemPaper {
         }
 
         // Damage
-        if (item.hasData(DataComponentTypes.DAMAGE)) {
+        if (item.isDataOverridden(DataComponentTypes.DAMAGE)) {
             section.set("damage", item.getData(DataComponentTypes.DAMAGE));
         }
 
+        // MAX Damage
+        if (item.isDataOverridden(DataComponentTypes.MAX_DAMAGE)) {
+            section.set("max-damage", item.getData(DataComponentTypes.MAX_DAMAGE));
+        }
+
         // Stored Enchantments
-        if (item.hasData(DataComponentTypes.STORED_ENCHANTMENTS)) {
+        if (item.isDataOverridden(DataComponentTypes.STORED_ENCHANTMENTS)) {
             ItemEnchantments enchants = item.getData(DataComponentTypes.STORED_ENCHANTMENTS);
             if (enchants != null) {
                 ConfigurationSection enchantsSection = section.createSection("stored-enchants"); // 创建子节
@@ -217,7 +220,7 @@ public class DebuildItemPaper {
         }
 
         // Banner Patterns
-        if (item.hasData(DataComponentTypes.BANNER_PATTERNS)) {
+        if (item.isDataOverridden(DataComponentTypes.BANNER_PATTERNS)) {
             BannerPatternLayers bannerPatterns = item.getData(DataComponentTypes.BANNER_PATTERNS);
             if (bannerPatterns != null) {
                 ConfigurationSection bannerSection = section.createSection("banner-patterns");
@@ -232,8 +235,7 @@ public class DebuildItemPaper {
         }
 
         // Potion Contents
-        if (item.hasData(DataComponentTypes.POTION_CONTENTS)) {
-
+        if (item.isDataOverridden(DataComponentTypes.POTION_CONTENTS)) {
             PotionContents potionContents = item.getData(DataComponentTypes.POTION_CONTENTS);
             if (potionContents != null) {
                 ConfigurationSection potionSection = section.createSection("potion");
@@ -261,7 +263,7 @@ public class DebuildItemPaper {
         }
 
         // Potion Duration Scale
-        if (item.hasData(DataComponentTypes.POTION_DURATION_SCALE)) {
+        if (item.isDataOverridden(DataComponentTypes.POTION_DURATION_SCALE)) {
             Float durationScale = item.getData(DataComponentTypes.POTION_DURATION_SCALE);
             if (durationScale != null) {
                 section.set("potion-duration-scale", durationScale);
@@ -269,19 +271,19 @@ public class DebuildItemPaper {
         }
 
         // Charged Projectiles
-        if (item.hasData(DataComponentTypes.CHARGED_PROJECTILES)) {
+        if (item.isDataOverridden(DataComponentTypes.CHARGED_PROJECTILES)) {
             ChargedProjectiles chargedProjectiles = item.getData(DataComponentTypes.CHARGED_PROJECTILES);
             if (chargedProjectiles != null) {
                 ConfigurationSection chargedSection = section.createSection("charged-projectiles");
                 int index = 0;
                 for (ItemStack subItem : chargedProjectiles.projectiles()) {
-                    chargedSection.set(String.valueOf(index++), serializeItemStack(subItem));
+                    chargedSection.set(String.valueOf(index++), DebuildItem.debuildItem(subItem, new MemoryConfiguration()));
                 }
             }
         }
 
         // Armor Trim
-        if (item.hasData(DataComponentTypes.TRIM)) {
+        if (item.isDataOverridden(DataComponentTypes.TRIM)) {
             ItemArmorTrim armorTrim = item.getData(DataComponentTypes.TRIM);
             ConfigurationSection trimSection = section.createSection("trim");
             if (armorTrim != null) {
@@ -293,7 +295,7 @@ public class DebuildItemPaper {
         }
 
         // Leather Armor Color
-        if (item.hasData(DataComponentTypes.DYED_COLOR)) {
+        if (item.isDataOverridden(DataComponentTypes.DYED_COLOR)) {
             DyedItemColor dyedColor = item.getData(DataComponentTypes.DYED_COLOR);
             if (dyedColor != null) {
                 section.set("leather-color", CommonUtil.colorToString(dyedColor.color()));
@@ -301,7 +303,7 @@ public class DebuildItemPaper {
         }
 
         // Axolotl Variant
-        if (item.hasData(DataComponentTypes.AXOLOTL_VARIANT)) {
+        if (item.isDataOverridden(DataComponentTypes.AXOLOTL_VARIANT)) {
             Axolotl.Variant axolotlVariant = item.getData(DataComponentTypes.AXOLOTL_VARIANT);
             if (axolotlVariant != null) {
                 section.set("axolotl-variant", axolotlVariant.name());
@@ -309,21 +311,21 @@ public class DebuildItemPaper {
         }
 
         // Tropical Fish
-        if (item.hasData(DataComponentTypes.TROPICAL_FISH_BASE_COLOR)) {
+        if (item.isDataOverridden(DataComponentTypes.TROPICAL_FISH_BASE_COLOR)) {
             DyeColor baseColor = item.getData(DataComponentTypes.TROPICAL_FISH_BASE_COLOR);
             if (baseColor != null) {
                 section.set("tropical-fish-base-color", baseColor.name());
             }
         }
 
-        if (item.hasData(DataComponentTypes.TROPICAL_FISH_PATTERN_COLOR)) {
+        if (item.isDataOverridden(DataComponentTypes.TROPICAL_FISH_PATTERN_COLOR)) {
             DyeColor patternColor = item.getData(DataComponentTypes.TROPICAL_FISH_PATTERN_COLOR);
             if (patternColor != null) {
                 section.set("tropical-fish-pattern-color", patternColor.name());
             }
         }
 
-        if (item.hasData(DataComponentTypes.TROPICAL_FISH_PATTERN)) {
+        if (item.isDataOverridden(DataComponentTypes.TROPICAL_FISH_PATTERN)) {
             TropicalFish.Pattern fishPattern = item.getData(DataComponentTypes.TROPICAL_FISH_PATTERN);
             if (fishPattern != null) {
                 section.set("tropical-fish-pattern", fishPattern.name());
@@ -331,7 +333,7 @@ public class DebuildItemPaper {
         }
 
         // Skull
-        if (item.hasData(DataComponentTypes.PROFILE)) {
+        if (item.isDataOverridden(DataComponentTypes.PROFILE)) {
             ResolvableProfile profile = item.getData(DataComponentTypes.PROFILE);
             if (profile != null) {
                 profile.properties().stream()
@@ -343,27 +345,26 @@ public class DebuildItemPaper {
         }
 
         // Fireworks
-        if (item.hasData(DataComponentTypes.FIREWORKS)) {
+        if (item.isDataOverridden(DataComponentTypes.FIREWORKS)) {
             Fireworks fireworks = item.getData(DataComponentTypes.FIREWORKS);
             if (fireworks != null) {
                 ConfigurationSection fwSection = section.createSection("firework");
                 fwSection.set("duration", fireworks.flightDuration());
-                List<Map<String, Object>> effects = new ArrayList<>();
+                int index = 0;
                 for (FireworkEffect effect : fireworks.effects()) {
-                    Map<String, Object> map = new HashMap<>();
-                    map.put("flicker", effect.hasFlicker());
-                    map.put("trail", effect.hasTrail());
-                    map.put("type", effect.getType().name());
-                    map.put("colors", effect.getColors().stream().map(CommonUtil::colorToString).toList());
-                    map.put("fade", effect.getFadeColors().stream().map(CommonUtil::colorToString).toList());
-                    effects.add(map);
+                    ConfigurationSection map = fwSection.createSection(String.valueOf(index));
+                    map.set("flicker", effect.hasFlicker());
+                    map.set("trail", effect.hasTrail());
+                    map.set("type", effect.getType().name());
+                    map.set("colors", effect.getColors().stream().map(CommonUtil::colorToString).toList());
+                    map.set("fade", effect.getFadeColors().stream().map(CommonUtil::colorToString).toList());
+                    index++;
                 }
-                fwSection.set("effects", effects);
             }
         }
 
         // Suspicious Stew
-        if (item.hasData(DataComponentTypes.SUSPICIOUS_STEW_EFFECTS)) {
+        if (item.isDataOverridden(DataComponentTypes.SUSPICIOUS_STEW_EFFECTS)) {
             SuspiciousStewEffects stewEffects = item.getData(DataComponentTypes.SUSPICIOUS_STEW_EFFECTS);
             List<String> effectStrings = null;
             if (stewEffects != null) {
@@ -375,19 +376,19 @@ public class DebuildItemPaper {
         }
 
         // Bundle Contents
-        if (item.hasData(DataComponentTypes.BUNDLE_CONTENTS)) {
+        if (item.isDataOverridden(DataComponentTypes.BUNDLE_CONTENTS)) {
             BundleContents bundleContents = item.getData(DataComponentTypes.BUNDLE_CONTENTS);
             ConfigurationSection bundleSection = section.createSection("bundle-contents");
             int index = 0;
             if (bundleContents != null) {
                 for (ItemStack subItem : bundleContents.contents()) {
-                    bundleSection.set(String.valueOf(index++), serializeItemStack(subItem));
+                    bundleSection.set(String.valueOf(index++), DebuildItem.debuildItem(subItem, new MemoryConfiguration()));
                 }
             }
         }
 
         // Ominous Bottle
-        if (item.hasData(DataComponentTypes.OMINOUS_BOTTLE_AMPLIFIER)) {
+        if (item.isDataOverridden(DataComponentTypes.OMINOUS_BOTTLE_AMPLIFIER)) {
             OminousBottleAmplifier amplifier = item.getData(DataComponentTypes.OMINOUS_BOTTLE_AMPLIFIER);
             if (amplifier != null) {
                 section.set("ominous-bottle-amplifier", amplifier.amplifier());
@@ -395,7 +396,7 @@ public class DebuildItemPaper {
         }
 
         // Music Instrument
-        if (item.hasData(DataComponentTypes.INSTRUMENT)) {
+        if (item.isDataOverridden(DataComponentTypes.INSTRUMENT)) {
             MusicInstrument instrument = item.getData(DataComponentTypes.INSTRUMENT);
             if (instrument != null) {
                 section.set("music", RegistryAccess.registryAccess().getRegistry(RegistryKey.INSTRUMENT)
@@ -404,13 +405,13 @@ public class DebuildItemPaper {
         }
 
         // Repairable
-        if (item.hasData(DataComponentTypes.REPAIR_COST)) {
+        if (item.isDataOverridden(DataComponentTypes.REPAIR_COST)) {
             Integer repairCost = item.getData(DataComponentTypes.REPAIR_COST);
             section.set("repair-cost", repairCost);
         }
 
         // Enchantable
-        if (item.hasData(DataComponentTypes.ENCHANTABLE)) {
+        if (item.isDataOverridden(DataComponentTypes.ENCHANTABLE)) {
             Enchantable enchantable = item.getData(DataComponentTypes.ENCHANTABLE);
             if (enchantable != null) {
                 section.set("enchantable", enchantable.value());
@@ -418,12 +419,12 @@ public class DebuildItemPaper {
         }
 
         // Glider
-        if (item.hasData(DataComponentTypes.GLIDER)) {
+        if (item.isDataOverridden(DataComponentTypes.GLIDER)) {
             section.set("glider", true);
         }
 
         // Item Model
-        if (item.hasData(DataComponentTypes.ITEM_MODEL)) {
+        if (item.isDataOverridden(DataComponentTypes.ITEM_MODEL)) {
             Key modelKey = item.getData(DataComponentTypes.ITEM_MODEL);
             if (modelKey != null) {
                 section.set("item-model", modelKey.asString());
@@ -431,7 +432,7 @@ public class DebuildItemPaper {
         }
 
         // Tooltip Style
-        if (item.hasData(DataComponentTypes.TOOLTIP_STYLE)) {
+        if (item.isDataOverridden(DataComponentTypes.TOOLTIP_STYLE)) {
             Key tooltipKey = item.getData(DataComponentTypes.TOOLTIP_STYLE);
             if (tooltipKey != null) {
                 section.set("tooltip-style", tooltipKey.asString());
@@ -439,10 +440,10 @@ public class DebuildItemPaper {
         }
 
         // Use Cooldown
-        if (item.hasData(DataComponentTypes.USE_COOLDOWN)) {
+        if (item.isDataOverridden(DataComponentTypes.USE_COOLDOWN)) {
             UseCooldown cooldown = item.getData(DataComponentTypes.USE_COOLDOWN);
-            ConfigurationSection cooldownSection = section.createSection("use-cooldown");
             if (cooldown != null) {
+                ConfigurationSection cooldownSection = section.createSection("use-cooldown");
                 cooldownSection.set("cooldown-seconds", cooldown.cooldownGroup());
                 if (cooldown.cooldownGroup() != null) {
                     cooldownSection.set("cooldown-group", cooldown.cooldownGroup().asString());
@@ -451,7 +452,7 @@ public class DebuildItemPaper {
         }
 
         // Equippable
-        if (item.hasData(DataComponentTypes.EQUIPPABLE)) {
+        if (item.isDataOverridden(DataComponentTypes.EQUIPPABLE)) {
             Equippable eq = item.getData(DataComponentTypes.EQUIPPABLE);
             if (eq != null) {
                 ConfigurationSection equippableSection = section.createSection("equippable");
@@ -473,15 +474,13 @@ public class DebuildItemPaper {
                 equippableSection.set("swappable", eq.swappable());
                 equippableSection.set("damage-on-hurt", eq.damageOnHurt());
                 equippableSection.set("equip-on-interact", eq.equipOnInteract());
-                if (CommonUtil.getMinorVersion(21, 6)) {
-                    equippableSection.set("can-be-sheared", eq.canBeSheared());
-                    equippableSection.set("shear-sound", eq.shearSound().asString());
-                }
+                equippableSection.set("can-be-sheared", eq.canBeSheared());
+                equippableSection.set("shear-sound", eq.shearSound().asString());
             }
         }
 
-// Weapon
-        if (item.hasData(DataComponentTypes.WEAPON)) {
+        // Weapon
+        if (item.isDataOverridden(DataComponentTypes.WEAPON)) {
             Weapon weapon = item.getData(DataComponentTypes.WEAPON);
             if (weapon != null) {
                 ConfigurationSection weaponSection = section.createSection("weapon");
@@ -490,17 +489,16 @@ public class DebuildItemPaper {
             }
         }
 
-
-// Damage Resistant
-        if (item.hasData(DataComponentTypes.DAMAGE_RESISTANT)) {
+        // Damage Resistant
+        if (item.isDataOverridden(DataComponentTypes.DAMAGE_RESISTANT)) {
             DamageResistant resistant = item.getData(DataComponentTypes.DAMAGE_RESISTANT);
             if (resistant != null) {
             section.set("damage-resistant", resistant.types().key().asString());
             }
         }
 
-// Blocks Attacks
-        if (item.hasData(DataComponentTypes.BLOCKS_ATTACKS)) {
+        // Blocks Attacks
+        if (item.isDataOverridden(DataComponentTypes.BLOCKS_ATTACKS)) {
             BlocksAttacks blocks = item.getData(DataComponentTypes.BLOCKS_ATTACKS);
             if (blocks != null) {
                 ConfigurationSection blocksSection = section.createSection("blocks-attacks");
@@ -514,24 +512,24 @@ public class DebuildItemPaper {
             }
         }
 
-// Break Sound
-        if (item.hasData(DataComponentTypes.BREAK_SOUND)) {
+        // Break Sound
+        if (item.isDataOverridden(DataComponentTypes.BREAK_SOUND)) {
             if (item.getData(DataComponentTypes.BREAK_SOUND) != null) {
                 section.set("break-sound", item.getData(DataComponentTypes.BREAK_SOUND).asString());
             }
         }
 
-// Use Reminder
-        if (item.hasData(DataComponentTypes.USE_REMAINDER)) {
+        // Use Reminder
+        if (item.isDataOverridden(DataComponentTypes.USE_REMAINDER)) {
             UseRemainder reminder = item.getData(DataComponentTypes.USE_REMAINDER);
             if (reminder != null) {
                 ConfigurationSection reminderSection = section.createSection("use-reminder");
-                reminderSection.set("item", serializeItemStack(reminder.transformInto())); // 递归序列化
+                reminderSection.set("item", DebuildItem.debuildItem(reminder.transformInto(), new MemoryConfiguration()));
             }
         }
 
-// Consumable
-        if (item.hasData(DataComponentTypes.CONSUMABLE)) {
+        // Consumable
+        if (item.isDataOverridden(DataComponentTypes.CONSUMABLE)) {
             Consumable consumable = item.getData(DataComponentTypes.CONSUMABLE);
             if (consumable != null) {
                 ConfigurationSection consumableSection = section.createSection("consumable");
@@ -570,7 +568,7 @@ public class DebuildItemPaper {
 
         if (CommonUtil.getMinorVersion(21, 11)) {
             // Damage Type
-            if (item.hasData(DataComponentTypes.DAMAGE_TYPE)) {
+            if (item.isDataOverridden(DataComponentTypes.DAMAGE_TYPE)) {
                 DamageType damageType = item.getData(DataComponentTypes.DAMAGE_TYPE);
                 if (damageType != null) {
                     section.set("damage-type", damageType.key().asString());
@@ -578,7 +576,7 @@ public class DebuildItemPaper {
             }
 
             // Kinetic Weapon
-            if (item.hasData(DataComponentTypes.KINETIC_WEAPON)) {
+            if (item.isDataOverridden(DataComponentTypes.KINETIC_WEAPON)) {
                 KineticWeapon kineticWeapon = item.getData(DataComponentTypes.KINETIC_WEAPON);
                 if (kineticWeapon != null) {
                     ConfigurationSection kwSection = section.createSection("kinetic-weapon");
@@ -607,7 +605,7 @@ public class DebuildItemPaper {
             }
 
             // Minimum Attack Charge
-            if (item.hasData(DataComponentTypes.MINIMUM_ATTACK_CHARGE)) {
+            if (item.isDataOverridden(DataComponentTypes.MINIMUM_ATTACK_CHARGE)) {
                 Float minCharge = item.getData(DataComponentTypes.MINIMUM_ATTACK_CHARGE);
                 if (minCharge != null) {
                     section.set("minimum-attack-charge", minCharge);
@@ -615,7 +613,7 @@ public class DebuildItemPaper {
             }
 
             // Piercing Weapon
-            if (item.hasData(DataComponentTypes.PIERCING_WEAPON)) {
+            if (item.isDataOverridden(DataComponentTypes.PIERCING_WEAPON)) {
                 PiercingWeapon pw = item.getData(DataComponentTypes.PIERCING_WEAPON);
                 if (pw != null) {
                     ConfigurationSection pwSection = section.createSection("piercing-weapon");
@@ -631,7 +629,7 @@ public class DebuildItemPaper {
             }
 
             // Swing Animation
-            if (item.hasData(DataComponentTypes.SWING_ANIMATION)) {
+            if (item.isDataOverridden(DataComponentTypes.SWING_ANIMATION)) {
                 SwingAnimation sa = item.getData(DataComponentTypes.SWING_ANIMATION);
                 if (sa != null) {
                     ConfigurationSection saSection = section.createSection("swing-animation");
@@ -641,7 +639,7 @@ public class DebuildItemPaper {
             }
 
             // Use Effects
-            if (item.hasData(DataComponentTypes.USE_EFFECTS)) {
+            if (item.isDataOverridden(DataComponentTypes.USE_EFFECTS)) {
                 UseEffects ue = item.getData(DataComponentTypes.USE_EFFECTS);
                 if (ue != null) {
                     ConfigurationSection ueSection = section.createSection("use-effects");
@@ -652,7 +650,7 @@ public class DebuildItemPaper {
             }
 
             // Attack Range
-            if (item.hasData(DataComponentTypes.ATTACK_RANGE)) {
+            if (item.isDataOverridden(DataComponentTypes.ATTACK_RANGE)) {
                 AttackRange ar = item.getData(DataComponentTypes.ATTACK_RANGE);
                 if (ar != null) {
                     ConfigurationSection arSection = section.createSection("attack-range-key");

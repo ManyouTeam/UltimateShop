@@ -1,5 +1,5 @@
 name: UltimateShop
-version: '4.2.0'
+version: '4.2.1'
 main: cn.superiormc.ultimateshop.UltimateShop
 api-version: 1.14
 folia-supported: true
