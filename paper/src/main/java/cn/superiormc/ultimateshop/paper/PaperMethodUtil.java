@@ -153,7 +153,7 @@ public class PaperMethodUtil implements SpecialMethodUtil {
     public void setItemLore(ItemMeta meta, List<String> lores, Player player) {
         List<Component> veryNewLore = new ArrayList<>();
         for (String lore : lores) {
-            for (String singleLore : lore.split("\n")) {
+            for (String singleLore : lore.split("\\\\n")) {
                 singleLore = TextUtil.withPAPI(singleLore, player);
                 if (PaperTextUtil.containsLegacyCodes(singleLore)) {
                     singleLore = "<!i>" + singleLore;

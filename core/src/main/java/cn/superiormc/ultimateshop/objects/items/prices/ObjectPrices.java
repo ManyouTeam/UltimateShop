@@ -3,7 +3,6 @@ package cn.superiormc.ultimateshop.objects.items.prices;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.ErrorManager;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
-import cn.superiormc.ultimateshop.objects.buttons.subobjects.ObjectItemConfig;
 import cn.superiormc.ultimateshop.objects.items.*;
 import cn.superiormc.ultimateshop.objects.items.subobjects.ObjectDisplayPlaceholder;
 import cn.superiormc.ultimateshop.utils.TextUtil;
@@ -317,6 +316,12 @@ public class ObjectPrices extends AbstractThings {
                                               ThingMode mode,
                                               boolean alwaysStatic) {
         List<String> text = getDisplayName(player, multi, result, mode, alwaysStatic);
+        return getDisplayNameInLine(player, text, mode);
+    }
+
+    public static String getDisplayNameInLine(Player player,
+                                              List<String> text,
+                                              ThingMode mode) {
         StringBuilder tempVal2 = new StringBuilder();
         switch (mode) {
             case ANY: case CLASSIC_ANY:
@@ -339,6 +344,7 @@ public class ObjectPrices extends AbstractThings {
                 tempVal2 = new StringBuilder(ConfigManager.configManager.getString(player, "placeholder.price.unknown-price-type"));
                 break;
         }
-        return tempVal2.toString().replace(";;", ConfigManager.configManager.getString(player, "placeholder.price.replace-new-line-symbol"));
+        return tempVal2.toString().replace(";;", ConfigManager.configManager.getString(player, "placeholder.price.replace-new-line-symbol"))
+                .replaceAll(ConfigManager.configManager.getString("placeholder.price.filter-for-one-line"), "");
     }
 }

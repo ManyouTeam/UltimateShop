@@ -263,6 +263,7 @@ placeholder:
     unknown: "{lang}"
     unknown-price-type: "{lang}"
     empty: "{lang}"
+    filter-for-one-line: ''
   click:
     # If enabled, {buy-click} and {sell-stick} will display different value according to product status.
     # But, it will maybe make server lag if you are running big server and have many products in your shop.

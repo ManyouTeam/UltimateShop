@@ -129,7 +129,7 @@ public class SpigotMethodUtil implements SpecialMethodUtil {
     public void setItemLore(ItemMeta meta, List<String> lores, Player player) {
         List<String> newLore = new ArrayList<>();
         for (String lore : lores) {
-            for (String singleLore : lore.split("\n")) {
+            for (String singleLore : lore.split("\\\\n")) {
                 if (singleLore.isEmpty()) {
                     newLore.add(" ");
                     continue;

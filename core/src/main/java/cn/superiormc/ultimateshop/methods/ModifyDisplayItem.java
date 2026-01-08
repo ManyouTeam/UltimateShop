@@ -9,6 +9,7 @@ import cn.superiormc.ultimateshop.methods.Product.SellProductMethod;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import cn.superiormc.ultimateshop.objects.buttons.subobjects.ObjectDisplayItemStack;
 import cn.superiormc.ultimateshop.objects.caches.ObjectUseTimesCache;
+import cn.superiormc.ultimateshop.objects.items.ThingMode;
 import cn.superiormc.ultimateshop.objects.items.prices.ObjectPrices;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
 import org.bukkit.entity.Player;
@@ -76,20 +77,27 @@ public class ModifyDisplayItem {
 
         List<String> resultLore = new ArrayList<>();
 
-        ObjectUseTimesCache ObjectCache =
+        ObjectUseTimesCache playerCache =
                 CacheManager.cacheManager.getObjectCache(player).getUseTimesCache().get(item);
         ObjectUseTimesCache serverCache =
                 CacheManager.cacheManager.serverCache.getUseTimesCache().get(item);
 
-        if (ObjectCache == null) {
-            ObjectCache = CacheManager.cacheManager.getObjectCache(player).createUseTimesCache(item);
+        if (playerCache == null) {
+            playerCache = CacheManager.cacheManager.getObjectCache(player).createUseTimesCache(item);
         }
         if (serverCache == null) {
             serverCache = CacheManager.cacheManager.serverCache.createUseTimesCache(item);
         }
 
-        Map<Character, Boolean> prefixConditions =
-                buildPrefixMap(player, item, clickType, buyMore, bedrock, ObjectCache, serverCache);
+        Map<Character, Boolean> prefixConditions = buildPrefixMap(player, item, clickType, buyMore, bedrock, playerCache, serverCache);
+
+        List<String> buyPrice = ObjectPrices.getDisplayName(player, multi,
+                item.getBuyPrice().take(player.getInventory(), player,
+                        playerCache.getBuyUseTimes(), multi, true).getResultMap(),
+                item.getBuyPrice().getMode(), false);
+        List<String> sellPrice = ObjectPrices.getDisplayName(player, multi,
+                item.getSellPrice().give(player, playerCache.getBuyUseTimes(), multi).getResultMap(),
+                item.getSellPrice().getMode(), false);
 
         for (String rawLine : item.getAddLore(player)) {
 
@@ -100,54 +108,74 @@ public class ModifyDisplayItem {
 
             ParsedLine parsed = ParsedLine.parse(rawLine);
 
-            if (!parsed.isConditional()) {
-                resultLore.add(parsed.getPureText());
-                continue;
+            boolean condition = true;
+
+            if (parsed.isConditional()) {
+                condition = parsed.conditions.stream().allMatch(c -> {
+                    Boolean val = prefixConditions.get(c.key);
+                    if (val == null) {
+                        val = false;
+                    }
+                    return c.negate != val;
+                });
             }
 
-            boolean condition = parsed.conditions.stream().allMatch(c -> {
-                Boolean val = prefixConditions.get(c.key);
-                if (val == null) {
-                    val = false;
-                }
-                return c.negate ? !val : val;
-            });
-
             if (condition) {
-                resultLore.add(parsed.getPureText());
+                String pureText = parsed.getPureText();
+
+                if (pureText.endsWith("{buy-price}") && parseEnableNewLineForPrice(item.getBuyPrice().getMode())) {
+                     if (!buyPrice.isEmpty()) {
+                        String prefix = pureText.replace("{buy-price}", "");
+                        if (!prefix.isEmpty()) {
+                            List<String> tempVal1 = new ArrayList<>();
+                            for (String line : buyPrice) {
+                                tempVal1.add(prefix + line);
+                            }
+                            resultLore.addAll(tempVal1);
+                        } else {
+                            resultLore.addAll(buyPrice);
+                        }
+                    }
+                } else if (pureText.endsWith("{sell-price}") && parseEnableNewLineForPrice(item.getSellPrice().getMode())) {
+                    if (!sellPrice.isEmpty()) {
+                        String prefix = pureText.replace("{sell-price}", "");
+                        if (!prefix.isEmpty()) {
+                            List<String> tempVal1 = new ArrayList<>();
+                            for (String line : sellPrice) {
+                                tempVal1.add(prefix + line);
+                            }
+                            resultLore.addAll(tempVal1);
+                        } else {
+                            resultLore.addAll(sellPrice);
+                        }
+                    }
+                } else {
+                    resultLore.add(pureText);
+                }
             }
         }
 
         if (!resultLore.isEmpty()) {
             resultLore = CommonUtil.modifyList(player, resultLore,
-                    "buy-price",
-                    ObjectPrices.getDisplayNameInLine(player, multi,
-                            item.getBuyPrice().take(player.getInventory(), player,
-                                    ObjectCache.getBuyUseTimes(), multi, true).getResultMap(),
-                            item.getBuyPrice().getMode(), false),
-
-                    "sell-price",
-                    ObjectPrices.getDisplayNameInLine(player, multi,
-                            item.getSellPrice().give(player, ObjectCache.getBuyUseTimes(), multi).getResultMap(),
-                            item.getSellPrice().getMode(), false),
-
+                    "buy-price", ObjectPrices.getDisplayNameInLine(player, buyPrice, item.getBuyPrice().getMode()),
+                    "sell-price", ObjectPrices.getDisplayNameInLine(player, sellPrice, item.getSellPrice().getMode()),
                     "buy-limit-player", String.valueOf(item.getPlayerBuyLimit(player)),
                     "sell-limit-player", String.valueOf(item.getPlayerSellLimit(player)),
                     "buy-limit-server", String.valueOf(item.getServerBuyLimit(player)),
                     "sell-limit-server", String.valueOf(item.getServerSellLimit(player)),
 
-                    "buy-total-player", String.valueOf(ObjectCache.getTotalBuyUseTimes()),
-                    "sell-total-player", String.valueOf(ObjectCache.getTotalSellUseTimes()),
+                    "buy-total-player", String.valueOf(playerCache.getTotalBuyUseTimes()),
+                    "sell-total-player", String.valueOf(playerCache.getTotalSellUseTimes()),
                     "buy-total-server", String.valueOf(serverCache.getTotalBuyUseTimes()),
                     "sell-total-server", String.valueOf(serverCache.getTotalSellUseTimes()),
 
-                    "buy-times-player", String.valueOf(ObjectCache.getBuyUseTimes()),
-                    "sell-times-player", String.valueOf(ObjectCache.getSellUseTimes()),
+                    "buy-times-player", String.valueOf(playerCache.getBuyUseTimes()),
+                    "sell-times-player", String.valueOf(playerCache.getSellUseTimes()),
 
-                    "buy-refresh-player", ObjectCache.getBuyRefreshTimeDisplayName(player),
-                    "sell-refresh-player", ObjectCache.getSellRefreshTimeDisplayName(player),
-                    "buy-next-player", ObjectCache.getBuyRefreshTimeNextName(player),
-                    "sell-next-player", ObjectCache.getSellRefreshTimeNextName(player),
+                    "buy-refresh-player", playerCache.getBuyRefreshTimeDisplayName(player),
+                    "sell-refresh-player", playerCache.getSellRefreshTimeDisplayName(player),
+                    "buy-next-player", playerCache.getBuyRefreshTimeNextName(player),
+                    "sell-next-player", playerCache.getSellRefreshTimeNextName(player),
 
                     "buy-times-server", String.valueOf(serverCache.getBuyUseTimes()),
                     "sell-times-server", String.valueOf(serverCache.getSellUseTimes()),
@@ -157,13 +185,13 @@ public class ModifyDisplayItem {
                     "buy-next-server", serverCache.getBuyRefreshTimeNextName(player),
                     "sell-next-server", serverCache.getSellRefreshTimeNextName(player),
 
-                    "last-buy-player", ObjectCache.getBuyLastTimeName(),
-                    "last-sell-player", ObjectCache.getSellLastTimeName(),
+                    "last-buy-player", playerCache.getBuyLastTimeName(),
+                    "last-sell-player", playerCache.getSellLastTimeName(),
                     "last-buy-server", serverCache.getBuyLastTimeName(),
                     "last-sell-server", serverCache.getSellLastTimeName(),
 
-                    "last-reset-buy-player", ObjectCache.getBuyLastResetTimeName(),
-                    "last-reset-sell-player", ObjectCache.getSellLastResetTimeName(),
+                    "last-reset-buy-player", playerCache.getBuyLastResetTimeName(),
+                    "last-reset-sell-player", playerCache.getSellLastResetTimeName(),
                     "last-reset-buy-server", serverCache.getBuyLastResetTimeName(),
                     "last-reset-sell-server", serverCache.getSellLastResetTimeName(),
 
@@ -190,7 +218,9 @@ public class ModifyDisplayItem {
     private static class ParsedLine {
 
         final List<ConditionElement> conditions;
+
         final boolean conditional;
+
         final String text;
 
         ParsedLine(List<ConditionElement> conditions, String text) {
@@ -199,11 +229,18 @@ public class ModifyDisplayItem {
             this.text = text;
         }
 
-        boolean isConditional() { return conditional; }
-        String getPureText() { return text; }
+        boolean isConditional() {
+            return conditional;
+        }
+
+        String getPureText() {
+            return text;
+        }
 
         static ParsedLine parse(String line) {
-            if (line == null) line = "";
+            if (line == null) {
+                line = "";
+            }
 
             List<ConditionElement> list = new ArrayList<>();
             StringBuilder out = new StringBuilder();
@@ -405,5 +442,15 @@ public class ModifyDisplayItem {
             default:
                 return false;
         }
+    }
+
+    private static boolean parseEnableNewLineForPrice(ThingMode mode) {
+        return switch (mode) {
+            case ALL, CLASSIC_ALL ->
+                    ConfigManager.configManager.getString("placeholder.price.split-symbol-all").equals(";;");
+            case ANY, CLASSIC_ANY ->
+                    ConfigManager.configManager.getString("placeholder.price.split-symbol-any").equals(";;");
+            default -> false;
+        };
     }
 }
