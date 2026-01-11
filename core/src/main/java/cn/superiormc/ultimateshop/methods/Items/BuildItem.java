@@ -100,14 +100,14 @@ public class BuildItem {
         // Custom Name
         String displayNameKey = section.getString("name", section.getString("display"));
         if (displayNameKey != null) {
-            UltimateShop.methodUtil.setItemName(meta, CommonUtil.modifyString(displayNameKey, args), player);
+            UltimateShop.methodUtil.setItemName(meta, CommonUtil.modifyString(player, displayNameKey, args), player);
         }
 
         // Item Name
         if (CommonUtil.getMinorVersion(20, 5)) {
             String itemNameKey = section.getString("item-name");
             if (itemNameKey != null) {
-                UltimateShop.methodUtil.setItemItemName(meta, CommonUtil.modifyString(itemNameKey, args), player);
+                UltimateShop.methodUtil.setItemItemName(meta, CommonUtil.modifyString(player, itemNameKey, args), player);
             }
         }
 

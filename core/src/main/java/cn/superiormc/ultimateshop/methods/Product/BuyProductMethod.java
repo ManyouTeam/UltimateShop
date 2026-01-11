@@ -200,7 +200,7 @@ public class BuyProductMethod {
                     String.valueOf(calculateAmount));
         }
         if (ConfigManager.configManager.getBoolean("log-transaction.enabled") && !UltimateShop.freeVersion) {
-            String log = CommonUtil.modifyString(ConfigManager.configManager.getString("log-transaction.format"),
+            String log = CommonUtil.modifyString(player, ConfigManager.configManager.getString("log-transaction.format"),
                     "player", player.getName(),
                     "player-uuid", player.getUniqueId().toString(),
                     "shop", item.getShop(),

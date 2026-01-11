@@ -3,6 +3,7 @@ package cn.superiormc.ultimateshop.utils;
 import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.ErrorManager;
+import cn.superiormc.ultimateshop.managers.LanguageManager;
 import io.lumine.mythic.bukkit.BukkitAdapter;
 import io.lumine.mythic.bukkit.MythicBukkit;
 import net.luckperms.api.LuckPermsProvider;
@@ -20,6 +21,8 @@ import java.net.URL;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class CommonUtil {
 
@@ -68,7 +71,8 @@ public class CommonUtil {
         MythicBukkit.inst().getMobManager().getMythicMob(mobID).ifPresent(mob -> mob.spawn(BukkitAdapter.adapt(location), level));
     }
 
-    public static String modifyString(String text, String... args) {
+    public static String modifyString(Player player, String text, String... args) {
+        text = CommonUtil.parseLang(player, text);
         for (int i = 0 ; i < args.length ; i += 2) {
             String var1 = "{" + args[i] + "}";
             String var2 = "%" + args[i] + "%";
@@ -84,6 +88,7 @@ public class CommonUtil {
     public static List<String> modifyList(Player player, List<String> config, String... args) {
         List<String> resultList = new ArrayList<>();
         for (String s : config) {
+            s = CommonUtil.parseLang(player, s);
             for (int i = 0 ; i < args.length ; i += 2) {
                 String var = "{" + args[i] + "}";
                 if (args[i + 1] == null) {
@@ -102,6 +107,16 @@ public class CommonUtil {
             resultList.add(TextUtil.withPAPI(s, player));
         }
         return resultList;
+    }
+
+    public static String parseLang(Player player, String text) {
+        Pattern pattern8 = Pattern.compile("\\{lang:(.*?)}");
+        Matcher matcher8 = pattern8.matcher(text);
+        while (matcher8.find()) {
+            String placeholder = matcher8.group(1);
+            text = text.replace("{lang:" + placeholder + "}", LanguageManager.languageManager.getStringText(player, "override-lang." + placeholder));
+        }
+        return text;
     }
 
     public static LocalDateTime stringToTime(String time) {

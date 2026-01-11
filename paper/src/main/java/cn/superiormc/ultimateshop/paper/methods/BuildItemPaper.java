@@ -70,12 +70,14 @@ public class BuildItemPaper {
         // Custom Name
         String displayNameKey = section.getString("name", section.getString("display"));
         if (displayNameKey != null) {
+            displayNameKey = CommonUtil.modifyString(player, displayNameKey, args);
             item.setData(DataComponentTypes.CUSTOM_NAME, PaperTextUtil.modernParse(displayNameKey, player));
         }
 
         // Item Name
         String itemNameKey = section.getString("item-name");
         if (itemNameKey != null) {
+            itemNameKey = CommonUtil.modifyString(player, itemNameKey, args);
             item.setData(DataComponentTypes.ITEM_NAME, PaperTextUtil.modernParse(itemNameKey, player));
         }
 
@@ -84,8 +86,8 @@ public class BuildItemPaper {
         if (!lores.isEmpty()) {
             ItemLore.Builder builder = ItemLore.lore();
             for (String lore : lores) {
-                lore = CommonUtil.modifyString(lore, args);
-                for (String singleLore : lore.split("\n")) {
+                lore = CommonUtil.modifyString(player, lore, args);
+                for (String singleLore : lore.split("\\\\n")) {
                     builder.addLine(PaperTextUtil.modernParse(singleLore, player));
                 }
             }

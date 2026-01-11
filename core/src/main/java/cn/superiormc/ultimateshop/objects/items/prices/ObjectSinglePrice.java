@@ -166,7 +166,7 @@ public class ObjectSinglePrice extends AbstractSingleThing {
                     serverTotalBuyTimes = tempVal4.getTotalBuyUseTimes();
                     serverTotalSellTimes = tempVal4.getTotalSellUseTimes();
                 }
-                tempVal1 = CommonUtil.modifyString(tempVal1,
+                tempVal1 = CommonUtil.modifyString(player, tempVal1,
                         "buy-times-player",
                         replacePlaceholder(playerBuyTimes, offsetAmount, true),
                         "sell-times-player",
@@ -238,7 +238,7 @@ public class ObjectSinglePrice extends AbstractSingleThing {
         if (tempVal2.contains("{amount}") && ConfigManager.configManager.getBoolean("placeholder.auto-settings.change-amount-in-all-price-placeholder.enabled")) {
             tempVal2 = tempVal2.replace("{amount}", ConfigManager.configManager.getString(player, "placeholder.auto-settings.change-amount-in-all-price-placeholder.replace-value", "{amount}"));
         }
-        return CommonUtil.modifyString(tempVal2,
+        return CommonUtil.modifyString(player, tempVal2,
                         "amount",
                         String.valueOf(amount),
                         "status",

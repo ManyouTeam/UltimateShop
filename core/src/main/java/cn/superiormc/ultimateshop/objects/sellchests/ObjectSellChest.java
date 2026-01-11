@@ -100,9 +100,9 @@ public class ObjectSellChest {
         if (meta.hasLore()) {
             for (String str : UltimateShop.methodUtil.getItemLore(meta)) {
                 if (!infinite) {
-                    str = CommonUtil.modifyString(str, "times", String.valueOf(times));
+                    str = CommonUtil.modifyString(null, str, "times", String.valueOf(times));
                 } else {
-                    str = CommonUtil.modifyString(str, "times", ConfigManager.configManager.getString("placeholder.sell-chest.infinite"));
+                    str = CommonUtil.modifyString(null, str, "times", ConfigManager.configManager.getString("placeholder.sell-chest.infinite"));
                 }
                 newLore.add(str);
             }

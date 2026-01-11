@@ -22,6 +22,7 @@ public class ActionManager {
         actions = new HashMap<>();
         registerNewAction("message", new ActionMessage());
         registerNewAction("title", new ActionTitle());
+        registerNewAction("action_bar", new ActionActionBar());
         registerNewAction("particle", new ActionParticle());
         registerNewAction("sound", new ActionSound());
         registerNewAction("announcement", new ActionAnnouncement());

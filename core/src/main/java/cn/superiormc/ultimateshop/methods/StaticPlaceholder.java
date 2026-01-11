@@ -19,13 +19,13 @@ public class StaticPlaceholder {
             return "ERROR: Unknown Placeholder";
         }
         if (compareValue.compareTo(baseValue) > 0) {
-            return CommonUtil.modifyString(ConfigManager.configManager.getString(player, "placeholder.compare.up", "↑"),
+            return CommonUtil.modifyString(player, ConfigManager.configManager.getString(player, "placeholder.compare.up", "↑"),
                     "base", baseValue.toString(), "compare", compareValue.toString());
         } else if (compareValue.compareTo(baseValue) == 0) {
-            return CommonUtil.modifyString(ConfigManager.configManager.getString(player, "placeholder.compare.same", "-"),
+            return CommonUtil.modifyString(player, ConfigManager.configManager.getString(player, "placeholder.compare.same", "-"),
                     "base", baseValue.toString(), "compare", compareValue.toString());
         } else {
-            return CommonUtil.modifyString(ConfigManager.configManager.getString(player, "placeholder.compare.down", "↓"),
+            return CommonUtil.modifyString(player, ConfigManager.configManager.getString(player, "placeholder.compare.down", "↓"),
                     "base", baseValue.toString(), "compare", compareValue.toString());
         }
     }

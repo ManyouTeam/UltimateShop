@@ -77,7 +77,7 @@ public abstract class AbstractSingleRun {
     }
 
     protected String replacePlaceholder(String content, Player player, double amount) {
-        content = CommonUtil.modifyString(content
+        content = CommonUtil.modifyString(player, content
                 ,"world", player.getWorld().getName()
                 ,"amount", String.valueOf(amount)
                 ,"player_x", String.valueOf(player.getLocation().getX())
@@ -88,12 +88,12 @@ public abstract class AbstractSingleRun {
                 ,"player", player.getName());
         content = TextUtil.withPAPI(content, player);
         if (shop != null) {
-            content = CommonUtil.modifyString(content, "shop-menu", shop.getShopMenu(),
+            content = CommonUtil.modifyString(player, content, "shop-menu", shop.getShopMenu(),
                     "shop", shop.getShopName(),
                     "shop-name", shop.getShopDisplayName());
         }
         if (item != null) {
-            content = CommonUtil.modifyString(content, "item", item.getProduct(),
+            content = CommonUtil.modifyString(player, content, "item", item.getProduct(),
                     "item-name", item.getDisplayName(player));
         }
         return content;

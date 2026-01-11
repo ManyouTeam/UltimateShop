@@ -96,7 +96,7 @@ public class ObjectLimit {
                     serverTotalBuyTimes = tempVal4.getTotalBuyUseTimes();
                     serverTotalSellTimes = tempVal4.getTotalSellUseTimes();
                 }
-                tempVal1 = CommonUtil.modifyString(tempVal1,
+                tempVal1 = CommonUtil.modifyString(player, tempVal1,
                         "buy-times-player",
                         String.valueOf(playerBuyTimes),
                         "sell-times-player",

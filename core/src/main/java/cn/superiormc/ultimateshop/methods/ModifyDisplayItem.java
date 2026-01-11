@@ -48,7 +48,7 @@ public class ModifyDisplayItem {
             UltimateShop.methodUtil.setItemName(tempVal2, item.getDisplayName(player), player);
         }
         if (tempVal2.hasDisplayName()) {
-            UltimateShop.methodUtil.setItemName(tempVal2, CommonUtil.modifyString(UltimateShop.methodUtil.getItemName(tempVal2), "amount", String.valueOf(multi),
+            UltimateShop.methodUtil.setItemName(tempVal2, CommonUtil.modifyString(player, UltimateShop.methodUtil.getItemName(tempVal2), "amount", String.valueOf(multi),
                     "item-name", item.getDisplayName(player)), player);
         }
         List<String> addLore = new ArrayList<>();

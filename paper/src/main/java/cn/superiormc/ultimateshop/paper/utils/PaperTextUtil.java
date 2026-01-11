@@ -21,6 +21,7 @@ import static cn.superiormc.ultimateshop.utils.TextUtil.SINGLE_HEX_PATTERN;
 public class PaperTextUtil {
 
     private static final MiniMessage MINI_MESSAGE = MiniMessage.miniMessage();
+
     private static final LegacyComponentSerializer LEGACY_SERIALIZER = LegacyComponentSerializer.legacyAmpersand();
 
     // Regex patterns

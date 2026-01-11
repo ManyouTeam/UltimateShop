@@ -49,7 +49,7 @@ public class ObjectSingleProduct extends AbstractSingleThing {
         }
         String tempVal1 = singleSection.getString("placeholder",
                 ConfigManager.configManager.getString(player, "placeholder.price.unknown"));
-        return CommonUtil.modifyString(tempVal1,
+        return CommonUtil.modifyString(player, tempVal1,
                 "amount",
                 String.valueOf(amount),
                 "status",
@@ -89,7 +89,7 @@ public class ObjectSingleProduct extends AbstractSingleThing {
                     serverTotalBuyTimes = tempVal4.getTotalBuyUseTimes();
                     serverTotalSellTimes = tempVal4.getTotalSellUseTimes();
                 }
-                tempVal1 = CommonUtil.modifyString(tempVal1,
+                tempVal1 = CommonUtil.modifyString(player, tempVal1,
                         "buy-times-player",
                         replacePlaceholder(playerBuyTimes, offsetAmount, buyOrSell, true),
                         "sell-times-player",
