@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>cn.superiormc</groupId>
+        <groupId>cn.superiormc.ultimateshop</groupId>
         <artifactId>UltimateShop</artifactId>
         <version>4.2.3</version>
     </parent>
@@ -13,7 +13,7 @@
 
     <dependencies>
         <dependency>
-            <groupId>cn.superiormc</groupId>
+            <groupId>cn.superiormc.ultimateshop</groupId>
             <artifactId>LegacyCodesCompatibility</artifactId>
             <version>1.0.0</version>
             <scope>system</scope>
@@ -247,7 +247,7 @@
             <version>20210307</version>
         </dependency>
         <dependency>
-            <groupId>cn.superiormc</groupId>
+            <groupId>cn.superiormc.ultimateshop</groupId>
             <artifactId>MythicChanger</artifactId>
             <version>3.0.3</version>
             <scope>system</scope>
