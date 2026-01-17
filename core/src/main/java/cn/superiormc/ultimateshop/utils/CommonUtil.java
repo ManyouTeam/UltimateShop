@@ -46,12 +46,16 @@ public class CommonUtil {
         }
     }
 
+    public static boolean getYearVersion(int year, int majorVersion, int minorVersion) {
+        return UltimateShop.yearVersion > year || (UltimateShop.yearVersion == year && UltimateShop.majorVersion >= majorVersion && UltimateShop.minorVersion >= minorVersion);
+    }
+
     public static boolean getMajorVersion(int version) {
-        return UltimateShop.majorVersion >= version;
+        return UltimateShop.yearVersion > 1 || UltimateShop.majorVersion >= version;
     }
 
     public static boolean getMinorVersion(int majorVersion, int minorVersion) {
-        return UltimateShop.majorVersion > majorVersion || (UltimateShop.majorVersion == majorVersion &&
+        return UltimateShop.yearVersion > 1 || UltimateShop.majorVersion > majorVersion || (UltimateShop.majorVersion == majorVersion &&
                 UltimateShop.minorVersion >= minorVersion);
     }
 

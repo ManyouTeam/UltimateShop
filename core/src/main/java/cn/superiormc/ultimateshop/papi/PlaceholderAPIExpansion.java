@@ -22,6 +22,7 @@ public class PlaceholderAPIExpansion extends PlaceholderExpansion {
     public static PlaceholderAPIExpansion papi = null;
 
     private final UltimateShop plugin;
+
     @Override
     public boolean canRegister() {
         return true;

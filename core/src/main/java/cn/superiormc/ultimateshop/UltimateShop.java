@@ -24,6 +24,8 @@ public final class UltimateShop extends JavaPlugin {
 
     public static boolean usePacketEvents = false;
 
+    public static int yearVersion;
+
     public static int majorVersion;
 
     public static int minorVersion;
@@ -35,6 +37,7 @@ public final class UltimateShop extends JavaPlugin {
         instance = this;
         try {
             String[] versionParts = Bukkit.getBukkitVersion().split("-")[0].split("\\.");
+            yearVersion = versionParts.length > 0 ? Integer.parseInt(versionParts[0]) : 1;
             majorVersion = versionParts.length > 1 ? Integer.parseInt(versionParts[1]) : 0;
             minorVersion = versionParts.length > 2 ? Integer.parseInt(versionParts[2]) : 0;
         } catch (Throwable throwable) {
@@ -101,7 +104,7 @@ public final class UltimateShop extends JavaPlugin {
             TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fNew AuthLib found, enabled new skull get method!");
         }
         new Metrics(UltimateShop.instance, 20783);
-        TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fYour Minecraft version is: 1." + majorVersion + "." + minorVersion + "!");
+        TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fYour server version is: " + yearVersion + "." + majorVersion + "." + minorVersion + "!");
         TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fPlugin is loaded. Author: PQguanfang.");
     }
 

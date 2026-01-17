@@ -71,8 +71,9 @@ public class ObjectDisplayPlaceholder implements Comparable<ObjectDisplayPlaceho
 
         ObjectDisplayPlaceholder otherPrice = (ObjectDisplayPlaceholder) obj;
 
-        if (singleSection.getString("placeholder") != null && otherPrice.singleSection.getString("placeholder") != null) {
-            return singleSection.getString("placeholder").equals(otherPrice.singleSection.getString("placeholder"));
+        String placeholder = singleSection.getString("placeholder");
+        if (placeholder != null && otherPrice.singleSection.getString("placeholder") != null) {
+            return placeholder.equals(otherPrice.singleSection.getString("placeholder"));
         }
 
         if (thing.type == ThingType.FREE || thing.type == ThingType.RESERVE || thing.type == ThingType.UNKNOWN) {
@@ -80,33 +81,38 @@ public class ObjectDisplayPlaceholder implements Comparable<ObjectDisplayPlaceho
         }
 
         if (thing.type == ThingType.HOOK_ECONOMY) {
-            if (singleSection.getString("economy-plugin") == null) {
+            String tempVal1 = singleSection.getString("economy-plugin");
+            if (tempVal1 == null) {
                 return true;
             } else {
-                if (singleSection.getString("economy-type") == null) {
-                    return singleSection.getString("economy-plugin").equals(otherPrice.singleSection.getString("economy-plugin"));
+                String tempVal2 = singleSection.getString("economy-type");
+                if (tempVal2 == null) {
+                    return tempVal1.equals(otherPrice.singleSection.getString("economy-plugin"));
                 }
-                return singleSection.getString("economy-plugin").equals(otherPrice.singleSection.getString("economy-plugin"))
-                        && singleSection.getString("economy-type").equals(otherPrice.singleSection.getString("economy-type"));
+                return tempVal1.equals(otherPrice.singleSection.getString("economy-plugin"))
+                        && tempVal2.equals(otherPrice.singleSection.getString("economy-type"));
             }
         }
 
         if (thing.type == ThingType.VANILLA_ECONOMY) {
-            if (singleSection.getString("economy-type") == null) {
+            String tempVal1 = singleSection.getString("economy-type");
+            if (tempVal1 == null) {
                 return true;
             }
-            return singleSection.getString("economy-type").equals(otherPrice.singleSection.getString("economy-type"));
+            return tempVal1.equals(otherPrice.singleSection.getString("economy-type"));
         }
 
         if (thing.type == ThingType.HOOK_ITEM) {
-            if (singleSection.getString("hook-plugin") == null) {
+            String tempVal1 = singleSection.getString("hook-plugin");
+            if (tempVal1 == null) {
                 return true;
             } else {
-                if (singleSection.getString("hook-item") == null) {
-                    return singleSection.getString("hook-plugin").equals(otherPrice.singleSection.getString("hook-plugin"));
+                String tempVal2 = singleSection.getString("hook-item");
+                if (tempVal2 == null) {
+                    return tempVal1.equals(otherPrice.singleSection.getString("hook-plugin"));
                 }
-                return singleSection.getString("hook-plugin").equals(otherPrice.singleSection.getString("hook-plugin"))
-                        && singleSection.getString("hook-type").equals(otherPrice.singleSection.getString("hook-type"));
+                return tempVal1.equals(otherPrice.singleSection.getString("hook-plugin"))
+                        && tempVal2.equals(otherPrice.singleSection.getString("hook-item"));
             }
         }
 
@@ -132,7 +138,11 @@ public class ObjectDisplayPlaceholder implements Comparable<ObjectDisplayPlaceho
             if (notCheckKey.contains(key)) {
                 continue;
             }
-            if (!section1.get(key).equals(section2.get(key))) {
+            Object tempVal1 = section1.get(key);
+            if (tempVal1 == null) {
+                continue;
+            }
+            if (!tempVal1.equals(section2.get(key))) {
                 return false;
             }
         }
