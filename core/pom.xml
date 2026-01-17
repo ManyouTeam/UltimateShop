@@ -247,11 +247,10 @@
             <version>20210307</version>
         </dependency>
         <dependency>
-            <groupId>cn.superiormc.ultimateshop</groupId>
-            <artifactId>MythicChanger</artifactId>
-            <version>3.0.3</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/lib/MythicChanger-3.0.3.jar</systemPath>
+            <groupId>cn.superiormc.mythicchanger</groupId>
+            <artifactId>plugin</artifactId>
+            <version>3.0.7</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.nexomc</groupId>
