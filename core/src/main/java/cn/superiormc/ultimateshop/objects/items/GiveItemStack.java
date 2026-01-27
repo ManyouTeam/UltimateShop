@@ -25,7 +25,13 @@ public class GiveItemStack {
 
     private final AbstractSingleThing thing;
 
-    public GiveItemStack(Collection<ItemStack> items, ItemStack targetItem, ItemStack displayItem, boolean canGive, AbstractSingleThing thing) {
+    public GiveItemStack(double cost,
+                         Collection<ItemStack> items,
+                         ItemStack targetItem,
+                         ItemStack displayItem,
+                         boolean canGive,
+                         AbstractSingleThing thing) {
+        this.cost = cost;
         this.displayItem = displayItem;
         this.targetItem = targetItem;
         this.items = items;
@@ -43,7 +49,11 @@ public class GiveItemStack {
         this.canGive = true;
     }
 
-    public GiveItemStack(ItemStack targetItem, ItemStack displayItem, AbstractSingleThing thing) {
+    public GiveItemStack(double cost,
+                         ItemStack targetItem,
+                         ItemStack displayItem,
+                         AbstractSingleThing thing) {
+        this.cost = cost;
         this.targetItem = targetItem;
         this.thing = thing;
         this.displayItem = displayItem;

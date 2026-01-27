@@ -110,7 +110,7 @@ public abstract class AbstractSingleThing implements Comparable<AbstractSingleTh
     public GiveItemStack playerCanGive(Player player,
                               double cost) {
         if (singleSection == null) {
-            return new GiveItemStack(this);
+            return new GiveItemStack(cost, this);
         }
         switch (type) {
             case VANILLA_ITEM:  case HOOK_ITEM: case MATCH_ITEM:
@@ -124,7 +124,7 @@ public abstract class AbstractSingleThing implements Comparable<AbstractSingleTh
             case HOOK_ECONOMY : case VANILLA_ECONOMY: case CUSTOM: case RESERVE:
                 return new GiveItemStack(cost, this);
         }
-        return new GiveItemStack(this);
+        return new GiveItemStack(cost, this);
     }
 
     public boolean getCondition(Player player) {
@@ -263,22 +263,22 @@ public abstract class AbstractSingleThing implements Comparable<AbstractSingleTh
                                    boolean displayOnly) {
         if (section == null) {
             if (singleSection == null) {
-                return new GiveItemStack(this);
+                return new GiveItemStack(cost, this);
             }
             section = singleSection;
         }
         if (!section.getBoolean("give-item", true) || (!section.contains("material") && !section.contains("item") && !section.contains("hook-item"))) {
-            return new GiveItemStack(this);
+            return new GiveItemStack(cost, this);
         }
         int amount = (int) cost;
         ItemStack targetItem = BuildItem.buildItemStack(player, section, 1);
         if (targetItem == null) {
-            return new GiveItemStack(this);
+            return new GiveItemStack(cost, this);
         }
         ItemStack displayItem = targetItem.clone();
         displayItem.setAmount((int) cost);
         if (displayOnly) {
-            return new GiveItemStack(targetItem, displayItem, this);
+            return new GiveItemStack(cost, targetItem, displayItem, this);
         }
         Collection<ItemStack> result = new ArrayList<>();
         int leftAmount = 0;
@@ -313,7 +313,7 @@ public abstract class AbstractSingleThing implements Comparable<AbstractSingleTh
         } else {
             result.add(displayItem);
         }
-        return new GiveItemStack(result, targetItem, displayItem, emptySlots >= requiredSlots, this);
+        return new GiveItemStack(cost, result, targetItem, displayItem, emptySlots >= requiredSlots, this);
     }
 
     public abstract String getDisplayName(Player player, int multi, BigDecimal amount, boolean alwaysStatic);

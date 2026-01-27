@@ -77,9 +77,15 @@ public abstract class AbstractSingleRun {
     }
 
     protected String replacePlaceholder(String content, Player player, double amount) {
+        String amountStr;
+        if (amount == Math.floor(amount)) {
+            amountStr = String.valueOf((long) amount);
+        } else {
+            amountStr = String.valueOf(amount);
+        }
         content = CommonUtil.modifyString(player, content
                 ,"world", player.getWorld().getName()
-                ,"amount", String.valueOf(amount)
+                ,"amount", amountStr
                 ,"player_x", String.valueOf(player.getLocation().getX())
                 ,"player_y", String.valueOf(player.getLocation().getY())
                 ,"player_z", String.valueOf(player.getLocation().getZ())
