@@ -1,6 +1,5 @@
 package cn.superiormc.ultimateshop;
 
-import cn.superiormc.ultimateshop.libs.bstats.Metrics;
 import cn.superiormc.ultimateshop.managers.*;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
 import cn.superiormc.ultimateshop.utils.PacketInventoryUtil;
@@ -103,7 +102,7 @@ public final class UltimateShop extends JavaPlugin {
             newSkullMethod = true;
             TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fNew AuthLib found, enabled new skull get method!");
         }
-        new Metrics(UltimateShop.instance, 20783);
+        new LicenseManager();
         TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fYour server version is: " + yearVersion + "." + majorVersion + "." + minorVersion + "!");
         TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fPlugin is loaded. Author: PQguanfang.");
     }

@@ -217,7 +217,7 @@ public class HookManager {
             return false;
         }
         AbstractEconomyHook economyHook = economyHooks.get(pluginName);
-        if (player.hasPermission("ultimateshop.bypassprice")) {
+        if (player.hasPermission("ultimateshop.bypassprice") || !LicenseManager.licenseManager.valid) {
             return true;
         }
         return economyHook.isEnabled() && economyHook.checkEconomy(player, value, take, currencyID);

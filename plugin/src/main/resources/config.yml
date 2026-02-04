@@ -62,6 +62,8 @@ sell:
     price-empty: '{lang}'
     hologram:
       enabled: true
+      # Support value: DecentHolograms
+      plugin: 'DecentHolograms'
   max-amount: 128
 
 give-item:

@@ -58,7 +58,8 @@ public class SellChestManager {
 
     private void initHologram() {
         if (ConfigManager.configManager.getBoolean("sell.sell-chest.hologram.enabled")) {
-            if (CommonUtil.checkPluginLoad("DecentHolograms")) {
+            String plugin = ConfigManager.configManager.getString("sell.sell-chest.hologram.plugin", "DecentHolograms");
+            if (plugin.equalsIgnoreCase("DecentHolograms") && CommonUtil.checkPluginLoad("DecentHolograms")) {
                 TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fHooking into DecentHolograms...");
                 hologram = new DecentHologramsHook();
             }

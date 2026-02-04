@@ -403,7 +403,6 @@ public class ObjectUseTimesCache {
     public LocalDateTime getBuyRefreshTimeWithUpdate() {
         String mode = product.getBuyTimesResetMode();
         String tempVal1 = TextUtil.withPAPI(product.getBuyTimesResetTime(), cache.getPlayer());
-        LocalDateTime result;
         return createRefreshTime(mode, tempVal1, true);
     }
 
@@ -418,7 +417,7 @@ public class ObjectUseTimesCache {
         String tempVal1 = TextUtil.withPAPI(product.getBuyTimesResetTime(), cache.getPlayer());
         LocalDateTime result;
         switch (mode) {
-            case "COOLDOWN_TIMED", "COOLDOWN_TIMER": {
+            case "COOLDOWN_TIMED", "COOLDOWN_TIMER", "COOLDOWN_CUSTOM": {
                 result = cooldownBuyTime;
                 createRefreshTime(mode, tempVal1, true);
                 break;
@@ -436,7 +435,7 @@ public class ObjectUseTimesCache {
         String tempVal1 = TextUtil.withPAPI(product.getSellTimesResetTime(), cache.getPlayer());
         LocalDateTime result;
         switch (mode) {
-            case "COOLDOWN_TIMED", "COOLDOWN_TIMER": {
+            case "COOLDOWN_TIMED", "COOLDOWN_TIMER", "COOLDOWN_CUSTOM": {
                 result = cooldownSellTime;
                 createRefreshTime(mode, tempVal1, false);
                 break;
