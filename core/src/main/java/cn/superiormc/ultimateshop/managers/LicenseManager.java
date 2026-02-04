@@ -13,8 +13,8 @@ public final class LicenseManager {
     public LicenseManager() {
         licenseManager = this;
         new Metrics(UltimateShop.instance, 20783);
-        printStartupInfo();
         this.valid = true;
+        printStartupInfo();
     }
 
     private void printStartupInfo() {
