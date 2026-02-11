@@ -32,10 +32,10 @@ public class FormBuyMoreGUI extends FormGUI {
         }
         CustomForm.Builder tempVal2 = CustomForm.builder();
 
-        tempVal2.title(TextUtil.parse(player, ConfigManager.configManager.getString(player, "menu.bedrock.buy-or-sell.title", "Buy More Menu",
+        tempVal2.title(TextUtil.parse(player, ConfigManager.configManager.getStringWithLang(player, "menu.bedrock.buy-or-sell.title", "Buy More Menu",
                 "item-name", item.getDisplayName(player))));
 
-        tempVal2.input(TextUtil.parse(player, ConfigManager.configManager.getString(player, "menu.bedrock.buy-or-sell.buttons.amount.name")), getButtonTab());
+        tempVal2.input(TextUtil.parse(player, ConfigManager.configManager.getStringWithLang(player, "menu.bedrock.buy-or-sell.buttons.amount.name")), getButtonTab());
         tempVal2.validResultHandler(response -> {
             FormInfoGUI infoGUI = new FormInfoGUI(player, item, response.next());
             infoGUI.openGUI(true);

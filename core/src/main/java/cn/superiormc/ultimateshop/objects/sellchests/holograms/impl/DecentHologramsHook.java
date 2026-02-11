@@ -8,7 +8,6 @@ import cn.superiormc.ultimateshop.utils.CommonUtil;
 import eu.decentsoftware.holograms.api.DHAPI;
 import org.bukkit.Location;
 import org.bukkit.block.Chest;
-import org.bukkit.entity.Player;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
@@ -20,7 +19,7 @@ public class DecentHologramsHook extends AbstractHologram {
     }
 
     @Override
-    public void create(Player player, Chest chest) {
+    public void create(Chest chest) {
         if (!isAvailable()) {
             return;
         }
@@ -37,11 +36,11 @@ public class DecentHologramsHook extends AbstractHologram {
             return;
         }
 
-        DHAPI.createHologram(id, loc, getLines(player, chest, sellChest));
+        DHAPI.createHologram(id, loc, getLines(chest, sellChest));
     }
 
     @Override
-    public void update(Player player, Chest chest) {
+    public void update(Chest chest) {
         if (!isAvailable()) {
             return;
         }
@@ -56,11 +55,11 @@ public class DecentHologramsHook extends AbstractHologram {
 
         String id = holoId(chest);
         if (DHAPI.getHologram(id) == null) {
-            create(player, chest);
+            create(chest);
             return;
         }
 
-        DHAPI.setHologramLines(DHAPI.getHologram(id), getLines(player, chest, sellChest));
+        DHAPI.setHologramLines(DHAPI.getHologram(id), getLines(chest, sellChest));
     }
 
     @Override

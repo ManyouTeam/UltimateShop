@@ -2,11 +2,11 @@ package cn.superiormc.ultimateshop.managers;
 
 import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.api.ShopHelper;
+import cn.superiormc.ultimateshop.objects.ObjectThingRun;
 import cn.superiormc.ultimateshop.objects.items.AbstractSingleThing;
 import cn.superiormc.ultimateshop.objects.items.ThingMode;
 import cn.superiormc.ultimateshop.objects.items.prices.ObjectPrices;
 import cn.superiormc.ultimateshop.objects.sellchests.ObjectSellChest;
-import cn.superiormc.ultimateshop.objects.ObjectThingRun;
 import cn.superiormc.ultimateshop.objects.sellchests.holograms.AbstractHologram;
 import cn.superiormc.ultimateshop.objects.sellchests.holograms.impl.DecentHologramsHook;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
@@ -16,7 +16,6 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Chest;
 import org.bukkit.entity.Player;
-import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.event.world.ChunkUnloadEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -38,6 +37,8 @@ public class SellChestManager {
     public static final NamespacedKey SELL_CHEST_ID = new NamespacedKey(UltimateShop.instance, "sell_chest_id");
 
     public static final NamespacedKey SELL_CHEST_PRICE = new NamespacedKey(UltimateShop.instance, "sell_chest_price");
+
+    public static final NamespacedKey KEY_CHUNK_CHESTS = new NamespacedKey(UltimateShop.instance, "chunk_chests_list");
 
     public static SellChestManager sellChestManager;
 
@@ -71,16 +72,13 @@ public class SellChestManager {
     }
 
     public void tick() {
-
-        int batchCount = ConfigManager.configManager
-                .getInt("sell.sell-chest.batch-count", 5);
+        int batchCount = ConfigManager.configManager.getInt("sell.sell-chest.batch-count", 5);
         if (batchCount <= 0) {
             batchCount = 1;
         }
 
-        if (ConfigManager.configManager.getBoolean("debug-2")) {
-            TextUtil.sendMessage(null,
-                    TextUtil.pluginPrefix() + " §fSell chest tick, batch=" + currentBatchIndex);
+        if (ConfigManager.configManager.getBoolean("sell.sell-chest.debug")) {
+            TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fSell chest tick, batch=" + currentBatchIndex);
         }
 
         if (currentBatchIndex == 0) {
@@ -99,7 +97,7 @@ public class SellChestManager {
 
             activeBatchCount = Math.min(batchCount, cycleLocations.size());
 
-            if (ConfigManager.configManager.getBoolean("debug-2")) {
+            if (ConfigManager.configManager.getBoolean("sell.sell-chest.debug")) {
                 TextUtil.sendMessage(null,
                         TextUtil.pluginPrefix() +
                                 " §fNew cycle started, total=" +
@@ -122,9 +120,8 @@ public class SellChestManager {
         for (int i = fromIndex; i < toIndex; i++) {
             Location loc = cycleLocations.get(i);
 
-            if (ConfigManager.configManager.getBoolean("debug-2")) {
-                TextUtil.sendMessage(null,
-                        TextUtil.pluginPrefix() + " §fSelling chest at location: " + loc);
+            if (ConfigManager.configManager.getBoolean("sell.sell-chest.debug")) {
+                TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fSelling chest at location: " + loc);
             }
 
             BlockState state = loc.getBlock().getState();
@@ -147,13 +144,11 @@ public class SellChestManager {
     }
 
     private void sell(Location loc) {
-
         Block block = loc.getBlock();
-        if (!(block.getState() instanceof Chest)) {
+        if (!(block.getState() instanceof Chest chest)) {
             return;
         }
 
-        Chest chest = (Chest) block.getState();
         Inventory inventory = chest.getBlockInventory();
 
         if (inventory.isEmpty()) {
@@ -235,13 +230,35 @@ public class SellChestManager {
         sellChest.getAction().runAllActions(new ObjectThingRun(player));
 
         chest.update();
-        hologram.update(player, chest);
+        hologram.update(chest);
     }
 
-    public void handleChunkLoad(ChunkLoadEvent event) {
-        Chunk chunk = event.getChunk();
+    public void handleChunkLoad(Chunk chunk) {
+        PersistentDataContainer chunkPdc = chunk.getPersistentDataContainer();
 
-        for (BlockState state : chunk.getTileEntities()) {
+        String data = chunkPdc.get(KEY_CHUNK_CHESTS, PersistentDataType.STRING);
+        // Debug
+        if (ConfigManager.configManager.getBoolean("sell.sell-chest.debug")) {
+            TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fChecking sell chest at chunk: " + chunk.getChunkKey());
+        }
+        if (data == null || data.isEmpty()) {
+            return;
+        }
+
+        // Debug
+        if (ConfigManager.configManager.getBoolean("sell.sell-chest.debug")) {
+            TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fFound sell chest at this chunk PDC: " + data);
+        }
+        String[] locStrings = data.split(";");
+
+        for (String s : locStrings) {
+            Location loc = stringToLoc(chunk.getWorld(), s);
+            if (loc == null) {
+                continue;
+            }
+
+            BlockState state = loc.getBlock().getState();
+
             if (!(state instanceof Chest chest)) {
                 continue;
             }
@@ -256,12 +273,7 @@ public class SellChestManager {
                 continue;
             }
 
-            Player player = Bukkit.getPlayer(UUID.fromString(ownerStr));
-            if (player == null) {
-                continue;
-            }
-
-            add(player, chest);
+            add(chest);
         }
     }
 
@@ -280,26 +292,49 @@ public class SellChestManager {
             pdc.set(SELL_CHEST_TIMES, PersistentDataType.INTEGER, times);
         }
         chest.update();
-        add(owner, chest);
+
+        Chunk chunk = chest.getChunk();
+        PersistentDataContainer chunkPdc = chunk.getPersistentDataContainer();
+        String currentData = chunkPdc.getOrDefault(KEY_CHUNK_CHESTS, PersistentDataType.STRING, "");
+        String locStr = locToString(chest.getLocation());
+
+        if (!currentData.contains(locStr)) {
+            String newData = currentData.isEmpty() ? locStr : currentData + ";" + locStr;
+            chunkPdc.set(KEY_CHUNK_CHESTS, PersistentDataType.STRING, newData);
+            // Debug
+            if (ConfigManager.configManager.getBoolean("sell.sell-chest.debug")) {
+                TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fRegister new chest and save in chunk PDC: " + newData + " at chunk " + chunk.getChunkKey());
+            }
+        }
+
+        add(chest);
     }
 
     public void unregisterSellChest(Location location) {
         if (hologram != null) {
             hologram.remove(location);
         }
-        Set<Location> set = chestLocations.get(location.getChunk());
+
+        Chunk chunk = location.getChunk();
+        Set<Location> set = chestLocations.get(chunk);
         if (set != null) {
             set.remove(location);
         }
-    }
 
-    private void add(Player player, Chest chest) {
-        if (ConfigManager.configManager.getBoolean("debug-2")) {
-            TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fPlayer " + player.getName() + " placed sell chest at " + chest.getBlock().getLocation() + ".");
-        }
-        chestLocations.computeIfAbsent(chest.getChunk(), k -> new HashSet<>()).add(chest.getBlock().getLocation());
-        if (hologram != null) {
-            hologram.create(player, chest);
+        PersistentDataContainer chunkPdc = chunk.getPersistentDataContainer();
+        String currentData = chunkPdc.get(KEY_CHUNK_CHESTS, PersistentDataType.STRING);
+        if (currentData != null && !currentData.isEmpty()) {
+            String locStr = locToString(location);
+            String newData = Arrays.stream(currentData.split(";"))
+                    .filter(s -> !s.equals(locStr))
+                    .reduce((a, b) -> a + ";" + b)
+                    .orElse("");
+
+            if (newData.isEmpty()) {
+                chunkPdc.remove(KEY_CHUNK_CHESTS);
+            } else {
+                chunkPdc.set(KEY_CHUNK_CHESTS, PersistentDataType.STRING, newData);
+            }
         }
     }
 
@@ -327,5 +362,27 @@ public class SellChestManager {
             times = -1;
         }
         return sellChest.getItemWithUsageTimes(1, times);
+    }
+
+    private void add(Chest chest) {
+        if (ConfigManager.configManager.getBoolean("sell.sell-chest.debug")) {
+            TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fFound sell chest at " + chest.getBlock().getLocation() + ".");
+        }
+        chestLocations.computeIfAbsent(chest.getChunk(), k -> new HashSet<>()).add(chest.getBlock().getLocation());
+        if (hologram != null) {
+            hologram.create(chest);
+        }
+    }
+
+    private String locToString(Location loc) {
+        return loc.getBlockX() + "," + loc.getBlockY() + "," + loc.getBlockZ();
+    }
+
+    private Location stringToLoc(World world, String str) {
+        String[] parts = str.split(",");
+        if (parts.length != 3) {
+            return null;
+        }
+        return new Location(world, Double.parseDouble(parts[0]), Double.parseDouble(parts[1]), Double.parseDouble(parts[2]));
     }
 }

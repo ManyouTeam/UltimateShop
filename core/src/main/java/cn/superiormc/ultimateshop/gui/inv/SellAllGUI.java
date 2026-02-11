@@ -30,7 +30,7 @@ public class SellAllGUI extends InvGUI {
 
     @Override
     public void constructGUI() {
-        title = ConfigManager.configManager.getString(player, "menu.sell-all.title");
+        title = ConfigManager.configManager.getStringWithLang(player, "menu.sell-all.title");
         if (Objects.isNull(inv)) {
             inv = UltimateShop.methodUtil.createNewInv(player, ConfigManager.configManager.getInt
                             ("menu.sell-all.size", 54), title);

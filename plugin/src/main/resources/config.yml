@@ -21,7 +21,7 @@ config-files:
 
 # Support value: COMPONENT or LEGACY
 # COMPONENT mode only supports 1.21.6+ Paper servers and PREMIUM version.
-debuild-item-method: 'COMPONENT'
+debuild-item-method: 'LEGACY'
 
 cache:
   # If you are facing multi servers sync issue, try greater this value.
@@ -56,6 +56,8 @@ sell:
     click-type: RIGHT
   # PREMIUM version only.
   sell-chest:
+    enabled: true
+    debug: false
     period-ticks: 600
     batch-count: 5
     send-sell-message: true

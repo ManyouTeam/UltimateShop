@@ -4,10 +4,8 @@ import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.SellChestManager;
 import cn.superiormc.ultimateshop.objects.sellchests.ObjectSellChest;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.Chest;
-import org.bukkit.entity.Player;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
@@ -15,9 +13,9 @@ import java.util.List;
 
 public abstract class AbstractHologram {
 
-    public abstract void create(Player player, Chest chest);
+    public abstract void create(Chest chest);
 
-    public abstract void update(Player player, Chest chest);
+    public abstract void update(Chest chest);
 
     public abstract void remove(Location location);
 
@@ -44,7 +42,7 @@ public abstract class AbstractHologram {
                 + "_" + l.getBlockZ();
     }
 
-    protected List<String> getLines(Player player, Chest chest, ObjectSellChest sellChest) {
+    protected List<String> getLines(Chest chest, ObjectSellChest sellChest) {
         PersistentDataContainer pdc = chest.getPersistentDataContainer();
 
         int usage = pdc.getOrDefault(
@@ -53,19 +51,19 @@ public abstract class AbstractHologram {
                 -1
         );
 
-        return CommonUtil.modifyList(player, sellChest.getHolograms(),
+        return CommonUtil.modifyList(null, sellChest.getHolograms(),
                 "id", sellChest.getID(),
                 "multiplier", String.valueOf(sellChest.getMultiplier()),
-                "price", getPrice(player, chest),
-                "usage", sellChest.isInfinite() ? ConfigManager.configManager.getString(player, "placeholder.sell-stick.infinite") : String.valueOf(usage)
+                "price", getPrice(chest),
+                "usage", sellChest.isInfinite() ? ConfigManager.configManager.getStringWithLang(null, "placeholder.sell-stick.infinite") : String.valueOf(usage)
         );
     }
 
-    protected String getPrice(Player player, Chest chest) {
+    protected String getPrice(Chest chest) {
         PersistentDataContainer pdc = chest.getPersistentDataContainer();
 
         if (!pdc.has(SellChestManager.SELL_CHEST_PRICE)) {
-            return ConfigManager.configManager.getString(player, "sell.sell-chest.price-empty");
+            return ConfigManager.configManager.getStringWithLang(null, "sell.sell-chest.price-empty");
         }
 
         return pdc.get(SellChestManager.SELL_CHEST_PRICE, PersistentDataType.STRING);

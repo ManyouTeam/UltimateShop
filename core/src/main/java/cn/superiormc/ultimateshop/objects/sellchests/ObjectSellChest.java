@@ -46,7 +46,7 @@ public class ObjectSellChest {
         this.multiplier = section.getDouble("multiplier");
         this.infinite = usageTimes < 0 || section.getBoolean("infinite");
         this.holograms = section.getStringList("holograms");
-        TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fLoaded sell stick: " + id + ".yml!");
+        TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fLoaded sell chest: " + id + ".yml!");
     }
 
     public String getID() {

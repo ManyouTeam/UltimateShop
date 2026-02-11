@@ -51,7 +51,7 @@ public class ConfigManager {
             initRandomPlaceholder();
             initConditionalPlaceholder();
             initSellStickConfigs();
-            if (!UltimateShop.isFolia) {
+            if (!UltimateShop.isFolia && ConfigManager.configManager.getBoolean("sell.sell-chest.enabled")) {
                 initSellChestConfigs();
             }
         }
@@ -307,7 +307,7 @@ public class ConfigManager {
         return s.replace("{plugin_folder}", String.valueOf(UltimateShop.instance.getDataFolder()));
     }
 
-    public String getString(Player player, String path, String... args) {
+    public String getStringWithLang(Player player, String path, String... args) {
         String tempVal1 = getString(path, args);
         if (tempVal1.equalsIgnoreCase("{lang}")) {
             String tempVal2 = LanguageManager.languageManager.getStringText(player, "override-lang." + path, args);

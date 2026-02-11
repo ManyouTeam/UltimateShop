@@ -67,9 +67,6 @@ public final class UltimateShop extends JavaPlugin {
                     "Please do not use in production environment!");
             isFolia = true;
         }
-        if (!UltimateShop.freeVersion) {
-            TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §cPREMIUM version found, thanks for your support and we hope you have good experience with this plugin!");
-        }
         new ErrorManager();
         new InitManager();
         new ActionManager();
@@ -80,7 +77,7 @@ public final class UltimateShop extends JavaPlugin {
         new LanguageManager();
         new CacheManager();
         new CommandManager();
-        if (!UltimateShop.freeVersion && !UltimateShop.isFolia) {
+        if (!UltimateShop.freeVersion && !UltimateShop.isFolia && ConfigManager.configManager.getBoolean("sell.sell-chest.enabled")) {
             new SellChestManager();
         }
         new ListenerManager();

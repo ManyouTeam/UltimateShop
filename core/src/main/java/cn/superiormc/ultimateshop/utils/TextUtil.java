@@ -2,7 +2,6 @@ package cn.superiormc.ultimateshop.utils;
 
 import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
-import cn.superiormc.ultimateshop.managers.LanguageManager;
 import cn.superiormc.ultimateshop.methods.StaticPlaceholder;
 import cn.superiormc.ultimateshop.objects.items.subobjects.ObjectConditionalPlaceholder;
 import cn.superiormc.ultimateshop.objects.items.subobjects.ObjectRandomPlaceholder;
@@ -284,7 +283,7 @@ public class TextUtil {
             String time = "";
 
             if (nextExecution.isPresent()) {
-                time = CommonUtil.timeToString(nextExecution.get().toLocalDateTime(), ConfigManager.configManager.getString(player, "placeholder.cron.format"));
+                time = CommonUtil.timeToString(nextExecution.get().toLocalDateTime(), ConfigManager.configManager.getStringWithLang(player, "placeholder.cron.format"));
             }
             text = text.replace("{cron_\"" + cronExpression + "\"}", time);
         }

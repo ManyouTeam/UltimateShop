@@ -45,10 +45,10 @@ public class ObjectSingleProduct extends AbstractSingleThing {
     @Override
     public String getDisplayName(Player player, int multi, BigDecimal amount, boolean alwaysStatic) {
         if (singleSection == null) {
-            return ConfigManager.configManager.getString(player, "placeholder.price.unknown");
+            return ConfigManager.configManager.getStringWithLang(player, "placeholder.price.unknown");
         }
         String tempVal1 = singleSection.getString("placeholder",
-                ConfigManager.configManager.getString(player, "placeholder.price.unknown"));
+                ConfigManager.configManager.getStringWithLang(player, "placeholder.price.unknown"));
         return CommonUtil.modifyString(player, tempVal1,
                 "amount",
                 String.valueOf(amount),

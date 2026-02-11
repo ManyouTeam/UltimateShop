@@ -32,7 +32,7 @@ public class CommandManager {
        registerNewSubCommand(new SubQuickBuy());
        registerNewSubCommand(new SubReload());
        registerNewSubCommand(new SubGiveSellStick());
-       if (!UltimateShop.isFolia) {
+       if (!UltimateShop.isFolia && ConfigManager.configManager.getBoolean("sell.sell-chest.enabled")) {
            registerNewSubCommand(new SubGiveSellChest());
        }
        registerNewSubCommand(new SubGiveSaveItem());
