@@ -22,8 +22,7 @@ public abstract class AbstractHologram {
     public abstract boolean isAvailable();
 
     protected Location holoLocation(Chest chest, ObjectSellChest sellChest) {
-        return chest.getBlock().getLocation()
-                .add(0.5, sellChest.getYOffset(), 0.5);
+        return chest.getBlock().getLocation().add(0.5, sellChest.getYOffset(), 0.5);
     }
 
     protected String holoId(Chest chest) {

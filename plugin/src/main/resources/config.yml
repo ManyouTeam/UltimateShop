@@ -64,7 +64,7 @@ sell:
     price-empty: '{lang}'
     hologram:
       enabled: true
-      # Support value: DecentHolograms
+      # Support value: DecentHolograms, CMI
       plugin: 'DecentHolograms'
   max-amount: 128
 

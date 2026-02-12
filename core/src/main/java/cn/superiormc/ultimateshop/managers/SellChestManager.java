@@ -8,6 +8,7 @@ import cn.superiormc.ultimateshop.objects.items.ThingMode;
 import cn.superiormc.ultimateshop.objects.items.prices.ObjectPrices;
 import cn.superiormc.ultimateshop.objects.sellchests.ObjectSellChest;
 import cn.superiormc.ultimateshop.objects.sellchests.holograms.AbstractHologram;
+import cn.superiormc.ultimateshop.objects.sellchests.holograms.impl.CMIHook;
 import cn.superiormc.ultimateshop.objects.sellchests.holograms.impl.DecentHologramsHook;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
 import cn.superiormc.ultimateshop.utils.TextUtil;
@@ -63,6 +64,9 @@ public class SellChestManager {
             if (plugin.equalsIgnoreCase("DecentHolograms") && CommonUtil.checkPluginLoad("DecentHolograms")) {
                 TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fHooking into DecentHolograms...");
                 hologram = new DecentHologramsHook();
+            } else if (plugin.equalsIgnoreCase("CMI") && CommonUtil.checkPluginLoad("CMI")) {
+                TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fHooking into CMI...");
+                hologram = new CMIHook();
             }
         }
     }
