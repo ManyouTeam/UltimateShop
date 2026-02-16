@@ -86,9 +86,8 @@ public class LanguageManager {
     private String getMessage(Player player, String key, String... args) {
         String lang = getPlayerLanguage(player);
 
-        YamlConfiguration config = languageFiles.getOrDefault(lang, tempMessageFile);
+        YamlConfiguration config = languageFiles.getOrDefault(lang, languageFiles.getOrDefault(serverLanguage.toLowerCase(), tempMessageFile));
         String text = config.getString(key);
-
 
         if (text == null) {
             if (tempMessageFile.getString(key) != null) {
