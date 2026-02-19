@@ -333,35 +333,45 @@ public class ObjectItem extends AbstractButton {
         String tempVal1 = ConfigManager.configManager.getClickAction(type, this);
         switch (tempVal1) {
             case "buy" :
-                if (!buyPrice.empty &&
-                        BuyProductMethod.startBuy(this, player, !b).getStatus() != ProductTradeStatus.Status.DONE) {
-                    failAction.runAllActions(new ObjectThingRun(player, type));
+                if (!buyPrice.empty) {
+                    ProductTradeStatus.Status status = BuyProductMethod.startBuy(this, player, !b).getStatus();
+                    if (status != ProductTradeStatus.Status.DONE) {
+                        failAction.runAllActions(new ObjectThingRun(player, type, status));
+                    }
                 }
                 return;
             case "sell" :
-                if (!sellPrice.empty &&
-                        SellProductMethod.startSell(this, player, !b).getStatus() != ProductTradeStatus.Status.DONE) {
-                    failAction.runAllActions(new ObjectThingRun(player, type));
+                if (!sellPrice.empty) {
+                    ProductTradeStatus.Status status = SellProductMethod.startSell(this, player, !b).getStatus();
+                    if (status != ProductTradeStatus.Status.DONE) {
+                        failAction.runAllActions(new ObjectThingRun(player, type, status));
+                    }
                 }
                 return;
             case "buy-or-sell" :
                 if (buyPrice.empty && !sellPrice.empty) {
-                    if (SellProductMethod.startSell(this, player, !b).getStatus() != ProductTradeStatus.Status.DONE) {
-                        failAction.runAllActions(new ObjectThingRun(player, type));
+                    ProductTradeStatus.Status status = SellProductMethod.startSell(this, player, !b).getStatus();
+                    if (status != ProductTradeStatus.Status.DONE) {
+                        failAction.runAllActions(new ObjectThingRun(player, type, status));
                     }
-                }
-                else if (!buyPrice.empty && BuyProductMethod.startBuy(this, player, !b).getStatus() != ProductTradeStatus.Status.DONE) {
-                    failAction.runAllActions(new ObjectThingRun(player, type));
+                } else if (!buyPrice.empty) {
+                    ProductTradeStatus.Status status = BuyProductMethod.startBuy(this, player, !b).getStatus();
+                    if (status != ProductTradeStatus.Status.DONE) {
+                        failAction.runAllActions(new ObjectThingRun(player, type, status));
+                    }
                 }
                 return;
             case "sell-all" :
-                if (!sellPrice.empty && isEnableSellAll() && SellProductMethod.startSell(this,
-                        player,
-                        !b,
-                        false,
-                        true,
-                        1).getStatus() != ProductTradeStatus.Status.DONE) {
-                    failAction.runAllActions(new ObjectThingRun(player, type));
+                if (!sellPrice.empty && isEnableSellAll()) {
+                    ProductTradeStatus.Status status = SellProductMethod.startSell(this,
+                            player,
+                            !b,
+                            false,
+                            true,
+                            1).getStatus();
+                    if (status != ProductTradeStatus.Status.DONE) {
+                        failAction.runAllActions(new ObjectThingRun(player, type, status));
+                    }
                 }
                 return;
             case "select-amount" :
@@ -375,8 +385,11 @@ public class ObjectItem extends AbstractButton {
                     ConfigManager.configManager.getSection("menu.click-event-actions." + tempVal1),
                     this);
             action.runAllActions(new ObjectThingRun(player, type));
-            if (action.getLastTradeStatus() != null && action.getLastTradeStatus().getStatus() != ProductTradeStatus.Status.DONE) {
-                failAction.runAllActions(new ObjectThingRun(player, type));
+            if (action.getLastTradeStatus() != null) {
+                ProductTradeStatus.Status status = action.getLastTradeStatus().getStatus();
+                if (status != ProductTradeStatus.Status.DONE) {
+                    failAction.runAllActions(new ObjectThingRun(player, type));
+                }
             }
         }
         super.clickEvent(type, player);

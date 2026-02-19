@@ -54,6 +54,9 @@ public class ObjectSingleAction extends AbstractSingleRun {
         if (thingRun.getPlayer() != null && javaOnly && CommonUtil.isBedrockPlayer(thingRun.getPlayer())) {
             return;
         }
+        if (thingRun.getStatus() != null && failStatus != null && thingRun.getStatus() != failStatus) {
+            return;
+        }
         ActionManager.actionManager.doAction(this, thingRun);
     }
 
