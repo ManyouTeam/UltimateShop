@@ -2,6 +2,7 @@ package cn.superiormc.ultimateshop.objects.conditions;
 
 import cn.superiormc.ultimateshop.managers.ErrorManager;
 import cn.superiormc.ultimateshop.objects.ObjectThingRun;
+import cn.superiormc.ultimateshop.utils.MathUtil;
 import org.bukkit.entity.Player;
 
 public class ConditionPlaceholder extends AbstractCheckCondition {
@@ -20,15 +21,15 @@ public class ConditionPlaceholder extends AbstractCheckCondition {
         try {
             switch (singleCondition.getString("rule")) {
                 case ">=":
-                    return Double.parseDouble(placeholder) >= Double.parseDouble(value);
+                    return MathUtil.doCalculate(placeholder).doubleValue() >= MathUtil.doCalculate(value).doubleValue();
                 case ">":
-                    return Double.parseDouble(placeholder) > Double.parseDouble(value);
+                    return MathUtil.doCalculate(placeholder).doubleValue() > MathUtil.doCalculate(value).doubleValue();
                 case "=":
-                    return Double.parseDouble(placeholder) == Double.parseDouble(value);
+                    return MathUtil.doCalculate(placeholder).doubleValue() == MathUtil.doCalculate(value).doubleValue();
                 case "<":
-                    return Double.parseDouble(placeholder) < Double.parseDouble(value);
+                    return MathUtil.doCalculate(placeholder).doubleValue() < MathUtil.doCalculate(value).doubleValue();
                 case "<=":
-                    return Double.parseDouble(placeholder) <= Double.parseDouble(value);
+                    return MathUtil.doCalculate(placeholder).doubleValue() <= MathUtil.doCalculate(value).doubleValue();
                 case "==":
                     return placeholder.equals(value);
                 case "!=":

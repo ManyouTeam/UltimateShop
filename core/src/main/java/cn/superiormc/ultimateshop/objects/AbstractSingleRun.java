@@ -3,6 +3,7 @@ package cn.superiormc.ultimateshop.objects;
 import cn.superiormc.ultimateshop.methods.ProductTradeStatus;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
+import cn.superiormc.ultimateshop.utils.MathUtil;
 import cn.superiormc.ultimateshop.utils.TextUtil;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
@@ -129,11 +130,11 @@ public abstract class AbstractSingleRun {
     }
 
     public double getDouble(String path) {
-        return section.getDouble(path);
+        return MathUtil.doCalculate(section.getString(path)).doubleValue();
     }
 
     public double getDouble(String path, Player player, double amount) {
-        return Double.parseDouble(replacePlaceholder(section.getString(path), player, amount));
+        return MathUtil.doCalculate(replacePlaceholder(section.getString(path), player, amount)).doubleValue();
     }
 
     public boolean getBoolean(String path, boolean defaultValue) {

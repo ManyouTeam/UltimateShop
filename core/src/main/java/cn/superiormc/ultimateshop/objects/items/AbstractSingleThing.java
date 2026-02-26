@@ -12,6 +12,7 @@ import cn.superiormc.ultimateshop.objects.items.prices.PriceMode;
 import cn.superiormc.ultimateshop.objects.items.products.ObjectSingleProduct;
 import cn.superiormc.ultimateshop.objects.items.subobjects.ObjectDisplayPlaceholder;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
+import cn.superiormc.ultimateshop.utils.MathUtil;
 import cn.superiormc.ultimateshop.utils.TextUtil;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
@@ -170,7 +171,7 @@ public abstract class AbstractSingleThing implements Comparable<AbstractSingleTh
                         section.getString("economy-type"));
             case CUSTOM:
                 try {
-                    return Double.parseDouble(TextUtil.withPAPI(section.getString("match-placeholder", "0"), player));
+                    return MathUtil.doCalculate(TextUtil.withPAPI(section.getString("match-placeholder", "0"), player)).doubleValue();
                 } catch (Throwable throwable) {
                     throwable.printStackTrace();
                     return 0;
@@ -243,7 +244,7 @@ public abstract class AbstractSingleThing implements Comparable<AbstractSingleTh
                         (int) cost, take);
             case CUSTOM:
                 try {
-                    return Double.parseDouble(TextUtil.withPAPI(section.getString("match-placeholder", "0"), player)) >= cost;
+                    return MathUtil.doCalculate(TextUtil.withPAPI(section.getString("match-placeholder", "0"), player)).doubleValue() >= cost;
                 } catch (Throwable throwable) {
                     throwable.printStackTrace();
                     return false;
