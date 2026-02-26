@@ -4,6 +4,8 @@ import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.utils.SchedulerUtil;
 import cn.superiormc.ultimateshop.utils.TextUtil;
 import org.bukkit.Bukkit;
+import org.bukkit.Chunk;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 
 public class TaskManager {
@@ -39,12 +41,19 @@ public class TaskManager {
     }
 
     public void initSellChestTasks() {
-        if (!ConfigManager.configManager.getSellChests().isEmpty() && !UltimateShop.isFolia) {
+        if (SellChestManager.sellChestManager != null &&
+                !ConfigManager.configManager.getSellChests().isEmpty() &&
+                !UltimateShop.isFolia) {
             sellChestTask = SchedulerUtil.runTaskTimer(
                     () -> SellChestManager.sellChestManager.tick(),
                     20L,
                     ConfigManager.configManager.getLong("sell.sell-chest.period-ticks", 60L)
             );
+            for (World world : Bukkit.getWorlds()) {
+                for (Chunk chunk : world.getLoadedChunks()) {
+                    SellChestManager.sellChestManager.handleChunkLoad(chunk);
+                }
+            }
         }
     }
 

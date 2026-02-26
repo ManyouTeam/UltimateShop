@@ -156,7 +156,7 @@ public class SellChestListener implements Listener {
 
     @EventHandler
     public void onChunkLoad(ChunkLoadEvent event) {
-        SellChestManager.sellChestManager.handleChunkLoad(event);
+        SellChestManager.sellChestManager.handleChunkLoad(event.getChunk());
     }
 
     @EventHandler

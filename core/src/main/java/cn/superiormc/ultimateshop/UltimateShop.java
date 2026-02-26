@@ -42,7 +42,7 @@ public final class UltimateShop extends JavaPlugin {
         } catch (Throwable throwable) {
             Bukkit.getConsoleSender().sendMessage(TextUtil.pluginPrefix() + " §cError: Can not get your Minecraft version! Default set to 1.0.0.");
         }
-        if (CommonUtil.getClass("com.destroystokyo.paper.PaperConfig") && CommonUtil.getMinorVersion(17, 1)) {
+        if (CommonUtil.getClass("com.destroystokyo.paper.PaperConfig") && CommonUtil.getMinorVersion(18, 2)) {
             try {
                 Class<?> paperClass = Class.forName("cn.superiormc.ultimateshop.paper.PaperMethodUtil");
                 methodUtil = (SpecialMethodUtil) paperClass.getDeclaredConstructor().newInstance();
@@ -66,9 +66,6 @@ public final class UltimateShop extends JavaPlugin {
             TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §6Warning: Folia support is not fully test, major bugs maybe found! " +
                     "Please do not use in production environment!");
             isFolia = true;
-        }
-        if (!UltimateShop.freeVersion) {
-            TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §cPREMIUM version found, thanks for your support and we hope you have good experience with this plugin!");
         }
         new ErrorManager();
         new InitManager();

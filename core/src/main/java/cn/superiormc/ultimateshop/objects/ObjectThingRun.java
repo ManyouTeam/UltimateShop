@@ -1,5 +1,6 @@
 package cn.superiormc.ultimateshop.objects;
 
+import cn.superiormc.ultimateshop.methods.ProductTradeStatus;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 
@@ -18,6 +19,8 @@ public class ObjectThingRun {
     private final ClickType type;
 
     private final boolean reopen;
+
+    private ProductTradeStatus.Status status;
 
     public ObjectThingRun(Player player) {
         this.player = player;
@@ -47,6 +50,17 @@ public class ObjectThingRun {
         this.sellAll = false;
         this.type = type;
         this.reopen = false;
+    }
+
+    public ObjectThingRun(Player player, ClickType type, ProductTradeStatus.Status status) {
+        this.player = player;
+        this.times = 1;
+        this.amount = 1;
+        this.multi = 1;
+        this.sellAll = false;
+        this.type = type;
+        this.reopen = false;
+        this.status = status;
     }
 
     public ObjectThingRun(Player player, int times, int multi, double amount) {
@@ -97,6 +111,10 @@ public class ObjectThingRun {
             return 1;
         }
         return multi;
+    }
+
+    public ProductTradeStatus.Status getStatus() {
+        return status;
     }
 
     public boolean isReopen() {

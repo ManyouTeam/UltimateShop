@@ -1,5 +1,6 @@
 package cn.superiormc.ultimateshop.objects;
 
+import cn.superiormc.ultimateshop.methods.ProductTradeStatus;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
 import cn.superiormc.ultimateshop.utils.TextUtil;
@@ -34,6 +35,8 @@ public abstract class AbstractSingleRun {
 
     protected boolean javaOnly;
 
+    protected ProductTradeStatus.Status failStatus;
+
     public AbstractSingleRun(ConfigurationSection section) {
         this.section = section;
         startApply = section.getInt("start-apply", -1);
@@ -60,6 +63,10 @@ public abstract class AbstractSingleRun {
         clickType = section.getString("click-type", null);
         bedrockOnly = section.getBoolean("bedrock-only", false);
         javaOnly = section.getBoolean("java-only", false);
+        String tempVal1 = section.getString("fail-type");
+        if (tempVal1 != null) {
+            failStatus = ProductTradeStatus.Status.valueOf(tempVal1);
+        }
     }
 
     public AbstractSingleRun(ConfigurationSection section, ObjectShop shop) {

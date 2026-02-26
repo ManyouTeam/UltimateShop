@@ -7,7 +7,6 @@ import cn.superiormc.ultimateshop.objects.items.ObjectAction;
 import cn.superiormc.ultimateshop.objects.items.ObjectCondition;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
 import cn.superiormc.ultimateshop.utils.TextUtil;
-import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
@@ -75,7 +74,7 @@ public class ObjectSellStick {
                 if (!infinite) {
                     str = CommonUtil.modifyString(player, str, "times", String.valueOf(times));
                 } else {
-                    str = CommonUtil.modifyString(player, str, "times", ConfigManager.configManager.getString(player, "placeholder.sell-stick.infinite"));
+                    str = CommonUtil.modifyString(player, str, "times", ConfigManager.configManager.getStringWithLang(player, "placeholder.sell-stick.infinite"));
                 }
                 newLore.add(str);
             }

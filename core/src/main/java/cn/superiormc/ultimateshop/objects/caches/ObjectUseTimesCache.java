@@ -304,8 +304,12 @@ public class ObjectUseTimesCache {
                                 null);
                     }
                 }
-                case "COOLDOWN_CUSTOM" -> cooldownBuyTime = CommonUtil.stringToTime(tempVal1,
-                        TextUtil.withPAPI(product.getBuyTimesResetFormat(), cache.getPlayer()));
+                case "COOLDOWN_CUSTOM" -> {
+                    if (UltimateShop.freeVersion) {
+                        cooldownBuyTime = CommonUtil.stringToTime(tempVal1);
+                    }
+                    cooldownBuyTime = CommonUtil.stringToTime(tempVal1, TextUtil.withPAPI(product.getBuyTimesResetFormat(), cache.getPlayer()));
+                }
             }
         }
     }
@@ -346,8 +350,12 @@ public class ObjectUseTimesCache {
                                 null);
                     }
                 }
-                case "COOLDOWN_CUSTOM" -> cooldownSellTime = CommonUtil.stringToTime(tempVal1,
-                        TextUtil.withPAPI(product.getSellTimesResetFormat(), cache.getPlayer()));
+                case "COOLDOWN_CUSTOM" -> {
+                    if (UltimateShop.freeVersion) {
+                        cooldownSellTime = CommonUtil.stringToTime(tempVal1);
+                    }
+                    cooldownSellTime = CommonUtil.stringToTime(tempVal1, TextUtil.withPAPI(product.getSellTimesResetFormat(), cache.getPlayer()));
+                }
             }
         }
     }
@@ -451,9 +459,9 @@ public class ObjectUseTimesCache {
     public String getBuyRefreshTimeDisplayName(Player player) {
         LocalDateTime tempVal1 = getBuyRefreshTimeWithUpdate();
         if (tempVal1 == null || tempVal1.getYear() == 2999) {
-            return ConfigManager.configManager.getString(player, "placeholder.refresh.never");
+            return ConfigManager.configManager.getStringWithLang(player, "placeholder.refresh.never");
         }
-        return CommonUtil.timeToString(tempVal1, ConfigManager.configManager.getString(player, "placeholder.refresh.format"));
+        return CommonUtil.timeToString(tempVal1, ConfigManager.configManager.getStringWithLang(player, "placeholder.refresh.format"));
     }
 
     public String getBuyRefreshTimeNextName(Player player) {
@@ -462,24 +470,24 @@ public class ObjectUseTimesCache {
         }
         LocalDateTime tempVal1 = getBuyRefreshTimeWithUpdate();
         if (tempVal1 == null || tempVal1.getYear() == 2999) {
-            return ConfigManager.configManager.getString(player, "placeholder.next.never");
+            return ConfigManager.configManager.getStringWithLang(player, "placeholder.next.never");
         }
         Duration duration = Duration.between(CommonUtil.getNowTime(), tempVal1);
         long totalSeconds = duration.getSeconds();
         if (totalSeconds < 0) {
-            return ConfigManager.configManager.getString(player, "placeholder.next.never");
+            return ConfigManager.configManager.getStringWithLang(player, "placeholder.next.never");
         }
         long days = totalSeconds / (24 * 3600);
         long hours = (totalSeconds % (24 * 3600)) / 3600;
         long minutes = (totalSeconds % 3600) / 60;
         long seconds = totalSeconds % 60;
         if (days > 0) {
-            return ConfigManager.configManager.getString(player, "placeholder.next.with-day-format").replace("{d}", String.valueOf(days))
+            return ConfigManager.configManager.getStringWithLang(player, "placeholder.next.with-day-format").replace("{d}", String.valueOf(days))
                     .replace("{h}", String.format("%02d", hours))
                     .replace("{m}", String.format("%02d", minutes))
                     .replace("{s}", String.format("%02d", seconds));
         }
-        return ConfigManager.configManager.getString(player, "placeholder.next.without-day-format").replace("{h}", String.valueOf(hours))
+        return ConfigManager.configManager.getStringWithLang(player, "placeholder.next.without-day-format").replace("{h}", String.valueOf(hours))
                 .replace("{m}", String.format("%02d", minutes))
                 .replace("{s}", String.format("%02d", seconds));
     }
@@ -511,9 +519,9 @@ public class ObjectUseTimesCache {
     public String getSellRefreshTimeDisplayName(Player player) {
         LocalDateTime tempVal1 = getSellRefreshTimeWithUpdate();
         if (tempVal1 == null || tempVal1.getYear() == 2999) {
-            return ConfigManager.configManager.getString(player, "placeholder.refresh.never");
+            return ConfigManager.configManager.getStringWithLang(player, "placeholder.refresh.never");
         }
-        return CommonUtil.timeToString(tempVal1, ConfigManager.configManager.getString(player, "placeholder.refresh.format"));
+        return CommonUtil.timeToString(tempVal1, ConfigManager.configManager.getStringWithLang(player, "placeholder.refresh.format"));
     }
 
     public String getSellRefreshTimeNextName(Player player) {
@@ -522,24 +530,24 @@ public class ObjectUseTimesCache {
         }
         LocalDateTime tempVal1 = getSellRefreshTimeWithUpdate();
         if (tempVal1 == null || tempVal1.getYear() == 2999) {
-            return ConfigManager.configManager.getString(player, "placeholder.next.never");
+            return ConfigManager.configManager.getStringWithLang(player, "placeholder.next.never");
         }
         Duration duration = Duration.between(CommonUtil.getNowTime(), tempVal1);
         long totalSeconds = duration.getSeconds();
         if (totalSeconds < 0) {
-            return ConfigManager.configManager.getString(player, "placeholder.next.never");
+            return ConfigManager.configManager.getStringWithLang(player, "placeholder.next.never");
         }
         long days = totalSeconds / (24 * 3600);
         long hours = (totalSeconds % (24 * 3600)) / 3600;
         long minutes = (totalSeconds % 3600) / 60;
         long seconds = totalSeconds % 60;
         if (days > 0) {
-            return ConfigManager.configManager.getString(player, "placeholder.next.with-day-format").replace("{d}", String.valueOf(days))
+            return ConfigManager.configManager.getStringWithLang(player, "placeholder.next.with-day-format").replace("{d}", String.valueOf(days))
                     .replace("{h}", String.format("%02d", hours))
                     .replace("{m}", String.format("%02d", minutes))
                     .replace("{s}", String.format("%02d", seconds));
         }
-        return ConfigManager.configManager.getString(player, "placeholder.next.without-day-format").replace("{h}", String.valueOf(hours))
+        return ConfigManager.configManager.getStringWithLang(player, "placeholder.next.without-day-format").replace("{h}", String.valueOf(hours))
                 .replace("{m}", String.format("%02d", minutes))
                 .replace("{s}", String.format("%02d", seconds));
     }
@@ -708,18 +716,13 @@ public class ObjectUseTimesCache {
 
     private LocalDateTime createRefreshTime(String mode, String time, boolean buyOrSell) {
         switch (mode) {
-            case "COOLDOWN_TIMED":
-            case "COOLDOWN_TIMER":
-            case "COOLDOWN_CUSTOM":
-                if (!UltimateShop.freeVersion) {
-                    if (buyOrSell) {
-                        setCooldownBuyTime();
-                        return cooldownBuyTime;
-                    }
-                    setCooldownSellTime();
-                    return cooldownSellTime;
+            case "COOLDOWN_TIMED", "COOLDOWN_TIMER", "COOLDOWN_CUSTOM":
+                if (buyOrSell) {
+                    setCooldownBuyTime();
+                    return cooldownBuyTime;
                 }
-                return CommonUtil.getNowTime();
+                setCooldownSellTime();
+                return cooldownSellTime;
             case "TIMED":
                 if (buyOrSell) {
                     return createTimedBuyRefreshTime(time);

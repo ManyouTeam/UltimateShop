@@ -327,7 +327,7 @@ public class ObjectPrices extends AbstractThings {
             case ANY: case CLASSIC_ANY:
                 for (int i = 0; i < text.size(); i++) {
                     if (i > 0) {
-                        tempVal2.append(ConfigManager.configManager.getString(player, "placeholder.price.split-symbol-any"));
+                        tempVal2.append(ConfigManager.configManager.getStringWithLang(player, "placeholder.price.split-symbol-any"));
                     }
                     tempVal2.append(text.get(i));
                 }
@@ -335,16 +335,16 @@ public class ObjectPrices extends AbstractThings {
             case ALL: case CLASSIC_ALL:
                 for (int i = 0; i < text.size(); i++) {
                     if (i > 0) {
-                        tempVal2.append(ConfigManager.configManager.getString(player, "placeholder.price.split-symbol-all"));
+                        tempVal2.append(ConfigManager.configManager.getStringWithLang(player, "placeholder.price.split-symbol-all"));
                     }
                     tempVal2.append(text.get(i));
                 }
                 break;
             default:
-                tempVal2 = new StringBuilder(ConfigManager.configManager.getString(player, "placeholder.price.unknown-price-type"));
+                tempVal2 = new StringBuilder(ConfigManager.configManager.getStringWithLang(player, "placeholder.price.unknown-price-type"));
                 break;
         }
-        return tempVal2.toString().replace(";;", ConfigManager.configManager.getString(player, "placeholder.price.replace-new-line-symbol"))
+        return tempVal2.toString().replace(";;", ConfigManager.configManager.getStringWithLang(player, "placeholder.price.replace-new-line-symbol"))
                 .replaceAll(ConfigManager.configManager.getString("placeholder.price.filter-for-one-line"), "");
     }
 }

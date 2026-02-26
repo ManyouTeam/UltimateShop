@@ -217,16 +217,16 @@ public class ObjectSinglePrice extends AbstractSingleThing {
     @Override
     public String getDisplayName(Player player, int multi, BigDecimal amount, boolean alwaysStatic) {
         if (empty) {
-            return ConfigManager.configManager.getString(player, "placeholder.price.empty");
+            return ConfigManager.configManager.getStringWithLang(player, "placeholder.price.empty");
         }
         if (singleSection == null) {
-            return ConfigManager.configManager.getString(player, "placeholder.price.unknown");
+            return ConfigManager.configManager.getStringWithLang(player, "placeholder.price.unknown");
         }
         String tempVal1 = singleSection.getString("placeholder",
-                ConfigManager.configManager.getString(player, "placeholder.price.unknown"));
+                ConfigManager.configManager.getStringWithLang(player, "placeholder.price.unknown"));
         String tempVal2;
         if (customPrice) {
-            tempVal2 = ConfigManager.configManager.getString(player, "prices." +
+            tempVal2 = ConfigManager.configManager.getStringWithLang(player, "prices." +
                     singleSection.getString("custom-type") + ".placeholder", tempVal1);
         } else {
             tempVal2 = singleSection.getString("placeholder", tempVal1);
@@ -236,7 +236,7 @@ public class ObjectSinglePrice extends AbstractSingleThing {
             tempVal2 = tempVal2 + " " + StaticPlaceholder.getCompareValue(player, baseAmount.multiply(new BigDecimal(multi)), amount);
         }
         if (tempVal2.contains("{amount}") && ConfigManager.configManager.getBoolean("placeholder.auto-settings.change-amount-in-all-price-placeholder.enabled")) {
-            tempVal2 = tempVal2.replace("{amount}", ConfigManager.configManager.getString(player, "placeholder.auto-settings.change-amount-in-all-price-placeholder.replace-value", "{amount}"));
+            tempVal2 = tempVal2.replace("{amount}", ConfigManager.configManager.getStringWithLang(player, "placeholder.auto-settings.change-amount-in-all-price-placeholder.replace-value", "{amount}"));
         }
         return CommonUtil.modifyString(player, tempVal2,
                         "amount",

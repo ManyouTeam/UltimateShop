@@ -47,7 +47,7 @@ public final class ResetTaskPool {
         ResetTaskGroup group = findOrCreateGroup(refreshTime, buy);
         group.add(cache);
 
-        if (ConfigManager.configManager.getBoolean("debug-2")) {
+        if (ConfigManager.configManager.getBoolean("sell.sell-chest.debug")) {
             TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fReset Time: " + group.triggerTime + " Cache: " + cache + " Group Amount: " + GROUPS.size() + "!");
             for (ObjectUseTimesCache dc : group.caches) {
                 TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fOther Caches: " + dc + "!");
@@ -118,7 +118,7 @@ public final class ResetTaskPool {
         }
 
         boolean isNear(LocalDateTime time) {
-            if (ConfigManager.configManager.getBoolean("debug-2")) {
+            if (ConfigManager.configManager.getBoolean("sell.sell-chest.debug")) {
                 TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fTrigger Time: " + triggerTime + " Object Time: " + time + "!");
             }
             long diff = Math.abs(
@@ -165,7 +165,7 @@ public final class ResetTaskPool {
             }
 
             long delayTicks = delayMillis / 50;
-            if (ConfigManager.configManager.getBoolean("debug-2")) {
+            if (ConfigManager.configManager.getBoolean("sell.sell-chest.debug")) {
                 TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fDelay: " + delayTicks + "!");
             }
             task = SchedulerUtil.runTaskLater(this::run, delayTicks + 10);
@@ -183,13 +183,13 @@ public final class ResetTaskPool {
                 } else {
                     cache.refreshSellTimes();
                 }
-                if (ConfigManager.configManager.getBoolean("debug-2")) {
+                if (ConfigManager.configManager.getBoolean("sell.sell-chest.debug")) {
                     TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fAuto reset actived for cache: " + cache + "!");
                 }
             }
             caches.clear();
             GROUPS.remove(this);
-            if (ConfigManager.configManager.getBoolean("debug-2")) {
+            if (ConfigManager.configManager.getBoolean("sell.sell-chest.debug")) {
                 TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fGroup removed, left amount: " + GROUPS.size() + "!");
             }
         }

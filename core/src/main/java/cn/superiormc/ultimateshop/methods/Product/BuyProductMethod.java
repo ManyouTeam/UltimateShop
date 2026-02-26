@@ -49,8 +49,10 @@ public class BuyProductMethod {
         if (item.getShopObject().getProductNotHidden(player, item) == null) {
             return ProductTradeStatus.ERROR;
         }
-        boolean shouldSendMessage = inventory instanceof PlayerInventory && !notCost && (forceDisplayMessage ||
-                !item.getShopObject().getShopConfig().getBoolean("settings.hide-message", false));
+        if (!ConfigManager.configManager.getBoolean("force-display-fail-message")) {
+            forceDisplayMessage = false;
+        }
+        boolean shouldSendMessage = inventory instanceof PlayerInventory && !notCost && (forceDisplayMessage || !item.getHideMessage());
         if (!item.getBuyCondition(player)) {
             if (shouldSendMessage) {
                 LanguageManager.languageManager.sendStringText(player,
@@ -185,7 +187,7 @@ public class BuyProductMethod {
             tempVal8.setLastBuyTime(CommonUtil.getNowTime());
             tempVal8.setCooldownBuyTime();
         }
-        if (!item.getShopObject().getShopConfig().getBoolean("settings.hide-message", false) && !giveResult.empty && !takeResult.empty) {
+        if (!item.getHideMessage() && !giveResult.empty && !takeResult.empty) {
             LanguageManager.languageManager.sendStringText(player,
                     "success-buy",
                     "item",

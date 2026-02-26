@@ -21,7 +21,9 @@ public class ListenerManager {
         if (!UltimateShop.freeVersion) {
             Bukkit.getPluginManager().registerEvents(new SellStickListener(), UltimateShop.instance);
             if (!UltimateShop.isFolia) {
-                Bukkit.getPluginManager().registerEvents(new SellChestListener(), UltimateShop.instance);
+                if (ConfigManager.configManager.getBoolean("sell.sell-chest.enabled")) {
+                    Bukkit.getPluginManager().registerEvents(new SellChestListener(), UltimateShop.instance);
+                }
             } else {
                 TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §6Warning: Sell chest feature does not support Folia.");
             }
