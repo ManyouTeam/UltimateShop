@@ -5,6 +5,7 @@ import cn.superiormc.ultimateshop.listeners.GUIListener;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.objects.buttons.AbstractButton;
 import cn.superiormc.ultimateshop.utils.PacketInventoryUtil;
+import cn.superiormc.ultimateshop.utils.SchedulerUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -12,7 +13,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -27,7 +27,7 @@ public abstract class InvGUI extends AbstractGUI {
 
     public Listener guiListener;
 
-    protected BukkitRunnable runTask = null;
+    protected SchedulerUtil runTask = null;
 
     public String title;
 
@@ -76,18 +76,14 @@ public abstract class InvGUI extends AbstractGUI {
         }
         if (ConfigManager.configManager.getBooleanOrDefault("menu.shop.update", "menu.menu-update.circle-update") ||
         ConfigManager.configManager.getBoolean("menu.title-update.circle-update")) {
-            runTask = new BukkitRunnable() {
-                @Override
-                public void run() {
-                    if (ConfigManager.configManager.getBooleanOrDefault("menu.shop.update", "menu.menu-update.circle-update")) {
-                        constructGUI();
-                    }
-                    if (ConfigManager.configManager.getBoolean("menu.title-update.circle-update") && UltimateShop.usePacketEvents) {
-                        PacketInventoryUtil.packetInventoryUtil.updateTitle(player, InvGUI.this);
-                    }
+            runTask = SchedulerUtil.runTaskTimerAsynchronously(()->{
+                if (ConfigManager.configManager.getBooleanOrDefault("menu.shop.update", "menu.menu-update.circle-update")) {
+                    constructGUI();
                 }
-            };
-            runTask.runTaskTimer(UltimateShop.instance, 20L, 20L);
+                if (ConfigManager.configManager.getBoolean("menu.title-update.circle-update") && UltimateShop.usePacketEvents) {
+                    PacketInventoryUtil.packetInventoryUtil.updateTitle(player, InvGUI.this);
+                }
+            }, 20L, 20L);
         }
     }
 

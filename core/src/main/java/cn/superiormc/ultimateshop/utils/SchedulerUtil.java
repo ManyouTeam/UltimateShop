@@ -4,9 +4,9 @@ import cn.superiormc.ultimateshop.UltimateShop;
 import io.papermc.paper.threadedregions.scheduler.ScheduledTask;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.block.Block;
-import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
+
+import java.util.concurrent.TimeUnit;
 
 public class SchedulerUtil {
 
@@ -68,6 +68,15 @@ public class SchedulerUtil {
                     scheduledTask -> task.run(), delayTicks, periodTicks));
         } else {
             return new SchedulerUtil(Bukkit.getScheduler().runTaskTimer(UltimateShop.instance, task, delayTicks, periodTicks));
+        }
+    }
+
+    public static SchedulerUtil runTaskTimerAsynchronously(Runnable task, long delayTicks, long periodTicks) {
+        if (UltimateShop.isFolia) {
+            return new SchedulerUtil(Bukkit.getAsyncScheduler().runAtFixedRate(UltimateShop.instance,
+                    scheduledTask -> task.run(), delayTicks * 50L, periodTicks * 50L, TimeUnit.MILLISECONDS));
+        } else {
+            return new SchedulerUtil(Bukkit.getScheduler().runTaskTimerAsynchronously(UltimateShop.instance, task, delayTicks, periodTicks));
         }
     }
 

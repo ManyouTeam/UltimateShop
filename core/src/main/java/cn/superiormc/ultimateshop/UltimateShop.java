@@ -89,8 +89,7 @@ public final class UltimateShop extends JavaPlugin {
             new BungeeCordManager();
         }
         if (ConfigManager.configManager.getBoolean("menu.title-update.enabled") && UltimateShop.methodUtil.methodID().equals("paper") &&
-                CommonUtil.checkPluginLoad("packetevents") &&
-                CommonUtil.checkPluginLoad("MythicChanger") && !UltimateShop.freeVersion) {
+                CommonUtil.checkPluginLoad("packetevents") && !UltimateShop.freeVersion) {
             usePacketEvents = true;
             new PacketInventoryUtil();
             TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fDynamic title enabled. Hooking into packetevents...");
