@@ -45,7 +45,7 @@ public class FormBuyMoreGUI extends FormGUI {
     }
 
     private String getButtonTab() {
-        return TextUtil.parse(player, ConfigManager.configManager.getStringOrDefault("menu.bedrock.buy-or-sell.buttons.amount.buy-tip",
+        return TextUtil.parse(player, ConfigManager.configManager.getStringWithLang(player, "menu.bedrock.buy-or-sell.buttons.amount.buy-tip",
                 "menu.bedrock.buy-or-sell.buttons.amount.tip", ""));
     }
 }

@@ -183,6 +183,7 @@ override-lang:
   terracotta-shop-name: 'Terracotta Shop'
   wools-shop-name: 'Wools Shop'
   daily-shop-name: 'Daily Shop (Require PREMIUM)'
+  transport-shop-name: 'Transport Shop'
   sell:
     sell-chest:
       price-empty: 'No sell history'
