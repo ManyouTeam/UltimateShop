@@ -32,6 +32,16 @@ public class ObjectThingRun {
         this.reopen = false;
     }
 
+    public ObjectThingRun(Player player, int multi) {
+        this.player = player;
+        this.times = 1;
+        this.amount = multi;
+        this.multi = multi;
+        this.sellAll = false;
+        this.type = null;
+        this.reopen = false;
+    }
+
     public ObjectThingRun(Player player, boolean reopen) {
         this.player = player;
         this.times = 1;

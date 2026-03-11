@@ -51,7 +51,7 @@ public class ObjectShop {
 
     private void initProducts() {
         if (config.getConfigurationSection("items") == null) {
-            ErrorManager.errorManager.sendErrorMessage("§cError: Can not get items section in your shop config!!");
+            ErrorManager.errorManager.sendErrorMessage("搂cError: Can not get items section in your shop config!!");
             return;
         }
         for (String s : config.getConfigurationSection("items").getKeys(false)) {
@@ -102,8 +102,14 @@ public class ObjectShop {
     }
 
     public void initMenus() {
-        if (config.getString("settings.menu") != null) {
-            this.menu = new ObjectMenu(config.getString("settings.menu"), this);
+        String menuName = config.getString("settings.menu");
+        if (menuName != null && !menuName.isEmpty()) {
+            this.menu = new ObjectMenu(menuName, this);
+            return;
+        }
+
+        if (config.getConfigurationSection("settings.menu-settings") != null) {
+            this.menu = new ObjectMenu(this);
         }
     }
 

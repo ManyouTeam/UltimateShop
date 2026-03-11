@@ -14,7 +14,6 @@ import cn.superiormc.ultimateshop.utils.CommandUtil;
 import cn.superiormc.ultimateshop.utils.TextUtil;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.BukkitCommand;
-import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -41,7 +40,7 @@ public class ObjectMenu {
 
     private ObjectAction closeAction;
 
-    public Configuration menuConfigs;
+    public ConfigurationSection menuConfigs;
 
     protected final Map<MenuSender, Map<Integer, AbstractButton>> menuItems = new HashMap<>();
 
@@ -53,6 +52,17 @@ public class ObjectMenu {
 
     public ObjectMenu(String fileName, ObjectShop shop) {
         this.fileName = fileName;
+        this.shop = shop;
+        this.type = MenuType.Shop;
+        initMenu();
+        if (!dynamicLayout) {
+            initShopItems(MenuSender.empty);
+        }
+        initButtons();
+    }
+
+    public ObjectMenu(ObjectShop shop) {
+        this.fileName = shop.getShopName();
         this.shop = shop;
         this.type = MenuType.Shop;
         initMenu();
@@ -84,22 +94,58 @@ public class ObjectMenu {
         return type;
     }
 
+    private void applyShopMenuOverrides() {
+        if (shop == null) {
+            return;
+        }
+
+        ConfigurationSection overrideSection = shop.getConfig().getConfigurationSection("settings.menu-settings");
+        if (overrideSection == null) {
+            return;
+        }
+
+        if (menuConfigs == null) {
+            menuConfigs = new YamlConfiguration();
+        }
+
+        mergeSection(menuConfigs, overrideSection);
+    }
+
+    private void mergeSection(ConfigurationSection target, ConfigurationSection source) {
+        for (String key : source.getKeys(false)) {
+            Object value = source.get(key);
+            if (value instanceof ConfigurationSection sourceSection) {
+                ConfigurationSection targetSection = target.getConfigurationSection(key);
+                if (targetSection == null) {
+                    targetSection = target.createSection(key);
+                }
+                mergeSection(targetSection, sourceSection);
+            } else {
+                target.set(key, value);
+            }
+        }
+    }
     public void initMenu() {
         if (type == MenuType.Common) {
             commonMenus.put(fileName, this);
-        } else {
+        } else if (fileName != null && !fileName.isEmpty()) {
             notCommonMenuNames.add(fileName);
         }
-        File file = new File(UltimateShop.instance.getDataFolder() + "/menus/" + fileName + ".yml");
-        if (!file.exists()){
-            TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §cError: We can not found your menu file: " +
-                    fileName + ".yml!");
-        } else {
-            if (type == MenuType.Common) {
-                TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fLoaded menu: " + fileName + ".yml!");
+
+        boolean hasMenuFile = fileName != null && !fileName.isEmpty();
+        if (hasMenuFile) {
+            File file = new File(UltimateShop.instance.getDataFolder() + "/menus/" + fileName + ".yml");
+            if (!file.exists()){
+                TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §cError: We can not found your menu file: " +
+                        fileName + ".yml!");
+            } else {
+                if (type == MenuType.Common) {
+                    TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §cLoaded menu: " + fileName + ".yml!");
+                }
+                this.menuConfigs = YamlConfiguration.loadConfiguration(file);
             }
-            this.menuConfigs = YamlConfiguration.loadConfiguration(file);
         }
+        applyShopMenuOverrides();
         if (menuConfigs == null) {
             this.condition = new ObjectCondition();
             this.openAction = new ObjectAction();
@@ -126,44 +172,19 @@ public class ObjectMenu {
         if (!dynamicLayout) {
             menuSender = MenuSender.empty;
         }
-        int slot = 0;
-        for (String singleLine : menuConfigs.getStringList("layout")) {
-            int c = 0;
-            while (c < singleLine.length()) {
-                String id;
 
-                if (singleLine.charAt(c) == '`') {
-                    // 找到下一个 `
-                    int end = singleLine.indexOf('`', c + 1);
-                    if (end == -1) {
-                        // 没闭合，当作普通字符处理
-                        id = String.valueOf(singleLine.charAt(c));
-                        c++;
-                    } else {
-                        id = singleLine.substring(c + 1, end);
-                        c = end + 1;
-                    }
-                } else {
-                    id = String.valueOf(singleLine.charAt(c));
-                    c++;
-                }
-
-                if (!menuSender.isStatic()) {
-                    id = TextUtil.withPAPI(id, menuSender.getPlayer());
-                }
-
-                // 放入物品
-                if (!UltimateShop.freeVersion && shop.getCopyItem(id) != null) {
-                    getButtons(menuSender).put(slot, shop.getCopyItem(id));
-                } else if (shop.getButton(id) != null) {
-                    getButtons(menuSender).put(slot, shop.getButton(id));
-                } else if (shop.getProduct(id) != null) {
-                    getButtons(menuSender).put(slot, shop.getProduct(id));
-                }
-
-                slot++;
+        MenuSender tempVal1 = menuSender;
+        parseLayout(menuConfigs.getStringList("layout"), (slot, rawId) -> {
+            String id = rawId;
+            if (!tempVal1.isStatic()) {
+                id = TextUtil.withPAPI(id, tempVal1.getPlayer());
             }
-        }
+
+            AbstractButton button = getButtonByLayoutId(id, tempVal1, true);
+            if (button != null) {
+                getButtons(tempVal1).put(slot, button);
+            }
+        });
     }
 
     public void initButtons() {
@@ -194,42 +215,70 @@ public class ObjectMenu {
             menuSender = MenuSender.empty;
         }
 
-        int slot = 0;
-        for (String singleLine : menuConfigs.getStringList("layout")) {
-            int c = 0;
-            while (c < singleLine.length()) {
-                String id;
+        MenuSender tempVal1 = menuSender;
+        parseLayout(menuConfigs.getStringList("layout"), (slot, rawId) -> {
+            String id = rawId;
+            if (!tempVal1.isStatic()) {
+                id = TextUtil.withPAPI(id, tempVal1.getPlayer());
+            }
 
-                // 读取多字符ID
-                if (singleLine.charAt(c) == '`') {
-                    int end = singleLine.indexOf('`', c + 1);
-                    if (end == -1) {
-                        // 没闭合，退化为单字符
-                        id = String.valueOf(singleLine.charAt(c));
-                        c++;
-                    } else {
-                        id = singleLine.substring(c + 1, end);
-                        c = end + 1;
-                    }
-                } else {
-                    // 单字符ID
-                    id = String.valueOf(singleLine.charAt(c));
-                    c++;
-                }
+            AbstractButton buttonObj = getButtonByLayoutId(id, tempVal1, false);
+            if (buttonObj != null) {
+                getButtons(tempVal1).put(slot, buttonObj);
+            }
+        });
+    }
 
-                if (!menuSender.isStatic()) {
-                    id = TextUtil.withPAPI(id, menuSender.getPlayer());
-                }
 
-                // 放入按钮（如果存在）
-                AbstractButton buttonObj = buttonItems.get(id);
-                if (buttonObj != null) {
-                    getButtons(menuSender).put(slot, buttonObj);
-                }
 
-                slot++;
+    private AbstractButton getButtonByLayoutId(String id, MenuSender menuSender, boolean includeShopItems) {
+        if (id == null || id.isEmpty()) {
+            return null;
+        }
+
+        if (!id.contains("||")) {
+            return getSingleButtonById(id, menuSender, includeShopItems);
+        }
+
+        String[] candidates = id.split("\\|\\|");
+        for (String candidate : candidates) {
+            AbstractButton button = getSingleButtonById(candidate.trim(), menuSender, includeShopItems);
+            if (button != null) {
+                return button;
             }
         }
+        return null;
+    }
+
+    private AbstractButton getSingleButtonById(String id, MenuSender menuSender, boolean includeShopItems) {
+        if (id == null || id.isEmpty()) {
+            return null;
+        }
+
+        if (includeShopItems && shop != null) {
+            if (!UltimateShop.freeVersion) {
+                AbstractButton copyItem = shop.getCopyItem(id);
+                if (copyItem != null && copyItem.canDisplay(menuSender)) {
+                    return copyItem;
+                }
+            }
+
+            AbstractButton button = shop.getButton(id);
+            if (button != null && button.canDisplay(menuSender)) {
+                return button;
+            }
+
+            AbstractButton product = shop.getProduct(id);
+            if (product != null && product.canDisplay(menuSender)) {
+                return product;
+            }
+        }
+
+        AbstractButton buttonObj = buttonItems.get(id);
+        if (buttonObj != null && buttonObj.canDisplay(menuSender)) {
+            return buttonObj;
+        }
+        return null;
     }
 
     private void initCustomCommand() {
@@ -249,7 +298,7 @@ public class ObjectMenu {
             };
             command.setDescription(menu.getString("custom-command.description", "UltimateShop Custom Command for " + commandName));
             CommandUtil.registerCustomCommand(command);
-            TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fRegistered custom command for menu: " + fileName + ".");
+            TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §cRegistered custom command for menu: " + fileName + ".");
         }
     }
 
@@ -266,6 +315,7 @@ public class ObjectMenu {
 
     public Map<Integer, AbstractButton> getMenu(MenuSender menuSender) {
         if (dynamicLayout) {
+            getButtons(menuSender).clear();
             if (type == MenuType.Shop) {
                 initShopItems(menuSender);
             }
@@ -273,9 +323,9 @@ public class ObjectMenu {
         }
         Map<Integer, AbstractButton> tempVal1 = getButtons(menuSender);
         if (tempVal1 == null) {
-            return menuItems.get(MenuSender.empty);
+            return new TreeMap<>(menuItems.get(MenuSender.empty));
         }
-        return tempVal1;
+        return new TreeMap<>(tempVal1);
     }
 
     public ObjectCondition getCondition() {

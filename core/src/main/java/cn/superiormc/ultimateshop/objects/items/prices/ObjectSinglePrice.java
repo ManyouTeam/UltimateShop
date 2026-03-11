@@ -81,7 +81,8 @@ public class ObjectSinglePrice extends AbstractSingleThing {
         }
         initCustomMode();
         initApplyCostMap();
-        initCondition();
+        initApplyCondition();
+        initRequireCondition();
         initAction();
     }
 

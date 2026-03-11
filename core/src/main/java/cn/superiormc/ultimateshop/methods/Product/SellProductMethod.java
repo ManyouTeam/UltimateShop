@@ -67,7 +67,7 @@ public class SellProductMethod {
             forceDisplayMessage = false;
         }
         boolean shouldSendMessage = inventory instanceof PlayerInventory && !notCost && (forceDisplayMessage || !item.getHideMessage());
-        if (!item.getSellCondition(player)) {
+        if (!ableMaxSell && !item.getSellCondition(player, multi)) {
             if (shouldSendMessage) {
                 LanguageManager.languageManager.sendStringText(player,
                         "sell-condition-not-meet",
@@ -123,6 +123,15 @@ public class SellProductMethod {
             sellResult = tempVal5.getMaxAbleSellAmount(inventory, player, playerUseTimes, multi, maxAmount);
             if (sellResult.getMaxAmount() > 0) {
                 multi = sellResult.getMaxAmount();
+            }
+            if (!item.getSellCondition(player, multi)) {
+                if (shouldSendMessage) {
+                    LanguageManager.languageManager.sendStringText(player,
+                            "sell-condition-not-meet",
+                            "product",
+                            item.getProduct());
+                }
+                return ProductTradeStatus.PERMISSION;
             }
         }
         if (item.getPlayerSellLimit(player) != -1 &&
@@ -192,8 +201,16 @@ public class SellProductMethod {
             }
             return ProductTradeStatus.NOT_ENOUGH;
         }
+        // single thing condition not meet
+        if (!takeResult.getConditionBoolean()) {
+            return ProductTradeStatus.REQUIRE_CONDITION_NOT_MEET;
+        }
         if (notCost) {
             return new ProductTradeStatus(ProductTradeStatus.Status.DONE, takeResult);
+        }
+        // single thing condition not meet
+        if (!giveResult.getConditionBoolean()) {
+            return ProductTradeStatus.REQUIRE_CONDITION_NOT_MEET;
         }
         // 尝试给物品
         if (!giveResult.give(playerUseTimes, multi, player, multiplier)) {

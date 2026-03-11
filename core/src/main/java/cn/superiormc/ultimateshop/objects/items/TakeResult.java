@@ -13,11 +13,14 @@ public class TakeResult {
 
     private boolean resultBoolean;
 
+    private boolean conditionBoolean;
+
     public boolean empty;
 
     public TakeResult(Map<AbstractSingleThing, BigDecimal> resultMap) {
         this.resultMap = resultMap;
         this.resultBoolean = false;
+        this.conditionBoolean = true;
         this.empty = resultMap.isEmpty();
     }
 
@@ -25,8 +28,11 @@ public class TakeResult {
         this.resultBoolean = true;
     }
 
-    public void addResultMapElement(AbstractSingleThing thing, BigDecimal amount) {
+    public void addResultMapElement(AbstractSingleThing thing, Player player, int times, int multi, BigDecimal amount) {
         resultMap.put(thing, amount);
+        if (!thing.getRequireCondition(player, times, multi, amount.doubleValue())) {
+            this.conditionBoolean = false;
+        }
         this.empty = false;
     }
 
@@ -43,6 +49,10 @@ public class TakeResult {
 
     public boolean getResultBoolean() {
         return resultBoolean;
+    }
+
+    public boolean getConditionBoolean() {
+        return conditionBoolean;
     }
 
     public void take(int times, int amount, Inventory inventory, Player player) {

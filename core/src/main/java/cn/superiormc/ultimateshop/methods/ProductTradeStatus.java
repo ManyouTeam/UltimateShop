@@ -19,6 +19,8 @@ public class ProductTradeStatus {
 
     public static ProductTradeStatus NOT_ENOUGH = new ProductTradeStatus(Status.NOT_ENOUGH);
 
+    public static ProductTradeStatus REQUIRE_CONDITION_NOT_MEET = new ProductTradeStatus(Status.REQUIRE_CONDITION_NOT_MEET);
+
     public static ProductTradeStatus INVENTORY_FULL = new ProductTradeStatus(Status.INVENTORY_FULL);
 
     private GiveResult giveResult = null;
@@ -77,6 +79,7 @@ public class ProductTradeStatus {
         PLAYER_MAX,
         SERVER_MAX,
         NOT_ENOUGH,
+        REQUIRE_CONDITION_NOT_MEET,
         INVENTORY_FULL,
         DONE
     }

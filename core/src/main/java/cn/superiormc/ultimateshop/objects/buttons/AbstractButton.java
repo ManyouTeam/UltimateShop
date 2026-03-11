@@ -3,6 +3,7 @@ package cn.superiormc.ultimateshop.objects.buttons;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.objects.ObjectThingRun;
 import cn.superiormc.ultimateshop.objects.buttons.subobjects.ObjectDisplayItemStack;
+import cn.superiormc.ultimateshop.objects.menus.MenuSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
@@ -37,6 +38,10 @@ public abstract class AbstractButton {
 
     public ButtonType getType() {
         return type;
+    }
+
+    public boolean canDisplay(MenuSender menuSender) {
+        return true;
     }
 
     @Override

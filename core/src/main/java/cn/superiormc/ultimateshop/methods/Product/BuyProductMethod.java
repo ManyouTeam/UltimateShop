@@ -53,7 +53,7 @@ public class BuyProductMethod {
             forceDisplayMessage = false;
         }
         boolean shouldSendMessage = inventory instanceof PlayerInventory && !notCost && (forceDisplayMessage || !item.getHideMessage());
-        if (!item.getBuyCondition(player)) {
+        if (!item.getBuyCondition(player, multi)) {
             if (shouldSendMessage) {
                 LanguageManager.languageManager.sendStringText(player,
                         "buy-condition-not-meet",
@@ -153,8 +153,16 @@ public class BuyProductMethod {
             }
             return ProductTradeStatus.NOT_ENOUGH;
         }
+        // single thing condition not meet
+        if (!takeResult.getConditionBoolean()) {
+            return ProductTradeStatus.REQUIRE_CONDITION_NOT_MEET;
+        }
         if (notCost) {
             return new ProductTradeStatus(ProductTradeStatus.Status.DONE, takeResult);
+        }
+        // single thing condition not meet
+        if (!giveResult.getConditionBoolean()) {
+            return ProductTradeStatus.REQUIRE_CONDITION_NOT_MEET;
         }
         // 尝试给物品
         if (!giveResult.give(playerUseTimes, multi, player, 1)) {

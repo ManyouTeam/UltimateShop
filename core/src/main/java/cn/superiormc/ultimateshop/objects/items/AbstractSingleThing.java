@@ -34,7 +34,9 @@ public abstract class AbstractSingleThing implements Comparable<AbstractSingleTh
 
     public ObjectAction takeAction;
 
-    public ObjectCondition condition;
+    public ObjectCondition applyCondition;
+
+    public ObjectCondition requireCondition;
 
     public boolean empty;
 
@@ -85,7 +87,7 @@ public abstract class AbstractSingleThing implements Comparable<AbstractSingleTh
         }
     }
 
-    protected void initCondition() {
+    protected void initApplyCondition() {
         ConfigurationSection conditions = null;
         if (this instanceof ObjectSinglePrice) {
             ObjectPrices objectPrices = (ObjectPrices) this.things;
@@ -98,9 +100,16 @@ public abstract class AbstractSingleThing implements Comparable<AbstractSingleTh
             conditions = things.item.getItemConfig().getConfigurationSection(ConfigManager.configManager.getString("conditions.products-key") + "." + id);
         }
         if (conditions == null) {
+            conditions = singleSection.getConfigurationSection("apply-conditions");
+        }
+        if (conditions == null) {
             conditions = singleSection.getConfigurationSection("conditions");
         }
-        condition = new ObjectCondition(conditions);
+        applyCondition = new ObjectCondition(conditions);
+    }
+
+    protected void initRequireCondition() {
+        requireCondition = new ObjectCondition(singleSection.getConfigurationSection("require-conditions"));
     }
 
     protected void initAction() {
@@ -128,11 +137,18 @@ public abstract class AbstractSingleThing implements Comparable<AbstractSingleTh
         return new GiveItemStack(cost, this);
     }
 
-    public boolean getCondition(Player player) {
-        if (condition == null) {
+    public boolean getApplyCondition(Player player) {
+        if (applyCondition == null) {
             return true;
         }
-        return condition.getAllBoolean(new ObjectThingRun(player));
+        return applyCondition.getAllBoolean(new ObjectThingRun(player));
+    }
+
+    public boolean getRequireCondition(Player player, int times, int multi, double amount) {
+        if (requireCondition == null) {
+            return true;
+        }
+        return requireCondition.getAllBoolean(new ObjectThingRun(player, times, multi, amount));
     }
 
     public double playerHasAmount(Inventory inventory, Player player) {

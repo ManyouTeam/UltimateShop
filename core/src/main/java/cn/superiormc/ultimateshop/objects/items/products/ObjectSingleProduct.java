@@ -38,7 +38,8 @@ public class ObjectSingleProduct extends AbstractSingleThing {
         if (matcher.find()) {
             this.baseAmount = new BigDecimal(matcher.group());
         }
-        initCondition();
+        initApplyCondition();
+        initRequireCondition();
         initAction();
     }
 

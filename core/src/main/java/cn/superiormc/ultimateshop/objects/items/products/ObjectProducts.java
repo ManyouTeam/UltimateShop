@@ -63,7 +63,7 @@ public class ObjectProducts extends AbstractThings {
             case ANY:
             case CLASSIC_ANY:
                 for (ObjectSingleProduct tempVal5 : singleProducts) {
-                    if (tempVal5.getCondition(player)) {
+                    if (tempVal5.getApplyCondition(player)) {
                         tempVal6.add(tempVal5);
                     }
                 }
@@ -72,16 +72,16 @@ public class ObjectProducts extends AbstractThings {
                 }
                 ObjectSingleProduct tempVal1 = RandomUtil.getRandomElement(tempVal6);
                 cost = getAmount(player, times, amount, true).get(tempVal1);
-                resultObject.addResultMapElement(tempVal1, cost);
+                resultObject.addResultMapElement(tempVal1, player, times, amount, cost);
                 return resultObject;
             case ALL:
             case CLASSIC_ALL:
                 for (ObjectSingleProduct tempVal2 : singleProducts) {
-                    if (!tempVal2.getCondition(player)) {
+                    if (!tempVal2.getApplyCondition(player)) {
                         continue;
                     }
                     cost = getAmount(player, times, amount, true).get(tempVal2);
-                    resultObject.addResultMapElement(tempVal2, cost);
+                    resultObject.addResultMapElement(tempVal2, player, times, amount, cost);
                 }
                 return resultObject;
             default:
@@ -105,11 +105,11 @@ public class ObjectProducts extends AbstractThings {
             case ANY:
             case CLASSIC_ANY:
                 for (ObjectSingleProduct tempVal1 : singleProducts) {
-                    if (!tempVal1.getCondition(player)) {
+                    if (!tempVal1.getApplyCondition(player)) {
                         continue;
                     }
                     cost = getAmount(player, times, amount, false).get(tempVal1);
-                    resultObject.addResultMapElement(tempVal1, cost);
+                    resultObject.addResultMapElement(tempVal1, player, times, amount, cost);
                     if (!test && tempVal1.playerHasEnough(inventory, player, false, cost.doubleValue())) {
                         resultObject.setResultBoolean();
                         return resultObject;
@@ -119,11 +119,11 @@ public class ObjectProducts extends AbstractThings {
             case ALL:
             case CLASSIC_ALL:
                 for (ObjectSingleProduct tempVal1 : singleProducts) {
-                    if (!tempVal1.getCondition(player)) {
+                    if (!tempVal1.getApplyCondition(player)) {
                         continue;
                     }
                     cost = getAmount(player, times, amount, false).get(tempVal1);
-                    resultObject.addResultMapElement(tempVal1, cost);
+                    resultObject.addResultMapElement(tempVal1, player, times, amount, cost);
                     if (!test && !tempVal1.playerHasEnough(inventory, player, false, cost.doubleValue())) {
                         needFalse = true;
                     }
@@ -180,7 +180,7 @@ public class ObjectProducts extends AbstractThings {
                 boolean breakThisTime = false;
                 boolean needTrue = true;
                 for (ObjectSingleProduct tempVal1 : singleProducts) {
-                    if (!tempVal1.getCondition(player)) {
+                    if (!tempVal1.getApplyCondition(player)) {
                         continue;
                     }
                     if (!tempVal1.isStatic()) {
@@ -201,7 +201,7 @@ public class ObjectProducts extends AbstractThings {
                         }
                         BigDecimal realCost = getAmount(player, times, tempVal2, false).get(tempVal1);
                         if (tempVal1.playerHasEnough(inventory, player, false, realCost.doubleValue())) {
-                            sellResult.getTakeResult().addResultMapElement(tempVal1, realCost);
+                            sellResult.getTakeResult().addResultMapElement(tempVal1, player, times, maxAmount, realCost);
                         } else {
                             needTrue = false;
                         }
@@ -219,7 +219,7 @@ public class ObjectProducts extends AbstractThings {
             case CLASSIC_ALL:
                 boolean needFalse = false;
                 for (ObjectSingleProduct tempVal1 : singleProducts) {
-                    if (!tempVal1.getCondition(player)) {
+                    if (!tempVal1.getApplyCondition(player)) {
                         continue;
                     }
                     if (!tempVal1.isStatic()) {
@@ -236,11 +236,11 @@ public class ObjectProducts extends AbstractThings {
                 }
                 if (maxAmount > 0) {
                     for (ObjectSingleProduct tempVal1 : singleProducts) {
-                        if (!tempVal1.getCondition(player)) {
+                        if (!tempVal1.getApplyCondition(player)) {
                             continue;
                         }
                         BigDecimal realCost = getAmount(player, times, maxAmount, false).get(tempVal1);
-                        sellResult.getTakeResult().addResultMapElement(tempVal1, realCost);
+                        sellResult.getTakeResult().addResultMapElement(tempVal1, player, times, maxAmount, realCost);
 
                         if (!tempVal1.playerHasEnough(inventory, player, false, realCost.doubleValue())) {
                             needFalse = true;
@@ -261,7 +261,7 @@ public class ObjectProducts extends AbstractThings {
 
     public ObjectSingleProduct getTargetProduct(Player player) {
         for (ObjectSingleProduct tempVal1 : singleProducts) {
-            if (!tempVal1.getCondition(player)) {
+            if (!tempVal1.getApplyCondition(player)) {
                 continue;
             }
             // 商品的 times 是没用的，因为商品没有 apply 选项

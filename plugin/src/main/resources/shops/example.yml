@@ -341,7 +341,7 @@ items:
       1:
         economy-plugin: Vault
         amount: 150
-        placeholder: '{amount}⛂'
+        placeholder: '{amount}閴€?
     buy-actions:
       1:
         type: console_command

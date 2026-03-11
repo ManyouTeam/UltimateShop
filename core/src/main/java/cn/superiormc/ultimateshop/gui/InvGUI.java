@@ -91,17 +91,16 @@ public abstract class InvGUI extends AbstractGUI {
     }
 
     public Map<Integer, ItemStack> getMenuItems(Player player) {
-        Map<Integer, AbstractButton> tempVal1 = menuButtons;
+        Map<Integer, AbstractButton> tempVal1 = new HashMap<>(menuButtons);
         Map<Integer, ItemStack> resultItems = new HashMap<>();
-        for (int i : tempVal1.keySet()) {
-            resultItems.put(i, tempVal1.get(i).getDisplayItem(player, 1).getItemStack());
+        for (Map.Entry<Integer, AbstractButton> entry : tempVal1.entrySet()) {
+            resultItems.put(entry.getKey(), entry.getValue().getDisplayItem(player, 1).getItemStack());
         }
         return resultItems;
     }
 
     public ItemStack getMenuItem(Player player, int slot) {
-        Map<Integer, AbstractButton> tempVal1 = menuButtons;
-        AbstractButton button = tempVal1.get(slot);
+        AbstractButton button = menuButtons.get(slot);
         if (button == null) {
             return new ItemStack(Material.AIR);
         }

@@ -8,6 +8,7 @@ import cn.superiormc.ultimateshop.objects.buttons.subobjects.ObjectDisplayItem;
 import cn.superiormc.ultimateshop.objects.buttons.subobjects.ObjectDisplayItemStack;
 import cn.superiormc.ultimateshop.objects.items.ObjectAction;
 import cn.superiormc.ultimateshop.objects.items.ObjectCondition;
+import cn.superiormc.ultimateshop.objects.menus.MenuSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
@@ -21,6 +22,8 @@ public class ObjectButton extends AbstractButton {
     private ObjectAction failAction;
 
     private ObjectCondition condition;
+
+    private ObjectCondition displayCondition;
 
     private ObjectDisplayItem displayItem;
 
@@ -56,8 +59,17 @@ public class ObjectButton extends AbstractButton {
             failAction = new ObjectAction(config.getConfigurationSection("fail-actions"), shop);
         }
         condition = new ObjectCondition(config.getConfigurationSection("conditions"));
+        displayCondition = new ObjectCondition(config.getConfigurationSection("display-conditions"));
         displayItem = new ObjectDisplayItem(config.getConfigurationSection("display-item"),
                 config.getConfigurationSection(ConfigManager.configManager.getString("conditions.display-item-key")));
+    }
+
+    @Override
+    public boolean canDisplay(MenuSender menuSender) {
+        if (menuSender == null || menuSender.getPlayer() == null) {
+            return true;
+        }
+        return displayCondition == null || displayCondition.getAllBoolean(new ObjectThingRun(menuSender.getPlayer()));
     }
 
     @Override

@@ -18,10 +18,12 @@ import cn.superiormc.ultimateshop.objects.items.ObjectLimit;
 import cn.superiormc.ultimateshop.objects.items.prices.ObjectPrices;
 import cn.superiormc.ultimateshop.objects.items.prices.PriceMode;
 import cn.superiormc.ultimateshop.objects.items.products.ObjectProducts;
+import cn.superiormc.ultimateshop.objects.menus.MenuSender;
 import cn.superiormc.ultimateshop.objects.menus.ObjectMoreMenu;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
 import cn.superiormc.ultimateshop.utils.ItemUtil;
 import cn.superiormc.ultimateshop.utils.TextUtil;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
@@ -51,6 +53,8 @@ public class ObjectItem extends AbstractButton {
     private ObjectCondition buyCondition;
 
     private ObjectCondition sellCondition;
+
+    private ObjectCondition displayCondition;
 
     private ObjectLimit buyLimit;
 
@@ -82,6 +86,7 @@ public class ObjectItem extends AbstractButton {
         initFailAction();
         initBuyCondition();
         initSellCondition();
+        initDisplayCondition();
         initBuyLimit();
         initSellLimit();
         initFixedStatus();
@@ -229,6 +234,12 @@ public class ObjectItem extends AbstractButton {
         sellCondition = new ObjectCondition(section, this);
     }
 
+
+    private void initDisplayCondition() {
+        ConfigurationSection section = itemConfig.getActionOrConditionSection("display-conditions");
+        displayCondition = new ObjectCondition(section, this);
+    }
+
     public boolean isEnableSellAll() {
         return enableSellAll;
     }
@@ -319,6 +330,14 @@ public class ObjectItem extends AbstractButton {
 
     public ObjectShop getShopObject() {
         return shop;
+    }
+
+    @Override
+    public boolean canDisplay(MenuSender menuSender) {
+        if (menuSender == null || menuSender.getPlayer() == null) {
+            return true;
+        }
+        return displayCondition == null || displayCondition.getAllBoolean(new ObjectThingRun(menuSender.getPlayer()));
     }
 
     @Override
@@ -416,18 +435,18 @@ public class ObjectItem extends AbstractButton {
         return displayItem;
     }
 
-    public boolean getBuyCondition(Player player) {
+    public boolean getBuyCondition(Player player, int multi) {
         if (buyCondition == null) {
             return true;
         }
-        return buyCondition.getAllBoolean(new ObjectThingRun(player));
+        return buyCondition.getAllBoolean(new ObjectThingRun(player, multi));
     }
 
-    public boolean getSellCondition(Player player) {
+    public boolean getSellCondition(Player player, int multi) {
         if (sellCondition == null) {
             return true;
         }
-        return sellCondition.getAllBoolean(new ObjectThingRun(player));
+        return sellCondition.getAllBoolean(new ObjectThingRun(player, multi));
     }
 
     public boolean getBuyMore() {

@@ -63,13 +63,11 @@ public class ObjectPrices extends AbstractThings {
         Map<ObjectSinglePrice, PriceType> priceMap = getPriceType(player, times, amount);
         for (ObjectSinglePrice tempVal1 : priceMap.keySet()) {
             BigDecimal cost = getAmount(player, times, amount).get(tempVal1);
-            if (tempVal1.getCondition(player)) {
-                if (priceMap.get(tempVal1) == PriceType.FIRST) {
-                    if (tempVal1.playerHasEnough(inventory, player, false, cost.doubleValue())) {
-                        confirmedResult.put(tempVal1, true);
-                    } else {
-                        maybeResult.put(tempVal1, false);
-                    }
+            if (priceMap.get(tempVal1) == PriceType.FIRST) {
+                if (tempVal1.playerHasEnough(inventory, player, false, cost.doubleValue())) {
+                    confirmedResult.put(tempVal1, true);
+                } else {
+                    maybeResult.put(tempVal1, false);
                 }
             }
         }
@@ -90,7 +88,7 @@ public class ObjectPrices extends AbstractThings {
             case CLASSIC_ALL:
             case CLASSIC_ANY:
                 for (ObjectSinglePrice tempVal1 : singlePrices) {
-                    if (!tempVal1.getCondition(player)) {
+                    if (!tempVal1.getApplyCondition(player)) {
                         continue;
                     }
                     if (applyThings.isEmpty()) {
@@ -106,7 +104,7 @@ public class ObjectPrices extends AbstractThings {
                 Set<Integer> confirmedAmount = new HashSet<>();
                 for (int i = 0 ; i < amount ; i ++) {
                     for (ObjectSinglePrice tempVal1 : singlePrices) {
-                        if (!tempVal1.getCondition(player)) {
+                        if (!tempVal1.getApplyCondition(player)) {
                             continue;
                         }
                         if (tempVal1.isAlwaysApply() || tempVal1.getApplyCostMap().containsKey(times + i)
@@ -145,7 +143,7 @@ public class ObjectPrices extends AbstractThings {
                 for (ObjectSinglePrice tempVal1 : priceMap.keySet()) {
                     if (priceMap.get(tempVal1) == PriceType.FIRST) {
                         cost = tempVal3.get(tempVal1);
-                        resultObject.addResultMapElement(tempVal1, cost);
+                        resultObject.addResultMapElement(tempVal1, player, times, amount, cost);
                     }
                 }
                 return resultObject;
@@ -153,7 +151,7 @@ public class ObjectPrices extends AbstractThings {
             case CLASSIC_ALL:
                 for (ObjectSinglePrice tempVal2 : getAmount(player, times, amount).keySet()) {
                     cost = tempVal3.get(tempVal2);
-                    resultObject.addResultMapElement(tempVal2, cost);
+                    resultObject.addResultMapElement(tempVal2, player, times, amount, cost);
                 }
                 return resultObject;
             default:
@@ -183,7 +181,7 @@ public class ObjectPrices extends AbstractThings {
                         continue;
                     }
                     cost = tempVal3.get(tempVal1);
-                    resultObject.addResultMapElement(tempVal1, cost);
+                    resultObject.addResultMapElement(tempVal1, player, times, amount, cost);
                     if (!test && !tempVal1.playerHasEnough(inventory, player, false, cost.doubleValue())) {
                         needFalse = true;
                     }
@@ -208,14 +206,14 @@ public class ObjectPrices extends AbstractThings {
                         first = tempVal11;
                     }
                     if (tempVal5.get(tempVal11)) {
-                        resultObject.addResultMapElement(tempVal11, cost);
+                        resultObject.addResultMapElement(tempVal11, player, times, amount, cost);
                         if (!test) {
                             resultObject.setResultBoolean();
                         }
                         return resultObject;
                     }
                 }
-                resultObject.addResultMapElement(first, cost);
+                resultObject.addResultMapElement(first, player, times, amount, cost);
                 return resultObject;
             default:
                 ErrorManager.errorManager.sendErrorMessage("§cError: Can not get price-mode section in your shop config!!");
@@ -227,7 +225,7 @@ public class ObjectPrices extends AbstractThings {
         Map<ObjectSinglePrice, BigDecimal> priceMaps = new TreeMap<>();
         Collection<ObjectSinglePrice> meetConditionSingle = new ArrayList<>();
         for (ObjectSinglePrice tempVal1 : singlePrices) {
-            if (tempVal1.getCondition(player)) {
+            if (tempVal1.getApplyCondition(player)) {
                 meetConditionSingle.add(tempVal1);
             }
         }
