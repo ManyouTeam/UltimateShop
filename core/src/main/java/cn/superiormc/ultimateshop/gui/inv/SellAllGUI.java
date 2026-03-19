@@ -50,13 +50,7 @@ public class SellAllGUI extends InvGUI {
         if (player == null) {
             return true;
         }
-        int nowAmount = 0;
-        int afterAmount = 0;
-        for (ItemStack item : inv.getStorageContents()) {
-            if (item != null) {
-                nowAmount = nowAmount + item.getAmount();
-            }
-        }
+        int soldAmount = 0;
         Map<AbstractSingleThing, BigDecimal> result = new HashMap<>();
         boolean firstSell = false;
         for (String shop : ConfigManager.configManager.shopConfigs.keySet()) {
@@ -76,6 +70,7 @@ public class SellAllGUI extends InvGUI {
                         1);
                 if (status.getStatus() == ProductTradeStatus.Status.DONE && status.getGiveResult() != null) {
                     result.putAll(status.getGiveResult().getResultMap());
+                    soldAmount = soldAmount + status.getAmount() * products.getDisplayItemObject().getAmountPlaceholder(player);
                 }
                 if (!products.getSellAction().isEmpty()) {
                     firstSell = true;
@@ -83,12 +78,7 @@ public class SellAllGUI extends InvGUI {
             }
         }
         if (!result.isEmpty()) {
-            for (ItemStack item : inv.getStorageContents()) {
-                if (item != null) {
-                    afterAmount = afterAmount + item.getAmount();
-                }
-            }
-            LanguageManager.languageManager.sendStringText(player, "start-sell-all", "amount", String.valueOf(nowAmount - afterAmount),
+            LanguageManager.languageManager.sendStringText(player, "start-sell-all", "amount", String.valueOf(soldAmount),
                     "reward", ObjectPrices.getDisplayNameInLine(player, 1,
                     result, ThingMode.ALL, true
             ));

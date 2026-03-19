@@ -57,6 +57,7 @@ public abstract class InvGUI extends AbstractGUI {
     }
 
     public void openGUI(boolean reopen) {
+        GUIStatus previousStatus = playerList.get(player);
         if (!super.canOpenGUI(reopen)) {
             return;
         }
@@ -68,6 +69,10 @@ public abstract class InvGUI extends AbstractGUI {
             if (getMenu() != null) {
                 getMenu().doOpenAction(player, reopen);
             }
+        } else if (previousStatus == null) {
+            playerList.remove(player);
+        } else {
+            playerList.put(player, previousStatus);
         }
         if (ConfigManager.configManager.getBooleanOrDefault("menu.shop.update", "menu.menu-update.circle-update") ||
         ConfigManager.configManager.getBoolean("menu.title-update.circle-update")) {

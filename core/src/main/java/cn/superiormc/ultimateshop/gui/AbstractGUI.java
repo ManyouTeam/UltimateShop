@@ -14,7 +14,7 @@ public abstract class AbstractGUI {
 
     public static Map<Player, GUIStatus> playerList = new HashMap<>();
 
-    private static boolean inClickCooldown = false;
+    private boolean inClickCooldown = false;
 
     protected Player player;
 
@@ -23,6 +23,10 @@ public abstract class AbstractGUI {
     }
 
     public abstract void constructGUI();
+
+    public void updateGUI() {
+        constructGUI();
+    }
 
     public boolean canOpenGUI(boolean reopen) {
         boolean result = true;
@@ -70,4 +74,3 @@ public abstract class AbstractGUI {
         return inClickCooldown;
     }
 }
-

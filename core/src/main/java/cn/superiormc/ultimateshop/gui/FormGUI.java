@@ -22,7 +22,16 @@ public abstract class FormGUI extends AbstractGUI {
         super(owner);
     }
 
+    @Override
+    public void updateGUI() {
+        constructGUI();
+        if (form != null) {
+            FloodgateApi.getInstance().sendForm(player.getUniqueId(), form);
+        }
+    }
+
     public void openGUI(boolean reopen) {
+        GUIStatus previousStatus = playerList.get(player);
         if (!super.canOpenGUI(reopen)) {
             return;
         }
@@ -31,6 +40,10 @@ public abstract class FormGUI extends AbstractGUI {
             if (getMenu() != null) {
                 getMenu().doOpenAction(player, reopen);
             }
+        } else if (previousStatus == null) {
+            playerList.remove(player);
+        } else {
+            playerList.put(player, previousStatus);
         }
     }
 

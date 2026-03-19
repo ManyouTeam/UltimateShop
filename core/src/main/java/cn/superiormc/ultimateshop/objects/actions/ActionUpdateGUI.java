@@ -14,7 +14,7 @@ public class ActionUpdateGUI extends AbstractRunAction {
     protected void onDoAction(ObjectSingleAction singleAction, ObjectThingRun thingRun) {
         GUIStatus guiStatus = AbstractGUI.playerList.get(thingRun.getPlayer());
         if (guiStatus != null && guiStatus.getGUI() != null) {
-            guiStatus.getGUI().constructGUI();
+            guiStatus.getGUI().updateGUI();
         }
     }
 }

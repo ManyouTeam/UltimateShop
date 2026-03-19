@@ -27,7 +27,7 @@ public class SubUpdateGUI extends AbstractCommand {
         }
         GUIStatus guiStatus = AbstractGUI.playerList.get(whoNeed);
         if (guiStatus != null && guiStatus.getGUI() != null) {
-            guiStatus.getGUI().constructGUI();
+            guiStatus.getGUI().updateGUI();
             LanguageManager.languageManager.sendStringText(player, "gui-updated", "player", whoNeed.getName());
             return;
         }
@@ -47,7 +47,7 @@ public class SubUpdateGUI extends AbstractCommand {
         }
         GUIStatus guiStatus = AbstractGUI.playerList.get(whoNeed);
         if (guiStatus != null && guiStatus.getGUI() != null) {
-            guiStatus.getGUI().constructGUI();
+            guiStatus.getGUI().updateGUI();
             LanguageManager.languageManager.sendStringText("gui-updated", "player", whoNeed.getName());
             return;
         }
