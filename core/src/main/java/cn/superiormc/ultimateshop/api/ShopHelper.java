@@ -183,8 +183,12 @@ public class ShopHelper {
     }
 
     public static Map<AbstractSingleThing, BigDecimal> sellAll(Player player, Inventory inventory, double multiplier) {
+        return sellAll(player, ItemStorage.of(inventory), multiplier);
+    }
 
-        if (inventory.isEmpty()) {
+    public static Map<AbstractSingleThing, BigDecimal> sellAll(Player player, ItemStorage storage, double multiplier) {
+
+        if (storage.isEmpty()) {
             return new HashMap<>();
         }
 
@@ -199,7 +203,7 @@ public class ShopHelper {
 
                 ProductTradeStatus status =
                         SellProductMethod.startSell(
-                                inventory,
+                                storage,
                                 products,
                                 player,
                                 false,

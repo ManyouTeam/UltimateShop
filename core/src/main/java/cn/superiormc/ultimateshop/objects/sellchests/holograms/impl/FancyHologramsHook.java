@@ -5,8 +5,10 @@ import cn.superiormc.ultimateshop.managers.SellChestManager;
 import cn.superiormc.ultimateshop.objects.sellchests.ObjectSellChest;
 import cn.superiormc.ultimateshop.objects.sellchests.holograms.AbstractHologram;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
-import com.Zrips.CMI.CMI;
-import com.Zrips.CMI.Modules.Holograms.CMIHologram;
+import de.oliver.fancyholograms.api.FancyHologramsPlugin;
+import de.oliver.fancyholograms.api.HologramManager;
+import de.oliver.fancyholograms.api.data.TextHologramData;
+import de.oliver.fancyholograms.api.hologram.Hologram;
 import org.bukkit.Location;
 import org.bukkit.block.Chest;
 import org.bukkit.persistence.PersistentDataContainer;
@@ -33,10 +35,18 @@ public class FancyHologramsHook extends AbstractHologram {
         Location loc = holoLocation(chest, sellChest);
         String id = holoId(chest);
 
-        CMIHologram holo = new CMIHologram(id, loc);
-        holo.setLines(getLines(chest, sellChest));
-        CMI.getInstance().getHologramManager().addHologram(holo);
-        holo.update();
+        HologramManager manager = FancyHologramsPlugin.get().getHologramManager();
+        if (manager.getHologram(id).isPresent()) {
+            update(chest);
+            return;
+        }
+
+        TextHologramData data = new TextHologramData(id, loc);
+        data.setText(getLines(chest, sellChest));
+        data.setPersistent(false);
+
+        Hologram hologram = manager.create(data);
+        manager.addHologram(hologram);
     }
 
     @Override
@@ -54,11 +64,18 @@ public class FancyHologramsHook extends AbstractHologram {
         }
 
         String id = holoId(chest);
-        CMIHologram holo = CMI.getInstance().getHologramManager().getHolograms().get(id);
+        HologramManager manager = FancyHologramsPlugin.get().getHologramManager();
+        Hologram hologram = manager.getHologram(id).orElse(null);
 
-        if (holo != null) {
-            holo.setLines(getLines(chest, sellChest));
-            holo.update();
+        if (hologram == null) {
+            create(chest);
+            return;
+        }
+
+        if (hologram.getData() instanceof TextHologramData data) {
+            data.setLocation(holoLocation(chest, sellChest));
+            data.setText(getLines(chest, sellChest));
+            hologram.forceUpdate();
         }
     }
 
@@ -69,10 +86,11 @@ public class FancyHologramsHook extends AbstractHologram {
         }
 
         String id = holoId(location);
-        CMIHologram holo = CMI.getInstance().getHologramManager().getHolograms().get(id);
+        HologramManager manager = FancyHologramsPlugin.get().getHologramManager();
+        Hologram hologram = manager.getHologram(id).orElse(null);
 
-        if (holo != null) {
-            holo.remove();
+        if (hologram != null) {
+            manager.removeHologram(hologram);
         }
     }
 }

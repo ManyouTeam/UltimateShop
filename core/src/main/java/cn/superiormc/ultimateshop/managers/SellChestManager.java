@@ -10,6 +10,7 @@ import cn.superiormc.ultimateshop.objects.sellchests.ObjectSellChest;
 import cn.superiormc.ultimateshop.objects.sellchests.holograms.AbstractHologram;
 import cn.superiormc.ultimateshop.objects.sellchests.holograms.impl.CMIHook;
 import cn.superiormc.ultimateshop.objects.sellchests.holograms.impl.DecentHologramsHook;
+import cn.superiormc.ultimateshop.objects.sellchests.holograms.impl.FancyHologramsHook;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
 import cn.superiormc.ultimateshop.utils.TextUtil;
 import org.bukkit.*;
@@ -67,6 +68,9 @@ public class SellChestManager {
             } else if (plugin.equalsIgnoreCase("CMI") && CommonUtil.checkPluginLoad("CMI")) {
                 TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fHooking into CMI...");
                 hologram = new CMIHook();
+            } else if (plugin.equalsIgnoreCase("FancyHolograms") && CommonUtil.checkPluginLoad("FancyHolograms")) {
+                TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fHooking into FancyHolograms...");
+                hologram = new FancyHologramsHook();
             }
         }
     }
@@ -234,7 +238,9 @@ public class SellChestManager {
         sellChest.getAction().runAllActions(new ObjectThingRun(player));
 
         chest.update();
-        hologram.update(chest);
+        if (hologram != null) {
+            hologram.update(chest);
+        }
     }
 
     public void handleChunkLoad(Chunk chunk) {

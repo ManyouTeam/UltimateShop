@@ -68,9 +68,11 @@ sell:
     price-empty: '{lang}'
     hologram:
       enabled: true
-      # Support value: DecentHolograms, CMI
+      # Support value: DecentHolograms, CMI, FancyHolograms
       plugin: 'DecentHolograms'
   max-amount: 128
+  # Premium version only.
+  shulker-box-sell: true
 
 give-item:
   # Support value: BUKKIT, SMART
