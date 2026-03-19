@@ -11,9 +11,7 @@ import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import cn.superiormc.ultimateshop.objects.caches.ObjectUseTimesCache;
 import cn.superiormc.ultimateshop.objects.items.*;
 import cn.superiormc.ultimateshop.objects.items.prices.ObjectPrices;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
@@ -60,12 +58,10 @@ public class ShopHelper {
     }
 
     @Nullable
-    public static ObjectItem getTargetItem(ItemStack[] items, Player player) {
-        Inventory inventory = Bukkit.createInventory(player, InventoryType.CHEST);
-        inventory.setStorageContents(items);
+    public static ObjectItem getTargetItem(ItemStorage storage, Player player) {
         for (ObjectShop shop : ConfigManager.configManager.getShops()) {
             for (ObjectItem item : shop.getProductList()) {
-                TakeResult takeResult = item.getReward().take(inventory, player, 1, 1, false);
+                TakeResult takeResult = item.getReward().take(storage, player, 1, 1, false);
                 if (takeResult != null && !takeResult.empty && takeResult.getResultBoolean()) {
                     return item;
                 }
@@ -75,14 +71,17 @@ public class ShopHelper {
     }
 
     @Nullable
-    public static TakeResult getBuyPrices(ItemStack[] items, Player player, int amount) {
-        Inventory inventory = Bukkit.createInventory(player, InventoryType.CHEST);
-        inventory.setStorageContents(items);
+    public static ObjectItem getTargetItem(ItemStack[] items, Player player) {
+        return getTargetItem(ItemStorage.of(items), player);
+    }
+
+    @Nullable
+    public static TakeResult getBuyPrices(ItemStorage storage, Player player, int amount) {
         for (ObjectShop shop : ConfigManager.configManager.getShops()) {
             for (ObjectItem item : shop.getProductList()) {
-                TakeResult takeResult = item.getReward().take(inventory, player, 1, 1, false);
+                TakeResult takeResult = item.getReward().take(storage, player, 1, 1, false);
                 if (takeResult != null && !takeResult.empty && takeResult.getResultBoolean()) {
-                    return item.getBuyPrice().take(inventory, player, getBuyUseTimes(item, player), amount, false);
+                    return item.getBuyPrice().take(storage, player, getBuyUseTimes(item, player), amount, false);
                 }
             }
         }
@@ -90,14 +89,17 @@ public class ShopHelper {
     }
 
     @Nullable
-    public static String getBuyPricesDisplay(ItemStack[] items, Player player, int amount) {
-        Inventory inventory = Bukkit.createInventory(player, InventoryType.CHEST);
-        inventory.setStorageContents(items);
+    public static TakeResult getBuyPrices(ItemStack[] items, Player player, int amount) {
+        return getBuyPrices(ItemStorage.of(items), player, amount);
+    }
+
+    @Nullable
+    public static String getBuyPricesDisplay(ItemStorage storage, Player player, int amount) {
         for (ObjectShop shop : ConfigManager.configManager.getShops()) {
             for (ObjectItem item : shop.getProductList()) {
-                TakeResult takeResult = item.getReward().take(inventory, player, 1, 1, false);
+                TakeResult takeResult = item.getReward().take(storage, player, 1, 1, false);
                 if (takeResult != null && !takeResult.empty && takeResult.getResultBoolean()) {
-                    TakeResult anotherTakeResult = item.getBuyPrice().take(inventory, player, getBuyUseTimes(item, player), amount, false);
+                    TakeResult anotherTakeResult = item.getBuyPrice().take(storage, player, getBuyUseTimes(item, player), amount, false);
                     if (anotherTakeResult != null) {
                         return ObjectPrices.getDisplayNameInLine(player, amount, anotherTakeResult.getResultMap(), item.getBuyPrice().getMode(), true);
                     }
@@ -108,12 +110,15 @@ public class ShopHelper {
     }
 
     @Nullable
-    public static GiveResult getSellPrices(ItemStack[] items, Player player, int amount) {
-        Inventory inventory = Bukkit.createInventory(player, InventoryType.CHEST);
-        inventory.setStorageContents(items);
+    public static String getBuyPricesDisplay(ItemStack[] items, Player player, int amount) {
+        return getBuyPricesDisplay(ItemStorage.of(items), player, amount);
+    }
+
+    @Nullable
+    public static GiveResult getSellPrices(ItemStorage storage, Player player, int amount) {
         for (ObjectShop shop : ConfigManager.configManager.getShops()) {
             for (ObjectItem item : shop.getProductList()) {
-                TakeResult takeResult = item.getReward().take(inventory, player, 1, 1, false);
+                TakeResult takeResult = item.getReward().take(storage, player, 1, 1, false);
                 if (takeResult != null && !takeResult.empty && takeResult.getResultBoolean()) {
                     return item.getSellPrice().give(player, getBuyUseTimes(item, player), amount);
                 }
@@ -123,12 +128,15 @@ public class ShopHelper {
     }
 
     @Nullable
-    public static String getSellPricesDisplay(ItemStack[] items, Player player, int amount) {
-        Inventory inventory = Bukkit.createInventory(player, InventoryType.CHEST);
-        inventory.setStorageContents(items);
+    public static GiveResult getSellPrices(ItemStack[] items, Player player, int amount) {
+        return getSellPrices(ItemStorage.of(items), player, amount);
+    }
+
+    @Nullable
+    public static String getSellPricesDisplay(ItemStorage storage, Player player, int amount) {
         for (ObjectShop shop : ConfigManager.configManager.getShops()) {
             for (ObjectItem item : shop.getProductList()) {
-                TakeResult takeResult = item.getReward().take(inventory, player, 1, 1, false);
+                TakeResult takeResult = item.getReward().take(storage, player, 1, 1, false);
                 if (takeResult != null && !takeResult.empty && takeResult.getResultBoolean()) {
                     GiveResult anotherGiveResult = item.getSellPrice().give(player, getBuyUseTimes(item, player), amount);
                     return ObjectPrices.getDisplayNameInLine(player, amount, anotherGiveResult.getResultMap(), item.getReward().getMode(), true);
@@ -138,10 +146,19 @@ public class ShopHelper {
         return null;
     }
 
+    @Nullable
+    public static String getSellPricesDisplay(ItemStack[] items, Player player, int amount) {
+        return getSellPricesDisplay(ItemStorage.of(items), player, amount);
+    }
+
     public static void takeThing(int times, int multi, Inventory inventory, Player player, Map<AbstractSingleThing, BigDecimal> result) {
+        takeThing(times, multi, ItemStorage.of(inventory), player, result);
+    }
+
+    public static void takeThing(int times, int multi, ItemStorage storage, Player player, Map<AbstractSingleThing, BigDecimal> result) {
         for (AbstractSingleThing singleThing : result.keySet()) {
             double cost = result.get(singleThing).doubleValue();
-            singleThing.playerHasEnough(inventory, player, true, cost);
+            singleThing.playerHasEnough(storage, player, true, cost);
             singleThing.takeAction.runAllActions(new ObjectThingRun(player, times, multi, cost));
         }
     }

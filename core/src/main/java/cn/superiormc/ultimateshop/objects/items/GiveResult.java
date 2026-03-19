@@ -18,6 +18,7 @@ public class GiveResult {
     public GiveResult(Map<AbstractSingleThing, BigDecimal> resultMap) {
         this.resultMap = resultMap;
         this.empty = resultMap.isEmpty();
+        this.conditionBoolean = true;
     }
 
     public void addResultMapElement(AbstractSingleThing thing, Player player, int times, int multi, BigDecimal amount) {

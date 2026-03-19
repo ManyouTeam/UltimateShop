@@ -56,9 +56,13 @@ public class TakeResult {
     }
 
     public void take(int times, int amount, Inventory inventory, Player player) {
+        take(times, amount, ItemStorage.of(inventory), player);
+    }
+
+    public void take(int times, int amount, ItemStorage storage, Player player) {
         for (AbstractSingleThing singleThing : resultMap.keySet()) {
             double cost = resultMap.get(singleThing).doubleValue();
-            singleThing.playerHasEnough(inventory, player, true, cost);
+            singleThing.playerHasEnough(storage, player, true, cost);
             singleThing.takeAction.runAllActions(new ObjectThingRun(player, times, amount, cost));
         }
     }

@@ -6,7 +6,6 @@ import cn.superiormc.ultimateshop.objects.items.*;
 import cn.superiormc.ultimateshop.utils.RandomUtil;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -91,7 +90,7 @@ public class ObjectProducts extends AbstractThings {
     }
 
     @Override
-    public TakeResult take(Inventory inventory, Player player, int times, int amount, boolean test) {
+    public TakeResult take(ItemStorage storage, Player player, int times, int amount, boolean test) {
         Map<AbstractSingleThing, BigDecimal> result = new TreeMap<>();
         TakeResult resultObject = new TakeResult(result);
         if (section == null) {
@@ -110,7 +109,7 @@ public class ObjectProducts extends AbstractThings {
                     }
                     cost = getAmount(player, times, amount, false).get(tempVal1);
                     resultObject.addResultMapElement(tempVal1, player, times, amount, cost);
-                    if (!test && tempVal1.playerHasEnough(inventory, player, false, cost.doubleValue())) {
+                    if (!test && tempVal1.playerHasEnough(storage, player, false, cost.doubleValue())) {
                         resultObject.setResultBoolean();
                         return resultObject;
                     }
@@ -124,7 +123,7 @@ public class ObjectProducts extends AbstractThings {
                     }
                     cost = getAmount(player, times, amount, false).get(tempVal1);
                     resultObject.addResultMapElement(tempVal1, player, times, amount, cost);
-                    if (!test && !tempVal1.playerHasEnough(inventory, player, false, cost.doubleValue())) {
+                    if (!test && !tempVal1.playerHasEnough(storage, player, false, cost.doubleValue())) {
                         needFalse = true;
                     }
                 }
@@ -169,7 +168,11 @@ public class ObjectProducts extends AbstractThings {
         return productMaps;
     }
 
-    public MaxSellResult getMaxAbleSellAmount(Inventory inventory, Player player, int times, int multi, int maxLimit) {
+    public MaxSellResult getMaxAbleSellAmount(org.bukkit.inventory.Inventory inventory, Player player, int times, int maxLimit) {
+        return getMaxAbleSellAmount(ItemStorage.of(inventory), player, times, maxLimit);
+    }
+
+    public MaxSellResult getMaxAbleSellAmount(ItemStorage storage, Player player, int times, int maxLimit) {
         int maxAmount = -1;
         MaxSellResult sellResult = new MaxSellResult();
         switch (mode) {
@@ -187,7 +190,7 @@ public class ObjectProducts extends AbstractThings {
                         ErrorManager.errorManager.sendErrorMessage("§6Warning: It seems that one of your product is using dynamic amounts, which results in an error in calculating the maximum sellable quantity for that product in the sell all, as the results of each sale are different and the plugin cannot predict the price for the next sale.");
                     }
                     BigDecimal cost = getAmount(player, times, 1, false).get(tempVal1);
-                    int tempVal2 = (int) (tempVal1.playerHasAmount(inventory, player) / cost.doubleValue());
+                    int tempVal2 = (int) (tempVal1.playerHasAmount(storage, player) / cost.doubleValue());
                     if (tempVal2 > 0) {
                         if (maxAmount < 0) {
                             maxAmount = 0;
@@ -200,8 +203,8 @@ public class ObjectProducts extends AbstractThings {
                             maxAmount = tempVal2 + maxAmount;
                         }
                         BigDecimal realCost = getAmount(player, times, tempVal2, false).get(tempVal1);
-                        if (tempVal1.playerHasEnough(inventory, player, false, realCost.doubleValue())) {
-                            sellResult.getTakeResult().addResultMapElement(tempVal1, player, times, maxAmount, realCost);
+                        if (tempVal1.playerHasEnough(storage, player, false, realCost.doubleValue())) {
+                            sellResult.getTakeResult().addResultMapElement(tempVal1, player, times, tempVal2, realCost);
                         } else {
                             needTrue = false;
                         }
@@ -226,7 +229,7 @@ public class ObjectProducts extends AbstractThings {
                         ErrorManager.errorManager.sendErrorMessage("§6Warning: It seems that one of your product is using dynamic amounts, which results in an error in calculating the maximum sellable quantity for that product in the sell all, as the results of each sale are different and the plugin cannot predict the price for the next sale.");
                     }
                     BigDecimal cost = getAmount(player, times, 1, false).get(tempVal1);
-                    int tempVal2 = (int) (tempVal1.playerHasAmount(inventory, player) / cost.doubleValue());
+                    int tempVal2 = (int) (tempVal1.playerHasAmount(storage, player) / cost.doubleValue());
                     if (maxAmount == -1 || tempVal2 < maxAmount) {
                         maxAmount = tempVal2;
                     }
@@ -242,7 +245,7 @@ public class ObjectProducts extends AbstractThings {
                         BigDecimal realCost = getAmount(player, times, maxAmount, false).get(tempVal1);
                         sellResult.getTakeResult().addResultMapElement(tempVal1, player, times, maxAmount, realCost);
 
-                        if (!tempVal1.playerHasEnough(inventory, player, false, realCost.doubleValue())) {
+                        if (!tempVal1.playerHasEnough(storage, player, false, realCost.doubleValue())) {
                             needFalse = true;
                         }
                     }

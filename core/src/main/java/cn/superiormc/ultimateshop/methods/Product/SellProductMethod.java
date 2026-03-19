@@ -13,6 +13,7 @@ import cn.superiormc.ultimateshop.objects.ObjectThingRun;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import cn.superiormc.ultimateshop.objects.caches.ObjectUseTimesCache;
 import cn.superiormc.ultimateshop.objects.items.GiveResult;
+import cn.superiormc.ultimateshop.objects.items.ItemStorage;
 import cn.superiormc.ultimateshop.objects.items.MaxSellResult;
 import cn.superiormc.ultimateshop.objects.items.TakeResult;
 import cn.superiormc.ultimateshop.objects.items.prices.ObjectPrices;
@@ -23,7 +24,7 @@ import cn.superiormc.ultimateshop.utils.TextUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.inventory.ItemStack;
 
 public class SellProductMethod {
 
@@ -45,10 +46,34 @@ public class SellProductMethod {
                                                boolean notCost,
                                                boolean ableMaxSell,
                                                int multi) {
-        return startSell(player.getInventory(), item, player, forceDisplayMessage, notCost, ableMaxSell, false, multi, 1);
+        return startSell(ItemStorage.of(player.getInventory()), item, player, forceDisplayMessage, notCost, ableMaxSell, false, multi, 1);
     }
 
     public static ProductTradeStatus startSell(Inventory inventory,
+                                               ObjectItem item,
+                                               Player player,
+                                               boolean forceDisplayMessage,
+                                               boolean notCost,
+                                               boolean ableMaxSell,
+                                               boolean sellAll,
+                                               int multi,
+                                               double multiplier) {
+        return startSell(ItemStorage.of(inventory), item, player, forceDisplayMessage, notCost, ableMaxSell, sellAll, multi, multiplier);
+    }
+
+    public static ProductTradeStatus startSell(ItemStack[] contents,
+                                               ObjectItem item,
+                                               Player player,
+                                               boolean forceDisplayMessage,
+                                               boolean notCost,
+                                               boolean ableMaxSell,
+                                               boolean sellAll,
+                                               int multi,
+                                               double multiplier) {
+        return startSell(ItemStorage.of(contents), item, player, forceDisplayMessage, notCost, ableMaxSell, sellAll, multi, multiplier);
+    }
+
+    public static ProductTradeStatus startSell(ItemStorage storage,
                                                ObjectItem item,
                                                Player player,
                                                boolean forceDisplayMessage,
@@ -66,7 +91,7 @@ public class SellProductMethod {
         if (!ConfigManager.configManager.getBoolean("force-display-fail-message")) {
             forceDisplayMessage = false;
         }
-        boolean shouldSendMessage = inventory instanceof PlayerInventory && !notCost && (forceDisplayMessage || !item.getHideMessage());
+        boolean shouldSendMessage = storage.isPlayerInventory() && !notCost && (forceDisplayMessage || !item.getHideMessage());
         if (!ableMaxSell && !item.getSellCondition(player, multi)) {
             if (shouldSendMessage) {
                 LanguageManager.languageManager.sendStringText(player,
@@ -120,7 +145,7 @@ public class SellProductMethod {
             if (maxAmount < 0) {
                 maxAmount = 0;
             }
-            sellResult = tempVal5.getMaxAbleSellAmount(inventory, player, playerUseTimes, multi, maxAmount);
+            sellResult = tempVal5.getMaxAbleSellAmount(storage, player, playerUseTimes, maxAmount);
             if (sellResult.getMaxAmount() > 0) {
                 multi = sellResult.getMaxAmount();
             }
@@ -183,7 +208,7 @@ public class SellProductMethod {
         if (sellResult != null) {
             takeResult = sellResult.getTakeResult();
         } else {
-            takeResult = tempVal5.take(inventory, player, playerUseTimes, multi, false);
+            takeResult = tempVal5.take(storage, player, playerUseTimes, multi, false);
         }
         // API
         if (!notCost) {
@@ -203,6 +228,12 @@ public class SellProductMethod {
         }
         // single thing condition not meet
         if (!takeResult.getConditionBoolean()) {
+            if (shouldSendMessage) {
+                LanguageManager.languageManager.sendStringText(player,
+                        "sell-condition-not-meet",
+                        "product",
+                        item.getProduct());
+            }
             return ProductTradeStatus.REQUIRE_CONDITION_NOT_MEET;
         }
         if (notCost) {
@@ -210,6 +241,12 @@ public class SellProductMethod {
         }
         // single thing condition not meet
         if (!giveResult.getConditionBoolean()) {
+            if (shouldSendMessage) {
+                LanguageManager.languageManager.sendStringText(player,
+                        "sell-condition-not-meet",
+                        "product",
+                        item.getProduct());
+            }
             return ProductTradeStatus.REQUIRE_CONDITION_NOT_MEET;
         }
         // 尝试给物品
@@ -221,7 +258,7 @@ public class SellProductMethod {
         }
         // 扣物品
         // 扣的是奖励中的东西
-        takeResult.take(playerUseTimes, multi, inventory, player);
+        takeResult.take(playerUseTimes, multi, storage, player);
         int calculateAmount = multi * item.getDisplayItemObject().getAmountPlaceholder(player);
         // 执行动作
         item.getSellAction().runAllActions(new ObjectThingRun(player, playerUseTimes, multi, calculateAmount, sellAll));

@@ -2,24 +2,27 @@ package cn.superiormc.ultimateshop.hooks;
 
 import cn.superiormc.mythicchanger.manager.MatchItemManager;
 import cn.superiormc.ultimateshop.managers.HookManager;
+import cn.superiormc.ultimateshop.objects.items.ItemStorage;
 import cn.superiormc.ultimateshop.utils.ItemUtil;
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.PlayerInventory;
 
 public class ItemPriceUtil {
 
     public static boolean getPrice(Inventory inventory, Player player, String pluginName, String item, int value, boolean take) {
+        return getPrice(ItemStorage.of(inventory), player, pluginName, item, value, take);
+    }
+
+    public static boolean getPrice(ItemStorage storage, Player player, String pluginName, String item, int value, boolean take) {
         if (value < 0) {
             return false;
         }
-        ItemStack[] storage = inventory.getStorageContents();
-        if (take || getItemAmount(inventory, pluginName, item) >= value) {
+        ItemStack[] storageContents = storage.getStorageContents();
+        if (take || getItemAmount(storage, pluginName, item) >= value) {
             if (take) {
-                for (ItemStack itemStack : storage) {
+                for (ItemStack itemStack : storageContents) {
                     if (itemStack == null || itemStack.getType().isAir()) {
                         continue;
                     }
@@ -34,11 +37,7 @@ public class ItemPriceUtil {
                         }
                     }
                 }
-                if (inventory instanceof PlayerInventory) {
-                    player.getInventory().setStorageContents(storage);
-                } else {
-                    inventory.setStorageContents(storage);
-                }
+                storage.setStorageContents(storageContents);
             }
             return true;
         } else {
@@ -47,12 +46,16 @@ public class ItemPriceUtil {
     }
 
     public static int getItemAmount(Inventory inventory, String pluginName, String item) {
+        return getItemAmount(ItemStorage.of(inventory), pluginName, item);
+    }
+
+    public static int getItemAmount(ItemStorage storage, String pluginName, String item) {
         if (item == null) {
             return 0;
         }
         int amount = 0;
-        ItemStack[] storage = inventory.getStorageContents();
-        for (ItemStack tempVal1 : storage) {
+        ItemStack[] storageContents = storage.getStorageContents();
+        for (ItemStack tempVal1 : storageContents) {
             if (tempVal1 == null || tempVal1.getType().isAir()) {
                 continue;
             }
@@ -65,13 +68,17 @@ public class ItemPriceUtil {
     }
 
     public static boolean getPrice(Inventory inventory, Player player, ItemStack item, int value, boolean take) {
+        return getPrice(ItemStorage.of(inventory), player, item, value, take);
+    }
+
+    public static boolean getPrice(ItemStorage storage, Player player, ItemStack item, int value, boolean take) {
         if (value < 0) {
             return false;
         }
-        ItemStack[] storage = inventory.getStorageContents();
-        if (take || getItemAmount(inventory, item) >= value) {
+        ItemStack[] storageContents = storage.getStorageContents();
+        if (take || getItemAmount(storage, item) >= value) {
             if (take) {
-                for (ItemStack itemStack : storage) {
+                for (ItemStack itemStack : storageContents) {
                     if (itemStack == null || itemStack.getType().isAir()) {
                         continue;
                     }
@@ -85,11 +92,7 @@ public class ItemPriceUtil {
                         }
                     }
                 }
-                if (inventory instanceof PlayerInventory) {
-                    player.getInventory().setStorageContents(storage);
-                } else {
-                    inventory.setStorageContents(storage);
-                }
+                storage.setStorageContents(storageContents);
             }
             return true;
         }
@@ -99,12 +102,16 @@ public class ItemPriceUtil {
     }
 
     public static int getItemAmount(Inventory inventory, Player player, ConfigurationSection section) {
+        return getItemAmount(ItemStorage.of(inventory), player, section);
+    }
+
+    public static int getItemAmount(ItemStorage storage, Player player, ConfigurationSection section) {
         if (section == null) {
             return 0;
         }
-        ItemStack[] storage = inventory.getStorageContents();
+        ItemStack[] storageContents = storage.getStorageContents();
         int amount = 0;
-        for (ItemStack tempVal1 : storage) {
+        for (ItemStack tempVal1 : storageContents) {
             if (tempVal1 == null || tempVal1.getType().isAir()) {
                 continue;
             }
@@ -116,13 +123,17 @@ public class ItemPriceUtil {
     }
 
     public static boolean getPrice(Inventory inventory, Player player, ConfigurationSection section, int value, boolean take) {
+        return getPrice(ItemStorage.of(inventory), player, section, value, take);
+    }
+
+    public static boolean getPrice(ItemStorage storage, Player player, ConfigurationSection section, int value, boolean take) {
         if (value < 0) {
             return false;
         }
-        ItemStack[] storage = inventory.getStorageContents();
-        if (take || getItemAmount(inventory, player, section) >= value) {
+        ItemStack[] storageContents = storage.getStorageContents();
+        if (take || getItemAmount(storage, player, section) >= value) {
             if (take) {
-                for (ItemStack itemStack : storage) {
+                for (ItemStack itemStack : storageContents) {
                     if (itemStack == null || itemStack.getType().isAir()) {
                         continue;
                     }
@@ -136,11 +147,7 @@ public class ItemPriceUtil {
                         }
                     }
                 }
-                if (inventory instanceof PlayerInventory) {
-                    player.getInventory().setStorageContents(storage);
-                } else {
-                    inventory.setStorageContents(storage);
-                }
+                storage.setStorageContents(storageContents);
             }
             return true;
         }
@@ -150,12 +157,16 @@ public class ItemPriceUtil {
     }
 
     public static int getItemAmount(Inventory inventory, ItemStack item) {
+        return getItemAmount(ItemStorage.of(inventory), item);
+    }
+
+    public static int getItemAmount(ItemStorage storage, ItemStack item) {
         if (item == null) {
             return 0;
         }
-        ItemStack[] storage = inventory.getStorageContents();
+        ItemStack[] storageContents = storage.getStorageContents();
         int amount = 0;
-        for (ItemStack tempVal1 : storage) {
+        for (ItemStack tempVal1 : storageContents) {
             if (tempVal1 == null || tempVal1.getType().isAir()) {
                 continue;
             }

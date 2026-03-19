@@ -8,7 +8,6 @@ import cn.superiormc.ultimateshop.objects.items.subobjects.ObjectDisplayPlacehol
 import cn.superiormc.ultimateshop.utils.TextUtil;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -54,7 +53,7 @@ public class ObjectPrices extends AbstractThings {
         empty = singlePrices.isEmpty();
     }
 
-    private Map<ObjectSinglePrice, Boolean> getAnyTargetPrice(Inventory inventory,
+    private Map<ObjectSinglePrice, Boolean> getAnyTargetPrice(ItemStorage storage,
                                                               Player player,
                                                               int times,
                                                               int amount) {
@@ -64,7 +63,7 @@ public class ObjectPrices extends AbstractThings {
         for (ObjectSinglePrice tempVal1 : priceMap.keySet()) {
             BigDecimal cost = getAmount(player, times, amount).get(tempVal1);
             if (priceMap.get(tempVal1) == PriceType.FIRST) {
-                if (tempVal1.playerHasEnough(inventory, player, false, cost.doubleValue())) {
+                if (tempVal1.playerHasEnough(storage, player, false, cost.doubleValue())) {
                     confirmedResult.put(tempVal1, true);
                 } else {
                     maybeResult.put(tempVal1, false);
@@ -162,7 +161,7 @@ public class ObjectPrices extends AbstractThings {
 
     // 作为价格时候使用
     @Override
-    public TakeResult take(Inventory inventory, Player player, int times, int amount, boolean test) {
+    public TakeResult take(ItemStorage storage, Player player, int times, int amount, boolean test) {
         Map<AbstractSingleThing, BigDecimal> result = new TreeMap<>();
         TakeResult resultObject = new TakeResult(result);
         if (section == null) {
@@ -182,7 +181,7 @@ public class ObjectPrices extends AbstractThings {
                     }
                     cost = tempVal3.get(tempVal1);
                     resultObject.addResultMapElement(tempVal1, player, times, amount, cost);
-                    if (!test && !tempVal1.playerHasEnough(inventory, player, false, cost.doubleValue())) {
+                    if (!test && !tempVal1.playerHasEnough(storage, player, false, cost.doubleValue())) {
                         needFalse = true;
                     }
                 }
@@ -193,7 +192,7 @@ public class ObjectPrices extends AbstractThings {
             case ANY:
             case CLASSIC_ANY:
                 Map<ObjectSinglePrice, BigDecimal> tempVal4 = getAmount(player, times, amount);
-                Map<ObjectSinglePrice, Boolean> tempVal5 = getAnyTargetPrice(inventory, player, times, amount);
+                Map<ObjectSinglePrice, Boolean> tempVal5 = getAnyTargetPrice(storage, player, times, amount);
                 ObjectSinglePrice first = null;
                 for (ObjectSinglePrice tempVal11 : tempVal5.keySet()) {
                     if (tempVal11.empty) {

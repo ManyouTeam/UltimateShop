@@ -361,6 +361,7 @@ public class ModifyDisplayItem {
                 s = ConfigManager.configManager.getStringWithLang(player, "placeholder.click.error", "",  "amount", String.valueOf(multi));
                 break;
             case PERMISSION:
+            case REQUIRE_CONDITION_NOT_MEET:
                 s = ConfigManager.configManager.getStringWithLang(player, "placeholder.click.buy-condition-not-meet", "",  "amount", String.valueOf(multi));
                 break;
             case PLAYER_MAX:
@@ -397,6 +398,7 @@ public class ModifyDisplayItem {
                 s = ConfigManager.configManager.getStringWithLang(player, "placeholder.click.error", "",  "amount", String.valueOf(multi));
                 break;
             case PERMISSION:
+            case REQUIRE_CONDITION_NOT_MEET:
                 s = ConfigManager.configManager.getStringWithLang(player, "placeholder.click.sell-condition-not-meet", "",  "amount", String.valueOf(multi));
                 break;
             case PLAYER_MAX:

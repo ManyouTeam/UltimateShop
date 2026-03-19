@@ -152,10 +152,18 @@ public abstract class AbstractSingleThing implements Comparable<AbstractSingleTh
     }
 
     public double playerHasAmount(Inventory inventory, Player player) {
-        return playerHasAmount(inventory, singleSection, player);
+        return playerHasAmount(ItemStorage.of(inventory), singleSection, player);
     }
 
     public double playerHasAmount(Inventory inventory, ConfigurationSection section, Player player) {
+        return playerHasAmount(ItemStorage.of(inventory), section, player);
+    }
+
+    public double playerHasAmount(ItemStorage storage, Player player) {
+        return playerHasAmount(storage, singleSection, player);
+    }
+
+    public double playerHasAmount(ItemStorage storage, ConfigurationSection section, Player player) {
         if (section == null) {
             return 0;
         }
@@ -168,7 +176,7 @@ public abstract class AbstractSingleThing implements Comparable<AbstractSingleTh
                 } else if (pluginName.equals("EcoArmor") && !itemID.contains(";;")) {
                     itemID = itemID + ";;" + section.getString("hook-item-type");
                 }
-                return ItemPriceUtil.getItemAmount(inventory,
+                return ItemPriceUtil.getItemAmount(storage,
                         pluginName,
                         itemID);
             case VANILLA_ITEM:
@@ -176,9 +184,9 @@ public abstract class AbstractSingleThing implements Comparable<AbstractSingleTh
                 if (tempVal1 == null) {
                     return 0;
                 }
-                return ItemPriceUtil.getItemAmount(inventory, tempVal1);
+                return ItemPriceUtil.getItemAmount(storage, tempVal1);
             case MATCH_ITEM:
-                return ItemPriceUtil.getItemAmount(inventory, player, section);
+                return ItemPriceUtil.getItemAmount(storage, player, section);
             case HOOK_ECONOMY:
                 return HookManager.hookManager.getEconomyAmount(player, section.getString("economy-plugin"),
                         section.getString("economy-type", "default"));
@@ -206,7 +214,7 @@ public abstract class AbstractSingleThing implements Comparable<AbstractSingleTh
                                    Player player,
                                    boolean take,
                                    double cost) {
-        return playerHasEnough(inventory,
+        return playerHasEnough(ItemStorage.of(inventory),
                 singleSection,
                 player,
                 take,
@@ -214,6 +222,25 @@ public abstract class AbstractSingleThing implements Comparable<AbstractSingleTh
     }
 
     public boolean playerHasEnough(Inventory inventory,
+                                   ConfigurationSection section,
+                                   Player player,
+                                   boolean take,
+                                   double cost) {
+        return playerHasEnough(ItemStorage.of(inventory), section, player, take, cost);
+    }
+
+    public boolean playerHasEnough(ItemStorage storage,
+                                   Player player,
+                                   boolean take,
+                                   double cost) {
+        return playerHasEnough(storage,
+                singleSection,
+                player,
+                take,
+                cost);
+    }
+
+    public boolean playerHasEnough(ItemStorage storage,
                                    ConfigurationSection section,
                                    Player player,
                                    boolean take,
@@ -236,7 +263,7 @@ public abstract class AbstractSingleThing implements Comparable<AbstractSingleTh
                 } else if (pluginName.equals("EcoArmor") && !itemID.contains(";;")) {
                     itemID = itemID + ";;" + section.getString("hook-item-type");
                 }
-                return ItemPriceUtil.getPrice(inventory,
+                return ItemPriceUtil.getPrice(storage,
                         player,
                         pluginName,
                         itemID,
@@ -246,9 +273,9 @@ public abstract class AbstractSingleThing implements Comparable<AbstractSingleTh
                 if (itemStack == null) {
                     return false;
                 }
-                return ItemPriceUtil.getPrice(inventory, player, itemStack, (int) cost, take);
+                return ItemPriceUtil.getPrice(storage, player, itemStack, (int) cost, take);
             case MATCH_ITEM:
-                return ItemPriceUtil.getPrice(inventory, player, section, (int) cost, take);
+                return ItemPriceUtil.getPrice(storage, player, section, (int) cost, take);
             case HOOK_ECONOMY:
                 return HookManager.hookManager.getPrice(player,
                         section.getString("economy-plugin"),

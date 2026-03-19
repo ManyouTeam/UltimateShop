@@ -132,6 +132,11 @@
       <option name="url" value="https://hub.spigotmc.org/nexus/content/repositories/snapshots/" />
     </remote-repository>
     <remote-repository>
+      <option name="id" value="fancyinnovations-releases" />
+      <option name="name" value="FancyInnovations Repository" />
+      <option name="url" value="https://repo.fancyinnovations.com/releases" />
+    </remote-repository>
+    <remote-repository>
       <option name="id" value="techscode" />
       <option name="name" value="techscode" />
       <option name="url" value="https://repo.techscode.com/repository/techscode-apis/" />

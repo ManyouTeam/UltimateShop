@@ -34,7 +34,15 @@ public abstract class AbstractThings {
                                     int times,
                                     int amount);
 
-    public abstract TakeResult take(Inventory inventory,
+    public TakeResult take(Inventory inventory,
+                                    Player player,
+                                    int times,
+                                    int amount,
+                                    boolean test) {
+        return take(ItemStorage.of(inventory), player, times, amount, test);
+    }
+
+    public abstract TakeResult take(ItemStorage storage,
                                     Player player,
                                     int times,
                                     int amount,

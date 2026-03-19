@@ -7,11 +7,11 @@ import cn.superiormc.ultimateshop.methods.StaticPlaceholder;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import cn.superiormc.ultimateshop.objects.caches.ObjectUseTimesCache;
 import cn.superiormc.ultimateshop.objects.items.AbstractSingleThing;
+import cn.superiormc.ultimateshop.objects.items.ItemStorage;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
 import cn.superiormc.ultimateshop.utils.MathUtil;
 import cn.superiormc.ultimateshop.utils.TextUtil;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -113,7 +113,7 @@ public class ObjectSinglePrice extends AbstractSingleThing {
     }
 
     @Override
-    public boolean playerHasEnough(Inventory inventory,
+    public boolean playerHasEnough(ItemStorage storage,
                                    Player player,
                                    boolean take,
                                    double cost) {
@@ -121,14 +121,14 @@ public class ObjectSinglePrice extends AbstractSingleThing {
             return false;
         }
         if (customPrice) {
-            return super.playerHasEnough(inventory,
+            return super.playerHasEnough(storage,
                     ConfigManager.configManager.config.
                             getConfigurationSection("prices." + singleSection.getString("custom-type")),
                     player,
                     take,
                     cost);
         }
-        return super.playerHasEnough(inventory, singleSection, player, take, cost);
+        return super.playerHasEnough(storage, singleSection, player, take, cost);
     }
 
     public boolean isStatic() {

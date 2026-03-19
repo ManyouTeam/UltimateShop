@@ -5,7 +5,7 @@
 
     <groupId>cn.superiormc.ultimateshop</groupId>
     <artifactId>UltimateShop</artifactId>
-    <version>4.3.1</version>
+    <version>4.3.2</version>
     <packaging>pom</packaging>
 
     <modules>
@@ -199,6 +199,11 @@
         <repository>
             <id>repo-lanink-cn</id>
             <url>https://repo.lanink.cn/repository/maven-releases/</url>
+        </repository>
+        <repository>
+            <id>fancyinnovations-releases</id>
+            <name>FancyInnovations Repository</name>
+            <url>https://repo.fancyinnovations.com/releases</url>
         </repository>
     </repositories>
 </project>
