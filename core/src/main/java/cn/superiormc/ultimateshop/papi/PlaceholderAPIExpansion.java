@@ -170,6 +170,8 @@ public class PlaceholderAPIExpansion extends PlaceholderExpansion {
                     return serverTimesCache.getSellLastResetTimeName();
                 case "item-name":
                     return item.getDisplayName(player);
+                case "item-material":
+                    return item.getDisplayItem(player).getType().toString();
             }
         }
         return null;

@@ -1,6 +1,5 @@
 package cn.superiormc.ultimateshop.utils;
 
-import cn.superiormc.mythicchanger.paper.utils.PaperTextUtil;
 import cn.superiormc.ultimateshop.gui.InvGUI;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import com.github.retrooper.packetevents.PacketEvents;
@@ -11,6 +10,7 @@ import com.github.retrooper.packetevents.protocol.packettype.PacketType;
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerOpenWindow;
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerWindowItems;
 import io.github.retrooper.packetevents.util.SpigotConversionUtil;
+import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -24,10 +24,16 @@ public class PacketInventoryUtil {
 
     protected final Map<UUID, Integer> WINDOW_IDS = new ConcurrentHashMap<>();
     protected final Map<UUID, Integer> WINDOW_TYPES = new ConcurrentHashMap<>();
+    protected PaperUtil PAPER_UTIL;
 
     public PacketInventoryUtil() {
-        packetInventoryUtil = this;
-        initListener();
+        try {
+            Class<?> paperClass = Class.forName("cn.superiormc.ultimateshop.paper.PaperUtilImpl");
+            PAPER_UTIL = (PaperUtil) paperClass.getDeclaredConstructor().newInstance();
+            packetInventoryUtil = this;
+            initListener();
+        } catch (Throwable ignored) {
+        }
     }
 
     private void initListener() {
@@ -44,7 +50,7 @@ public class PacketInventoryUtil {
             return;
         }
 
-        WrapperPlayServerOpenWindow packet = new WrapperPlayServerOpenWindow(windowId, windowType, PaperTextUtil.modernParse(newTitle));
+        WrapperPlayServerOpenWindow packet = new WrapperPlayServerOpenWindow(windowId, windowType, PAPER_UTIL.modernParse(player, newTitle));
 
         PacketEvents.getAPI().getPlayerManager().sendPacket(player, packet);
         if (ConfigManager.configManager.getBoolean("menu.title-update.resend-items-pack")) {
@@ -56,7 +62,7 @@ public class PacketInventoryUtil {
             WrapperPlayServerWindowItems itemsPacket = new WrapperPlayServerWindowItems(windowId, 0, items, null);
             PacketEvents.getAPI().getPlayerManager().sendPacket(player, itemsPacket);
         }
-        player.updateInventory();
+        SchedulerUtil.runSync(player::updateInventory);
     }
 
     public void clear(Player player) {
@@ -64,18 +70,23 @@ public class PacketInventoryUtil {
         WINDOW_IDS.remove(uuid);
         WINDOW_TYPES.remove(uuid);
     }
-}
 
-class PacketListener extends PacketListenerAbstract {
-    @Override
-    public void onPacketSend(PacketSendEvent event) {
-        if (event.getPacketType() == PacketType.Play.Server.OPEN_WINDOW) {
-            WrapperPlayServerOpenWindow wrapper = new WrapperPlayServerOpenWindow(event);
-            Player player = event.getPlayer();
-            UUID uuid = player.getUniqueId();
+    private static class PacketListener extends PacketListenerAbstract {
+        @Override
+        public void onPacketSend(PacketSendEvent event) {
+            if (event.getPacketType() == PacketType.Play.Server.OPEN_WINDOW) {
+                WrapperPlayServerOpenWindow wrapper = new WrapperPlayServerOpenWindow(event);
+                Player player = event.getPlayer();
+                UUID uuid = player.getUniqueId();
 
-            PacketInventoryUtil.packetInventoryUtil.WINDOW_IDS.put(uuid, wrapper.getContainerId());
-            PacketInventoryUtil.packetInventoryUtil.WINDOW_TYPES.put(uuid, wrapper.getType());
+                PacketInventoryUtil.packetInventoryUtil.WINDOW_IDS.put(uuid, wrapper.getContainerId());
+                PacketInventoryUtil.packetInventoryUtil.WINDOW_TYPES.put(uuid, wrapper.getType());
+            }
         }
     }
+
+    public interface PaperUtil {
+        default Component modernParse(Player player, String message){return Component.empty();}
+    }
+
 }
