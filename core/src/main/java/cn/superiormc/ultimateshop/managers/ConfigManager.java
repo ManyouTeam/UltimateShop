@@ -30,6 +30,10 @@ public class ConfigManager {
 
     public FileConfiguration config;
 
+    public FileConfiguration editorEnableConfirmConfig;
+
+    private File editorEnableConfirmFile;
+
     public Map<String, ObjectShop> shopConfigs = new HashMap<>();
 
     public Map<String, ObjectRandomPlaceholder> randomPlaceholders = new HashMap<>();
@@ -44,6 +48,7 @@ public class ConfigManager {
         configManager = this;
         UltimateShop.instance.saveDefaultConfig();
         this.config = UltimateShop.instance.getConfig();
+        loadEditorEnableConfirmConfig();
         initShopConfigs();
         loadShopConfigs();
         initMenuConfigs();
@@ -191,6 +196,30 @@ public class ConfigManager {
                 conditionalPlaceholders.put(substring, new ObjectConditionalPlaceholder(substring, YamlConfiguration.loadConfiguration(file)));
             }
         }
+    }
+
+    public void loadEditorEnableConfirmConfig() {
+        editorEnableConfirmFile = new File(UltimateShop.instance.getDataFolder(), "editor-enable-confirm.yml");
+        if (!editorEnableConfirmFile.exists()) {
+            UltimateShop.instance.saveResource("editor-enable-confirm.yml", false);
+        }
+        editorEnableConfirmConfig = YamlConfiguration.loadConfiguration(editorEnableConfirmFile);
+    }
+
+    public File getEditorEnableConfirmFile() {
+        if (editorEnableConfirmFile == null) {
+            loadEditorEnableConfirmConfig();
+        }
+        return editorEnableConfirmFile;
+    }
+
+    public boolean isEditorConfirmedEnabled() {
+        loadEditorEnableConfirmConfig();
+        return editorEnableConfirmConfig.getBoolean("confirmations.understand-testing-status")
+                && editorEnableConfirmConfig.getBoolean("confirmations.backed-up-data-folder")
+                && editorEnableConfirmConfig.getBoolean("confirmations.read-related-wiki")
+                && editorEnableConfirmConfig.getBoolean("confirmations.accept-possible-errors")
+                && editorEnableConfirmConfig.getBoolean("confirmations.enable-editor");
     }
 
     public ObjectShop getShop(String fileName) {

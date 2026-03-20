@@ -427,6 +427,8 @@ editor:
     saved: '&aUloženo &f{value}'
     save-failed: '&cSoubor se nepodařilo uložit: {value}'
     empty-id: '&cID položky nesmí být prázdné.'
+    enable-confirm-required: '&cEditor is still experimental. Read and confirm every item in &f{file}&c before using it.'
+    enable-confirm-details: '&7Back up data, read the wiki, accept possible errors, then set every confirmation in &f{file} &7to true.'
     unknown-type: '&cNeznámé type. Use section/string/int/double/boolean/list/int-list.'
     invalid-integer: '&cTo není platné celé číslo.'
     invalid-number: '&cTo není platné číslo.'

@@ -1,8 +1,10 @@
 package cn.superiormc.ultimateshop.editor;
 
 import cn.superiormc.ultimateshop.commands.AbstractCommand;
+import cn.superiormc.ultimateshop.managers.ConfigManager;
 import org.bukkit.entity.Player;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,6 +20,16 @@ public class EditorCommand extends AbstractCommand {
 
     @Override
     public void executeCommandInGame(String[] args, Player player) {
+        if (!ConfigManager.configManager.isEditorConfirmedEnabled()) {
+            File confirmFile = ConfigManager.configManager.getEditorEnableConfirmFile();
+            EditorLang.send(player, "editor.message.enable-confirm-required",
+                    "&cEditor is still experimental. Read and confirm every item in &f{file}&c before using it.",
+                    "file", confirmFile.getAbsolutePath());
+            EditorLang.send(player, "editor.message.enable-confirm-details",
+                    "&7Back up data, read the wiki, accept possible errors, then set every confirmation in &f{file} &7to true.",
+                    "file", confirmFile.getAbsolutePath());
+            return;
+        }
         if (args.length == 1) {
             EditorManager.editorManager.openRoot(player);
             return;

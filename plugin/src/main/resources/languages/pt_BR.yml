@@ -426,6 +426,8 @@ editor:
     saved: '&aSalvo &f{value}'
     save-failed: '&cFalha ao salvar o arquivo: {value}'
     empty-id: '&cO id da entrada não pode estar vazio.'
+    enable-confirm-required: '&cEditor is still experimental. Read and confirm every item in &f{file}&c before using it.'
+    enable-confirm-details: '&7Back up data, read the wiki, accept possible errors, then set every confirmation in &f{file} &7to true.'
     unknown-type: '&cDesconhecido type. Use section/string/int/double/boolean/list/int-list.'
     invalid-integer: '&cIsso não é um inteiro válido.'
     invalid-number: '&cIsso não é um número válido.'

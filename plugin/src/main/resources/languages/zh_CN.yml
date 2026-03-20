@@ -437,6 +437,8 @@ editor:
     saved: '&a已保存 &f{value}'
     save-failed: '&c保存文件失败: {value}'
     empty-id: '&c条目 id 不能为空。'
+    enable-confirm-required: '&cEditor 仍处于测试阶段。使用前请先阅读并确认 &f{file} &c中的全部项目。'
+    enable-confirm-details: '&7请先备份数据、阅读 Wiki、知悉可能存在的错误，然后把 &f{file} &7中的所有确认项都改成 true。'
     unknown-type: '&c未知类型。可用类型: section/string/int/double/boolean/list/int-list。'
     invalid-integer: '&c这不是有效的整数。'
     invalid-number: '&c这不是有效的数字。'

@@ -1,0 +1,22 @@
+# UltimateShop visual editor is still experimental.
+# Read this file carefully before enabling the editor.
+#
+# You should only enable the editor after:
+# 1. Backing up your full plugin data folder before each use.
+# 2. Reading and following the related wiki before making changes.
+# 3. Understanding that some GUI fields may still be incomplete or incorrect.
+# 4. Accepting that bugs, invalid writes, or unexpected behavior may still exist.
+#
+# Related wiki:
+# https://ultimateshop.superiormc.cn
+#
+# Premium version only.
+#
+# To enable /shop editor, set every value below to true.
+
+confirmations:
+  understand-testing-status: false
+  backed-up-data-folder: false
+  read-related-wiki: false
+  accept-possible-errors: false
+  enable-editor: false

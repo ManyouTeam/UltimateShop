@@ -442,6 +442,8 @@ editor:
     saved: '&aSaved &f{value}'
     save-failed: '&cFailed to save file: {value}'
     empty-id: '&cEntry id cannot be empty.'
+    enable-confirm-required: '&cEditor is still experimental. Read and confirm every item in &f{file}&c before using it.'
+    enable-confirm-details: '&7Back up data, read the wiki, accept possible errors, then set every confirmation in &f{file} &7to true.'
     unknown-type: '&cUnknown type. Use section/string/int/double/boolean/list/int-list.'
     invalid-integer: '&cThat is not a valid integer.'
     invalid-number: '&cThat is not a valid number.'

@@ -431,6 +431,8 @@ editor:
     saved: '&aKaydedildi &f{value}'
     save-failed: '&cDosya kaydedilemedi: {value}'
     empty-id: '&cGiriş kimliği boş olamaz.'
+    enable-confirm-required: '&cEditor is still experimental. Read and confirm every item in &f{file}&c before using it.'
+    enable-confirm-details: '&7Back up data, read the wiki, accept possible errors, then set every confirmation in &f{file} &7to true.'
     unknown-type: '&cBilinmiyor type. Use section/string/int/double/boolean/list/int-list.'
     invalid-integer: '&cBu geçerli bir tam sayı değil.'
     invalid-number: '&cBu geçerli bir sayı değil.'

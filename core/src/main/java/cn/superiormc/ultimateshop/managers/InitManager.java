@@ -30,6 +30,7 @@ public class InitManager {
         resourceOutput("languages/de_DE.yml", true);
         resourceOutput("languages/pt_BR.yml", true);
         resourceOutput("languages/tr_TR.yml", true);
+        resourceOutput("editor-enable-confirm.yml", true);
         resourceOutput("shops/concretes.yml", false);
         resourceOutput("shops/blocks.yml", false);
         resourceOutput("shops/blocks2.yml", false);

@@ -431,6 +431,8 @@ editor:
     saved: '&aGespeichert &f{value}'
     save-failed: '&cDatei konnte nicht gespeichert werden: {value}'
     empty-id: '&cEintrags-ID darf nicht leer sein.'
+    enable-confirm-required: '&cEditor is still experimental. Read and confirm every item in &f{file}&c before using it.'
+    enable-confirm-details: '&7Back up data, read the wiki, accept possible errors, then set every confirmation in &f{file} &7to true.'
     unknown-type: '&cUnbekannt type. Use section/string/int/double/boolean/list/int-list.'
     invalid-integer: '&cDas ist keine gültige Ganzzahl.'
     invalid-number: '&cDas ist keine gültige Zahl.'
