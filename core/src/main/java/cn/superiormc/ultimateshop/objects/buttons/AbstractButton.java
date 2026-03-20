@@ -1,6 +1,5 @@
 package cn.superiormc.ultimateshop.objects.buttons;
 
-import cn.superiormc.ultimateshop.gui.InvGUI;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.objects.ObjectThingRun;
 import cn.superiormc.ultimateshop.objects.buttons.subobjects.ObjectDisplayItemStack;
@@ -31,10 +30,6 @@ public abstract class AbstractButton {
 
     public void clickEvent(ClickType type, Player player) {
        return;
-    }
-
-    public void clickEvent(ClickType type, Player player, InvGUI invGUI) {
-        clickEvent(type, player);
     }
 
     public ConfigurationSection getButtonConfig() {

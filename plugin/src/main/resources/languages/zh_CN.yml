@@ -271,3 +271,607 @@ override-lang:
       - '(@n)&c&l:( 不能这么做'
       - '(@a)@u@p&c物品无法购买'
       - '(@b)@v@p&c物品无法出售'
+editor:
+  scope:
+    shop: '商店'
+    menu: '菜单'
+  common:
+    root: '根节点'
+    back:
+      name: '&e返回'
+      desc: '&7返回上一层界面'
+    refresh:
+      name: '&e刷新'
+    reload:
+      name: '&a重载插件'
+    previous-page:
+      name: '&e上一页'
+      desc: '&7查看上一页内容'
+    next-page:
+      name: '&e下一页'
+      desc: '&7查看下一页内容'
+  action:
+    open: '&a左键打开'
+    edit: '&a左键编辑'
+    delete: '&c右键删除'
+    toggle: '&a左键切换'
+    cycle: '&a左键循环切换'
+    cycle-back: '&aShift + 左键反向切换'
+    cycle-action: '&a左键切换动作类型'
+    cycle-condition: '&a左键切换条件类型'
+    read-only: '&7这里只显示摘要，不能直接修改'
+  summary:
+    type: '&7当前类型: &f{value}'
+    section: '配置节点'
+    list: '列表'
+    keys: '&7子键数量: &f{value}'
+    size: '&7当前长度: &f{value}'
+    value: '&7当前值: &f{value}'
+  lore:
+    path: '&7路径: &f{value}'
+    kind: '&7值类型: &f{value}'
+    description: '&7作用: &f{value}'
+    not-set: '&7当前值: &f<未设置>'
+  value-kind:
+    item_section: '物品节点'
+    economy_section: '经济节点'
+    action_collection: '动作列表'
+    condition_collection: '条件列表'
+    action_type: '动作类型'
+    condition_type: '条件类型'
+    boolean: '布尔值'
+    integer: '整数'
+    double: '数字'
+    string: '字符串'
+    string_list: '字符串列表'
+    integer_list: '整数列表'
+    section: '配置节点'
+    unknown: '未知'
+  root:
+    title: 'UltimateShop 编辑器'
+    shops:
+      name: '&e编辑商店'
+      desc: '&7打开 &f/shops &7目录下的商店 yml 文件'
+    menus:
+      name: '&e编辑菜单'
+      desc: '&7打开 &f/menus &7目录下的菜单 yml 文件'
+    close:
+      name: '&c关闭'
+      desc: '&7关闭编辑器'
+  file-list:
+    title: '{scope} 编辑器'
+    type: '&7类型: &f{value}'
+    file: '&7文件: &f{value}'
+    back: '&7返回编辑器首页'
+    refresh: '&7重新加载文件列表'
+  section:
+    path:
+      name: '&e当前路径'
+      desc: '&f{value}'
+    reload:
+      line-1: '&7修改已经写入磁盘。'
+      line-2: '&7点击这里可重建实时商店/菜单对象。'
+    add-child:
+      name: '&e新增子节点'
+      numbered: '&7新增一个自动编号的条目'
+      named: '&7新增一个需要自定义 id 的条目'
+      generic: '&7在当前节点下新增一个子键'
+  preset:
+    add-limit-group:
+      name: '&e新增条件组'
+      desc: '&7创建一个新的限制条件组，并同步建立对应限制值。'
+    raw:
+      name: '&e原始节点'
+      desc: '&7打开原始 section 兜底编辑器'
+    reload:
+      desc: '&7把修改应用到当前在线对象'
+  item:
+    title: '物品编辑器: {path}'
+    slot:
+      name: '&eItemFormat 槽位'
+      line-1: '&7把目标物品放进 13 号槽位。'
+      line-2: '&7然后点击保存，把它 DebuildItem 成 yaml。'
+    apply:
+      name: '&a应用物品'
+      desc: '&7把 13 号槽位序列化到当前节点'
+    clear:
+      name: '&c清空节点'
+      desc: '&7删除整个物品节点'
+    back:
+      desc: '&7返回父节点'
+  economy:
+    title: '经济编辑器: {path}'
+    current: '&7当前值: &f{value}'
+    provider:
+      name: '&e经济来源'
+    currency:
+      name: '&e货币类型'
+    amount:
+      name: '&e数量'
+    placeholder:
+      name: '&e显示占位符'
+    conditions:
+      name: '&e条件'
+      desc: '&7打开这个经济节点下的条件列表'
+    raw:
+      name: '&e原始节点'
+      desc: '&7查看这个经济节点中的全部键'
+    delete:
+      name: '&c删除节点'
+      desc: '&7删除整个经济格式节点'
+    back:
+      desc: '&7返回父节点'
+  thing-item:
+    title: 'Thing ItemFormat: {path}'
+    slot:
+      name: '&e内联 ItemFormat'
+      line-1: '&7把物品放进 13 号槽位。'
+      line-2: '&7这里只会刷新 item-format 相关字段。'
+      line-3: '&7通用的 single thing 控制字段会被保留。'
+    apply:
+      name: '&a应用 ItemFormat'
+      desc: '&7更新这个 single thing 内部的物品数据'
+    clear:
+      name: '&c清空物品字段'
+      desc: '&7只移除 material / hook-item / item-format 相关字段'
+    back:
+      desc: '&7返回预设编辑器'
+  prompt:
+    description: '&f{value}'
+    cancel-keyword: '取消'
+    cancel-tip: '&7输入 &f{value} &7可取消这次编辑。'
+    new-entry-id: '请输入新的条目 id'
+    new-condition-id: '请输入新的条件组 id'
+    string: '请输入 &f{path} &7的新字符串值'
+    integer: '请输入 &f{path} &7的新整数值'
+    double: '请输入 &f{path} &7的新数字值'
+    string-list: '请输入 &f{path} &7的新字符串列表，使用 &f;; &7分隔'
+    integer-list: '请输入 &f{path} &7的新整数列表，使用 &f;; &7分隔'
+    new-child: '请输入新子节点的键名'
+  message:
+    target-not-found: '&c找不到目标文件。'
+    saved: '&a已保存 &f{value}'
+    save-failed: '&c保存文件失败: {value}'
+    empty-id: '&c条目 id 不能为空。'
+    unknown-type: '&c未知类型。可用类型: section/string/int/double/boolean/list/int-list。'
+    invalid-integer: '&c这不是有效的整数。'
+    invalid-number: '&c这不是有效的数字。'
+    invalid-integer-list: '&c列表里有某个值不是整数。'
+    child-format: '&c请输入: 键名 类型'
+    command-usage: '&c请使用 /shop editor [shop|menu] <id>'
+    target-missing: '&c找不到{scope}: {id}'
+  presets:
+    root_shop:
+      title: '商店预设'
+      fields:
+        settings:
+          menu:
+            name: '菜单文件'
+            desc: '绑定这个商店使用的菜单文件 id。'
+          menu-settings:
+            name: '内联菜单设置'
+            desc: '只针对这个商店覆盖部分菜单设置。'
+          buy-more:
+            name: '默认 Buy More'
+            desc: '这个商店里的商品默认是否允许打开数量选择菜单。'
+          shop-name:
+            name: '商店显示名'
+            desc: '用于 {shop-name} 等占位符的显示名称。'
+          hide-message:
+            name: '隐藏成功消息'
+            desc: '是否隐藏这个商店的默认成功提示。'
+          secret-shop-items:
+            name: '隐藏秘密商品'
+            desc: '当展示条件不满足时，是否直接隐藏商品。'
+          custom-command:
+            name: '自定义命令'
+            desc: '给这个商店注册专属打开命令。'
+        general-configs:
+          name: '通用配置'
+          desc: '对这个商店所有商品生效的默认值。'
+        items:
+          name: '商品列表'
+          desc: '这个商店内所有可编辑商品。'
+        buttons:
+          name: '按钮列表'
+          desc: '这个商店菜单里额外显示的按钮。'
+    root_menu:
+      title: '菜单预设'
+      fields:
+        title:
+          name: '标题'
+          desc: '玩家打开后看到的背包标题。'
+        size:
+          name: '大小'
+          desc: '菜单大小，通常是 9 的倍数。'
+        dynamic-layout:
+          name: '动态布局'
+          desc: '是否每次打开菜单都重新解析布局。'
+        bedrock:
+          name: '基岩版设置'
+          desc: '基岩版显示和兼容相关设置。'
+        layout:
+          name: '布局'
+          desc: '用于放置按钮和商品的布局字符串列表。'
+        conditions:
+          name: '打开条件'
+          desc: '玩家打开菜单前必须满足的条件。'
+        open-actions:
+          name: '打开动作'
+          desc: '菜单打开时执行的动作。'
+        close-actions:
+          name: '关闭动作'
+          desc: '菜单关闭时执行的动作。'
+        buttons:
+          name: '按钮列表'
+          desc: '这个菜单中配置的全部按钮。'
+        custom-command:
+          name: '自定义命令'
+          desc: '给这个菜单注册专属打开命令。'
+    shop_item:
+      title: '商品预设'
+      fields:
+        display-name:
+          name: '显示名'
+          desc: '这个商品的逻辑显示名称。'
+        display-item:
+          name: '显示物品'
+          desc: '菜单里展示给玩家看的物品。'
+        add-lore:
+          name: '追加 Lore'
+          desc: '额外追加到显示物品上的 lore 列表。'
+        price-mode:
+          name: '价格模式'
+          desc: '多个价格条目如何组合判定。'
+        product-mode:
+          name: '产物模式'
+          desc: '多个产物条目如何组合发放。'
+        products:
+          name: '产物列表'
+          desc: '买入后给玩家，或卖出时向玩家收取的 single thing 列表。'
+        buy-prices:
+          name: '购买价格'
+          desc: '玩家购买时需要支付的 single thing 列表。'
+        sell-prices:
+          name: '出售价格'
+          desc: '玩家出售后会得到的 single thing 列表。'
+        conditions:
+          name: '共享条件'
+          desc: '旧写法下买卖共用的条件。'
+        buy-conditions:
+          name: '购买条件'
+          desc: '只在购买时检查的条件。'
+        sell-conditions:
+          name: '出售条件'
+          desc: '只在出售时检查的条件。'
+        display-conditions:
+          name: '显示条件'
+          desc: '决定这个商品是否展示。'
+        buy-actions:
+          name: '购买动作'
+          desc: '购买成功后执行的动作。'
+        sell-actions:
+          name: '出售动作'
+          desc: '出售成功后执行的动作。'
+        fail-actions:
+          name: '失败动作'
+          desc: '交易失败后执行的动作。'
+        click-event:
+          name: '点击事件'
+          desc: '这个商品按钮自己的点击规则。'
+        buy-more:
+          name: 'Buy More'
+          desc: '是否允许打开数量选择 GUI。'
+        buy-more-menu:
+          name: 'Buy More 菜单'
+          desc: '这个商品专属的数量选择菜单。'
+        hide-message:
+          name: '隐藏消息'
+          desc: '是否隐藏这个商品的成功消息。'
+        sell-all:
+          name: '启用 Sell All'
+          desc: '是否允许这个商品参与 sell-all。'
+        as-sub-button:
+          name: '作为子按钮'
+          desc: '把这个商品作为另一个商品的子按钮显示。'
+        bedrock:
+          name: '基岩版设置'
+          desc: '这个商品的基岩版专用显示设置。'
+        limits:
+          name: '共享限制'
+          desc: '买卖共用的库存/次数限制。'
+        limits-conditions:
+          name: '共享限制条件组'
+          desc: '为共享限制定义可复用的条件组 id。'
+        buy-limits:
+          name: '购买限制'
+          desc: '购买时使用的库存或次数限制。'
+        buy-limits-conditions:
+          name: '购买限制条件组'
+          desc: '为购买限制定义可复用的条件组 id。'
+        sell-limits:
+          name: '出售限制'
+          desc: '出售时使用的库存或次数限制。'
+        sell-limits-conditions:
+          name: '出售限制条件组'
+          desc: '为出售限制定义可复用的条件组 id。'
+        buy-times-reset-mode:
+          name: '购买重置模式'
+          desc: '购买次数按照什么规则重置。'
+        buy-times-reset-time:
+          name: '购买重置时间'
+          desc: '购买次数在什么时间重置。'
+        sell-times-reset-mode:
+          name: '出售重置模式'
+          desc: '出售次数按照什么规则重置。'
+        sell-times-reset-time:
+          name: '出售重置时间'
+          desc: '出售次数在什么时间重置。'
+    single_thing:
+      title: 'Single Thing 预设'
+      fields:
+        display:
+          name: '识别出的 Thing 类型'
+          desc: '插件会根据当前已有字段自动识别这个 single thing 的类型。'
+        inline-item:
+          name: 'ItemFormat'
+          desc: '把物品拖进来后刷新 item-format 字段，同时保留通用控制字段。'
+        amount:
+          name: '数量'
+          desc: '数量值。可按场景写固定值、公式或占位符。'
+        material:
+          name: '材质'
+          desc: '普通原版物品格式使用的基础材质。'
+        hook-plugin:
+          name: '挂钩物品插件'
+          desc: '这个 single thing 使用的外部物品插件名。'
+        hook-item:
+          name: '挂钩物品 ID'
+          desc: '外部物品插件中的物品 id。'
+        match-item:
+          name: '匹配物品'
+          desc: '使用匹配规则，而不是精确物品堆。'
+        match-placeholder:
+          name: '匹配占位符'
+          desc: '用于读取自定义比较值的占位符。'
+        economy-plugin:
+          name: '经济插件'
+          desc: '这个价格条目使用的经济提供者插件。'
+        economy-type:
+          name: '经济类型'
+          desc: '货币类型、经验、等级，或多货币 id。'
+        placeholder:
+          name: '显示占位符'
+          desc: '显示在 lore 和价格占位符里的文本。'
+        min-amount:
+          name: '最小数量'
+          desc: '当 amount 是动态值时允许的最小值。'
+        max-amount:
+          name: '最大数量'
+          desc: '当 amount 是动态值时允许的最大值。'
+        start-apply:
+          name: '开始生效'
+          desc: '从第几次交易开始生效。'
+        end-apply:
+          name: '结束生效'
+          desc: '到第几次交易后停止生效。'
+        apply:
+          name: '生效列表'
+          desc: '只在这些交易次数上生效。'
+        apply-conditions:
+          name: '参与条件'
+          desc: '决定这个 single thing 是否参与当前交易。'
+        require-conditions:
+          name: '要求条件'
+          desc: '选中这个 single thing 后，交易继续前必须满足的条件。'
+        give-actions:
+          name: '给予动作'
+          desc: '给予这个 single thing 时执行的动作。'
+        take-actions:
+          name: '扣除动作'
+          desc: '扣除这个 single thing 时执行的动作。'
+        give-item:
+          name: '给予物品'
+          desc: '关闭后如果禁用，就只执行 give-actions 而不真正给物品。'
+        take:
+          name: '真正扣除'
+          desc: '关闭后只检查是否拥有，而不真正扣除。'
+    action_entry:
+      title: '动作预设'
+      fields:
+        type:
+          name: '类型'
+          desc: '要执行的动作类型。'
+        start-apply:
+          name: '开始生效'
+          desc: '从第几次交易开始执行。'
+        end-apply:
+          name: '结束生效'
+          desc: '到第几次交易后停止执行。'
+        apply:
+          name: '生效列表'
+          desc: '只在这些交易次数上执行。'
+        multi-once:
+          name: '多次交易仅一次'
+          desc: '多买/多卖时只执行一次。'
+        sell-all-once:
+          name: 'Sell All 仅一次'
+          desc: 'sell-all 时只执行一次。'
+        open-once:
+          name: '单次打开'
+          desc: '菜单重开时不重复执行。'
+        click-type:
+          name: '点击类型'
+          desc: '限制这个动作只在指定点击类型下触发。'
+        bedrock-only:
+          name: '仅基岩版'
+          desc: '只对基岩版玩家执行。'
+        java-only:
+          name: '仅 Java 版'
+          desc: '只对 Java 版玩家执行。'
+        fail-type:
+          name: '失败类型'
+          desc: '只在指定失败类型下执行。'
+        message:
+          name: '消息'
+          desc: '这个动作发送的消息文本。'
+        main-title:
+          name: '主标题'
+          desc: '标题主文本。'
+        sub-title:
+          name: '副标题'
+          desc: '标题副文本。'
+        fade-in:
+          name: '淡入'
+          desc: '淡入时间，单位 ticks。'
+        stay:
+          name: '停留'
+          desc: '停留时间，单位 ticks。'
+        fade-out:
+          name: '淡出'
+          desc: '淡出时间，单位 ticks。'
+        sound:
+          name: '声音'
+          desc: '要播放的声音 id。'
+        volume:
+          name: '音量'
+          desc: '声音音量值。'
+        particle:
+          name: '粒子'
+          desc: '要生成的粒子 id。'
+        count:
+          name: '数量'
+          desc: '要生成的粒子数量。'
+        offset-x:
+          name: 'X 偏移'
+          desc: '粒子 X 偏移。'
+        offset-y:
+          name: 'Y 偏移'
+          desc: '粒子 Y 偏移。'
+        offset-z:
+          name: 'Z 偏移'
+          desc: '粒子 Z 偏移。'
+        speed:
+          name: '速度'
+          desc: '粒子速度。'
+        command:
+          name: '命令'
+          desc: '这个动作执行的命令。'
+        shop:
+          name: '商店'
+          desc: '这个动作使用的目标商店 id。'
+        menu:
+          name: '菜单'
+          desc: '这个动作使用的目标菜单 id。'
+        item:
+          name: '商品'
+          desc: '这个动作使用的目标商品或物品 id。'
+        amount:
+          name: '数量'
+          desc: '这个动作使用的数量值。'
+        sell-all:
+          name: 'Sell All'
+          desc: '是否处理所有匹配物品。'
+        rate:
+          name: '概率'
+          desc: '成功概率，范围 0 到 100。'
+        actions:
+          name: '嵌套动作'
+          desc: '这个动作内部继续执行的动作列表。'
+        conditions:
+          name: '条件'
+          desc: '这个动作内部使用的条件列表。'
+        server:
+          name: '服务器'
+          desc: '目标服务器名称。'
+        potion:
+          name: '药水效果'
+          desc: '药水效果 id。'
+        duration:
+          name: '持续时间'
+          desc: '持续时间，单位 ticks。'
+        level:
+          name: '等级'
+          desc: '这个动作使用的等级值。'
+        ambient:
+          name: '环境效果'
+          desc: '是否作为环境效果显示。'
+        particles:
+          name: '粒子显示'
+          desc: '是否显示药水粒子。'
+        icon:
+          name: '图标显示'
+          desc: '是否显示状态图标。'
+        entity:
+          name: '实体'
+          desc: '要生成的实体或 MythicMob id。'
+        world:
+          name: '世界'
+          desc: '这个动作使用的世界名。'
+        x:
+          name: 'X'
+          desc: 'X 坐标。'
+        y:
+          name: 'Y'
+          desc: 'Y 坐标。'
+        z:
+          name: 'Z'
+          desc: 'Z 坐标。'
+        yaw:
+          name: 'Yaw'
+          desc: '朝向 yaw。'
+        pitch:
+          name: 'Pitch'
+          desc: '朝向 pitch 或声音音高。'
+    condition_entry:
+      title: '条件预设'
+      fields:
+        type:
+          name: '类型'
+          desc: '要检查的条件类型。'
+        start-apply:
+          name: '开始生效'
+          desc: '从第几次交易开始检查。'
+        end-apply:
+          name: '结束生效'
+          desc: '到第几次交易后停止检查。'
+        apply:
+          name: '生效列表'
+          desc: '只在这些交易次数上检查。'
+        click-type:
+          name: '点击类型'
+          desc: '限制这个条件只在指定点击类型下检查。'
+        bedrock-only:
+          name: '仅基岩版'
+          desc: '只对基岩版玩家检查。'
+        java-only:
+          name: '仅 Java 版'
+          desc: '只对 Java 版玩家检查。'
+        meet-actions:
+          name: '满足动作'
+          desc: '条件满足时执行的动作。'
+        not-meet-actions:
+          name: '不满足动作'
+          desc: '条件不满足时执行的动作。'
+        permission:
+          name: '权限'
+          desc: '玩家必须拥有的权限节点。'
+        placeholder:
+          name: '占位符'
+          desc: '这个条件使用的占位符。'
+        rule:
+          name: '规则'
+          desc: '比较规则，例如 ==、>=、<=。'
+        value:
+          name: '目标值'
+          desc: '用于比较的目标值。'
+        biome:
+          name: '生物群系'
+          desc: '要求所在的生物群系名称。'
+        world:
+          name: '世界'
+          desc: '要求所在的世界名称。'
+        conditions:
+          name: '嵌套条件'
+          desc: '这个条件内部继续使用的条件列表。'
+

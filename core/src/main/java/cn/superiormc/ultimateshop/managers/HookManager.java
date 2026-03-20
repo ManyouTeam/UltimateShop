@@ -11,7 +11,9 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class HookManager {
@@ -334,5 +336,13 @@ public class HookManager {
             }
         }
         return true;
+    }
+
+    public List<String> getEconomyHookNames() {
+        return new ArrayList<>(economyHooks.keySet());
+    }
+
+    public List<String> getItemHookNames() {
+        return new ArrayList<>(itemHooks.keySet());
     }
 }

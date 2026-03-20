@@ -2,6 +2,7 @@ package cn.superiormc.ultimateshop.managers;
 
 import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.commands.*;
+import cn.superiormc.ultimateshop.editor.EditorCommand;
 import org.bukkit.Bukkit;
 
 import java.util.HashMap;
@@ -50,6 +51,7 @@ public class CommandManager {
        registerNewSubCommand(new SubSellAllHand());
        registerNewSubCommand(new SubUpdateGUI());
        registerNewSubCommand(new SubUpdateGUITitle());
+       registerNewSubCommand(new EditorCommand());
     }
 
     public Map<String, AbstractCommand> getSubCommandsMap() {

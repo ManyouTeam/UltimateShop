@@ -5,7 +5,9 @@ import cn.superiormc.ultimateshop.objects.actions.*;
 import cn.superiormc.ultimateshop.objects.conditions.*;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class ConditionManager {
@@ -44,5 +46,9 @@ public class ConditionManager {
             }
         }
         return true;
+    }
+
+    public List<String> getConditionTypes() {
+        return new ArrayList<>(conditions.keySet());
     }
 }

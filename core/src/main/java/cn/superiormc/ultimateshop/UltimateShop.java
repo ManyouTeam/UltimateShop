@@ -1,6 +1,7 @@
 package cn.superiormc.ultimateshop;
 
 import cn.superiormc.ultimateshop.managers.*;
+import cn.superiormc.ultimateshop.editor.EditorManager;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
 import cn.superiormc.ultimateshop.utils.PacketInventoryUtil;
 import cn.superiormc.ultimateshop.utils.SpecialMethodUtil;
@@ -77,6 +78,7 @@ public final class UltimateShop extends JavaPlugin {
         new LanguageManager();
         new CacheManager();
         new CommandManager();
+        new EditorManager();
         if (!UltimateShop.freeVersion && !UltimateShop.isFolia) {
             new SellChestManager();
         }

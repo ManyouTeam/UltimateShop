@@ -155,6 +155,9 @@ public class BuyProductMethod {
             giveResult = item.getReward().give(player, playerUseTimes, multi);
             ItemPreTransactionEvent event = new ItemPreTransactionEvent(true, player, multi, item, giveResult, takeResult);
             Bukkit.getServer().getPluginManager().callEvent(event);
+            if (event.isCancelled()) {
+                return ProductTradeStatus.API_CANCEL;
+            }
         }
         // price
         if (!takeResult.getResultBoolean()) {

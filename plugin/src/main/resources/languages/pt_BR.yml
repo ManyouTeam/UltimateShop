@@ -260,3 +260,594 @@ override-lang:
       - '(@n)&c&l:( Can not do this'
       - '(@a)@u@p&cThis item can not be purchased'
       - '(@b)@v@p&cThis item can not be sold'
+editor:
+  scope:
+    shop: 'Shop'
+    menu: 'Menu'
+  common:
+    root: 'root'
+    back:
+      name: '&eBack'
+      desc: '&7Return to the previous screen'
+    refresh:
+      name: '&eRefresh'
+    reload:
+      name: '&aReload Plugin'
+    previous-page:
+      name: '&ePrevious Page'
+      desc: '&7Go to the previous page'
+    next-page:
+      name: '&eNext Page'
+      desc: '&7Go to the next page'
+  action:
+    open: '&aLeft click to open'
+    edit: '&aLeft click to edit'
+    delete: '&cRight click to delete'
+    toggle: '&aLeft click to toggle'
+    cycle: '&aLeft click to cycle'
+    cycle-back: '&aShift-left to cycle backwards'
+    cycle-action: '&aLeft click to cycle action type'
+    cycle-condition: '&aLeft click to cycle condition type'
+    read-only: '&7Read-only summary'
+  summary:
+    type: '&7Current Type: &f{value}'
+    section: 'Section'
+    list: 'List'
+    keys: '&7Child Keys: &f{value}'
+    size: '&7Current Size: &f{value}'
+    value: '&7Current Value: &f{value}'
+  lore:
+    path: '&7Path: &f{value}'
+    kind: '&7Kind: &f{value}'
+    description: '&7Description: &f{value}'
+    not-set: '&7Current Value: &f<not set>'
+  value-kind:
+    item_section: 'Item section'
+    economy_section: 'Economy section'
+    action_collection: 'Action collection'
+    condition_collection: 'Condition collection'
+    action_type: 'Action type'
+    condition_type: 'Condition type'
+    boolean: 'Boolean'
+    integer: 'Integer'
+    double: 'Number'
+    string: 'String'
+    string_list: 'String list'
+    integer_list: 'Integer list'
+    section: 'Section'
+    unknown: 'Unknown'
+  root:
+    title: 'UltimateShop Editor'
+    shops:
+      name: '&eEdit Shops'
+      desc: '&7Open shop yml files under &f/shops'
+    menus:
+      name: '&eEdit Menus'
+      desc: '&7Open menu yml files under &f/menus'
+    close:
+      name: '&cClose'
+      desc: '&7Close the editor'
+  file-list:
+    title: 'Editor {scope}s'
+    type: '&7Type: &f{value}'
+    file: '&7File: &f{value}'
+    back: '&7Return to editor home'
+    refresh: '&7Reload the file list'
+  section:
+    path:
+      name: '&eCurrent Path'
+      desc: '&f{value}'
+    reload:
+      line-1: '&7Changes are already written to disk.'
+      line-2: '&7Use this to rebuild live shop/menu objects.'
+    add-child:
+      name: '&eAdd Child'
+      numbered: '&7Add a new numbered entry'
+      named: '&7Create a new named section entry'
+      generic: '&7Add a new child node under this section'
+  preset:
+    raw:
+      name: '&eRaw Section'
+      desc: '&7Open the raw section fallback editor'
+    reload:
+      desc: '&7Apply changes to live shop/menu objects'
+  item:
+    title: 'Item Editor: {path}'
+    slot:
+      name: '&eItemFormat Slot'
+      line-1: '&7Put the target item into slot 13.'
+      line-2: '&7Then click save to DebuildItem into yaml.'
+    apply:
+      name: '&aApply Item'
+      desc: '&7Serialize slot 13 into the current section'
+    clear:
+      name: '&cClear Section'
+      desc: '&7Delete this entire item section'
+    back:
+      desc: '&7Return to the parent section'
+  economy:
+    title: 'Economy Editor: {path}'
+    current: '&7Current: &f{value}'
+    provider:
+      name: '&eProvider'
+    currency:
+      name: '&eCurrency Type'
+    amount:
+      name: '&eAmount'
+    placeholder:
+      name: '&ePlaceholder'
+    conditions:
+      name: '&eConditions'
+      desc: '&7Open the nested conditions section'
+    raw:
+      name: '&eRaw Section'
+      desc: '&7Open all keys inside this economy section'
+    delete:
+      name: '&cDelete Section'
+      desc: '&7Delete this economy format section'
+    back:
+      desc: '&7Return to the parent section'
+  thing-item:
+    title: 'Thing ItemFormat: {path}'
+    slot:
+      name: '&eInline ItemFormat'
+      line-1: '&7Put the item in slot 13.'
+      line-2: '&7This only refreshes item-format fields.'
+      line-3: '&7Common single thing options are preserved.'
+    apply:
+      name: '&aApply ItemFormat'
+      desc: '&7Update item data inside this single thing'
+    clear:
+      name: '&cClear Item Fields'
+      desc: '&7Remove material / hook-item / item-format fields only'
+    back:
+      desc: '&7Return to the preset editor'
+  prompt:
+    description: '&f{value}'
+    cancel-keyword: 'cancel'
+    cancel-tip: '&7Type &f{value} &7to abort this edit.'
+    new-entry-id: 'Input the new entry id'
+    string: 'Input the new string for &f{path}'
+    integer: 'Input the new integer for &f{path}'
+    double: 'Input the new number for &f{path}'
+    string-list: 'Input the new list for &f{path} &7(use &f;; &7as separator)'
+    integer-list: 'Input the new integer list for &f{path} &7(use &f;; &7as separator)'
+    new-child: 'Input &fkey type &7for the new child. Example: &fdisplay-name string'
+  message:
+    target-not-found: '&cTarget file not found.'
+    saved: '&aSaved &f{value}'
+    save-failed: '&cFailed to save file: {value}'
+    unknown-type: '&cUnknown type. Use section/string/int/double/boolean/list/int-list.'
+    invalid-integer: '&cThat is not a valid integer.'
+    invalid-number: '&cThat is not a valid number.'
+    invalid-integer-list: '&cOne of the values is not an integer.'
+    child-format: '&cUse format: key type'
+    command-usage: '&cUse /shop editor [shop|menu] <id>'
+    target-missing: '&cCould not find {scope}: {id}'
+  presets:
+    root_shop:
+      title: 'Shop Preset'
+      fields:
+        settings:
+          menu:
+            name: 'Menu File'
+            desc: 'Bind this shop to a menu file id.'
+          menu-settings:
+            name: 'Inline Menu Settings'
+            desc: 'Override part of the menu settings only for this shop.'
+          buy-more:
+            name: 'Default Buy More'
+            desc: 'Whether products in this shop open the buy-more menu by default.'
+          shop-name:
+            name: 'Shop Display Name'
+            desc: 'Display name used by placeholders such as {shop-name}.'
+          hide-message:
+            name: 'Hide Success Message'
+            desc: 'Hide the default success message for this shop.'
+          secret-shop-items:
+            name: 'Secret Shop Items'
+            desc: 'Hide products when their display rules are not met.'
+          custom-command:
+            name: 'Custom Command'
+            desc: 'Register custom open commands for this shop.'
+        general-configs:
+          name: 'General Configs'
+          desc: 'Default values shared by all products in this shop.'
+        items:
+          name: 'Products'
+          desc: 'All editable products inside this shop.'
+        buttons:
+          name: 'Buttons'
+          desc: 'Extra menu buttons shown in this shop menu.'
+    root_menu:
+      title: 'Menu Preset'
+      fields:
+        title:
+          name: 'Title'
+          desc: 'Inventory title shown to players.'
+        size:
+          name: 'Size'
+          desc: 'Inventory size, usually a multiple of 9.'
+        dynamic-layout:
+          name: 'Dynamic Layout'
+          desc: 'Rebuild the layout every time the menu opens.'
+        bedrock:
+          name: 'Bedrock Settings'
+          desc: 'Bedrock specific display and compatibility settings.'
+        layout:
+          name: 'Layout'
+          desc: 'Layout string list used to place buttons and products.'
+        conditions:
+          name: 'Open Conditions'
+          desc: 'Conditions that must be met before the menu can open.'
+        open-actions:
+          name: 'Open Actions'
+          desc: 'Actions executed when the menu opens.'
+        close-actions:
+          name: 'Close Actions'
+          desc: 'Actions executed when the menu closes.'
+        buttons:
+          name: 'Buttons'
+          desc: 'All buttons placed in this menu.'
+        custom-command:
+          name: 'Custom Command'
+          desc: 'Register custom open commands for this menu.'
+    shop_item:
+      title: 'Product Preset'
+      fields:
+        display-name:
+          name: 'Display Name'
+          desc: 'Logical display name of this product.'
+        display-item:
+          name: 'Display Item'
+          desc: 'The GUI item players see in the menu.'
+        add-lore:
+          name: 'Add Lore'
+          desc: 'Extra lore lines appended to the display item.'
+        price-mode:
+          name: 'Price Mode'
+          desc: 'How multiple prices are combined for payment.'
+        product-mode:
+          name: 'Product Mode'
+          desc: 'How multiple products are combined for reward delivery.'
+        products:
+          name: 'Products'
+          desc: 'Single thing entries the player receives or pays as products.'
+        buy-prices:
+          name: 'Buy Prices'
+          desc: 'Single thing entries consumed when buying.'
+        sell-prices:
+          name: 'Sell Prices'
+          desc: 'Single thing entries given when selling.'
+        conditions:
+          name: 'Shared Conditions'
+          desc: 'Legacy shared conditions for both buy and sell.'
+        buy-conditions:
+          name: 'Buy Conditions'
+          desc: 'Conditions checked only when buying.'
+        sell-conditions:
+          name: 'Sell Conditions'
+          desc: 'Conditions checked only when selling.'
+        display-conditions:
+          name: 'Display Conditions'
+          desc: 'Conditions that decide whether this product is shown.'
+        buy-actions:
+          name: 'Buy Actions'
+          desc: 'Actions executed after a successful buy.'
+        sell-actions:
+          name: 'Sell Actions'
+          desc: 'Actions executed after a successful sell.'
+        fail-actions:
+          name: 'Fail Actions'
+          desc: 'Actions executed when a trade fails.'
+        click-event:
+          name: 'Click Event'
+          desc: 'Custom click rules for this product button.'
+        buy-more:
+          name: 'Buy More'
+          desc: 'Whether this product can open the amount selection GUI.'
+        buy-more-menu:
+          name: 'Buy More Menu'
+          desc: 'Dedicated buy-more menu for this product.'
+        hide-message:
+          name: 'Hide Message'
+          desc: 'Hide this product success message.'
+        sell-all:
+          name: 'Enable Sell All'
+          desc: 'Allow this product to be handled by sell-all.'
+        as-sub-button:
+          name: 'As Sub Button'
+          desc: 'Show this product as a sub button of another product.'
+        bedrock:
+          name: 'Bedrock Settings'
+          desc: 'Bedrock specific display settings for this product.'
+        limits:
+          name: 'Shared Limits'
+          desc: 'Shared stock and usage limits for buy and sell.'
+        buy-limits:
+          name: 'Buy Limits'
+          desc: 'Stock or times limits applied to buying.'
+        sell-limits:
+          name: 'Sell Limits'
+          desc: 'Stock or times limits applied to selling.'
+        buy-times-reset-mode:
+          name: 'Buy Reset Mode'
+          desc: 'How the buy times counter resets.'
+        buy-times-reset-time:
+          name: 'Buy Reset Time'
+          desc: 'When the buy times counter resets.'
+        sell-times-reset-mode:
+          name: 'Sell Reset Mode'
+          desc: 'How the sell times counter resets.'
+        sell-times-reset-time:
+          name: 'Sell Reset Time'
+          desc: 'When the sell times counter resets.'
+    single_thing:
+      title: 'Single Thing Preset'
+      fields:
+        display:
+          name: 'Detected Thing Type'
+          desc: 'The plugin detects the single thing type from the fields that currently exist.'
+        inline-item:
+          name: 'ItemFormat'
+          desc: 'Drag an item here to refresh item-format fields while keeping common control fields.'
+        amount:
+          name: 'Amount'
+          desc: 'Amount value. Supports fixed numbers, formulas or placeholders depending on context.'
+        material:
+          name: 'Material'
+          desc: 'Base material for a vanilla item format.'
+        hook-plugin:
+          name: 'Hook Item Plugin'
+          desc: 'External item plugin name used by this single thing.'
+        hook-item:
+          name: 'Hook Item ID'
+          desc: 'External item id from the hooked plugin.'
+        match-item:
+          name: 'Match Item'
+          desc: 'Use match rules instead of an exact item stack.'
+        match-placeholder:
+          name: 'Match Placeholder'
+          desc: 'Placeholder used to read custom values for comparison.'
+        economy-plugin:
+          name: 'Economy Plugin'
+          desc: 'Economy provider plugin used by this price entry.'
+        economy-type:
+          name: 'Economy Type'
+          desc: 'Currency type, exp, levels, or multi-currency id.'
+        placeholder:
+          name: 'Display Placeholder'
+          desc: 'Display text used in lore and price placeholders.'
+        min-amount:
+          name: 'Min Amount'
+          desc: 'Minimum amount when the amount is dynamic.'
+        max-amount:
+          name: 'Max Amount'
+          desc: 'Maximum amount when the amount is dynamic.'
+        start-apply:
+          name: 'Start Apply'
+          desc: 'Start applying from this transaction count.'
+        end-apply:
+          name: 'End Apply'
+          desc: 'Stop applying after this transaction count.'
+        apply:
+          name: 'Apply List'
+          desc: 'Only apply on these transaction counts.'
+        apply-conditions:
+          name: 'Apply Conditions'
+          desc: 'Conditions that decide whether this single thing joins the current trade.'
+        require-conditions:
+          name: 'Require Conditions'
+          desc: 'Conditions that must pass after this single thing is selected.'
+        give-actions:
+          name: 'Give Actions'
+          desc: 'Actions executed when this single thing is given.'
+        take-actions:
+          name: 'Take Actions'
+          desc: 'Actions executed when this single thing is taken.'
+        give-item:
+          name: 'Give Item'
+          desc: 'If disabled, only give-actions run and the item itself is not given.'
+        take:
+          name: 'Take'
+          desc: 'If disabled, only check ownership instead of actually taking it.'
+    action_entry:
+      title: 'Action Preset'
+      fields:
+        type:
+          name: 'Type'
+          desc: 'Action type to execute.'
+        start-apply:
+          name: 'Start Apply'
+          desc: 'Start executing from this transaction count.'
+        end-apply:
+          name: 'End Apply'
+          desc: 'Stop executing after this transaction count.'
+        apply:
+          name: 'Apply List'
+          desc: 'Only execute on these transaction counts.'
+        multi-once:
+          name: 'Multi Once'
+          desc: 'Only execute once during multi-buy or multi-sell.'
+        sell-all-once:
+          name: 'Sell All Once'
+          desc: 'Only execute once during sell-all.'
+        open-once:
+          name: 'Open Once'
+          desc: 'Do not execute again when the menu reopens.'
+        click-type:
+          name: 'Click Type'
+          desc: 'Limit this action to a specific click type.'
+        bedrock-only:
+          name: 'Bedrock Only'
+          desc: 'Only execute for Bedrock players.'
+        java-only:
+          name: 'Java Only'
+          desc: 'Only execute for Java players.'
+        fail-type:
+          name: 'Fail Type'
+          desc: 'Only execute for the specified failure type.'
+        message:
+          name: 'Message'
+          desc: 'Message text sent by this action.'
+        main-title:
+          name: 'Main Title'
+          desc: 'Main title text.'
+        sub-title:
+          name: 'Sub Title'
+          desc: 'Subtitle text.'
+        fade-in:
+          name: 'Fade In'
+          desc: 'Fade in time in ticks.'
+        stay:
+          name: 'Stay'
+          desc: 'Stay time in ticks.'
+        fade-out:
+          name: 'Fade Out'
+          desc: 'Fade out time in ticks.'
+        sound:
+          name: 'Sound'
+          desc: 'Sound id to play.'
+        volume:
+          name: 'Volume'
+          desc: 'Volume value.'
+        particle:
+          name: 'Particle'
+          desc: 'Particle id to spawn.'
+        count:
+          name: 'Count'
+          desc: 'Number of particles to spawn.'
+        offset-x:
+          name: 'Offset X'
+          desc: 'Particle X offset.'
+        offset-y:
+          name: 'Offset Y'
+          desc: 'Particle Y offset.'
+        offset-z:
+          name: 'Offset Z'
+          desc: 'Particle Z offset.'
+        speed:
+          name: 'Speed'
+          desc: 'Particle speed.'
+        command:
+          name: 'Command'
+          desc: 'Command executed by this action.'
+        shop:
+          name: 'Shop'
+          desc: 'Target shop id used by this action.'
+        menu:
+          name: 'Menu'
+          desc: 'Target menu id used by this action.'
+        item:
+          name: 'Item'
+          desc: 'Target product or item id used by this action.'
+        amount:
+          name: 'Amount'
+          desc: 'Amount or count used by this action.'
+        sell-all:
+          name: 'Sell All'
+          desc: 'Whether the action should process all matching items.'
+        rate:
+          name: 'Chance'
+          desc: 'Success chance from 0 to 100.'
+        actions:
+          name: 'Nested Actions'
+          desc: 'Nested actions executed by this action.'
+        conditions:
+          name: 'Conditions'
+          desc: 'Conditions checked by this action.'
+        server:
+          name: 'Server'
+          desc: 'Target server name.'
+        potion:
+          name: 'Potion'
+          desc: 'Potion effect id.'
+        duration:
+          name: 'Duration'
+          desc: 'Duration in ticks.'
+        level:
+          name: 'Level'
+          desc: 'Level value used by this action.'
+        ambient:
+          name: 'Ambient'
+          desc: 'Whether the effect is ambient.'
+        particles:
+          name: 'Particles'
+          desc: 'Whether the effect shows particles.'
+        icon:
+          name: 'Icon'
+          desc: 'Whether the effect shows an icon.'
+        entity:
+          name: 'Entity'
+          desc: 'Entity or MythicMob id to spawn.'
+        world:
+          name: 'World'
+          desc: 'World name used by this action.'
+        x:
+          name: 'X'
+          desc: 'X coordinate.'
+        y:
+          name: 'Y'
+          desc: 'Y coordinate.'
+        z:
+          name: 'Z'
+          desc: 'Z coordinate.'
+        yaw:
+          name: 'Yaw'
+          desc: 'Yaw rotation.'
+        pitch:
+          name: 'Pitch'
+          desc: 'Pitch rotation or sound pitch.'
+    condition_entry:
+      title: 'Condition Preset'
+      fields:
+        type:
+          name: 'Type'
+          desc: 'Condition type to check.'
+        start-apply:
+          name: 'Start Apply'
+          desc: 'Start checking from this transaction count.'
+        end-apply:
+          name: 'End Apply'
+          desc: 'Stop checking after this transaction count.'
+        apply:
+          name: 'Apply List'
+          desc: 'Only check on these transaction counts.'
+        click-type:
+          name: 'Click Type'
+          desc: 'Limit this condition to a specific click type.'
+        bedrock-only:
+          name: 'Bedrock Only'
+          desc: 'Only check for Bedrock players.'
+        java-only:
+          name: 'Java Only'
+          desc: 'Only check for Java players.'
+        meet-actions:
+          name: 'Meet Actions'
+          desc: 'Actions executed when the condition passes.'
+        not-meet-actions:
+          name: 'Not Meet Actions'
+          desc: 'Actions executed when the condition fails.'
+        permission:
+          name: 'Permission'
+          desc: 'Permission node the player must have.'
+        placeholder:
+          name: 'Placeholder'
+          desc: 'Placeholder used by the condition.'
+        rule:
+          name: 'Rule'
+          desc: 'Comparison rule such as ==, >=, <=.'
+        value:
+          name: 'Value'
+          desc: 'Target value used for comparison.'
+        biome:
+          name: 'Biome'
+          desc: 'Required biome name.'
+        world:
+          name: 'World'
+          desc: 'Required world name.'
+        conditions:
+          name: 'Nested Conditions'
+          desc: 'Nested condition list used by this condition.'
+
+

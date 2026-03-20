@@ -384,6 +384,10 @@ public abstract class AbstractSingleThing implements Comparable<AbstractSingleTh
         int len2 = otherThing.getId().length();
         int minLength = Math.min(len1, len2);
 
+        if (getId() == null || otherThing.getId() == null) {
+            return -1;
+        }
+
         for (int i = 0; i < minLength; i++) {
             char c1 = getId().charAt(i);
             char c2 = otherThing.getId().charAt(i);

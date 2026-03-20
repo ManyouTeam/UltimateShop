@@ -55,6 +55,8 @@ commands:
 permissions:
   ultimateshop.generateitemformat:
     default: op
+  ultimateshop.editor:
+    default: op
   ultimateshop.givesellstick:
     default: op
   ultimateshop.menu:

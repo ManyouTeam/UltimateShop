@@ -4,7 +4,9 @@ import cn.superiormc.ultimateshop.objects.actions.AbstractRunAction;
 import cn.superiormc.ultimateshop.objects.ObjectThingRun;
 import cn.superiormc.ultimateshop.objects.actions.*;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class ActionManager {
@@ -63,5 +65,9 @@ public class ActionManager {
                 runAction.runAction(action, thingRun);
             }
         }
+    }
+
+    public List<String> getActionTypes() {
+        return new ArrayList<>(actions.keySet());
     }
 }

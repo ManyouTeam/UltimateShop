@@ -216,7 +216,7 @@ public class SellProductMethod {
             ItemPreTransactionEvent event = new ItemPreTransactionEvent(false, player, multi, item, giveResult, takeResult);
             Bukkit.getServer().getPluginManager().callEvent(event);
             if (event.isCancelled()) {
-                return ProductTradeStatus.NOT_ENOUGH;
+                return ProductTradeStatus.API_CANCEL;
             }
         }
         // price
@@ -321,7 +321,7 @@ public class SellProductMethod {
                 SchedulerUtil.runTaskAsynchronously(() -> CommonUtil.logFile(filePath, log));
             }
         }
-        ItemFinishTransactionEvent event = new ItemFinishTransactionEvent(true, player, multi, item);
+        ItemFinishTransactionEvent event = new ItemFinishTransactionEvent(false, player, multi, item);
         Bukkit.getServer().getPluginManager().callEvent(event);
         return new ProductTradeStatus(ProductTradeStatus.Status.DONE, takeResult, giveResult, multi);
     }

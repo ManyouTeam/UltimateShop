@@ -1,7 +1,6 @@
 package cn.superiormc.ultimateshop.objects.buttons;
 
 import cn.superiormc.ultimateshop.UltimateShop;
-import cn.superiormc.ultimateshop.gui.InvGUI;
 import cn.superiormc.ultimateshop.gui.form.FormInfoGUI;
 import cn.superiormc.ultimateshop.gui.inv.BuyMoreGUI;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
@@ -23,7 +22,6 @@ import cn.superiormc.ultimateshop.objects.menus.MenuSender;
 import cn.superiormc.ultimateshop.objects.menus.ObjectMoreMenu;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
 import cn.superiormc.ultimateshop.utils.ItemUtil;
-import cn.superiormc.ultimateshop.utils.PacketInventoryUtil;
 import cn.superiormc.ultimateshop.utils.TextUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -343,7 +341,7 @@ public class ObjectItem extends AbstractButton {
     }
 
     @Override
-    public void clickEvent(ClickType type, Player player, InvGUI invGUI) {
+    public void clickEvent(ClickType type, Player player) {
         if (empty) {
             return;
         }
@@ -360,10 +358,6 @@ public class ObjectItem extends AbstractButton {
                     ProductTradeStatus.Status status = BuyProductMethod.startBuy(this, player, !b).getStatus();
                     if (status != ProductTradeStatus.Status.DONE) {
                         failAction.runAllActions(new ObjectThingRun(player, type, status));
-                    } else {
-                        if (ConfigManager.configManager.getBoolean("menu.title-update.click-update") && UltimateShop.usePacketEvents) {
-                            PacketInventoryUtil.packetInventoryUtil.updateTitle(player, invGUI);
-                        }
                     }
                 }
                 return;
@@ -372,10 +366,6 @@ public class ObjectItem extends AbstractButton {
                     ProductTradeStatus.Status status = SellProductMethod.startSell(this, player, !b).getStatus();
                     if (status != ProductTradeStatus.Status.DONE) {
                         failAction.runAllActions(new ObjectThingRun(player, type, status));
-                    } else {
-                        if (ConfigManager.configManager.getBoolean("menu.title-update.click-update") && UltimateShop.usePacketEvents) {
-                            PacketInventoryUtil.packetInventoryUtil.updateTitle(player, invGUI);
-                        }
                     }
                 }
                 return;
@@ -384,19 +374,11 @@ public class ObjectItem extends AbstractButton {
                     ProductTradeStatus.Status status = SellProductMethod.startSell(this, player, !b).getStatus();
                     if (status != ProductTradeStatus.Status.DONE) {
                         failAction.runAllActions(new ObjectThingRun(player, type, status));
-                    } else {
-                        if (ConfigManager.configManager.getBoolean("menu.title-update.click-update") && UltimateShop.usePacketEvents) {
-                            PacketInventoryUtil.packetInventoryUtil.updateTitle(player, invGUI);
-                        }
                     }
                 } else if (!buyPrice.empty) {
                     ProductTradeStatus.Status status = BuyProductMethod.startBuy(this, player, !b).getStatus();
                     if (status != ProductTradeStatus.Status.DONE) {
                         failAction.runAllActions(new ObjectThingRun(player, type, status));
-                    } else {
-                        if (ConfigManager.configManager.getBoolean("menu.title-update.click-update") && UltimateShop.usePacketEvents) {
-                            PacketInventoryUtil.packetInventoryUtil.updateTitle(player, invGUI);
-                        }
                     }
                 }
                 return;
@@ -410,10 +392,6 @@ public class ObjectItem extends AbstractButton {
                             1).getStatus();
                     if (status != ProductTradeStatus.Status.DONE) {
                         failAction.runAllActions(new ObjectThingRun(player, type, status));
-                    } else {
-                        if (ConfigManager.configManager.getBoolean("menu.title-update.click-update") && UltimateShop.usePacketEvents) {
-                            PacketInventoryUtil.packetInventoryUtil.updateTitle(player, invGUI);
-                        }
                     }
                 }
                 return;

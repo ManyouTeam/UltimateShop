@@ -23,6 +23,8 @@ public class ProductTradeStatus {
 
     public static ProductTradeStatus INVENTORY_FULL = new ProductTradeStatus(Status.INVENTORY_FULL);
 
+    public static ProductTradeStatus API_CANCEL = new ProductTradeStatus(Status.API_CANCEL);
+
     private GiveResult giveResult = null;
 
     private TakeResult takeResult = null;
@@ -81,6 +83,7 @@ public class ProductTradeStatus {
         NOT_ENOUGH,
         REQUIRE_CONDITION_NOT_MEET,
         INVENTORY_FULL,
+        API_CANCEL,
         DONE
     }
 }

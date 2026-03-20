@@ -1,6 +1,7 @@
 package cn.superiormc.ultimateshop.managers;
 
 import cn.superiormc.ultimateshop.UltimateShop;
+import cn.superiormc.ultimateshop.editor.EditorChatListener;
 import cn.superiormc.ultimateshop.listeners.CacheListener;
 import cn.superiormc.ultimateshop.listeners.SellChestListener;
 import cn.superiormc.ultimateshop.listeners.SellStickListener;
@@ -18,6 +19,7 @@ public class ListenerManager {
 
     private void registerListeners(){
         Bukkit.getPluginManager().registerEvents(new CacheListener(), UltimateShop.instance);
+        Bukkit.getPluginManager().registerEvents(new EditorChatListener(), UltimateShop.instance);
         if (!UltimateShop.freeVersion) {
             Bukkit.getPluginManager().registerEvents(new SellStickListener(), UltimateShop.instance);
             if (!UltimateShop.isFolia) {
