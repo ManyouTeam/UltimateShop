@@ -51,7 +51,7 @@ public class ObjectShop {
 
     private void initProducts() {
         if (config.getConfigurationSection("items") == null) {
-            ErrorManager.errorManager.sendErrorMessage("搂cError: Can not get items section in your shop config!!");
+            ErrorManager.errorManager.sendErrorMessage("§cError: Can not get items section in your shop config!!");
             return;
         }
         for (String s : config.getConfigurationSection("items").getKeys(false)) {
