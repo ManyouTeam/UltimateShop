@@ -215,6 +215,9 @@ public class SellProductMethod {
             giveResult = item.getSellPrice().give(player, playerUseTimes, multi);
             ItemPreTransactionEvent event = new ItemPreTransactionEvent(false, player, multi, item, giveResult, takeResult);
             Bukkit.getServer().getPluginManager().callEvent(event);
+            if (event.isCancelled()) {
+                return ProductTradeStatus.NOT_ENOUGH;
+            }
         }
         // price
         if (!takeResult.getResultBoolean()) {
