@@ -13,6 +13,7 @@ public class EditorCommand extends AbstractCommand {
         this.requiredPermission = "ultimateshop." + id;
         this.onlyInGame = true;
         this.requiredArgLength = new Integer[]{1, 3};
+        this.premiumOnly = true;
     }
 
     @Override

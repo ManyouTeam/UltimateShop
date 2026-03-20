@@ -352,6 +352,9 @@ editor:
       desc: '&7Open the raw section fallback editor'
     reload:
       desc: '&7Apply changes to live shop/menu objects'
+    add-limit-group:
+      name: '&eAdd Limit Group'
+      desc: '&7Create a new named condition group for this limit section'
   item:
     title: 'Item Editor: {path}'
     slot:
@@ -408,16 +411,22 @@ editor:
     cancel-keyword: 'cancel'
     cancel-tip: '&7Type &f{value} &7to abort this edit.'
     new-entry-id: 'Input the new entry id'
+    new-condition-id: 'Input the new condition group id'
     string: 'Input the new string for &f{path}'
     integer: 'Input the new integer for &f{path}'
     double: 'Input the new number for &f{path}'
     string-list: 'Input the new list for &f{path} &7(use &f;; &7as separator)'
+    string-list-entry: 'Input the new list entry for &f{path}'
+    string-list-entry-edit: 'Input the new value for list entry &f#{index}'
     integer-list: 'Input the new integer list for &f{path} &7(use &f;; &7as separator)'
-    new-child: 'Input &fkey type &7for the new child. Example: &fdisplay-name string'
+    integer-list-entry: 'Input the new integer list entry for &f{path}'
+    integer-list-entry-edit: 'Input the new integer for list entry &f#{index}'
+    new-child: 'Input the key name for the new child'
   message:
     target-not-found: '&cTarget file not found.'
     saved: '&aSaved &f{value}'
     save-failed: '&cFailed to save file: {value}'
+    empty-id: '&cEntry id cannot be empty.'
     unknown-type: '&cUnknown type. Use section/string/int/double/boolean/list/int-list.'
     invalid-integer: '&cThat is not a valid integer.'
     invalid-number: '&cThat is not a valid number.'
@@ -425,6 +434,40 @@ editor:
     child-format: '&cUse format: key type'
     command-usage: '&cUse /shop editor [shop|menu] <id>'
     target-missing: '&cCould not find {scope}: {id}'
+  list:
+    title: 'List Editor: {path}'
+    current: '&7Current: &f{value}'
+    add:
+      name: '&eAdd Line'
+      desc: '&7Add a new line to this list'
+    clear:
+      name: '&cClear List'
+      desc: '&7Remove all entries from this list'
+    move-up: '&eShift-left to move up'
+    move-down: '&eShift-right to move down'
+  sub-button:
+    title: 'Sub Button: {path}'
+    current: '&7Current: &f{value}'
+    not-set: '<not set>'
+    same-shop:
+      name: '&eCurrent Shop Product'
+    cross-shop:
+      name: '&eTarget Shop'
+    cross-product:
+      name: '&eTarget Product'
+    preview:
+      name: '&ePreview'
+    same-preview: '&7Same shop: &f{value}'
+    cross-preview: '&7Cross shop: &f{value}'
+    apply-same:
+      name: '&aUse Current Shop Target'
+      desc: '&7Save as &fProductID'
+    apply-cross:
+      name: '&aUse Cross Shop Target'
+      desc: '&7Save as &fShopID;;ProductID'
+    clear:
+      name: '&cClear'
+      desc: '&7Remove the as-sub-button value'
   presets:
     root_shop:
       title: 'Shop Preset'
@@ -451,6 +494,12 @@ editor:
           custom-command:
             name: 'Custom Command'
             desc: 'Register custom open commands for this shop.'
+            name:
+              name: 'Command Name'
+              desc: 'Command players can use to open this shop.'
+            description:
+              name: 'Command Description'
+              desc: 'Description shown for this shop command.'
         general-configs:
           name: 'General Configs'
           desc: 'Default values shared by all products in this shop.'
@@ -475,6 +524,12 @@ editor:
         bedrock:
           name: 'Bedrock Settings'
           desc: 'Bedrock specific display and compatibility settings.'
+          enabled:
+            name: 'Enabled'
+            desc: 'Whether this menu should use Bedrock-specific support.'
+          content:
+            name: 'Content'
+            desc: 'Bedrock-specific content value for this menu.'
         layout:
           name: 'Layout'
           desc: 'Layout string list used to place buttons and products.'
@@ -493,6 +548,12 @@ editor:
         custom-command:
           name: 'Custom Command'
           desc: 'Register custom open commands for this menu.'
+          name:
+            name: 'Command Name'
+            desc: 'Command players can use to open this menu.'
+          description:
+            name: 'Command Description'
+            desc: 'Description shown for this menu command.'
     shop_item:
       title: 'Product Preset'
       fields:
@@ -562,27 +623,80 @@ editor:
         bedrock:
           name: 'Bedrock Settings'
           desc: 'Bedrock specific display settings for this product.'
+          hide:
+            name: 'Hide'
+            desc: 'Whether this product should be hidden on Bedrock.'
+          icon:
+            name: 'Icon'
+            desc: 'Bedrock icon value or url for this product.'
         limits:
           name: 'Shared Limits'
           desc: 'Shared stock and usage limits for buy and sell.'
+        limits-conditions:
+          name: 'Shared Limit Groups'
+          desc: 'Named condition groups used by the shared limit section.'
         buy-limits:
           name: 'Buy Limits'
           desc: 'Stock or times limits applied to buying.'
+        buy-limits-conditions:
+          name: 'Buy Limit Groups'
+          desc: 'Named condition groups used by the buy limit section.'
         sell-limits:
           name: 'Sell Limits'
           desc: 'Stock or times limits applied to selling.'
+        sell-limits-conditions:
+          name: 'Sell Limit Groups'
+          desc: 'Named condition groups used by the sell limit section.'
         buy-times-reset-mode:
           name: 'Buy Reset Mode'
           desc: 'How the buy times counter resets.'
         buy-times-reset-time:
           name: 'Buy Reset Time'
           desc: 'When the buy times counter resets.'
+        buy-times-reset-time-format:
+          name: 'Buy Reset Time Format'
+          desc: 'Time format used to parse the buy reset time value.'
+        buy-times-reset-value:
+          name: 'Buy Reset Value'
+          desc: 'Value applied when the buy times counter resets.'
+        buy-times-max-value:
+          name: 'Buy Max Value'
+          desc: 'Maximum buy times value allowed before reset.'
         sell-times-reset-mode:
           name: 'Sell Reset Mode'
           desc: 'How the sell times counter resets.'
         sell-times-reset-time:
           name: 'Sell Reset Time'
           desc: 'When the sell times counter resets.'
+        sell-times-reset-time-format:
+          name: 'Sell Reset Time Format'
+          desc: 'Time format used to parse the sell reset time value.'
+        sell-times-reset-value:
+          name: 'Sell Reset Value'
+          desc: 'Value applied when the sell times counter resets.'
+        sell-times-max-value:
+          name: 'Sell Max Value'
+          desc: 'Maximum sell times value allowed before reset.'
+    button_entry:
+      title: 'Button Preset'
+      fields:
+        display-item:
+          name: 'Display Item'
+          desc: 'The display item used for this button.'
+        actions:
+          name: 'Actions'
+          desc: 'Actions executed after clicking this button.'
+        fail-actions:
+          name: 'Fail Actions'
+          desc: 'Actions executed when button conditions are not met.'
+        conditions:
+          name: 'Conditions'
+          desc: 'Conditions that must be met before this button can be used.'
+        display-conditions:
+          name: 'Display Conditions'
+          desc: 'Conditions that decide whether this button is shown.'
+    limits_section:
+      title: 'Limit Section Preset'
     single_thing:
       title: 'Single Thing Preset'
       fields:

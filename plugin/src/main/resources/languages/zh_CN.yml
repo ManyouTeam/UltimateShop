@@ -426,7 +426,11 @@ editor:
     integer: '请输入 &f{path} &7的新整数值'
     double: '请输入 &f{path} &7的新数字值'
     string-list: '请输入 &f{path} &7的新字符串列表，使用 &f;; &7分隔'
+    string-list-entry: '请输入 &f{path} &7的新列表项'
+    string-list-entry-edit: '请输入列表项 &f#{index} &7的新值'
     integer-list: '请输入 &f{path} &7的新整数列表，使用 &f;; &7分隔'
+    integer-list-entry: '请输入 &f{path} &7的新整数列表项'
+    integer-list-entry-edit: '请输入列表项 &f#{index} &7的新整数值'
     new-child: '请输入新子节点的键名'
   message:
     target-not-found: '&c找不到目标文件。'
@@ -440,6 +444,40 @@ editor:
     child-format: '&c请输入: 键名 类型'
     command-usage: '&c请使用 /shop editor [shop|menu] <id>'
     target-missing: '&c找不到{scope}: {id}'
+  list:
+    title: '列表编辑器: {path}'
+    current: '&7当前值: &f{value}'
+    add:
+      name: '&e新增一行'
+      desc: '&7向这个列表添加一行'
+    clear:
+      name: '&c清空列表'
+      desc: '&7删除这个列表中的全部条目'
+    move-up: '&eShift+左键上移'
+    move-down: '&eShift+右键下移'
+  sub-button:
+    title: '子按钮: {path}'
+    current: '&7当前值: &f{value}'
+    not-set: '<未设置>'
+    same-shop:
+      name: '&e当前商店商品'
+    cross-shop:
+      name: '&e目标商店'
+    cross-product:
+      name: '&e目标商品'
+    preview:
+      name: '&e预览'
+    same-preview: '&7同商店: &f{value}'
+    cross-preview: '&7跨商店: &f{value}'
+    apply-same:
+      name: '&a使用当前商店目标'
+      desc: '&7保存为 &fProductID'
+    apply-cross:
+      name: '&a使用跨商店目标'
+      desc: '&7保存为 &fShopID;;ProductID'
+    clear:
+      name: '&c清除'
+      desc: '&7删除 as-sub-button 的值'
   presets:
     root_shop:
       title: '商店预设'
@@ -466,6 +504,12 @@ editor:
           custom-command:
             name: '自定义命令'
             desc: '给这个商店注册专属打开命令。'
+            name:
+              name: '命令名称'
+              desc: '玩家可以用来打开这个商店的指令名。'
+            description:
+              name: '命令描述'
+              desc: '这个商店指令显示的描述文本。'
         general-configs:
           name: '通用配置'
           desc: '对这个商店所有商品生效的默认值。'
@@ -490,6 +534,12 @@ editor:
         bedrock:
           name: '基岩版设置'
           desc: '基岩版显示和兼容相关设置。'
+          enabled:
+            name: '启用'
+            desc: '这个菜单是否启用基岩版兼容支持。'
+          content:
+            name: '内容'
+            desc: '这个菜单使用的基岩版内容值。'
         layout:
           name: '布局'
           desc: '用于放置按钮和商品的布局字符串列表。'
@@ -508,6 +558,12 @@ editor:
         custom-command:
           name: '自定义命令'
           desc: '给这个菜单注册专属打开命令。'
+          name:
+            name: '命令名称'
+            desc: '玩家可以用来打开这个菜单的指令名。'
+          description:
+            name: '命令描述'
+            desc: '这个菜单指令显示的描述文本。'
     shop_item:
       title: '商品预设'
       fields:
@@ -577,6 +633,12 @@ editor:
         bedrock:
           name: '基岩版设置'
           desc: '这个商品的基岩版专用显示设置。'
+          hide:
+            name: '隐藏'
+            desc: '是否在基岩版中隐藏这个商品。'
+          icon:
+            name: '图标'
+            desc: '这个商品的基岩版图标值或 url。'
         limits:
           name: '共享限制'
           desc: '买卖共用的库存/次数限制。'
@@ -601,12 +663,50 @@ editor:
         buy-times-reset-time:
           name: '购买重置时间'
           desc: '购买次数在什么时间重置。'
+        buy-times-reset-time-format:
+          name: '购买重置时间格式'
+          desc: '用于解析购买重置时间的时间格式。'
+        buy-times-reset-value:
+          name: '购买重置值'
+          desc: '购买次数重置时设置成的值。'
+        buy-times-max-value:
+          name: '购买最大值'
+          desc: '重置前允许达到的购买次数上限。'
         sell-times-reset-mode:
           name: '出售重置模式'
           desc: '出售次数按照什么规则重置。'
         sell-times-reset-time:
           name: '出售重置时间'
           desc: '出售次数在什么时间重置。'
+        sell-times-reset-time-format:
+          name: '出售重置时间格式'
+          desc: '用于解析出售重置时间的时间格式。'
+        sell-times-reset-value:
+          name: '出售重置值'
+          desc: '出售次数重置时设置成的值。'
+        sell-times-max-value:
+          name: '出售最大值'
+          desc: '重置前允许达到的出售次数上限。'
+    button_entry:
+      title: '按钮预设'
+      fields:
+        display-item:
+          name: '显示物品'
+          desc: '这个按钮使用的显示物品。'
+        actions:
+          name: '动作'
+          desc: '点击这个按钮后执行的动作。'
+        fail-actions:
+          name: '失败动作'
+          desc: '当按钮条件不满足时执行的动作。'
+        conditions:
+          name: '条件'
+          desc: '使用这个按钮前必须满足的条件。'
+        display-conditions:
+          name: '显示条件'
+          desc: '决定这个按钮是否显示的条件。'
+    limits_section:
+      title: '限制预设'
     single_thing:
       title: 'Single Thing 预设'
       fields:
