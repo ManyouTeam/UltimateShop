@@ -84,7 +84,7 @@ public class ShopGUI extends InvGUI {
         if (menuButtons.get(slot) == null) {
             return true;
         }
-        menuButtons.get(slot).clickEvent(type, player, this);
+        menuButtons.get(slot).clickEvent(type, player);
         if (ConfigManager.configManager.getBooleanOrDefault("menu.shop.click-update", "menu.menu-update.click-update")) {
             constructGUI();
         } else {

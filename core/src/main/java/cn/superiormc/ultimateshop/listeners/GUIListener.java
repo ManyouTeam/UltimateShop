@@ -58,6 +58,10 @@ public class GUIListener implements Listener {
                 if (CommonUtil.getMajorVersion(16) && e.getClick() == ClickType.SWAP_OFFHAND && e.isCancelled()) {
                     player.getInventory().setItemInOffHand(player.getInventory().getItemInOffHand());
                 }
+                if (ConfigManager.configManager.getBoolean("menu.title-update.click-update") && UltimateShop.usePacketEvents
+                        && player.getOpenInventory().getTopInventory().equals(gui.getInv())) {
+                    PacketInventoryUtil.packetInventoryUtil.updateTitle(player, gui);
+                }
             }
         } catch (Throwable throwable) {
             ErrorManager.errorManager.sendErrorMessage("§cError: Your menu configs has wrong, error message: " + throwable.getMessage());
