@@ -8,18 +8,22 @@
     <parent>
         <groupId>cn.superiormc.ultimateshop</groupId>
         <artifactId>UltimateShop</artifactId>
-        <version>4.3.5</version>
+        <version>${revision}</version>
         <relativePath>../pom.xml</relativePath> <!-- 如果 plugin 和根目录同级 -->
     </parent>
 
     <build>
-        <finalName>${project.name}-${project.version}</finalName>
+        <finalName>${name}-${revision}</finalName>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
     </build>
 
     <artifactId>plugin</artifactId>
     <packaging>jar</packaging>
-    <version>4.3.5</version>
-    <name>UltimateShop</name>
 
     <dependencies>
         <!-- Core module -->
