@@ -131,7 +131,7 @@ public class DebuildItem {
             // Tool
             if (CommonUtil.getMajorVersion(21)) {
                 ToolComponent toolComponent = meta.getTool();
-                if (toolComponent.getDamagePerBlock() != 0) {
+                if (toolComponent.getDamagePerBlock() != 0 && toolComponent.getDamagePerBlock() != 1) {
                     section.set("tool.damage-per-block", toolComponent.getDamagePerBlock());
                 }
                 if (toolComponent.getDefaultMiningSpeed() != 1) {

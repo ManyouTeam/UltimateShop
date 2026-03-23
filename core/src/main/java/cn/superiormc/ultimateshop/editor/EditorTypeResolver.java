@@ -101,6 +101,18 @@ public class EditorTypeResolver {
                 || last.equals("sell-limits-conditions");
     }
 
+    public static boolean isClickEventSection(String path) {
+        return lastSegment(path).equals("click-event");
+    }
+
+    public static boolean isResetTimeKey(String key) {
+        if (key == null) {
+            return false;
+        }
+        String normalized = key.toLowerCase(Locale.ENGLISH);
+        return normalized.equals("buy-times-reset-time") || normalized.equals("sell-times-reset-time");
+    }
+
     public static boolean isEconomySection(String path, ConfigurationSection section) {
         return section.contains("economy-plugin")
                 || section.contains("economy-type")
@@ -110,6 +122,9 @@ public class EditorTypeResolver {
 
     public static boolean isItemSection(String path, ConfigurationSection section) {
         String lowerPath = path.toLowerCase(Locale.ENGLISH);
+        if (lowerPath.contains("match-item")) {
+            return false;
+        }
         return lowerPath.endsWith("display-item")
                 || lowerPath.endsWith("content")
                 || lowerPath.endsWith("convert")

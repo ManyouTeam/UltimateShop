@@ -1,7 +1,7 @@
 package cn.superiormc.ultimateshop.managers;
 
 import cn.superiormc.ultimateshop.UltimateShop;
-import cn.superiormc.ultimateshop.editor.EditorChatListener;
+import cn.superiormc.ultimateshop.listeners.EditorChatListener;
 import cn.superiormc.ultimateshop.listeners.CacheListener;
 import cn.superiormc.ultimateshop.listeners.SellChestListener;
 import cn.superiormc.ultimateshop.listeners.SellStickListener;

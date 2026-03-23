@@ -1,6 +1,8 @@
 package cn.superiormc.ultimateshop.editor;
 
 import cn.superiormc.ultimateshop.UltimateShop;
+import cn.superiormc.ultimateshop.gui.InvGUI;
+import cn.superiormc.ultimateshop.managers.EditorManager;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
@@ -10,7 +12,7 @@ import org.bukkit.inventory.Inventory;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EditorSubButtonValueGUI extends cn.superiormc.ultimateshop.gui.InvGUI {
+public class EditorSubButtonValueGUI extends InvGUI {
 
     private final EditorTarget target;
 

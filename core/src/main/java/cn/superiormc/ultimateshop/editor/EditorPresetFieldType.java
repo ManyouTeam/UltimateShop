@@ -10,8 +10,11 @@ public enum EditorPresetFieldType {
     DOUBLE,
     STRING_LIST,
     INTEGER_LIST,
+    CLICK_TYPE_BINDING,
+    RESET_TIME,
     SECTION,
     ACTIONS,
     CONDITIONS,
-    ITEM_INLINE
+    ITEM_INLINE,
+    ECONOMY_INLINE
 }

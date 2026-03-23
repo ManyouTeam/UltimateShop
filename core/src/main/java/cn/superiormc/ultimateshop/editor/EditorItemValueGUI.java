@@ -2,6 +2,7 @@ package cn.superiormc.ultimateshop.editor;
 
 import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.gui.InvGUI;
+import cn.superiormc.ultimateshop.managers.EditorManager;
 import cn.superiormc.ultimateshop.methods.Items.BuildItem;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
@@ -57,7 +58,10 @@ public class EditorItemValueGUI extends InvGUI {
                         EditorLang.text(player, "editor.item.slot.line-1", "&7Put the target item into slot 13."),
                         EditorLang.text(player, "editor.item.slot.line-2", "&7Then click save to DebuildItem into yaml.")
                 )));
-        inv.setItem(22, EditorUtil.createItem(Material.EMERALD,
+        inv.setItem(22, EditorUtil.createItem(Material.CHEST,
+                EditorLang.text(player, "editor.item.raw.name", "&eRaw Section"),
+                List.of(EditorLang.text(player, "editor.item.raw.desc", "&7Open all keys inside this item section"))));
+        inv.setItem(23, EditorUtil.createItem(Material.EMERALD,
                 EditorLang.text(player, "editor.item.apply.name", "&aApply Item"),
                 List.of(EditorLang.text(player, "editor.item.apply.desc", "&7Serialize slot 13 into the current section"))));
         inv.setItem(24, EditorUtil.createItem(Material.BARRIER,
@@ -74,6 +78,10 @@ public class EditorItemValueGUI extends InvGUI {
             return false;
         }
         if (slot == 22) {
+            EditorManager.editorManager.openTarget(player, target, path, 0);
+            return true;
+        }
+        if (slot == 23) {
             ItemStack itemStack = inv.getItem(EDIT_SLOT);
             if (itemStack == null || itemStack.getType().isAir()) {
                 return true;

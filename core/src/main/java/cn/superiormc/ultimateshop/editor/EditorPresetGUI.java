@@ -2,6 +2,7 @@ package cn.superiormc.ultimateshop.editor;
 
 import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.gui.InvGUI;
+import cn.superiormc.ultimateshop.managers.EditorManager;
 import cn.superiormc.ultimateshop.managers.HookManager;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
@@ -82,7 +83,7 @@ public class EditorPresetGUI extends InvGUI {
             lore.add(EditorLang.text(player, "editor.lore.not-set", "&7Current: &f<not set>"));
         }
         switch (field.getType()) {
-            case SECTION, ACTIONS, CONDITIONS, ITEM_INLINE, STRING_LIST, INTEGER_LIST:
+            case SECTION, ACTIONS, CONDITIONS, ITEM_INLINE, ECONOMY_INLINE, STRING_LIST, INTEGER_LIST, CLICK_TYPE_BINDING, RESET_TIME:
                 lore.add(EditorLang.text(player, "editor.action.open", "&aLeft click to open"));
                 if (field.getType() == EditorPresetFieldType.STRING_LIST || field.getType() == EditorPresetFieldType.INTEGER_LIST) {
                     lore.add(EditorLang.text(player, "editor.action.delete", "&cRight click to delete"));
@@ -96,6 +97,13 @@ public class EditorPresetGUI extends InvGUI {
             case BOOLEAN:
                 lore.add(EditorLang.text(player, "editor.action.toggle", "&aLeft click to toggle"));
                 lore.add(EditorLang.text(player, "editor.action.delete", "&cRight click to delete"));
+                break;
+            case INTEGER, DOUBLE:
+                lore.add(EditorLang.text(player, "editor.action.increase-ten", "&aLeft click to add 10"));
+                lore.add(EditorLang.text(player, "editor.action.decrease-ten", "&cRight click to subtract 10"));
+                lore.add(EditorLang.text(player, "editor.action.increase-one", "&aShift-left to add 1"));
+                lore.add(EditorLang.text(player, "editor.action.decrease-one", "&cShift-right to subtract 1"));
+                lore.add(EditorLang.text(player, "editor.action.middle-clear", "&eMiddle click to clear"));
                 break;
             case DISPLAY:
                 lore.add(EditorLang.text(player, "editor.action.read-only", "&7Read-only summary"));
@@ -150,7 +158,12 @@ public class EditorPresetGUI extends InvGUI {
                     && field.getType() != EditorPresetFieldType.SECTION
                     && field.getType() != EditorPresetFieldType.ACTIONS
                     && field.getType() != EditorPresetFieldType.CONDITIONS
-                    && field.getType() != EditorPresetFieldType.ITEM_INLINE) {
+                    && field.getType() != EditorPresetFieldType.ITEM_INLINE
+                    && field.getType() != EditorPresetFieldType.ECONOMY_INLINE
+                    && field.getType() != EditorPresetFieldType.INTEGER
+                    && field.getType() != EditorPresetFieldType.DOUBLE
+                    && field.getType() != EditorPresetFieldType.CLICK_TYPE_BINDING
+                    && field.getType() != EditorPresetFieldType.RESET_TIME) {
                 if (preset.getKind() == EditorPresetKind.LIMITS_SECTION
                         && !field.getKey().equals("default")
                         && !field.getKey().equals("global")) {
@@ -185,6 +198,10 @@ public class EditorPresetGUI extends InvGUI {
                     new EditorThingItemValueGUI(player, target, path).openGUI(true);
                     return true;
                 }
+                case ECONOMY_INLINE -> {
+                    new EditorThingEconomyValueGUI(player, target, path).openGUI(true);
+                    return true;
+                }
                 case BOOLEAN -> {
                     boolean current = target.getConfig().getBoolean(fullPath);
                     EditorManager.editorManager.setValue(player, target, fullPath, !current);
@@ -209,17 +226,41 @@ public class EditorPresetGUI extends InvGUI {
                     return true;
                 }
                 case STRING_CHOICE -> {
-                    cycle(fullPath, field.getChoices(), type.isShiftClick());
+                        cycle(fullPath, field.getChoices(), type.isShiftClick());
+                    return true;
+                }
+                case CLICK_TYPE_BINDING -> {
+                    new EditorClickTypeBindingGUI(player, target, fullPath, path).openGUI(true);
+                    return true;
+                }
+                case RESET_TIME -> {
+                    new EditorResetTimeValueGUI(player, target, fullPath, path).openGUI(true);
                     return true;
                 }
                 case INTEGER -> {
-                    EditorManager.editorManager.promptInteger(player, target, fullPath,
-                            () -> EditorManager.editorManager.openTarget(player, target, path, 0));
+                    if (type == ClickType.MIDDLE) {
+                        EditorManager.editorManager.removeValue(player, target, fullPath);
+                    } else {
+                        int delta = resolveIntegerDelta(type);
+                        if (delta != 0) {
+                            int current = target.getConfig().getInt(fullPath, 0);
+                            EditorManager.editorManager.setValue(player, target, fullPath, current + delta);
+                        }
+                    }
+                    EditorManager.editorManager.openTarget(player, target, path, 0);
                     return true;
                 }
                 case DOUBLE -> {
-                    EditorManager.editorManager.promptDouble(player, target, fullPath,
-                            () -> EditorManager.editorManager.openTarget(player, target, path, 0));
+                    if (type == ClickType.MIDDLE) {
+                        EditorManager.editorManager.removeValue(player, target, fullPath);
+                    } else {
+                        double delta = resolveDoubleDelta(type);
+                        if (delta != 0) {
+                            double current = target.getConfig().getDouble(fullPath, 0D);
+                            EditorManager.editorManager.setValue(player, target, fullPath, current + delta);
+                        }
+                    }
+                    EditorManager.editorManager.openTarget(player, target, path, 0);
                     return true;
                 }
                 case STRING_LIST -> {
@@ -252,6 +293,8 @@ public class EditorPresetGUI extends InvGUI {
         }
         if (slot == 50 && preset.getKind() == EditorPresetKind.LIMITS_SECTION) {
             EditorManager.editorManager.promptCreateLimitConditionGroup(player, target, path,
+                    groupId -> EditorManager.editorManager.openTarget(player, target,
+                            EditorManager.editorManager.getLimitConditionsPathFor(path) + "." + groupId, 0),
                     () -> EditorManager.editorManager.openTarget(player, target, path, 0));
             return true;
         }
@@ -284,5 +327,25 @@ public class EditorPresetGUI extends InvGUI {
             return "";
         }
         return path.isEmpty() ? field.getKey() : path + "." + field.getKey();
+    }
+
+    private int resolveIntegerDelta(ClickType type) {
+        if (type.isShiftClick() && type.isLeftClick()) {
+            return 1;
+        }
+        if (type.isShiftClick() && type.isRightClick()) {
+            return -1;
+        }
+        if (type.isLeftClick()) {
+            return 10;
+        }
+        if (type.isRightClick()) {
+            return -10;
+        }
+        return 0;
+    }
+
+    private double resolveDoubleDelta(ClickType type) {
+        return resolveIntegerDelta(type);
     }
 }

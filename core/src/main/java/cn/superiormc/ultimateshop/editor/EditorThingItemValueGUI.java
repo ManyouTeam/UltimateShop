@@ -2,16 +2,15 @@ package cn.superiormc.ultimateshop.editor;
 
 import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.gui.InvGUI;
+import cn.superiormc.ultimateshop.managers.EditorManager;
 import cn.superiormc.ultimateshop.methods.Items.BuildItem;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.MemoryConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -60,7 +59,27 @@ public class EditorThingItemValueGUI extends InvGUI {
                         EditorLang.text(player, "editor.thing-item.slot.line-2", "&7This only refreshes item-format fields."),
                         EditorLang.text(player, "editor.thing-item.slot.line-3", "&7Common single thing options are preserved.")
                 )));
-        inv.setItem(22, EditorUtil.createItem(Material.EMERALD,
+        inv.setItem(18, EditorUtil.createItem(Material.COMPARATOR,
+                EditorLang.text(player, "editor.thing-item.apply-conditions.name", "&eApply Conditions"),
+                List.of(EditorLang.text(player, "editor.thing-item.apply-conditions.desc",
+                        "&7Open apply-conditions for this single thing"))));
+        inv.setItem(19, EditorUtil.createItem(Material.COMPARATOR,
+                EditorLang.text(player, "editor.thing-item.require-conditions.name", "&eRequire Conditions"),
+                List.of(EditorLang.text(player, "editor.thing-item.require-conditions.desc",
+                        "&7Open require-conditions for this single thing"))));
+        inv.setItem(20, EditorUtil.createItem(Material.BLAZE_POWDER,
+                EditorLang.text(player, "editor.thing-item.give-actions.name", "&eGive Actions"),
+                List.of(EditorLang.text(player, "editor.thing-item.give-actions.desc",
+                        "&7Open give-actions for this single thing"))));
+        inv.setItem(21, EditorUtil.createItem(Material.BLAZE_POWDER,
+                EditorLang.text(player, "editor.thing-item.take-actions.name", "&eTake Actions"),
+                List.of(EditorLang.text(player, "editor.thing-item.take-actions.desc",
+                        "&7Open take-actions for this single thing"))));
+        inv.setItem(22, EditorUtil.createItem(Material.BOOK,
+                EditorLang.text(player, "editor.thing-item.preset.name", "&ePreset Editor"),
+                List.of(EditorLang.text(player, "editor.thing-item.preset.desc",
+                        "&7Return to the single thing preset editor"))));
+        inv.setItem(23, EditorUtil.createItem(Material.EMERALD,
                 EditorLang.text(player, "editor.thing-item.apply.name", "&aApply ItemFormat"),
                 List.of(EditorLang.text(player, "editor.thing-item.apply.desc", "&7Update item data inside this single thing"))));
         inv.setItem(24, EditorUtil.createItem(Material.BARRIER,
@@ -76,7 +95,27 @@ public class EditorThingItemValueGUI extends InvGUI {
         if (slot == EDIT_SLOT) {
             return false;
         }
+        if (slot == 18) {
+            openNestedSection(path + ".apply-conditions");
+            return true;
+        }
+        if (slot == 19) {
+            openNestedSection(path + ".require-conditions");
+            return true;
+        }
+        if (slot == 20) {
+            openNestedSection(path + ".give-actions");
+            return true;
+        }
+        if (slot == 21) {
+            openNestedSection(path + ".take-actions");
+            return true;
+        }
         if (slot == 22) {
+            EditorManager.editorManager.openTarget(player, target, path, 0);
+            return true;
+        }
+        if (slot == 23) {
             ItemStack itemStack = inv.getItem(EDIT_SLOT);
             if (itemStack == null || itemStack.getType().isAir()) {
                 return true;
@@ -95,6 +134,12 @@ public class EditorThingItemValueGUI extends InvGUI {
             return true;
         }
         return true;
+    }
+
+    private void openNestedSection(String fullPath) {
+        EditorManager.editorManager.ensureSection(target, fullPath);
+        EditorManager.editorManager.save(player, target);
+        EditorManager.editorManager.openTarget(player, target, fullPath, 0);
     }
 
     @Override

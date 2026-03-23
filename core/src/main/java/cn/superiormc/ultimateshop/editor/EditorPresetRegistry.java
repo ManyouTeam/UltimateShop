@@ -2,14 +2,16 @@ package cn.superiormc.ultimateshop.editor;
 
 import cn.superiormc.ultimateshop.managers.ActionManager;
 import cn.superiormc.ultimateshop.managers.ConditionManager;
+import cn.superiormc.ultimateshop.managers.ConfigManager;
+import cn.superiormc.ultimateshop.managers.EditorManager;
 import cn.superiormc.ultimateshop.methods.ProductTradeStatus;
-import cn.superiormc.ultimateshop.objects.menus.ObjectMenu;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.inventory.ClickType;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.LinkedHashSet;
 import java.util.List;
 
 public class EditorPresetRegistry {
@@ -45,6 +47,7 @@ public class EditorPresetRegistry {
             case SHOP_ITEM -> new EditorPreset(kind, shopItemFields());
             case BUTTON_ENTRY -> new EditorPreset(kind, buttonFields());
             case LIMITS_SECTION -> new EditorPreset(kind, limitFields(target, path));
+            case CLICK_EVENT_SECTION -> new EditorPreset(kind, clickEventFields());
             case SINGLE_THING -> new EditorPreset(kind, singleThingFields(path));
             case ACTION_ENTRY -> new EditorPreset(kind, actionFields(target, path));
             case CONDITION_ENTRY -> new EditorPreset(kind, conditionFields(target, path));
@@ -67,6 +70,10 @@ public class EditorPresetRegistry {
         if (target.getScope() == EditorScope.SHOP && split.length == 2 && split[0].equals("items")) {
             return EditorPresetKind.SHOP_ITEM;
         }
+        if (target.getScope() == EditorScope.SHOP && split.length == 3 && split[0].equals("items")
+                && split[2].equals("click-event")) {
+            return EditorPresetKind.CLICK_EVENT_SECTION;
+        }
         if (split.length >= 2 && split[split.length - 2].equals("buttons")) {
             return EditorPresetKind.BUTTON_ENTRY;
         }
@@ -88,10 +95,8 @@ public class EditorPresetRegistry {
     }
 
     private static List<EditorPresetField> rootShopFields() {
-        List<String> commonMenus = new ArrayList<>(ObjectMenu.commonMenus.keySet());
-        commonMenus.sort(String::compareToIgnoreCase);
         return List.of(
-                choice("settings.menu", Material.BOOK, commonMenus.toArray(new String[0])),
+                choice("settings.menu", Material.BOOK, EditorScope.MENU.listIds().toArray(new String[0])),
                 field("settings.menu-settings", Material.WRITABLE_BOOK, EditorPresetFieldType.SECTION),
                 field("settings.buy-more", Material.CHEST, EditorPresetFieldType.BOOLEAN),
                 field("settings.shop-name", Material.NAME_TAG, EditorPresetFieldType.STRING),
@@ -141,7 +146,11 @@ public class EditorPresetRegistry {
                 field("fail-actions", Material.BLAZE_POWDER, EditorPresetFieldType.ACTIONS),
                 field("click-event", Material.STONE_BUTTON, EditorPresetFieldType.SECTION),
                 field("buy-more", Material.CHEST, EditorPresetFieldType.BOOLEAN),
-                field("buy-more-menu", Material.CHEST, EditorPresetFieldType.SECTION),
+                EditorPresetField.choice("buy-more-menu.menu", "Buy More Menu File",
+                        "Menu file used when this product opens the buy-more GUI.", Material.CHEST,
+                        EditorScope.MENU.listIds().toArray(new String[0])),
+                new EditorPresetField("buy-more-menu.max-amount", "Buy More Max Amount",
+                        "Maximum amount selectable in the buy-more menu.", Material.SLIME_BALL, EditorPresetFieldType.INTEGER),
                 field("hide-message", Material.PAPER, EditorPresetFieldType.BOOLEAN),
                 field("sell-all", Material.HOPPER, EditorPresetFieldType.BOOLEAN),
                 field("as-sub-button", Material.CHAINMAIL_HELMET, EditorPresetFieldType.STRING),
@@ -154,12 +163,14 @@ public class EditorPresetRegistry {
                 field("sell-limits", Material.BARRIER, EditorPresetFieldType.SECTION),
                 field("sell-limits-conditions", Material.COMPARATOR, EditorPresetFieldType.SECTION),
                 choice("buy-times-reset-mode", Material.REPEATER, RESET_MODES),
-                field("buy-times-reset-time", Material.REPEATER, EditorPresetFieldType.STRING),
+                EditorPresetField.resetTime("buy-times-reset-time", "Buy Reset Time",
+                        "Reset time value editor that adapts to the selected buy reset mode.", Material.REPEATER),
                 field("buy-times-reset-time-format", Material.CLOCK, EditorPresetFieldType.STRING),
                 field("buy-times-reset-value", Material.SLIME_BALL, EditorPresetFieldType.STRING),
                 field("buy-times-max-value", Material.BARRIER, EditorPresetFieldType.STRING),
                 choice("sell-times-reset-mode", Material.REPEATER, RESET_MODES),
-                field("sell-times-reset-time", Material.REPEATER, EditorPresetFieldType.STRING),
+                EditorPresetField.resetTime("sell-times-reset-time", "Sell Reset Time",
+                        "Reset time value editor that adapts to the selected sell reset mode.", Material.REPEATER),
                 field("sell-times-reset-time-format", Material.CLOCK, EditorPresetFieldType.STRING),
                 field("sell-times-reset-value", Material.SLIME_BALL, EditorPresetFieldType.STRING),
                 field("sell-times-max-value", Material.BARRIER, EditorPresetFieldType.STRING)
@@ -178,8 +189,10 @@ public class EditorPresetRegistry {
 
     private static List<EditorPresetField> limitFields(EditorTarget target, String path) {
         List<EditorPresetField> result = new ArrayList<>();
-        result.add(field("default", Material.PAPER, EditorPresetFieldType.STRING));
-        result.add(field("global", Material.GLOBE_BANNER_PATTERN, EditorPresetFieldType.STRING));
+        result.add(new EditorPresetField("default", "Default Limit",
+                "Limit used when the player does not match any custom limit condition group.", Material.PAPER, EditorPresetFieldType.STRING));
+        result.add(new EditorPresetField("global", "Global Limit",
+                "Global shared limit applied to the whole server for this product.", Material.GLOBE_BANNER_PATTERN, EditorPresetFieldType.STRING));
 
         ConfigurationSection section = EditorManager.editorManager.getSection(target, path);
         if (section == null) {
@@ -200,12 +213,38 @@ public class EditorPresetRegistry {
         return result;
     }
 
+    private static List<EditorPresetField> clickEventFields() {
+        List<EditorPresetField> result = new ArrayList<>();
+        result.add(EditorPresetField.clickBinding("buy", "Buy",
+                "Click types that trigger the buy action for this product.", Material.EMERALD));
+        result.add(EditorPresetField.clickBinding("sell", "Sell",
+                "Click types that trigger the sell action for this product.", Material.GOLD_INGOT));
+        result.add(EditorPresetField.clickBinding("buy-or-sell", "Buy Or Sell",
+                "Click types that trigger the shared buy-or-sell action.", Material.CLOCK));
+        result.add(EditorPresetField.clickBinding("sell-all", "Sell All",
+                "Click types that trigger sell-all for this product.", Material.HOPPER));
+        result.add(EditorPresetField.clickBinding("select-amount", "Select Amount",
+                "Click types that open the amount selection menu.", Material.CHEST));
+
+        ConfigurationSection customActions = ConfigManager.configManager.getSection("menu.click-event-actions");
+        if (customActions != null) {
+            List<String> keys = new ArrayList<>(new LinkedHashSet<>(customActions.getKeys(false)));
+            keys.sort(String::compareToIgnoreCase);
+            for (String key : keys) {
+                result.add(EditorPresetField.clickBinding(key, key,
+                        "Click types that trigger the custom click-event action '" + key + "'.", Material.STONE_BUTTON));
+            }
+        }
+        return result;
+    }
+
     private static List<EditorPresetField> singleThingFields(String path) {
         List<EditorPresetField> fields = new ArrayList<>();
         boolean priceThing = isPriceThing(path);
 
         fields.add(new EditorPresetField("", Material.BOOK, EditorPresetFieldType.DISPLAY));
         fields.add(new EditorPresetField("__inline-item__", Material.ITEM_FRAME, EditorPresetFieldType.ITEM_INLINE));
+        fields.add(new EditorPresetField("__inline-economy__", Material.GOLD_INGOT, EditorPresetFieldType.ECONOMY_INLINE));
         fields.add(field("amount", Material.SLIME_BALL, EditorPresetFieldType.STRING));
         fields.add(field("material", Material.IRON_INGOT, EditorPresetFieldType.STRING));
         fields.add(field("hook-plugin", Material.CHEST_MINECART, EditorPresetFieldType.STRING));

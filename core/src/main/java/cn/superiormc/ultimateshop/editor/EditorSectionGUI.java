@@ -4,6 +4,7 @@ import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.gui.InvGUI;
 import cn.superiormc.ultimateshop.managers.ActionManager;
 import cn.superiormc.ultimateshop.managers.ConditionManager;
+import cn.superiormc.ultimateshop.managers.EditorManager;
 import cn.superiormc.ultimateshop.managers.HookManager;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
@@ -86,7 +87,20 @@ public class EditorSectionGUI extends InvGUI {
                                 : ("items".equals(path) || EditorTypeResolver.lastSegment(path).equals("buttons")
                                 || EditorTypeResolver.isLimitConditionRoot(path))
                                 ? EditorLang.text(player, "editor.section.add-child.named", "&7Create a new named section entry")
-                                : EditorLang.text(player, "editor.section.add-child.generic", "&7Add a new child node under this section")
+                                : EditorLang.text(player, "editor.section.add-child.generic", "&7Add a new child node under this section"),
+                        !EditorTypeResolver.isActionCollection(path)
+                                && !EditorTypeResolver.isThingCollection(path)
+                                && !("items".equals(path) || EditorTypeResolver.lastSegment(path).equals("buttons")
+                                || EditorTypeResolver.isLimitConditionRoot(path))
+                                ? EditorLang.text(player, "editor.section.add-child.value-mode",
+                                "&7After the key, input the value directly. Use &fsection &7or &f{} &7to create a section.")
+                                : "",
+                        EditorTypeResolver.isThingCollection(path)
+                                ? EditorLang.text(player, "editor.section.add-child.thing-item", "&aLeft click: add item template")
+                                : "",
+                        EditorTypeResolver.isThingCollection(path)
+                                ? EditorLang.text(player, "editor.section.add-child.thing-economy", "&eRight click: add economy template")
+                                : ""
                 )));
         inv.setItem(52, EditorUtil.createItem(Material.SPECTRAL_ARROW,
                 EditorLang.text(player, "editor.common.previous-page.name", "&ePrevious Page"),
@@ -127,6 +141,13 @@ public class EditorSectionGUI extends InvGUI {
                 lore.add(EditorLang.text(player, "editor.action.toggle", "&aLeft click to toggle"));
                 lore.add(EditorLang.text(player, "editor.action.delete", "&cRight click to delete"));
                 break;
+            case INTEGER, DOUBLE:
+                lore.add(EditorLang.text(player, "editor.action.increase-ten", "&aLeft click to add 10"));
+                lore.add(EditorLang.text(player, "editor.action.decrease-ten", "&cRight click to subtract 10"));
+                lore.add(EditorLang.text(player, "editor.action.increase-one", "&aShift-left to add 1"));
+                lore.add(EditorLang.text(player, "editor.action.decrease-one", "&cShift-right to subtract 1"));
+                lore.add(EditorLang.text(player, "editor.action.middle-clear", "&eMiddle click to clear"));
+                break;
             case ACTION_TYPE:
                 lore.add(EditorLang.text(player, "editor.action.cycle-action", "&aLeft click to cycle action type"));
                 lore.add(EditorLang.text(player, "editor.action.cycle-back", "&aShift-left to cycle backwards"));
@@ -160,7 +181,7 @@ public class EditorSectionGUI extends InvGUI {
             String childPath = EditorTypeResolver.buildPath(path, key);
             EditorValueKind kind = EditorTypeResolver.resolve(section, key);
 
-            if (type.isRightClick()) {
+            if (type.isRightClick() && kind != EditorValueKind.INTEGER && kind != EditorValueKind.DOUBLE) {
                 if (EditorTypeResolver.isLimitConditionRoot(path)) {
                     String limitsPath = path.replace("-conditions", "");
                     EditorManager.editorManager.removeLimitConditionGroup(player, target, limitsPath, key);
@@ -189,12 +210,28 @@ public class EditorSectionGUI extends InvGUI {
                     EditorManager.editorManager.openTarget(player, target, path, page);
                     return true;
                 case INTEGER:
-                    EditorManager.editorManager.promptInteger(player, target, childPath,
-                            () -> EditorManager.editorManager.openTarget(player, target, path, page));
+                    if (type == ClickType.MIDDLE) {
+                        EditorManager.editorManager.removeValue(player, target, childPath);
+                    } else {
+                        int delta = resolveIntegerDelta(type);
+                        if (delta != 0) {
+                            int currentValue = section.getInt(key, 0);
+                            EditorManager.editorManager.setValue(player, target, childPath, currentValue + delta);
+                        }
+                    }
+                    EditorManager.editorManager.openTarget(player, target, path, page);
                     return true;
                 case DOUBLE:
-                    EditorManager.editorManager.promptDouble(player, target, childPath,
-                            () -> EditorManager.editorManager.openTarget(player, target, path, page));
+                    if (type == ClickType.MIDDLE) {
+                        EditorManager.editorManager.removeValue(player, target, childPath);
+                    } else {
+                        double delta = resolveDoubleDelta(type);
+                        if (delta != 0) {
+                            double currentValue = section.getDouble(key, 0D);
+                            EditorManager.editorManager.setValue(player, target, childPath, currentValue + delta);
+                        }
+                    }
+                    EditorManager.editorManager.openTarget(player, target, path, page);
                     return true;
                 case STRING:
                     if ("economy-plugin".equalsIgnoreCase(key)) {
@@ -203,6 +240,10 @@ public class EditorSectionGUI extends InvGUI {
                         cycleValue(player, childPath, HookManager.hookManager.getItemHookNames(), type.isShiftClick());
                     } else if ("as-sub-button".equalsIgnoreCase(key)) {
                         new EditorSubButtonValueGUI(player, target, path).openGUI(true);
+                    } else if (EditorTypeResolver.isClickEventSection(path)) {
+                        new EditorClickTypeBindingGUI(player, target, childPath, path).openGUI(true);
+                    } else if (EditorTypeResolver.isResetTimeKey(key)) {
+                        new EditorResetTimeValueGUI(player, target, childPath, path).openGUI(true);
                     } else {
                         EditorManager.editorManager.promptString(player, target, childPath,
                                 () -> EditorManager.editorManager.openTarget(player, target, path, page));
@@ -241,7 +282,8 @@ public class EditorSectionGUI extends InvGUI {
             if (EditorTypeResolver.isActionCollection(path)
                     || (EditorTypeResolver.isConditionCollection(path) && !EditorTypeResolver.isLimitConditionRoot(path))
                     || EditorTypeResolver.isThingCollection(path)) {
-                EditorManager.editorManager.createDefaultCollectionEntry(player, target, path);
+                EditorManager.editorManager.createDefaultCollectionEntry(player, target, path,
+                        EditorTypeResolver.isThingCollection(path) && type.isRightClick());
                 EditorManager.editorManager.openTarget(player, target, path, page);
             } else if ("items".equals(path) || EditorTypeResolver.lastSegment(path).equals("buttons")) {
                 EditorManager.editorManager.promptCreateNamedSection(player, target, path,
@@ -281,5 +323,25 @@ public class EditorSectionGUI extends InvGUI {
         }
         EditorManager.editorManager.setValue(player, target, childPath, values.get(index));
         EditorManager.editorManager.openTarget(player, target, path, page);
+    }
+
+    private int resolveIntegerDelta(ClickType type) {
+        if (type.isShiftClick() && type.isLeftClick()) {
+            return 1;
+        }
+        if (type.isShiftClick() && type.isRightClick()) {
+            return -1;
+        }
+        if (type.isLeftClick()) {
+            return 10;
+        }
+        if (type.isRightClick()) {
+            return -10;
+        }
+        return 0;
+    }
+
+    private double resolveDoubleDelta(ClickType type) {
+        return resolveIntegerDelta(type);
     }
 }

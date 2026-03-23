@@ -280,10 +280,15 @@ editor:
     back:
       name: '&e返回'
       desc: '&7返回上一层界面'
+    clear:
+      name: '&c清除'
+      desc: '&7移除这个值'
     refresh:
       name: '&e刷新'
     reload:
       name: '&a重载插件'
+    enabled: '已启用'
+    disabled: '已禁用'
     previous-page:
       name: '&e上一页'
       desc: '&7查看上一页内容'
@@ -299,6 +304,11 @@ editor:
     cycle-back: '&aShift + 左键反向切换'
     cycle-action: '&a左键切换动作类型'
     cycle-condition: '&a左键切换条件类型'
+    increase-ten: '&a左键增加 10'
+    decrease-ten: '&c右键减少 10'
+    increase-one: '&aShift + 左键增加 1'
+    decrease-one: '&cShift + 右键减少 1'
+    middle-clear: '&e中键清除'
     read-only: '&7这里只显示摘要，不能直接修改'
   summary:
     type: '&7当前类型: &f{value}'
@@ -356,6 +366,9 @@ editor:
       numbered: '&7新增一个自动编号的条目'
       named: '&7新增一个需要自定义 id 的条目'
       generic: '&7在当前节点下新增一个子键'
+      value-mode: '&7输入键名后会直接输入值。输入 &fsection &7或 &f{} &7可创建子 section。'
+      thing-item: '&a左键：新增物品模板'
+      thing-economy: '&e右键：新增经济模板'
   preset:
     add-limit-group:
       name: '&e新增条件组'
@@ -374,6 +387,9 @@ editor:
     apply:
       name: '&a应用物品'
       desc: '&7把 13 号槽位序列化到当前节点'
+    raw:
+      name: '&e原始节点'
+      desc: '&7打开这个物品节点下的全部键值'
     clear:
       name: '&c清空节点'
       desc: '&7删除整个物品节点'
@@ -411,9 +427,64 @@ editor:
     apply:
       name: '&a应用 ItemFormat'
       desc: '&7更新这个 single thing 内部的物品数据'
+    apply-conditions:
+      name: '&e参与条件'
+      desc: '&7打开这个 single thing 的 apply-conditions'
+    require-conditions:
+      name: '&e要求条件'
+      desc: '&7打开这个 single thing 的 require-conditions'
+    give-actions:
+      name: '&e给予动作'
+      desc: '&7打开这个 single thing 的 give-actions'
+    take-actions:
+      name: '&e扣除动作'
+      desc: '&7打开这个 single thing 的 take-actions'
+    preset:
+      name: '&e预设编辑器'
+      desc: '&7返回这个 single thing 的预设编辑器'
+    raw:
+      name: '&e原始节点'
+      desc: '&7打开这个 single thing 下的全部键值'
     clear:
       name: '&c清空物品字段'
       desc: '&7只移除 material / hook-item / item-format 相关字段'
+    back:
+      desc: '&7返回预设编辑器'
+  thing-economy:
+    title: 'Thing EconomyFormat: {path}'
+    provider:
+      name: '&e经济提供者'
+      desc: '&7把这个 single thing 切换成原版经济或挂钩经济格式。'
+    currency:
+      name: '&e货币类型'
+      desc: '&7当前经济提供者使用的货币 id。'
+    placeholder:
+      name: '&e显示占位文本'
+      desc: '&7这个 single thing 在价格或产物显示中使用的文本。'
+    apply-conditions:
+      name: '&e参与条件'
+      desc: '&7打开这个 single thing 的 apply-conditions'
+    require-conditions:
+      name: '&e要求条件'
+      desc: '&7打开这个 single thing 的 require-conditions'
+    give-actions:
+      name: '&e给予动作'
+      desc: '&7打开这个 single thing 的 give-actions'
+    take-actions:
+      name: '&e扣除动作'
+      desc: '&7打开这个 single thing 的 take-actions'
+    preset:
+      name: '&e预设编辑器'
+      desc: '&7返回这个 single thing 的预设编辑器'
+    raw:
+      name: '&e原始节点'
+      desc: '&7打开这个 single thing 下的全部键值'
+    apply:
+      name: '&a应用 EconomyFormat'
+      desc: '&7把这个 single thing 转成经济格式，并保留通用控制字段'
+    clear:
+      name: '&c清空经济字段'
+      desc: '&7只移除 economy-plugin / economy-type 字段'
     back:
       desc: '&7返回预设编辑器'
   prompt:
@@ -432,6 +503,7 @@ editor:
     integer-list-entry: '请输入 &f{path} &7的新整数列表项'
     integer-list-entry-edit: '请输入列表项 &f#{index} &7的新整数值'
     new-child: '请输入新子节点的键名'
+    new-child-value: '请输入 &f{path} &7的值。输入 &fsection &7或 &f{} &7可创建 section，输入 &f;; &7可创建列表。'
   message:
     target-not-found: '&c找不到目标文件。'
     saved: '&a已保存 &f{value}'
@@ -442,6 +514,7 @@ editor:
     unknown-type: '&c未知类型。可用类型: section/string/int/double/boolean/list/int-list。'
     invalid-integer: '&c这不是有效的整数。'
     invalid-number: '&c这不是有效的数字。'
+    invalid-new-child-value: '&c无效值。可使用 section/{}, 布尔值, 数字, 列表 (;;), 或普通文本。'
     invalid-integer-list: '&c列表里有某个值不是整数。'
     child-format: '&c请输入: 键名 类型'
     command-usage: '&c请使用 /shop editor [shop|menu] <id>'
@@ -480,6 +553,28 @@ editor:
     clear:
       name: '&c清除'
       desc: '&7删除 as-sub-button 的值'
+  click-binding:
+    title: '点击类型: {path}'
+    state: '&7已选中: &f{value}'
+  reset-time:
+    title: '重置时间: {path}'
+    current: '&7当前值: &f{value}'
+    mode:
+      name: '&e当前模式'
+      value: '&7模式: &f{value}'
+      desc: '&7这个编辑器会根据当前选择的重置模式自动切换行为。'
+    add:
+      name: '&e新增时间'
+      desc: '&7添加一个新的重置时间条目'
+    random:
+      name: '&e随机变量符'
+    manual:
+      name: '&e编辑值'
+    never:
+      name: '&e无需重置时间'
+      desc: '&7这个重置模式不需要填写时间值。'
+    prompt-add: '请输入 &f{path} &7的新重置时间'
+    prompt-edit: '请输入条目 &f#{index} &7的新重置时间'
   presets:
     root_shop:
       title: '商店预设'
@@ -504,8 +599,6 @@ editor:
             name: '隐藏秘密商品'
             desc: '当展示条件不满足时，是否直接隐藏商品。'
           custom-command:
-            name: '自定义命令'
-            desc: '给这个商店注册专属打开命令。'
             name:
               name: '命令名称'
               desc: '玩家可以用来打开这个商店的指令名。'
@@ -558,8 +651,6 @@ editor:
           name: '按钮列表'
           desc: '这个菜单中配置的全部按钮。'
         custom-command:
-          name: '自定义命令'
-          desc: '给这个菜单注册专属打开命令。'
           name:
             name: '命令名称'
             desc: '玩家可以用来打开这个菜单的指令名。'
@@ -623,6 +714,12 @@ editor:
         buy-more-menu:
           name: 'Buy More 菜单'
           desc: '这个商品专属的数量选择菜单。'
+          menu:
+            name: '菜单文件'
+            desc: '这个商品打开 Buy More GUI 时使用的菜单文件。'
+          max-amount:
+            name: '最大数量'
+            desc: 'Buy More 菜单里允许选择的最大数量。'
         hide-message:
           name: '隐藏消息'
           desc: '是否隐藏这个商品的成功消息。'
@@ -709,6 +806,13 @@ editor:
           desc: '决定这个按钮是否显示的条件。'
     limits_section:
       title: '限制预设'
+      fields:
+        default:
+          name: '默认限制'
+          desc: '当玩家没有匹配任何自定义限制条件组时使用的限制值。'
+        global:
+          name: '全局限制'
+          desc: '对整个服务器共享生效的这个商品限制值。'
     single_thing:
       title: 'Single Thing 预设'
       fields:
@@ -718,6 +822,9 @@ editor:
         inline-item:
           name: 'ItemFormat'
           desc: '把物品拖进来后刷新 item-format 字段，同时保留通用控制字段。'
+        inline-economy:
+          name: 'EconomyFormat'
+          desc: '把这个 single thing 切换成经济格式，同时保留数量、动作和条件字段。'
         amount:
           name: '数量'
           desc: '数量值。可按场景写固定值、公式或占位符。'

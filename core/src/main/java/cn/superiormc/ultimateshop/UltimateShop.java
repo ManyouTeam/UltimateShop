@@ -1,7 +1,7 @@
 package cn.superiormc.ultimateshop;
 
 import cn.superiormc.ultimateshop.managers.*;
-import cn.superiormc.ultimateshop.editor.EditorManager;
+import cn.superiormc.ultimateshop.managers.EditorManager;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
 import cn.superiormc.ultimateshop.utils.PacketInventoryUtil;
 import cn.superiormc.ultimateshop.utils.SpecialMethodUtil;

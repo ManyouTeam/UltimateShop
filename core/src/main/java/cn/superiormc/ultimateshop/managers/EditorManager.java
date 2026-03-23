@@ -1,7 +1,6 @@
-package cn.superiormc.ultimateshop.editor;
+package cn.superiormc.ultimateshop.managers;
 
-import cn.superiormc.ultimateshop.managers.ActionManager;
-import cn.superiormc.ultimateshop.managers.ConditionManager;
+import cn.superiormc.ultimateshop.editor.*;
 import cn.superiormc.ultimateshop.methods.Items.DebuildItem;
 import cn.superiormc.ultimateshop.methods.ReloadPlugin;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
@@ -16,10 +15,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Consumer;
 
 public class EditorManager {
 
     public static EditorManager editorManager;
+
+    private static final Object SECTION_SENTINEL = new Object();
 
     private final Map<UUID, EditorContext> contexts = new ConcurrentHashMap<>();
 
@@ -183,6 +185,10 @@ public class EditorManager {
     }
 
     public void createDefaultCollectionEntry(Player player, EditorTarget target, String collectionPath) {
+        createDefaultCollectionEntry(player, target, collectionPath, false);
+    }
+
+    public void createDefaultCollectionEntry(Player player, EditorTarget target, String collectionPath, boolean economyTemplate) {
         ConfigurationSection section = ensureSection(target, collectionPath);
         String nextKey = String.valueOf(nextNumericKey(section));
         ConfigurationSection child = section.createSection(nextKey);
@@ -193,60 +199,85 @@ public class EditorManager {
             List<String> types = ConditionManager.conditionManager.getConditionTypes();
             child.set("type", types.isEmpty() ? "permission" : types.get(0));
         } else if (EditorTypeResolver.isThingCollection(collectionPath)) {
-            String last = EditorTypeResolver.lastSegment(collectionPath);
-            if (last.equals("products")) {
-                child.set("material", "STONE");
-                child.set("amount", 1);
+            child.set("amount", 1);
+            if (economyTemplate) {
+                applyDefaultEconomyFields(child);
             } else {
-                List<String> economyHooks = cn.superiormc.ultimateshop.managers.HookManager.hookManager.getEconomyHookNames();
-                if (economyHooks.isEmpty()) {
-                    child.set("economy-type", "levels");
-                    child.set("placeholder", "{amount} levels");
-                } else {
-                    child.set("economy-plugin", economyHooks.get(0));
-                    child.set("economy-type", "default");
-                    child.set("placeholder", "{amount}");
-                }
-                child.set("amount", 1);
+                child.set("material", "STONE");
             }
         }
         save(player, target);
     }
 
-    public void createLimitConditionGroup(Player player, EditorTarget target, String limitsPath, String groupId) {
+    public void replaceInlineThingEconomy(Player player, EditorTarget target, String path, String provider, String economyType, String placeholder) {
+        ConfigurationSection section = ensureSection(target, path);
+        Map<String, Object> preserved = preserveThingControls(section);
+        clearInlineThingItem(player, target, path);
+        ConfigurationSection refreshed = ensureSection(target, path);
+        for (Map.Entry<String, Object> entry : preserved.entrySet()) {
+            refreshed.set(entry.getKey(), entry.getValue());
+        }
+        applyEconomyFields(refreshed, provider, economyType, placeholder);
+        if (!refreshed.contains("amount")) {
+            refreshed.set("amount", 1);
+        }
+        save(player, target);
+    }
+
+    public void clearInlineThingEconomy(Player player, EditorTarget target, String path) {
+        ConfigurationSection section = ensureSection(target, path);
+        section.set("economy-plugin", null);
+        section.set("economy-type", null);
+        save(player, target);
+    }
+
+    public String createLimitConditionGroup(Player player, EditorTarget target, String limitsPath, String groupId) {
         String normalizedId = groupId == null ? "" : groupId.trim();
         if (normalizedId.isEmpty()) {
             EditorLang.send(player, "editor.message.empty-id", "&cEntry id can not be empty.");
-            return;
+            return null;
         }
         ensureSection(target, limitsPath);
         target.getConfig().set(limitsPath + "." + normalizedId, "0");
         ensureSection(target, getLimitConditionsPath(limitsPath) + "." + normalizedId);
         save(player, target);
+        return normalizedId;
     }
 
-    public void createLimitConditionGroupFromRoot(Player player, EditorTarget target, String conditionsRootPath, String groupId) {
+    public String createLimitConditionGroupFromRoot(Player player, EditorTarget target, String conditionsRootPath, String groupId) {
         String normalizedId = groupId == null ? "" : groupId.trim();
         if (normalizedId.isEmpty()) {
             EditorLang.send(player, "editor.message.empty-id", "&cEntry id can not be empty.");
-            return;
+            return null;
         }
         String limitsPath = getLimitsPathFromConditionsRoot(conditionsRootPath);
         if (limitsPath == null) {
             EditorLang.send(player, "editor.message.target-not-found", "&cTarget file not found.");
-            return;
+            return null;
         }
-        createLimitConditionGroup(player, target, limitsPath, normalizedId);
+        return createLimitConditionGroup(player, target, limitsPath, normalizedId);
     }
 
     public void promptCreateLimitConditionGroup(Player player, EditorTarget target, String limitsPath, Runnable reopenAction) {
+        promptCreateLimitConditionGroup(player, target, limitsPath, groupId -> reopenAction.run(), reopenAction);
+    }
+
+    public void promptCreateLimitConditionGroup(Player player,
+                                                EditorTarget target,
+                                                String limitsPath,
+                                                Consumer<String> successAction,
+                                                Runnable cancelAction) {
         startPrompt(player, new EditorPrompt(
                 EditorLang.text(player, "editor.prompt.new-condition-id", "Input the new condition id"),
                 (p, input) -> {
-                    createLimitConditionGroup(p, target, limitsPath, input);
-                    reopenAction.run();
+                    String groupId = createLimitConditionGroup(p, target, limitsPath, input);
+                    if (groupId == null) {
+                        cancelAction.run();
+                        return;
+                    }
+                    successAction.accept(groupId);
                 },
-                p -> reopenAction.run()
+                p -> cancelAction.run()
         ));
     }
 
@@ -332,6 +363,36 @@ public class EditorManager {
                 || key.equals("start-apply")
                 || key.equals("end-apply")
                 || key.equals("apply");
+    }
+
+    private void applyDefaultEconomyFields(ConfigurationSection section) {
+        List<String> economyHooks = cn.superiormc.ultimateshop.managers.HookManager.hookManager.getEconomyHookNames();
+        if (economyHooks.isEmpty()) {
+            section.set("economy-plugin", null);
+            section.set("economy-type", "levels");
+            section.set("placeholder", "{amount} levels");
+        } else {
+            section.set("economy-plugin", economyHooks.get(0));
+            section.set("economy-type", "default");
+            section.set("placeholder", "{amount}");
+        }
+    }
+
+    private void applyEconomyFields(ConfigurationSection section, String provider, String economyType, String placeholder) {
+        String normalizedProvider = provider == null ? "" : provider.trim();
+        if (normalizedProvider.isEmpty() || normalizedProvider.equalsIgnoreCase("exp") || normalizedProvider.equalsIgnoreCase("levels")) {
+            section.set("economy-plugin", null);
+            section.set("economy-type", normalizedProvider.isEmpty() ? "levels" : normalizedProvider.toLowerCase());
+        } else {
+            section.set("economy-plugin", normalizedProvider);
+            section.set("economy-type", economyType == null || economyType.isEmpty() ? "default" : economyType);
+        }
+        if (placeholder != null && !placeholder.isEmpty()) {
+            section.set("placeholder", placeholder);
+        } else if (!section.contains("placeholder")) {
+            section.set("placeholder", normalizedProvider.equalsIgnoreCase("levels") || normalizedProvider.isEmpty()
+                    ? "{amount} levels" : "{amount}");
+        }
     }
 
     public void createGenericChild(Player player, EditorTarget target, String parentPath, String key, String type) {
@@ -471,13 +532,87 @@ public class EditorManager {
                         promptNewChild(p, target, parentPath, reopenAction);
                         return;
                     }
-                    String childPath = parentPath == null || parentPath.isEmpty() ? key : parentPath + "." + key;
-                    ensureSection(target, childPath);
+                    promptNewChildValue(p, target, parentPath, key, reopenAction);
+                },
+                p -> reopenAction.run()
+        ));
+    }
+
+    private void promptNewChildValue(Player player, EditorTarget target, String parentPath, String key, Runnable reopenAction) {
+        String childPath = parentPath == null || parentPath.isEmpty() ? key : parentPath + "." + key;
+        startPrompt(player, new EditorPrompt(
+                EditorLang.text(player, "editor.prompt.new-child-value",
+                        "Input the value for &f{path}&7. Use &fsection &7or &f{} &7to create a section. Use &f;; &7for lists.",
+                        "path", childPath),
+                (p, input) -> {
+                    Object parsed = parseNewChildValue(input);
+                    if (parsed == null) {
+                        EditorLang.send(p, "editor.message.invalid-new-child-value",
+                                "&cInvalid value. Use section/{}, boolean, number, list (;;), or plain text.");
+                        promptNewChildValue(p, target, parentPath, key, reopenAction);
+                        return;
+                    }
+                    if (parsed == SECTION_SENTINEL) {
+                        ensureSection(target, childPath);
+                    } else {
+                        setValue(p, target, childPath, parsed);
+                        reopenAction.run();
+                        return;
+                    }
                     save(p, target);
                     reopenAction.run();
                 },
                 p -> reopenAction.run()
         ));
+    }
+
+    private Object parseNewChildValue(String input) {
+        if (input == null) {
+            return "";
+        }
+        String trimmed = input.trim();
+        if (trimmed.equalsIgnoreCase("section") || trimmed.equals("{}")) {
+            return SECTION_SENTINEL;
+        }
+        if (trimmed.equalsIgnoreCase("true") || trimmed.equalsIgnoreCase("false")) {
+            return Boolean.parseBoolean(trimmed);
+        }
+        if (trimmed.contains(";;")) {
+            String[] split = trimmed.split(";;");
+            List<Integer> integerValues = new ArrayList<>();
+            List<String> stringValues = new ArrayList<>();
+            boolean integerList = true;
+            for (String part : split) {
+                String element = part.trim();
+                if (element.isEmpty()) {
+                    stringValues.add("");
+                    integerList = false;
+                    continue;
+                }
+                stringValues.add(element);
+                if (integerList) {
+                    try {
+                        integerValues.add(Integer.parseInt(element));
+                    } catch (NumberFormatException exception) {
+                        integerList = false;
+                    }
+                }
+            }
+            return integerList ? integerValues : stringValues;
+        }
+        if (trimmed.matches("-?\\d+")) {
+            try {
+                return Integer.parseInt(trimmed);
+            } catch (NumberFormatException ignored) {
+            }
+        }
+        if (trimmed.matches("-?\\d+\\.\\d+")) {
+            try {
+                return Double.parseDouble(trimmed);
+            } catch (NumberFormatException ignored) {
+            }
+        }
+        return input;
     }
 
     private String getLimitConditionsPath(String limitsPath) {
@@ -494,6 +629,10 @@ public class EditorManager {
             return limitsPath.substring(0, limitsPath.length() - "limits".length()) + "limits-conditions";
         }
         return limitsPath + "-conditions";
+    }
+
+    public String getLimitConditionsPathFor(String limitsPath) {
+        return getLimitConditionsPath(limitsPath);
     }
 
     private String getLimitsPathFromConditionsRoot(String conditionsRootPath) {

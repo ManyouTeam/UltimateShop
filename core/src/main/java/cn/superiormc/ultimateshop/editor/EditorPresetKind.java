@@ -7,6 +7,7 @@ public enum EditorPresetKind {
     SHOP_ITEM,
     BUTTON_ENTRY,
     LIMITS_SECTION,
+    CLICK_EVENT_SECTION,
     SINGLE_THING,
     ACTION_ENTRY,
     CONDITION_ENTRY

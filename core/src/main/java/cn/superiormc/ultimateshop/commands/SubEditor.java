@@ -1,6 +1,9 @@
-package cn.superiormc.ultimateshop.editor;
+package cn.superiormc.ultimateshop.commands;
 
-import cn.superiormc.ultimateshop.commands.AbstractCommand;
+import cn.superiormc.ultimateshop.editor.EditorLang;
+import cn.superiormc.ultimateshop.managers.EditorManager;
+import cn.superiormc.ultimateshop.editor.EditorScope;
+import cn.superiormc.ultimateshop.editor.EditorTarget;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import org.bukkit.entity.Player;
 
@@ -8,9 +11,9 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EditorCommand extends AbstractCommand {
+public class SubEditor extends AbstractCommand {
 
-    public EditorCommand() {
+    public SubEditor() {
         this.id = "editor";
         this.requiredPermission = "ultimateshop." + id;
         this.onlyInGame = true;

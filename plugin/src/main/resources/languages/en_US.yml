@@ -285,10 +285,15 @@ editor:
     back:
       name: '&eBack'
       desc: '&7Return to the previous screen'
+    clear:
+      name: '&cClear'
+      desc: '&7Remove this value'
     refresh:
       name: '&eRefresh'
     reload:
       name: '&aReload Plugin'
+    enabled: 'enabled'
+    disabled: 'disabled'
     previous-page:
       name: '&ePrevious Page'
       desc: '&7Go to the previous page'
@@ -304,6 +309,11 @@ editor:
     cycle-back: '&aShift-left to cycle backwards'
     cycle-action: '&aLeft click to cycle action type'
     cycle-condition: '&aLeft click to cycle condition type'
+    increase-ten: '&aLeft click to add 10'
+    decrease-ten: '&cRight click to subtract 10'
+    increase-one: '&aShift-left to add 1'
+    decrease-one: '&cShift-right to subtract 1'
+    middle-clear: '&eMiddle click to clear'
     read-only: '&7Read-only summary'
   summary:
     type: '&7Current Type: &f{value}'
@@ -361,6 +371,9 @@ editor:
       numbered: '&7Add a new numbered entry'
       named: '&7Create a new named section entry'
       generic: '&7Add a new child node under this section'
+      value-mode: '&7After the key, input the value directly. Use &fsection &7or &f{} &7to create a section.'
+      thing-item: '&aLeft click: add item template'
+      thing-economy: '&eRight click: add economy template'
   preset:
     raw:
       name: '&eRaw Section'
@@ -379,6 +392,9 @@ editor:
     apply:
       name: '&aApply Item'
       desc: '&7Serialize slot 13 into the current section'
+    raw:
+      name: '&eRaw Section'
+      desc: '&7Open all keys inside this item section'
     clear:
       name: '&cClear Section'
       desc: '&7Delete this entire item section'
@@ -416,9 +432,64 @@ editor:
     apply:
       name: '&aApply ItemFormat'
       desc: '&7Update item data inside this single thing'
+    apply-conditions:
+      name: '&eApply Conditions'
+      desc: '&7Open apply-conditions for this single thing'
+    require-conditions:
+      name: '&eRequire Conditions'
+      desc: '&7Open require-conditions for this single thing'
+    give-actions:
+      name: '&eGive Actions'
+      desc: '&7Open give-actions for this single thing'
+    take-actions:
+      name: '&eTake Actions'
+      desc: '&7Open take-actions for this single thing'
+    preset:
+      name: '&ePreset Editor'
+      desc: '&7Return to the single thing preset editor'
+    raw:
+      name: '&eRaw Section'
+      desc: '&7Open all keys inside this single thing'
     clear:
       name: '&cClear Item Fields'
       desc: '&7Remove material / hook-item / item-format fields only'
+    back:
+      desc: '&7Return to the preset editor'
+  thing-economy:
+    title: 'Thing EconomyFormat: {path}'
+    provider:
+      name: '&eProvider'
+      desc: '&7Switch this single thing to a vanilla or hooked economy format.'
+    currency:
+      name: '&eCurrency Type'
+      desc: '&7Currency id used by the selected economy provider.'
+    placeholder:
+      name: '&ePlaceholder'
+      desc: '&7Display text used for this single thing price or product.'
+    apply-conditions:
+      name: '&eApply Conditions'
+      desc: '&7Open apply-conditions for this single thing'
+    require-conditions:
+      name: '&eRequire Conditions'
+      desc: '&7Open require-conditions for this single thing'
+    give-actions:
+      name: '&eGive Actions'
+      desc: '&7Open give-actions for this single thing'
+    take-actions:
+      name: '&eTake Actions'
+      desc: '&7Open take-actions for this single thing'
+    preset:
+      name: '&ePreset Editor'
+      desc: '&7Return to the single thing preset editor'
+    raw:
+      name: '&eRaw Section'
+      desc: '&7Open all keys inside this single thing'
+    apply:
+      name: '&aApply EconomyFormat'
+      desc: '&7Convert this single thing to economy format and keep common control fields'
+    clear:
+      name: '&cClear Economy Fields'
+      desc: '&7Remove economy-plugin / economy-type fields only'
     back:
       desc: '&7Return to the preset editor'
   prompt:
@@ -437,6 +508,7 @@ editor:
     integer-list-entry: 'Input the new integer list entry for &f{path}'
     integer-list-entry-edit: 'Input the new integer for list entry &f#{index}'
     new-child: 'Input the key name for the new child'
+    new-child-value: 'Input the value for &f{path}&7. Use &fsection &7or &f{} &7to create a section. Use &f;; &7for lists.'
   message:
     target-not-found: '&cTarget file not found.'
     saved: '&aSaved &f{value}'
@@ -447,6 +519,7 @@ editor:
     unknown-type: '&cUnknown type. Use section/string/int/double/boolean/list/int-list.'
     invalid-integer: '&cThat is not a valid integer.'
     invalid-number: '&cThat is not a valid number.'
+    invalid-new-child-value: '&cInvalid value. Use section/{}, boolean, number, list (;;), or plain text.'
     invalid-integer-list: '&cOne of the values is not an integer.'
     child-format: '&cUse format: key type'
     command-usage: '&cUse /shop editor [shop|menu] <id>'
@@ -485,6 +558,28 @@ editor:
     clear:
       name: '&cClear'
       desc: '&7Remove the as-sub-button value'
+  click-binding:
+    title: 'Click Types: {path}'
+    state: '&7Selected: &f{value}'
+  reset-time:
+    title: 'Reset Time: {path}'
+    current: '&7Current: &f{value}'
+    mode:
+      name: '&eCurrent Mode'
+      value: '&7Mode: &f{value}'
+      desc: '&7This editor changes behavior based on the selected reset mode.'
+    add:
+      name: '&eAdd Time'
+      desc: '&7Add a new reset time entry'
+    random:
+      name: '&eRandom Placeholder'
+    manual:
+      name: '&eEdit Value'
+    never:
+      name: '&eNo Reset Time Needed'
+      desc: '&7This reset mode does not use a time value.'
+    prompt-add: 'Input the new reset time for &f{path}'
+    prompt-edit: 'Input the new reset time for entry &f#{index}'
   presets:
     root_shop:
       title: 'Shop Preset'
@@ -509,8 +604,6 @@ editor:
             name: 'Secret Shop Items'
             desc: 'Hide products when their display rules are not met.'
           custom-command:
-            name: 'Custom Command'
-            desc: 'Register custom open commands for this shop.'
             name:
               name: 'Command Name'
               desc: 'Command players can use to open this shop.'
@@ -563,8 +656,6 @@ editor:
           name: 'Buttons'
           desc: 'All buttons placed in this menu.'
         custom-command:
-          name: 'Custom Command'
-          desc: 'Register custom open commands for this menu.'
           name:
             name: 'Command Name'
             desc: 'Command players can use to open this menu.'
@@ -628,6 +719,12 @@ editor:
         buy-more-menu:
           name: 'Buy More Menu'
           desc: 'Dedicated buy-more menu for this product.'
+          menu:
+            name: 'Menu File'
+            desc: 'Menu file used when this product opens the buy-more GUI.'
+          max-amount:
+            name: 'Max Amount'
+            desc: 'Maximum amount selectable in the buy-more menu.'
         hide-message:
           name: 'Hide Message'
           desc: 'Hide this product success message.'
@@ -714,6 +811,13 @@ editor:
           desc: 'Conditions that decide whether this button is shown.'
     limits_section:
       title: 'Limit Section Preset'
+      fields:
+        default:
+          name: 'Default Limit'
+          desc: 'Limit used when the player does not match any custom limit condition group.'
+        global:
+          name: 'Global Limit'
+          desc: 'Global shared limit applied to the whole server for this product.'
     single_thing:
       title: 'Single Thing Preset'
       fields:
@@ -723,6 +827,9 @@ editor:
         inline-item:
           name: 'ItemFormat'
           desc: 'Drag an item here to refresh item-format fields while keeping common control fields.'
+        inline-economy:
+          name: 'EconomyFormat'
+          desc: 'Switch this single thing to economy format while keeping amount, actions and condition fields.'
         amount:
           name: 'Amount'
           desc: 'Amount value. Supports fixed numbers, formulas or placeholders depending on context.'

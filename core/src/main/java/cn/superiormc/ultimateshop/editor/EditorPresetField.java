@@ -68,4 +68,12 @@ public class EditorPresetField {
     public static EditorPresetField choice(String key, String title, String description, Material material, String... choices) {
         return new EditorPresetField(key, title, description, material, EditorPresetFieldType.STRING_CHOICE, Arrays.asList(choices));
     }
+
+    public static EditorPresetField clickBinding(String key, String title, String description, Material material) {
+        return new EditorPresetField(key, title, description, material, EditorPresetFieldType.CLICK_TYPE_BINDING, new ArrayList<>());
+    }
+
+    public static EditorPresetField resetTime(String key, String title, String description, Material material) {
+        return new EditorPresetField(key, title, description, material, EditorPresetFieldType.RESET_TIME, new ArrayList<>());
+    }
 }

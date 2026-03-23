@@ -1,5 +1,7 @@
-package cn.superiormc.ultimateshop.editor;
+package cn.superiormc.ultimateshop.listeners;
 
+import cn.superiormc.ultimateshop.editor.EditorLang;
+import cn.superiormc.ultimateshop.managers.EditorManager;
 import cn.superiormc.ultimateshop.utils.SchedulerUtil;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
