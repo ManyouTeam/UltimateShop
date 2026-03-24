@@ -31,6 +31,8 @@ public interface SpecialMethodUtil {
 
     SkullMeta setSkullMeta(SkullMeta meta, String skull);
 
+    String serializeSkull(SkullMeta meta);
+
     void setItemName(ItemMeta meta, String name, Player player);
 
     void setItemItemName(ItemMeta meta, String itemName, Player player);

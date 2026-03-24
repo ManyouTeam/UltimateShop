@@ -128,6 +128,23 @@ public class PaperMethodUtil implements SpecialMethodUtil {
     }
 
     @Override
+    public String serializeSkull(SkullMeta meta) {
+        PlayerProfile profile = meta.getPlayerProfile();
+        if (profile != null) {
+            for (ProfileProperty property : profile.getProperties()) {
+                if ("textures".equalsIgnoreCase(property.getName()) && property.getValue() != null && !property.getValue().isEmpty()) {
+                    return property.getValue();
+                }
+            }
+        }
+
+        if (meta.getOwningPlayer() != null) {
+            return meta.getOwningPlayer().getName();
+        }
+        return null;
+    }
+
+    @Override
     public void setItemName(ItemMeta meta, String name, Player player) {
         name = TextUtil.withPAPI(name, player);
         if (PaperTextUtil.containsLegacyCodes(name)) {

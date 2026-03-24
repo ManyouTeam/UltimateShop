@@ -140,7 +140,7 @@ public class ObjectMenu {
                         fileName + ".yml!");
             } else {
                 if (type == MenuType.Common) {
-                    TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §cLoaded menu: " + fileName + ".yml!");
+                    TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fLoaded menu: " + fileName + ".yml!");
                 }
                 this.menuConfigs = YamlConfiguration.loadConfiguration(file);
             }

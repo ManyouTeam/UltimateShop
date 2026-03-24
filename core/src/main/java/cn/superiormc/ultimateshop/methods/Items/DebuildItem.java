@@ -1,14 +1,11 @@
 package cn.superiormc.ultimateshop.methods.Items;
 
 import cn.superiormc.ultimateshop.managers.ConfigManager;
-import cn.superiormc.ultimateshop.managers.ErrorManager;
 import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.managers.HookManager;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
 import cn.superiormc.ultimateshop.utils.NBTUtil;
 import com.google.common.collect.Multimap;
-import com.mojang.authlib.GameProfile;
-import com.mojang.authlib.properties.Property;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
@@ -31,7 +28,6 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionType;
 import org.bukkit.Sound;
 
-import java.lang.reflect.Field;
 import java.util.*;
 
 public class DebuildItem {
@@ -350,43 +346,10 @@ public class DebuildItem {
 
             // Skull
             if (meta instanceof SkullMeta) {
-                SkullMeta skullMeta = (SkullMeta) meta;
-                try {
-                    if (skullMeta.hasOwner() && skullMeta.getOwningPlayer() != null) {
-                        if (skullMeta.getOwningPlayer().getName() != null) {
-                            section.set("skull", skullMeta.getOwningPlayer().getName());
-                        }
-                    } else {
-                        Field field = skullMeta.getClass().getDeclaredField("profile");
-                        field.setAccessible(true);
-                        if (UltimateShop.newSkullMethod) {
-                            Object playerProfile = field.get(skullMeta);
-                            if (playerProfile != null) {
-                                Field field2 = playerProfile.getClass().getDeclaredField("f");
-                                field2.setAccessible(true);
-                                GameProfile gameProfile = (GameProfile) field2.get(playerProfile);
-                                if (gameProfile != null) {
-                                    Property property = gameProfile.getProperties().get("textures").iterator().next();
-                                    Field field3 = property.getClass().getDeclaredField("value");
-                                    field3.setAccessible(true);
-                                    section.set("skull", field3.get(property));
-                                }
-                            }
-                        } else {
-                            GameProfile gameProfile = (GameProfile) field.get(skullMeta);
-                            if (gameProfile != null) {
-                                Property property = gameProfile.getProperties().get("textures").iterator().next();
-                                Field field3 = property.getClass().getDeclaredField("value");
-                                field3.setAccessible(true);
-                                section.set("skull", field3.get(property));
-                            }
-                        }
-                    }
-                } catch (Throwable throwable) {
-                    if (ConfigManager.configManager.getBoolean("debug")) {
-                        throwable.printStackTrace();
-                    }
-                    ErrorManager.errorManager.sendErrorMessage("§cError: Can not parse skull texture in a item!");
+                SkullMeta skullMeta =  (SkullMeta) meta;
+                String textureValue = UltimateShop.methodUtil.serializeSkull(skullMeta);
+                if (textureValue != null && !textureValue.isEmpty()) {
+                    section.set("skull", textureValue);
                 }
             }
 
