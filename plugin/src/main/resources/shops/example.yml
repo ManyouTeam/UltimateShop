@@ -3,6 +3,11 @@
 
 settings:
   menu: 'example-shop-menu'
+  menu-settings:
+    conditions:
+      1:
+        type: permission
+        permission: 'test.required'
   buy-more: true
   shop-name: 'Example Shop'
   hide-message: false

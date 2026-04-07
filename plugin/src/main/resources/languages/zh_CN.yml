@@ -104,6 +104,21 @@ gui-updated: "&#98FB98[UltimateShop] &f已为玩家 {player} 刷新GUI!"
 gui-not-opened: "&#98FB98[UltimateShop] &c{player} 没有打开任何的GUI!"
 
 override-lang:
+  search-gui-guide-name: '&e搜索槽位'
+  search-gui-guide-line-1: '&7把需要搜索的物品放入任意输入槽位'
+  search-gui-guide-line-2: '&7下方会显示匹配到的关联商品'
+  search-gui-guide-line-3: '&7点击结果可按原方式交易该商品'
+  search-gui-clear-name: '&c清空搜索'
+  search-gui-clear-line-1: '&7返还所有输入物品并清空搜索结果'
+  search-gui-empty-name: '&e等待放入物品'
+  search-gui-empty-line-1: '&7请先将物品放入已配置的输入槽位'
+  search-gui-state-name: '&a搜索结果'
+  search-gui-state-line-1: '&7匹配到的商品数量: &f{result-amount}'
+  search-gui-state-line-2: '&7当前显示 &f{showing-amount} &7个结果，输入物品总数为 &f{input-amount}'
+  search-gui-no-result-name: '&c没有匹配商品'
+  search-gui-no-result-line-1: '&7当前输入物品没有关联到任何商店商品'
+  search-gui-result-shop: '&8商店: &f{shop}'
+  search-gui-result-product: '&8商品ID: &f{product}'
   shop-title: '物品商店'
   buy-more-title: '选择数量'
   buy-more-add-1: '&7点击增加 1 个'
@@ -186,6 +201,8 @@ override-lang:
   menu:
     sell-all:
       title: '&f一键回收菜单 &7- 按下ESC开始回收!'
+    search-gui:
+      title: '&8商品搜索界面'
     bedrock:
       price-extra-line:
         default: '&6购买: {buy-price} &6| 回收: {sell-price}'

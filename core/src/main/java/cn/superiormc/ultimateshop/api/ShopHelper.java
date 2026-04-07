@@ -20,7 +20,10 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class ShopHelper {
 
@@ -59,20 +62,33 @@ public class ShopHelper {
 
     @Nullable
     public static ObjectItem getTargetItem(ItemStorage storage, Player player) {
-        for (ObjectShop shop : ConfigManager.configManager.getShops()) {
-            for (ObjectItem item : shop.getProductList()) {
-                TakeResult takeResult = item.getReward().take(storage, player, 1, 1, false);
-                if (takeResult != null && !takeResult.empty && takeResult.getResultBoolean()) {
-                    return item;
-                }
-            }
+        List<ObjectItem> items = getTargetItems(storage, player);
+        if (items.isEmpty()) {
+            return null;
         }
-        return null;
+        return items.get(0);
     }
 
     @Nullable
     public static ObjectItem getTargetItem(ItemStack[] items, Player player) {
         return getTargetItem(ItemStorage.of(items), player);
+    }
+
+    public static List<ObjectItem> getTargetItems(ItemStorage storage, Player player) {
+        Set<ObjectItem> result = new LinkedHashSet<>();
+        for (ObjectShop shop : ConfigManager.configManager.getShops()) {
+            for (ObjectItem item : shop.getProductListNotHidden(player)) {
+                TakeResult takeResult = item.getReward().take(storage, player, 1, 1, false);
+                if (takeResult != null && !takeResult.empty && takeResult.getResultBoolean()) {
+                    result.add(item);
+                }
+            }
+        }
+        return new ArrayList<>(result);
+    }
+
+    public static List<ObjectItem> getTargetItems(ItemStack[] items, Player player) {
+        return getTargetItems(ItemStorage.of(items), player);
     }
 
     @Nullable
@@ -187,7 +203,6 @@ public class ShopHelper {
     }
 
     public static Map<AbstractSingleThing, BigDecimal> sellAll(Player player, ItemStorage storage, double multiplier) {
-
         if (storage.isEmpty()) {
             return new HashMap<>();
         }

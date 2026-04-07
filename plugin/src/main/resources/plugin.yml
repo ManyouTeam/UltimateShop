@@ -71,6 +71,8 @@ permissions:
     default: op
   ultimateshop.sellall:
     default: true
+  ultimateshop.searchgui:
+    default: true
   ultimateshop.setbuytimes:
     default: op
   ultimateshop.setselltimes:

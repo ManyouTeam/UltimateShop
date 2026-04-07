@@ -11,6 +11,7 @@ import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -26,11 +27,6 @@ public class EditorThingItemValueGUI extends InvGUI {
         super(owner);
         this.target = target;
         this.path = path;
-    }
-
-    @Override
-    public boolean getChangeable() {
-        return true;
     }
 
     @Override

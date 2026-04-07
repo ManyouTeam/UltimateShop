@@ -46,12 +46,14 @@ help:
     &f/shop help &7- View help.
     &f/shop menu <menuName> &7- Open specified common menu.
     &f/shop menu <shopName> &7- Open specified shop menu.
+    &f/shop searchgui &7- Open item search GUI.
     &f/shop sellall &7- Open sell all menu.
   main-admin: |
     &#98FB98&lUltimateShop &7Made by @PQguanfang
     &f/shop help &7- View help.
     &f/shop menu <menuName> &7- Open specified common menu.
     &f/shop menu <shopName> &7- Open specified shop menu.
+    &f/shop searchgui &7- Open item search GUI.
     &f/shop quickbuy <shopName> <itemName> &7- Quick purchase specified item without open menu.
     &f/shop quicksell <shopName> <itemName> &7- Quick sell specified item without open menu.
     &f/shop reload &7- Reload the plugin.
@@ -108,6 +110,21 @@ gui-updated: "&#98FB98[UltimateShop] &fGUI updated for player {player}!"
 gui-not-opened: "&#98FB98[UltimateShop] &c{player} didn't open any GUI!"
 
 override-lang:
+  search-gui-guide-name: '&eSearch Slot'
+  search-gui-guide-line-1: '&7Put the item you want to search'
+  search-gui-guide-line-2: '&7into one of the input slots.'
+  search-gui-guide-line-3: '&7Matching shop products will appear below.'
+  search-gui-clear-name: '&cClear Search'
+  search-gui-clear-line-1: '&7Return all input items and clear results.'
+  search-gui-empty-name: '&eWaiting for input'
+  search-gui-empty-line-1: '&7Place items into the configured input slots.'
+  search-gui-state-name: '&aSearch Result'
+  search-gui-state-line-1: '&7Matched products: &f{result-amount}'
+  search-gui-state-line-2: '&7Showing &f{showing-amount} &7results from &f{input-amount} &7input items.'
+  search-gui-no-result-name: '&cNo matched products'
+  search-gui-no-result-line-1: '&7No shop product is linked to the current input.'
+  search-gui-result-shop: '&8Shop: &f{shop}'
+  search-gui-result-product: '&8Product: &f{product}'
   shop-title: 'Item Shop'
   buy-more-title: 'Select Quantity'
   buy-more-add-1: '&7Click to add 1 more.'
@@ -190,6 +207,8 @@ override-lang:
   menu:
     sell-all:
       title: '&fSell All &7- Esc to confirm sell!'
+    search-gui:
+      title: '&8Shop Search GUI'
     bedrock:
       price-extra-line:
         default: '&6Buy: {buy-price} &6| Sell: {sell-price}'

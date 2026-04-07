@@ -11,7 +11,6 @@ import cn.superiormc.ultimateshop.objects.items.prices.ObjectSinglePrice;
 import cn.superiormc.ultimateshop.objects.items.prices.PriceMode;
 import cn.superiormc.ultimateshop.objects.items.products.ObjectSingleProduct;
 import cn.superiormc.ultimateshop.objects.items.subobjects.ObjectDisplayPlaceholder;
-import cn.superiormc.ultimateshop.utils.CommonUtil;
 import cn.superiormc.ultimateshop.utils.MathUtil;
 import cn.superiormc.ultimateshop.utils.TextUtil;
 import org.bukkit.configuration.ConfigurationSection;
@@ -70,7 +69,7 @@ public abstract class AbstractSingleThing implements Comparable<AbstractSingleTh
             type = ThingType.UNKNOWN;
         } else if (section.contains("hook-plugin") && section.contains("hook-item")) {
             type = ThingType.HOOK_ITEM;
-        } else if (section.contains("match-item") && CommonUtil.checkPluginLoad("MythicChanger")) {
+        } else if (section.contains("match-item")) {
             type = ThingType.MATCH_ITEM;
         } else if (section.contains("match-placeholder") && !UltimateShop.freeVersion) {
             type = ThingType.CUSTOM;
@@ -264,7 +263,6 @@ public abstract class AbstractSingleThing implements Comparable<AbstractSingleTh
                     itemID = itemID + ";;" + section.getString("hook-item-type");
                 }
                 return ItemPriceUtil.getPrice(storage,
-                        player,
                         pluginName,
                         itemID,
                         (int) cost, take);
@@ -273,7 +271,7 @@ public abstract class AbstractSingleThing implements Comparable<AbstractSingleTh
                 if (itemStack == null) {
                     return false;
                 }
-                return ItemPriceUtil.getPrice(storage, player, itemStack, (int) cost, take);
+                return ItemPriceUtil.getPrice(storage, itemStack, (int) cost, take);
             case MATCH_ITEM:
                 return ItemPriceUtil.getPrice(storage, player, section, (int) cost, take);
             case HOOK_ECONOMY:

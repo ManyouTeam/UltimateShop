@@ -5,6 +5,7 @@ import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.HookManager;
 import cn.superiormc.ultimateshop.objects.items.ItemStorage;
+import cn.superiormc.ultimateshop.utils.CommonUtil;
 import cn.superiormc.ultimateshop.utils.ItemUtil;
 import org.bukkit.block.ShulkerBox;
 import org.bukkit.configuration.ConfigurationSection;
@@ -17,11 +18,11 @@ import java.util.function.Predicate;
 
 public class ItemPriceUtil {
 
-    public static boolean getPrice(Inventory inventory, Player player, String pluginName, String item, int value, boolean take) {
-        return getPrice(ItemStorage.of(inventory), player, pluginName, item, value, take);
+    public static boolean getPrice(Inventory inventory, String pluginName, String item, int value, boolean take) {
+        return getPrice(ItemStorage.of(inventory), pluginName, item, value, take);
     }
 
-    public static boolean getPrice(ItemStorage storage, Player player, String pluginName, String item, int value, boolean take) {
+    public static boolean getPrice(ItemStorage storage, String pluginName, String item, int value, boolean take) {
         if (value < 0) {
             return false;
         }
@@ -54,11 +55,11 @@ public class ItemPriceUtil {
         });
     }
 
-    public static boolean getPrice(Inventory inventory, Player player, ItemStack item, int value, boolean take) {
-        return getPrice(ItemStorage.of(inventory), player, item, value, take);
+    public static boolean getPrice(Inventory inventory, ItemStack item, int value, boolean take) {
+        return getPrice(ItemStorage.of(inventory), item, value, take);
     }
 
-    public static boolean getPrice(ItemStorage storage, Player player, ItemStack item, int value, boolean take) {
+    public static boolean getPrice(ItemStorage storage, ItemStack item, int value, boolean take) {
         if (value < 0) {
             return false;
         }
@@ -83,6 +84,9 @@ public class ItemPriceUtil {
         if (section == null) {
             return 0;
         }
+        if (!CommonUtil.checkPluginLoad("MythicChanger")) {
+            return 0;
+        }
         return countItems(storage.getStorageContents(), tempVal1 -> MatchItemManager.matchItemManager.getMatch(section.getConfigurationSection("match-item"), player, tempVal1));
     }
 
@@ -92,6 +96,9 @@ public class ItemPriceUtil {
 
     public static boolean getPrice(ItemStorage storage, Player player, ConfigurationSection section, int value, boolean take) {
         if (value < 0) {
+            return false;
+        }
+        if (!CommonUtil.checkPluginLoad("MythicChanger")) {
             return false;
         }
         ItemStack[] storageContents = storage.getStorageContents();
