@@ -16,6 +16,8 @@ error:
   result-empty: "&#98FB98[UltimateShop] &c该物品在商店中不存在!"
 
 plugin:
+  search-gui-name-input: "&f请在聊天栏输入要搜索的物品名称，输入 {value} 可清空名称筛选。"
+  search-gui-name-empty: "无"
   reloading: "&#98FB98[UltimateShop] &f插件重启中，您的服务器可会有卡顿. 除非特殊情况，我们建议您重启服务器，而不是重启插件，这样能保证数据储存安全."
   reloaded: '&#98FB98[UltimateShop] &f插件已重启!'
   saved: '&#98FB98[UltimateShop] &f物品已保存!'
@@ -106,19 +108,24 @@ gui-not-opened: "&#98FB98[UltimateShop] &c{player} 没有打开任何的GUI!"
 override-lang:
   search-gui-guide-name: '&e搜索槽位'
   search-gui-guide-line-1: '&7把需要搜索的物品放入任意输入槽位'
-  search-gui-guide-line-2: '&7下方会显示匹配到的关联商品'
-  search-gui-guide-line-3: '&7点击结果可按原方式交易该商品'
+  search-gui-guide-line-2: '&7或点击本按钮后在聊天栏输入物品名称'
+  search-gui-guide-line-3: '&7下方会显示匹配到的关联商品'
+  search-gui-guide-line-4: '&7点击结果可按原方式交易该商品'
   search-gui-clear-name: '&c清空搜索'
-  search-gui-clear-line-1: '&7返还所有输入物品并清空搜索结果'
+  search-gui-clear-line-1: '&7返还所有输入物品并清空名称筛选'
   search-gui-empty-name: '&e等待放入物品'
   search-gui-empty-line-1: '&7请先将物品放入已配置的输入槽位'
+  search-gui-empty-line-2: '&7或点击上方漏斗直接按物品名称搜索'
   search-gui-state-name: '&a搜索结果'
   search-gui-state-line-1: '&7匹配到的商品数量: &f{result-amount}'
   search-gui-state-line-2: '&7当前显示 &f{showing-amount} &7个结果，输入物品总数为 &f{input-amount}'
+  search-gui-state-line-3: '&7名称筛选: &f{name-keyword}'
   search-gui-no-result-name: '&c没有匹配商品'
   search-gui-no-result-line-1: '&7当前输入物品没有关联到任何商店商品'
+  search-gui-no-result-line-2: '&7当前名称筛选: &f{name-keyword}'
   search-gui-result-shop: '&8商店: &f{shop}'
   search-gui-result-product: '&8商品ID: &f{product}'
+  search-gui-result-click: '&7点击即可直接交易该商品'
   shop-title: '物品商店'
   buy-more-title: '选择数量'
   buy-more-add-1: '&7点击增加 1 个'
@@ -199,10 +206,14 @@ override-lang:
     sell-chest:
       price-empty: '没有交易历史'
   menu:
+    prompt:
+      cancel-keyword: '取消'
     sell-all:
       title: '&f一键回收菜单 &7- 按下ESC开始回收!'
     search-gui:
       title: '&8商品搜索界面'
+      prompt:
+        clear-keyword: '清除'
     bedrock:
       price-extra-line:
         default: '&6购买: {buy-price} &6| 回收: {sell-price}'
@@ -523,7 +534,7 @@ editor:
     new-child-value: '请输入 &f{path} &7的值。输入 &fsection &7或 &f{} &7可创建 section，输入 &f;; &7可创建列表。'
   message:
     target-not-found: '&c找不到目标文件。'
-    saved: '&a已保存 &f{value}'
+    saved: '&a已保存 &f{value}&a，不要忘记在完成编辑后重启插件以让你的修改生效！'
     save-failed: '&c保存文件失败: {value}'
     empty-id: '&c条目 id 不能为空。'
     enable-confirm-required: '&cEditor 仍处于测试阶段。使用前请先阅读并确认 &f{file} &c中的全部项目。'

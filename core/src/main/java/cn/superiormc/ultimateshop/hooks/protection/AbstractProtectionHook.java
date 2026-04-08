@@ -12,4 +12,8 @@ public abstract class AbstractProtectionHook {
     }
 
     public abstract boolean canUse(Player player, Location location);
+
+    public abstract boolean canPlace(Player player, Location location);
+
+    public abstract boolean canBreak(Player player, Location location);
 }

@@ -13,6 +13,7 @@
 # Premium version only.
 #
 # To enable /shop editor, set every value below to true.
+# Don't forget to reload the plugin after completing the editing to make your modifications take effect!
 
 confirmations:
   understand-testing-status: false

@@ -17,4 +17,17 @@ public class ProtectionTownyHook extends AbstractProtectionHook {
         Block block = location.getBlock();
         return PlayerCacheUtil.getCachePermission(player, block.getLocation(), block.getType(), TownyPermission.ActionType.SWITCH);
     }
+
+    @Override
+    public boolean canBreak(Player player, Location location) {
+        Block block = location.getBlock();
+        return PlayerCacheUtil.getCachePermission(player, block.getLocation(), block.getType(), TownyPermission.ActionType.DESTROY);
+    }
+
+    @Override
+    public boolean canPlace(Player player, Location location) {
+        Block block = location.getBlock();
+        return PlayerCacheUtil.getCachePermission(player, block.getLocation(), block.getType(), TownyPermission.ActionType.BUILD);
+    }
+
 }

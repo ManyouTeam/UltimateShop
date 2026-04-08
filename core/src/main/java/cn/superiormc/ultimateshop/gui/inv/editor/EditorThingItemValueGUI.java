@@ -1,8 +1,11 @@
-package cn.superiormc.ultimateshop.editor;
+package cn.superiormc.ultimateshop.gui.inv.editor;
 
 import cn.superiormc.ultimateshop.UltimateShop;
+import cn.superiormc.ultimateshop.editor.EditorLang;
+import cn.superiormc.ultimateshop.editor.EditorTarget;
+import cn.superiormc.ultimateshop.editor.EditorUtil;
 import cn.superiormc.ultimateshop.gui.InvGUI;
-import cn.superiormc.ultimateshop.managers.EditorManager;
+import cn.superiormc.ultimateshop.managers.MenuStatusManager;
 import cn.superiormc.ultimateshop.methods.Items.BuildItem;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
@@ -11,7 +14,6 @@ import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -38,7 +40,7 @@ public class EditorThingItemValueGUI extends InvGUI {
         }
         inv.clear();
 
-        ConfigurationSection section = EditorManager.editorManager.getSection(target, path);
+        ConfigurationSection section = MenuStatusManager.menuStatusManager.getSection(target, path);
         if (section != null) {
             try {
                 ItemStack itemStack = BuildItem.buildItemStack(player, section, Math.max(section.getInt("amount", 1), 1));
@@ -108,7 +110,7 @@ public class EditorThingItemValueGUI extends InvGUI {
             return true;
         }
         if (slot == 22) {
-            EditorManager.editorManager.openTarget(player, target, path, 0);
+            MenuStatusManager.menuStatusManager.openTarget(player, target, path, 0);
             return true;
         }
         if (slot == 23) {
@@ -116,26 +118,26 @@ public class EditorThingItemValueGUI extends InvGUI {
             if (itemStack == null || itemStack.getType().isAir()) {
                 return true;
             }
-            EditorManager.editorManager.replaceInlineThingItem(player, target, path, itemStack);
-            EditorManager.editorManager.openTarget(player, target, path, 0);
+            MenuStatusManager.menuStatusManager.replaceInlineThingItem(player, target, path, itemStack);
+            MenuStatusManager.menuStatusManager.openTarget(player, target, path, 0);
             return true;
         }
         if (slot == 24) {
-            EditorManager.editorManager.clearInlineThingItem(player, target, path);
-            EditorManager.editorManager.openTarget(player, target, path, 0);
+            MenuStatusManager.menuStatusManager.clearInlineThingItem(player, target, path);
+            MenuStatusManager.menuStatusManager.openTarget(player, target, path, 0);
             return true;
         }
         if (slot == 26) {
-            EditorManager.editorManager.openTarget(player, target, path, 0);
+            MenuStatusManager.menuStatusManager.openTarget(player, target, path, 0);
             return true;
         }
         return true;
     }
 
     private void openNestedSection(String fullPath) {
-        EditorManager.editorManager.ensureSection(target, fullPath);
-        EditorManager.editorManager.save(player, target);
-        EditorManager.editorManager.openTarget(player, target, fullPath, 0);
+        MenuStatusManager.menuStatusManager.ensureSection(target, fullPath);
+        MenuStatusManager.menuStatusManager.save(player, target);
+        MenuStatusManager.menuStatusManager.openTarget(player, target, fullPath, 0);
     }
 
     @Override

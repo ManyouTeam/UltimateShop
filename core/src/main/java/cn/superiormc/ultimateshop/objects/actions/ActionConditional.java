@@ -30,7 +30,7 @@ public class ActionConditional extends AbstractRunAction {
         if (actionSection == null) {
             return;
         }
-        ObjectAction action = new ObjectAction(actionSection);
+        ObjectAction action = singleAction.createNestedAction(actionSection);
         action.runAllActions(thingRun);
     }
 }

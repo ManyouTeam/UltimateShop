@@ -76,4 +76,14 @@ public class ObjectSingleAction extends AbstractSingleRun {
         return action;
     }
 
+    public ObjectAction createNestedAction(ConfigurationSection actionSection) {
+        if (item != null) {
+            return new ObjectAction(actionSection, item);
+        }
+        if (shop != null) {
+            return new ObjectAction(actionSection, shop);
+        }
+        return new ObjectAction(actionSection);
+    }
+
 }

@@ -1,8 +1,11 @@
-package cn.superiormc.ultimateshop.editor;
+package cn.superiormc.ultimateshop.gui.inv.editor;
 
 import cn.superiormc.ultimateshop.UltimateShop;
+import cn.superiormc.ultimateshop.editor.EditorLang;
+import cn.superiormc.ultimateshop.editor.EditorTarget;
+import cn.superiormc.ultimateshop.editor.EditorUtil;
 import cn.superiormc.ultimateshop.gui.InvGUI;
-import cn.superiormc.ultimateshop.managers.EditorManager;
+import cn.superiormc.ultimateshop.managers.MenuStatusManager;
 import cn.superiormc.ultimateshop.managers.HookManager;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
@@ -34,7 +37,7 @@ public class EditorEconomyValueGUI extends InvGUI {
         }
         inv.clear();
 
-        ConfigurationSection section = EditorManager.editorManager.ensureSection(target, path);
+        ConfigurationSection section = MenuStatusManager.menuStatusManager.ensureSection(target, path);
         String provider = getProvider(section);
         String currency = section.getString("economy-type", "default");
         String amount = String.valueOf(section.get("amount"));
@@ -83,7 +86,7 @@ public class EditorEconomyValueGUI extends InvGUI {
 
     @Override
     public boolean clickEventHandle(Inventory inventory, ClickType type, int slot) {
-        ConfigurationSection section = EditorManager.editorManager.ensureSection(target, path);
+        ConfigurationSection section = MenuStatusManager.menuStatusManager.ensureSection(target, path);
 
         if (slot == 10) {
             List<String> providers = new ArrayList<>();
@@ -111,47 +114,47 @@ public class EditorEconomyValueGUI extends InvGUI {
                     section.set("economy-type", "default");
                 }
             }
-            EditorManager.editorManager.save(player, target);
+            MenuStatusManager.menuStatusManager.save(player, target);
             new EditorEconomyValueGUI(player, target, path).openGUI(true);
             return true;
         }
         if (slot == 12) {
-            EditorManager.editorManager.promptString(player, target, path + ".economy-type",
+            MenuStatusManager.menuStatusManager.promptString(player, target, path + ".economy-type",
                     () -> new EditorEconomyValueGUI(player, target, path).openGUI(true));
             return true;
         }
         if (slot == 14) {
-            EditorManager.editorManager.promptDouble(player, target, path + ".amount",
+            MenuStatusManager.menuStatusManager.promptDouble(player, target, path + ".amount",
                     () -> new EditorEconomyValueGUI(player, target, path).openGUI(true));
             return true;
         }
         if (slot == 16) {
             if (type.isRightClick()) {
-                EditorManager.editorManager.removeValue(player, target, path + ".placeholder");
+                MenuStatusManager.menuStatusManager.removeValue(player, target, path + ".placeholder");
                 new EditorEconomyValueGUI(player, target, path).openGUI(true);
             } else {
-                EditorManager.editorManager.promptString(player, target, path + ".placeholder",
+                MenuStatusManager.menuStatusManager.promptString(player, target, path + ".placeholder",
                         () -> new EditorEconomyValueGUI(player, target, path).openGUI(true));
             }
             return true;
         }
         if (slot == 20) {
-            EditorManager.editorManager.ensureSection(target, path + ".conditions");
-            EditorManager.editorManager.save(player, target);
-            EditorManager.editorManager.openTarget(player, target, path + ".conditions", 0);
+            MenuStatusManager.menuStatusManager.ensureSection(target, path + ".conditions");
+            MenuStatusManager.menuStatusManager.save(player, target);
+            MenuStatusManager.menuStatusManager.openTarget(player, target, path + ".conditions", 0);
             return true;
         }
         if (slot == 22) {
-            EditorManager.editorManager.openTarget(player, target, path, 0);
+            MenuStatusManager.menuStatusManager.openTarget(player, target, path, 0);
             return true;
         }
         if (slot == 24) {
-            EditorManager.editorManager.removeValue(player, target, path);
-            EditorManager.editorManager.openTarget(player, target, EditorUtil.parentPath(path), 0);
+            MenuStatusManager.menuStatusManager.removeValue(player, target, path);
+            MenuStatusManager.menuStatusManager.openTarget(player, target, EditorUtil.parentPath(path), 0);
             return true;
         }
         if (slot == 26) {
-            EditorManager.editorManager.openTarget(player, target, EditorUtil.parentPath(path), 0);
+            MenuStatusManager.menuStatusManager.openTarget(player, target, EditorUtil.parentPath(path), 0);
             return true;
         }
         return true;

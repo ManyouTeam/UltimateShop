@@ -21,7 +21,7 @@ public class ActionAny extends AbstractRunAction {
         if (chanceSection == null) {
             return;
         }
-        ObjectAction action = new ObjectAction(chanceSection);
+        ObjectAction action = singleAction.createNestedAction(chanceSection);
         action.runAnyActions(thingRun, singleAction.getInt("amount", 1));
     }
 }

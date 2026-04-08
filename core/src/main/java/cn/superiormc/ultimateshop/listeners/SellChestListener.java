@@ -1,6 +1,7 @@
 package cn.superiormc.ultimateshop.listeners;
 
 import cn.superiormc.ultimateshop.managers.ConfigManager;
+import cn.superiormc.ultimateshop.managers.HookManager;
 import cn.superiormc.ultimateshop.managers.SellChestManager;
 import cn.superiormc.ultimateshop.objects.ObjectThingRun;
 import cn.superiormc.ultimateshop.objects.sellchests.ObjectSellChest;
@@ -22,7 +23,7 @@ import org.bukkit.persistence.PersistentDataType;
 
 public class SellChestListener implements Listener {
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onPlace(BlockPlaceEvent event) {
         if (event.getBlockPlaced().getType() != Material.CHEST) {
             return;
@@ -60,6 +61,9 @@ public class SellChestListener implements Listener {
         if (!sellChest.getCondition().getAllBoolean(new ObjectThingRun(event.getPlayer()))) {
             return;
         }
+        if (!HookManager.hookManager.getProtectionCanPlace(event.getPlayer(), event.getBlockPlaced().getLocation())) {
+            return;
+        }
 
         int times = ObjectSellChest.getSellChestValue(item);
         if (times <= 0 && !sellChest.isInfinite()) {
@@ -82,7 +86,7 @@ public class SellChestListener implements Listener {
         SellChestManager.sellChestManager.registerSellChest(chest, event.getPlayer(), sellChest, times);
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onBreak(BlockBreakEvent event) {
         Block block = event.getBlock();
         BlockState state = block.getState();
@@ -92,6 +96,9 @@ public class SellChestListener implements Listener {
 
         PersistentDataContainer pdc = chest.getPersistentDataContainer();
         if (!pdc.has(SellChestManager.KEY_IS_SELL_CHEST, PersistentDataType.BYTE)) {
+            return;
+        }
+        if (!HookManager.hookManager.getProtectionCanBreak(event.getPlayer(), block.getLocation())) {
             return;
         }
 

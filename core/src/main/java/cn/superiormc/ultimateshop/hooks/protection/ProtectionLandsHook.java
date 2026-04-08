@@ -26,4 +26,29 @@ public class ProtectionLandsHook extends AbstractProtectionHook {
         }
         return true;
     }
+
+    @Override
+    public boolean canBreak(Player player, Location location) {
+        LandWorld world = api.getWorld(location.getWorld());
+        if (world != null) {
+            return world.hasRoleFlag(api.getLandPlayer(player.getUniqueId()),
+                    location,
+                    Flags.BLOCK_BREAK, location.getBlock().getType(),
+                    false);
+        }
+        return true;
+    }
+
+    @Override
+    public boolean canPlace(Player player, Location location) {
+        LandWorld world = api.getWorld(location.getWorld());
+        if (world != null) {
+            return world.hasRoleFlag(api.getLandPlayer(player.getUniqueId()),
+                    location,
+                    Flags.BLOCK_PLACE, location.getBlock().getType(),
+                    false);
+        }
+        return true;
+    }
+
 }

@@ -17,4 +17,15 @@ public class ProtectionHuskClaimsHook extends AbstractProtectionHook {
     public boolean canUse(Player player, Location location) {
         return api.isOperationAllowed(api.getOnlineUser(player.getUniqueId()), OperationType.CONTAINER_OPEN, api.getPosition(location));
     }
+
+    @Override
+    public boolean canBreak(Player player, Location location) {
+        return api.isOperationAllowed(api.getOnlineUser(player.getUniqueId()), OperationType.BLOCK_BREAK, api.getPosition(location));
+    }
+
+    @Override
+    public boolean canPlace(Player player, Location location) {
+        return api.isOperationAllowed(api.getOnlineUser(player.getUniqueId()), OperationType.BLOCK_PLACE, api.getPosition(location));
+    }
+
 }

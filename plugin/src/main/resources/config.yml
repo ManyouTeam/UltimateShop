@@ -82,6 +82,8 @@ give-item:
   check-full: true
 
 menu:
+  prompt:
+    cancel-keyword: '{lang}'
   # Recommend use when you are running big server, it will make player no longer quickly click
   # and reopen shop menu to make sure UltimateShop not lag your server.
   # In ticks.
@@ -114,97 +116,10 @@ menu:
     title: '{lang}'
     black-slots: []
   search-gui:
-    size: 54
-    title: '{lang}'
-    input-slots:
-      - 3
-      - 4
-      - 5
-    result-slots:
-      - 18
-      - 19
-      - 20
-      - 21
-      - 22
-      - 23
-      - 24
-      - 25
-      - 26
-      - 27
-      - 28
-      - 29
-      - 30
-      - 31
-      - 32
-      - 33
-      - 34
-      - 35
-      - 36
-      - 37
-      - 38
-      - 39
-      - 40
-      - 41
-      - 42
-      - 43
-      - 44
-      - 45
-      - 46
-      - 47
-      - 48
-      - 49
-      - 50
-      - 51
-      - 52
-      - 53
-    filler:
-      enabled: true
-      display-item:
-        material: GRAY_STAINED_GLASS_PANE
-        name: ' '
-    guide-item:
-      slot: 11
-      display-item:
-        material: HOPPER
-        name: '{lang:search-gui-guide-name}'
-        lore:
-          - '{lang:search-gui-guide-line-1}'
-          - '{lang:search-gui-guide-line-2}'
-          - '{lang:search-gui-guide-line-3}'
-    state-item:
-      slot: 13
-      empty-input:
-        display-item:
-          material: PAPER
-          name: '{lang:search-gui-empty-name}'
-          lore:
-            - '{lang:search-gui-empty-line-1}'
-      has-input:
-        display-item:
-          material: COMPASS
-          name: '{lang:search-gui-state-name}'
-          lore:
-            - '{lang:search-gui-state-line-1}'
-            - '{lang:search-gui-state-line-2}'
-    clear-search:
-      slot: 15
-      display-item:
-        material: BARRIER
-        name: '{lang:search-gui-clear-name}'
-        lore:
-          - '{lang:search-gui-clear-line-1}'
-    no-result-item:
-      slot: 31
-      display-item:
-        material: BARRIER
-        name: '{lang:search-gui-no-result-name}'
-        lore:
-          - '{lang:search-gui-no-result-line-1}'
-    result-lore:
-      - ' '
-      - '{lang:search-gui-result-shop}'
-      - '{lang:search-gui-result-product}'
-      - '{lang:search-gui-result-click}'
+    menu:
+      - 'search'
+    prompt:
+      clear-keyword: '{lang}'
   # Premium version only
   bedrock:
     enabled: true

@@ -25,4 +25,33 @@ public class ProtectionDominionHook extends AbstractProtectionHook {
             return true;
         }
     }
+
+    @Override
+    public boolean canBreak(Player player, Location location) {
+        try {
+            DominionAPI dominionAPI = DominionAPI.getInstance();
+            DominionDTO dominionDTO = dominionAPI.getDominionByLoc(location);
+            if (dominionDTO != null) {
+                return dominionAPI.checkPrivilegeFlag(dominionDTO, Flags.BREAK_BLOCK, player);
+            }
+            return true;
+        } catch (Throwable throwable) {
+            return true;
+        }
+    }
+
+    @Override
+    public boolean canPlace(Player player, Location location) {
+        try {
+            DominionAPI dominionAPI = DominionAPI.getInstance();
+            DominionDTO dominionDTO = dominionAPI.getDominionByLoc(location);
+            if (dominionDTO != null) {
+                return dominionAPI.checkPrivilegeFlag(dominionDTO, Flags.PLACE, player);
+            }
+            return true;
+        } catch (Throwable throwable) {
+            return true;
+        }
+    }
+
 }

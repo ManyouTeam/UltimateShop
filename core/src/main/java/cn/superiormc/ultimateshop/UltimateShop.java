@@ -1,7 +1,7 @@
 package cn.superiormc.ultimateshop;
 
 import cn.superiormc.ultimateshop.managers.*;
-import cn.superiormc.ultimateshop.managers.EditorManager;
+import cn.superiormc.ultimateshop.managers.MenuStatusManager;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
 import cn.superiormc.ultimateshop.utils.PacketInventoryUtil;
 import cn.superiormc.ultimateshop.utils.SpecialMethodUtil;
@@ -14,7 +14,7 @@ public final class UltimateShop extends JavaPlugin {
 
     public static UltimateShop instance;
 
-    public static final boolean freeVersion = true;
+    public static final boolean freeVersion = false;
 
     public static SpecialMethodUtil methodUtil;
 
@@ -76,7 +76,7 @@ public final class UltimateShop extends JavaPlugin {
         new LanguageManager();
         new CacheManager();
         new CommandManager();
-        new EditorManager();
+        new MenuStatusManager();
         if (!UltimateShop.freeVersion && !UltimateShop.isFolia) {
             new SellChestManager();
         }

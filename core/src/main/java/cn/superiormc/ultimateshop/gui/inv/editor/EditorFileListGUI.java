@@ -1,8 +1,12 @@
-package cn.superiormc.ultimateshop.editor;
+package cn.superiormc.ultimateshop.gui.inv.editor;
 
 import cn.superiormc.ultimateshop.UltimateShop;
+import cn.superiormc.ultimateshop.editor.EditorLang;
+import cn.superiormc.ultimateshop.editor.EditorScope;
+import cn.superiormc.ultimateshop.editor.EditorTarget;
+import cn.superiormc.ultimateshop.editor.EditorUtil;
 import cn.superiormc.ultimateshop.gui.InvGUI;
-import cn.superiormc.ultimateshop.managers.EditorManager;
+import cn.superiormc.ultimateshop.managers.MenuStatusManager;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
@@ -74,24 +78,24 @@ public class EditorFileListGUI extends InvGUI {
             int index = page * 45 + slot;
             if (index < ids.size()) {
                 EditorTarget target = EditorTarget.load(scope, ids.get(index));
-                EditorManager.editorManager.openTarget(player, target, "", 0);
+                MenuStatusManager.menuStatusManager.openTarget(player, target, "", 0);
             }
             return true;
         }
         if (slot == 45) {
-            EditorManager.editorManager.openRoot(player);
+            MenuStatusManager.menuStatusManager.openRoot(player);
             return true;
         }
         if (slot == 49) {
-            EditorManager.editorManager.openScope(player, scope, page);
+            MenuStatusManager.menuStatusManager.openScope(player, scope, page);
             return true;
         }
         if (slot == 52 && page > 0) {
-            EditorManager.editorManager.openScope(player, scope, page - 1);
+            MenuStatusManager.menuStatusManager.openScope(player, scope, page - 1);
             return true;
         }
         if (slot == 53 && (page + 1) * 45 < ids.size()) {
-            EditorManager.editorManager.openScope(player, scope, page + 1);
+            MenuStatusManager.menuStatusManager.openScope(player, scope, page + 1);
             return true;
         }
         return true;

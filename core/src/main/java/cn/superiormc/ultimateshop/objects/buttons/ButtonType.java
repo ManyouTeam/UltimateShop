@@ -6,6 +6,10 @@ public enum ButtonType {
     SHOP,
     SELECT_AMOUNT,
     CONFIRM,
-    DISPLAY
+    DISPLAY,
+    SEARCH_ACTION,
+    SEARCH_STATE,
+    SEARCH_RESULT,
+    SEARCH_NO_RESULT
 
 }

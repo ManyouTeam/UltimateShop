@@ -1,9 +1,13 @@
-package cn.superiormc.ultimateshop.editor;
+package cn.superiormc.ultimateshop.gui.inv.editor;
 
 import cn.superiormc.ultimateshop.UltimateShop;
+import cn.superiormc.ultimateshop.editor.EditorLang;
+import cn.superiormc.ultimateshop.editor.EditorTarget;
+import cn.superiormc.ultimateshop.editor.EditorUtil;
 import cn.superiormc.ultimateshop.gui.InvGUI;
+import cn.superiormc.ultimateshop.gui.Prompt;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
-import cn.superiormc.ultimateshop.managers.EditorManager;
+import cn.superiormc.ultimateshop.managers.MenuStatusManager;
 import cn.superiormc.ultimateshop.objects.items.subobjects.ObjectRandomPlaceholder;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
 import org.bukkit.Material;
@@ -63,7 +67,7 @@ public class EditorResetTimeValueGUI extends InvGUI {
     public boolean clickEventHandle(Inventory inventory, ClickType type, int slot) {
         String mode = getMode();
         if (slot == 45) {
-            EditorManager.editorManager.openTarget(player, target, backPath, 0);
+            MenuStatusManager.menuStatusManager.openTarget(player, target, backPath, 0);
             return true;
         }
         if (isListMode(mode)) {
@@ -76,8 +80,8 @@ public class EditorResetTimeValueGUI extends InvGUI {
             return handleManualStringMode(slot);
         }
         if (slot == 49) {
-            EditorManager.editorManager.removeValue(player, target, path);
-            EditorManager.editorManager.openTarget(player, target, backPath, 0);
+            MenuStatusManager.menuStatusManager.removeValue(player, target, path);
+            MenuStatusManager.menuStatusManager.openTarget(player, target, backPath, 0);
         }
         return true;
     }
@@ -119,8 +123,8 @@ public class EditorResetTimeValueGUI extends InvGUI {
             return true;
         }
         if (slot == 50) {
-            EditorManager.editorManager.removeValue(player, target, path);
-            EditorManager.editorManager.openTarget(player, target, backPath, 0);
+            MenuStatusManager.menuStatusManager.removeValue(player, target, path);
+            MenuStatusManager.menuStatusManager.openTarget(player, target, backPath, 0);
             return true;
         }
         return true;
@@ -149,8 +153,8 @@ public class EditorResetTimeValueGUI extends InvGUI {
             return true;
         }
         if (slot == 15) {
-            EditorManager.editorManager.removeValue(player, target, path);
-            EditorManager.editorManager.openTarget(player, target, backPath, 0);
+            MenuStatusManager.menuStatusManager.removeValue(player, target, path);
+            MenuStatusManager.menuStatusManager.openTarget(player, target, backPath, 0);
             return true;
         }
         return true;
@@ -174,13 +178,13 @@ public class EditorResetTimeValueGUI extends InvGUI {
 
     private boolean handleManualStringMode(int slot) {
         if (slot == 13) {
-            EditorManager.editorManager.promptString(player, target, path,
-                    () -> EditorManager.editorManager.openTarget(player, target, backPath, 0));
+            MenuStatusManager.menuStatusManager.promptString(player, target, path,
+                    () -> MenuStatusManager.menuStatusManager.openTarget(player, target, backPath, 0));
             return true;
         }
         if (slot == 15) {
-            EditorManager.editorManager.removeValue(player, target, path);
-            EditorManager.editorManager.openTarget(player, target, backPath, 0);
+            MenuStatusManager.menuStatusManager.removeValue(player, target, path);
+            MenuStatusManager.menuStatusManager.openTarget(player, target, backPath, 0);
             return true;
         }
         return true;
@@ -212,14 +216,14 @@ public class EditorResetTimeValueGUI extends InvGUI {
 
     private void saveListValues(List<String> values) {
         if (values == null || values.isEmpty()) {
-            EditorManager.editorManager.removeValue(player, target, path);
+            MenuStatusManager.menuStatusManager.removeValue(player, target, path);
             return;
         }
-        EditorManager.editorManager.setValue(player, target, path, CommonUtil.translateStringList(values));
+        MenuStatusManager.menuStatusManager.setValue(player, target, path, CommonUtil.translateStringList(values));
     }
 
     private void promptAdd() {
-        EditorManager.editorManager.startPrompt(player, new EditorPrompt(
+        MenuStatusManager.menuStatusManager.startPrompt(player, new Prompt(
                 EditorLang.text(player, "editor.reset-time.prompt-add", "Input the new reset time for &f{path}",
                         "path", path),
                 (p, input) -> {
@@ -233,7 +237,7 @@ public class EditorResetTimeValueGUI extends InvGUI {
     }
 
     private void promptEdit(int index, String currentValue) {
-        EditorManager.editorManager.startPrompt(player, new EditorPrompt(
+        MenuStatusManager.menuStatusManager.startPrompt(player, new Prompt(
                 EditorLang.text(player, "editor.reset-time.prompt-edit", "Input the new reset time for entry &f#{index}",
                         "index", String.valueOf(index + 1))
                         + " "
@@ -266,7 +270,7 @@ public class EditorResetTimeValueGUI extends InvGUI {
         } else {
             index = (index + 1) % ids.size();
         }
-        EditorManager.editorManager.setValue(player, target, path, ids.get(index));
+        MenuStatusManager.menuStatusManager.setValue(player, target, path, ids.get(index));
         new EditorResetTimeValueGUI(player, target, path, backPath).openGUI(true);
     }
 

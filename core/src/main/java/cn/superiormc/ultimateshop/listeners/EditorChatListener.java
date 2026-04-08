@@ -1,7 +1,7 @@
 package cn.superiormc.ultimateshop.listeners;
 
-import cn.superiormc.ultimateshop.editor.EditorLang;
-import cn.superiormc.ultimateshop.managers.EditorManager;
+import cn.superiormc.ultimateshop.gui.PromptUtil;
+import cn.superiormc.ultimateshop.managers.MenuStatusManager;
 import cn.superiormc.ultimateshop.utils.SchedulerUtil;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -14,24 +14,25 @@ public class EditorChatListener implements Listener {
     @EventHandler
     public void onChat(AsyncPlayerChatEvent event) {
         Player player = event.getPlayer();
-        if (!EditorManager.editorManager.hasPrompt(player)) {
+        if (!MenuStatusManager.menuStatusManager.hasPrompt(player)) {
             return;
         }
 
         event.setCancelled(true);
         String message = event.getMessage();
         SchedulerUtil.runSync(() -> {
-            if (EditorLang.matchesCancel(player, message)) {
-                EditorManager.editorManager.cancelPrompt(player);
-                EditorManager.editorManager.reopen(player);
+            if (PromptUtil.matchesCancel(player, message)) {
+                if (MenuStatusManager.menuStatusManager.cancelPromptAndShouldReopen(player)) {
+                    MenuStatusManager.menuStatusManager.reopen(player);
+                }
                 return;
             }
-            EditorManager.editorManager.submitPrompt(player, message);
+            MenuStatusManager.menuStatusManager.submitPrompt(player, message);
         });
     }
 
     @EventHandler
     public void onQuit(PlayerQuitEvent event) {
-        EditorManager.editorManager.clear(event.getPlayer());
+        MenuStatusManager.menuStatusManager.clear(event.getPlayer());
     }
 }

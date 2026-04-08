@@ -3,136 +3,200 @@ package cn.superiormc.ultimateshop.gui.inv;
 import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.api.ShopHelper;
 import cn.superiormc.ultimateshop.gui.InvGUI;
+import cn.superiormc.ultimateshop.gui.Prompt;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
-import cn.superiormc.ultimateshop.methods.Items.BuildItem;
+import cn.superiormc.ultimateshop.managers.MenuStatusManager;
+import cn.superiormc.ultimateshop.managers.LanguageManager;
+import cn.superiormc.ultimateshop.objects.ObjectThingRun;
+import cn.superiormc.ultimateshop.objects.buttons.AbstractButton;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
+import cn.superiormc.ultimateshop.objects.buttons.ObjectSearchActionButton;
+import cn.superiormc.ultimateshop.objects.buttons.ObjectSearchNoResultButton;
+import cn.superiormc.ultimateshop.objects.buttons.ObjectSearchResultButton;
+import cn.superiormc.ultimateshop.objects.buttons.ObjectSearchStateButton;
+import cn.superiormc.ultimateshop.objects.menus.MenuSender;
+import cn.superiormc.ultimateshop.objects.menus.ObjectMenu;
+import cn.superiormc.ultimateshop.objects.menus.ObjectSearchMenu;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
 import cn.superiormc.ultimateshop.utils.SchedulerUtil;
-import org.bukkit.Material;
+import cn.superiormc.ultimateshop.utils.TextUtil;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 public class SearchGUI extends InvGUI {
 
-    private final Map<Integer, ObjectItem> resultButtons = new HashMap<>();
+    private final ObjectSearchMenu menu;
+
+    private final boolean bypass;
+
+    private final Map<Integer, ObjectSearchResultButton> resultButtons = new HashMap<>();
 
     private final Map<Integer, ItemStack> inputButtons = new HashMap<>();
 
-    private SearchGUI(Player owner) {
+    private String searchKeyword = "";
+
+    private boolean suppressCloseReturn;
+
+    private SearchGUI(Player owner, ObjectSearchMenu menu, boolean bypass) {
         super(owner);
+        this.menu = menu;
+        this.bypass = bypass;
     }
 
     @Override
     public void constructGUI() {
-        title = ConfigManager.configManager.getStringWithLang(player, "menu.search-gui.title");
-        int size = ConfigManager.configManager.getInt("menu.search-gui.size", 54);
-        List<Integer> inputSlots = ConfigManager.configManager.getIntList("menu.search-gui.input-slots");
-        List<Integer> resultSlots = ConfigManager.configManager.getIntList("menu.search-gui.result-slots");
-        if (Objects.isNull(inv)) {
-            inv = UltimateShop.methodUtil.createNewInv(player, size, title);
+        if (menu == null || menu.getConfig() == null) {
+            return;
         }
+        if (!bypass && !menu.getCondition().getAllBoolean(new ObjectThingRun(player))) {
+            LanguageManager.languageManager.sendStringText(player,
+                    "menu-condition-not-meet",
+                    "menu",
+                    menu.getName());
+            return;
+        }
+
+        title = TextUtil.withPAPI(CommonUtil.parseLang(player, menu.getString("title", "Search")), player);
+        if (Objects.isNull(inv)) {
+            inv = UltimateShop.methodUtil.createNewInv(player, menu.getInt("size", 54), title);
+        }
+
         initInputItemMap();
         inv.clear();
         resultButtons.clear();
 
-        if (ConfigManager.configManager.getBoolean("menu.search-gui.filler.enabled")) {
-            ItemStack filler = BuildItem.buildItemStack(player,
-                    ConfigManager.configManager.getSection("menu.search-gui.filler.display-item"),
-                    1);
-            for (int slot = 0; slot < size; slot++) {
-                if (inputSlots.contains(slot)
-                        || resultSlots.contains(slot)
-                        || slot == ConfigManager.configManager.getInt("menu.search-gui.guide-item.slot", 11)
-                        || slot == ConfigManager.configManager.getInt("menu.search-gui.state-item.slot", 13)
-                        || slot == ConfigManager.configManager.getInt("menu.search-gui.clear-search.slot", 15)
-                        || slot == ConfigManager.configManager.getInt("menu.search-gui.no-result-item.slot", 31)) {
-                    continue;
-                }
-                inv.setItem(slot, filler);
+        menuButtons = menu.getMenu(MenuSender.of(player));
+        menuItems = getMenuItems(player);
+        for (Map.Entry<Integer, ItemStack> entry : menuItems.entrySet()) {
+            if (entry.getKey() >= 0 && entry.getKey() < inv.getSize()) {
+                inv.setItem(entry.getKey(), entry.getValue());
             }
         }
+
+        renderActionButtons();
+
         for (Map.Entry<Integer, ItemStack> entry : inputButtons.entrySet()) {
             if (entry.getKey() >= 0 && entry.getKey() < inv.getSize()) {
                 inv.setItem(entry.getKey(), entry.getValue());
             }
         }
-        inv.setItem(ConfigManager.configManager.getInt("menu.search-gui.guide-item.slot", 11),
-                BuildItem.buildItemStack(player,
-                        ConfigManager.configManager.getSection("menu.search-gui.guide-item.display-item"),
-                        ConfigManager.configManager.getInt("menu.search-gui.guide-item.display-item.amount", 1)));
-        inv.setItem(ConfigManager.configManager.getInt("menu.search-gui.clear-search.slot", 15),
-                BuildItem.buildItemStack(player,
-                        ConfigManager.configManager.getSection("menu.search-gui.clear-search.display-item"),
-                        ConfigManager.configManager.getInt("menu.search-gui.clear-search.display-item.amount", 1)));
 
-        List<ObjectItem> matchedItems = ShopHelper.getTargetItems(inputButtons.values().toArray(new ItemStack[0]), player);
-        if (!inputButtons.isEmpty()) {
-            inv.setItem(ConfigManager.configManager.getInt("menu.search-gui.state-item.slot", 13),
-                    BuildItem.buildItemStack(player,
-                    ConfigManager.configManager.getSection("menu.search-gui.state-item.has-input.display-item"),
-                    ConfigManager.configManager.getInt("menu.search-gui.state-item.has-input.display-item.amount", 1),
-                    "result-amount", String.valueOf(matchedItems.size()),
-                    "showing-amount", String.valueOf(Math.min(matchedItems.size(), resultSlots.size())),
-                    "input-amount", String.valueOf(countInputItems())));
-        } else {
-            inv.setItem(ConfigManager.configManager.getInt("menu.search-gui.state-item.slot", 13),
-                    BuildItem.buildItemStack(player,
-                    ConfigManager.configManager.getSection("menu.search-gui.state-item.empty-input.display-item"),
-                    ConfigManager.configManager.getInt("menu.search-gui.state-item.empty-input.display-item.amount", 1),
-                    "result-amount", "0",
-                    "showing-amount", "0",
-                    "input-amount", "0"));
+        boolean hasSearchFilters = !inputButtons.isEmpty() || !TextUtil.normalizeText(searchKeyword).isEmpty();
+        List<ObjectItem> matchedItems = getMatchedItems();
+
+        renderStateButtons(hasSearchFilters, matchedItems.size());
+        renderResultItems(matchedItems);
+
+        if (matchedItems.isEmpty() && hasSearchFilters) {
+            renderNoResultItem();
         }
+    }
 
-        if (matchedItems.isEmpty()) {
-            if (!inputButtons.isEmpty()) {
-                inv.setItem(ConfigManager.configManager.getInt("menu.search-gui.no-result-item.slot", 31),
-                        BuildItem.buildItemStack(player,
-                                ConfigManager.configManager.getSection("menu.search-gui.no-result-item.display-item"),
-                                ConfigManager.configManager.getInt("menu.search-gui.no-result-item.display-item.amount", 1),
-                                "input-amount", String.valueOf(countInputItems())));
+    private void renderActionButtons() {
+        for (Map.Entry<Integer, ObjectSearchActionButton> entry : menu.getActionButtons().entrySet()) {
+            if (entry.getKey() < 0 || entry.getKey() >= inv.getSize()) {
+                continue;
             }
-            return;
+            inv.setItem(entry.getKey(), entry.getValue().getDisplayItem(player, 1).getItemStack());
         }
+    }
 
+    private void renderStateButtons(boolean hasSearchFilters, int resultAmount) {
+        int showingAmount = Math.min(resultAmount, menu.getResultSlots().size());
+        int inputAmount = countInputItems();
+        String keywordDisplay = getSearchKeywordDisplay();
+
+        for (Map.Entry<Integer, ObjectSearchStateButton> entry : menu.getStateButtons().entrySet()) {
+            inv.setItem(entry.getKey(), entry.getValue().buildDisplayItem(player,
+                    hasSearchFilters,
+                    resultAmount,
+                    showingAmount,
+                    inputAmount,
+                    keywordDisplay));
+        }
+    }
+
+    private void renderResultItems(List<ObjectItem> matchedItems) {
+        List<Integer> resultSlots = menu.getResultSlots();
         int limit = Math.min(matchedItems.size(), resultSlots.size());
         for (int i = 0; i < limit; i++) {
             int slot = resultSlots.get(i);
-            ObjectItem item = matchedItems.get(i);
-            resultButtons.put(slot, item);
-            inv.setItem(slot, item.getDisplayItem(player, 1).getItemStack());
+            ObjectSearchResultButton button = new ObjectSearchResultButton(matchedItems.get(i), menu.getResultLore());
+            resultButtons.put(slot, button);
+            inv.setItem(slot, button.getDisplayItem(player, 1).getItemStack());
         }
+    }
+
+    private void renderNoResultItem() {
+        ObjectSearchNoResultButton button = menu.getNoResultButton();
+        if (button == null) {
+            return;
+        }
+        int slot = menu.getNoResultSlot();
+        if (slot < 0 || slot >= inv.getSize()) {
+            return;
+        }
+        inv.setItem(slot, button.buildDisplayItem(player, countInputItems(), getSearchKeywordDisplay()));
     }
 
     @Override
     public boolean clickEventHandle(Inventory inventory, ClickType type, int slot) {
-        if (ConfigManager.configManager.getIntList("menu.search-gui.input-slots").contains(slot)) {
+        if (menu.getInputSlots().contains(slot)) {
             queueRefresh();
             return false;
         }
-        if (slot == ConfigManager.configManager.getInt("menu.search-gui.clear-search.slot", 15)) {
-            returnInputItems();
-            constructGUI();
+
+        ObjectSearchActionButton actionButton = menu.getActionButton(slot);
+        if (actionButton != null) {
+            handleActionButton(actionButton);
             return true;
         }
-        ObjectItem resultItem = resultButtons.get(slot);
-        if (resultItem != null) {
-            resultItem.clickEvent(type, player);
+
+        ObjectSearchResultButton resultButton = resultButtons.get(slot);
+        if (resultButton != null) {
+            resultButton.getItem().clickEvent(type, player);
             queueRefresh();
             return true;
         }
+
+        AbstractButton normalButton = menuButtons.get(slot);
+        if (normalButton != null) {
+            normalButton.clickEvent(type, player);
+            queueRefresh();
+        }
         return true;
+    }
+
+    private void handleActionButton(ObjectSearchActionButton button) {
+        switch (button.getActionType()) {
+            case "input-name":
+            case "search-name":
+                promptName();
+                return;
+            case "clear-search":
+                returnInputItems();
+                searchKeyword = "";
+                constructGUI();
+                return;
+            default:
+                return;
+        }
     }
 
     @Override
     public boolean dragEventHandle(Map<Integer, ItemStack> newItems) {
         boolean changedInput = false;
         for (int slot : newItems.keySet()) {
-            if (!ConfigManager.configManager.getIntList("menu.search-gui.input-slots").contains(slot)) {
+            if (!menu.getInputSlots().contains(slot)) {
                 return true;
             }
             changedInput = true;
@@ -145,20 +209,47 @@ public class SearchGUI extends InvGUI {
 
     @Override
     public boolean closeEventHandle(Inventory inventory) {
-        returnInputItems();
+        if (!suppressCloseReturn) {
+            returnInputItems();
+        }
         return super.closeEventHandle(inventory);
+    }
+
+    @Override
+    public ObjectMenu getMenu() {
+        return menu;
+    }
+
+    private List<ObjectItem> getMatchedItems() {
+        boolean hasItemInput = !inputButtons.isEmpty();
+        String normalizedKeyword = TextUtil.normalizeText(searchKeyword);
+        if (!hasItemInput && normalizedKeyword.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        if (hasItemInput) {
+            ItemStack[] inputItems = inputButtons.values().toArray(new ItemStack[0]);
+            return ShopHelper.getTargetItems(inputItems, player, normalizedKeyword);
+        }
+        return ShopHelper.getTargetItems(normalizedKeyword, player);
     }
 
     private void returnInputItems() {
         List<ItemStack> items = new ArrayList<>();
-        for (int slot : ConfigManager.configManager.getIntList("menu.search-gui.input-slots")) {
-            ItemStack itemStack = inv.getItem(slot);
-            if (itemStack == null || itemStack.getType().isAir()) {
+        for (int slot : menu.getInputSlots()) {
+            ItemStack item = inv == null ? null : inv.getItem(slot);
+            if (item != null && !item.getType().isAir()) {
+                items.add(item.clone());
+                inv.setItem(slot, null);
                 continue;
             }
-            items.add(itemStack.clone());
-            inv.setItem(slot, new ItemStack(Material.AIR));
+            ItemStack cachedItem = inputButtons.get(slot);
+            if (cachedItem == null || cachedItem.getType().isAir()) {
+                continue;
+            }
+            items.add(cachedItem.clone());
         }
+        inputButtons.clear();
         if (!items.isEmpty()) {
             CommonUtil.giveOrDrop(player, items.toArray(new ItemStack[0]));
         }
@@ -166,7 +257,7 @@ public class SearchGUI extends InvGUI {
 
     private void initInputItemMap() {
         inputButtons.clear();
-        for (int slot : ConfigManager.configManager.getIntList("menu.search-gui.input-slots")) {
+        for (int slot : menu.getInputSlots()) {
             ItemStack itemStack = inv.getItem(slot);
             if (itemStack != null && !itemStack.getType().isAir()) {
                 inputButtons.put(slot, itemStack.clone());
@@ -182,6 +273,36 @@ public class SearchGUI extends InvGUI {
         return amount;
     }
 
+    private String getSearchKeywordDisplay() {
+        String normalizedKeyword = searchKeyword == null ? "" : searchKeyword.trim();
+        if (normalizedKeyword.isEmpty()) {
+            return LanguageManager.languageManager.getStringText(player, "plugin.search-gui-name-empty");
+        }
+        return normalizedKeyword;
+    }
+
+    private void promptName() {
+        suppressCloseReturn = true;
+        MenuStatusManager.menuStatusManager.startPrompt(player, new Prompt(
+                LanguageManager.languageManager.getStringText(player, "plugin.search-gui-name-input", "&fType the item name you want to search in chat. Type {value} to remove the name filter.", "value", ConfigManager.configManager.getStringWithLang(player, "menu.search-gui.prompt.clear-keyword")),
+                (p, input) -> {
+                    suppressCloseReturn = false;
+                    String normalizedInput = input == null ? "" : input.trim();
+                    if (normalizedInput.equalsIgnoreCase("clear")
+                            || normalizedInput.equalsIgnoreCase(ConfigManager.configManager.getStringWithLang(player, "menu.search-gui.prompt.clear-keyword"))) {
+                        normalizedInput = "";
+                    }
+                    searchKeyword = normalizedInput;
+                    openGUI(true);
+                },
+                p -> {
+                    suppressCloseReturn = false;
+                    openGUI(true);
+                },
+                false
+        ));
+    }
+
     private void queueRefresh() {
         SchedulerUtil.runTaskLater(() -> {
             if (inv != null && player.getOpenInventory().getTopInventory().equals(inv)) {
@@ -191,7 +312,23 @@ public class SearchGUI extends InvGUI {
     }
 
     public static void openGUI(Player player) {
-        SearchGUI gui = new SearchGUI(player);
-        gui.openGUI(true);
+        openGUI(player, "search");
+    }
+
+    public static void openGUI(Player player, String menuName) {
+        ObjectMenu menu = ObjectMenu.commonMenus.get(menuName);
+        if (!(menu instanceof ObjectSearchMenu searchMenu) || searchMenu.getConfig() == null) {
+            LanguageManager.languageManager.sendStringText(player,
+                    "error.menu-not-found",
+                    "menu",
+                    menuName);
+            return;
+        }
+        openGUI(player, searchMenu, false, true);
+    }
+
+    public static void openGUI(Player player, ObjectSearchMenu menu, boolean bypass, boolean reopen) {
+        SearchGUI gui = new SearchGUI(player, menu, bypass);
+        gui.openGUI(reopen);
     }
 }

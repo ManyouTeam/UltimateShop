@@ -8,6 +8,7 @@ import cn.superiormc.ultimateshop.objects.buttons.AbstractButton;
 import cn.superiormc.ultimateshop.objects.items.subobjects.ObjectConditionalPlaceholder;
 import cn.superiormc.ultimateshop.objects.items.subobjects.ObjectRandomPlaceholder;
 import cn.superiormc.ultimateshop.objects.menus.ObjectMenu;
+import cn.superiormc.ultimateshop.objects.menus.ObjectSearchMenu;
 import cn.superiormc.ultimateshop.utils.TextUtil;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -108,7 +109,13 @@ public class ConfigManager {
                 if (ObjectMenu.commonMenus.containsKey(substring)) {
                     continue;
                 }
-                new ObjectMenu(substring);
+                if (ConfigManager.configManager.getStringList("menu.search-gui.menu").contains(substring)) {
+                    if (!UltimateShop.freeVersion) {
+                        new ObjectSearchMenu(substring);
+                    }
+                } else {
+                    new ObjectMenu(substring);
+                }
             }
         }
     }

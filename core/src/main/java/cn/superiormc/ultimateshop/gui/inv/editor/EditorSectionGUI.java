@@ -1,10 +1,11 @@
-package cn.superiormc.ultimateshop.editor;
+package cn.superiormc.ultimateshop.gui.inv.editor;
 
 import cn.superiormc.ultimateshop.UltimateShop;
+import cn.superiormc.ultimateshop.editor.*;
 import cn.superiormc.ultimateshop.gui.InvGUI;
 import cn.superiormc.ultimateshop.managers.ActionManager;
 import cn.superiormc.ultimateshop.managers.ConditionManager;
-import cn.superiormc.ultimateshop.managers.EditorManager;
+import cn.superiormc.ultimateshop.managers.MenuStatusManager;
 import cn.superiormc.ultimateshop.managers.HookManager;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
@@ -39,7 +40,7 @@ public class EditorSectionGUI extends InvGUI {
 
     @Override
     public void constructGUI() {
-        ConfigurationSection section = EditorManager.editorManager.getSection(target, path);
+        ConfigurationSection section = MenuStatusManager.menuStatusManager.getSection(target, path);
         title = target.getId() + ": " + EditorUtil.displayPath(player, path);
         if (inv == null) {
             inv = UltimateShop.methodUtil.createNewInv(player, 54, title);
@@ -169,7 +170,7 @@ public class EditorSectionGUI extends InvGUI {
 
     @Override
     public boolean clickEventHandle(Inventory inventory, ClickType type, int slot) {
-        ConfigurationSection section = EditorManager.editorManager.getSection(target, path);
+        ConfigurationSection section = MenuStatusManager.menuStatusManager.getSection(target, path);
 
         if (slot >= 0 && slot < 45) {
             int index = page * 45 + slot;
@@ -184,11 +185,11 @@ public class EditorSectionGUI extends InvGUI {
             if (type.isRightClick() && kind != EditorValueKind.INTEGER && kind != EditorValueKind.DOUBLE) {
                 if (EditorTypeResolver.isLimitConditionRoot(path)) {
                     String limitsPath = path.replace("-conditions", "");
-                    EditorManager.editorManager.removeLimitConditionGroup(player, target, limitsPath, key);
+                    MenuStatusManager.menuStatusManager.removeLimitConditionGroup(player, target, limitsPath, key);
                 } else {
-                    EditorManager.editorManager.removeValue(player, target, childPath);
+                    MenuStatusManager.menuStatusManager.removeValue(player, target, childPath);
                 }
-                EditorManager.editorManager.openTarget(player, target, path, page);
+                MenuStatusManager.menuStatusManager.openTarget(player, target, path, page);
                 return true;
             }
 
@@ -196,7 +197,7 @@ public class EditorSectionGUI extends InvGUI {
                 case SECTION:
                 case ACTION_COLLECTION:
                 case CONDITION_COLLECTION:
-                    EditorManager.editorManager.openTarget(player, target, childPath, 0);
+                    MenuStatusManager.menuStatusManager.openTarget(player, target, childPath, 0);
                     return true;
                 case ITEM_SECTION:
                     new EditorItemValueGUI(player, target, childPath).openGUI(true);
@@ -206,32 +207,32 @@ public class EditorSectionGUI extends InvGUI {
                     return true;
                 case BOOLEAN:
                     boolean current = section.getBoolean(key);
-                    EditorManager.editorManager.setValue(player, target, childPath, !current);
-                    EditorManager.editorManager.openTarget(player, target, path, page);
+                    MenuStatusManager.menuStatusManager.setValue(player, target, childPath, !current);
+                    MenuStatusManager.menuStatusManager.openTarget(player, target, path, page);
                     return true;
                 case INTEGER:
                     if (type == ClickType.MIDDLE) {
-                        EditorManager.editorManager.removeValue(player, target, childPath);
+                        MenuStatusManager.menuStatusManager.removeValue(player, target, childPath);
                     } else {
                         int delta = resolveIntegerDelta(type);
                         if (delta != 0) {
                             int currentValue = section.getInt(key, 0);
-                            EditorManager.editorManager.setValue(player, target, childPath, currentValue + delta);
+                            MenuStatusManager.menuStatusManager.setValue(player, target, childPath, currentValue + delta);
                         }
                     }
-                    EditorManager.editorManager.openTarget(player, target, path, page);
+                    MenuStatusManager.menuStatusManager.openTarget(player, target, path, page);
                     return true;
                 case DOUBLE:
                     if (type == ClickType.MIDDLE) {
-                        EditorManager.editorManager.removeValue(player, target, childPath);
+                        MenuStatusManager.menuStatusManager.removeValue(player, target, childPath);
                     } else {
                         double delta = resolveDoubleDelta(type);
                         if (delta != 0) {
                             double currentValue = section.getDouble(key, 0D);
-                            EditorManager.editorManager.setValue(player, target, childPath, currentValue + delta);
+                            MenuStatusManager.menuStatusManager.setValue(player, target, childPath, currentValue + delta);
                         }
                     }
-                    EditorManager.editorManager.openTarget(player, target, path, page);
+                    MenuStatusManager.menuStatusManager.openTarget(player, target, path, page);
                     return true;
                 case STRING:
                     if ("economy-plugin".equalsIgnoreCase(key)) {
@@ -245,8 +246,8 @@ public class EditorSectionGUI extends InvGUI {
                     } else if (EditorTypeResolver.isResetTimeKey(key)) {
                         new EditorResetTimeValueGUI(player, target, childPath, path).openGUI(true);
                     } else {
-                        EditorManager.editorManager.promptString(player, target, childPath,
-                                () -> EditorManager.editorManager.openTarget(player, target, path, page));
+                        MenuStatusManager.menuStatusManager.promptString(player, target, childPath,
+                                () -> MenuStatusManager.menuStatusManager.openTarget(player, target, path, page));
                     }
                     return true;
                 case STRING_LIST:
@@ -268,41 +269,41 @@ public class EditorSectionGUI extends InvGUI {
 
         if (slot == 45) {
             if (path.isEmpty()) {
-                EditorManager.editorManager.openScope(player, target.getScope(), 0);
+                MenuStatusManager.menuStatusManager.openScope(player, target.getScope(), 0);
             } else {
-                EditorManager.editorManager.openTarget(player, target, EditorUtil.parentPath(path), 0);
+                MenuStatusManager.menuStatusManager.openTarget(player, target, EditorUtil.parentPath(path), 0);
             }
             return true;
         }
         if (slot == 49) {
-            EditorManager.editorManager.reloadAndReopen(player);
+            MenuStatusManager.menuStatusManager.reloadAndReopen(player);
             return true;
         }
         if (slot == 50) {
             if (EditorTypeResolver.isActionCollection(path)
                     || (EditorTypeResolver.isConditionCollection(path) && !EditorTypeResolver.isLimitConditionRoot(path))
                     || EditorTypeResolver.isThingCollection(path)) {
-                EditorManager.editorManager.createDefaultCollectionEntry(player, target, path,
+                MenuStatusManager.menuStatusManager.createDefaultCollectionEntry(player, target, path,
                         EditorTypeResolver.isThingCollection(path) && type.isRightClick());
-                EditorManager.editorManager.openTarget(player, target, path, page);
+                MenuStatusManager.menuStatusManager.openTarget(player, target, path, page);
             } else if ("items".equals(path) || EditorTypeResolver.lastSegment(path).equals("buttons")) {
-                EditorManager.editorManager.promptCreateNamedSection(player, target, path,
-                        () -> EditorManager.editorManager.openTarget(player, target, path, page));
+                MenuStatusManager.menuStatusManager.promptCreateNamedSection(player, target, path,
+                        () -> MenuStatusManager.menuStatusManager.openTarget(player, target, path, page));
             } else if (EditorTypeResolver.isLimitConditionRoot(path)) {
-                EditorManager.editorManager.promptCreateLimitConditionRootEntry(player, target, path,
-                        () -> EditorManager.editorManager.openTarget(player, target, path, page));
+                MenuStatusManager.menuStatusManager.promptCreateLimitConditionRootEntry(player, target, path,
+                        () -> MenuStatusManager.menuStatusManager.openTarget(player, target, path, page));
             } else {
-                EditorManager.editorManager.promptNewChild(player, target, path,
-                        () -> EditorManager.editorManager.openTarget(player, target, path, page));
+                MenuStatusManager.menuStatusManager.promptNewChild(player, target, path,
+                        () -> MenuStatusManager.menuStatusManager.openTarget(player, target, path, page));
             }
             return true;
         }
         if (slot == 52 && page > 0) {
-            EditorManager.editorManager.openTarget(player, target, path, page - 1);
+            MenuStatusManager.menuStatusManager.openTarget(player, target, path, page - 1);
             return true;
         }
         if (slot == 53 && (page + 1) * 45 < keys.size()) {
-            EditorManager.editorManager.openTarget(player, target, path, page + 1);
+            MenuStatusManager.menuStatusManager.openTarget(player, target, path, page + 1);
             return true;
         }
         return true;
@@ -321,8 +322,8 @@ public class EditorSectionGUI extends InvGUI {
         } else {
             index = (index + 1) % values.size();
         }
-        EditorManager.editorManager.setValue(player, target, childPath, values.get(index));
-        EditorManager.editorManager.openTarget(player, target, path, page);
+        MenuStatusManager.menuStatusManager.setValue(player, target, childPath, values.get(index));
+        MenuStatusManager.menuStatusManager.openTarget(player, target, path, page);
     }
 
     private int resolveIntegerDelta(ClickType type) {

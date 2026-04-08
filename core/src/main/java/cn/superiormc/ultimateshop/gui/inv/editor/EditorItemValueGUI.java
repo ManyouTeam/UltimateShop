@@ -1,8 +1,11 @@
-package cn.superiormc.ultimateshop.editor;
+package cn.superiormc.ultimateshop.gui.inv.editor;
 
 import cn.superiormc.ultimateshop.UltimateShop;
+import cn.superiormc.ultimateshop.editor.EditorLang;
+import cn.superiormc.ultimateshop.editor.EditorTarget;
+import cn.superiormc.ultimateshop.editor.EditorUtil;
 import cn.superiormc.ultimateshop.gui.InvGUI;
-import cn.superiormc.ultimateshop.managers.EditorManager;
+import cn.superiormc.ultimateshop.managers.MenuStatusManager;
 import cn.superiormc.ultimateshop.methods.Items.BuildItem;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
@@ -11,7 +14,6 @@ import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -38,7 +40,7 @@ public class EditorItemValueGUI extends InvGUI {
         }
         inv.clear();
 
-        ConfigurationSection section = EditorManager.editorManager.getSection(target, path);
+        ConfigurationSection section = MenuStatusManager.menuStatusManager.getSection(target, path);
         if (section != null && (inv.getItem(EDIT_SLOT) == null || inv.getItem(EDIT_SLOT).getType().isAir())) {
             try {
                 ItemStack itemStack = BuildItem.buildItemStack(player, section, section.getInt("amount", 1));
@@ -74,7 +76,7 @@ public class EditorItemValueGUI extends InvGUI {
             return false;
         }
         if (slot == 22) {
-            EditorManager.editorManager.openTarget(player, target, path, 0);
+            MenuStatusManager.menuStatusManager.openTarget(player, target, path, 0);
             return true;
         }
         if (slot == 23) {
@@ -82,17 +84,17 @@ public class EditorItemValueGUI extends InvGUI {
             if (itemStack == null || itemStack.getType().isAir()) {
                 return true;
             }
-            EditorManager.editorManager.replaceItemSection(player, target, path, itemStack);
-            EditorManager.editorManager.openTarget(player, target, EditorUtil.parentPath(path), 0);
+            MenuStatusManager.menuStatusManager.replaceItemSection(player, target, path, itemStack);
+            MenuStatusManager.menuStatusManager.openTarget(player, target, EditorUtil.parentPath(path), 0);
             return true;
         }
         if (slot == 24) {
-            EditorManager.editorManager.removeValue(player, target, path);
-            EditorManager.editorManager.openTarget(player, target, EditorUtil.parentPath(path), 0);
+            MenuStatusManager.menuStatusManager.removeValue(player, target, path);
+            MenuStatusManager.menuStatusManager.openTarget(player, target, EditorUtil.parentPath(path), 0);
             return true;
         }
         if (slot == 26) {
-            EditorManager.editorManager.openTarget(player, target, EditorUtil.parentPath(path), 0);
+            MenuStatusManager.menuStatusManager.openTarget(player, target, EditorUtil.parentPath(path), 0);
             return true;
         }
         return true;

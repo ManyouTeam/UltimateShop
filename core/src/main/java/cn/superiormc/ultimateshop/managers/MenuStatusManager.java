@@ -1,6 +1,13 @@
 package cn.superiormc.ultimateshop.managers;
 
 import cn.superiormc.ultimateshop.editor.*;
+import cn.superiormc.ultimateshop.gui.inv.editor.EditorFileListGUI;
+import cn.superiormc.ultimateshop.gui.inv.editor.EditorPresetGUI;
+import cn.superiormc.ultimateshop.editor.EditorContext;
+import cn.superiormc.ultimateshop.gui.Prompt;
+import cn.superiormc.ultimateshop.gui.PromptUtil;
+import cn.superiormc.ultimateshop.gui.inv.editor.EditorRootGUI;
+import cn.superiormc.ultimateshop.gui.inv.editor.EditorSectionGUI;
 import cn.superiormc.ultimateshop.methods.Items.DebuildItem;
 import cn.superiormc.ultimateshop.methods.ReloadPlugin;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
@@ -17,18 +24,18 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 
-public class EditorManager {
+public class MenuStatusManager {
 
-    public static EditorManager editorManager;
+    public static MenuStatusManager menuStatusManager;
 
     private static final Object SECTION_SENTINEL = new Object();
 
     private final Map<UUID, EditorContext> contexts = new ConcurrentHashMap<>();
 
-    private final Map<UUID, EditorPrompt> prompts = new ConcurrentHashMap<>();
+    private final Map<UUID, Prompt> prompts = new ConcurrentHashMap<>();
 
-    public EditorManager() {
-        editorManager = this;
+    public MenuStatusManager() {
+        menuStatusManager = this;
     }
 
     public EditorContext getContext(Player player) {
@@ -44,23 +51,32 @@ public class EditorManager {
         return prompts.containsKey(player.getUniqueId());
     }
 
-    public void startPrompt(Player player, EditorPrompt prompt) {
+    public void startPrompt(Player player, Prompt prompt) {
         prompts.put(player.getUniqueId(), prompt);
         player.closeInventory();
         EditorLang.send(player, "editor.prompt.description", "&f{value}", "value", prompt.getDescription());
         EditorLang.send(player, "editor.prompt.cancel-tip", "&7Type &f{value} &7to abort this edit.",
-                "value", EditorLang.text(player, "editor.prompt.cancel-keyword", "cancel"));
+                "value", PromptUtil.getCancelKeyword(player));
     }
 
     public void cancelPrompt(Player player) {
-        EditorPrompt prompt = prompts.remove(player.getUniqueId());
+        Prompt prompt = prompts.remove(player.getUniqueId());
         if (prompt != null) {
             prompt.cancel(player);
         }
     }
 
+    public boolean cancelPromptAndShouldReopen(Player player) {
+        Prompt prompt = prompts.remove(player.getUniqueId());
+        if (prompt == null) {
+            return false;
+        }
+        prompt.cancel(player);
+        return prompt.shouldReopenOnCancel();
+    }
+
     public void submitPrompt(Player player, String input) {
-        EditorPrompt prompt = prompts.remove(player.getUniqueId());
+        Prompt prompt = prompts.remove(player.getUniqueId());
         if (prompt != null) {
             prompt.handle(player, input);
         }
@@ -267,7 +283,7 @@ public class EditorManager {
                                                 String limitsPath,
                                                 Consumer<String> successAction,
                                                 Runnable cancelAction) {
-        startPrompt(player, new EditorPrompt(
+        startPrompt(player, new Prompt(
                 EditorLang.text(player, "editor.prompt.new-condition-id", "Input the new condition id"),
                 (p, input) -> {
                     String groupId = createLimitConditionGroup(p, target, limitsPath, input);
@@ -282,7 +298,7 @@ public class EditorManager {
     }
 
     public void promptCreateLimitConditionRootEntry(Player player, EditorTarget target, String conditionsRootPath, Runnable reopenAction) {
-        startPrompt(player, new EditorPrompt(
+        startPrompt(player, new Prompt(
                 EditorLang.text(player, "editor.prompt.new-condition-id", "Input the new condition id"),
                 (p, input) -> {
                     createLimitConditionGroupFromRoot(p, target, conditionsRootPath, input);
@@ -293,7 +309,7 @@ public class EditorManager {
     }
 
     public void promptCreateNamedSection(Player player, EditorTarget target, String parentPath, Runnable reopenAction) {
-        startPrompt(player, new EditorPrompt(
+        startPrompt(player, new Prompt(
                 EditorLang.text(player, "editor.prompt.new-entry-id", "Input the new entry id"),
                 (p, input) -> {
                     String fullPath = parentPath == null || parentPath.isEmpty() ? input : parentPath + "." + input;
@@ -433,7 +449,7 @@ public class EditorManager {
     }
 
     public void promptString(Player player, EditorTarget target, String path, Runnable reopenAction) {
-        startPrompt(player, new EditorPrompt(
+        startPrompt(player, new Prompt(
                 EditorLang.text(player, "editor.prompt.string", "Input the new string for &f{path}",
                         "path", path),
                 (p, input) -> {
@@ -449,7 +465,7 @@ public class EditorManager {
     }
 
     public void promptInteger(Player player, EditorTarget target, String path, Runnable reopenAction) {
-        startPrompt(player, new EditorPrompt(
+        startPrompt(player, new Prompt(
                 EditorLang.text(player, "editor.prompt.integer", "Input the new integer for &f{path}",
                         "path", path),
                 (p, input) -> {
@@ -466,7 +482,7 @@ public class EditorManager {
     }
 
     public void promptDouble(Player player, EditorTarget target, String path, Runnable reopenAction) {
-        startPrompt(player, new EditorPrompt(
+        startPrompt(player, new Prompt(
                 EditorLang.text(player, "editor.prompt.double", "Input the new number for &f{path}",
                         "path", path),
                 (p, input) -> {
@@ -483,7 +499,7 @@ public class EditorManager {
     }
 
     public void promptStringList(Player player, EditorTarget target, String path, Runnable reopenAction) {
-        startPrompt(player, new EditorPrompt(
+        startPrompt(player, new Prompt(
                 EditorLang.text(player, "editor.prompt.string-list",
                         "Input the new list for &f{path} &7(use &f;; &7as separator)",
                         "path", path),
@@ -500,7 +516,7 @@ public class EditorManager {
     }
 
     public void promptIntegerList(Player player, EditorTarget target, String path, Runnable reopenAction) {
-        startPrompt(player, new EditorPrompt(
+        startPrompt(player, new Prompt(
                 EditorLang.text(player, "editor.prompt.integer-list",
                         "Input the new integer list for &f{path} &7(use &f;; &7as separator)",
                         "path", path),
@@ -522,7 +538,7 @@ public class EditorManager {
     }
 
     public void promptNewChild(Player player, EditorTarget target, String parentPath, Runnable reopenAction) {
-        startPrompt(player, new EditorPrompt(
+        startPrompt(player, new Prompt(
                 EditorLang.text(player, "editor.prompt.new-child",
                         "Input the new child key"),
                 (p, input) -> {
@@ -540,7 +556,7 @@ public class EditorManager {
 
     private void promptNewChildValue(Player player, EditorTarget target, String parentPath, String key, Runnable reopenAction) {
         String childPath = parentPath == null || parentPath.isEmpty() ? key : parentPath + "." + key;
-        startPrompt(player, new EditorPrompt(
+        startPrompt(player, new Prompt(
                 EditorLang.text(player, "editor.prompt.new-child-value",
                         "Input the value for &f{path}&7. Use &fsection &7or &f{} &7to create a section. Use &f;; &7for lists.",
                         "path", childPath),

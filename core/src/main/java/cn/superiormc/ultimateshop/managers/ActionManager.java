@@ -49,6 +49,7 @@ public class ActionManager {
         registerNewAction("connect", new ActionConnect());
         registerNewAction("update_title", new ActionUpdateTitle());
         registerNewAction("update_gui", new ActionUpdateGUI());
+        registerNewAction("prompt", new ActionPrompt());
     }
 
     public void registerNewAction(String actionID,

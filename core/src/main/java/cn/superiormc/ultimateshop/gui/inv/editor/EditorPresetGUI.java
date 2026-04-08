@@ -1,8 +1,9 @@
-package cn.superiormc.ultimateshop.editor;
+package cn.superiormc.ultimateshop.gui.inv.editor;
 
 import cn.superiormc.ultimateshop.UltimateShop;
+import cn.superiormc.ultimateshop.editor.*;
 import cn.superiormc.ultimateshop.gui.InvGUI;
-import cn.superiormc.ultimateshop.managers.EditorManager;
+import cn.superiormc.ultimateshop.managers.MenuStatusManager;
 import cn.superiormc.ultimateshop.managers.HookManager;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
@@ -118,7 +119,7 @@ public class EditorPresetGUI extends InvGUI {
 
     private String getDisplayValue() {
         if (preset.getKind() == EditorPresetKind.SINGLE_THING) {
-            ConfigurationSection section = EditorManager.editorManager.getSection(target, path);
+            ConfigurationSection section = MenuStatusManager.menuStatusManager.getSection(target, path);
             if (section == null) {
                 return "UNKNOWN";
             }
@@ -167,31 +168,31 @@ public class EditorPresetGUI extends InvGUI {
                 if (preset.getKind() == EditorPresetKind.LIMITS_SECTION
                         && !field.getKey().equals("default")
                         && !field.getKey().equals("global")) {
-                    EditorManager.editorManager.removeLimitConditionGroup(player, target, path, field.getKey());
+                    MenuStatusManager.menuStatusManager.removeLimitConditionGroup(player, target, path, field.getKey());
                 } else {
-                    EditorManager.editorManager.removeValue(player, target, fullPath);
+                    MenuStatusManager.menuStatusManager.removeValue(player, target, fullPath);
                 }
-                EditorManager.editorManager.openTarget(player, target, path, 0);
+                MenuStatusManager.menuStatusManager.openTarget(player, target, path, 0);
                 return true;
             }
 
             switch (field.getType()) {
                 case SECTION -> {
-                    ConfigurationSection section = EditorManager.editorManager.ensureSection(target, fullPath);
-                    EditorManager.editorManager.save(player, target);
+                    ConfigurationSection section = MenuStatusManager.menuStatusManager.ensureSection(target, fullPath);
+                    MenuStatusManager.menuStatusManager.save(player, target);
                     if (EditorTypeResolver.isItemSection(fullPath, section)) {
                         new EditorItemValueGUI(player, target, fullPath).openGUI(true);
                     } else if (EditorTypeResolver.isEconomySection(fullPath, section)) {
                         new EditorEconomyValueGUI(player, target, fullPath).openGUI(true);
                     } else {
-                        EditorManager.editorManager.openTarget(player, target, fullPath, 0);
+                        MenuStatusManager.menuStatusManager.openTarget(player, target, fullPath, 0);
                     }
                     return true;
                 }
                 case ACTIONS, CONDITIONS -> {
-                    EditorManager.editorManager.ensureSection(target, fullPath);
-                    EditorManager.editorManager.save(player, target);
-                    EditorManager.editorManager.openTarget(player, target, fullPath, 0);
+                    MenuStatusManager.menuStatusManager.ensureSection(target, fullPath);
+                    MenuStatusManager.menuStatusManager.save(player, target);
+                    MenuStatusManager.menuStatusManager.openTarget(player, target, fullPath, 0);
                     return true;
                 }
                 case ITEM_INLINE -> {
@@ -204,8 +205,8 @@ public class EditorPresetGUI extends InvGUI {
                 }
                 case BOOLEAN -> {
                     boolean current = target.getConfig().getBoolean(fullPath);
-                    EditorManager.editorManager.setValue(player, target, fullPath, !current);
-                    EditorManager.editorManager.openTarget(player, target, path, 0);
+                    MenuStatusManager.menuStatusManager.setValue(player, target, fullPath, !current);
+                    MenuStatusManager.menuStatusManager.openTarget(player, target, path, 0);
                     return true;
                 }
                 case STRING -> {
@@ -220,8 +221,8 @@ public class EditorPresetGUI extends InvGUI {
                     } else if (field.getKey().equals("as-sub-button")) {
                         new EditorSubButtonValueGUI(player, target, path).openGUI(true);
                     } else {
-                        EditorManager.editorManager.promptString(player, target, fullPath,
-                                () -> EditorManager.editorManager.openTarget(player, target, path, 0));
+                        MenuStatusManager.menuStatusManager.promptString(player, target, fullPath,
+                                () -> MenuStatusManager.menuStatusManager.openTarget(player, target, path, 0));
                     }
                     return true;
                 }
@@ -239,28 +240,28 @@ public class EditorPresetGUI extends InvGUI {
                 }
                 case INTEGER -> {
                     if (type == ClickType.MIDDLE) {
-                        EditorManager.editorManager.removeValue(player, target, fullPath);
+                        MenuStatusManager.menuStatusManager.removeValue(player, target, fullPath);
                     } else {
                         int delta = resolveIntegerDelta(type);
                         if (delta != 0) {
                             int current = target.getConfig().getInt(fullPath, 0);
-                            EditorManager.editorManager.setValue(player, target, fullPath, current + delta);
+                            MenuStatusManager.menuStatusManager.setValue(player, target, fullPath, current + delta);
                         }
                     }
-                    EditorManager.editorManager.openTarget(player, target, path, 0);
+                    MenuStatusManager.menuStatusManager.openTarget(player, target, path, 0);
                     return true;
                 }
                 case DOUBLE -> {
                     if (type == ClickType.MIDDLE) {
-                        EditorManager.editorManager.removeValue(player, target, fullPath);
+                        MenuStatusManager.menuStatusManager.removeValue(player, target, fullPath);
                     } else {
                         double delta = resolveDoubleDelta(type);
                         if (delta != 0) {
                             double current = target.getConfig().getDouble(fullPath, 0D);
-                            EditorManager.editorManager.setValue(player, target, fullPath, current + delta);
+                            MenuStatusManager.menuStatusManager.setValue(player, target, fullPath, current + delta);
                         }
                     }
-                    EditorManager.editorManager.openTarget(player, target, path, 0);
+                    MenuStatusManager.menuStatusManager.openTarget(player, target, path, 0);
                     return true;
                 }
                 case STRING_LIST -> {
@@ -279,11 +280,11 @@ public class EditorPresetGUI extends InvGUI {
 
         if (slot == 45) {
             if (path.equals("settings.menu-settings")) {
-                EditorManager.editorManager.openTarget(player, target, "", 0);
+                MenuStatusManager.menuStatusManager.openTarget(player, target, "", 0);
             } else if (path.isEmpty()) {
-                EditorManager.editorManager.openScope(player, target.getScope(), 0);
+                MenuStatusManager.menuStatusManager.openScope(player, target.getScope(), 0);
             } else {
-                EditorManager.editorManager.openTarget(player, target, EditorUtil.parentPath(path), 0);
+                MenuStatusManager.menuStatusManager.openTarget(player, target, EditorUtil.parentPath(path), 0);
             }
             return true;
         }
@@ -292,14 +293,14 @@ public class EditorPresetGUI extends InvGUI {
             return true;
         }
         if (slot == 50 && preset.getKind() == EditorPresetKind.LIMITS_SECTION) {
-            EditorManager.editorManager.promptCreateLimitConditionGroup(player, target, path,
-                    groupId -> EditorManager.editorManager.openTarget(player, target,
-                            EditorManager.editorManager.getLimitConditionsPathFor(path) + "." + groupId, 0),
-                    () -> EditorManager.editorManager.openTarget(player, target, path, 0));
+            MenuStatusManager.menuStatusManager.promptCreateLimitConditionGroup(player, target, path,
+                    groupId -> MenuStatusManager.menuStatusManager.openTarget(player, target,
+                            MenuStatusManager.menuStatusManager.getLimitConditionsPathFor(path) + "." + groupId, 0),
+                    () -> MenuStatusManager.menuStatusManager.openTarget(player, target, path, 0));
             return true;
         }
         if (slot == 53) {
-            EditorManager.editorManager.reloadAndReopen(player);
+            MenuStatusManager.menuStatusManager.reloadAndReopen(player);
             return true;
         }
         return true;
@@ -318,8 +319,8 @@ public class EditorPresetGUI extends InvGUI {
         } else {
             index = (index + 1) % values.size();
         }
-        EditorManager.editorManager.setValue(player, target, fullPath, values.get(index));
-        EditorManager.editorManager.openTarget(player, target, path, 0);
+        MenuStatusManager.menuStatusManager.setValue(player, target, fullPath, values.get(index));
+        MenuStatusManager.menuStatusManager.openTarget(player, target, path, 0);
     }
 
     private String fullPath(EditorPresetField field) {

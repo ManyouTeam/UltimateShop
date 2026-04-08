@@ -3,7 +3,7 @@ package cn.superiormc.ultimateshop.editor;
 import cn.superiormc.ultimateshop.managers.ActionManager;
 import cn.superiormc.ultimateshop.managers.ConditionManager;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
-import cn.superiormc.ultimateshop.managers.EditorManager;
+import cn.superiormc.ultimateshop.managers.MenuStatusManager;
 import cn.superiormc.ultimateshop.methods.ProductTradeStatus;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
@@ -194,7 +194,7 @@ public class EditorPresetRegistry {
         result.add(new EditorPresetField("global", "Global Limit",
                 "Global shared limit applied to the whole server for this product.", Material.GLOBE_BANNER_PATTERN, EditorPresetFieldType.STRING));
 
-        ConfigurationSection section = EditorManager.editorManager.getSection(target, path);
+        ConfigurationSection section = MenuStatusManager.menuStatusManager.getSection(target, path);
         if (section == null) {
             return result;
         }
@@ -285,7 +285,7 @@ public class EditorPresetRegistry {
         result.add(field("java-only", Material.MAP, EditorPresetFieldType.BOOLEAN));
         result.add(choice("fail-type", Material.BARRIER, FAIL_TYPES));
 
-        ConfigurationSection section = EditorManager.editorManager.getSection(target, path);
+        ConfigurationSection section = MenuStatusManager.menuStatusManager.getSection(target, path);
         String type = section == null ? "message" : section.getString("type", "message");
         switch (type) {
             case "message", "action_bar", "announcement" ->
@@ -347,6 +347,13 @@ public class EditorPresetRegistry {
                 result.add(field("conditions", Material.COMPARATOR, EditorPresetFieldType.CONDITIONS));
                 result.add(field("actions", Material.BLAZE_POWDER, EditorPresetFieldType.ACTIONS));
             }
+            case "prompt" -> {
+                result.add(field("description", Material.WRITABLE_BOOK, EditorPresetFieldType.STRING));
+                result.add(field("actions", Material.BLAZE_POWDER, EditorPresetFieldType.ACTIONS));
+                result.add(field("cancel-actions", Material.BARRIER, EditorPresetFieldType.ACTIONS));
+                result.add(field("reopen-on-submit", Material.CHEST, EditorPresetFieldType.BOOLEAN));
+                result.add(field("reopen-on-cancel", Material.CHEST, EditorPresetFieldType.BOOLEAN));
+            }
             case "connect" ->
                     result.add(field("server", Material.ENDER_PEARL, EditorPresetFieldType.STRING));
             case "effect" -> {
@@ -394,7 +401,7 @@ public class EditorPresetRegistry {
         result.add(field("meet-actions", Material.BLAZE_POWDER, EditorPresetFieldType.ACTIONS));
         result.add(field("not-meet-actions", Material.BLAZE_POWDER, EditorPresetFieldType.ACTIONS));
 
-        ConfigurationSection section = EditorManager.editorManager.getSection(target, path);
+        ConfigurationSection section = MenuStatusManager.menuStatusManager.getSection(target, path);
         String type = section == null ? "permission" : section.getString("type", "permission");
         switch (type) {
             case "permission" ->

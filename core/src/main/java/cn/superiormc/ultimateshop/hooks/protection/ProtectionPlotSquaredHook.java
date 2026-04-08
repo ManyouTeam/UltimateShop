@@ -21,4 +21,25 @@ public class ProtectionPlotSquaredHook extends AbstractProtectionHook {
         }
         return true;
     }
+
+    @Override
+    public boolean canBreak(Player player, Location location) {
+        BukkitPlayer bukkitPlayer = BukkitUtil.adapt(player);
+        Plot plot = bukkitPlayer.getCurrentPlot();
+        if (plot != null) {
+            return plot.isAdded(player.getUniqueId());
+        }
+        return true;
+    }
+
+    @Override
+    public boolean canPlace(Player player, Location location) {
+        BukkitPlayer bukkitPlayer = BukkitUtil.adapt(player);
+        Plot plot = bukkitPlayer.getCurrentPlot();
+        if (plot != null) {
+            return plot.isAdded(player.getUniqueId());
+        }
+        return true;
+    }
+
 }

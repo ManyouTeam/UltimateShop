@@ -17,10 +17,7 @@ import org.bukkit.entity.Player;
 import java.awt.Color;
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -29,6 +26,24 @@ public class TextUtil {
     public static final Pattern SINGLE_HEX_PATTERN = Pattern.compile("&#([A-Fa-f0-9]{6})");
     public static final Pattern GRADIENT_PATTERN = Pattern.compile("&<#([A-Fa-f0-9]{6})>(.*?)&<#([A-Fa-f0-9]{6})>");
     public static final Pattern LEGACY_COLOR_PATTERN = Pattern.compile("[&§]([0-9a-frlomn])", Pattern.CASE_INSENSITIVE);
+
+    public static String clear(String text) {
+        text = SINGLE_HEX_PATTERN.matcher(text).replaceAll("");
+        text = GRADIENT_PATTERN.matcher(text).replaceAll("");
+        text = LEGACY_COLOR_PATTERN.matcher(text).replaceAll("");
+        return text;
+    }
+
+    public static String normalizeText(String text) {
+        if (text == null || text.isEmpty()) {
+            return "";
+        }
+        String normalized = TextUtil.clear(text);
+        if (normalized == null) {
+            return "";
+        }
+        return normalized.trim().toLowerCase(Locale.ROOT);
+    }
 
     // Minecraft 16 原生颜色码映射
     private static final Map<Character, Color> LEGACY_COLORS = Map.ofEntries(

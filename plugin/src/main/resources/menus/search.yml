@@ -1,0 +1,72 @@
+menu-type: search
+title: '{lang:menu.search-gui.title}'
+size: 54
+
+layout:
+  - '000111000'
+  - '002030400'
+  - '666666666'
+  - '666666666'
+  - '666666666'
+  - '666666666'
+
+input-item: '1'
+result-item: '6'
+
+buttons:
+  0:
+    display-item:
+      material: GRAY_STAINED_GLASS_PANE
+      name: ' '
+
+action-items:
+  2:
+    action-type: input-name
+    display-item:
+      material: HOPPER
+      name: '{lang:search-gui-guide-name}'
+      lore:
+        - '{lang:search-gui-guide-line-1}'
+        - '{lang:search-gui-guide-line-2}'
+        - '{lang:search-gui-guide-line-3}'
+        - '{lang:search-gui-guide-line-4}'
+  4:
+    action-type: clear-search
+    display-item:
+      material: BARRIER
+      name: '{lang:search-gui-clear-name}'
+      lore:
+        - '{lang:search-gui-clear-line-1}'
+
+state-items:
+  3:
+    empty-input:
+      display-item:
+        material: PAPER
+        name: '{lang:search-gui-empty-name}'
+        lore:
+          - '{lang:search-gui-empty-line-1}'
+          - '{lang:search-gui-empty-line-2}'
+    has-input:
+      display-item:
+        material: COMPASS
+        name: '{lang:search-gui-state-name}'
+        lore:
+          - '{lang:search-gui-state-line-1}'
+          - '{lang:search-gui-state-line-2}'
+          - '{lang:search-gui-state-line-3}'
+
+no-result-item:
+  slot: 31
+  display-item:
+    material: BARRIER
+    name: '{lang:search-gui-no-result-name}'
+    lore:
+      - '{lang:search-gui-no-result-line-1}'
+      - '{lang:search-gui-no-result-line-2}'
+
+result-lore:
+  - ' '
+  - '{lang:search-gui-result-shop}'
+  - '{lang:search-gui-result-product}'
+  - '{lang:search-gui-result-click}'

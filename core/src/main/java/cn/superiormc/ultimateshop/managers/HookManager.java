@@ -338,6 +338,31 @@ public class HookManager {
         return true;
     }
 
+    public boolean getProtectionCanBreak(Player player, Location location) {
+        if (player.isOp() || player.hasPermission("ultimateshop.bypass.protection")) {
+            return true;
+        }
+        for (AbstractProtectionHook protectionHook : protectionHooks.values()) {
+            if (!protectionHook.canBreak(player, location)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public boolean getProtectionCanPlace(Player player, Location location) {
+        if (player.isOp() || player.hasPermission("ultimateshop.bypass.protection")) {
+            return true;
+        }
+        for (AbstractProtectionHook protectionHook : protectionHooks.values()) {
+            if (!protectionHook.canPlace(player, location)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+
     public List<String> getEconomyHookNames() {
         return new ArrayList<>(economyHooks.keySet());
     }

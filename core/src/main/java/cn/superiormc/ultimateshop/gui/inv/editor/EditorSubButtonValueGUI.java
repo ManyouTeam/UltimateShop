@@ -1,8 +1,12 @@
-package cn.superiormc.ultimateshop.editor;
+package cn.superiormc.ultimateshop.gui.inv.editor;
 
 import cn.superiormc.ultimateshop.UltimateShop;
+import cn.superiormc.ultimateshop.editor.EditorLang;
+import cn.superiormc.ultimateshop.editor.EditorScope;
+import cn.superiormc.ultimateshop.editor.EditorTarget;
+import cn.superiormc.ultimateshop.editor.EditorUtil;
 import cn.superiormc.ultimateshop.gui.InvGUI;
-import cn.superiormc.ultimateshop.managers.EditorManager;
+import cn.superiormc.ultimateshop.managers.MenuStatusManager;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
@@ -130,26 +134,26 @@ public class EditorSubButtonValueGUI extends InvGUI {
         }
         if (slot == 20) {
             if (sameShopTarget != null && !sameShopTarget.isEmpty()) {
-                EditorManager.editorManager.setValue(player, target, itemPath + ".as-sub-button", sameShopTarget);
+                MenuStatusManager.menuStatusManager.setValue(player, target, itemPath + ".as-sub-button", sameShopTarget);
             }
-            EditorManager.editorManager.openTarget(player, target, itemPath, 0);
+            MenuStatusManager.menuStatusManager.openTarget(player, target, itemPath, 0);
             return true;
         }
         if (slot == 22) {
             String value = buildCrossValue();
             if (!value.equals(EditorLang.text(player, "editor.sub-button.not-set", "<not set>"))) {
-                EditorManager.editorManager.setValue(player, target, itemPath + ".as-sub-button", value);
+                MenuStatusManager.menuStatusManager.setValue(player, target, itemPath + ".as-sub-button", value);
             }
-            EditorManager.editorManager.openTarget(player, target, itemPath, 0);
+            MenuStatusManager.menuStatusManager.openTarget(player, target, itemPath, 0);
             return true;
         }
         if (slot == 24) {
-            EditorManager.editorManager.removeValue(player, target, itemPath + ".as-sub-button");
-            EditorManager.editorManager.openTarget(player, target, itemPath, 0);
+            MenuStatusManager.menuStatusManager.removeValue(player, target, itemPath + ".as-sub-button");
+            MenuStatusManager.menuStatusManager.openTarget(player, target, itemPath, 0);
             return true;
         }
         if (slot == 26) {
-            EditorManager.editorManager.openTarget(player, target, itemPath, 0);
+            MenuStatusManager.menuStatusManager.openTarget(player, target, itemPath, 0);
             return true;
         }
         return true;

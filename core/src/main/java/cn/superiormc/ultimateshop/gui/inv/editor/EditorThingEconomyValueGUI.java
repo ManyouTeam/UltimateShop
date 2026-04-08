@@ -1,8 +1,12 @@
-package cn.superiormc.ultimateshop.editor;
+package cn.superiormc.ultimateshop.gui.inv.editor;
 
 import cn.superiormc.ultimateshop.UltimateShop;
+import cn.superiormc.ultimateshop.editor.EditorLang;
+import cn.superiormc.ultimateshop.editor.EditorTarget;
+import cn.superiormc.ultimateshop.editor.EditorUtil;
 import cn.superiormc.ultimateshop.gui.InvGUI;
-import cn.superiormc.ultimateshop.managers.EditorManager;
+import cn.superiormc.ultimateshop.gui.Prompt;
+import cn.superiormc.ultimateshop.managers.MenuStatusManager;
 import cn.superiormc.ultimateshop.managers.HookManager;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
@@ -34,7 +38,7 @@ public class EditorThingEconomyValueGUI extends InvGUI {
         }
         inv.clear();
 
-        ConfigurationSection section = EditorManager.editorManager.ensureSection(target, path);
+        ConfigurationSection section = MenuStatusManager.menuStatusManager.ensureSection(target, path);
         String provider = getProvider(section);
         String currency = getCurrency(section, provider);
         String placeholder = getPlaceholder(section, provider);
@@ -101,7 +105,7 @@ public class EditorThingEconomyValueGUI extends InvGUI {
 
     @Override
     public boolean clickEventHandle(Inventory inventory, ClickType type, int slot) {
-        ConfigurationSection section = EditorManager.editorManager.ensureSection(target, path);
+        ConfigurationSection section = MenuStatusManager.menuStatusManager.ensureSection(target, path);
         String provider = getProvider(section);
         String currency = getCurrency(section, provider);
         String placeholder = getPlaceholder(section, provider);
@@ -119,7 +123,7 @@ public class EditorThingEconomyValueGUI extends InvGUI {
             String nextProvider = providers.get(index);
             String nextCurrency = isVanillaProvider(nextProvider) ? nextProvider : "default";
             String nextPlaceholder = buildDefaultPlaceholder(nextProvider);
-            EditorManager.editorManager.replaceInlineThingEconomy(player, target, path,
+            MenuStatusManager.menuStatusManager.replaceInlineThingEconomy(player, target, path,
                     nextProvider, nextCurrency, nextPlaceholder);
             new EditorThingEconomyValueGUI(player, target, path).openGUI(true);
             return true;
@@ -127,11 +131,11 @@ public class EditorThingEconomyValueGUI extends InvGUI {
         if (slot == 12) {
             String currentProvider = provider;
             String currentPlaceholder = placeholder;
-            EditorManager.editorManager.startPrompt(player, new EditorPrompt(
+            MenuStatusManager.menuStatusManager.startPrompt(player, new Prompt(
                     EditorLang.text(player, "editor.prompt.string",
                             "Input the new string for &f{path}", "path", path + ".economy-type"),
                     (p, input) -> {
-                        EditorManager.editorManager.replaceInlineThingEconomy(p, target, path,
+                        MenuStatusManager.menuStatusManager.replaceInlineThingEconomy(p, target, path,
                                 currentProvider, input, currentPlaceholder);
                         new EditorThingEconomyValueGUI(p, target, path).openGUI(true);
                     },
@@ -141,18 +145,18 @@ public class EditorThingEconomyValueGUI extends InvGUI {
         }
         if (slot == 14) {
             if (type.isRightClick()) {
-                EditorManager.editorManager.replaceInlineThingEconomy(player, target, path,
+                MenuStatusManager.menuStatusManager.replaceInlineThingEconomy(player, target, path,
                         provider, currency, "");
-                EditorManager.editorManager.removeValue(player, target, path + ".placeholder");
+                MenuStatusManager.menuStatusManager.removeValue(player, target, path + ".placeholder");
                 new EditorThingEconomyValueGUI(player, target, path).openGUI(true);
             } else {
                 String currentProvider = provider;
                 String currentCurrency = currency;
-                EditorManager.editorManager.startPrompt(player, new EditorPrompt(
+                MenuStatusManager.menuStatusManager.startPrompt(player, new Prompt(
                         EditorLang.text(player, "editor.prompt.string",
                                 "Input the new string for &f{path}", "path", path + ".placeholder"),
                         (p, input) -> {
-                            EditorManager.editorManager.replaceInlineThingEconomy(p, target, path,
+                            MenuStatusManager.menuStatusManager.replaceInlineThingEconomy(p, target, path,
                                     currentProvider, currentCurrency, input);
                             new EditorThingEconomyValueGUI(p, target, path).openGUI(true);
                         },
@@ -178,21 +182,21 @@ public class EditorThingEconomyValueGUI extends InvGUI {
             return true;
         }
         if (slot == 22) {
-            EditorManager.editorManager.openTarget(player, target, path, 0);
+            MenuStatusManager.menuStatusManager.openTarget(player, target, path, 0);
             return true;
         }
         if (slot == 23) {
-            EditorManager.editorManager.replaceInlineThingEconomy(player, target, path, provider, currency, placeholder);
-            EditorManager.editorManager.openTarget(player, target, path, 0);
+            MenuStatusManager.menuStatusManager.replaceInlineThingEconomy(player, target, path, provider, currency, placeholder);
+            MenuStatusManager.menuStatusManager.openTarget(player, target, path, 0);
             return true;
         }
         if (slot == 24) {
-            EditorManager.editorManager.clearInlineThingEconomy(player, target, path);
-            EditorManager.editorManager.openTarget(player, target, path, 0);
+            MenuStatusManager.menuStatusManager.clearInlineThingEconomy(player, target, path);
+            MenuStatusManager.menuStatusManager.openTarget(player, target, path, 0);
             return true;
         }
         if (slot == 26) {
-            EditorManager.editorManager.openTarget(player, target, path, 0);
+            MenuStatusManager.menuStatusManager.openTarget(player, target, path, 0);
             return true;
         }
         return true;
@@ -246,8 +250,8 @@ public class EditorThingEconomyValueGUI extends InvGUI {
     }
 
     private void openNestedSection(String fullPath) {
-        EditorManager.editorManager.ensureSection(target, fullPath);
-        EditorManager.editorManager.save(player, target);
-        EditorManager.editorManager.openTarget(player, target, fullPath, 0);
+        MenuStatusManager.menuStatusManager.ensureSection(target, fullPath);
+        MenuStatusManager.menuStatusManager.save(player, target);
+        MenuStatusManager.menuStatusManager.openTarget(player, target, fullPath, 0);
     }
 }

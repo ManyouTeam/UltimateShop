@@ -9,6 +9,7 @@ import cn.superiormc.ultimateshop.objects.ObjectThingRun;
 import cn.superiormc.ultimateshop.objects.menus.MenuSender;
 import cn.superiormc.ultimateshop.objects.menus.MenuType;
 import cn.superiormc.ultimateshop.objects.menus.ObjectMenu;
+import cn.superiormc.ultimateshop.objects.menus.ObjectSearchMenu;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
@@ -75,6 +76,11 @@ public class CommonGUI extends InvGUI {
                     "error.menu-not-found",
                     "menu",
                     fileName);
+            return;
+        }
+
+        if (commonMenu.getType().equals(MenuType.Search)) {
+            SearchGUI.openGUI(player, (ObjectSearchMenu) commonMenu, bypass, reopen);
             return;
         }
 

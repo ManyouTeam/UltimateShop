@@ -1,8 +1,12 @@
-package cn.superiormc.ultimateshop.editor;
+package cn.superiormc.ultimateshop.gui.inv.editor;
 
 import cn.superiormc.ultimateshop.UltimateShop;
+import cn.superiormc.ultimateshop.editor.EditorLang;
+import cn.superiormc.ultimateshop.editor.EditorTarget;
+import cn.superiormc.ultimateshop.editor.EditorUtil;
 import cn.superiormc.ultimateshop.gui.InvGUI;
-import cn.superiormc.ultimateshop.managers.EditorManager;
+import cn.superiormc.ultimateshop.gui.Prompt;
+import cn.superiormc.ultimateshop.managers.MenuStatusManager;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
@@ -103,7 +107,7 @@ public class EditorListValueGUI extends InvGUI {
         }
 
         if (slot == 45) {
-            EditorManager.editorManager.openTarget(player, target, EditorUtil.parentPath(path), 0);
+            MenuStatusManager.menuStatusManager.openTarget(player, target, EditorUtil.parentPath(path), 0);
             return true;
         }
         if (slot == 49) {
@@ -111,7 +115,7 @@ public class EditorListValueGUI extends InvGUI {
             return true;
         }
         if (slot == 50) {
-            EditorManager.editorManager.setValue(player, target, path, new ArrayList<>());
+            MenuStatusManager.menuStatusManager.setValue(player, target, path, new ArrayList<>());
             new EditorListValueGUI(player, target, path, integerMode, 0).openGUI(true);
             return true;
         }
@@ -134,7 +138,7 @@ public class EditorListValueGUI extends InvGUI {
     private void delete(int index) {
         List<Object> values = getValues();
         values.remove(index);
-        EditorManager.editorManager.setValue(player, target, path, values);
+        MenuStatusManager.menuStatusManager.setValue(player, target, path, values);
         new EditorListValueGUI(player, target, path, integerMode, normalizePage(values.size())).openGUI(true);
     }
 
@@ -145,7 +149,7 @@ public class EditorListValueGUI extends InvGUI {
         }
         Object value = values.remove(from);
         values.add(to, value);
-        EditorManager.editorManager.setValue(player, target, path, values);
+        MenuStatusManager.menuStatusManager.setValue(player, target, path, values);
         new EditorListValueGUI(player, target, path, integerMode, normalizePage(values.size())).openGUI(true);
     }
 
@@ -159,7 +163,7 @@ public class EditorListValueGUI extends InvGUI {
                 return false;
             }
             values.add(parsed);
-            EditorManager.editorManager.setValue(player, target, path, values);
+            MenuStatusManager.menuStatusManager.setValue(player, target, path, values);
             new EditorListValueGUI(player, target, path, integerMode, normalizePage(values.size())).openGUI(true);
             return true;
         });
@@ -175,7 +179,7 @@ public class EditorListValueGUI extends InvGUI {
                 return false;
             }
             values.set(index, parsed);
-            EditorManager.editorManager.setValue(player, target, path, values);
+            MenuStatusManager.menuStatusManager.setValue(player, target, path, values);
             new EditorListValueGUI(player, target, path, integerMode, page).openGUI(true);
             return true;
         }, currentValue);
@@ -186,7 +190,7 @@ public class EditorListValueGUI extends InvGUI {
     }
 
     private void promptValue(String description, java.util.function.Function<String, Boolean> handler, Object currentValue) {
-        EditorManager.editorManager.startPrompt(player, new EditorPrompt(
+        MenuStatusManager.menuStatusManager.startPrompt(player, new Prompt(
                 currentValue == null ? description
                         : description + " " + EditorLang.text(player, "editor.list.current", "&7Current: &f{value}",
                         "value", String.valueOf(currentValue)),

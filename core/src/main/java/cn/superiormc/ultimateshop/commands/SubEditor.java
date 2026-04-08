@@ -1,7 +1,7 @@
 package cn.superiormc.ultimateshop.commands;
 
 import cn.superiormc.ultimateshop.editor.EditorLang;
-import cn.superiormc.ultimateshop.managers.EditorManager;
+import cn.superiormc.ultimateshop.managers.MenuStatusManager;
 import cn.superiormc.ultimateshop.editor.EditorScope;
 import cn.superiormc.ultimateshop.editor.EditorTarget;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
@@ -34,7 +34,7 @@ public class SubEditor extends AbstractCommand {
             return;
         }
         if (args.length == 1) {
-            EditorManager.editorManager.openRoot(player);
+            MenuStatusManager.menuStatusManager.openRoot(player);
             return;
         }
 
@@ -52,7 +52,7 @@ public class SubEditor extends AbstractCommand {
             return;
         }
 
-        EditorManager.editorManager.openTarget(player, target, "", 0);
+        MenuStatusManager.menuStatusManager.openTarget(player, target, "", 0);
     }
 
     @Override

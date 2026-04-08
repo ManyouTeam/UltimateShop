@@ -66,7 +66,7 @@ public class SubMenu extends AbstractCommand {
                     tempVal1.add(tempVal2.getShopName());
                 }
                 for (ObjectMenu tempVal4 : ObjectMenu.commonMenus.values()) {
-                    if (!tempVal4.getType().equals(MenuType.Common)) {
+                    if (tempVal4.getType().equals(MenuType.More)) {
                         continue;
                     }
                     tempVal1.add(tempVal4.getName());

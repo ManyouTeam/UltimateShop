@@ -2,10 +2,10 @@ package cn.superiormc.ultimateshop.api;
 
 import cn.superiormc.ultimateshop.managers.CacheManager;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
-import cn.superiormc.ultimateshop.managers.LanguageManager;
 import cn.superiormc.ultimateshop.methods.Product.SellProductMethod;
 import cn.superiormc.ultimateshop.methods.ProductTradeStatus;
 import cn.superiormc.ultimateshop.objects.ObjectShop;
+import cn.superiormc.ultimateshop.objects.SearchResult;
 import cn.superiormc.ultimateshop.objects.ObjectThingRun;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import cn.superiormc.ultimateshop.objects.caches.ObjectUseTimesCache;
@@ -89,6 +89,18 @@ public class ShopHelper {
 
     public static List<ObjectItem> getTargetItems(ItemStack[] items, Player player) {
         return getTargetItems(ItemStorage.of(items), player);
+    }
+
+    public static List<ObjectItem> getTargetItems(ItemStorage storage, Player player, String searchText) {
+        return new SearchResult(storage, player, searchText).getItems();
+    }
+
+    public static List<ObjectItem> getTargetItems(ItemStack[] items, Player player, String searchText) {
+        return getTargetItems(ItemStorage.of(items), player, searchText);
+    }
+
+    public static List<ObjectItem> getTargetItems(String searchText, Player player) {
+        return new SearchResult(player, searchText).getItems();
     }
 
     @Nullable
@@ -241,4 +253,5 @@ public class ShopHelper {
         }
         return result;
     }
+
 }

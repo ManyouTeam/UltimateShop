@@ -1,8 +1,11 @@
-package cn.superiormc.ultimateshop.editor;
+package cn.superiormc.ultimateshop.gui.inv.editor;
 
 import cn.superiormc.ultimateshop.UltimateShop;
+import cn.superiormc.ultimateshop.editor.EditorLang;
+import cn.superiormc.ultimateshop.editor.EditorTarget;
+import cn.superiormc.ultimateshop.editor.EditorUtil;
 import cn.superiormc.ultimateshop.gui.InvGUI;
-import cn.superiormc.ultimateshop.managers.EditorManager;
+import cn.superiormc.ultimateshop.managers.MenuStatusManager;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -75,12 +78,12 @@ public class EditorClickTypeBindingGUI extends InvGUI {
             return true;
         }
         if (slot == 45) {
-            EditorManager.editorManager.openTarget(player, target, backPath, 0);
+            MenuStatusManager.menuStatusManager.openTarget(player, target, backPath, 0);
             return true;
         }
         if (slot == 49) {
-            EditorManager.editorManager.removeValue(player, target, path);
-            EditorManager.editorManager.openTarget(player, target, backPath, 0);
+            MenuStatusManager.menuStatusManager.removeValue(player, target, path);
+            MenuStatusManager.menuStatusManager.openTarget(player, target, backPath, 0);
             return true;
         }
         return true;
@@ -102,9 +105,9 @@ public class EditorClickTypeBindingGUI extends InvGUI {
             selected.add(clickType);
         }
         if (selected.isEmpty()) {
-            EditorManager.editorManager.removeValue(player, target, path);
+            MenuStatusManager.menuStatusManager.removeValue(player, target, path);
             return;
         }
-        EditorManager.editorManager.setValue(player, target, path, CommonUtil.translateStringList(new ArrayList<>(selected)));
+        MenuStatusManager.menuStatusManager.setValue(player, target, path, CommonUtil.translateStringList(new ArrayList<>(selected)));
     }
 }

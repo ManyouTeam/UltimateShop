@@ -45,11 +45,6 @@ public class EditorLang {
         return text(player, fieldPath(preset, field) + ".desc", fallbackFieldDescription(field));
     }
 
-    public static boolean matchesCancel(Player player, String input) {
-        String keyword = text(player, "editor.prompt.cancel-keyword", "cancel");
-        return input.equalsIgnoreCase("cancel") || input.equalsIgnoreCase(keyword);
-    }
-
     private static String fieldPath(EditorPreset preset, EditorPresetField field) {
         return "editor.presets." + preset.getKind().name().toLowerCase() + ".fields." + normalizeFieldKey(field);
     }

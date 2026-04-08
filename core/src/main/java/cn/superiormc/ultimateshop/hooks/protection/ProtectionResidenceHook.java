@@ -18,4 +18,17 @@ public class ProtectionResidenceHook extends AbstractProtectionHook {
         FlagPermissions perms = Residence.getInstance().getPermsByLocForPlayer(location, player);
         return perms.playerHas(player, Flags.container, false);
     }
+
+    @Override
+    public boolean canBreak(Player player, Location location) {
+        ResidencePlayer rPlayer = Residence.getInstance().getPlayerManager().getResidencePlayer(player);
+        return rPlayer.canBreakBlock(location.getBlock(), true);
+    }
+
+    @Override
+    public boolean canPlace(Player player, Location location) {
+        ResidencePlayer rPlayer = Residence.getInstance().getPlayerManager().getResidencePlayer(player);
+        return rPlayer.canPlaceBlock(location.getBlock(), true);
+    }
+
 }

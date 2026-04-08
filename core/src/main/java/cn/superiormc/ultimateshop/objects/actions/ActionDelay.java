@@ -23,7 +23,7 @@ public class ActionDelay extends AbstractRunAction {
             return;
         }
         long time = singleAction.getSection().getLong("time");
-        ObjectAction action = new ObjectAction(chanceSection);
+        ObjectAction action = singleAction.createNestedAction(chanceSection);
         SchedulerUtil.runTaskLater(() -> action.runAllActions(thingRun), time);
     }
 }

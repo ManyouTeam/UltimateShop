@@ -1,8 +1,11 @@
-package cn.superiormc.ultimateshop.editor;
+package cn.superiormc.ultimateshop.gui.inv.editor;
 
 import cn.superiormc.ultimateshop.UltimateShop;
+import cn.superiormc.ultimateshop.editor.EditorLang;
+import cn.superiormc.ultimateshop.editor.EditorScope;
+import cn.superiormc.ultimateshop.editor.EditorUtil;
 import cn.superiormc.ultimateshop.gui.InvGUI;
-import cn.superiormc.ultimateshop.managers.EditorManager;
+import cn.superiormc.ultimateshop.managers.MenuStatusManager;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
@@ -43,11 +46,11 @@ public class EditorRootGUI extends InvGUI {
     @Override
     public boolean clickEventHandle(Inventory inventory, ClickType type, int slot) {
         if (slot == 11) {
-            EditorManager.editorManager.openScope(player, EditorScope.SHOP, 0);
+            MenuStatusManager.menuStatusManager.openScope(player, EditorScope.SHOP, 0);
             return true;
         }
         if (slot == 15) {
-            EditorManager.editorManager.openScope(player, EditorScope.MENU, 0);
+            MenuStatusManager.menuStatusManager.openScope(player, EditorScope.MENU, 0);
             return true;
         }
         if (slot == 22) {

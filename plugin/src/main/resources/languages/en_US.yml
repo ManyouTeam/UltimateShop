@@ -21,6 +21,8 @@ plugin:
     &fTarget Item: {item-name} in shop {shop} &7(/shop menu {shop})
     &fBuy Price: {buy-price}
     &fSell Price: {sell-price}
+  search-gui-name-input: "&fType the item name you want to search in chat. Type {value} to remove the name filter."
+  search-gui-name-empty: "None"
   reloading: "&#98FB98[UltimateShop] &fTrying reload the plugin, server may have TPS
     drop or even crash if you have much shop products and online players because we are trying save
     their data in server main thread. We recommend you restart the server instead of reload plugin
@@ -113,18 +115,23 @@ override-lang:
   search-gui-guide-name: '&eSearch Slot'
   search-gui-guide-line-1: '&7Put the item you want to search'
   search-gui-guide-line-2: '&7into one of the input slots.'
-  search-gui-guide-line-3: '&7Matching shop products will appear below.'
+  search-gui-guide-line-3: '&7Or click this button and type an item name in chat.'
+  search-gui-guide-line-4: '&7Matching shop products will appear below.'
   search-gui-clear-name: '&cClear Search'
-  search-gui-clear-line-1: '&7Return all input items and clear results.'
+  search-gui-clear-line-1: '&7Return all input items and clear the name filter.'
   search-gui-empty-name: '&eWaiting for input'
   search-gui-empty-line-1: '&7Place items into the configured input slots.'
+  search-gui-empty-line-2: '&7Or click the hopper above to search by item name.'
   search-gui-state-name: '&aSearch Result'
   search-gui-state-line-1: '&7Matched products: &f{result-amount}'
   search-gui-state-line-2: '&7Showing &f{showing-amount} &7results from &f{input-amount} &7input items.'
+  search-gui-state-line-3: '&7Name filter: &f{name-keyword}'
   search-gui-no-result-name: '&cNo matched products'
   search-gui-no-result-line-1: '&7No shop product is linked to the current input.'
+  search-gui-no-result-line-2: '&7Current name filter: &f{name-keyword}'
   search-gui-result-shop: '&8Shop: &f{shop}'
   search-gui-result-product: '&8Product: &f{product}'
+  search-gui-result-click: '&7Click to trade this product.'
   shop-title: 'Item Shop'
   buy-more-title: 'Select Quantity'
   buy-more-add-1: '&7Click to add 1 more.'
@@ -205,10 +212,14 @@ override-lang:
     sell-chest:
       price-empty: 'No sell history'
   menu:
+    prompt:
+      cancel-keyword: 'cancel'
     sell-all:
       title: '&fSell All &7- Esc to confirm sell!'
     search-gui:
       title: '&8Shop Search GUI'
+      prompt:
+        clear-keyword: 'clear'
     bedrock:
       price-extra-line:
         default: '&6Buy: {buy-price} &6| Sell: {sell-price}'
@@ -530,7 +541,7 @@ editor:
     new-child-value: 'Input the value for &f{path}&7. Use &fsection &7or &f{} &7to create a section. Use &f;; &7for lists.'
   message:
     target-not-found: '&cTarget file not found.'
-    saved: '&aSaved &f{value}'
+    saved: '&aSaved &f{value}&a, don''t forget to reload the plugin after completing the editing to make your modifications take effect!'
     save-failed: '&cFailed to save file: {value}'
     empty-id: '&cEntry id cannot be empty.'
     enable-confirm-required: '&cEditor is still experimental. Read and confirm every item in &f{file}&c before using it.'
