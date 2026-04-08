@@ -49,6 +49,7 @@ public class CommandManager {
        registerNewSubCommand(new SubSetRandomPlaceholder());
        registerNewSubCommand(new SubSearch());
        registerNewSubCommand(new SubSearchGUI());
+       registerNewSubCommand(new SubSellHand());
        registerNewSubCommand(new SubSellAllHand());
        registerNewSubCommand(new SubUpdateGUI());
        registerNewSubCommand(new SubUpdateGUITitle());
