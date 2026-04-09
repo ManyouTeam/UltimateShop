@@ -342,3 +342,6 @@ auto-save:
   enabled: true
   hide-message: false
   period-tick: 6000
+
+bypass-plugin-check:
+  - 'PluginNameHere'

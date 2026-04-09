@@ -241,13 +241,7 @@ public class SearchGUI extends InvGUI {
             if (item != null && !item.getType().isAir()) {
                 items.add(item.clone());
                 inv.setItem(slot, null);
-                continue;
             }
-            ItemStack cachedItem = inputButtons.get(slot);
-            if (cachedItem == null || cachedItem.getType().isAir()) {
-                continue;
-            }
-            items.add(cachedItem.clone());
         }
         inputButtons.clear();
         if (!items.isEmpty()) {

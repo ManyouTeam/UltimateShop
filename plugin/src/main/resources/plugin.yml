@@ -29,6 +29,7 @@ softdepend:
   - PlaceholderAPI
   - UltraEconomy
   - CoinsEngine
+  - ExcellentEconomy
   - RedisEconomy
   - EcoBits
   - MythicMobs

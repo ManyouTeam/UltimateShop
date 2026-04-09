@@ -9,7 +9,7 @@ import org.bukkit.entity.Player;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Files;
+import java.io.InputStreamReader;
 import java.util.*;
 
 public class LanguageManager {
@@ -27,7 +27,7 @@ public class LanguageManager {
         initLanguages();
     }
 
-    protected String getPlayerLanguage(Player player) {
+    public String getPlayerLanguage(Player player) {
         if (player == null) {
             return serverLanguage.toLowerCase();
         }
@@ -48,18 +48,14 @@ public class LanguageManager {
             langFolder.mkdirs();
         }
 
-        InputStream is = UltimateShop.instance.getResource("languages/en_US.yml");
-        if (is != null) {
-            try {
-                File tempFile = new File(UltimateShop.instance.getDataFolder(), "tempMessage.yml");
-                Files.copy(is, tempFile.toPath());
-                tempMessageFile = YamlConfiguration.loadConfiguration(tempFile);
-                tempFile.delete();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        } else {
+        serverLanguage = ConfigManager.configManager.getString("config-files.language", "en-US");
+        tempMessageFile = loadInternalLanguage(serverLanguage);
+        if (tempMessageFile == null) {
             tempMessageFile = new YamlConfiguration();
+        }
+        YamlConfiguration fullLanguageFile = loadInternalLanguage("en_US");
+        if (fullLanguageFile != null) {
+            mergeMissingKeys(tempMessageFile, fullLanguageFile);
         }
 
         File[] files = langFolder.listFiles((dir, name) -> name.endsWith(".yml"));
@@ -75,7 +71,6 @@ public class LanguageManager {
         if (!languageFiles.containsKey("en_US".toLowerCase())) {
             languageFiles.put("en_US".toLowerCase(), tempMessageFile);
         }
-        serverLanguage = ConfigManager.configManager.getString("config-files.language", "en-US");
         if (!languageFiles.containsKey(serverLanguage.toLowerCase())) {
             ErrorManager.errorManager.sendErrorMessage("§cError: Can not found language file: " + serverLanguage + ".yml at languages folder!");
             serverLanguage = "en_US";
@@ -178,5 +173,35 @@ public class LanguageManager {
             }
         }
         return list;
+    }
+
+    private YamlConfiguration loadInternalLanguage(String language) {
+        if (language == null) {
+            return null;
+        }
+
+        String resourceName = language.replace('-', '_');
+        InputStream inputStream = UltimateShop.instance.getResource("languages/" + resourceName + ".yml");
+        if (inputStream == null) {
+            return null;
+        }
+
+        try (InputStreamReader reader = new InputStreamReader(inputStream)) {
+            return YamlConfiguration.loadConfiguration(reader);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    private void mergeMissingKeys(YamlConfiguration target, YamlConfiguration source) {
+        for (String key : source.getKeys(true)) {
+            if (source.isConfigurationSection(key)) {
+                continue;
+            }
+            if (target.get(key) == null) {
+                target.set(key, source.get(key));
+            }
+        }
     }
 }

@@ -18,7 +18,7 @@
     <properties>
         <java.version>16</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <revision>4.4.0</revision>
+        <revision>4.4.1</revision>
         <name>UltimateShop</name>
     </properties>
 
@@ -229,6 +229,10 @@
             <id>fancyinnovations-releases</id>
             <name>FancyInnovations Repository</name>
             <url>https://repo.fancyinnovations.com/releases</url>
+        </repository>
+        <repository>
+            <id>nightexpress-releases</id>
+            <url>https://repo.nightexpressdev.com/releases</url>
         </repository>
     </repositories>
 </project>

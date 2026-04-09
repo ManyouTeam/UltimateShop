@@ -38,8 +38,7 @@ public class EconomyRedisEconomyHook extends AbstractEconomyHook {
     public void giveEconomy(Player player, double value, String currencyID) {
         Currency redisCurrency = api.getCurrencyByName(currencyID);
         if (redisCurrency == null) {
-            ErrorManager.errorManager.sendErrorMessage("§cCan not find currency " +
-                    currencyID + " in RedisEconomy plugin!");
+            ErrorManager.errorManager.sendErrorMessage("§cCan not find currency " + currencyID + " in RedisEconomy plugin!");
             return;
         }
         redisCurrency.depositPlayer(player, value);

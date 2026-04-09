@@ -14,15 +14,12 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
 
 public class LocateManager {
 
@@ -32,11 +29,9 @@ public class LocateManager {
 
     private final String languageFileName;
 
-    private volatile JSONObject fileContent;
+    private JSONObject fileContent;
 
-    private volatile boolean enabled = false;
-
-    private volatile boolean downloading = false;
+    private boolean enabled = false;
 
     public LocateManager() {
         locateManager = this;
@@ -56,40 +51,10 @@ public class LocateManager {
     }
 
     public void downloadLocateFile() {
-        if (!InitManager.initManager.isFirstLoad()
-                && !ConfigManager.configManager.getBoolean("config-files.minecraft-locate-file.generate-new-one")) {
+        if (!InitManager.initManager.isFirstLoad() && !ConfigManager.configManager.getBoolean("config-files.minecraft-locate-file.generate-new-one")) {
             return;
         }
-        if (downloading) {
-            return;
-        }
-        downloading = true;
-        TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " 搂fDownloading Minecraft locate file in background...");
-        CompletableFuture.runAsync(() -> {
-            try {
-                downloadLocateFileNow();
-                File file = new File(UltimateShop.instance.getDataFolder(), languageFileName);
-                enabled = file.exists();
-                if (enabled) {
-                    loadLocateFile();
-                    if (fileContent != null) {
-                        TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " 搂aMinecraft locate file downloaded successfully.");
-                    }
-                }
-            } catch (SocketTimeoutException | ConnectException exception) {
-                enabled = false;
-                ErrorManager.errorManager.sendErrorMessage("搂cError: Failed to download Minecraft locate file. Reason: Connection timed out!");
-            } catch (Throwable throwable) {
-                enabled = false;
-                ErrorManager.errorManager.sendErrorMessage("搂cError: Failed to download Minecraft locate file. Reason: " + throwable.getMessage() + "!");
-                throwable.printStackTrace();
-            } finally {
-                downloading = false;
-            }
-        });
-    }
-
-    private void downloadLocateFileNow() throws Exception {
+        TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fDownloading Minecraft locate file, this will cost some time...");
         String minecraftVersion = UltimateShop.yearVersion + "." + UltimateShop.majorVersion + "." + UltimateShop.minorVersion;
         if (minecraftVersion.endsWith(".0")) {
             minecraftVersion = minecraftVersion.substring(0, minecraftVersion.length() - 2);
@@ -97,57 +62,86 @@ public class LocateManager {
         if (languageFileName == null) {
             return;
         }
+        try {
+            String versionManifestUrl = "https://launchermeta.mojang.com/mc/game/version_manifest.json";
+            JSONObject versionManifest = CommonUtil.fetchJson(versionManifestUrl);
 
-        JSONObject versionManifest = CommonUtil.fetchJson("https://launchermeta.mojang.com/mc/game/version_manifest.json");
-        JSONArray versions = versionManifest.getJSONArray("versions");
-        JSONObject targetVersion = null;
-        for (int i = 0; i < versions.length(); i++) {
-            JSONObject version = versions.getJSONObject(i);
-            if (version.getString("id").equals(minecraftVersion)) {
-                targetVersion = version;
-                break;
+            JSONArray versions = versionManifest.getJSONArray("versions");
+            JSONObject targetVersion = null;
+            for (int i = 0; i < versions.length(); i++) {
+                JSONObject version = versions.getJSONObject(i);
+                if (version.getString("id").equals(minecraftVersion)) {
+                    targetVersion = version;
+                    break;
+                }
             }
-        }
 
-        if (targetVersion == null) {
-            throw new IllegalStateException("Can not get your Minecraft version");
-        }
-
-        JSONObject versionInfo = CommonUtil.fetchJson(targetVersion.getString("url"));
-        JSONObject assetIndex = CommonUtil.fetchJson(versionInfo.getJSONObject("assetIndex").getString("url"));
-        JSONObject objects = assetIndex.getJSONObject("objects");
-        if (!objects.has("minecraft/lang/" + languageFileName)) {
-            throw new FileNotFoundException("Can not find locate file: " + languageFileName);
-        }
-
-        String languageFileHash = objects.getJSONObject("minecraft/lang/" + languageFileName).getString("hash");
-        String downloadUrl = "https://resources.download.minecraft.net/" + languageFileHash.substring(0, 2) + "/" + languageFileHash;
-
-        File targetFile = new File(UltimateShop.instance.getDataFolder(), languageFileName);
-        HttpURLConnection connection = openConnection(downloadUrl);
-        try (InputStream inputStream = connection.getInputStream();
-             FileOutputStream outputStream = new FileOutputStream(targetFile)) {
-            byte[] buffer = new byte[8192];
-            int length;
-            while ((length = inputStream.read(buffer)) != -1) {
-                outputStream.write(buffer, 0, length);
+            if (targetVersion == null) {
+                ErrorManager.errorManager.sendErrorMessage("§cError: Failed to download Minecraft locate file. Reason: Can not get your Minecraft version!");
+                return;
             }
-        } finally {
-            connection.disconnect();
+
+            String versionInfoUrl = targetVersion.getString("url");
+            JSONObject versionInfo = CommonUtil.fetchJson(versionInfoUrl);
+
+            String assetIndexUrl = versionInfo.getJSONObject("assetIndex").getString("url");
+            JSONObject assetIndex = CommonUtil.fetchJson(assetIndexUrl);
+
+            JSONObject objects = assetIndex.getJSONObject("objects");
+            if (!objects.has("minecraft/lang/" + languageFileName)) {
+                ErrorManager.errorManager.sendErrorMessage("§cError: Failed to download Minecraft locate file. Reason: Can not find locate file: " + languageFileName + "!");
+                return;
+            }
+
+            String languageFileHash = objects.getJSONObject("minecraft/lang/" + languageFileName).getString("hash");
+            String downloadUrl = "https://resources.download.minecraft.net/"
+                    + languageFileHash.substring(0, 2) + "/" + languageFileHash;
+
+            URL url = new URL(downloadUrl);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("GET");
+            connection.setConnectTimeout(10000);
+            connection.setReadTimeout(15000);
+            connection.setRequestProperty("Accept-Charset", StandardCharsets.UTF_8.name());
+            connection.setRequestProperty("User-Agent", "UltimateShop Locate Downloader");
+
+            int responseCode = connection.getResponseCode();
+            if (responseCode < 200 || responseCode >= 300) {
+                connection.disconnect();
+                throw new IOException("HTTP " + responseCode);
+            }
+
+            try (var inputStream = connection.getInputStream();
+                 FileOutputStream fos = new FileOutputStream(new File(UltimateShop.instance.getDataFolder(), languageFileName))) {
+                byte[] buffer = new byte[8192];
+                int length;
+                while ((length = inputStream.read(buffer)) != -1) {
+                    fos.write(buffer, 0, length);
+                }
+            } finally {
+                connection.disconnect();
+            }
+        } catch (SocketTimeoutException e) {
+            ErrorManager.errorManager.sendErrorMessage("§cError: Failed to download Minecraft locate file. Reason: Connection timed out!");
+        } catch (Throwable throwable) {
+            ErrorManager.errorManager.sendErrorMessage("§cError: Failed to download Minecraft locate file. Reason: Internet problem!");
+            throwable.fillInStackTrace();
         }
     }
 
     public void loadLocateFile() {
-        try (FileInputStream fis = new FileInputStream(new File(UltimateShop.instance.getDataFolder(), languageFileName))) {
+        try {
+            FileInputStream fis = new FileInputStream(new File(UltimateShop.instance.getDataFolder(), languageFileName));
             this.fileContent = new JSONObject(new JSONTokener(fis));
+            fis.close();
             this.enabled = true;
         } catch (FileNotFoundException e) {
             this.enabled = false;
-            ErrorManager.errorManager.sendErrorMessage("搂cError: Failed to load Minecraft locate file. Reason: Can not find locate file: " + languageFileName + "!");
+            ErrorManager.errorManager.sendErrorMessage("§cError: Failed to load Minecraft locate file. Reason: Can not find locate file: " + languageFileName + "!");
         } catch (Throwable throwable) {
             this.enabled = false;
-            ErrorManager.errorManager.sendErrorMessage("搂cError: Failed to load Minecraft locate file. Reason: " + throwable.getMessage() + "!");
-            throwable.printStackTrace();
+            ErrorManager.errorManager.sendErrorMessage("§cError: Failed to load Minecraft locate file. Reason: " + throwable.getMessage() + "!");
+            throwable.fillInStackTrace();
         }
     }
 
@@ -156,47 +150,35 @@ public class LocateManager {
             return ItemUtil.getItemNameWithoutVanilla(item);
         }
 
-        String translationKey = item.translationKey();
-        if (!locateMap.containsKey(translationKey)) {
-            Object value = getValueFromJson(fileContent, translationKey);
+        if (!locateMap.containsKey(item.getTranslationKey())) {
+            Object value = getValueFromJson(fileContent, item.getTranslationKey());
             if (value != null) {
-                locateMap.put(translationKey, String.valueOf(value));
+                locateMap.put(item.getTranslationKey(), String.valueOf(value));
             } else {
-                locateMap.put(translationKey, ItemUtil.getItemNameWithoutVanilla(item));
+                locateMap.put(item.getTranslationKey(), ItemUtil.getItemNameWithoutVanilla(item));
             }
         }
-        return locateMap.get(translationKey);
+        return locateMap.get(item.getTranslationKey());
     }
 
     private Object getValueFromJson(JSONObject jsonObject, String path) {
-        if (jsonObject == null) {
+        Object value = jsonObject;
+
+        if (value != null) {
+            JSONObject json = (JSONObject) value;
+            if (json.has(path)) {
+                value = json.get(path);
+            } else {
+                return null;
+            }
+        } else {
             return null;
         }
-        if (jsonObject.has(path)) {
-            return jsonObject.get(path);
-        }
-        return null;
+
+        return value;
     }
 
     public static boolean enableThis() {
-        return CommonUtil.getMajorVersion(16)
-                && !UltimateShop.freeVersion
-                && ConfigManager.configManager.getBoolean("config-files.minecraft-locate-file.enabled");
-    }
-
-    private HttpURLConnection openConnection(String urlString) throws IOException {
-        URL url = new URL(urlString);
-        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-        connection.setRequestMethod("GET");
-        connection.setConnectTimeout(10000);
-        connection.setReadTimeout(15000);
-        connection.setRequestProperty("Accept-Charset", StandardCharsets.UTF_8.name());
-        connection.setRequestProperty("User-Agent", "UltimateShop Locate Downloader");
-        int responseCode = connection.getResponseCode();
-        if (responseCode < 200 || responseCode >= 300) {
-            connection.disconnect();
-            throw new IOException("HTTP " + responseCode);
-        }
-        return connection;
+        return CommonUtil.getMajorVersion(16) && !UltimateShop.freeVersion && ConfigManager.configManager.getBoolean("config-files.minecraft-locate-file.enabled");
     }
 }
