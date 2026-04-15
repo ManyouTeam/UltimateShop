@@ -55,6 +55,7 @@ public class InitManager {
         resourceOutput("menus/search.yml", false);
         resourceOutput("menus/example-shop-menu.yml", false);
         resourceOutput("menus/daily-shop-menu.yml", false);
+        resourceOutput("shared_use_times/example.yml", true);
         resourceOutput("random_placeholders/daily.yml", false);
         resourceOutput("random_placeholders/reset.yml", false);
         resourceOutput("random_placeholders/rate_example.yml", false);

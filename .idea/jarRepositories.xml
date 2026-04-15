@@ -37,6 +37,11 @@
       <option name="url" value="https://repo.rosewooddev.io/repository/public/" />
     </remote-repository>
     <remote-repository>
+      <option name="id" value="nightexpress-releases" />
+      <option name="name" value="nightexpress-releases" />
+      <option name="url" value="https://repo.nightexpressdev.com/releases" />
+    </remote-repository>
+    <remote-repository>
       <option name="id" value="bs-repo-releases" />
       <option name="name" value="bs-repo-releases" />
       <option name="url" value="https://repo.bsdevelopment.org/releases" />

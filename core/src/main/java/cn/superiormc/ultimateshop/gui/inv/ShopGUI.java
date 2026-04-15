@@ -12,6 +12,7 @@ import cn.superiormc.ultimateshop.objects.ObjectShop;
 import cn.superiormc.ultimateshop.objects.ObjectThingRun;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import cn.superiormc.ultimateshop.objects.caches.ObjectUseTimesCache;
+import cn.superiormc.ultimateshop.objects.caches.UseTimesStorageKey;
 import cn.superiormc.ultimateshop.objects.menus.MenuSender;
 import cn.superiormc.ultimateshop.objects.menus.ObjectMenu;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
@@ -19,6 +20,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.Inventory;
 
+import java.util.Map;
 import java.util.Objects;
 
 public class ShopGUI extends InvGUI {
@@ -84,6 +86,15 @@ public class ShopGUI extends InvGUI {
         if (menuButtons.get(slot) == null) {
             return true;
         }
+        if (menuButtons.get(slot) instanceof ObjectItem itemButton) {
+            itemButton.clickEvent(type, player);
+            if (ConfigManager.configManager.getBooleanOrDefault("menu.shop.click-update", "menu.menu-update.click-update")) {
+                constructGUI();
+            } else {
+                updateSharedUseTimesSlots(itemButton, slot);
+            }
+            return true;
+        }
         menuButtons.get(slot).clickEvent(type, player);
         if (ConfigManager.configManager.getBooleanOrDefault("menu.shop.click-update", "menu.menu-update.click-update")) {
             constructGUI();
@@ -101,6 +112,26 @@ public class ShopGUI extends InvGUI {
     public void updateSlot(int slot) {
         menuItems.put(slot, getMenuItem(player, slot));
         inv.setItem(slot, menuItems.get(slot));
+    }
+
+    private void updateSharedUseTimesSlots(ObjectItem clickedItem, int clickedSlot) {
+        UseTimesStorageKey storageKey = clickedItem.getUseTimesStorageKey();
+        boolean updated = false;
+
+        for (Map.Entry<Integer, ?> entry : menuButtons.entrySet()) {
+            if (!(entry.getValue() instanceof ObjectItem itemButton)) {
+                continue;
+            }
+            if (!storageKey.equals(itemButton.getUseTimesStorageKey())) {
+                continue;
+            }
+            updateSlot(entry.getKey());
+            updated = true;
+        }
+
+        if (!updated) {
+            updateSlot(clickedSlot);
+        }
     }
 
     public static void openGUI(Player player, ObjectShop shop, boolean bypass, boolean reopen) {

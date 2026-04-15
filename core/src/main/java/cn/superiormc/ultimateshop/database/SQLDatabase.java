@@ -1,24 +1,30 @@
 package cn.superiormc.ultimateshop.database;
 
 import cn.superiormc.ultimateshop.UltimateShop;
-import cn.superiormc.ultimateshop.objects.caches.ObjectCache;
 import cn.superiormc.ultimateshop.database.sql.DatabaseDialect;
+import cn.superiormc.ultimateshop.database.sql.H2Dialect;
+import cn.superiormc.ultimateshop.database.sql.MySQLDialect;
+import cn.superiormc.ultimateshop.database.sql.PostgreSQLDialect;
+import cn.superiormc.ultimateshop.database.sql.SQLiteDialect;
 import cn.superiormc.ultimateshop.managers.CacheManager;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
-import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
+import cn.superiormc.ultimateshop.objects.caches.ObjectCache;
 import cn.superiormc.ultimateshop.objects.caches.ObjectRandomPlaceholderCache;
 import cn.superiormc.ultimateshop.objects.caches.ObjectUseTimesCache;
+import cn.superiormc.ultimateshop.objects.caches.UseTimesStorageKey;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
 import cn.superiormc.ultimateshop.utils.TextUtil;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
-import cn.superiormc.ultimateshop.database.sql.*;
-
-import java.util.List;
 
 public class SQLDatabase extends AbstractDatabase {
 
@@ -40,7 +46,6 @@ public class SQLDatabase extends AbstractDatabase {
         dialect.needExtraDownload(jdbcUrl);
 
         HikariConfig config = new HikariConfig();
-        //config.setDriverClassName(ConfigManager.configManager.getString("database.jdbc-class"));
         config.setJdbcUrl(jdbcUrl);
 
         String user = ConfigManager.configManager.getString("database.properties.user");
@@ -66,10 +71,6 @@ public class SQLDatabase extends AbstractDatabase {
             dataSource.close();
         }
     }
-
-    /* =========================
-       Dialect
-     ========================= */
 
     private void initDialect(String jdbcUrl) {
         List<DatabaseDialect> dialects = List.of(
@@ -205,31 +206,8 @@ public class SQLDatabase extends AbstractDatabase {
         try (Connection conn = dataSource.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
-            for (Map.Entry<ObjectItem, ObjectUseTimesCache> e
-                    : cache.getUseTimesCache().entrySet()) {
-
-                ObjectUseTimesCache c = e.getValue();
-                if (c == null || c.isEmpty()) continue;
-
-                ps.setString(1, playerUUID);
-                ps.setString(2, e.getKey().getShop());
-                ps.setString(3, e.getKey().getProduct());
-                ps.setInt(4, c.getBuyUseTimes());
-                ps.setInt(5, c.getTotalBuyUseTimes());
-                ps.setInt(6, c.getSellUseTimes());
-                ps.setInt(7, c.getTotalSellUseTimes());
-                ps.setString(8, c.getLastBuyTime());
-                ps.setString(9, c.getLastSellTime());
-                ps.setString(10, c.getLastResetBuyTime());
-                ps.setString(11, c.getLastResetSellTime());
-                ps.setString(12, c.getCooldownBuyTime());
-                ps.setString(13, c.getCooldownSellTime());
-
-                if (dialect.supportBatch()) {
-                    ps.addBatch();
-                } else {
-                    ps.executeUpdate();
-                }
+            for (Map.Entry<UseTimesStorageKey, ObjectUseTimesCache> entry : cache.getSharedUseTimesCache().entrySet()) {
+                writeUseTimesCache(ps, playerUUID, entry.getKey(), entry.getValue());
             }
 
             if (dialect.supportBatch()) {
@@ -238,6 +216,64 @@ public class SQLDatabase extends AbstractDatabase {
 
         } catch (SQLException e) {
             e.printStackTrace();
+        }
+    }
+
+    private void writeUseTimesCache(PreparedStatement ps,
+                                    String playerUUID,
+                                    UseTimesStorageKey key,
+                                    ObjectUseTimesCache cache) throws SQLException {
+        if (cache == null || cache.isEmpty()) {
+            return;
+        }
+        fillUseTimes(
+                ps,
+                playerUUID,
+                key,
+                cache.getBuyUseTimes(),
+                cache.getTotalBuyUseTimes(),
+                cache.getSellUseTimes(),
+                cache.getTotalSellUseTimes(),
+                cache.getLastBuyTime(),
+                cache.getLastSellTime(),
+                cache.getLastResetBuyTime(),
+                cache.getLastResetSellTime(),
+                cache.getCooldownBuyTime(),
+                cache.getCooldownSellTime()
+        );
+    }
+
+    private void fillUseTimes(PreparedStatement ps,
+                              String playerUUID,
+                              UseTimesStorageKey key,
+                              int buyUseTimes,
+                              int totalBuyUseTimes,
+                              int sellUseTimes,
+                              int totalSellUseTimes,
+                              String lastBuyTime,
+                              String lastSellTime,
+                              String lastResetBuyTime,
+                              String lastResetSellTime,
+                              String cooldownBuyTime,
+                              String cooldownSellTime) throws SQLException {
+        ps.setString(1, playerUUID);
+        ps.setString(2, key.getShop());
+        ps.setString(3, key.getProduct());
+        ps.setInt(4, buyUseTimes);
+        ps.setInt(5, totalBuyUseTimes);
+        ps.setInt(6, sellUseTimes);
+        ps.setInt(7, totalSellUseTimes);
+        ps.setString(8, lastBuyTime);
+        ps.setString(9, lastSellTime);
+        ps.setString(10, lastResetBuyTime);
+        ps.setString(11, lastResetSellTime);
+        ps.setString(12, cooldownBuyTime);
+        ps.setString(13, cooldownSellTime);
+
+        if (dialect.supportBatch()) {
+            ps.addBatch();
+        } else {
+            ps.executeUpdate();
         }
     }
 

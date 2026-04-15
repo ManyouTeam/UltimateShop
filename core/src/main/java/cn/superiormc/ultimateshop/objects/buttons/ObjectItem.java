@@ -7,6 +7,7 @@ import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.methods.Product.BuyProductMethod;
 import cn.superiormc.ultimateshop.methods.Product.SellProductMethod;
 import cn.superiormc.ultimateshop.methods.ProductTradeStatus;
+import cn.superiormc.ultimateshop.objects.ObjectSharedUseTimes;
 import cn.superiormc.ultimateshop.objects.ObjectShop;
 import cn.superiormc.ultimateshop.objects.ObjectThingRun;
 import cn.superiormc.ultimateshop.objects.buttons.subobjects.ObjectDisplayItem;
@@ -20,10 +21,10 @@ import cn.superiormc.ultimateshop.objects.items.prices.PriceMode;
 import cn.superiormc.ultimateshop.objects.items.products.ObjectProducts;
 import cn.superiormc.ultimateshop.objects.menus.MenuSender;
 import cn.superiormc.ultimateshop.objects.menus.ObjectMoreMenu;
+import cn.superiormc.ultimateshop.objects.caches.UseTimesStorageKey;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
 import cn.superiormc.ultimateshop.utils.ItemUtil;
 import cn.superiormc.ultimateshop.utils.TextUtil;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
@@ -62,6 +63,10 @@ public class ObjectItem extends AbstractButton {
 
     private ObjectMoreMenu buyMoreMenu;
 
+    private String sharedUseTimesKey;
+
+    private ObjectSharedUseTimes sharedUseTimes;
+
     private boolean buyMore;
 
     private boolean hideMessage;
@@ -78,6 +83,7 @@ public class ObjectItem extends AbstractButton {
         this.type = ButtonType.SHOP;
         this.itemConfig = new ObjectItemConfig(this, originalConfig);
         this.enableSellAll = itemConfig.getBoolean("sell-all", true);
+        initSharedUseTimes();
         initReward();
         initBuyPrice();
         initSellPrice();
@@ -95,6 +101,18 @@ public class ObjectItem extends AbstractButton {
         }
         initDisplayItem();
         this.empty = reward.empty && buyPrice.empty && sellPrice.empty;
+    }
+
+    private void initSharedUseTimes() {
+        String sharedGroup = itemConfig.getString("shared-use-times");
+        if (sharedGroup == null) {
+            sharedGroup = itemConfig.getString("use-times-group");
+        }
+        if (sharedGroup == null) {
+            return;
+        }
+        sharedUseTimesKey = sharedGroup.trim();
+        sharedUseTimes = ConfigManager.configManager.getSharedUseTimes(sharedGroup);
     }
 
     private void initDisplayItem() {
@@ -162,28 +180,28 @@ public class ObjectItem extends AbstractButton {
     }
 
     private void initBuyLimit() {
-        if (itemConfig.getConfigurationSection("limits") == null) {
-            if (itemConfig.getConfigurationSection("buy-limits") == null) {
+        if (getLocalOrSharedUseTimesSection("limits") == null) {
+            if (getLocalOrSharedUseTimesSection("buy-limits") == null) {
                 buyLimit = new ObjectLimit();
             } else {
-                buyLimit = new ObjectLimit(itemConfig.getConfigurationSection("buy-limits"),
-                        itemConfig.getConfigurationSection("buy-limits-conditions"),
+                buyLimit = new ObjectLimit(getLocalOrSharedUseTimesSection("buy-limits"),
+                        getLocalOrSharedUseTimesSection("buy-limits-conditions"),
                         this);
             }
             return;
         }
-        buyLimit = new ObjectLimit(itemConfig.getConfigurationSection("limits"),
-                itemConfig.getConfigurationSection("limits-conditions"),
+        buyLimit = new ObjectLimit(getLocalOrSharedUseTimesSection("limits"),
+                getLocalOrSharedUseTimesSection("limits-conditions"),
                 this);
     }
 
     private void initSellLimit() {
-        if (itemConfig.getConfigurationSection("limits") == null) {
-            if (itemConfig.getConfigurationSection("sell-limits") == null) {
+        if (getLocalOrSharedUseTimesSection("limits") == null) {
+            if (getLocalOrSharedUseTimesSection("sell-limits") == null) {
                 sellLimit = new ObjectLimit();
             } else {
-                sellLimit = new ObjectLimit(itemConfig.getConfigurationSection("sell-limits"),
-                        itemConfig.getConfigurationSection("sell-limits-conditions"),
+                sellLimit = new ObjectLimit(getLocalOrSharedUseTimesSection("sell-limits"),
+                        getLocalOrSharedUseTimesSection("sell-limits-conditions"),
                         this);
             }
             return;
@@ -332,6 +350,36 @@ public class ObjectItem extends AbstractButton {
         return shop;
     }
 
+    private ConfigurationSection getLocalOrSharedUseTimesSection(String path) {
+        ConfigurationSection tempVal1 = itemConfig.getConfigurationSection(path);
+        if (tempVal1 != null) {
+            return tempVal1;
+        }
+        if (sharedUseTimes != null) {
+            return sharedUseTimes.getSharedUseTimesSection(path);
+        }
+        return null;
+    }
+
+    public UseTimesStorageKey getUseTimesStorageKey() {
+        if (sharedUseTimesKey != null) {
+            return new UseTimesStorageKey(UseTimesStorageKey.SHARED_SHOP_ID, sharedUseTimesKey);
+        }
+        return new UseTimesStorageKey(getShop(), getProduct());
+    }
+
+    public String getSharedUseTimesKey() {
+        return sharedUseTimesKey;
+    }
+
+    public String getUseTimesStorageShop() {
+        return getUseTimesStorageKey().getShop();
+    }
+
+    public String getUseTimesStorageProduct() {
+        return getUseTimesStorageKey().getProduct();
+    }
+
     @Override
     public boolean canDisplay(MenuSender menuSender) {
         if (menuSender == null || menuSender.getPlayer() == null) {
@@ -467,6 +515,11 @@ public class ObjectItem extends AbstractButton {
     }
 
     public String getBuyTimesResetMode() {
+        if (sharedUseTimes != null) {
+            return sharedUseTimes.getSharedUseTimesStringOrDefault("buy-times-reset-mode",
+                    "buy-limits-reset-mode",
+                    ConfigManager.configManager.getString("use-times.default-reset-mode", "NEVER"));
+        }
         if (itemConfig.getString("buy-limits-reset-mode") != null) {
             return itemConfig.getString("buy-limits-reset-mode");
         } else if (itemConfig.getString("buy-times-reset-mode") != null) {
@@ -476,6 +529,11 @@ public class ObjectItem extends AbstractButton {
     }
 
     public String getBuyTimesResetTime() {
+        if (sharedUseTimes != null) {
+            return sharedUseTimes.getSharedUseTimesStringOrDefault("buy-times-reset-time",
+                    "buy-limits-reset-time",
+                    ConfigManager.configManager.getString("use-times.default-reset-time", "00:00:00"));
+        }
         if (itemConfig.getString("buy-limits-reset-time") != null) {
             return itemConfig.getString("buy-limits-reset-time");
         } else if (itemConfig.getString("buy-times-reset-time") != null) {
@@ -485,6 +543,10 @@ public class ObjectItem extends AbstractButton {
     }
 
     public String getBuyTimesResetFormat() {
+        if (sharedUseTimes != null) {
+            return sharedUseTimes.getSharedUseTimesStringOrDefault("buy-times-reset-time-format",
+                    ConfigManager.configManager.getString("use-times.default-reset-time-format", "yyyy-MM-dd HH:mm:ss"));
+        }
         if (itemConfig.getString("buy-times-reset-time-format") != null) {
             return itemConfig.getString("buy-times-reset-time-format");
         }
@@ -494,6 +556,13 @@ public class ObjectItem extends AbstractButton {
     public int getBuyTimesResetValue(Player player) {
         if (UltimateShop.freeVersion) {
             return 0;
+        }
+        if (sharedUseTimes != null) {
+            int value = sharedUseTimes.getSharedUseTimesIntWithPAPI(player, "buy-times-reset-value");
+            if (value > 0) {
+                return value;
+            }
+            return ConfigManager.configManager.getIntWithPAPI(player, "use-times.default-reset-value", "0");
         }
         int value = itemConfig.getIntWithPAPI(player, "buy-times-reset-value", "-1");
         if (value > 0) {
@@ -506,6 +575,13 @@ public class ObjectItem extends AbstractButton {
         if (UltimateShop.freeVersion) {
             return -1;
         }
+        if (sharedUseTimes != null) {
+            int value = sharedUseTimes.getSharedUseTimesIntWithPAPI(player, "buy-times-max-value");
+            if (value > 0) {
+                return value;
+            }
+            return ConfigManager.configManager.getIntWithPAPI(player, "use-times.default-max-value", "-1");
+        }
         int value = itemConfig.getIntWithPAPI(player, "buy-times-max-value", "-1");
         if (value > 0) {
             return value;
@@ -514,6 +590,11 @@ public class ObjectItem extends AbstractButton {
     }
 
     public String getSellTimesResetMode() {
+        if (sharedUseTimes != null) {
+            return sharedUseTimes.getSharedUseTimesStringOrDefault("sell-times-reset-mode",
+                    "sell-limits-reset-mode",
+                    ConfigManager.configManager.getString("use-times.default-reset-mode", "NEVER"));
+        }
         if (itemConfig.getString("sell-limits-reset-mode") != null) {
             return itemConfig.getString("sell-limits-reset-mode");
         } else if (itemConfig.getString("sell-times-reset-mode") != null) {
@@ -523,6 +604,11 @@ public class ObjectItem extends AbstractButton {
     }
 
     public String getSellTimesResetTime() {
+        if (sharedUseTimes != null) {
+            return sharedUseTimes.getSharedUseTimesStringOrDefault("sell-times-reset-time",
+                    "sell-limits-reset-time",
+                    ConfigManager.configManager.getString("use-times.default-reset-time", "00:00:00"));
+        }
         if (itemConfig.getString("sell-limits-reset-time") != null) {
             return itemConfig.getString("sell-limits-reset-time");
         } else if (itemConfig.getString("sell-times-reset-time") != null) {
@@ -532,6 +618,10 @@ public class ObjectItem extends AbstractButton {
     }
 
     public String getSellTimesResetFormat() {
+        if (sharedUseTimes != null) {
+            return sharedUseTimes.getSharedUseTimesStringOrDefault("sell-times-reset-time-format",
+                    ConfigManager.configManager.getString("use-times.default-reset-time-format", "yyyy-MM-dd HH:mm:ss"));
+        }
         if (itemConfig.getString("sell-times-reset-time-format") != null) {
             return itemConfig.getString("sell-times-reset-time-format");
         }
@@ -541,6 +631,13 @@ public class ObjectItem extends AbstractButton {
     public int getSellTimesResetValue(Player player) {
         if (UltimateShop.freeVersion) {
             return 0;
+        }
+        if (sharedUseTimes != null) {
+            int value = sharedUseTimes.getSharedUseTimesIntWithPAPI(player, "sell-times-reset-value");
+            if (value > 0) {
+                return value;
+            }
+            return ConfigManager.configManager.getIntWithPAPI(player, "use-times.default-reset-value", "0");
         }
         int value = itemConfig.getIntWithPAPI(player, "sell-times-reset-value", "-1");
         if (value > 0) {
@@ -552,6 +649,13 @@ public class ObjectItem extends AbstractButton {
     public int getSellTimesMaxValue(Player player) {
         if (UltimateShop.freeVersion) {
             return -1;
+        }
+        if (sharedUseTimes != null) {
+            int value = sharedUseTimes.getSharedUseTimesIntWithPAPI(player, "sell-times-max-value");
+            if (value > 0) {
+                return value;
+            }
+            return ConfigManager.configManager.getIntWithPAPI(player, "use-times.default-max-value", "-1");
         }
         int value = itemConfig.getIntWithPAPI(player, "sell-times-max-value", "-1");
         if (value > 0) {

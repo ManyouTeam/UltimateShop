@@ -282,7 +282,7 @@ override-lang:
       - '@e&#FF7777玩家出售限量: {sell-times-player}/{sell-limit-player}'
       - '@f&#FF7777全服出售限量: {sell-times-server}/{sell-limit-server}'
       - '@g '
-      - '@g&#ff3300c不能再买更多了!'
+      - '@g&#ff3300不能再买更多了!'
       - '@g&8补货时间: {buy-refresh-player}'
       - '@i '
       - '@i&#ff3300已售罄!'
@@ -801,6 +801,9 @@ editor:
         buy-times-max-value:
           name: '购买最大值'
           desc: '重置前允许达到的购买次数上限。'
+        shared-use-times:
+          name: '共享限购组'
+          desc: '填写同一个组 id 的商品会共享 buy/sell times 与冷却数据。'
         sell-times-reset-mode:
           name: '出售重置模式'
           desc: '出售次数按照什么规则重置。'

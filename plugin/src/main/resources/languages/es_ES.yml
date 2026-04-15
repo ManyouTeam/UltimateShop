@@ -763,6 +763,9 @@ editor:
         buy-times-max-value:
           name: 'Buy Max Value'
           desc: 'Maximum buy times value allowed before reset.'
+        shared-use-times:
+          name: 'Shared Use Times Group'
+          desc: 'Products with the same group id will share buy/sell times and cooldown data.'
         sell-times-reset-mode:
           name: 'Sell Reset Mode'
           desc: 'How the sell times counter resets.'

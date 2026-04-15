@@ -1,16 +1,19 @@
 package cn.superiormc.ultimateshop.database;
 
 import cn.superiormc.ultimateshop.UltimateShop;
-import cn.superiormc.ultimateshop.objects.caches.ObjectCache;
 import cn.superiormc.ultimateshop.managers.CacheManager;
 import cn.superiormc.ultimateshop.managers.ErrorManager;
+import cn.superiormc.ultimateshop.objects.caches.ObjectCache;
 import cn.superiormc.ultimateshop.objects.caches.ObjectRandomPlaceholderCache;
+import cn.superiormc.ultimateshop.objects.caches.ObjectUseTimesCache;
+import cn.superiormc.ultimateshop.objects.caches.UseTimesStorageKey;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.concurrent.CompletableFuture;
 
@@ -46,7 +49,6 @@ public class YamlDatabase extends AbstractDatabase {
 
         YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
 
-        // 读取 useTimes
         ConfigurationSection useTimeSection = config.getConfigurationSection("useTimes");
         if (useTimeSection != null) {
             useTimeSection.getKeys(false).forEach(shopID -> {
@@ -57,28 +59,24 @@ public class YamlDatabase extends AbstractDatabase {
                     ConfigurationSection productSection = shopSection.getConfigurationSection(productID);
                     if (productSection == null) return;
 
-                    String lastBuy = productSection.getString("lastBuyTime", null);
-                    String lastSell = productSection.getString("lastSellTime", null);
-                    String lastResetBuy = productSection.getString("lastResetBuyTime", null);
-                    String lastResetSell = productSection.getString("lastResetSellTime", null);
-                    String cooldownBuy = productSection.getString("cooldownBuyTime", null);
-                    String cooldownSell = productSection.getString("cooldownSellTime", null);
-
-                    int buyUseTimes = productSection.getInt("buyUseTimes", 0);
-                    int totalBuyUseTimes = productSection.getInt("totalBuyUseTimes", 0);
-                    int sellUseTimes = productSection.getInt("sellUseTimes", 0);
-                    int totalSellUseTimes = productSection.getInt("totalSellUseTimes", 0);
-
-                    cache.setUseTimesCache(shopID, productID,
-                            buyUseTimes, totalBuyUseTimes,
-                            sellUseTimes, totalSellUseTimes,
-                            lastBuy, lastSell, lastResetBuy, lastResetSell,
-                            cooldownBuy, cooldownSell);
+                    cache.setUseTimesCache(
+                            shopID,
+                            productID,
+                            productSection.getInt("buyUseTimes", 0),
+                            productSection.getInt("totalBuyUseTimes", 0),
+                            productSection.getInt("sellUseTimes", 0),
+                            productSection.getInt("totalSellUseTimes", 0),
+                            productSection.getString("lastBuyTime", null),
+                            productSection.getString("lastSellTime", null),
+                            productSection.getString("lastResetBuyTime", null),
+                            productSection.getString("lastResetSellTime", null),
+                            productSection.getString("cooldownBuyTime", null),
+                            productSection.getString("cooldownSellTime", null)
+                    );
                 });
             });
         }
 
-        // 读取随机变量
         if (!UltimateShop.freeVersion) {
             ConfigurationSection randomSection = config.getConfigurationSection("randomPlaceholder");
             if (randomSection != null) {
@@ -118,28 +116,9 @@ public class YamlDatabase extends AbstractDatabase {
 
         YamlConfiguration config = new YamlConfiguration();
 
-        // 储存 useTimes
         ConfigurationSection useTimesSection = config.createSection("useTimes");
-        cache.getUseTimesCache().forEach((item, c) -> {
-            ConfigurationSection shopSection = useTimesSection.getConfigurationSection(item.getShop());
-            if (shopSection == null) shopSection = useTimesSection.createSection(item.getShop());
+        cache.getSharedUseTimesCache().forEach((key, state) -> writeUseTimesCache(useTimesSection, key, state));
 
-            ConfigurationSection productSection = shopSection.getConfigurationSection(item.getProduct());
-            if (productSection == null) productSection = shopSection.createSection(item.getProduct());
-
-            if (c.getBuyUseTimes() != 0) productSection.set("buyUseTimes", c.getBuyUseTimes());
-            if (c.getTotalBuyUseTimes() != 0) productSection.set("totalBuyUseTimes", c.getTotalBuyUseTimes());
-            if (c.getSellUseTimes() != 0) productSection.set("sellUseTimes", c.getSellUseTimes());
-            if (c.getTotalSellUseTimes() != 0) productSection.set("totalSellUseTimes", c.getTotalSellUseTimes());
-            if (c.getLastBuyTime() != null) productSection.set("lastBuyTime", c.getLastBuyTime());
-            if (c.getLastSellTime() != null) productSection.set("lastSellTime", c.getLastSellTime());
-            if (c.getLastResetBuyTime() != null) productSection.set("lastResetBuyTime", c.getLastResetBuyTime());
-            if (c.getLastResetSellTime() != null) productSection.set("lastResetSellTime", c.getLastResetSellTime());
-            if (c.getCooldownBuyTime() != null) productSection.set("cooldownBuyTime", c.getCooldownBuyTime());
-            if (c.getCooldownSellTime() != null) productSection.set("cooldownSellTime", c.getCooldownSellTime());
-        });
-
-        // 储存随机变量
         if (!UltimateShop.freeVersion) {
             ConfigurationSection randomSection = config.createSection("randomPlaceholder");
             Collection<ObjectRandomPlaceholderCache> placeholders = cache.getRandomPlaceholderCache().values();
@@ -158,6 +137,68 @@ public class YamlDatabase extends AbstractDatabase {
         } catch (IOException e) {
             ErrorManager.errorManager.sendErrorMessage("§cError: Can not save data file: " + file.getName() + "!");
         }
+    }
+
+    private void writeUseTimesCache(ConfigurationSection root,
+                                    UseTimesStorageKey key,
+                                    ObjectUseTimesCache cache) {
+        if (cache == null || cache.isEmpty()) {
+            return;
+        }
+        ConfigurationSection productSection = getUseTimesSection(root, key);
+        writeCommonUseTimes(
+                productSection,
+                cache.getBuyUseTimes(),
+                cache.getTotalBuyUseTimes(),
+                cache.getSellUseTimes(),
+                cache.getTotalSellUseTimes(),
+                toTime(cache.getLastBuyTime()),
+                toTime(cache.getLastSellTime()),
+                toTime(cache.getLastResetBuyTime()),
+                toTime(cache.getLastResetSellTime()),
+                toTime(cache.getCooldownBuyTime()),
+                toTime(cache.getCooldownSellTime())
+        );
+    }
+
+    private ConfigurationSection getUseTimesSection(ConfigurationSection root, UseTimesStorageKey key) {
+        ConfigurationSection shopSection = root.getConfigurationSection(key.getShop());
+        if (shopSection == null) {
+            shopSection = root.createSection(key.getShop());
+        }
+
+        ConfigurationSection productSection = shopSection.getConfigurationSection(key.getProduct());
+        if (productSection == null) {
+            productSection = shopSection.createSection(key.getProduct());
+        }
+        return productSection;
+    }
+
+    private void writeCommonUseTimes(ConfigurationSection productSection,
+                                     int buyUseTimes,
+                                     int totalBuyUseTimes,
+                                     int sellUseTimes,
+                                     int totalSellUseTimes,
+                                     LocalDateTime lastBuyTime,
+                                     LocalDateTime lastSellTime,
+                                     LocalDateTime lastResetBuyTime,
+                                     LocalDateTime lastResetSellTime,
+                                     LocalDateTime cooldownBuyTime,
+                                     LocalDateTime cooldownSellTime) {
+        if (buyUseTimes != 0) productSection.set("buyUseTimes", buyUseTimes);
+        if (totalBuyUseTimes != 0) productSection.set("totalBuyUseTimes", totalBuyUseTimes);
+        if (sellUseTimes != 0) productSection.set("sellUseTimes", sellUseTimes);
+        if (totalSellUseTimes != 0) productSection.set("totalSellUseTimes", totalSellUseTimes);
+        if (lastBuyTime != null) productSection.set("lastBuyTime", CommonUtil.timeToString(lastBuyTime));
+        if (lastSellTime != null) productSection.set("lastSellTime", CommonUtil.timeToString(lastSellTime));
+        if (lastResetBuyTime != null) productSection.set("lastResetBuyTime", CommonUtil.timeToString(lastResetBuyTime));
+        if (lastResetSellTime != null) productSection.set("lastResetSellTime", CommonUtil.timeToString(lastResetSellTime));
+        if (cooldownBuyTime != null) productSection.set("cooldownBuyTime", CommonUtil.timeToString(cooldownBuyTime));
+        if (cooldownSellTime != null) productSection.set("cooldownSellTime", CommonUtil.timeToString(cooldownSellTime));
+    }
+
+    private LocalDateTime toTime(String value) {
+        return value == null ? null : CommonUtil.stringToTime(value);
     }
 
     @Override

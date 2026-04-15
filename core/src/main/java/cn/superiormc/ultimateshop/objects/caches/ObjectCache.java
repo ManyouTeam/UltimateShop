@@ -4,7 +4,6 @@ import cn.superiormc.ultimateshop.managers.CacheManager;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.ErrorManager;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
-import cn.superiormc.ultimateshop.objects.ObjectShop;
 import cn.superiormc.ultimateshop.objects.items.subobjects.ObjectRandomPlaceholder;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
 import org.bukkit.entity.Player;
@@ -16,11 +15,11 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class ObjectCache {
 
-    private final Map<ObjectItem, ObjectUseTimesCache> useTimesCache =
-            new ConcurrentHashMap<>();
+    private final Map<UseTimesStorageKey, ObjectUseTimesCache> sharedUseTimesCache = new ConcurrentHashMap<>();
 
-    private final Map<ObjectRandomPlaceholder, ObjectRandomPlaceholderCache> randomPlaceholderCache =
-            new ConcurrentHashMap<>();
+    private final Map<ObjectItem, ObjectUseTimesCache> useTimesCache = new ConcurrentHashMap<>();
+
+    private final Map<ObjectRandomPlaceholder, ObjectRandomPlaceholderCache> randomPlaceholderCache = new ConcurrentHashMap<>();
 
     private final boolean server;
 
@@ -46,7 +45,7 @@ public class ObjectCache {
         CacheManager.cacheManager.database.updateData(this, quitServer);
 
         if (quitServer && ConfigManager.configManager.getBoolean("use-times.auto-reset-mode")) {
-            useTimesCache.values().forEach(ObjectUseTimesCache::cancelResetTime);
+            sharedUseTimesCache.values().forEach(ObjectUseTimesCache::cancelResetTime);
         }
     }
 
@@ -54,21 +53,24 @@ public class ObjectCache {
         CacheManager.cacheManager.database.updateDataOnDisable(this, disable);
 
         if (disable && ConfigManager.configManager.getBoolean("use-times.auto-reset-mode")) {
-            useTimesCache.values().forEach(ObjectUseTimesCache::cancelResetTime);
+            sharedUseTimesCache.values().forEach(ObjectUseTimesCache::cancelResetTime);
         }
     }
 
-    public ObjectUseTimesCache createUseTimesCache(ObjectItem product) {
-        if (product == null) {
+    public ObjectUseTimesCache getUseTimesCache(ObjectItem item) {
+        if (item == null) {
             ErrorManager.errorManager.sendErrorMessage("§cThe product is null.");
-            return new ObjectUseTimesCache(this,
-                    0, 0, 0, 0,
-                    null, null, null, null, null, null,
-                    null,
-                    true);
+            return null;
         }
 
-        return useTimesCache.computeIfAbsent(product, key -> {
+        return useTimesCache.computeIfAbsent(item, key -> {
+            UseTimesStorageKey storageKey = key.getUseTimesStorageKey();
+            ObjectUseTimesCache existing = sharedUseTimesCache.get(storageKey);
+            if (existing != null) {
+                existing.bindProduct(key);
+                return existing;
+            }
+
             int defaultBuyTimes = 0;
             int defaultSellTimes = 0;
 
@@ -77,7 +79,7 @@ public class ObjectCache {
                 defaultSellTimes = key.getSellTimesResetValue(player);
             }
 
-            return new ObjectUseTimesCache(this,
+            ObjectUseTimesCache created = new ObjectUseTimesCache(this,
                     defaultBuyTimes,
                     0,
                     defaultSellTimes,
@@ -90,12 +92,15 @@ public class ObjectCache {
                     null,
                     key,
                     true);
+            sharedUseTimesCache.put(storageKey, created);
+            return created;
         });
     }
 
-    /**
-     * 数据库回填（覆盖安全）
-     */
+    public ObjectUseTimesCache createUseTimesCache(ObjectItem product) {
+        return getUseTimesCache(product);
+    }
+
     public void setUseTimesCache(String shop,
                                  String product,
                                  int buyUseTimes,
@@ -108,14 +113,8 @@ public class ObjectCache {
                                  String lastResetSellTime,
                                  String cooldownBuyTime,
                                  String cooldownSellTime) {
-
-        ObjectShop shopObj = ConfigManager.configManager.getShop(shop);
-        if (shopObj == null) return;
-
-        ObjectItem item = shopObj.getProduct(product);
-        if (item == null) return;
-
-        useTimesCache.put(item, new ObjectUseTimesCache(this,
+        sharedUseTimesCache.put(new UseTimesStorageKey(shop, product), new ObjectUseTimesCache(
+                this,
                 buyUseTimes,
                 totalBuyUseTimes,
                 sellUseTimes,
@@ -126,7 +125,7 @@ public class ObjectCache {
                 lastResetSellTime,
                 cooldownBuyTime,
                 cooldownSellTime,
-                item,
+                null,
                 false));
     }
 
@@ -199,6 +198,10 @@ public class ObjectCache {
 
     public Map<ObjectRandomPlaceholder, ObjectRandomPlaceholderCache> getRandomPlaceholderCache() {
         return Collections.unmodifiableMap(randomPlaceholderCache);
+    }
+
+    public Map<UseTimesStorageKey, ObjectUseTimesCache> getSharedUseTimesCache() {
+        return Collections.unmodifiableMap(sharedUseTimesCache);
     }
 
     public Map<ObjectItem, ObjectUseTimesCache> getUseTimesCache() {

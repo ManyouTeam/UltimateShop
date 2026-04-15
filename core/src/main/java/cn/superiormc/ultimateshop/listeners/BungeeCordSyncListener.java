@@ -1,10 +1,12 @@
 package cn.superiormc.ultimateshop.listeners;
 
+import cn.superiormc.ultimateshop.api.ShopHelper;
 import cn.superiormc.ultimateshop.managers.CacheManager;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.objects.ObjectShop;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import cn.superiormc.ultimateshop.objects.caches.ObjectUseTimesCache;
+import cn.superiormc.ultimateshop.objects.caches.UseTimesStorageKey;
 import cn.superiormc.ultimateshop.objects.items.subobjects.ObjectRandomPlaceholder;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
 import org.bukkit.entity.Player;
@@ -35,7 +37,7 @@ public class BungeeCordSyncListener implements PluginMessageListener {
             DataInputStream msgin = new DataInputStream(new ByteArrayInputStream(msgbytes));
             String shop = msgin.readUTF();
             ObjectShop tempVal1 = ConfigManager.configManager.getShop(shop);
-            if (tempVal1 == null) {
+            if (tempVal1 == null && !UseTimesStorageKey.SHARED_SHOP_ID.equals(shop)) {
                 ObjectRandomPlaceholder tempVal3 = ConfigManager.configManager.getRandomPlaceholder(shop);
                 if (tempVal3 == null) {
                     return;
@@ -48,7 +50,12 @@ public class BungeeCordSyncListener implements PluginMessageListener {
                 }
             }
             String product = msgin.readUTF();
-            ObjectItem tempVal2 = tempVal1.getProduct(product);
+            ObjectItem tempVal2;
+            if (UseTimesStorageKey.SHARED_SHOP_ID.equals(shop)) {
+                tempVal2 = ShopHelper.getUseTimesGroupLinkedProduct(product);
+            } else {
+                tempVal2 = tempVal1.getProduct(product);
+            }
             if (tempVal2 == null) {
                 return;
             }

@@ -37,7 +37,7 @@ public class ObjectUseTimesCache {
 
     private LocalDateTime cooldownSellTime = null;
 
-    private final ObjectItem product;
+    private ObjectItem product;
 
     private final ObjectCache cache;
 
@@ -87,7 +87,21 @@ public class ObjectUseTimesCache {
             this.cooldownSellTime = CommonUtil.stringToTime(cooldownSellTime);
         }
         this.product = product;
+        if (product != null) {
+            refreshTimes();
+        }
+    }
+
+    public synchronized void bindProduct(ObjectItem product) {
+        if (this.product != null || product == null) {
+            return;
+        }
+        this.product = product;
         refreshTimes();
+    }
+
+    public ObjectItem getProduct() {
+        return product;
     }
 
     public void refreshTimes() {
@@ -98,6 +112,9 @@ public class ObjectUseTimesCache {
     }
 
     public synchronized void initBuyResetTask() {
+        if (product == null) {
+            return;
+        }
         if (!ConfigManager.configManager.getBoolean("use-times.auto-reset-mode")) {
             return;
         }
@@ -113,6 +130,9 @@ public class ObjectUseTimesCache {
     }
 
     public synchronized void initSellResetTask() {
+        if (product == null) {
+            return;
+        }
         if (!ConfigManager.configManager.getBoolean("use-times.auto-reset-mode")) {
             return;
         }
@@ -163,6 +183,10 @@ public class ObjectUseTimesCache {
     }
 
     public synchronized void setBuyUseTimes(int i, boolean notUseBungee, boolean isReset) {
+        if (product == null) {
+            buyUseTimes = i;
+            return;
+        }
         int maxTimes = product.getBuyTimesMaxValue(cache.getPlayer());
         if (i > Integer.MAX_VALUE - 10000) {
             setSellUseTimes(0);
@@ -186,8 +210,8 @@ public class ObjectUseTimesCache {
         }
         if (!notUseBungee && cache.isServer() && BungeeCordManager.bungeeCordManager != null) {
             BungeeCordManager.bungeeCordManager.sendToOtherServer(
-                    product.getShop(),
-                    product.getProduct(),
+                    product.getUseTimesStorageShop(),
+                    product.getUseTimesStorageProduct(),
                     "buy-times",
                     String.valueOf(i));
         }
@@ -202,6 +226,10 @@ public class ObjectUseTimesCache {
     }
 
     public synchronized void setSellUseTimes(int i, boolean notUseBungee, boolean isReset) {
+        if (product == null) {
+            sellUseTimes = i;
+            return;
+        }
         int maxTimes = product.getSellTimesMaxValue(cache.getPlayer());
         if (i > Integer.MAX_VALUE - 10000) {
             setBuyUseTimes(0);
@@ -225,8 +253,8 @@ public class ObjectUseTimesCache {
         }
         if (!notUseBungee && cache.isServer() && BungeeCordManager.bungeeCordManager != null) {
             BungeeCordManager.bungeeCordManager.sendToOtherServer(
-                    product.getShop(),
-                    product.getProduct(),
+                    product.getUseTimesStorageShop(),
+                    product.getUseTimesStorageProduct(),
                     "sell-times",
                     String.valueOf(i));
         }
@@ -243,8 +271,8 @@ public class ObjectUseTimesCache {
         lastBuyTime = time;
         if (!notUseBungee && cache.isServer() && BungeeCordManager.bungeeCordManager != null) {
             BungeeCordManager.bungeeCordManager.sendToOtherServer(
-                    product.getShop(),
-                    product.getProduct(),
+                    product.getUseTimesStorageShop(),
+                    product.getUseTimesStorageProduct(),
                     "last-buy-time",
                     CommonUtil.timeToString(time));
         }
@@ -261,8 +289,8 @@ public class ObjectUseTimesCache {
         lastSellTime = time;
         if (!notUseBungee && cache.isServer() && BungeeCordManager.bungeeCordManager != null) {
             BungeeCordManager.bungeeCordManager.sendToOtherServer(
-                    product.getShop(),
-                    product.getProduct(),
+                    product.getUseTimesStorageShop(),
+                    product.getUseTimesStorageProduct(),
                     "last-sell-time",
                     CommonUtil.timeToString(time));
         }
@@ -277,6 +305,9 @@ public class ObjectUseTimesCache {
     }
 
     public synchronized void setCooldownBuyTime(boolean notUseBungee) {
+        if (product == null) {
+            return;
+        }
         if (cooldownBuyTime == null || cooldownBuyTime.isBefore(CommonUtil.getNowTime())) {
             String mode = product.getBuyTimesResetMode();
             String tempVal1 = TextUtil.withPAPI(product.getBuyTimesResetTime(), cache.getPlayer());
@@ -288,8 +319,8 @@ public class ObjectUseTimesCache {
                     cooldownBuyTime = createTimedBuyRefreshTime(tempVal1);
                     if (!notUseBungee && cache.isServer() && BungeeCordManager.bungeeCordManager != null) {
                         BungeeCordManager.bungeeCordManager.sendToOtherServer(
-                                product.getShop(),
-                                product.getProduct(),
+                                product.getUseTimesStorageShop(),
+                                product.getUseTimesStorageProduct(),
                                 "cooldown-buy-time",
                                 null);
                     }
@@ -298,8 +329,8 @@ public class ObjectUseTimesCache {
                     cooldownBuyTime = createTimerBuyRefreshTime(tempVal1);
                     if (!notUseBungee && cache.isServer() && BungeeCordManager.bungeeCordManager != null) {
                         BungeeCordManager.bungeeCordManager.sendToOtherServer(
-                                product.getShop(),
-                                product.getProduct(),
+                                product.getUseTimesStorageShop(),
+                                product.getUseTimesStorageProduct(),
                                 "cooldown-buy-time",
                                 null);
                     }
@@ -323,6 +354,9 @@ public class ObjectUseTimesCache {
     }
 
     public synchronized void setCooldownSellTime(boolean notUseBungee) {
+        if (product == null) {
+            return;
+        }
         if (cooldownSellTime == null || cooldownSellTime.isBefore(CommonUtil.getNowTime())) {
             String mode = product.getSellTimesResetMode();
             String tempVal1 = TextUtil.withPAPI(product.getSellTimesResetTime(), cache.getPlayer());
@@ -334,8 +368,8 @@ public class ObjectUseTimesCache {
                     cooldownSellTime = createTimedSellRefreshTime(tempVal1);
                     if (!notUseBungee && cache.isServer() && BungeeCordManager.bungeeCordManager != null) {
                         BungeeCordManager.bungeeCordManager.sendToOtherServer(
-                                product.getShop(),
-                                product.getProduct(),
+                                product.getUseTimesStorageShop(),
+                                product.getUseTimesStorageProduct(),
                                 "cooldown-sell-time",
                                 null);
                     }
@@ -344,8 +378,8 @@ public class ObjectUseTimesCache {
                     cooldownSellTime = createTimerSellRefreshTime(tempVal1);
                     if (!notUseBungee && cache.isServer() && BungeeCordManager.bungeeCordManager != null) {
                         BungeeCordManager.bungeeCordManager.sendToOtherServer(
-                                product.getShop(),
-                                product.getProduct(),
+                                product.getUseTimesStorageShop(),
+                                product.getUseTimesStorageProduct(),
                                 "cooldown-sell-time",
                                 null);
                     }
@@ -409,18 +443,27 @@ public class ObjectUseTimesCache {
     }
 
     public LocalDateTime getBuyRefreshTimeWithUpdate() {
+        if (product == null) {
+            return null;
+        }
         String mode = product.getBuyTimesResetMode();
         String tempVal1 = TextUtil.withPAPI(product.getBuyTimesResetTime(), cache.getPlayer());
         return createRefreshTime(mode, tempVal1, true);
     }
 
     public LocalDateTime getSellRefreshTimeWithUpdate() {
+        if (product == null) {
+            return null;
+        }
         String mode = product.getSellTimesResetMode();
         String tempVal1 = TextUtil.withPAPI(product.getSellTimesResetTime(), cache.getPlayer());
         return createRefreshTime(mode, tempVal1, false);
     }
 
     public LocalDateTime getBuyRefreshTime() {
+        if (product == null) {
+            return null;
+        }
         String mode = product.getBuyTimesResetMode();
         String tempVal1 = TextUtil.withPAPI(product.getBuyTimesResetTime(), cache.getPlayer());
         LocalDateTime result;
@@ -439,6 +482,9 @@ public class ObjectUseTimesCache {
     }
 
     public LocalDateTime getSellRefreshTime() {
+        if (product == null) {
+            return null;
+        }
         String mode = product.getSellTimesResetMode();
         String tempVal1 = TextUtil.withPAPI(product.getSellTimesResetTime(), cache.getPlayer());
         LocalDateTime result;
@@ -749,6 +795,9 @@ public class ObjectUseTimesCache {
     }
 
     public synchronized void refreshBuyTimes() {
+        if (product == null) {
+            return;
+        }
         LocalDateTime tempVal1 = getBuyRefreshTime();
         if (tempVal1 != null && tempVal1.isBefore(CommonUtil.getNowTime())) {
             setBuyUseTimes(product.getBuyTimesResetValue(cache.getPlayer()), true);
@@ -760,6 +809,9 @@ public class ObjectUseTimesCache {
     }
 
     public synchronized void refreshSellTimes() {
+        if (product == null) {
+            return;
+        }
         LocalDateTime tempVal1 = getSellRefreshTime();
         if (tempVal1 != null && tempVal1.isBefore(CommonUtil.getNowTime())) {
             setSellUseTimes(product.getSellTimesResetValue(cache.getPlayer()), true);

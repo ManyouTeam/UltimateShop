@@ -1,0 +1,21 @@
+# Shared use times group id is the file name.
+# Products that set `shared-use-times: example` will read use-times settings from this file.
+
+buy-limits:
+  default: 3
+  global: 30
+
+sell-limits:
+  default: 64
+
+buy-times-reset-mode: 'TIMED'
+buy-times-reset-time: '00:00:00'
+buy-times-reset-time-format: 'yyyy-MM-dd HH:mm:ss'
+buy-times-reset-value: 0
+buy-times-max-value: 3
+
+sell-times-reset-mode: 'TIMED'
+sell-times-reset-time: '00:00:00'
+sell-times-reset-time-format: 'yyyy-MM-dd HH:mm:ss'
+sell-times-reset-value: 0
+sell-times-max-value: 64

@@ -47,6 +47,14 @@ public class ObjectItemConfig {
         return tempVal1;
     }
 
+    public String getOwnString(String key) {
+        return section.getString(key);
+    }
+
+    public boolean containsInItem(String key) {
+        return section.contains(key);
+    }
+
     public String getString(String key, String defaultValue) {
         if (shopSection == null) {
             return section.getString(key, defaultValue);

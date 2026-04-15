@@ -168,6 +168,7 @@ public class EditorPresetRegistry {
                 field("buy-times-reset-time-format", Material.CLOCK, EditorPresetFieldType.STRING),
                 field("buy-times-reset-value", Material.SLIME_BALL, EditorPresetFieldType.STRING),
                 field("buy-times-max-value", Material.BARRIER, EditorPresetFieldType.STRING),
+                field("shared-use-times", Material.CHAINMAIL_HELMET, EditorPresetFieldType.STRING),
                 choice("sell-times-reset-mode", Material.REPEATER, RESET_MODES),
                 EditorPresetField.resetTime("sell-times-reset-time", "Sell Reset Time",
                         "Reset time value editor that adapts to the selected sell reset mode.", Material.REPEATER),

@@ -1,6 +1,7 @@
 package cn.superiormc.ultimateshop.managers;
 
 import cn.superiormc.ultimateshop.UltimateShop;
+import cn.superiormc.ultimateshop.objects.ObjectSharedUseTimes;
 import cn.superiormc.ultimateshop.objects.sellchests.ObjectSellChest;
 import cn.superiormc.ultimateshop.objects.ObjectSellStick;
 import cn.superiormc.ultimateshop.objects.ObjectShop;
@@ -41,6 +42,8 @@ public class ConfigManager {
 
     public Map<String, ObjectConditionalPlaceholder> conditionalPlaceholders = new HashMap<>();
 
+    public Map<String, ObjectSharedUseTimes> sharedUseTimesMap = new HashMap<>();
+
     public Map<String, ObjectSellStick> sellStickMap = new HashMap<>();
 
     public Map<String, ObjectSellChest> sellChestMap = new HashMap<>();
@@ -50,6 +53,9 @@ public class ConfigManager {
         UltimateShop.instance.saveDefaultConfig();
         this.config = UltimateShop.instance.getConfig();
         loadEditorEnableConfirmConfig();
+        if (!UltimateShop.freeVersion) {
+            initSharedUseTimesConfigs();
+        }
         initShopConfigs();
         loadShopConfigs();
         initMenuConfigs();
@@ -79,6 +85,25 @@ public class ConfigManager {
                 shopConfigs.put(substring,
                         new ObjectShop(substring, YamlConfiguration.loadConfiguration(file)));
                 TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fLoaded shop: " + fileName + "!");
+            }
+        }
+    }
+
+    private void initSharedUseTimesConfigs() {
+        File dir = new File(UltimateShop.instance.getDataFolder(), "shared_use_times");
+        if (!dir.exists()) {
+            dir.mkdir();
+        }
+        File[] files = dir.listFiles();
+        if (!Objects.nonNull(files) && files.length != 0) {
+            return;
+        }
+        for (File file : files) {
+            String fileName = file.getName();
+            if (fileName.endsWith(".yml")) {
+                String substring = fileName.substring(0, fileName.length() - 4);
+                sharedUseTimesMap.put(substring, new ObjectSharedUseTimes(substring, YamlConfiguration.loadConfiguration(file)));
+                TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fLoaded shared use times setting: " + fileName + "!");
             }
         }
     }
@@ -242,6 +267,13 @@ public class ConfigManager {
 
     public Collection<ObjectShop> getShops() {
         return shopConfigs.values();
+    }
+
+    public ObjectSharedUseTimes getSharedUseTimes(String id) {
+        if (id == null) {
+            return null;
+        }
+        return sharedUseTimesMap.get(id);
     }
 
     public List<ObjectShop> getShopList() {

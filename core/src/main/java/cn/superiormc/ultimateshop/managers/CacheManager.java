@@ -1,6 +1,5 @@
 package cn.superiormc.ultimateshop.managers;
 
-import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.objects.caches.ObjectCache;
 import cn.superiormc.ultimateshop.database.AbstractDatabase;
 import cn.superiormc.ultimateshop.database.SQLDatabase;

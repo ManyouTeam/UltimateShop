@@ -254,4 +254,15 @@ public class ShopHelper {
         return result;
     }
 
+    @Nullable
+    public static ObjectItem getUseTimesGroupLinkedProduct(String sharedGroup) {
+        for (ObjectShop shop : ConfigManager.configManager.getShops()) {
+            for (ObjectItem item : shop.getProductList()) {
+                if (sharedGroup.equals(item.getSharedUseTimesKey())) {
+                    return item;
+                }
+            }
+        }
+        return null;
+    }
 }
