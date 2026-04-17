@@ -4,6 +4,7 @@ settings:
   shop-name: '{lang:daily-shop-name}'
   hide-message: false
   secret-shop-items: true
+  allow-favourite: false
 
 general-configs:
   price-mode: CLASSIC_ANY

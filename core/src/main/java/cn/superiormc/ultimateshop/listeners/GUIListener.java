@@ -1,10 +1,10 @@
 package cn.superiormc.ultimateshop.listeners;
 
 import cn.superiormc.ultimateshop.UltimateShop;
-import cn.superiormc.ultimateshop.gui.AbstractGUI;
 import cn.superiormc.ultimateshop.gui.InvGUI;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.ErrorManager;
+import cn.superiormc.ultimateshop.managers.MenuStatusManager;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
 import cn.superiormc.ultimateshop.utils.PacketInventoryUtil;
 import org.bukkit.entity.Player;
@@ -65,7 +65,7 @@ public class GUIListener implements Listener {
         } catch (Throwable throwable) {
             ErrorManager.errorManager.sendErrorMessage("§cError: Your menu configs has wrong, error message: " + throwable.getMessage());
             throwable.printStackTrace();
-            AbstractGUI.playerList.remove(player);
+            MenuStatusManager.menuStatusManager.removeGUIStatus(player);
             e.setCancelled(true);
         }
     }
@@ -90,8 +90,8 @@ public class GUIListener implements Listener {
                 PacketInventoryUtil.packetInventoryUtil.clear(player);
             }
             player.updateInventory();
-            if (AbstractGUI.playerList.containsKey(player)) {
-                gui.removeOpenGUIStatus();
+            if (MenuStatusManager.menuStatusManager.hasOpeningGUI(player)) {
+                MenuStatusManager.menuStatusManager.removeOpenGUIStatus(player, gui);
             }
             if (gui.closeEventHandle(e.getInventory())) {
                 if (gui.getMenu() != null) {

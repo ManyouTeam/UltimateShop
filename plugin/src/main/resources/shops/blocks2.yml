@@ -4,6 +4,7 @@ settings:
   shop-name: '{lang:blocks-shop-name}'
   hide-message: false
   secret-shop-items: true
+  allow-favourite: true
 
 items:
   A:
@@ -16,13 +17,13 @@ items:
     buy-prices:
       1:
         economy-plugin: Vault
-        amount: '0.58'
+        amount: '1.2'
         placeholder: '{amount}$'
         start-apply: 0
     sell-prices:
       1:
         economy-plugin: Vault
-        amount: '0.51'
+        amount: '0.7'
         placeholder: '{amount}$'
         start-apply: 0
   B:
@@ -35,13 +36,13 @@ items:
     buy-prices:
       1:
         economy-plugin: Vault
-        amount: '15.99'
+        amount: '3.8'
         placeholder: '{amount}$'
         start-apply: 0
     sell-prices:
       1:
         economy-plugin: Vault
-        amount: '15.82'
+        amount: '2.2'
         placeholder: '{amount}$'
         start-apply: 0
   C:
@@ -54,13 +55,13 @@ items:
     buy-prices:
       1:
         economy-plugin: Vault
-        amount: '12.71'
+        amount: '28'
         placeholder: '{amount}$'
         start-apply: 0
     sell-prices:
       1:
         economy-plugin: Vault
-        amount: '12.60'
+        amount: '16.8'
         placeholder: '{amount}$'
         start-apply: 0
   D:
@@ -73,13 +74,13 @@ items:
     buy-prices:
       1:
         economy-plugin: Vault
-        amount: '2.22'
+        amount: '2.2'
         placeholder: '{amount}$'
         start-apply: 0
     sell-prices:
       1:
         economy-plugin: Vault
-        amount: '2.10'
+        amount: '1.3'
         placeholder: '{amount}$'
         start-apply: 0
   E:
@@ -92,13 +93,13 @@ items:
     buy-prices:
       1:
         economy-plugin: Vault
-        amount: '1.1'
+        amount: '1.8'
         placeholder: '{amount}$'
         start-apply: 0
     sell-prices:
       1:
         economy-plugin: Vault
-        amount: '0.8'
+        amount: '1'
         placeholder: '{amount}$'
         start-apply: 0
   F:
@@ -111,13 +112,13 @@ items:
     buy-prices:
       1:
         economy-plugin: Vault
-        amount: '1.54'
+        amount: '1.6'
         placeholder: '{amount}$'
         start-apply: 0
     sell-prices:
       1:
         economy-plugin: Vault
-        amount: '1.48'
+        amount: '0.9'
         placeholder: '{amount}$'
         start-apply: 0
   G:
@@ -130,13 +131,13 @@ items:
     buy-prices:
       1:
         economy-plugin: Vault
-        amount: '6.67'
+        amount: '6'
         placeholder: '{amount}$'
         start-apply: 0
     sell-prices:
       1:
         economy-plugin: Vault
-        amount: '6.57'
+        amount: '3.6'
         placeholder: '{amount}$'
         start-apply: 0
   H:
@@ -149,19 +150,15 @@ items:
     buy-prices:
       1:
         economy-plugin: Vault
-        amount: '44.75'
+        amount: '8'
         placeholder: '{amount}$'
         start-apply: 0
     sell-prices:
       1:
         economy-plugin: Vault
-        amount: '44.68'
+        amount: '4.8'
         placeholder: '{amount}$'
         start-apply: 0
-    buy-limits:
-      global: '{sell-times-server}'
-    buy-times-reset-mode: 'NEVER'
-    buy-times-reset-time: '00:00:00'
   I:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
@@ -172,19 +169,15 @@ items:
     buy-prices:
       1:
         economy-plugin: Vault
-        amount: '48.92'
+        amount: '12'
         placeholder: '{amount}$'
         start-apply: 0
     sell-prices:
       1:
         economy-plugin: Vault
-        amount: '48.75'
+        amount: '7.2'
         placeholder: '{amount}$'
         start-apply: 0
-    buy-limits:
-      global: '{sell-times-server}'
-    buy-times-reset-mode: 'NEVER'
-    buy-times-reset-time: '00:00:00'
   J:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
@@ -195,13 +188,13 @@ items:
     buy-prices:
       1:
         economy-plugin: Vault
-        amount: '3.43'
+        amount: '15'
         placeholder: '{amount}$'
         start-apply: 0
     sell-prices:
       1:
         economy-plugin: Vault
-        amount: '3.35'
+        amount: '9'
         placeholder: '{amount}$'
         start-apply: 0
   K:
@@ -214,13 +207,13 @@ items:
     buy-prices:
       1:
         economy-plugin: Vault
-        amount: '3.43'
+        amount: '15'
         placeholder: '{amount}$'
         start-apply: 0
     sell-prices:
       1:
         economy-plugin: Vault
-        amount: '3.35'
+        amount: '9'
         placeholder: '{amount}$'
         start-apply: 0
   L:
@@ -233,13 +226,13 @@ items:
     buy-prices:
       1:
         economy-plugin: Vault
-        amount: '3.43'
+        amount: '15'
         placeholder: '{amount}$'
         start-apply: 0
     sell-prices:
       1:
         economy-plugin: Vault
-        amount: '3.35'
+        amount: '9'
         placeholder: '{amount}$'
         start-apply: 0
   M:
@@ -252,13 +245,13 @@ items:
     buy-prices:
       1:
         economy-plugin: Vault
-        amount: '3.43'
+        amount: '15'
         placeholder: '{amount}$'
         start-apply: 0
     sell-prices:
       1:
         economy-plugin: Vault
-        amount: '3.35'
+        amount: '9'
         placeholder: '{amount}$'
         start-apply: 0
   N:
@@ -271,13 +264,13 @@ items:
     buy-prices:
       1:
         economy-plugin: Vault
-        amount: '3.43'
+        amount: '15'
         placeholder: '{amount}$'
         start-apply: 0
     sell-prices:
       1:
         economy-plugin: Vault
-        amount: '3.35'
+        amount: '9'
         placeholder: '{amount}$'
         start-apply: 0
   O:
@@ -290,19 +283,15 @@ items:
     buy-prices:
       1:
         economy-plugin: Vault
-        amount: '58.25'
+        amount: '9'
         placeholder: '{amount}$'
         start-apply: 0
     sell-prices:
       1:
         economy-plugin: Vault
-        amount: '58.18'
+        amount: '5.4'
         placeholder: '{amount}$'
         start-apply: 0
-    buy-limits:
-      global: '{sell-times-server}'
-    buy-times-reset-mode: 'NEVER'
-    buy-times-reset-time: '00:00:00' 
   P:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
@@ -313,19 +302,15 @@ items:
     buy-prices:
       1:
         economy-plugin: Vault
-        amount: '133.84'
+        amount: '2.6'
         placeholder: '{amount}$'
         start-apply: 0
     sell-prices:
       1:
         economy-plugin: Vault
-        amount: '133.75'
+        amount: '1.5'
         placeholder: '{amount}$'
         start-apply: 0
-    buy-limits:
-      global: '{sell-times-server}'
-    buy-times-reset-mode: 'NEVER'
-    buy-times-reset-time: '00:00:00' 
   Q:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
@@ -336,13 +321,13 @@ items:
     buy-prices:
       1:
         economy-plugin: Vault
-        amount: '0.26'
+        amount: '1.4'
         placeholder: '{amount}$'
         start-apply: 0
     sell-prices:
       1:
         economy-plugin: Vault
-        amount: '0.24'
+        amount: '0.8'
         placeholder: '{amount}$'
         start-apply: 0
   R:
@@ -355,13 +340,13 @@ items:
     buy-prices:
       1:
         economy-plugin: Vault
-        amount: '0.55'
+        amount: '0.9'
         placeholder: '{amount}$'
         start-apply: 0
     sell-prices:
       1:
         economy-plugin: Vault
-        amount: '0.50'
+        amount: '0.5'
         placeholder: '{amount}$'
         start-apply: 0
   S:
@@ -374,13 +359,13 @@ items:
     buy-prices:
       1:
         economy-plugin: Vault
-        amount: '1.63'
+        amount: '1.2'
         placeholder: '{amount}$'
         start-apply: 0
     sell-prices:
       1:
         economy-plugin: Vault
-        amount: '1.59'
+        amount: '0.7'
         placeholder: '{amount}$'
         start-apply: 0
   T:
@@ -393,20 +378,16 @@ items:
     buy-prices:
       1:
         economy-plugin: Vault
-        amount: '21.34'
+        amount: '6.5'
         placeholder: '{amount}$'
         start-apply: 0
     sell-prices:
       1:
         economy-plugin: Vault
-        amount: '20.98'
+        amount: '3.9'
         placeholder: '{amount}$'
         start-apply: 0
-    buy-limits:
-      global: '{sell-times-server}'
-    buy-times-reset-mode: 'NEVER'
-    buy-times-reset-time: '00:00:00' 
-    
+
 buttons:
   a:
     display-item:

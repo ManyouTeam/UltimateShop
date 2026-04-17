@@ -8,6 +8,7 @@ import cn.superiormc.ultimateshop.objects.ObjectShop;
 import cn.superiormc.ultimateshop.objects.buttons.AbstractButton;
 import cn.superiormc.ultimateshop.objects.items.subobjects.ObjectConditionalPlaceholder;
 import cn.superiormc.ultimateshop.objects.items.subobjects.ObjectRandomPlaceholder;
+import cn.superiormc.ultimateshop.objects.menus.ObjectFavouriteMenu;
 import cn.superiormc.ultimateshop.objects.menus.ObjectMenu;
 import cn.superiormc.ultimateshop.objects.menus.ObjectSearchMenu;
 import cn.superiormc.ultimateshop.utils.TextUtil;
@@ -134,9 +135,17 @@ public class ConfigManager {
                 if (ObjectMenu.commonMenus.containsKey(substring)) {
                     continue;
                 }
-                if (ConfigManager.configManager.getStringList("menu.search-gui.menu").contains(substring)) {
+                YamlConfiguration menuConfig = YamlConfiguration.loadConfiguration(file);
+                String menuType = menuConfig.getString("menu-type", "");
+                if (menuType.equalsIgnoreCase("search")
+                        || ConfigManager.configManager.getStringList("menu.search-gui.menu").contains(substring)) {
                     if (!UltimateShop.freeVersion) {
                         new ObjectSearchMenu(substring);
+                    }
+                } else if (menuType.equalsIgnoreCase("favourite") || menuType.equalsIgnoreCase("favorite")  ||
+                        ConfigManager.configManager.getStringList("menu.favourite-gui.menu").contains(substring)) {
+                    if (!UltimateShop.freeVersion) {
+                        new ObjectFavouriteMenu(substring);
                     }
                 } else {
                     new ObjectMenu(substring);

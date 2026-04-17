@@ -55,9 +55,6 @@ public class ObjectMenu {
         this.shop = shop;
         this.type = MenuType.Shop;
         initMenu();
-        if (!dynamicLayout) {
-            initShopItems(MenuSender.empty);
-        }
         initButtons();
     }
 
@@ -66,9 +63,6 @@ public class ObjectMenu {
         this.shop = shop;
         this.type = MenuType.Shop;
         initMenu();
-        if (!dynamicLayout) {
-            initShopItems(MenuSender.empty);
-        }
         initButtons();
     }
 
@@ -206,7 +200,11 @@ public class ObjectMenu {
         }
 
         if (!dynamicLayout) {
-            initButtonItems(MenuSender.empty);
+            if (type == MenuType.Shop) {
+                initShopItems(MenuSender.empty);
+            } else {
+                initButtonItems(MenuSender.empty);
+            }
         }
     }
 
@@ -224,7 +222,7 @@ public class ObjectMenu {
 
             AbstractButton buttonObj = getButtonByLayoutId(id, tempVal1, false);
             if (buttonObj != null) {
-                getButtons(tempVal1).put(slot, buttonObj);
+                getButtons(tempVal1).putIfAbsent(slot, buttonObj);
             }
         });
     }
@@ -318,8 +316,9 @@ public class ObjectMenu {
             getButtons(menuSender).clear();
             if (type == MenuType.Shop) {
                 initShopItems(menuSender);
+            } else {
+                initButtonItems(menuSender);
             }
-            initButtonItems(menuSender);
         }
         Map<Integer, AbstractButton> tempVal1 = getButtons(menuSender);
         if (tempVal1 == null) {

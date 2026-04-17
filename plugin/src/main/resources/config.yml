@@ -70,7 +70,7 @@ sell:
       enabled: true
       # Support value: DecentHolograms, CMI, FancyHolograms
       plugin: 'DecentHolograms'
-  max-amount: 128
+  max-amount: -1
   # Premium version only.
   shulker-box-sell: true
 
@@ -120,6 +120,9 @@ menu:
       - 'search'
     prompt:
       clear-keyword: '{lang}'
+  favourite-gui:
+    menu:
+      - 'favourite'
   # Premium version only
   bedrock:
     enabled: true
@@ -152,13 +155,13 @@ menu:
     display-item-max-stack: true
     default:
       menu: buy-more
-      max-amount: 64
+      max-amount: 693
     only-buy:
       menu: buy-more-buy
-      max-amount: 64
+      max-amount: 693
     only-sell:
       menu: buy-more-sell
-      max-amount: 64
+      max-amount: 693
   auto-open:
     enabled: true
     menu: main
@@ -169,7 +172,8 @@ menu:
     sell: 'RIGHT'
     buy-or-sell: 'LEFT'
     # If you want to disable select-amount feature, set this to NEVER.
-    select-amount: 'SHIFT_RIGHT;;SWAP_OFFHAND'
+    select-amount: 'SHIFT_RIGHT'
+    add-favourite: 'SWAP_OFFHAND'
     sell-all: 'DROP'
     # buy-one-stack: 'SWAP_OFFHAND'
   # Custom click actions for shop menu.
@@ -191,6 +195,23 @@ menu:
         shop: '{shop}'
         item: '{item}'
         amount: 64
+    add-favourite:
+      display-name: '{lang:add-favourite-action}'
+      1:
+        type: conditional
+        conditions:
+          1:
+            type: not
+            conditions:
+              1:
+                type: menu_type
+                menu-type: 'favourite'
+        actions:
+          1:
+            type: add_favourite
+            menu: favourite
+            shop: '{shop}'
+            item: '{item}'
 
 secret-shop-items:
   require-display-in-menu: true

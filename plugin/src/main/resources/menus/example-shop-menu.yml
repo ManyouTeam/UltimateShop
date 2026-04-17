@@ -7,14 +7,34 @@ open-actions:
     sound: item.book.page_turn
 
 layout:
+  - '0f00s00x0'
   - '000000000'
-  - '0ABCDEFG0'
-  - '0HIJKLMN0'
-  - '0OPQRSTU0'
-  - '000000000'
+  - '1ABCDEFG2'
+  - '1HIJKLMN2'
+  - '1OPQRSTU2'
   - 'a0003000b'
 
 buttons:
+  0:
+    display-item:
+      material: BLACK_STAINED_GLASS_PANE
+      name: ' '
+  1:
+    display-item:
+      material: GRAY_STAINED_GLASS_PANE
+      name: ' '
+  a:
+    display-item:
+      material: GRAY_STAINED_GLASS_PANE
+      name: ' '
+  2:
+    display-item:
+      material: LIGHT_BLUE_STAINED_GLASS_PANE
+      name: ' '
+  b:
+    display-item:
+      material: LIGHT_BLUE_STAINED_GLASS_PANE
+      name: ' '
   3:
     display-item:
       material: ARROW
@@ -23,3 +43,32 @@ buttons:
       1:
         type: open_menu
         menu: main
+  f:
+    display-item:
+      material: NAME_TAG
+      name: '{lang:favourite-menu-button-name}'
+      lore:
+        - '{lang:favourite-menu-button-line-1}'
+        - '{lang:favourite-menu-button-line-2}'
+    actions:
+      1:
+        type: open_menu
+        menu: favourite
+  s:
+    display-item:
+      material: HOPPER
+      name: '{lang:search-menu-button-name}'
+      lore:
+        - '{lang:search-menu-button-line-1}'
+        - '{lang:search-menu-button-line-2}'
+    actions:
+      1:
+        type: open_menu
+        menu: search
+  x:
+    display-item:
+      material: BARRIER
+      name: '{lang:close-button}'
+    actions:
+      1:
+        type: close

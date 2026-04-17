@@ -3,11 +3,11 @@ size: 54
 
 layout:
   - '000000000'
-  - '012304560'
+  - '0abcdefg0'
   - '000000000'
-  - '0000B0000'
-  - '00D0F0E00'
-  - 'A00000000'
+  - '065401230'
+  - '0000F0000'
+  - 'A000000C0'
 
 amount-items:
   1:
@@ -56,10 +56,15 @@ amount-items:
       lore:
         - '{lang:buy-more-reduce-32}'
     add-amount: -32
-    # Support replace add-amount option to set-amount.
-    # set-amount: 32
 
-display-item: B
+display-items:
+  - a
+  - b
+  - c
+  - d
+  - e
+  - f
+  - g
 
 confirm-items:
   F:
@@ -69,11 +74,13 @@ confirm-items:
       lore:
         - '{lang:buy-more-buy-button-lore-1}'
         - '{lang:buy-more-buy-button-lore-2}'
-    # You can remove click-action option, then confirm button can do all things, like buy, sell, sell all.
-    # If this option exists, then this confirm button can only do the thing.
     click-action: buy
 
 buttons:
+  0:
+    display-item:
+      material: BLACK_STAINED_GLASS_PANE
+      name: ' '
   A:
     display-item:
       material: ARROW
@@ -82,3 +89,10 @@ buttons:
       1:
         type: shop_menu
         shop: '{shop}'
+  C:
+    display-item:
+      material: BARRIER
+      name: '{lang:close-button}'
+    actions:
+      1:
+        type: close

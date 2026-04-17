@@ -9,6 +9,7 @@ import cn.superiormc.ultimateshop.database.sql.SQLiteDialect;
 import cn.superiormc.ultimateshop.managers.CacheManager;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.objects.caches.ObjectCache;
+import cn.superiormc.ultimateshop.objects.caches.FavouriteProductReference;
 import cn.superiormc.ultimateshop.objects.caches.ObjectRandomPlaceholderCache;
 import cn.superiormc.ultimateshop.objects.caches.ObjectUseTimesCache;
 import cn.superiormc.ultimateshop.objects.caches.UseTimesStorageKey;
@@ -23,6 +24,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
@@ -91,6 +93,7 @@ public class SQLDatabase extends AbstractDatabase {
              Statement stmt = conn.createStatement()) {
 
             stmt.execute(dialect.createUseTimesTable());
+            stmt.execute(dialect.createFavouriteTable());
 
             if (!UltimateShop.freeVersion) {
                 stmt.execute(dialect.createRandomPlaceholderTable());
@@ -116,6 +119,7 @@ public class SQLDatabase extends AbstractDatabase {
         try (Connection conn = dataSource.getConnection()) {
 
             loadUseTimes(conn, cache, playerUUID);
+            loadFavourites(conn, cache, playerUUID);
 
             if (!UltimateShop.freeVersion) {
                 loadPlaceholders(conn, cache, playerUUID);
@@ -123,6 +127,41 @@ public class SQLDatabase extends AbstractDatabase {
 
         } catch (SQLException e) {
             e.printStackTrace();
+        }
+    }
+
+    private void loadFavourites(Connection conn, ObjectCache cache, String playerUUID)
+            throws SQLException {
+
+        String sql = """
+                SELECT menuName, sortOrder, shop, product
+                FROM ultimateshop_favourites
+                WHERE playerUUID = ?
+                ORDER BY menuName ASC, sortOrder ASC
+                """;
+
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, playerUUID);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                String currentMenu = null;
+                List<FavouriteProductReference> references = new ArrayList<>();
+                while (rs.next()) {
+                    String menuName = rs.getString("menuName");
+                    if (currentMenu != null && !currentMenu.equals(menuName)) {
+                        cache.setFavouriteProductCache(currentMenu, references);
+                        references = new ArrayList<>();
+                    }
+                    references.add(new FavouriteProductReference(
+                            rs.getString("shop"),
+                            rs.getString("product")
+                    ));
+                    currentMenu = menuName;
+                }
+                if (currentMenu != null) {
+                    cache.setFavouriteProductCache(currentMenu, references);
+                }
+            }
         }
     }
 
@@ -187,6 +226,7 @@ public class SQLDatabase extends AbstractDatabase {
     public void updateData(ObjectCache cache, boolean quitServer) {
         CompletableFuture.runAsync(() -> {
             saveUseTimes(cache);
+            saveFavourites(cache);
             if (!UltimateShop.freeVersion) {
                 savePlaceholders(cache);
             }
@@ -194,6 +234,45 @@ public class SQLDatabase extends AbstractDatabase {
                 CacheManager.cacheManager.removeObjectCache(cache.getPlayer());
             }
         }, DatabaseExecutor.EXECUTOR);
+    }
+
+    private void saveFavourites(ObjectCache cache) {
+        if (cache.isServer()) {
+            return;
+        }
+        String playerUUID = cache.getPlayer().getUniqueId().toString();
+
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement deletePs = conn.prepareStatement(dialect.deleteFavourites());
+             PreparedStatement insertPs = conn.prepareStatement(dialect.insertFavourite())) {
+
+            deletePs.setString(1, playerUUID);
+            deletePs.executeUpdate();
+
+            for (Map.Entry<String, List<FavouriteProductReference>> entry : cache.getFavouriteProductCache().entrySet()) {
+                List<FavouriteProductReference> references = entry.getValue();
+                for (int i = 0; i < references.size(); i++) {
+                    FavouriteProductReference reference = references.get(i);
+                    insertPs.setString(1, playerUUID);
+                    insertPs.setString(2, entry.getKey());
+                    insertPs.setInt(3, i);
+                    insertPs.setString(4, reference.getShop());
+                    insertPs.setString(5, reference.getProduct());
+                    if (dialect.supportBatch()) {
+                        insertPs.addBatch();
+                    } else {
+                        insertPs.executeUpdate();
+                    }
+                }
+            }
+
+            if (dialect.supportBatch()) {
+                insertPs.executeBatch();
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     private void saveUseTimes(ObjectCache cache) {
@@ -318,6 +397,7 @@ public class SQLDatabase extends AbstractDatabase {
     @Override
     public void updateDataOnDisable(ObjectCache cache, boolean disable) {
         saveUseTimes(cache);
+        saveFavourites(cache);
 
         if (!UltimateShop.freeVersion) {
             savePlaceholders(cache);

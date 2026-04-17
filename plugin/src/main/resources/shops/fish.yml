@@ -4,6 +4,7 @@ settings:
   shop-name: '{lang:fish-shop-name}'
   hide-message: false
   secret-shop-items: true
+  allow-favourite: true
 
 items:
   A:
@@ -16,13 +17,13 @@ items:
     buy-prices:
       1:
         economy-plugin: Vault
-        amount: '14.25'
+        amount: '3'
         placeholder: '{amount}$'
         start-apply: 0
     sell-prices:
       1:
         economy-plugin: Vault
-        amount: '12.15'
+        amount: '1.8'
         placeholder: '{amount}$'
         start-apply: 0
   B:
@@ -35,13 +36,13 @@ items:
     buy-prices:
       1:
         economy-plugin: Vault
-        amount: '19.21'
+        amount: '4.5'
         placeholder: '{amount}$'
         start-apply: 0
     sell-prices:
       1:
         economy-plugin: Vault
-        amount: '18.48'
+        amount: '2.7'
         placeholder: '{amount}$'
         start-apply: 0
   C:
@@ -54,13 +55,13 @@ items:
     buy-prices:
       1:
         economy-plugin: Vault
-        amount: '17.26'
+        amount: '4'
         placeholder: '{amount}$'
         start-apply: 0
     sell-prices:
       1:
         economy-plugin: Vault
-        amount: '16.58'
+        amount: '2.4'
         placeholder: '{amount}$'
         start-apply: 0
   D:
@@ -73,13 +74,13 @@ items:
     buy-prices:
       1:
         economy-plugin: Vault
-        amount: '21.26'
+        amount: '5.5'
         placeholder: '{amount}$'
         start-apply: 0
     sell-prices:
       1:
         economy-plugin: Vault
-        amount: '19.98'
+        amount: '3.3'
         placeholder: '{amount}$'
         start-apply: 0
   E:
@@ -92,13 +93,13 @@ items:
     buy-prices:
       1:
         economy-plugin: Vault
-        amount: '16.25'
+        amount: '9'
         placeholder: '{amount}$'
         start-apply: 0
     sell-prices:
       1:
         economy-plugin: Vault
-        amount: '15.86'
+        amount: '5.4'
         placeholder: '{amount}$'
         start-apply: 0
   F:
@@ -111,12 +112,12 @@ items:
     buy-prices:
       1:
         economy-plugin: Vault
-        amount: '23.51'
+        amount: '10'
         placeholder: '{amount}$'
         start-apply: 0
     sell-prices:
       1:
         economy-plugin: Vault
-        amount: '22.45'
+        amount: '6'
         placeholder: '{amount}$'
         start-apply: 0

@@ -1,8 +1,8 @@
 package cn.superiormc.ultimateshop.listeners;
 
-import cn.superiormc.ultimateshop.gui.AbstractGUI;
 import cn.superiormc.ultimateshop.managers.CacheManager;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
+import cn.superiormc.ultimateshop.managers.MenuStatusManager;
 import cn.superiormc.ultimateshop.utils.SchedulerUtil;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -27,6 +27,6 @@ public class CacheListener implements Listener {
         if (ConfigManager.configManager.getBoolean("database.auto-update-server-data") && CacheManager.cacheManager.serverCache != null) {
             CacheManager.cacheManager.serverCache.shutCache(false);
         }
-        AbstractGUI.playerList.remove(event.getPlayer());
+        MenuStatusManager.menuStatusManager.removeGUIStatus(event.getPlayer());
     }
 }

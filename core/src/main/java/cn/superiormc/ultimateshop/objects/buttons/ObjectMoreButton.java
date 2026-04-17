@@ -11,7 +11,7 @@ public class ObjectMoreButton extends AbstractButton {
 
     public ObjectMoreButton(ConfigurationSection config) {
         super(config);
-        this.type = ButtonType.SELECT_AMOUNT;
+        this.type = ButtonType.BUY_MORE_SELECT_AMOUNT;
     }
 
     @Override

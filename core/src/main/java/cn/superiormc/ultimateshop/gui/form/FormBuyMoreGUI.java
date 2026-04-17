@@ -4,6 +4,7 @@ import cn.superiormc.ultimateshop.gui.FormGUI;
 import cn.superiormc.ultimateshop.managers.CacheManager;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.LanguageManager;
+import cn.superiormc.ultimateshop.managers.MenuStatusManager;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import cn.superiormc.ultimateshop.objects.caches.ObjectCache;
 import cn.superiormc.ultimateshop.utils.TextUtil;
@@ -40,12 +41,11 @@ public class FormBuyMoreGUI extends FormGUI {
             FormInfoGUI infoGUI = new FormInfoGUI(player, item, response.next());
             infoGUI.openGUI(true);
         });
-        tempVal2.closedOrInvalidResultHandler(response -> removeOpenGUIStatus());
+        tempVal2.closedOrInvalidResultHandler(response -> MenuStatusManager.menuStatusManager.removeOpenGUIStatus(player, this));
         form = tempVal2.build();
     }
 
     private String getButtonTab() {
-        return TextUtil.parse(player, ConfigManager.configManager.getStringWithLang(player, "menu.bedrock.buy-or-sell.buttons.amount.buy-tip",
-                "menu.bedrock.buy-or-sell.buttons.amount.tip", ""));
+        return TextUtil.parse(player, ConfigManager.configManager.getStringWithLang(player, "menu.bedrock.buy-or-sell.buttons.amount.tip"));
     }
 }

@@ -71,6 +71,8 @@ public class ObjectItem extends AbstractButton {
 
     private boolean hideMessage;
 
+    private boolean allowFavourite;
+
     private final ObjectItemConfig itemConfig;
 
     public final boolean empty;
@@ -212,6 +214,15 @@ public class ObjectItem extends AbstractButton {
     private void initFixedStatus() {
         buyMore = itemConfig.getBoolean("buy-more", shop.getShopConfig().getBoolean("settings.buy-more", true));
         hideMessage = itemConfig.getBoolean("hide-message", shop.getShopConfig().getBoolean("settings.hide-message", true));
+        if (itemConfig.containsInItem("allow-favourite")) {
+            allowFavourite = itemConfig.getBoolean("allow-favourite", true);
+            return;
+        }
+        if (itemConfig.containsInItem("allow-favorite")) {
+            allowFavourite = itemConfig.getBoolean("allow-favorite", true);
+            return;
+        }
+        allowFavourite = shop.isAllowFavourite();
     }
 
     private void initBuyMoreMenu() {
@@ -666,6 +677,10 @@ public class ObjectItem extends AbstractButton {
 
     public boolean getHideMessage() {
         return hideMessage;
+    }
+
+    public boolean isAllowFavourite() {
+        return allowFavourite;
     }
 
     @Override

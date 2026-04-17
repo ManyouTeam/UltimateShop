@@ -12,6 +12,7 @@ settings:
   shop-name: 'Example Shop'
   hide-message: false
   secret-shop-items: true
+  allow-favourite: false
 
 # General Configs means the section below will work for all products inside this shop.
 general-configs:

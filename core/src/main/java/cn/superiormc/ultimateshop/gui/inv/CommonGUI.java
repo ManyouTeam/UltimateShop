@@ -3,11 +3,13 @@ package cn.superiormc.ultimateshop.gui.inv;
 import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.gui.InvGUI;
 import cn.superiormc.ultimateshop.gui.form.FormCommonGUI;
+import cn.superiormc.ultimateshop.gui.form.FormFavouriteGUI;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.LanguageManager;
 import cn.superiormc.ultimateshop.objects.ObjectThingRun;
 import cn.superiormc.ultimateshop.objects.menus.MenuSender;
 import cn.superiormc.ultimateshop.objects.menus.MenuType;
+import cn.superiormc.ultimateshop.objects.menus.ObjectFavouriteMenu;
 import cn.superiormc.ultimateshop.objects.menus.ObjectMenu;
 import cn.superiormc.ultimateshop.objects.menus.ObjectSearchMenu;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
@@ -81,6 +83,16 @@ public class CommonGUI extends InvGUI {
 
         if (commonMenu.getType().equals(MenuType.Search)) {
             SearchGUI.openGUI(player, (ObjectSearchMenu) commonMenu, bypass, reopen);
+            return;
+        }
+
+        if (commonMenu.getType().equals(MenuType.Favourite)) {
+            if (UltimateShop.useGeyser && commonMenu.isUseGeyser() && CommonUtil.isBedrockPlayer(player)) {
+                FormFavouriteGUI formFavouriteGUI = new FormFavouriteGUI(player, (ObjectFavouriteMenu) commonMenu, bypass);
+                formFavouriteGUI.openGUI(reopen);
+                return;
+            }
+            FavouriteGUI.openGUI(player, (ObjectFavouriteMenu) commonMenu, bypass, reopen);
             return;
         }
 

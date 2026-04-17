@@ -15,7 +15,7 @@ public class ObjectMoreBuyButton extends AbstractButton {
     public ObjectMoreBuyButton(ConfigurationSection config, ObjectItem item) {
         super(config);
         this.item = item;
-        this.type = ButtonType.CONFIRM;
+        this.type = ButtonType.BUY_MORE_CONFIRM;
     }
 
     @Override

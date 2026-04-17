@@ -5,6 +5,7 @@ public enum MenuType {
     Shop,
     Common,
     More,
-    Search
+    Search,
+    Favourite
 
 }

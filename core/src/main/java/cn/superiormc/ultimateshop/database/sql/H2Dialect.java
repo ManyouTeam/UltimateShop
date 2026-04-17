@@ -58,6 +58,20 @@ public class H2Dialect extends DatabaseDialect {
     }
 
     @Override
+    public String createFavouriteTable() {
+        return """
+            CREATE TABLE IF NOT EXISTS ultimateshop_favourites (
+                playerUUID VARCHAR(36) NOT NULL,
+                menuName VARCHAR(48) NOT NULL,
+                sortOrder INT NOT NULL,
+                shop VARCHAR(48) NOT NULL,
+                product VARCHAR(48) NOT NULL,
+                PRIMARY KEY (playerUUID, menuName, sortOrder)
+            )
+        """;
+    }
+
+    @Override
     public String upsertUseTimes() {
         return """
             MERGE INTO ultimateshop_useTimes
@@ -80,6 +94,20 @@ public class H2Dialect extends DatabaseDialect {
              nowValue, refreshDoneTime)
             KEY (playerUUID, placeholderID)
             VALUES (?, ?, ?, ?)
+        """;
+    }
+
+    @Override
+    public String deleteFavourites() {
+        return "DELETE FROM ultimateshop_favourites WHERE playerUUID = ?";
+    }
+
+    @Override
+    public String insertFavourite() {
+        return """
+            INSERT INTO ultimateshop_favourites
+            (playerUUID, menuName, sortOrder, shop, product)
+            VALUES (?, ?, ?, ?, ?)
         """;
     }
 

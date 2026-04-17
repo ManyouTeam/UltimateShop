@@ -12,17 +12,53 @@ open-actions:
     open-once: true
 
 layout:
+  - '00Y0S0X00'
   - '000000000'
   - '0ABCDEFG0'
   - '0HIJKLMN0'
   - '000000000'
-  - '000000000'
   - '0000Z0000'
 
 buttons:
+  0:
+    display-item:
+      material: BLACK_STAINED_GLASS_PANE
+      name: ' '
+  Y:
+    display-item:
+      material: HOPPER
+      name: '{lang:search-menu-button-name} &c(PREMIUM)'
+      lore:
+        - '{lang:search-menu-button-line-1}'
+        - '{lang:search-menu-button-line-2}'
+    actions:
+      1:
+        type: open_menu
+        menu: search
+  X:
+    display-item:
+      material: NAME_TAG
+      name: '{lang:favourite-menu-button-name} &c(PREMIUM)'
+      lore:
+        - '{lang:favourite-menu-button-line-1}'
+        - '{lang:favourite-menu-button-line-2}'
+    actions:
+      1:
+        type: open_menu
+        menu: favourite
+  S:
+    display-item:
+      material: CHEST
+      name: '{lang:sell-all-menu-button-name}'
+      lore:
+        - '{lang:sell-all-menu-button-line-1}'
+        - '{lang:sell-all-menu-button-line-2}'
+    actions:
+      1:
+        type: sell_all_menu
   A:
     display-item:
-      material: wheat
+      material: WHEAT
       name: '{lang:farming-name}'
       lore:
         - '{lang:farming-lore-1}'
@@ -33,7 +69,7 @@ buttons:
         shop: farming
   B:
     display-item:
-      material: bone
+      material: BONE
       name: '{lang:drops-name}'
       lore:
         - '{lang:drops-lore-1}'
@@ -44,7 +80,7 @@ buttons:
         shop: drops
   C:
     display-item:
-      material: ORANGE_CONCRETE
+      material: WHITE_CONCRETE
       name: '{lang:concretes-name}'
       lore:
         - '{lang:concretes-lore-1}'
@@ -55,7 +91,7 @@ buttons:
         shop: concretes
   D:
     display-item:
-      material: LILAC
+      material: SUNFLOWER
       name: '{lang:flowers-name}'
       lore:
         - '{lang:flowers-lore-1}'
@@ -66,7 +102,7 @@ buttons:
         shop: flowers
   E:
     display-item:
-      material: oak_log
+      material: OAK_LOG
       name: '{lang:logs-name}'
       lore:
         - '{lang:logs-lore-1}'
@@ -77,7 +113,7 @@ buttons:
         shop: logs
   F:
     display-item:
-      material: diamond
+      material: DIAMOND
       name: '{lang:minerals-name}'
       lore:
         - '{lang:minerals-lore-1}'
@@ -88,7 +124,7 @@ buttons:
         shop: minerals
   G:
     display-item:
-      material: GRASS_BLOCK
+      material: BRICKS
       name: '{lang:blocks-name}'
       lore:
         - '{lang:blocks-lore-1}'
@@ -99,7 +135,7 @@ buttons:
         shop: blocks
   H:
     display-item:
-      material: LIME_TERRACOTTA
+      material: TERRACOTTA
       name: '{lang:terracotta-name}'
       lore:
         - '{lang:terracotta-lore-1}'
@@ -121,7 +157,7 @@ buttons:
         shop: glass
   J:
     display-item:
-      material: LIME_WOOL
+      material: WHITE_WOOL
       name: '{lang:wool-name}'
       lore:
         - '{lang:wool-lore-1}'
@@ -143,7 +179,7 @@ buttons:
         shop: special
   L:
     display-item:
-      material: REDSTONE
+      material: COMPARATOR
       name: '{lang:redstone-name}'
       lore:
         - '{lang:redstone-lore-1}'
@@ -154,7 +190,7 @@ buttons:
         shop: redstone
   M:
     display-item:
-      material: FISHING_ROD
+      material: COD
       name: '{lang:fish-name}'
       lore:
         - '{lang:fish-lore-1}'
@@ -165,7 +201,7 @@ buttons:
         shop: fish
   N:
     display-item:
-      material: RAIL
+      material: MINECART
       name: '{lang:transports-name}'
       lore:
         - '{lang:transports-lore-1}'

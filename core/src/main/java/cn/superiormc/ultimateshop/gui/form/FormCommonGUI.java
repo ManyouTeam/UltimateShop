@@ -2,6 +2,7 @@ package cn.superiormc.ultimateshop.gui.form;
 
 import cn.superiormc.ultimateshop.gui.FormGUI;
 import cn.superiormc.ultimateshop.managers.LanguageManager;
+import cn.superiormc.ultimateshop.managers.MenuStatusManager;
 import cn.superiormc.ultimateshop.objects.ObjectThingRun;
 import cn.superiormc.ultimateshop.objects.buttons.AbstractButton;
 import cn.superiormc.ultimateshop.objects.buttons.subobjects.ObjectDisplayItemStack;
@@ -49,9 +50,9 @@ public class FormCommonGUI extends FormGUI {
         tempVal2.title(TextUtil.parse(player, commonMenu.getString("title", "Shop")));
         tempVal2.validResultHandler(response -> {
             menuButtons.get(menuItems.get(response.clickedButton())).clickEvent(ClickType.LEFT, player);
-            removeOpenGUIStatus();
+            MenuStatusManager.menuStatusManager.removeOpenGUIStatus(player, this);
         });
-        tempVal2.closedOrInvalidResultHandler(response -> removeOpenGUIStatus());
+        tempVal2.closedOrInvalidResultHandler(response -> MenuStatusManager.menuStatusManager.removeOpenGUIStatus(player, this));
         if (commonMenu.getString("bedrock.content", null) != null) {
             tempVal2.content(TextUtil.parse(player, getMenu().getString("bedrock.content", "")));
         }

@@ -1,7 +1,7 @@
 package cn.superiormc.ultimateshop.utils;
 
-import cn.superiormc.ultimateshop.gui.AbstractGUI;
 import cn.superiormc.ultimateshop.gui.GUIStatus;
+import cn.superiormc.ultimateshop.managers.MenuStatusManager;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandMap;
 import org.bukkit.command.defaults.BukkitCommand;
@@ -33,7 +33,7 @@ public class CommandUtil {
 
     public static void updateGUI(Player player) {
         if (player != null) {
-            GUIStatus guiStatus = AbstractGUI.playerList.get(player);
+            GUIStatus guiStatus = MenuStatusManager.menuStatusManager.getGUIStatus(player);
             if (guiStatus != null && guiStatus.getGUI() != null) {
                 SchedulerUtil task = guiUpdateTask.get(player);
                 if (task != null) {

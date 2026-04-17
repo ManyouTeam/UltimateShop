@@ -24,6 +24,8 @@ public class ConditionManager {
     private void initConditions() {
         conditions = new HashMap<>();
         registerNewCondition("biome", new ConditionBiome());
+        registerNewCondition("menu", new ConditionMenu());
+        registerNewCondition("menu_type", new ConditionMenuType());
         registerNewCondition("permission", new ConditionPermission());
         registerNewCondition("placeholder", new ConditionPlaceholder());
         registerNewCondition("world", new ConditionWorld());

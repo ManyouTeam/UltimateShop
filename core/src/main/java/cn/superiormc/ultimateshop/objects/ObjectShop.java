@@ -249,6 +249,16 @@ public class ObjectShop {
         return config.getString("settings.shop-name", menu == null ? "" : menu.getName());
     }
 
+    public boolean isAllowFavourite() {
+        if (config.contains("settings.allow-favourite")) {
+            return config.getBoolean("settings.allow-favourite");
+        }
+        if (config.contains("settings.allow-favorite")) {
+            return config.getBoolean("settings.allow-favorite");
+        }
+        return true;
+    }
+
     public YamlConfiguration getConfig() {
         return config;
     }

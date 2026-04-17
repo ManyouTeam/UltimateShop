@@ -28,9 +28,7 @@ public class ObjectSearchMenu extends ObjectMenu {
         super(fileName);
         this.type = MenuType.Search;
         initSearchStructure();
-        if (type == MenuType.Common) {
-            TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fLoaded search menu: " + fileName + ".yml!");
-        }
+        TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §f" + fileName + ".yml set as search type menu.");
     }
 
     private void initSearchStructure() {

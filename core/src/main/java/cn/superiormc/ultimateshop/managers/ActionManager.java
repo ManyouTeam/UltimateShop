@@ -50,6 +50,9 @@ public class ActionManager {
         registerNewAction("update_title", new ActionUpdateTitle());
         registerNewAction("update_gui", new ActionUpdateGUI());
         registerNewAction("prompt", new ActionPrompt());
+        registerNewAction("toggle_favourite", new ActionToggleFavourite());
+        registerNewAction("add_favourite", new ActionAddFavourite());
+        registerNewAction("remove_favourite", new ActionRemoveFavourite());
     }
 
     public void registerNewAction(String actionID,

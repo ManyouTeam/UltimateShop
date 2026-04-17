@@ -48,18 +48,12 @@ public class BuyMoreGUI extends InvGUI {
         if (menu == null) {
             return;
         }
-        // display item
         menuButtons = menu.getMenu(MenuSender.of(player));
         menuItems = getMenuItems(player);
-        int displaySlot = menu.getDisplayItemSlot();
-        ItemStack tempVal1 = menuItems.get(displaySlot);
-        tempVal1.setAmount(nowingAmount);
         title = menu.getString("title", "Buy More Menu");
         if (Objects.isNull(inv)) {
             inv = UltimateShop.methodUtil.createNewInv(player, menu.getInt("size", 54), title);
         }
-        inv.setItem(displaySlot, tempVal1);
-        // 其他物品
         for (int slot : menuButtons.keySet()) {
             inv.setItem(slot, menuItems.get(slot));
         }
@@ -72,7 +66,7 @@ public class BuyMoreGUI extends InvGUI {
             return true;
         }
         switch (button.type) {
-            case SELECT_AMOUNT:
+            case BUY_MORE_SELECT_AMOUNT:
                 if (button.config.getInt("add-amount", 0) == 0) {
                     if (button.config.getInt("set-amount", -1) == -1) {
                         ErrorManager.errorManager.sendErrorMessage("§cError: Can not find add-amount section " +
@@ -91,9 +85,9 @@ public class BuyMoreGUI extends InvGUI {
                     nowingAmount = menu.getSection().getInt("max-amount", 64);
                 }
                 break;
-            case DISPLAY:
+            case BUY_MORE_DISPLAY:
                 break;
-            case CONFIRM:
+            case BUY_MORE_CONFIRM:
                 boolean b = ConfigManager.configManager.getBoolean("placeholder.click.enabled");
                 String clickType = ConfigManager.configManager.getClickAction(type, button);
                 if (((ObjectMoreBuyButton)button).getClickType() != null) {
@@ -163,11 +157,11 @@ public class BuyMoreGUI extends InvGUI {
         Map<Integer, ItemStack> resultItems = new HashMap<>();
         for (int i : tempVal1.keySet()) {
             AbstractButton tempVal2 = tempVal1.get(i);
-            if (tempVal2.type == ButtonType.DISPLAY) {
+            if (tempVal2.type == ButtonType.BUY_MORE_DISPLAY) {
                 ObjectMoreDisplayButton tempVal3;
                 tempVal3 = (ObjectMoreDisplayButton) tempVal2;
                 resultItems.put(i, tempVal3.getDisplayItem(player, nowingAmount).getItemStack());
-            } else if (tempVal2.type == ButtonType.CONFIRM) {
+            } else if (tempVal2.type == ButtonType.BUY_MORE_CONFIRM) {
                 ObjectMoreBuyButton tempVal4;
                 tempVal4 = (ObjectMoreBuyButton) tempVal2;
                 resultItems.put(i, tempVal4.getDisplayItem(player, nowingAmount).getItemStack());

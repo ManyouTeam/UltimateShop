@@ -4,6 +4,7 @@ import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.managers.CacheManager;
 import cn.superiormc.ultimateshop.managers.ErrorManager;
 import cn.superiormc.ultimateshop.objects.caches.ObjectCache;
+import cn.superiormc.ultimateshop.objects.caches.FavouriteProductReference;
 import cn.superiormc.ultimateshop.objects.caches.ObjectRandomPlaceholderCache;
 import cn.superiormc.ultimateshop.objects.caches.ObjectUseTimesCache;
 import cn.superiormc.ultimateshop.objects.caches.UseTimesStorageKey;
@@ -14,7 +15,9 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 public class YamlDatabase extends AbstractDatabase {
@@ -77,6 +80,21 @@ public class YamlDatabase extends AbstractDatabase {
             });
         }
 
+        ConfigurationSection favouriteSection = config.getConfigurationSection("favourites");
+        if (favouriteSection != null) {
+            favouriteSection.getKeys(false).forEach(menuName -> {
+                List<String> rawEntries = favouriteSection.getStringList(menuName);
+                List<FavouriteProductReference> references = new ArrayList<>();
+                for (String rawEntry : rawEntries) {
+                    FavouriteProductReference reference = FavouriteProductReference.deserialize(rawEntry);
+                    if (reference != null) {
+                        references.add(reference);
+                    }
+                }
+                cache.setFavouriteProductCache(menuName, references);
+            });
+        }
+
         if (!UltimateShop.freeVersion) {
             ConfigurationSection randomSection = config.getConfigurationSection("randomPlaceholder");
             if (randomSection != null) {
@@ -118,6 +136,17 @@ public class YamlDatabase extends AbstractDatabase {
 
         ConfigurationSection useTimesSection = config.createSection("useTimes");
         cache.getSharedUseTimesCache().forEach((key, state) -> writeUseTimesCache(useTimesSection, key, state));
+
+        ConfigurationSection favouriteSection = config.createSection("favourites");
+        cache.getFavouriteProductCache().forEach((menuName, references) -> {
+            List<String> rawReferences = new ArrayList<>();
+            for (FavouriteProductReference reference : references) {
+                rawReferences.add(reference.serialize());
+            }
+            if (!rawReferences.isEmpty()) {
+                favouriteSection.set(menuName, rawReferences);
+            }
+        });
 
         if (!UltimateShop.freeVersion) {
             ConfigurationSection randomSection = config.createSection("randomPlaceholder");

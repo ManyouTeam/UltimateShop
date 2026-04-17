@@ -1,10 +1,10 @@
 package cn.superiormc.ultimateshop.commands;
 
 import cn.superiormc.ultimateshop.UltimateShop;
-import cn.superiormc.ultimateshop.gui.AbstractGUI;
 import cn.superiormc.ultimateshop.gui.GUIStatus;
 import cn.superiormc.ultimateshop.gui.InvGUI;
 import cn.superiormc.ultimateshop.managers.LanguageManager;
+import cn.superiormc.ultimateshop.managers.MenuStatusManager;
 import cn.superiormc.ultimateshop.utils.PacketInventoryUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -29,7 +29,7 @@ public class SubUpdateGUITitle extends AbstractCommand {
                 return;
             }
         }
-        GUIStatus guiStatus = AbstractGUI.playerList.get(whoNeed);
+        GUIStatus guiStatus = MenuStatusManager.menuStatusManager.getGUIStatus(whoNeed);
         if (guiStatus != null && guiStatus.getGUI() != null) {
             if (!(guiStatus.getGUI() instanceof InvGUI invGUI)) {
                 LanguageManager.languageManager.sendStringText(player, "gui-not-opened", "player", whoNeed.getName());
@@ -55,7 +55,7 @@ public class SubUpdateGUITitle extends AbstractCommand {
             LanguageManager.languageManager.sendStringText("error.player-not-found", "player", args[1]);
             return;
         }
-        GUIStatus guiStatus = AbstractGUI.playerList.get(whoNeed);
+        GUIStatus guiStatus = MenuStatusManager.menuStatusManager.getGUIStatus(whoNeed);
         if (guiStatus != null && guiStatus.getGUI() != null) {
             if (!(guiStatus.getGUI() instanceof InvGUI invGUI)) {
                 LanguageManager.languageManager.sendStringText("gui-not-opened", "player", whoNeed.getName());

@@ -4,6 +4,7 @@ settings:
   shop-name: '{lang:logs-shop-name}'
   hide-message: false
   secret-shop-items: true
+  allow-favourite: true
 
 items:
   A:
@@ -16,26 +17,15 @@ items:
     buy-prices:
       1:
         economy-plugin: Vault
-        amount: '10.42'
+        amount: '5.5'
         placeholder: '{amount}$'
         start-apply: 0
     sell-prices:
       1:
         economy-plugin: Vault
-        amount: '10.35'
+        amount: '3.3'
         placeholder: '{amount}$'
         start-apply: 0
-    sell-limits:
-      global: 640
-      default: 128
-      vip: 192
-    sell-limits-conditions:
-      vip:
-        1:
-          type: permission
-          permission: 'group.vip'
-    sell-times-reset-mode: 'TIMED'
-    sell-times-reset-time: '00:00:00'
   B:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
@@ -46,26 +36,15 @@ items:
     buy-prices:
       1:
         economy-plugin: Vault
-        amount: '9.06'
+        amount: '5'
         placeholder: '{amount}$'
         start-apply: 0
     sell-prices:
       1:
         economy-plugin: Vault
-        amount: '9.02'
+        amount: '3'
         placeholder: '{amount}$'
         start-apply: 0
-    sell-limits:
-      global: 640
-      default: 128
-      vip: 192
-    sell-limits-conditions:
-      vip:
-        1:
-          type: permission
-          permission: 'group.vip'
-    sell-times-reset-mode: 'TIMED'
-    sell-times-reset-time: '00:00:00'
   C:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
@@ -76,26 +55,15 @@ items:
     buy-prices:
       1:
         economy-plugin: Vault
-        amount: '9.06'
+        amount: '5'
         placeholder: '{amount}$'
         start-apply: 0
     sell-prices:
       1:
         economy-plugin: Vault
-        amount: '9.02'
+        amount: '3'
         placeholder: '{amount}$'
         start-apply: 0
-    sell-limits:
-      global: 640
-      default: 128
-      vip: 192
-    sell-limits-conditions:
-      vip:
-        1:
-          type: permission
-          permission: 'group.vip'
-    sell-times-reset-mode: 'TIMED'
-    sell-times-reset-time: '00:00:00'
   D:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
@@ -106,26 +74,15 @@ items:
     buy-prices:
       1:
         economy-plugin: Vault
-        amount: '9.06'
+        amount: '5'
         placeholder: '{amount}$'
         start-apply: 0
     sell-prices:
       1:
         economy-plugin: Vault
-        amount: '9.02'
+        amount: '3'
         placeholder: '{amount}$'
         start-apply: 0
-    sell-limits:
-      global: 640
-      default: 128
-      vip: 192
-    sell-limits-conditions:
-      vip:
-        1:
-          type: permission
-          permission: 'group.vip'
-    sell-times-reset-mode: 'TIMED'
-    sell-times-reset-time: '00:00:00'
   E:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
@@ -136,26 +93,15 @@ items:
     buy-prices:
       1:
         economy-plugin: Vault
-        amount: '9.06'
+        amount: '5.5'
         placeholder: '{amount}$'
         start-apply: 0
     sell-prices:
       1:
         economy-plugin: Vault
-        amount: '9.02'
+        amount: '3.3'
         placeholder: '{amount}$'
         start-apply: 0
-    sell-limits:
-      global: 640
-      default: 128
-      vip: 192
-    sell-limits-conditions:
-      vip:
-        1:
-          type: permission
-          permission: 'group.vip'
-    sell-times-reset-mode: 'TIMED'
-    sell-times-reset-time: '00:00:00'
   F:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
@@ -166,26 +112,15 @@ items:
     buy-prices:
       1:
         economy-plugin: Vault
-        amount: '9.06'
+        amount: '5'
         placeholder: '{amount}$'
         start-apply: 0
     sell-prices:
       1:
         economy-plugin: Vault
-        amount: '9.02'
+        amount: '3'
         placeholder: '{amount}$'
         start-apply: 0
-    sell-limits:
-      global: 640
-      default: 128
-      vip: 192
-    sell-limits-conditions:
-      vip:
-        1:
-          type: permission
-          permission: 'group.vip'
-    sell-times-reset-mode: 'TIMED'
-    sell-times-reset-time: '00:00:00'
   G:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
@@ -196,26 +131,15 @@ items:
     buy-prices:
       1:
         economy-plugin: Vault
-        amount: '9.06'
+        amount: '5'
         placeholder: '{amount}$'
         start-apply: 0
     sell-prices:
       1:
         economy-plugin: Vault
-        amount: '9.02'
+        amount: '3'
         placeholder: '{amount}$'
         start-apply: 0
-    sell-limits:
-      global: 640
-      default: 128
-      vip: 192
-    sell-limits-conditions:
-      vip:
-        1:
-          type: permission
-          permission: 'group.vip'
-    sell-times-reset-mode: 'TIMED'
-    sell-times-reset-time: '00:00:00'
   H:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
@@ -226,26 +150,15 @@ items:
     buy-prices:
       1:
         economy-plugin: Vault
-        amount: '10.35'
+        amount: '5.2'
         placeholder: '{amount}$'
         start-apply: 0
     sell-prices:
       1:
         economy-plugin: Vault
-        amount: '10.32'
+        amount: '3.1'
         placeholder: '{amount}$'
         start-apply: 0
-    sell-limits:
-      global: 640
-      default: 128
-      vip: 192
-    sell-limits-conditions:
-      vip:
-        1:
-          type: permission
-          permission: 'group.vip'
-    sell-times-reset-mode: 'TIMED'
-    sell-times-reset-time: '00:00:00'
   I:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
@@ -256,26 +169,15 @@ items:
     buy-prices:
       1:
         economy-plugin: Vault
-        amount: '1.8'
+        amount: '3.5'
         placeholder: '{amount}$'
         start-apply: 0
     sell-prices:
       1:
         economy-plugin: Vault
-        amount: '1.5'
+        amount: '2.1'
         placeholder: '{amount}$'
         start-apply: 0
-    sell-limits:
-      global: 640
-      default: 128
-      vip: 192
-    sell-limits-conditions:
-      vip:
-        1:
-          type: permission
-          permission: 'group.vip'
-    sell-times-reset-mode: 'TIMED'
-    sell-times-reset-time: '00:00:00'
   J:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
@@ -286,26 +188,15 @@ items:
     buy-prices:
       1:
         economy-plugin: Vault
-        amount: '1.8'
+        amount: '3'
         placeholder: '{amount}$'
         start-apply: 0
     sell-prices:
       1:
         economy-plugin: Vault
-        amount: '1.6'
+        amount: '1.8'
         placeholder: '{amount}$'
         start-apply: 0
-    sell-limits:
-      global: 640
-      default: 128
-      vip: 192
-    sell-limits-conditions:
-      vip:
-        1:
-          type: permission
-          permission: 'group.vip'
-    sell-times-reset-mode: 'TIMED'
-    sell-times-reset-time: '00:00:00'
   K:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
@@ -316,26 +207,15 @@ items:
     buy-prices:
       1:
         economy-plugin: Vault
-        amount: '1.8'
+        amount: '3'
         placeholder: '{amount}$'
         start-apply: 0
     sell-prices:
       1:
         economy-plugin: Vault
-        amount: '1.5'
+        amount: '1.8'
         placeholder: '{amount}$'
         start-apply: 0
-    sell-limits:
-      global: 640
-      default: 128
-      vip: 192
-    sell-limits-conditions:
-      vip:
-        1:
-          type: permission
-          permission: 'group.vip'
-    sell-times-reset-mode: 'TIMED'
-    sell-times-reset-time: '00:00:00'
   L:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
@@ -346,26 +226,15 @@ items:
     buy-prices:
       1:
         economy-plugin: Vault
-        amount: '1.8'
+        amount: '3'
         placeholder: '{amount}$'
         start-apply: 0
     sell-prices:
       1:
         economy-plugin: Vault
-        amount: '1.6'
+        amount: '1.8'
         placeholder: '{amount}$'
         start-apply: 0
-    sell-limits:
-      global: 640
-      default: 128
-      vip: 192
-    sell-limits-conditions:
-      vip:
-        1:
-          type: permission
-          permission: 'group.vip'
-    sell-times-reset-mode: 'TIMED'
-    sell-times-reset-time: '00:00:00'
   M:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
@@ -376,26 +245,15 @@ items:
     buy-prices:
       1:
         economy-plugin: Vault
-        amount: '1.8'
+        amount: '4'
         placeholder: '{amount}$'
         start-apply: 0
     sell-prices:
       1:
         economy-plugin: Vault
-        amount: '1.6'
+        amount: '2.4'
         placeholder: '{amount}$'
         start-apply: 0
-    sell-limits:
-      global: 640
-      default: 128
-      vip: 192
-    sell-limits-conditions:
-      vip:
-        1:
-          type: permission
-          permission: 'group.vip'
-    sell-times-reset-mode: 'TIMED'
-    sell-times-reset-time: '00:00:00'
   N:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
@@ -406,26 +264,15 @@ items:
     buy-prices:
       1:
         economy-plugin: Vault
-        amount: '1.8'
+        amount: '3.2'
         placeholder: '{amount}$'
         start-apply: 0
     sell-prices:
       1:
         economy-plugin: Vault
-        amount: '1.6'
+        amount: '1.9'
         placeholder: '{amount}$'
         start-apply: 0
-    sell-limits:
-      global: 640
-      default: 128
-      vip: 192
-    sell-limits-conditions:
-      vip:
-        1:
-          type: permission
-          permission: 'group.vip'
-    sell-times-reset-mode: 'TIMED'
-    sell-times-reset-time: '00:00:00'
   O:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
@@ -436,26 +283,15 @@ items:
     buy-prices:
       1:
         economy-plugin: Vault
-        amount: '1.8'
+        amount: '3.2'
         placeholder: '{amount}$'
         start-apply: 0
     sell-prices:
       1:
         economy-plugin: Vault
-        amount: '1.6'
+        amount: '1.9'
         placeholder: '{amount}$'
         start-apply: 0
-    sell-limits:
-      global: 640
-      default: 128
-      vip: 192
-    sell-limits-conditions:
-      vip:
-        1:
-          type: permission
-          permission: 'group.vip'
-    sell-times-reset-mode: 'TIMED'
-    sell-times-reset-time: '00:00:00'
   P:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
@@ -466,23 +302,12 @@ items:
     buy-prices:
       1:
         economy-plugin: Vault
-        amount: '1.8'
+        amount: '3.6'
         placeholder: '{amount}$'
         start-apply: 0
     sell-prices:
       1:
         economy-plugin: Vault
-        amount: '1.6'
+        amount: '2.1'
         placeholder: '{amount}$'
         start-apply: 0
-    sell-limits:
-      global: 640
-      default: 128
-      vip: 192
-    sell-limits-conditions:
-      vip:
-        1:
-          type: permission
-          permission: 'group.vip'
-    sell-times-reset-mode: 'TIMED'
-    sell-times-reset-time: '00:00:00'

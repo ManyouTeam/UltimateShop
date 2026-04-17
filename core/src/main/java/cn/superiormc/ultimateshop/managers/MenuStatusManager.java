@@ -1,6 +1,8 @@
 package cn.superiormc.ultimateshop.managers;
 
 import cn.superiormc.ultimateshop.editor.*;
+import cn.superiormc.ultimateshop.gui.AbstractGUI;
+import cn.superiormc.ultimateshop.gui.GUIStatus;
 import cn.superiormc.ultimateshop.gui.inv.editor.EditorFileListGUI;
 import cn.superiormc.ultimateshop.gui.inv.editor.EditorPresetGUI;
 import cn.superiormc.ultimateshop.editor.EditorContext;
@@ -10,6 +12,7 @@ import cn.superiormc.ultimateshop.gui.inv.editor.EditorRootGUI;
 import cn.superiormc.ultimateshop.gui.inv.editor.EditorSectionGUI;
 import cn.superiormc.ultimateshop.methods.Items.DebuildItem;
 import cn.superiormc.ultimateshop.methods.ReloadPlugin;
+import cn.superiormc.ultimateshop.objects.menus.ObjectMenu;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
 import cn.superiormc.ultimateshop.utils.SchedulerUtil;
 import org.bukkit.configuration.ConfigurationSection;
@@ -34,8 +37,82 @@ public class MenuStatusManager {
 
     private final Map<UUID, Prompt> prompts = new ConcurrentHashMap<>();
 
+    private final Map<UUID, GUIStatus> openGuis = new ConcurrentHashMap<>();
+
     public MenuStatusManager() {
         menuStatusManager = this;
+    }
+
+    public GUIStatus getGUIStatus(Player player) {
+        if (player == null) {
+            return null;
+        }
+        return openGuis.get(player.getUniqueId());
+    }
+
+    public AbstractGUI getOpeningGUI(Player player) {
+        GUIStatus guiStatus = getGUIStatus(player);
+        if (guiStatus == null) {
+            return null;
+        }
+        return guiStatus.getGUI();
+    }
+
+    public ObjectMenu getOpeningMenu(Player player) {
+        AbstractGUI gui = getOpeningGUI(player);
+        if (gui == null) {
+            return null;
+        }
+        return gui.getMenu();
+    }
+
+    public boolean hasOpeningGUI(Player player) {
+        return getGUIStatus(player) != null;
+    }
+
+    public void setGUIStatus(Player player, GUIStatus guiStatus) {
+        if (player == null) {
+            return;
+        }
+        if (guiStatus == null) {
+            openGuis.remove(player.getUniqueId());
+            return;
+        }
+        openGuis.put(player.getUniqueId(), guiStatus);
+    }
+
+    public void removeGUIStatus(Player player) {
+        if (player == null) {
+            return;
+        }
+        openGuis.remove(player.getUniqueId());
+    }
+
+    public boolean canOpenGUI(Player player, AbstractGUI gui, boolean reopen) {
+        if (player == null || gui == null) {
+            return false;
+        }
+        GUIStatus guiStatus = getGUIStatus(player);
+        if (!reopen && guiStatus != null && ConfigManager.configManager.getLong("menu.cooldown.reopen", -1L) > 0L) {
+            return false;
+        }
+        setGUIStatus(player, GUIStatus.of(gui, reopen ? GUIStatus.Status.ACTION_OPEN_MENU : GUIStatus.Status.CAN_REOPEN));
+        return true;
+    }
+
+    public void removeOpenGUIStatus(Player player, AbstractGUI gui) {
+        if (player == null || gui == null) {
+            return;
+        }
+        long time = ConfigManager.configManager.getLong("menu.cooldown.reopen", 3L);
+        GUIStatus guiStatus = getGUIStatus(player);
+        if (guiStatus == null || guiStatus.getGUI() != gui) {
+            return;
+        }
+        if (time > 0L && guiStatus.getStatus() != GUIStatus.Status.ALREADY_IN_COOLDOWN) {
+            setGUIStatus(player, GUIStatus.of(gui, GUIStatus.Status.ALREADY_IN_COOLDOWN));
+            SchedulerUtil.runTaskLater(() -> removeGUIStatus(player), time);
+        }
     }
 
     public EditorContext getContext(Player player) {
@@ -45,6 +122,7 @@ public class MenuStatusManager {
     public void clear(Player player) {
         contexts.remove(player.getUniqueId());
         prompts.remove(player.getUniqueId());
+        openGuis.remove(player.getUniqueId());
     }
 
     public boolean hasPrompt(Player player) {

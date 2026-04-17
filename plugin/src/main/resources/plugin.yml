@@ -6,6 +6,7 @@ folia-supported: true
 authors:
   - PQguanfang
 softdepend:
+  # Protection
   - WorldGuard
   - Towny
   - Dominion
@@ -17,36 +18,39 @@ softdepend:
   - HuskTowns
   - HuskClaims
   - SuperiorSkyblock2
-  - MMOItems
-  - MythicLib
-  - ItemsAdder
+  # Economy
   - Vault
   - PlayerPoints
-  - GamePoints
-  - Oraxen
-  - EcoItems
-  - EcoArmor
-  - PlaceholderAPI
   - UltraEconomy
   - CoinsEngine
   - ExcellentEconomy
   - RedisEconomy
-  - EcoBits
-  - MythicMobs
-  - CraftEngine
-  - PEconomy
   - RoyaleEconomy
-  - AdvancedEnchantments
-  - NeigeItems
-  - floodgate
+  - EcoBits
+  - PEconomy
   - VotingPlugin
+  # Item
+  - MMOItems
+  - ItemsAdder
+  - Oraxen
+  - Nexo
+  - EcoItems
+  - EcoArmor
+  - MythicMobs
   - ExecutableItems
-  - MythicChanger
-  - NBTAPI
-  - packetevents
+  - CraftEngine
+  - NeigeItems
+  # Holograms
   - DecentHolograms
   - CMI
   - FancyHolograms
+  # Others
+  - NBTAPI
+  - packetevents
+  - floodgate
+  - PlaceholderAPI
+  - AdvancedEnchantments
+  - MythicChanger
 commands:
   ultimateshop:
     aliases:

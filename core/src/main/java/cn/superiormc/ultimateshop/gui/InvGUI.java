@@ -3,6 +3,7 @@ package cn.superiormc.ultimateshop.gui;
 import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.listeners.GUIListener;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
+import cn.superiormc.ultimateshop.managers.MenuStatusManager;
 import cn.superiormc.ultimateshop.objects.buttons.AbstractButton;
 import cn.superiormc.ultimateshop.utils.PacketInventoryUtil;
 import cn.superiormc.ultimateshop.utils.SchedulerUtil;
@@ -59,8 +60,8 @@ public abstract class InvGUI extends AbstractGUI {
     }
 
     public void openGUI(boolean reopen) {
-        GUIStatus previousStatus = playerList.get(player);
-        if (!super.canOpenGUI(reopen)) {
+        GUIStatus previousStatus = MenuStatusManager.menuStatusManager.getGUIStatus(player);
+        if (!MenuStatusManager.menuStatusManager.canOpenGUI(player, this, reopen)) {
             return;
         }
         constructGUI();
@@ -72,9 +73,9 @@ public abstract class InvGUI extends AbstractGUI {
                 getMenu().doOpenAction(player, reopen);
             }
         } else if (previousStatus == null) {
-            playerList.remove(player);
+            MenuStatusManager.menuStatusManager.removeGUIStatus(player);
         } else {
-            playerList.put(player, previousStatus);
+            MenuStatusManager.menuStatusManager.setGUIStatus(player, previousStatus);
         }
         if (ConfigManager.configManager.getBooleanOrDefault("menu.shop.update", "menu.menu-update.circle-update") ||
         ConfigManager.configManager.getBoolean("menu.title-update.circle-update")) {

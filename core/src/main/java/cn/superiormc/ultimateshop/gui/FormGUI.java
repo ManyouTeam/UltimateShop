@@ -1,5 +1,6 @@
 package cn.superiormc.ultimateshop.gui;
 
+import cn.superiormc.ultimateshop.managers.MenuStatusManager;
 import cn.superiormc.ultimateshop.objects.buttons.AbstractButton;
 import org.bukkit.entity.Player;
 import org.geysermc.cumulus.component.ButtonComponent;
@@ -31,8 +32,8 @@ public abstract class FormGUI extends AbstractGUI {
     }
 
     public void openGUI(boolean reopen) {
-        GUIStatus previousStatus = playerList.get(player);
-        if (!super.canOpenGUI(reopen)) {
+        GUIStatus previousStatus = MenuStatusManager.menuStatusManager.getGUIStatus(player);
+        if (!MenuStatusManager.menuStatusManager.canOpenGUI(player, this, reopen)) {
             return;
         }
         if (form != null) {
@@ -41,9 +42,9 @@ public abstract class FormGUI extends AbstractGUI {
                 getMenu().doOpenAction(player, reopen);
             }
         } else if (previousStatus == null) {
-            playerList.remove(player);
+            MenuStatusManager.menuStatusManager.removeGUIStatus(player);
         } else {
-            playerList.put(player, previousStatus);
+            MenuStatusManager.menuStatusManager.setGUIStatus(player, previousStatus);
         }
     }
 

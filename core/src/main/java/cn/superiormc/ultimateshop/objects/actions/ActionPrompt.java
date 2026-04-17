@@ -1,5 +1,6 @@
 package cn.superiormc.ultimateshop.objects.actions;
 
+import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.gui.AbstractGUI;
 import cn.superiormc.ultimateshop.gui.FormGUI;
 import cn.superiormc.ultimateshop.gui.GUIStatus;
@@ -24,21 +25,21 @@ public class ActionPrompt extends AbstractRunAction {
 
     @Override
     protected void onDoAction(ObjectSingleAction singleAction, ObjectThingRun thingRun) {
+        if (UltimateShop.freeVersion) {
+            return;
+        }
         Player player = thingRun.getPlayer();
         if (player == null) {
             return;
         }
-
         ConfigurationSection submitSection = singleAction.getSection().getConfigurationSection("actions");
         if (submitSection == null) {
             return;
         }
-
         String description = getDescription(singleAction, player, thingRun.getAmount());
         if (description == null || description.isEmpty()) {
             return;
         }
-
         ConfigurationSection cancelSection = singleAction.getSection().getConfigurationSection("cancel-actions");
         boolean reopenOnSubmit = singleAction.getBoolean("reopen-on-submit", false);
         boolean reopenOnCancel = singleAction.getBoolean("reopen-on-cancel", true);
@@ -80,7 +81,7 @@ public class ActionPrompt extends AbstractRunAction {
     }
 
     private AbstractGUI getPreviousGUI(Player player) {
-        GUIStatus guiStatus = AbstractGUI.playerList.get(player);
+        GUIStatus guiStatus = MenuStatusManager.menuStatusManager.getGUIStatus(player);
         if (guiStatus == null) {
             return null;
         }

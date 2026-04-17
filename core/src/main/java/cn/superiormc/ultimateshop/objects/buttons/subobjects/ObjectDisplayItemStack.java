@@ -1,5 +1,6 @@
 package cn.superiormc.ultimateshop.objects.buttons.subobjects;
 
+import cn.superiormc.ultimateshop.api.ShopHelper;
 import cn.superiormc.ultimateshop.managers.CacheManager;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
@@ -50,6 +51,18 @@ public class ObjectDisplayItemStack {
         return meta;
     }
 
+    public ConfigurationSection getSection() {
+        return section;
+    }
+
+    public Player getPlayer() {
+        return player;
+    }
+
+    public ObjectItem getItem() {
+        return item;
+    }
+
     public void setItemMeta(@Nullable ItemMeta itemMeta) {
         javaItem.setItemMeta(itemMeta);
     }
@@ -83,7 +96,7 @@ public class ObjectDisplayItemStack {
                 }
             }
             if (tempVal4 != null && !tempVal4.isEmpty()) {
-                ObjectUseTimesCache tempVal9 = CacheManager.cacheManager.getObjectCache(player).getUseTimesCache().get(item);
+                ObjectUseTimesCache tempVal9 = ShopHelper.getPlayerUseTimesCache(item, player);
                 tempVal3 = tempVal3 + "\n" + TextUtil.parse(player, CommonUtil.modifyString(player, tempVal4,
                         "buy-price",
                         ObjectPrices.getDisplayNameInLine(player,

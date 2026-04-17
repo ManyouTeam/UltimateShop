@@ -99,6 +99,8 @@ public class EditorPresetRegistry {
                 choice("settings.menu", Material.BOOK, EditorScope.MENU.listIds().toArray(new String[0])),
                 field("settings.menu-settings", Material.WRITABLE_BOOK, EditorPresetFieldType.SECTION),
                 field("settings.buy-more", Material.CHEST, EditorPresetFieldType.BOOLEAN),
+                new EditorPresetField("settings.allow-favourite", "Allow Favourite",
+                        "Allow products from this shop to be added into favourite menus.", Material.NAME_TAG, EditorPresetFieldType.BOOLEAN),
                 field("settings.shop-name", Material.NAME_TAG, EditorPresetFieldType.STRING),
                 field("settings.hide-message", Material.PAPER, EditorPresetFieldType.BOOLEAN),
                 field("settings.secret-shop-items", Material.ENDER_EYE, EditorPresetFieldType.BOOLEAN),
@@ -152,6 +154,8 @@ public class EditorPresetRegistry {
                 new EditorPresetField("buy-more-menu.max-amount", "Buy More Max Amount",
                         "Maximum amount selectable in the buy-more menu.", Material.SLIME_BALL, EditorPresetFieldType.INTEGER),
                 field("hide-message", Material.PAPER, EditorPresetFieldType.BOOLEAN),
+                new EditorPresetField("allow-favourite", "Allow Favourite",
+                        "Allow this product to be added into favourite menus.", Material.NAME_TAG, EditorPresetFieldType.BOOLEAN),
                 field("sell-all", Material.HOPPER, EditorPresetFieldType.BOOLEAN),
                 field("as-sub-button", Material.CHAINMAIL_HELMET, EditorPresetFieldType.STRING),
                 field("bedrock.hide", Material.MAP, EditorPresetFieldType.BOOLEAN),
@@ -405,6 +409,10 @@ public class EditorPresetRegistry {
         ConfigurationSection section = MenuStatusManager.menuStatusManager.getSection(target, path);
         String type = section == null ? "permission" : section.getString("type", "permission");
         switch (type) {
+            case "menu" ->
+                    result.add(field("menu", Material.BOOK, EditorPresetFieldType.STRING));
+            case "menu-type" ->
+                    result.add(field("menu-type", Material.BOOKSHELF, EditorPresetFieldType.STRING));
             case "permission" ->
                     result.add(field("permission", Material.TRIPWIRE_HOOK, EditorPresetFieldType.STRING));
             case "placeholder" -> {

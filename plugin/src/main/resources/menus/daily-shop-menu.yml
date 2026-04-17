@@ -3,11 +3,6 @@
 title: '{shop-name}'
 size: 36
 
-#conditions:
-#  1:
-#    type: permission
-#    permission: 'test.required'
-
 open-actions:
   1:
     type: sound
@@ -19,9 +14,13 @@ layout:
   - '000000000'
   - '000`{random_daily;;1}``{random_daily;;2}``{random_daily;;3}`000'
   - '000000000'
-  - 'a0003000b'
+  - 'a0003000c'
 
 buttons:
+  0:
+    display-item:
+      material: BLACK_STAINED_GLASS_PANE
+      name: ' '
   3:
     display-item:
       material: ARROW
@@ -30,3 +29,10 @@ buttons:
       1:
         type: open_menu
         menu: main
+  c:
+    display-item:
+      material: BARRIER
+      name: '{lang:close-button}'
+    actions:
+      1:
+        type: close

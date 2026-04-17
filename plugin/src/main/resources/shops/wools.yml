@@ -4,6 +4,7 @@ settings:
   shop-name: '{lang:wools-shop-name}'
   hide-message: false
   secret-shop-items: true
+  allow-favourite: true
 
 items:
   A:
@@ -16,7 +17,13 @@ items:
     buy-prices:
       1:
         economy-plugin: Vault
-        amount: '6.99'
+        amount: '4'
+        placeholder: '{amount}$'
+        start-apply: 0
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: '2.4'
         placeholder: '{amount}$'
         start-apply: 0
   B:
@@ -29,7 +36,13 @@ items:
     buy-prices:
       1:
         economy-plugin: Vault
-        amount: '8.25'
+        amount: '4'
+        placeholder: '{amount}$'
+        start-apply: 0
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: '2.4'
         placeholder: '{amount}$'
         start-apply: 0
   C:
@@ -42,7 +55,13 @@ items:
     buy-prices:
       1:
         economy-plugin: Vault
-        amount: '7.64'
+        amount: '4'
+        placeholder: '{amount}$'
+        start-apply: 0
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: '2.4'
         placeholder: '{amount}$'
         start-apply: 0
   D:
@@ -55,7 +74,13 @@ items:
     buy-prices:
       1:
         economy-plugin: Vault
-        amount: '9.99'
+        amount: '4'
+        placeholder: '{amount}$'
+        start-apply: 0
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: '2.4'
         placeholder: '{amount}$'
         start-apply: 0
   E:
@@ -68,7 +93,13 @@ items:
     buy-prices:
       1:
         economy-plugin: Vault
-        amount: '13.15'
+        amount: '4'
+        placeholder: '{amount}$'
+        start-apply: 0
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: '2.4'
         placeholder: '{amount}$'
         start-apply: 0
   F:
@@ -81,7 +112,13 @@ items:
     buy-prices:
       1:
         economy-plugin: Vault
-        amount: '7.42'
+        amount: '4'
+        placeholder: '{amount}$'
+        start-apply: 0
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: '2.4'
         placeholder: '{amount}$'
         start-apply: 0
   G:
@@ -94,7 +131,13 @@ items:
     buy-prices:
       1:
         economy-plugin: Vault
-        amount: '16.28'
+        amount: '4'
+        placeholder: '{amount}$'
+        start-apply: 0
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: '2.4'
         placeholder: '{amount}$'
         start-apply: 0
   H:
@@ -107,7 +150,13 @@ items:
     buy-prices:
       1:
         economy-plugin: Vault
-        amount: '19.45'
+        amount: '4'
+        placeholder: '{amount}$'
+        start-apply: 0
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: '2.4'
         placeholder: '{amount}$'
         start-apply: 0
   I:
@@ -120,7 +169,13 @@ items:
     buy-prices:
       1:
         economy-plugin: Vault
-        amount: '13.16'
+        amount: '4'
+        placeholder: '{amount}$'
+        start-apply: 0
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: '2.4'
         placeholder: '{amount}$'
         start-apply: 0
   J:
@@ -133,7 +188,13 @@ items:
     buy-prices:
       1:
         economy-plugin: Vault
-        amount: '11.78'
+        amount: '4'
+        placeholder: '{amount}$'
+        start-apply: 0
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: '2.4'
         placeholder: '{amount}$'
         start-apply: 0
   K:
@@ -146,7 +207,13 @@ items:
     buy-prices:
       1:
         economy-plugin: Vault
-        amount: '7.42'
+        amount: '4'
+        placeholder: '{amount}$'
+        start-apply: 0
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: '2.4'
         placeholder: '{amount}$'
         start-apply: 0
   L:
@@ -159,7 +226,13 @@ items:
     buy-prices:
       1:
         economy-plugin: Vault
-        amount: '10.85'
+        amount: '4'
+        placeholder: '{amount}$'
+        start-apply: 0
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: '2.4'
         placeholder: '{amount}$'
         start-apply: 0
   M:
@@ -172,7 +245,13 @@ items:
     buy-prices:
       1:
         economy-plugin: Vault
-        amount: '9.06'
+        amount: '4'
+        placeholder: '{amount}$'
+        start-apply: 0
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: '2.4'
         placeholder: '{amount}$'
         start-apply: 0
   N:
@@ -185,7 +264,13 @@ items:
     buy-prices:
       1:
         economy-plugin: Vault
-        amount: '8.25'
+        amount: '4'
+        placeholder: '{amount}$'
+        start-apply: 0
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: '2.4'
         placeholder: '{amount}$'
         start-apply: 0
   O:
@@ -198,7 +283,13 @@ items:
     buy-prices:
       1:
         economy-plugin: Vault
-        amount: '8.25'
+        amount: '4'
+        placeholder: '{amount}$'
+        start-apply: 0
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: '2.4'
         placeholder: '{amount}$'
         start-apply: 0
   P:
@@ -211,6 +302,12 @@ items:
     buy-prices:
       1:
         economy-plugin: Vault
-        amount: '6.4'
+        amount: '4'
+        placeholder: '{amount}$'
+        start-apply: 0
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: '2.4'
         placeholder: '{amount}$'
         start-apply: 0

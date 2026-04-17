@@ -1,0 +1,74 @@
+menu-type: favourite
+title: '{lang:menu.favourite.title}'
+size: 54
+
+layout:
+  - '000000000'
+  - '011111110'
+  - '011111110'
+  - '011111110'
+  - '011111110'
+  - '00B0D0C00'
+
+result-items:
+  - '1'
+
+edit-mode-item:
+  D:
+    normal-display-item:
+      material: NAME_TAG
+      name: '{lang:edit-mode-enable-name}'
+      lore:
+        - '{lang:edit-mode-enable-line-1}'
+    editing-display-item:
+      material: WRITABLE_BOOK
+      name: '{lang:edit-mode-disable-name}'
+      lore:
+        - '{lang:edit-mode-disable-line-1}'
+
+empty-item:
+  display-item:
+    material: GRAY_STAINED_GLASS_PANE
+    name: '{lang:favourite-empty-name}'
+    lore:
+      - '{lang:favourite-empty-line-1}'
+      - '{lang:favourite-empty-line-2}'
+
+result-lore:
+  - ' '
+  - '{lang:favourite-result-shop}'
+  - '{lang:favourite-result-product}'
+  - '{lang:favourite-result-click}'
+  - '{lang:favourite-result-enter-edit}'
+
+editing-result-lore:
+  - ' '
+  - '{lang:favourite-result-shop}'
+  - '{lang:favourite-result-product}'
+  - '{lang:favourite-result-edit-forward}'
+  - '{lang:favourite-result-edit-backward}'
+  - '{lang:favourite-result-edit-remove}'
+
+buttons:
+  0:
+    display-item:
+      material: BLACK_STAINED_GLASS_PANE
+      name: ' '
+  B:
+    display-item:
+      material: ARROW
+      name: '{lang:back-button}'
+    actions:
+      1:
+        type: open_menu
+        menu: main
+  C:
+    display-item:
+      material: BARRIER
+      name: '{lang:close-button}'
+    actions:
+      1:
+        type: close
+
+bedrock:
+  content: '{lang:menu.favourite.content}'

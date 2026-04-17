@@ -3,12 +3,12 @@ title: '{lang:menu.search-gui.title}'
 size: 54
 
 layout:
-  - '000111000'
-  - '002030400'
-  - '666666666'
-  - '666666666'
-  - '666666666'
-  - '666666666'
+  - '00H0N0C00'
+  - '001111100'
+  - '000000000'
+  - '066666660'
+  - '066666660'
+  - '00B000X00'
 
 input-item: '1'
 result-item: '6'
@@ -18,9 +18,24 @@ buttons:
     display-item:
       material: GRAY_STAINED_GLASS_PANE
       name: ' '
+  B:
+    display-item:
+      material: ARROW
+      name: '{lang:back-button}'
+    actions:
+      1:
+        type: open_menu
+        menu: main
+  X:
+    display-item:
+      material: BARRIER
+      name: '{lang:close-button}'
+    actions:
+      1:
+        type: close
 
 action-items:
-  2:
+  H:
     action-type: input-name
     display-item:
       material: HOPPER
@@ -30,7 +45,7 @@ action-items:
         - '{lang:search-gui-guide-line-2}'
         - '{lang:search-gui-guide-line-3}'
         - '{lang:search-gui-guide-line-4}'
-  4:
+  C:
     action-type: clear-search
     display-item:
       material: BARRIER
@@ -39,7 +54,7 @@ action-items:
         - '{lang:search-gui-clear-line-1}'
 
 state-items:
-  3:
+  N:
     empty-input:
       display-item:
         material: PAPER

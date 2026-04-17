@@ -1,6 +1,9 @@
 package cn.superiormc.ultimateshop.methods;
 
 import cn.superiormc.ultimateshop.UltimateShop;
+import cn.superiormc.ultimateshop.api.ShopHelper;
+import cn.superiormc.ultimateshop.gui.AbstractGUI;
+import cn.superiormc.ultimateshop.gui.GUIStatus;
 import cn.superiormc.ultimateshop.managers.CacheManager;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.ErrorManager;
@@ -11,7 +14,10 @@ import cn.superiormc.ultimateshop.objects.buttons.subobjects.ObjectDisplayItemSt
 import cn.superiormc.ultimateshop.objects.caches.ObjectUseTimesCache;
 import cn.superiormc.ultimateshop.objects.items.ThingMode;
 import cn.superiormc.ultimateshop.objects.items.prices.ObjectPrices;
+import cn.superiormc.ultimateshop.objects.menus.MenuType;
+import cn.superiormc.ultimateshop.objects.menus.ObjectMenu;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -329,6 +335,9 @@ public class ModifyDisplayItem {
 
         map.put('i', item.getServerBuyLimit(player) > 0 && s.getBuyUseTimes() >= item.getServerBuyLimit(player));
         map.put('j', item.getServerSellLimit(player) > 0 && s.getSellUseTimes() >= item.getServerSellLimit(player));
+
+        map.put('l', item.isAllowFavourite());
+        map.put('o', ShopHelper.getOpeningMenu(player) != null && ShopHelper.getOpeningMenu(player).getType() == MenuType.Favourite);
 
         map.put('k', item.getBuyMore());
         map.put('m', !item.getSellPrice().empty && item.isEnableSellAll());

@@ -3,11 +3,16 @@ package cn.superiormc.ultimateshop.objects.menus;
 import cn.superiormc.ultimateshop.objects.buttons.*;
 import org.bukkit.configuration.ConfigurationSection;
 
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
+
 public class ObjectMoreMenu extends ObjectMenu {
 
     private final ObjectItem item;
 
-    private int displayItemSlot = -1;
+    private final List<Integer> displayItemSlots = new ArrayList<>();
 
     private final ConfigurationSection section;
 
@@ -28,6 +33,25 @@ public class ObjectMoreMenu extends ObjectMenu {
         if (menuConfigs == null) {
             return;
         }
+        ConfigurationSection paddingItemSection = menuConfigs.getConfigurationSection("display-items-padding-item");
+        List<String> displayItems = getConfiguredDisplayItems();
+        if (!displayItems.isEmpty()) {
+            parseLayout(menuConfigs.getStringList("layout"), (slot, id) -> {
+                int index = displayItems.indexOf(id);
+                if (index < 0) {
+                    return;
+                }
+                displayItemSlots.add(slot);
+                getButtons().put(slot, new ObjectMoreDisplayButton(
+                        null,
+                        paddingItemSection,
+                        item,
+                        index
+                ));
+            });
+            return;
+        }
+
         String displayItem = menuConfigs.getString("display-item");
         if (displayItem == null) {
             return;
@@ -35,13 +59,38 @@ public class ObjectMoreMenu extends ObjectMenu {
 
         parseLayout(menuConfigs.getStringList("layout"), (slot, id) -> {
             if (displayItem.equals(id)) {
-                displayItemSlot = slot;
+                displayItemSlots.add(slot);
                 getButtons().put(slot, new ObjectMoreDisplayButton(
-                        menuConfigs.getConfigurationSection("display-item"),
-                        item
+                        null,
+                        paddingItemSection,
+                        item,
+                        displayItemSlots.size() - 1
                 ));
             }
         });
+    }
+
+    private List<String> getConfiguredDisplayItems() {
+        Object rawItems = menuConfigs.get("display-items");
+        if (!(rawItems instanceof List<?> itemList)) {
+            return List.of();
+        }
+
+        Set<String> result = new LinkedHashSet<>();
+        for (Object rawItem : itemList) {
+            String parsedItem = parseDisplayItem(rawItem);
+            if (parsedItem != null && !parsedItem.isEmpty()) {
+                result.add(parsedItem);
+            }
+        }
+        return new ArrayList<>(result);
+    }
+
+    private String parseDisplayItem(Object rawItem) {
+        if (rawItem == null) {
+            return null;
+        }
+        return String.valueOf(rawItem).trim();
     }
 
     private void initConfirmItem() {
@@ -90,9 +139,11 @@ public class ObjectMoreMenu extends ObjectMenu {
     }
 
     public int getDisplayItemSlot() {
-        return displayItemSlot;
+        if (displayItemSlots.isEmpty()) {
+            return -1;
+        }
+        return displayItemSlots.get(0);
     }
-
     public ConfigurationSection getSection() {
         return section;
     }

@@ -29,9 +29,15 @@ public abstract class DatabaseDialect {
 
     public abstract String createRandomPlaceholderTable();
 
+    public abstract String createFavouriteTable();
+
     public abstract String upsertUseTimes();
 
     public abstract String upsertRandomPlaceholder();
+
+    public abstract String deleteFavourites();
+
+    public abstract String insertFavourite();
 
     /** 是否支持批量写入 */
     public boolean supportBatch() {

@@ -68,6 +68,20 @@ public class SQLiteDialect extends DatabaseDialect {
     }
 
     @Override
+    public String createFavouriteTable() {
+        return """
+            CREATE TABLE IF NOT EXISTS ultimateshop_favourites (
+                playerUUID TEXT NOT NULL,
+                menuName TEXT NOT NULL,
+                sortOrder INTEGER NOT NULL,
+                shop TEXT NOT NULL,
+                product TEXT NOT NULL,
+                PRIMARY KEY (playerUUID, menuName, sortOrder)
+            )
+        """;
+    }
+
+    @Override
     public String upsertUseTimes() {
         return """
             INSERT INTO ultimateshop_useTimes (
@@ -106,6 +120,21 @@ public class SQLiteDialect extends DatabaseDialect {
             DO UPDATE SET
                 nowValue = excluded.nowValue,
                 refreshDoneTime = excluded.refreshDoneTime
+        """;
+    }
+
+    @Override
+    public String deleteFavourites() {
+        return "DELETE FROM ultimateshop_favourites WHERE playerUUID = ?";
+    }
+
+    @Override
+    public String insertFavourite() {
+        return """
+            INSERT INTO ultimateshop_favourites (
+                playerUUID, menuName, sortOrder, shop, product
+            )
+            VALUES (?, ?, ?, ?, ?)
         """;
     }
 

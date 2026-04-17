@@ -1,7 +1,6 @@
 package cn.superiormc.ultimateshop.methods;
 
 import cn.superiormc.ultimateshop.UltimateShop;
-import cn.superiormc.ultimateshop.gui.AbstractGUI;
 import cn.superiormc.ultimateshop.listeners.SellStickListener;
 import cn.superiormc.ultimateshop.managers.*;
 import cn.superiormc.ultimateshop.objects.menus.ObjectMenu;
@@ -17,7 +16,7 @@ public class ReloadPlugin {
         UltimateShop.instance.reloadConfig();
         for (Player player : Bukkit.getOnlinePlayers()) {
             CacheManager.cacheManager.saveObjectCacheOnDisable(player, false);
-            AbstractGUI.playerList.remove(player);
+            MenuStatusManager.menuStatusManager.removeGUIStatus(player);
             if (!UltimateShop.freeVersion) {
                 SellStickListener.playerList.remove(player);
             }

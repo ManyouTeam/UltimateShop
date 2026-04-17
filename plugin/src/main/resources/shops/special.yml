@@ -4,6 +4,7 @@ settings:
   shop-name: '{lang:special-items-shop-name}'
   hide-message: false
   secret-shop-items: true
+  allow-favourite: true
 
 items:
   A:
@@ -16,13 +17,13 @@ items:
     buy-prices:
       1:
         economy-plugin: Vault
-        amount: '35.57'
+        amount: '12'
         placeholder: '{amount}$'
         start-apply: 0
     sell-prices:
       1:
         economy-plugin: Vault
-        amount: '34.98'
+        amount: '7'
         placeholder: '{amount}$'
         start-apply: 0
   B:
@@ -35,13 +36,13 @@ items:
     buy-prices:
       1:
         economy-plugin: Vault
-        amount: '44.39'
+        amount: '180'
         placeholder: '{amount}$'
         start-apply: 0
     sell-prices:
       1:
         economy-plugin: Vault
-        amount: '44.31'
+        amount: '110'
         placeholder: '{amount}$'
         start-apply: 0
   C:
@@ -54,12 +55,12 @@ items:
     buy-prices:
       1:
         economy-plugin: Vault
-        amount: '6.58'
+        amount: '18'
         placeholder: '{amount}$'
         start-apply: 0
     sell-prices:
       1:
         economy-plugin: Vault
-        amount: '6.51'
+        amount: '11'
         placeholder: '{amount}$'
         start-apply: 0

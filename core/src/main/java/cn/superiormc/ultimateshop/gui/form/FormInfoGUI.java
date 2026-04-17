@@ -6,6 +6,7 @@ import cn.superiormc.ultimateshop.gui.inv.ShopGUI;
 import cn.superiormc.ultimateshop.managers.CacheManager;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.LanguageManager;
+import cn.superiormc.ultimateshop.managers.MenuStatusManager;
 import cn.superiormc.ultimateshop.methods.ModifyDisplayItem;
 import cn.superiormc.ultimateshop.methods.Product.BuyProductMethod;
 import cn.superiormc.ultimateshop.methods.Product.SellProductMethod;
@@ -133,7 +134,7 @@ public class FormInfoGUI extends FormGUI {
         }
         tempVal2.button(back);
         tempVal2.validResultHandler(response -> {
-            removeOpenGUIStatus();
+            MenuStatusManager.menuStatusManager.removeOpenGUIStatus(player, this);
             if (response.clickedButton().equals(buy)) {
                 doThing(true);
             } else if (response.clickedButton().equals(sell)) {
@@ -169,7 +170,7 @@ public class FormInfoGUI extends FormGUI {
                 }
             }
         });
-        tempVal2.closedOrInvalidResultHandler(response -> removeOpenGUIStatus());
+        tempVal2.closedOrInvalidResultHandler(response -> MenuStatusManager.menuStatusManager.removeOpenGUIStatus(player, this));
         form = tempVal2.build();
     }
 
@@ -186,7 +187,7 @@ public class FormInfoGUI extends FormGUI {
     }
 
     public void doThing(boolean buyOrSell) {
-        removeOpenGUIStatus();
+        MenuStatusManager.menuStatusManager.removeOpenGUIStatus(player, this);
         if (amount == null) {
             return;
         }

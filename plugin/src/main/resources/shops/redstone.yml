@@ -4,6 +4,7 @@ settings:
   shop-name: '{lang:redstone-shop-name}'
   hide-message: false
   secret-shop-items: true
+  allow-favourite: true
 
 items:
   A:
@@ -16,13 +17,13 @@ items:
     buy-prices:
       1:
         economy-plugin: Vault
-        amount: '17.38'
+        amount: '18'
         placeholder: '{amount}$'
         start-apply: 0
     sell-prices:
       1:
         economy-plugin: Vault
-        amount: '17.34'
+        amount: '11'
         placeholder: '{amount}$'
         start-apply: 0
   B:
@@ -35,15 +36,15 @@ items:
     buy-prices:
       1:
         economy-plugin: Vault
-        amount: '19.74'
+        amount: '14'
         placeholder: '{amount}$'
         start-apply: 0
     sell-prices:
       1:
         economy-plugin: Vault
-        amount: '19.62'
+        amount: '8'
         placeholder: '{amount}$'
-        start-apply: 0 
+        start-apply: 0
   C:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
@@ -54,13 +55,13 @@ items:
     buy-prices:
       1:
         economy-plugin: Vault
-        amount: '40.94'
+        amount: '22'
         placeholder: '{amount}$'
         start-apply: 0
     sell-prices:
       1:
         economy-plugin: Vault
-        amount: '40.86'
+        amount: '13'
         placeholder: '{amount}$'
         start-apply: 0
   D:
@@ -73,17 +74,17 @@ items:
     buy-prices:
       1:
         economy-plugin: Vault
-        amount: '30.35'
+        amount: '14'
         placeholder: '{amount}$'
         start-apply: 0
     sell-prices:
       1:
         economy-plugin: Vault
-        amount: '30.27'
+        amount: '8'
         placeholder: '{amount}$'
         start-apply: 0
   E:
-    price-mode: ALL
+    price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
     products:
       1:
@@ -92,15 +93,13 @@ items:
     buy-prices:
       1:
         economy-plugin: Vault
-        amount: '52.62'
+        amount: '32'
         placeholder: '{amount}$'
         start-apply: 0
     sell-prices:
       1:
         economy-plugin: Vault
-        amount: '52.5'
-        max-amount: 52.5
-        min-amount: 34.3
+        amount: '19'
         placeholder: '{amount}$'
         start-apply: 0
   F:
@@ -113,13 +112,13 @@ items:
     buy-prices:
       1:
         economy-plugin: Vault
-        amount: '10.23'
+        amount: '12'
         placeholder: '{amount}$'
         start-apply: 0
     sell-prices:
       1:
         economy-plugin: Vault
-        amount: '10.19'
+        amount: '7'
         placeholder: '{amount}$'
         start-apply: 0
   G:
@@ -132,13 +131,13 @@ items:
     buy-prices:
       1:
         economy-plugin: Vault
-        amount: '29.85'
+        amount: '16'
         placeholder: '{amount}$'
         start-apply: 0
     sell-prices:
       1:
         economy-plugin: Vault
-        amount: '29.79'
+        amount: '9.5'
         placeholder: '{amount}$'
         start-apply: 0
   H:
@@ -151,17 +150,17 @@ items:
     buy-prices:
       1:
         economy-plugin: Vault
-        amount: '15.39'
+        amount: '11'
         placeholder: '{amount}$'
         start-apply: 0
     sell-prices:
       1:
         economy-plugin: Vault
-        amount: '15.32'
+        amount: '6.5'
         placeholder: '{amount}$'
-        start-apply: 0 
+        start-apply: 0
   I:
-    price-mode: ALL
+    price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
     products:
       1:
@@ -170,14 +169,12 @@ items:
     buy-prices:
       1:
         economy-plugin: Vault
-        amount: '34.34'
+        amount: '15'
         placeholder: '{amount}$'
         start-apply: 0
     sell-prices:
       1:
         economy-plugin: Vault
-        amount: '34.2'
-        max-amount: 34.2
-        min-amount: 14
+        amount: '9'
         placeholder: '{amount}$'
         start-apply: 0

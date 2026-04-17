@@ -4,6 +4,7 @@ import cn.superiormc.ultimateshop.objects.caches.ObjectCache;
 import cn.superiormc.ultimateshop.gui.FormGUI;
 import cn.superiormc.ultimateshop.managers.CacheManager;
 import cn.superiormc.ultimateshop.managers.LanguageManager;
+import cn.superiormc.ultimateshop.managers.MenuStatusManager;
 import cn.superiormc.ultimateshop.objects.ObjectShop;
 import cn.superiormc.ultimateshop.objects.ObjectThingRun;
 import cn.superiormc.ultimateshop.objects.buttons.AbstractButton;
@@ -107,10 +108,10 @@ public class FormShopGUI extends FormGUI {
         tempVal5.title(TextUtil.parse(player, shop.getShopMenuObject().getString("title", shop.getShopDisplayName())
                 .replace("{shop-name}", shop.getShopDisplayName())));
         tempVal5.validResultHandler(response -> {
-            removeOpenGUIStatus();
+            MenuStatusManager.menuStatusManager.removeOpenGUIStatus(player, this);
             menuButtons.get(menuItems.get(response.clickedButton())).clickEvent(ClickType.LEFT, player);
         });
-        tempVal5.closedOrInvalidResultHandler(response -> removeOpenGUIStatus());
+        tempVal5.closedOrInvalidResultHandler(response -> MenuStatusManager.menuStatusManager.removeOpenGUIStatus(player, this));
         if (getMenu().getString("bedrock.content", null) != null) {
             tempVal5.content(TextUtil.parse(player, getMenu().getString("bedrock.content", "")));
         }

@@ -1,8 +1,8 @@
 package cn.superiormc.ultimateshop.commands;
 
-import cn.superiormc.ultimateshop.gui.AbstractGUI;
 import cn.superiormc.ultimateshop.gui.GUIStatus;
 import cn.superiormc.ultimateshop.managers.LanguageManager;
+import cn.superiormc.ultimateshop.managers.MenuStatusManager;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -25,7 +25,7 @@ public class SubUpdateGUI extends AbstractCommand {
                 return;
             }
         }
-        GUIStatus guiStatus = AbstractGUI.playerList.get(whoNeed);
+        GUIStatus guiStatus = MenuStatusManager.menuStatusManager.getGUIStatus(whoNeed);
         if (guiStatus != null && guiStatus.getGUI() != null) {
             guiStatus.getGUI().updateGUI();
             LanguageManager.languageManager.sendStringText(player, "gui-updated", "player", whoNeed.getName());
@@ -45,7 +45,7 @@ public class SubUpdateGUI extends AbstractCommand {
             LanguageManager.languageManager.sendStringText("error.player-not-found", "player", args[1]);
             return;
         }
-        GUIStatus guiStatus = AbstractGUI.playerList.get(whoNeed);
+        GUIStatus guiStatus = MenuStatusManager.menuStatusManager.getGUIStatus(whoNeed);
         if (guiStatus != null && guiStatus.getGUI() != null) {
             guiStatus.getGUI().updateGUI();
             LanguageManager.languageManager.sendStringText("gui-updated", "player", whoNeed.getName());
