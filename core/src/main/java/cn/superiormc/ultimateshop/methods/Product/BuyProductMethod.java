@@ -252,6 +252,7 @@ public class BuyProductMethod {
                     "item", item.getProduct(),
                     "item-name", TextUtil.parse(item.getDisplayName(player)),
                     "amount", String.valueOf(calculateAmount),
+                    "multiplier", String.valueOf(1.0),
                     "price", ObjectPrices.getDisplayNameInLine(player,
                             multi,
                             takeResult.getResultMap(),

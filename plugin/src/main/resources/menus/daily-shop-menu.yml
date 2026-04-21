@@ -14,7 +14,7 @@ layout:
   - '000000000'
   - '000`{random_daily;;1}``{random_daily;;2}``{random_daily;;3}`000'
   - '000000000'
-  - 'a0003000c'
+  - '00003000c'
 
 buttons:
   0:

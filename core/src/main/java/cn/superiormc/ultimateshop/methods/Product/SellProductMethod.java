@@ -3,6 +3,7 @@ package cn.superiormc.ultimateshop.methods.Product;
 import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.api.ItemFinishTransactionEvent;
 import cn.superiormc.ultimateshop.api.ItemPreTransactionEvent;
+import cn.superiormc.ultimateshop.api.ShopHelper;
 
 import cn.superiormc.ultimateshop.objects.caches.ObjectCache;
 import cn.superiormc.ultimateshop.managers.CacheManager;
@@ -19,6 +20,7 @@ import cn.superiormc.ultimateshop.objects.items.TakeResult;
 import cn.superiormc.ultimateshop.objects.items.prices.ObjectPrices;
 import cn.superiormc.ultimateshop.objects.items.products.ObjectProducts;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
+import cn.superiormc.ultimateshop.utils.MathUtil;
 import cn.superiormc.ultimateshop.utils.SchedulerUtil;
 import cn.superiormc.ultimateshop.utils.TextUtil;
 import org.bukkit.Bukkit;
@@ -103,6 +105,10 @@ public class SellProductMethod {
         }
         if (item.getSellPrice().empty) {
             return ProductTradeStatus.ERROR;
+        }
+        double finalMultiplier = multiplier;
+        if (!notCost || !ConfigManager.configManager.getBoolean("sell.multiplier.display-original-price")) {
+            finalMultiplier = MathUtil.multiply(finalMultiplier, ShopHelper.getSellMultiplier(player));
         }
         ObjectCache tempVal3 = CacheManager.cacheManager.getObjectCache(player);
         ObjectCache tempVal11 = CacheManager.cacheManager.serverCache;
@@ -253,7 +259,7 @@ public class SellProductMethod {
             return ProductTradeStatus.REQUIRE_CONDITION_NOT_MEET;
         }
         // 尝试给物品
-        if (!giveResult.give(playerUseTimes, multi, player, multiplier)) {
+        if (!giveResult.give(playerUseTimes, multi, player, finalMultiplier)) {
             if (shouldSendMessage) {
                 LanguageManager.languageManager.sendStringText(player, "inventory-full");
             }
@@ -289,6 +295,7 @@ public class SellProductMethod {
                     "success-sell",
                     "item",
                     item.getDisplayName(player),
+                    "multiplier", MathUtil.toDisplayString(finalMultiplier),
                     "price",
                     ObjectPrices.getDisplayNameInLine(player,
                             multi,
@@ -307,6 +314,7 @@ public class SellProductMethod {
                     "item", item.getProduct(),
                     "item-name", TextUtil.parse(item.getDisplayName(player)),
                     "amount", String.valueOf(calculateAmount),
+                    "multiplier", MathUtil.toDisplayString(finalMultiplier),
                     "price", ObjectPrices.getDisplayNameInLine(player,
                             multi,
                             giveResult.getResultMap(),

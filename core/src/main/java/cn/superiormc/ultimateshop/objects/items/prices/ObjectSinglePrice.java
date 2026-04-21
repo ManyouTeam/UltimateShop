@@ -22,6 +22,8 @@ import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static cn.superiormc.ultimateshop.utils.MathUtil.scale;
+
 public class ObjectSinglePrice extends AbstractSingleThing {
 
     private Map<Integer, BigDecimal> applyCostMap = new HashMap<>();
@@ -212,7 +214,10 @@ public class ObjectSinglePrice extends AbstractSingleThing {
                 cost = applyCostMap.get(times);
             }
         }
-        return cost.setScale(MathUtil.scale, RoundingMode.HALF_UP);
+        if (ConfigManager.configManager.getBoolean("math.static-scale")) {
+            return cost.setScale(scale, RoundingMode.HALF_UP);
+        }
+        return cost;
     }
 
     @Override
@@ -241,7 +246,7 @@ public class ObjectSinglePrice extends AbstractSingleThing {
         }
         return CommonUtil.modifyString(player, tempVal2,
                         "amount",
-                        String.valueOf(amount),
+                        MathUtil.toDisplayString(amount),
                         "status",
                         alwaysStatic || baseAmount == null ? "" : StaticPlaceholder.getCompareValue(player, baseAmount.multiply(new BigDecimal(multi)), amount));
     }

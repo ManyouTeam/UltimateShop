@@ -1,5 +1,6 @@
 package cn.superiormc.ultimateshop.listeners;
 
+import cn.superiormc.ultimateshop.api.ShopHelper;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.HookManager;
 import cn.superiormc.ultimateshop.managers.LanguageManager;
@@ -12,6 +13,7 @@ import cn.superiormc.ultimateshop.objects.items.AbstractSingleThing;
 import cn.superiormc.ultimateshop.objects.items.ThingMode;
 import cn.superiormc.ultimateshop.objects.items.prices.ObjectPrices;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
+import cn.superiormc.ultimateshop.utils.MathUtil;
 import cn.superiormc.ultimateshop.utils.SchedulerUtil;
 import org.bukkit.block.*;
 import org.bukkit.entity.Player;
@@ -111,16 +113,11 @@ public class SellStickListener implements Listener {
                     }
                 }
                 if (!result.isEmpty()) {
-                    if (ConfigManager.configManager.getBoolean("sell.sell-stick.display-calculate-multiplier")) {
-                        for (AbstractSingleThing singleThing : result.keySet()) {
-                            BigDecimal newValue = result.get(singleThing).multiply(BigDecimal.valueOf(sellStick.getMultiplier()));
-                            result.put(singleThing, newValue);
-                        }
-                    }
+                    double finalMultiplier = MathUtil.multiply(sellStick.getMultiplier(), ShopHelper.getSellMultiplier(event.getPlayer()));
                     LanguageManager.languageManager.sendStringText(event.getPlayer(), "start-sell-stick",
                             "reward", ObjectPrices.getDisplayNameInLine(event.getPlayer(), 1,
                                     result, ThingMode.ALL, true),
-                            "multiplier", String.valueOf(sellStick.getMultiplier()));
+                            "multiplier", MathUtil.toDisplayString(finalMultiplier));
                     sellStick.takeUsageTimes(event.getPlayer(), event.getItem());
                     sellStick.getAction().runAllActions(new ObjectThingRun(event.getPlayer()));
                 }

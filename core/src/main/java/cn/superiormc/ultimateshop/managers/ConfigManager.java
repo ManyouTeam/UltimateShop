@@ -11,6 +11,7 @@ import cn.superiormc.ultimateshop.objects.items.subobjects.ObjectRandomPlacehold
 import cn.superiormc.ultimateshop.objects.menus.ObjectFavouriteMenu;
 import cn.superiormc.ultimateshop.objects.menus.ObjectMenu;
 import cn.superiormc.ultimateshop.objects.menus.ObjectSearchMenu;
+import cn.superiormc.ultimateshop.utils.MathUtil;
 import cn.superiormc.ultimateshop.utils.TextUtil;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -68,6 +69,7 @@ public class ConfigManager {
                 initSellChestConfigs();
             }
         }
+        MathUtil.init();
     }
 
     private void initShopConfigs() {

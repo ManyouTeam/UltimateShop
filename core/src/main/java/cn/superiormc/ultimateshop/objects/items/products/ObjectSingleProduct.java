@@ -16,6 +16,8 @@ import java.math.RoundingMode;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static cn.superiormc.ultimateshop.utils.MathUtil.scale;
+
 public class ObjectSingleProduct extends AbstractSingleThing {
 
     private ObjectItem item;
@@ -52,7 +54,7 @@ public class ObjectSingleProduct extends AbstractSingleThing {
                 ConfigManager.configManager.getStringWithLang(player, "placeholder.price.unknown"));
         return CommonUtil.modifyString(player, tempVal1,
                 "amount",
-                String.valueOf(amount),
+                MathUtil.toDisplayString(amount),
                 "status",
                 alwaysStatic ? "" : StaticPlaceholder.getCompareValue(player, baseAmount.multiply(new BigDecimal(multi)), amount));
     }
@@ -130,7 +132,10 @@ public class ObjectSingleProduct extends AbstractSingleThing {
                 cost = minAmount;
             }
         }
-        return cost.setScale(MathUtil.scale, RoundingMode.HALF_UP);
+        if (ConfigManager.configManager.getBoolean("math.static-scale")) {
+            return cost.setScale(scale, RoundingMode.HALF_UP);
+        }
+        return cost;
     }
 
     protected String replacePlaceholder(int baseAmount, int offsetAmount, boolean buyOrSell, boolean placeholderBuyOrSell) {

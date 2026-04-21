@@ -95,7 +95,7 @@ public class ModifyDisplayItem {
             serverCache = CacheManager.cacheManager.serverCache.createUseTimesCache(item);
         }
 
-        Map<Character, Boolean> prefixConditions = buildPrefixMap(player, item, clickType, buyMore, bedrock, playerCache, serverCache);
+        Map<Character, ConditionResolver> conditionResolvers = buildConditionResolvers(player, item, clickType, buyMore, bedrock, playerCache, serverCache);
 
         List<String> buyPrice = ObjectPrices.getDisplayName(player, multi,
                 item.getBuyPrice().take(player.getInventory(), player,
@@ -117,13 +117,7 @@ public class ModifyDisplayItem {
             boolean condition = true;
 
             if (parsed.isConditional()) {
-                condition = parsed.conditions.stream().allMatch(c -> {
-                    Boolean val = prefixConditions.get(c.key);
-                    if (val == null) {
-                        val = false;
-                    }
-                    return c.negate != val;
-                });
+                condition = parsed.conditions.stream().allMatch(c -> c.negate != getConditionValue(conditionResolvers, c));
             }
 
             if (condition) {
@@ -214,11 +208,22 @@ public class ModifyDisplayItem {
     private static class ConditionElement {
         final char key;
         final boolean negate;
+        final String argument;
 
         ConditionElement(char key, boolean negate) {
+            this(key, negate, null);
+        }
+
+        ConditionElement(char key, boolean negate, String argument) {
             this.key = key;
             this.negate = negate;
+            this.argument = argument;
         }
+    }
+
+    @FunctionalInterface
+    private interface ConditionResolver {
+        boolean resolve(String argument);
     }
 
     private static class ParsedLine {
@@ -270,6 +275,14 @@ public class ModifyDisplayItem {
                 if (ch == '@' && idx + 1 < len) {
                     char key = line.charAt(idx + 1);
                     if (Character.isLetter(key)) {
+                        if (idx + 2 < len && line.charAt(idx + 2) == '[') {
+                            int end = line.indexOf(']', idx + 3);
+                            if (end != -1) {
+                                list.add(new ConditionElement(key, false, line.substring(idx + 3, end)));
+                                idx = end + 1;
+                                continue;
+                            }
+                        }
                         list.add(new ConditionElement(key, false));
                         idx += 2;
                         continue;
@@ -292,19 +305,35 @@ public class ModifyDisplayItem {
             while (i < inside.length()) {
                 char c = inside.charAt(i);
 
-                if (Character.isLetter(c)) {
-                    list.add(new ConditionElement(c, negate));
-                    i++;
-                    continue;
-                }
-
                 if (c == '@' && i + 1 < inside.length()) {
                     char k = inside.charAt(i + 1);
                     if (Character.isLetter(k)) {
+                        if (i + 2 < inside.length() && inside.charAt(i + 2) == '[') {
+                            int end = inside.indexOf(']', i + 3);
+                            if (end != -1) {
+                                list.add(new ConditionElement(k, negate, inside.substring(i + 3, end)));
+                                i = end + 1;
+                                continue;
+                            }
+                        }
                         list.add(new ConditionElement(k, negate));
                         i += 2;
                         continue;
                     }
+                }
+
+                if (Character.isLetter(c)) {
+                    if (i + 1 < inside.length() && inside.charAt(i + 1) == '[') {
+                        int end = inside.indexOf(']', i + 2);
+                        if (end != -1) {
+                            list.add(new ConditionElement(c, negate, inside.substring(i + 2, end)));
+                            i = end + 1;
+                            continue;
+                        }
+                    }
+                    list.add(new ConditionElement(c, negate));
+                    i++;
+                    continue;
                 }
 
                 i++;
@@ -312,7 +341,12 @@ public class ModifyDisplayItem {
         }
     }
 
-    private static Map<Character, Boolean> buildPrefixMap(
+    private static boolean getConditionValue(Map<Character, ConditionResolver> conditionResolvers, ConditionElement condition) {
+        ConditionResolver resolver = conditionResolvers.get(condition.key);
+        return resolver != null && resolver.resolve(condition.argument);
+    }
+
+    private static Map<Character, ConditionResolver> buildConditionResolvers(
             Player player,
             ObjectItem item,
             String clickType,
@@ -321,37 +355,37 @@ public class ModifyDisplayItem {
             ObjectUseTimesCache p,
             ObjectUseTimesCache s
     ) {
-        Map<Character, Boolean> map = new HashMap<>();
+        Map<Character, ConditionResolver> map = new HashMap<>();
 
-        map.put('a', !item.getBuyPrice().empty);
-        map.put('b', !item.getSellPrice().empty);
-        map.put('c', item.getPlayerBuyLimit(player) != -1);
-        map.put('d', item.getServerBuyLimit(player) != -1);
-        map.put('e', item.getPlayerSellLimit(player) != -1);
-        map.put('f', item.getServerSellLimit(player) != -1);
+        map.put('a', ignored -> !item.getBuyPrice().empty);
+        map.put('b', ignored -> !item.getSellPrice().empty);
+        map.put('c', ignored -> item.getPlayerBuyLimit(player) != -1);
+        map.put('d', ignored -> item.getServerBuyLimit(player) != -1);
+        map.put('e', ignored -> item.getPlayerSellLimit(player) != -1);
+        map.put('f', ignored -> item.getServerSellLimit(player) != -1);
 
-        map.put('g', item.getPlayerBuyLimit(player) > 0 && p.getBuyUseTimes() >= item.getPlayerBuyLimit(player));
-        map.put('h', item.getPlayerSellLimit(player) > 0 && p.getSellUseTimes() >= item.getPlayerSellLimit(player));
+        map.put('g', ignored -> item.getPlayerBuyLimit(player) > 0 && p.getBuyUseTimes() >= item.getPlayerBuyLimit(player));
+        map.put('h', ignored -> item.getPlayerSellLimit(player) > 0 && p.getSellUseTimes() >= item.getPlayerSellLimit(player));
 
-        map.put('i', item.getServerBuyLimit(player) > 0 && s.getBuyUseTimes() >= item.getServerBuyLimit(player));
-        map.put('j', item.getServerSellLimit(player) > 0 && s.getSellUseTimes() >= item.getServerSellLimit(player));
+        map.put('i', ignored -> item.getServerBuyLimit(player) > 0 && s.getBuyUseTimes() >= item.getServerBuyLimit(player));
+        map.put('j', ignored -> item.getServerSellLimit(player) > 0 && s.getSellUseTimes() >= item.getServerSellLimit(player));
 
-        map.put('l', item.isAllowFavourite());
-        map.put('o', ShopHelper.getOpeningMenu(player) != null && ShopHelper.getOpeningMenu(player).getType() == MenuType.Favourite);
-
-        map.put('k', item.getBuyMore());
-        map.put('m', !item.getSellPrice().empty && item.isEnableSellAll());
-        map.put('n', (!item.getBuyPrice().empty && parseClickType(item, clickType, true)) ||
+        map.put('k', ignored -> item.getBuyMore());
+        map.put('l', ignored -> item.isAllowFavourite());
+        map.put('m', ignored -> !item.getSellPrice().empty && item.isEnableSellAll());
+        map.put('n', ignored -> (!item.getBuyPrice().empty && parseClickType(item, clickType, true)) ||
                 (!item.getSellPrice().empty && parseClickType(item, clickType, false)));
+        map.put('o', ignored -> ShopHelper.getOpeningMenu(player) != null && ShopHelper.getOpeningMenu(player).getType() == MenuType.Favourite);
 
-        map.put('p', buyMore);
-        map.put('q', !buyMore);
+        map.put('p', ignored -> buyMore);
+        map.put('q', ignored -> !buyMore);
 
-        map.put('x', bedrock);
-        map.put('y', !bedrock);
+        map.put('u', ignored -> parseClickType(item, clickType, true));
+        map.put('v', ignored -> parseClickType(item, clickType, false));
 
-        map.put('u', parseClickType(item, clickType, true));
-        map.put('v', parseClickType(item, clickType, false));
+        map.put('x', ignored -> bedrock);
+        map.put('y', ignored -> !bedrock);
+        map.put('z', argument -> ShopHelper.isSellMultiplierActive(player, argument));
 
         return map;
     }

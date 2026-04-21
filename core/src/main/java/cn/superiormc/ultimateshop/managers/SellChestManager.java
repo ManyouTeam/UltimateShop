@@ -204,8 +204,7 @@ public class SellChestManager {
             return;
         }
 
-        Map<AbstractSingleThing, BigDecimal> result =
-                ShopHelper.sellAll(player, inventory, sellChest.getMultiplier());
+        Map<AbstractSingleThing, BigDecimal> result = ShopHelper.sellAll(player, inventory, sellChest.getMultiplier());
 
         if (result.isEmpty()) {
             return;

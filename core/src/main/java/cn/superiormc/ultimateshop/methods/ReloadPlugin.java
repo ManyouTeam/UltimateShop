@@ -35,7 +35,6 @@ public class ReloadPlugin {
         for (Player player : Bukkit.getOnlinePlayers()) {
             CacheManager.cacheManager.addObjectCache(player);
         }
-        MathUtil.scale = ConfigManager.configManager.getInt("math.scale", 2);
         LanguageManager.languageManager.sendStringText(sender, "plugin.reloaded");
     }
 }

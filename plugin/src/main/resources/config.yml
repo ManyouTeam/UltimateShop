@@ -54,7 +54,6 @@ sell:
     # The min value here is 5, if you set value less than 5, we will auto set the cooldown to 5 tick.
     # In ticks.
     cooldown: 5
-    display-calculate-multiplier: true
     # Support value: LEFT, RIGHT and LEFT;;RIGHT
     # Do not change this value unless you are know what you are doing!
     click-type: RIGHT
@@ -73,6 +72,31 @@ sell:
   max-amount: -1
   # Premium version only.
   shulker-box-sell: true
+  # Premium version only
+  multiplier:
+    enabled: false
+    display-original-price: true
+    # Support value: MAX, STACK
+    # MAX mode: will use the maximum value as the result
+    # STACK mode: As long as the player meets the conditions, it will be stacked and multiplied.
+    mode: STACK
+    value:
+      default: 1
+      rich: 0.9
+      vip: 1.1
+    value-conditions:
+      # Tax
+      rich:
+        1:
+          type: placeholder
+          placeholder: '%vault_eco_balance%'
+          rule: '>='
+          value: 50000
+      # Bonus for VIP
+      vip:
+        1:
+          type: permission
+          permission: 'group.vip'
 
 give-item:
   # Support value: BUKKIT, SMART
@@ -234,6 +258,15 @@ use-times:
 math:
   enabled: true
   scale: 2
+  static-scale: false
+
+number-display:
+  format:
+    enabled: true
+    decimal: "#,##0.00##########"
+    integer: "#,##0"
+  strip-trailing-zeros:
+    enabled: true
 
 # Premium version only.
 log-transaction:
@@ -241,7 +274,7 @@ log-transaction:
   enabled: false
   # If set to empty value, we will just print the log into console.
   file: 'log.txt'
-  format: '{time} | {player} | {shop} | {buy-or-sell} | {item-name} x{amount} | {price}'
+  format: '{time} | {player} | {shop} | {buy-or-sell} | {item-name} x{amount} | {price} | Price Multiplier: x{multiplier}'
   time-format: "yyyy-MM-dd HH:mm:ss"
 
 display-item:

@@ -1,5 +1,6 @@
 package cn.superiormc.ultimateshop.api;
 
+import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.managers.CacheManager;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.MenuStatusManager;
@@ -11,14 +12,18 @@ import cn.superiormc.ultimateshop.objects.ObjectThingRun;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import cn.superiormc.ultimateshop.objects.caches.ObjectUseTimesCache;
 import cn.superiormc.ultimateshop.objects.items.*;
+import cn.superiormc.ultimateshop.objects.items.ObjectCondition;
 import cn.superiormc.ultimateshop.objects.items.prices.ObjectPrices;
 import cn.superiormc.ultimateshop.objects.menus.ObjectMenu;
+import cn.superiormc.ultimateshop.utils.MathUtil;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -195,6 +200,10 @@ public class ShopHelper {
 
     public static boolean giveThing(int times, int multi, Player player, double multiplier, Map<AbstractSingleThing, BigDecimal> result) {
         boolean resultBoolean = true;
+        for (AbstractSingleThing singleThing : result.keySet()) {
+            BigDecimal newValue = result.get(singleThing).multiply(BigDecimal.valueOf(multiplier));
+            result.put(singleThing, newValue);
+        }
         Collection<GiveItemStack> giveItemStacks = new ArrayList<>();
         for (AbstractSingleThing singleThing: result.keySet()) {
             GiveItemStack giveItemStack = singleThing.playerCanGive(player, result.get(singleThing).doubleValue());
@@ -207,9 +216,60 @@ public class ShopHelper {
             return false;
         }
         for (GiveItemStack giveItemStack : giveItemStacks) {
-            giveItemStack.giveToPlayer(times, multi, multiplier, player);
+            giveItemStack.giveToPlayer(times, multi, player);
         }
         return true;
+    }
+
+    public static double getSellMultiplier(Player player) {
+        if (player == null || UltimateShop.freeVersion) {
+            return 1D;
+        }
+
+        ConfigurationSection multiplierSection = ConfigManager.configManager.getSection("sell.multiplier");
+        if (multiplierSection == null || !multiplierSection.getBoolean("enabled")) {
+            return 1D;
+        }
+
+        ConfigurationSection valueSection = multiplierSection.getConfigurationSection("value");
+        if (valueSection == null) {
+            return 1D;
+        }
+
+        double defaultValue = valueSection.getDouble("default", 1D);
+        String mode = multiplierSection.getString("mode", "MAX");
+        double result = defaultValue;
+
+        for (String key : valueSection.getKeys(false)) {
+            if ("default".equalsIgnoreCase(key)) {
+                continue;
+            }
+            if (!isSellMultiplierActive(player, key)) {
+                continue;
+            }
+
+            double value = valueSection.getDouble(key, 1D);
+            if ("STACK".equalsIgnoreCase(mode)) {
+                result = MathUtil.multiply(result, value);
+                continue;
+            }
+            result = Math.max(result, value);
+        }
+        return result;
+    }
+
+    public static boolean isSellMultiplierActive(Player player, String key) {
+        if (player == null || key == null || key.isEmpty() || UltimateShop.freeVersion) {
+            return false;
+        }
+        if (!ConfigManager.configManager.getBoolean("sell.multiplier.enabled")) {
+            return false;
+        }
+        ConfigurationSection conditionSection = ConfigManager.configManager.getSection("sell.multiplier.value-conditions." + key);
+        if (conditionSection == null) {
+            return false;
+        }
+        return new ObjectCondition(conditionSection).getAllBoolean(new ObjectThingRun(player));
     }
 
     public static Map<AbstractSingleThing, BigDecimal> sellAll(Player player, Inventory inventory, double multiplier) {
@@ -220,7 +280,6 @@ public class ShopHelper {
         if (storage.isEmpty()) {
             return new HashMap<>();
         }
-
         Map<AbstractSingleThing, BigDecimal> result = new HashMap<>();
         boolean firstSell = false;
 

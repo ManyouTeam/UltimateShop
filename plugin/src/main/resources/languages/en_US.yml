@@ -99,8 +99,8 @@ add-times: "&#98FB98[UltimateShop] &fAdd {times} to {player}'s {item} use times!
 set-times: "&#98FB98[UltimateShop] &fSet {player}'s {item} use times to {times}!"
 add-times-shop: "&#98FB98[UltimateShop] &fAdd {times} to {player}'s all {shop}'s product use times!"
 set-times-shop: "&#98FB98[UltimateShop] &fSet {player}'s all {shop}'s product use times to {times}!"
-success-buy: "&#98FB98[UltimateShop] &fSuccessfully purchased {item}x{amount}, cost {price}!"
-success-sell: "&#98FB98[UltimateShop] &fSuccessfully sold {item}x{amount}, gain {price}!"
+success-buy: "&#98FB98[UltimateShop] &fSuccessfully purchased {item}&fx{amount}, cost {price}&f!"
+success-sell: "&#98FB98[UltimateShop] &fSuccessfully sold {item}&fx{amount}, gain {price} &fwith multiplier &cx{multiplier}!"
 favourite-added: "&#98FB98[UltimateShop] &fAdded {item} into favourite menu {menu}."
 favourite-removed: "&#98FB98[UltimateShop] &fRemoved {item} from favourite menu {menu}."
 menu-condition-not-meet: "&#98FB98[UltimateShop] &cYou didn't meet the condition that open this menu!"
@@ -322,7 +322,9 @@ override-lang:
     add-lore:
       - '@n '
       - '@a&ePurchase: {buy-price}'
-      - '@b&eSell: {sell-price}'
+      - '@b(@z[rich])&eSell: {sell-price}'
+      - '@b@z[rich]&eSell: {sell-price} &8(Tax:&c -10%&8)'
+      - '@b@z[vip]&6VIP Bonus:&a +10%'
       - '@c&#FF7777Player Buy Stock: {buy-times-player}/{buy-limit-player}'
       - '@d&#FF7777Server Buy Stock: {buy-times-server}/{buy-limit-server}'
       - '@e&#FF7777Player Sell Limit: {sell-times-player}/{sell-limit-player}'

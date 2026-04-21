@@ -1,5 +1,6 @@
 package cn.superiormc.ultimateshop.objects.items;
 
+import cn.superiormc.ultimateshop.managers.ConfigManager;
 import org.bukkit.entity.Player;
 
 import java.math.BigDecimal;
@@ -33,6 +34,13 @@ public class GiveResult {
         return resultMap;
     }
 
+    public void setMultiplier(double multiplier) {
+        for (AbstractSingleThing singleThing : resultMap.keySet()) {
+            BigDecimal newValue = resultMap.get(singleThing).multiply(BigDecimal.valueOf(multiplier));
+            resultMap.put(singleThing, newValue);
+        }
+    }
+
     public AbstractThings getThings() {
         for (AbstractSingleThing singleThing : resultMap.keySet()) {
             return singleThing.getThings();
@@ -46,6 +54,7 @@ public class GiveResult {
 
     public boolean give(int times, int multi, Player player, double multiplier) {
         boolean resultBoolean = true;
+        setMultiplier(multiplier);
         Collection<GiveItemStack> giveItemStacks = new ArrayList<>();
         for (AbstractSingleThing singleThing: resultMap.keySet()) {
             GiveItemStack giveItemStack = singleThing.playerCanGive(player, resultMap.get(singleThing).doubleValue());
@@ -58,7 +67,7 @@ public class GiveResult {
             return false;
         }
         for (GiveItemStack giveItemStack : giveItemStacks) {
-            giveItemStack.giveToPlayer(times, multi, multiplier, player);
+            giveItemStack.giveToPlayer(times, multi, player);
         }
         return true;
     }

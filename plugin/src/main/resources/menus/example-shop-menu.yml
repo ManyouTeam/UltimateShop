@@ -46,7 +46,7 @@ buttons:
   f:
     display-item:
       material: NAME_TAG
-      name: '{lang:favourite-menu-button-name}'
+      name: '{lang:favourite-menu-button-name} &c(PREMIUM)'
       lore:
         - '{lang:favourite-menu-button-line-1}'
         - '{lang:favourite-menu-button-line-2}'
@@ -57,7 +57,7 @@ buttons:
   s:
     display-item:
       material: HOPPER
-      name: '{lang:search-menu-button-name}'
+      name: '{lang:search-menu-button-name} &c(PREMIUM)'
       lore:
         - '{lang:search-menu-button-line-1}'
         - '{lang:search-menu-button-line-2}'

@@ -90,8 +90,8 @@ add-times: "&#98FB98[UltimateShop] &f添加 {times} 次数到玩家 {player} 的
 set-times: '&#98FB98[UltimateShop] &f设置 {player} 的 {item} 次数为 {times}!'
 add-times-shop: "&#98FB98[UltimateShop] &f添加 {times} 次数到玩家 {player} 在商店 {shop} 中所有商品!"
 set-times-shop: "&#98FB98[UltimateShop] &f设置玩家 {player} 在 {shop} 商店中所有商品的次数为 {times}!"
-success-buy: '&#98FB98[UltimateShop] &f成功购买 {item} x{amount}，&f花费 {price}!'
-success-sell: '&#98FB98[UltimateShop] &f成功出售 {item} x{amount}，&f获得 {price}!'
+success-buy: '&#98FB98[UltimateShop] &f成功购买 {item}&f x{amount}，&f花费 {price}&f!'
+success-sell: '&#98FB98[UltimateShop] &f成功以倍率 &cx{multiplier} &f出售 {item}&f x{amount}，&f获得 {price}&f!'
 menu-condition-not-meet: '&#98FB98[UltimateShop] &c你目前不能打开该菜单!'
 buy-condition-not-meet: '&#98FB98[UltimateShop] &c你目前不能购买该商品!'
 sell-condition-not-meet: '&#98FB98[UltimateShop]  &c你目前不能回收该商品!'
@@ -318,7 +318,9 @@ override-lang:
     add-lore:
       - '@n '
       - '@a&e买价: {buy-price}'
-      - '@b&e卖价: {sell-price}'
+      - '@b(@z[rich])&e卖价: {sell-price}'
+      - '@b@z[rich]&e卖价: {sell-price} &8（税：&c-10%&8)'
+      - '@b@z[vip]&6VIP额外增益：&a+10%'
       - '@c&#FF7777玩家购买余量: {buy-times-player}/{buy-limit-player}'
       - '@d&#FF7777全服购买余量: {buy-times-server}/{buy-limit-server}'
       - '@e&#FF7777玩家出售限量: {sell-times-player}/{sell-limit-player}'
