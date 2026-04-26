@@ -74,7 +74,7 @@ public class FormFavouriteGUI extends FormGUI {
         editModeComponent = null;
 
         SimpleForm.Builder builder = SimpleForm.builder();
-        builder.title(TextUtil.parse(player, CommonUtil.parseLang(player, menu.getString("title", "Favourite"))));
+        builder.title(TextUtil.parse(player, menu.getString("title", "Favourite")));
 
         int displayed = 0;
         for (Map.Entry<FavouriteProductReference, ObjectItem> entry : favouriteProducts.entrySet()) {
@@ -112,7 +112,7 @@ public class FormFavouriteGUI extends FormGUI {
         }
 
         if (menu.getString("bedrock.content", null) != null) {
-            builder.content(TextUtil.parse(player, CommonUtil.parseLang(player, menu.getString("bedrock.content", ""))));
+            builder.content(TextUtil.parse(player, menu.getString("bedrock.content", "")));
         }
 
         builder.validResultHandler(response -> {
@@ -157,17 +157,17 @@ public class FormFavouriteGUI extends FormGUI {
 
     private void openEditActionForm(ObjectFavouriteResultButton resultButton) {
         SimpleForm.Builder builder = SimpleForm.builder();
-        builder.title(TextUtil.parse(player, CommonUtil.parseLang(player,
+        builder.title(TextUtil.parse(player,
                 ConfigManager.configManager.getStringWithLang(player,
                         "menu.bedrock.favourite-edit.title",
                         "Edit Favourite: {item-name}",
-                        "item-name", resultButton.getItem().getDisplayName(player)))));
-        builder.content(TextUtil.parse(player, CommonUtil.parseLang(player,
+                        "item-name", resultButton.getItem().getDisplayName(player))));
+        builder.content(TextUtil.parse(player,
                 ConfigManager.configManager.getStringWithLang(player,
                         "menu.bedrock.favourite-edit.content",
                         "Choose how to edit this favourite entry.",
                         "item-name", resultButton.getItem().getDisplayName(player),
-                        "index", String.valueOf(resultButton.getIndex() + 1)))));
+                        "index", String.valueOf(resultButton.getIndex() + 1))));
 
         ButtonComponent moveForward = ButtonComponent.of(TextUtil.parse(player,
                 ConfigManager.configManager.getStringWithLang(player, "menu.bedrock.favourite-edit.buttons.forward", "Move Forward")));

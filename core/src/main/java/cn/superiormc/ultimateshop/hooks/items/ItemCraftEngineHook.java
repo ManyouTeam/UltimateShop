@@ -1,7 +1,8 @@
 package cn.superiormc.ultimateshop.hooks.items;
 
+import cn.superiormc.ultimateshop.managers.ErrorManager;
 import net.momirealms.craftengine.bukkit.api.CraftEngineItems;
-import net.momirealms.craftengine.core.item.CustomItem;
+import net.momirealms.craftengine.bukkit.item.BukkitItemDefinition;
 import net.momirealms.craftengine.core.util.Key;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -17,11 +18,11 @@ public class ItemCraftEngineHook extends AbstractItemHook {
         if (hookItemID.split(";;").length != 2) {
             return returnNullItem(hookItemID);
         }
-        CustomItem<ItemStack> customItem = CraftEngineItems.byId(new Key(hookItemID.split(";;")[0], hookItemID.split(";;")[1]));
+        BukkitItemDefinition customItem = CraftEngineItems.byId(new Key(hookItemID.split(";;")[0], hookItemID.split(";;")[1]));
         if (customItem == null) {
             return null;
         }
-        return customItem.buildItemStack();
+        return customItem.buildBukkitItem(player);
     }
 
     @Override

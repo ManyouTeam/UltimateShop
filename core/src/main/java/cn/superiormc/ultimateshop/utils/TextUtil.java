@@ -225,10 +225,17 @@ public class TextUtil {
         return parseBuiltInPlaceholder(text, player);
     }
 
+    public static Pattern pattern1 = Pattern.compile("\\{conditional_(.*?)}");
+    public static Pattern pattern2 = Pattern.compile("\\{random_(.*?)}");
+    public static Pattern pattern3 = Pattern.compile("\\{random-times_(.*?)}");
+    public static Pattern pattern4 = Pattern.compile("\\{compare_([\\d.]+)_([\\d.]+)}");
+    public static Pattern pattern5 = Pattern.compile("\\{math_(.*?)}");
+    public static Pattern pattern6 = Pattern.compile("\\{random-next_(.*?)}");
+    public static Pattern pattern7 = Pattern.compile("\\{cron_\"([^\"]+)\"\\}");
+
     public static String parseBuiltInPlaceholder(String text, Player player) {
         text = text.replace("{discount_", "{conditional_");
         if (player != null) {
-            Pattern pattern1 = Pattern.compile("\\{conditional_(.*?)}");
             Matcher matcher1 = pattern1.matcher(text);
             while (matcher1.find()) {
                 String discount = matcher1.group(1);
@@ -236,7 +243,6 @@ public class TextUtil {
                         String.valueOf(ObjectConditionalPlaceholder.getNowValue(discount, player)));
             }
         }
-        Pattern pattern2 = Pattern.compile("\\{random_(.*?)}");
         Matcher matcher2 = pattern2.matcher(text);
         while (matcher2.find()) {
             String placeholder = matcher2.group(1);
@@ -249,14 +255,12 @@ public class TextUtil {
             text = text.replace("{random_" + matcher2.group(1) + "}",
                     ObjectRandomPlaceholder.getNowValue(player, placeholder, number));
         }
-        Pattern pattern3 = Pattern.compile("\\{random-times_(.*?)}");
         Matcher matcher3 = pattern3.matcher(text);
         while (matcher3.find()) {
             String placeholder = matcher3.group(1);
             text = text.replace("{random-times_" + placeholder + "}",
                     ObjectRandomPlaceholder.getRefreshDoneTime(player, placeholder));
         }
-        Pattern pattern4 = Pattern.compile("\\{compare_([\\d.]+)_([\\d.]+)}");
         Matcher matcher4 = pattern4.matcher(text);
         while (matcher4.find()) {
             String compareNumber = matcher4.group(1);
@@ -264,21 +268,18 @@ public class TextUtil {
             text = text.replace("{compare_" + compareNumber + "_" + baseNumber + "}",
                     StaticPlaceholder.getCompareValue(player, new BigDecimal(baseNumber), new BigDecimal(compareNumber)));
         }
-        Pattern pattern5 = Pattern.compile("\\{math_(.*?)}");
         Matcher matcher5 = pattern5.matcher(text);
         while (matcher5.find()) {
             String placeholder = matcher5.group(1);
             text = text.replace("{math_" + placeholder + "}",
                     MathUtil.doCalculate(placeholder, ConfigManager.configManager.getInt("placeholder.math.scale", 0)).toString());
         }
-        Pattern pattern6 = Pattern.compile("\\{random-next_(.*?)}");
         Matcher matcher6 = pattern6.matcher(text);
         while (matcher6.find()) {
             String placeholder = matcher6.group(1);
             text = text.replace("{random-next_" + placeholder + "}",
                     ObjectRandomPlaceholder.getNextTime(player, placeholder));
         }
-        Pattern pattern7 = Pattern.compile("\\{cron_\"([^\"]+)\"\\}");
         Matcher matcher7 = pattern7.matcher(text);
         while (matcher7.find()) {
             String cronExpression = matcher7.group(1);

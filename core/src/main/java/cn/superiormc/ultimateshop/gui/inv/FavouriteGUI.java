@@ -67,7 +67,7 @@ public class FavouriteGUI extends InvGUI {
             return;
         }
 
-        title = TextUtil.withPAPI(CommonUtil.parseLang(player, menu.getString("title", "Favourite")), player);
+        title = TextUtil.withPAPI(menu.getString("title", "Favourite"), player);
         if (Objects.isNull(inv)) {
             inv = UltimateShop.methodUtil.createNewInv(player, menu.getInt("size", 54), title);
         }

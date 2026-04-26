@@ -119,6 +119,7 @@ public class ObjectMenu {
             }
         }
     }
+
     public void initMenu() {
         if (type == MenuType.Common) {
             commonMenus.put(fileName, this);

@@ -18,7 +18,7 @@
     <properties>
         <java.version>16</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <revision>4.4.4</revision>
+        <revision>4.4.6</revision>
         <name>UltimateShop</name>
     </properties>
 
@@ -207,7 +207,7 @@
         </repository>
         <repository>
             <id>momirealms repo</id>
-            <url>https://repo.momirealms.net/releases/</url>
+            <url>https://repo.momirealms.net/snapshots</url>
         </repository>
         <repository>
             <id>bg-repo</id>

@@ -70,13 +70,17 @@ public class ObjectDisplayItem {
                     ConfigurationSection tempVal1 = conditionSection.getConfigurationSection(conditionID);
                     if (tempVal1 != null) {
                         ObjectCondition condition = new ObjectCondition(tempVal1);
+                        ConfigurationSection tempVal2 = section.getConfigurationSection(conditionID);
                         if (condition.getAllBoolean(new ObjectThingRun(player))) {
-                            String amount = section.getString("amount", "1");
+                            if (tempVal2 == null) {
+                                continue;
+                            }
+                            String amount = tempVal2.getString("amount", "1");
                             ItemStack displayItem = BuildItem.buildItemStack(player,
-                                    section.getConfigurationSection(conditionID),
+                                    tempVal2,
                                     MathUtil.doCalculate(TextUtil.withPAPI(amount, player)).intValue());
                             addLoreDisplayItem = displayItem.clone();
-                            usedSection = section.getConfigurationSection(conditionID);
+                            usedSection = tempVal2;
                             break;
                         }
                     }
@@ -89,8 +93,7 @@ public class ObjectDisplayItem {
         if (usedSection == null) {
             usedSection = section;
         }
-        ObjectDisplayItemStack displayItemStack = new ObjectDisplayItemStack(player, addLoreDisplayItem, usedSection, item);
-        return displayItemStack;
+        return new ObjectDisplayItemStack(player, addLoreDisplayItem, usedSection, item);
     }
 
     public int getAmountPlaceholder(Player player) {

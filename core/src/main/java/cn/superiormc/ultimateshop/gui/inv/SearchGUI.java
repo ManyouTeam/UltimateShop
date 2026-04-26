@@ -65,7 +65,7 @@ public class SearchGUI extends InvGUI {
             return;
         }
 
-        title = TextUtil.withPAPI(CommonUtil.parseLang(player, menu.getString("title", "Search")), player);
+        title = TextUtil.withPAPI(menu.getString("title", "Search"), player);
         if (Objects.isNull(inv)) {
             inv = UltimateShop.methodUtil.createNewInv(player, menu.getInt("size", 54), title);
         }
