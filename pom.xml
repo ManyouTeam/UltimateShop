@@ -18,7 +18,7 @@
     <properties>
         <java.version>16</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <revision>4.4.6</revision>
+        <revision>4.5.0</revision>
         <name>UltimateShop</name>
     </properties>
 
