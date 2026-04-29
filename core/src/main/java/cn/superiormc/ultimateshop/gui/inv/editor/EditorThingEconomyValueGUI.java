@@ -43,7 +43,7 @@ public class EditorThingEconomyValueGUI extends InvGUI {
         String currency = getCurrency(section, provider);
         String placeholder = getPlaceholder(section, provider);
 
-        inv.setItem(10, EditorUtil.createItem(Material.GOLD_INGOT,
+        setInvItem(10, EditorUtil.createItem(Material.GOLD_INGOT,
                 EditorLang.text(player, "editor.thing-economy.provider.name", "&eProvider"),
                 List.of(
                         EditorLang.text(player, "editor.economy.current", "&7Current: &f{value}", "value", provider),
@@ -52,7 +52,7 @@ public class EditorThingEconomyValueGUI extends InvGUI {
                         EditorLang.text(player, "editor.action.cycle", "&aLeft click to cycle"),
                         EditorLang.text(player, "editor.action.cycle-back", "&aShift-left to cycle backwards")
                 )));
-        inv.setItem(12, EditorUtil.createItem(Material.NAME_TAG,
+        setInvItem(12, EditorUtil.createItem(Material.NAME_TAG,
                 EditorLang.text(player, "editor.thing-economy.currency.name", "&eCurrency Type"),
                 List.of(
                         EditorLang.text(player, "editor.economy.current", "&7Current: &f{value}", "value", currency),
@@ -60,7 +60,7 @@ public class EditorThingEconomyValueGUI extends InvGUI {
                                 "&7Currency id used by the selected economy provider."),
                         EditorLang.text(player, "editor.action.edit", "&aLeft click to edit")
                 )));
-        inv.setItem(14, EditorUtil.createItem(Material.PAPER,
+        setInvItem(14, EditorUtil.createItem(Material.PAPER,
                 EditorLang.text(player, "editor.thing-economy.placeholder.name", "&ePlaceholder"),
                 List.of(
                         EditorLang.text(player, "editor.economy.current", "&7Current: &f{value}",
@@ -70,35 +70,35 @@ public class EditorThingEconomyValueGUI extends InvGUI {
                         EditorLang.text(player, "editor.action.edit", "&aLeft click to edit"),
                         EditorLang.text(player, "editor.action.delete", "&cRight click to delete")
                 )));
-        inv.setItem(18, EditorUtil.createItem(Material.COMPARATOR,
+        setInvItem(18, EditorUtil.createItem(Material.COMPARATOR,
                 EditorLang.text(player, "editor.thing-economy.apply-conditions.name", "&eApply Conditions"),
                 List.of(EditorLang.text(player, "editor.thing-economy.apply-conditions.desc",
                         "&7Open apply-conditions for this single thing"))));
-        inv.setItem(19, EditorUtil.createItem(Material.COMPARATOR,
+        setInvItem(19, EditorUtil.createItem(Material.COMPARATOR,
                 EditorLang.text(player, "editor.thing-economy.require-conditions.name", "&eRequire Conditions"),
                 List.of(EditorLang.text(player, "editor.thing-economy.require-conditions.desc",
                         "&7Open require-conditions for this single thing"))));
-        inv.setItem(20, EditorUtil.createItem(Material.BLAZE_POWDER,
+        setInvItem(20, EditorUtil.createItem(Material.BLAZE_POWDER,
                 EditorLang.text(player, "editor.thing-economy.give-actions.name", "&eGive Actions"),
                 List.of(EditorLang.text(player, "editor.thing-economy.give-actions.desc",
                         "&7Open give-actions for this single thing"))));
-        inv.setItem(21, EditorUtil.createItem(Material.BLAZE_POWDER,
+        setInvItem(21, EditorUtil.createItem(Material.BLAZE_POWDER,
                 EditorLang.text(player, "editor.thing-economy.take-actions.name", "&eTake Actions"),
                 List.of(EditorLang.text(player, "editor.thing-economy.take-actions.desc",
                         "&7Open take-actions for this single thing"))));
-        inv.setItem(22, EditorUtil.createItem(Material.BOOK,
+        setInvItem(22, EditorUtil.createItem(Material.BOOK,
                 EditorLang.text(player, "editor.thing-economy.preset.name", "&ePreset Editor"),
                 List.of(EditorLang.text(player, "editor.thing-economy.preset.desc",
                         "&7Return to the single thing preset editor"))));
-        inv.setItem(23, EditorUtil.createItem(Material.EMERALD,
+        setInvItem(23, EditorUtil.createItem(Material.EMERALD,
                 EditorLang.text(player, "editor.thing-economy.apply.name", "&aApply EconomyFormat"),
                 List.of(EditorLang.text(player, "editor.thing-economy.apply.desc",
                         "&7Convert this single thing to economy format and keep common control fields"))));
-        inv.setItem(24, EditorUtil.createItem(Material.BARRIER,
+        setInvItem(24, EditorUtil.createItem(Material.BARRIER,
                 EditorLang.text(player, "editor.thing-economy.clear.name", "&cClear Economy Fields"),
                 List.of(EditorLang.text(player, "editor.thing-economy.clear.desc",
                         "&7Remove economy-plugin / economy-type fields only"))));
-        inv.setItem(26, EditorUtil.createItem(Material.ARROW,
+        setInvItem(26, EditorUtil.createItem(Material.ARROW,
                 EditorLang.text(player, "editor.common.back.name", "&eBack"),
                 List.of(EditorLang.text(player, "editor.thing-economy.back.desc", "&7Return to the preset editor"))));
     }

@@ -1,6 +1,7 @@
 package cn.superiormc.ultimateshop.objects.buttons;
 
 import cn.superiormc.ultimateshop.UltimateShop;
+import cn.superiormc.ultimateshop.gui.InvGUI;
 import cn.superiormc.ultimateshop.gui.form.FormInfoGUI;
 import cn.superiormc.ultimateshop.gui.inv.BuyMoreGUI;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
@@ -32,6 +33,7 @@ import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
+import java.util.Map;
 
 public class ObjectItem extends AbstractButton {
 
@@ -681,6 +683,27 @@ public class ObjectItem extends AbstractButton {
 
     public boolean isAllowFavourite() {
         return allowFavourite;
+    }
+
+    @Override
+    public void guiUpdateSlot(int slot, InvGUI gui) {
+        UseTimesStorageKey storageKey = getUseTimesStorageKey();
+        boolean updated = false;
+
+        for (Map.Entry<Integer, ?> entry : gui.menuButtons.entrySet()) {
+            if (!(entry.getValue() instanceof ObjectItem itemButton)) {
+                continue;
+            }
+            if (!storageKey.equals(itemButton.getUseTimesStorageKey())) {
+                continue;
+            }
+            gui.updateSlot(entry.getKey());
+            updated = true;
+        }
+
+        if (!updated) {
+            gui.updateSlot(slot);
+        }
     }
 
     @Override

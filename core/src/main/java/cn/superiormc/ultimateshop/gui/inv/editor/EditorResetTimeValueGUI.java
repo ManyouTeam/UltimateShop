@@ -44,7 +44,7 @@ public class EditorResetTimeValueGUI extends InvGUI {
         inv.clear();
 
         String mode = getMode();
-        inv.setItem(46, EditorUtil.createItem(Material.BOOK,
+        setInvItem(46, EditorUtil.createItem(Material.BOOK,
                 EditorLang.text(player, "editor.reset-time.mode.name", "&eCurrent Mode"),
                 modeLore(mode)));
 
@@ -58,7 +58,7 @@ public class EditorResetTimeValueGUI extends InvGUI {
             constructNeverMode();
         }
 
-        inv.setItem(45, EditorUtil.createItem(Material.ARROW,
+        setInvItem(45, EditorUtil.createItem(Material.ARROW,
                 EditorLang.text(player, "editor.common.back.name", "&eBack"),
                 List.of(EditorLang.text(player, "editor.common.back.desc", "&7Return to the previous screen"))));
     }
@@ -90,7 +90,7 @@ public class EditorResetTimeValueGUI extends InvGUI {
         List<String> values = getListValues();
         for (int i = 0; i < Math.min(45, values.size()); i++) {
             String value = values.get(i);
-            inv.setItem(i, EditorUtil.createItem(Material.CLOCK,
+            setInvItem(i, EditorUtil.createItem(Material.CLOCK,
                     "&e#" + (i + 1),
                     List.of(
                             EditorLang.text(player, "editor.summary.value", "&7Value: &f{value}", "value", value),
@@ -98,10 +98,10 @@ public class EditorResetTimeValueGUI extends InvGUI {
                             EditorLang.text(player, "editor.action.delete", "&cRight click to delete")
                     )));
         }
-        inv.setItem(49, EditorUtil.createItem(Material.ANVIL,
+        setInvItem(49, EditorUtil.createItem(Material.ANVIL,
                 EditorLang.text(player, "editor.reset-time.add.name", "&eAdd Time"),
                 List.of(EditorLang.text(player, "editor.reset-time.add.desc", "&7Add a new reset time entry"))));
-        inv.setItem(50, EditorUtil.createItem(Material.BARRIER,
+        setInvItem(50, EditorUtil.createItem(Material.BARRIER,
                 EditorLang.text(player, "editor.common.clear.name", "&cClear"),
                 List.of(EditorLang.text(player, "editor.common.clear.desc", "&7Remove this value"))));
     }
@@ -132,7 +132,7 @@ public class EditorResetTimeValueGUI extends InvGUI {
 
     private void constructRandomPlaceholderMode() {
         String current = target.getConfig().getString(path);
-        inv.setItem(13, EditorUtil.createItem(Material.CLOCK,
+        setInvItem(13, EditorUtil.createItem(Material.CLOCK,
                 EditorLang.text(player, "editor.reset-time.random.name", "&eRandom Placeholder"),
                 List.of(
                         EditorLang.text(player, "editor.reset-time.current", "&7Current: &f{value}",
@@ -142,7 +142,7 @@ public class EditorResetTimeValueGUI extends InvGUI {
                         EditorLang.text(player, "editor.action.cycle", "&aLeft click to cycle"),
                         EditorLang.text(player, "editor.action.cycle-back", "&aShift-left to cycle backwards")
                 )));
-        inv.setItem(15, EditorUtil.createItem(Material.BARRIER,
+        setInvItem(15, EditorUtil.createItem(Material.BARRIER,
                 EditorLang.text(player, "editor.common.clear.name", "&cClear"),
                 List.of(EditorLang.text(player, "editor.common.clear.desc", "&7Remove this value"))));
     }
@@ -162,7 +162,7 @@ public class EditorResetTimeValueGUI extends InvGUI {
 
     private void constructManualStringMode() {
         String current = target.getConfig().getString(path);
-        inv.setItem(13, EditorUtil.createItem(Material.NAME_TAG,
+        setInvItem(13, EditorUtil.createItem(Material.NAME_TAG,
                 EditorLang.text(player, "editor.reset-time.manual.name", "&eEdit Value"),
                 List.of(
                         EditorLang.text(player, "editor.reset-time.current", "&7Current: &f{value}",
@@ -171,7 +171,7 @@ public class EditorResetTimeValueGUI extends InvGUI {
                                         : EditorUtil.trim(current, 42)),
                         EditorLang.text(player, "editor.action.edit", "&aLeft click to edit")
                 )));
-        inv.setItem(15, EditorUtil.createItem(Material.BARRIER,
+        setInvItem(15, EditorUtil.createItem(Material.BARRIER,
                 EditorLang.text(player, "editor.common.clear.name", "&cClear"),
                 List.of(EditorLang.text(player, "editor.common.clear.desc", "&7Remove this value"))));
     }
@@ -192,7 +192,7 @@ public class EditorResetTimeValueGUI extends InvGUI {
 
     private void constructNeverMode() {
         String current = target.getConfig().getString(path);
-        inv.setItem(13, EditorUtil.createItem(Material.PAPER,
+        setInvItem(13, EditorUtil.createItem(Material.PAPER,
                 EditorLang.text(player, "editor.reset-time.never.name", "&eNo Reset Time Needed"),
                 List.of(
                         EditorLang.text(player, "editor.reset-time.never.desc", "&7This reset mode does not use a time value."),
@@ -201,7 +201,7 @@ public class EditorResetTimeValueGUI extends InvGUI {
                                         ? EditorLang.text(player, "editor.sub-button.not-set", "<not set>")
                                         : current)
                 )));
-        inv.setItem(49, EditorUtil.createItem(Material.BARRIER,
+        setInvItem(49, EditorUtil.createItem(Material.BARRIER,
                 EditorLang.text(player, "editor.common.clear.name", "&cClear"),
                 List.of(EditorLang.text(player, "editor.common.clear.desc", "&7Remove this value"))));
     }

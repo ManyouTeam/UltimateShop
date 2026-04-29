@@ -32,6 +32,11 @@ public class EditorThingItemValueGUI extends InvGUI {
     }
 
     @Override
+    protected boolean isChangeableSlot(int slot) {
+        return slot == EDIT_SLOT;
+    }
+
+    @Override
     public void constructGUI() {
         title = EditorLang.text(player, "editor.thing-item.title", "Thing ItemFormat: {path}",
                 "path", EditorUtil.displayPath(player, path));
@@ -44,46 +49,46 @@ public class EditorThingItemValueGUI extends InvGUI {
         if (section != null) {
             try {
                 ItemStack itemStack = BuildItem.buildItemStack(player, section, Math.max(section.getInt("amount", 1), 1));
-                inv.setItem(EDIT_SLOT, itemStack);
+                setInvItem(EDIT_SLOT, itemStack);
             } catch (Throwable ignored) {
-                inv.setItem(EDIT_SLOT, new ItemStack(Material.AIR));
+                setInvItem(EDIT_SLOT, new ItemStack(Material.AIR));
             }
         }
 
-        inv.setItem(10, EditorUtil.createItem(Material.HOPPER,
+        setInvItem(10, EditorUtil.createItem(Material.HOPPER,
                 EditorLang.text(player, "editor.thing-item.slot.name", "&eInline ItemFormat"),
                 List.of(
                         EditorLang.text(player, "editor.thing-item.slot.line-1", "&7Put the item in slot 13."),
                         EditorLang.text(player, "editor.thing-item.slot.line-2", "&7This only refreshes item-format fields."),
                         EditorLang.text(player, "editor.thing-item.slot.line-3", "&7Common single thing options are preserved.")
                 )));
-        inv.setItem(18, EditorUtil.createItem(Material.COMPARATOR,
+        setInvItem(18, EditorUtil.createItem(Material.COMPARATOR,
                 EditorLang.text(player, "editor.thing-item.apply-conditions.name", "&eApply Conditions"),
                 List.of(EditorLang.text(player, "editor.thing-item.apply-conditions.desc",
                         "&7Open apply-conditions for this single thing"))));
-        inv.setItem(19, EditorUtil.createItem(Material.COMPARATOR,
+        setInvItem(19, EditorUtil.createItem(Material.COMPARATOR,
                 EditorLang.text(player, "editor.thing-item.require-conditions.name", "&eRequire Conditions"),
                 List.of(EditorLang.text(player, "editor.thing-item.require-conditions.desc",
                         "&7Open require-conditions for this single thing"))));
-        inv.setItem(20, EditorUtil.createItem(Material.BLAZE_POWDER,
+        setInvItem(20, EditorUtil.createItem(Material.BLAZE_POWDER,
                 EditorLang.text(player, "editor.thing-item.give-actions.name", "&eGive Actions"),
                 List.of(EditorLang.text(player, "editor.thing-item.give-actions.desc",
                         "&7Open give-actions for this single thing"))));
-        inv.setItem(21, EditorUtil.createItem(Material.BLAZE_POWDER,
+        setInvItem(21, EditorUtil.createItem(Material.BLAZE_POWDER,
                 EditorLang.text(player, "editor.thing-item.take-actions.name", "&eTake Actions"),
                 List.of(EditorLang.text(player, "editor.thing-item.take-actions.desc",
                         "&7Open take-actions for this single thing"))));
-        inv.setItem(22, EditorUtil.createItem(Material.BOOK,
+        setInvItem(22, EditorUtil.createItem(Material.BOOK,
                 EditorLang.text(player, "editor.thing-item.preset.name", "&ePreset Editor"),
                 List.of(EditorLang.text(player, "editor.thing-item.preset.desc",
                         "&7Return to the single thing preset editor"))));
-        inv.setItem(23, EditorUtil.createItem(Material.EMERALD,
+        setInvItem(23, EditorUtil.createItem(Material.EMERALD,
                 EditorLang.text(player, "editor.thing-item.apply.name", "&aApply ItemFormat"),
                 List.of(EditorLang.text(player, "editor.thing-item.apply.desc", "&7Update item data inside this single thing"))));
-        inv.setItem(24, EditorUtil.createItem(Material.BARRIER,
+        setInvItem(24, EditorUtil.createItem(Material.BARRIER,
                 EditorLang.text(player, "editor.thing-item.clear.name", "&cClear Item Fields"),
                 List.of(EditorLang.text(player, "editor.thing-item.clear.desc", "&7Remove material / hook-item / item-format fields only"))));
-        inv.setItem(26, EditorUtil.createItem(Material.ARROW,
+        setInvItem(26, EditorUtil.createItem(Material.ARROW,
                 EditorLang.text(player, "editor.common.back.name", "&eBack"),
                 List.of(EditorLang.text(player, "editor.thing-item.back.desc", "&7Return to the preset editor"))));
     }

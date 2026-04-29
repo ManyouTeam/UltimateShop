@@ -1,14 +1,11 @@
 package cn.superiormc.ultimateshop.objects.buttons;
 
-import cn.superiormc.ultimateshop.managers.ConfigManager;
-import cn.superiormc.ultimateshop.objects.ObjectThingRun;
+import cn.superiormc.ultimateshop.gui.InvGUI;
 import cn.superiormc.ultimateshop.objects.buttons.subobjects.ObjectDisplayItemStack;
 import cn.superiormc.ultimateshop.objects.menus.MenuSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
-import org.bukkit.inventory.ItemStack;
-import org.geysermc.cumulus.component.ButtonComponent;
 
 public abstract class AbstractButton {
 
@@ -26,8 +23,6 @@ public abstract class AbstractButton {
 
     public abstract ObjectDisplayItemStack getDisplayItem(Player player, int multi);
 
-    //public abstract ButtonComponent getBedrockButton(Player player, int multi);
-
     public void clickEvent(ClickType type, Player player) {
        return;
     }
@@ -42,6 +37,10 @@ public abstract class AbstractButton {
 
     public boolean canDisplay(MenuSender menuSender) {
         return true;
+    }
+
+    public void guiUpdateSlot(int slot, InvGUI gui) {
+        gui.updateSlot(slot);
     }
 
     @Override

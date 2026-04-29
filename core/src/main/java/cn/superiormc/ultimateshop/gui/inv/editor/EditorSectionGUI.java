@@ -62,23 +62,23 @@ public class EditorSectionGUI extends InvGUI {
             String key = keys.get(index);
             EditorValueKind kind = EditorTypeResolver.resolve(section, key);
             Object value = section.get(key);
-            inv.setItem(i, createEntryItem(key, kind, value));
+            setInvItem(i, createEntryItem(key, kind, value));
         }
 
-        inv.setItem(45, EditorUtil.createItem(Material.ARROW,
+        setInvItem(45, EditorUtil.createItem(Material.ARROW,
                 EditorLang.text(player, "editor.common.back.name", "&eBack"),
                 List.of(EditorLang.text(player, "editor.common.back.desc", "&7Return to the previous screen"))));
-        inv.setItem(46, EditorUtil.createItem(Material.OAK_SIGN,
+        setInvItem(46, EditorUtil.createItem(Material.OAK_SIGN,
                 EditorLang.text(player, "editor.section.path.name", "&eCurrent Path"),
                 List.of(EditorLang.text(player, "editor.section.path.desc", "&f{value}",
                         "value", EditorUtil.displayPath(player, path)))));
-        inv.setItem(49, EditorUtil.createItem(Material.EMERALD,
+        setInvItem(49, EditorUtil.createItem(Material.EMERALD,
                 EditorLang.text(player, "editor.common.reload.name", "&aReload Plugin"),
                 List.of(
                         EditorLang.text(player, "editor.section.reload.line-1", "&7Changes are already written to disk."),
                         EditorLang.text(player, "editor.section.reload.line-2", "&7Use this to rebuild live shop/menu objects.")
                 )));
-        inv.setItem(50, EditorUtil.createItem(Material.ANVIL,
+        setInvItem(50, EditorUtil.createItem(Material.ANVIL,
                 EditorLang.text(player, "editor.section.add-child.name", "&eAdd Child"),
                 List.of(
                         EditorTypeResolver.isActionCollection(path)
@@ -103,10 +103,10 @@ public class EditorSectionGUI extends InvGUI {
                                 ? EditorLang.text(player, "editor.section.add-child.thing-economy", "&eRight click: add economy template")
                                 : ""
                 )));
-        inv.setItem(52, EditorUtil.createItem(Material.SPECTRAL_ARROW,
+        setInvItem(52, EditorUtil.createItem(Material.SPECTRAL_ARROW,
                 EditorLang.text(player, "editor.common.previous-page.name", "&ePrevious Page"),
                 List.of(EditorLang.text(player, "editor.common.previous-page.desc", "&7Go to the previous page"))));
-        inv.setItem(53, EditorUtil.createItem(Material.TIPPED_ARROW,
+        setInvItem(53, EditorUtil.createItem(Material.TIPPED_ARROW,
                 EditorLang.text(player, "editor.common.next-page.name", "&eNext Page"),
                 List.of(EditorLang.text(player, "editor.common.next-page.desc", "&7Go to the next page"))));
     }

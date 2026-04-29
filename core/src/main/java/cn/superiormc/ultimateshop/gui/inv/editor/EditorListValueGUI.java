@@ -50,7 +50,7 @@ public class EditorListValueGUI extends InvGUI {
                 break;
             }
             Object value = values.get(index);
-            inv.setItem(i, EditorUtil.createItem(Material.WRITABLE_BOOK,
+            setInvItem(i, EditorUtil.createItem(Material.WRITABLE_BOOK,
                     "&e#" + (index + 1),
                     List.of(
                             EditorLang.text(player, "editor.summary.value", "&7Value: &f{value}",
@@ -62,19 +62,19 @@ public class EditorListValueGUI extends InvGUI {
                     )));
         }
 
-        inv.setItem(45, EditorUtil.createItem(Material.ARROW,
+        setInvItem(45, EditorUtil.createItem(Material.ARROW,
                 EditorLang.text(player, "editor.common.back.name", "&eBack"),
                 List.of(EditorLang.text(player, "editor.common.back.desc", "&7Return to the previous screen"))));
-        inv.setItem(49, EditorUtil.createItem(Material.ANVIL,
+        setInvItem(49, EditorUtil.createItem(Material.ANVIL,
                 EditorLang.text(player, "editor.list.add.name", "&eAdd Line"),
                 List.of(EditorLang.text(player, "editor.list.add.desc", "&7Add a new line to this list"))));
-        inv.setItem(50, EditorUtil.createItem(Material.BARRIER,
+        setInvItem(50, EditorUtil.createItem(Material.BARRIER,
                 EditorLang.text(player, "editor.list.clear.name", "&cClear List"),
                 List.of(EditorLang.text(player, "editor.list.clear.desc", "&7Remove all entries from this list"))));
-        inv.setItem(52, EditorUtil.createItem(Material.SPECTRAL_ARROW,
+        setInvItem(52, EditorUtil.createItem(Material.SPECTRAL_ARROW,
                 EditorLang.text(player, "editor.common.previous-page.name", "&ePrevious Page"),
                 List.of(EditorLang.text(player, "editor.common.previous-page.desc", "&7Go to the previous page"))));
-        inv.setItem(53, EditorUtil.createItem(Material.TIPPED_ARROW,
+        setInvItem(53, EditorUtil.createItem(Material.TIPPED_ARROW,
                 EditorLang.text(player, "editor.common.next-page.name", "&eNext Page"),
                 List.of(EditorLang.text(player, "editor.common.next-page.desc", "&7Go to the next page"))));
     }

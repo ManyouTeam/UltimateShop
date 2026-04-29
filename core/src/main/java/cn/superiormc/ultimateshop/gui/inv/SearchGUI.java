@@ -53,6 +53,11 @@ public class SearchGUI extends InvGUI {
     }
 
     @Override
+    protected boolean isChangeableSlot(int slot) {
+        return menu.getInputSlots().contains(slot);
+    }
+
+    @Override
     public void constructGUI() {
         if (menu == null || menu.getConfig() == null) {
             return;
@@ -78,7 +83,7 @@ public class SearchGUI extends InvGUI {
         menuItems = getMenuItems(player);
         for (Map.Entry<Integer, ItemStack> entry : menuItems.entrySet()) {
             if (entry.getKey() >= 0 && entry.getKey() < inv.getSize()) {
-                inv.setItem(entry.getKey(), entry.getValue());
+                setInvItem(entry.getKey(), entry.getValue());
             }
         }
 
@@ -86,7 +91,7 @@ public class SearchGUI extends InvGUI {
 
         for (Map.Entry<Integer, ItemStack> entry : inputButtons.entrySet()) {
             if (entry.getKey() >= 0 && entry.getKey() < inv.getSize()) {
-                inv.setItem(entry.getKey(), entry.getValue());
+                setInvItem(entry.getKey(), entry.getValue());
             }
         }
 
@@ -106,7 +111,7 @@ public class SearchGUI extends InvGUI {
             if (entry.getKey() < 0 || entry.getKey() >= inv.getSize()) {
                 continue;
             }
-            inv.setItem(entry.getKey(), entry.getValue().getDisplayItem(player, 1).getItemStack());
+            setInvItem(entry.getKey(), entry.getValue().getDisplayItem(player, 1).getItemStack());
         }
     }
 
@@ -116,7 +121,7 @@ public class SearchGUI extends InvGUI {
         String keywordDisplay = getSearchKeywordDisplay();
 
         for (Map.Entry<Integer, ObjectSearchStateButton> entry : menu.getStateButtons().entrySet()) {
-            inv.setItem(entry.getKey(), entry.getValue().buildDisplayItem(player,
+            setInvItem(entry.getKey(), entry.getValue().buildDisplayItem(player,
                     hasSearchFilters,
                     resultAmount,
                     showingAmount,
@@ -132,7 +137,7 @@ public class SearchGUI extends InvGUI {
             int slot = resultSlots.get(i);
             ObjectSearchResultButton button = new ObjectSearchResultButton(matchedItems.get(i), menu.getResultLore());
             resultButtons.put(slot, button);
-            inv.setItem(slot, button.getDisplayItem(player, 1).getItemStack());
+            setInvItem(slot, button.getDisplayItem(player, 1).getItemStack());
         }
     }
 
@@ -145,7 +150,7 @@ public class SearchGUI extends InvGUI {
         if (slot < 0 || slot >= inv.getSize()) {
             return;
         }
-        inv.setItem(slot, button.buildDisplayItem(player, countInputItems(), getSearchKeywordDisplay()));
+        setInvItem(slot, button.buildDisplayItem(player, countInputItems(), getSearchKeywordDisplay()));
     }
 
     @Override
@@ -185,7 +190,7 @@ public class SearchGUI extends InvGUI {
             case "clear-search":
                 returnInputItems();
                 searchKeyword = "";
-                constructGUI();
+                updateGUI();
                 return;
             default:
                 return;
@@ -300,7 +305,7 @@ public class SearchGUI extends InvGUI {
     private void queueRefresh() {
         SchedulerUtil.runTaskLater(() -> {
             if (inv != null && player.getOpenInventory().getTopInventory().equals(inv)) {
-                constructGUI();
+                updateGUI();
             }
         }, 1L);
     }

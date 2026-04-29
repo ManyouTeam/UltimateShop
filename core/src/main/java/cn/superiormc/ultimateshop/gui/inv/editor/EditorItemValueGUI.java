@@ -32,6 +32,11 @@ public class EditorItemValueGUI extends InvGUI {
     }
 
     @Override
+    protected boolean isChangeableSlot(int slot) {
+        return slot == EDIT_SLOT;
+    }
+
+    @Override
     public void constructGUI() {
         title = EditorLang.text(player, "editor.item.title", "Item Editor: {path}",
                 "path", EditorUtil.displayPath(player, path));
@@ -44,28 +49,28 @@ public class EditorItemValueGUI extends InvGUI {
         if (section != null && (inv.getItem(EDIT_SLOT) == null || inv.getItem(EDIT_SLOT).getType().isAir())) {
             try {
                 ItemStack itemStack = BuildItem.buildItemStack(player, section, section.getInt("amount", 1));
-                inv.setItem(EDIT_SLOT, itemStack);
+                setInvItem(EDIT_SLOT, itemStack);
             } catch (Throwable ignored) {
-                inv.setItem(EDIT_SLOT, new ItemStack(Material.AIR));
+                setInvItem(EDIT_SLOT, new ItemStack(Material.AIR));
             }
         }
 
-        inv.setItem(10, EditorUtil.createItem(Material.HOPPER,
+        setInvItem(10, EditorUtil.createItem(Material.HOPPER,
                 EditorLang.text(player, "editor.item.slot.name", "&eItemFormat Slot"),
                 List.of(
                         EditorLang.text(player, "editor.item.slot.line-1", "&7Put the target item into slot 13."),
                         EditorLang.text(player, "editor.item.slot.line-2", "&7Then click save to DebuildItem into yaml.")
                 )));
-        inv.setItem(22, EditorUtil.createItem(Material.CHEST,
+        setInvItem(22, EditorUtil.createItem(Material.CHEST,
                 EditorLang.text(player, "editor.item.raw.name", "&eRaw Section"),
                 List.of(EditorLang.text(player, "editor.item.raw.desc", "&7Open all keys inside this item section"))));
-        inv.setItem(23, EditorUtil.createItem(Material.EMERALD,
+        setInvItem(23, EditorUtil.createItem(Material.EMERALD,
                 EditorLang.text(player, "editor.item.apply.name", "&aApply Item"),
                 List.of(EditorLang.text(player, "editor.item.apply.desc", "&7Serialize slot 13 into the current section"))));
-        inv.setItem(24, EditorUtil.createItem(Material.BARRIER,
+        setInvItem(24, EditorUtil.createItem(Material.BARRIER,
                 EditorLang.text(player, "editor.item.clear.name", "&cClear Section"),
                 List.of(EditorLang.text(player, "editor.item.clear.desc", "&7Delete this entire item section"))));
-        inv.setItem(26, EditorUtil.createItem(Material.ARROW,
+        setInvItem(26, EditorUtil.createItem(Material.ARROW,
                 EditorLang.text(player, "editor.common.back.name", "&eBack"),
                 List.of(EditorLang.text(player, "editor.item.back.desc", "&7Return to the parent section"))));
     }

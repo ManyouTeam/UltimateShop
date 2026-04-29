@@ -85,7 +85,8 @@ public final class UltimateShop extends JavaPlugin {
         if (BungeeCordManager.enableThis()) {
             new BungeeCordManager();
         }
-        if (ConfigManager.configManager.getBoolean("menu.title-update.enabled") && UltimateShop.methodUtil.methodID().equals("paper") &&
+        if ((ConfigManager.configManager.getBoolean("menu.title-update.enabled") ||
+                ConfigManager.configManager.getBoolean("menu.packet-mode")) && UltimateShop.methodUtil.methodID().equals("paper") &&
                 CommonUtil.checkPluginLoad("packetevents") && !UltimateShop.freeVersion) {
             usePacketEvents = true;
             new PacketInventoryUtil();

@@ -45,7 +45,7 @@ public class EditorFileListGUI extends InvGUI {
                 break;
             }
             String id = ids.get(index);
-            inv.setItem(i, EditorUtil.createItem(
+            setInvItem(i, EditorUtil.createItem(
                     scope == EditorScope.SHOP ? Material.CHEST : Material.BOOK,
                     "&e" + id,
                     List.of(
@@ -58,16 +58,16 @@ public class EditorFileListGUI extends InvGUI {
             ));
         }
 
-        inv.setItem(45, EditorUtil.createItem(Material.ARROW,
+        setInvItem(45, EditorUtil.createItem(Material.ARROW,
                 EditorLang.text(player, "editor.common.back.name", "&eBack"),
                 List.of(EditorLang.text(player, "editor.file-list.back", "&7Return to editor home"))));
-        inv.setItem(49, EditorUtil.createItem(Material.COMPASS,
+        setInvItem(49, EditorUtil.createItem(Material.COMPASS,
                 EditorLang.text(player, "editor.common.refresh.name", "&eRefresh"),
                 List.of(EditorLang.text(player, "editor.file-list.refresh", "&7Reload the file list"))));
-        inv.setItem(52, EditorUtil.createItem(Material.SPECTRAL_ARROW,
+        setInvItem(52, EditorUtil.createItem(Material.SPECTRAL_ARROW,
                 EditorLang.text(player, "editor.common.previous-page.name", "&ePrevious Page"),
                 List.of(EditorLang.text(player, "editor.common.previous-page.desc", "&7Go to the previous page"))));
-        inv.setItem(53, EditorUtil.createItem(Material.TIPPED_ARROW,
+        setInvItem(53, EditorUtil.createItem(Material.TIPPED_ARROW,
                 EditorLang.text(player, "editor.common.next-page.name", "&eNext Page"),
                 List.of(EditorLang.text(player, "editor.common.next-page.desc", "&7Go to the next page"))));
     }

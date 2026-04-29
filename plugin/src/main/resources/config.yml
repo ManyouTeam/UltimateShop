@@ -106,6 +106,9 @@ give-item:
   check-full: true
 
 menu:
+  # Premium version only. Require Paper and PacketEvents.
+  # If enabled, menu display items will only be sent to the player by packets and will not exist in the server-side GUI inventory.
+  packet-mode: false
   prompt:
     cancel-keyword: '{lang}'
   # Recommend use when you are running big server, it will make player no longer quickly click

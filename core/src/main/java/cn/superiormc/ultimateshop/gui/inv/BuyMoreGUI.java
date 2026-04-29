@@ -56,7 +56,7 @@ public class BuyMoreGUI extends InvGUI {
             inv = UltimateShop.methodUtil.createNewInv(player, menu.getInt("size", 54), title);
         }
         for (int slot : menuButtons.keySet()) {
-            inv.setItem(slot, menuItems.get(slot));
+            setInvItem(slot, menuItems.get(slot));
         }
     }
 
@@ -151,10 +151,10 @@ public class BuyMoreGUI extends InvGUI {
                 }
                 break;
             default:
-                menuButtons.get(slot).clickEvent(type, player);
+                normalButtonClickEventHandle(type, slot);
                 break;
         }
-        constructGUI();
+        updateGUI();
         return true;
     }
 

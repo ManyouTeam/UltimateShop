@@ -2,6 +2,7 @@ package cn.superiormc.ultimateshop.gui.inv;
 
 import cn.superiormc.ultimateshop.UltimateShop;
 
+import cn.superiormc.ultimateshop.objects.buttons.AbstractButton;
 import cn.superiormc.ultimateshop.objects.caches.ObjectCache;
 import cn.superiormc.ultimateshop.gui.InvGUI;
 import cn.superiormc.ultimateshop.gui.form.FormShopGUI;
@@ -77,61 +78,19 @@ public class ShopGUI extends InvGUI {
             }
         }
         for (int slot : menuButtons.keySet()) {
-            inv.setItem(slot, menuItems.get(slot));
+            setInvItem(slot, menuItems.get(slot));
         }
     }
 
     @Override
     public boolean clickEventHandle(Inventory inventory, ClickType type, int slot) {
-        if (menuButtons.get(slot) == null) {
-            return true;
-        }
-        if (menuButtons.get(slot) instanceof ObjectItem itemButton) {
-            itemButton.clickEvent(type, player);
-            if (ConfigManager.configManager.getBooleanOrDefault("menu.shop.click-update", "menu.menu-update.click-update")) {
-                constructGUI();
-            } else {
-                updateSharedUseTimesSlots(itemButton, slot);
-            }
-            return true;
-        }
-        menuButtons.get(slot).clickEvent(type, player);
-        if (ConfigManager.configManager.getBooleanOrDefault("menu.shop.click-update", "menu.menu-update.click-update")) {
-            constructGUI();
-        } else {
-            updateSlot(slot);
-        }
+        normalButtonClickEventHandle(type, slot);
         return true;
     }
 
     @Override
     public ObjectMenu getMenu() {
         return shop.getShopMenuObject();
-    }
-
-    public void updateSlot(int slot) {
-        menuItems.put(slot, getMenuItem(player, slot));
-        inv.setItem(slot, menuItems.get(slot));
-    }
-
-    private void updateSharedUseTimesSlots(ObjectItem clickedItem, int clickedSlot) {
-        UseTimesStorageKey storageKey = clickedItem.getUseTimesStorageKey();
-        boolean updated = false;
-
-        for (Map.Entry<Integer, ?> entry : menuButtons.entrySet()) {
-            if (!(entry.getValue() instanceof ObjectItem itemButton)) {
-                continue;
-            }
-            if (!storageKey.equals(itemButton.getUseTimesStorageKey())) {
-                continue;
-            }
-            updateSlot(entry.getKey());
-            updated = true;
-        }
-
-        if (!updated) {
-            updateSlot(clickedSlot);
-        }
     }
 
     public static void openGUI(Player player, ObjectShop shop, boolean bypass, boolean reopen) {
