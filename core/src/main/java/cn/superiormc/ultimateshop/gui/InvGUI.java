@@ -1,13 +1,16 @@
 package cn.superiormc.ultimateshop.gui;
 
 import cn.superiormc.ultimateshop.UltimateShop;
+import cn.superiormc.ultimateshop.listeners.GUIListener;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.MenuStatusManager;
 import cn.superiormc.ultimateshop.objects.buttons.AbstractButton;
 import cn.superiormc.ultimateshop.utils.PacketInventoryUtil;
 import cn.superiormc.ultimateshop.utils.SchedulerUtil;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -27,6 +30,8 @@ public abstract class InvGUI extends AbstractGUI {
     public Map<Integer, ItemStack> items = new HashMap<>();
 
     protected final Map<Integer, ItemStack> packetItems = new HashMap<>();
+
+    public Listener guiListener;
 
     protected SchedulerUtil runTask = null;
 
@@ -149,7 +154,12 @@ public abstract class InvGUI extends AbstractGUI {
         if (inv != null) {
             player.openInventory(inv);
             this.opened = true;
-            MenuStatusManager.menuStatusManager.setActiveInvGUI(player, this);
+            if (ConfigManager.configManager.getBoolean("menu.global-gui-listener")) {
+                MenuStatusManager.menuStatusManager.setActiveInvGUI(player, this);
+            } else {
+                this.guiListener = new GUIListener(this);
+                SchedulerUtil.runSync(() -> Bukkit.getPluginManager().registerEvents(guiListener, UltimateShop.instance));
+            }
             sendPacketItems();
             if (getMenu() != null) {
                 getMenu().doOpenAction(player, reopen);
@@ -161,7 +171,7 @@ public abstract class InvGUI extends AbstractGUI {
         }
         if (ConfigManager.configManager.getBooleanOrDefault("menu.shop.update", "menu.menu-update.circle-update") ||
                 ConfigManager.configManager.getBoolean("menu.title-update.circle-update")) {
-            runTask = SchedulerUtil.runTaskTimerAsynchronously(()->{
+            runTask = SchedulerUtil.runTaskTimer(()->{
                 if (ConfigManager.configManager.getBooleanOrDefault("menu.shop.update", "menu.menu-update.circle-update")) {
                     updateGUI();
                 }

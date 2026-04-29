@@ -1,11 +1,7 @@
 package cn.superiormc.ultimateshop.managers;
 
 import cn.superiormc.ultimateshop.UltimateShop;
-import cn.superiormc.ultimateshop.listeners.EditorChatListener;
-import cn.superiormc.ultimateshop.listeners.CacheListener;
-import cn.superiormc.ultimateshop.listeners.GUIListener;
-import cn.superiormc.ultimateshop.listeners.SellChestListener;
-import cn.superiormc.ultimateshop.listeners.SellStickListener;
+import cn.superiormc.ultimateshop.listeners.*;
 import cn.superiormc.ultimateshop.utils.TextUtil;
 import org.bukkit.Bukkit;
 
@@ -21,7 +17,9 @@ public class ListenerManager {
     private void registerListeners(){
         Bukkit.getPluginManager().registerEvents(new CacheListener(), UltimateShop.instance);
         Bukkit.getPluginManager().registerEvents(new EditorChatListener(), UltimateShop.instance);
-        Bukkit.getPluginManager().registerEvents(new GUIListener(), UltimateShop.instance);
+        if (ConfigManager.configManager.getBoolean("menu.global-gui-listener")) {
+            Bukkit.getPluginManager().registerEvents(new GlobalGUIListener(), UltimateShop.instance);
+        }
         if (!UltimateShop.freeVersion) {
             Bukkit.getPluginManager().registerEvents(new SellStickListener(), UltimateShop.instance);
             if (!UltimateShop.isFolia) {
