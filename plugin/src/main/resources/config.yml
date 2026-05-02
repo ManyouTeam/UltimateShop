@@ -23,6 +23,9 @@ config-files:
 # COMPONENT mode only supports 1.21.6+ Paper servers and PREMIUM version.
 debuild-item-method: 'LEGACY'
 
+# Support value: DEFAULT or ITEMBRIDGE
+hook-item-method: 'DEFAULT'
+
 # By default, we will auto force display fail message to make sure player know whether they have successfully clicked the product button.
 # If set to false, we will not force display fail message and you can also use hide-message option in shop configs to hide the fail messages.
 force-display-fail-message: false

@@ -1,6 +1,5 @@
 package cn.superiormc.ultimateshop.hooks.items;
 
-import cn.superiormc.ultimateshop.managers.ErrorManager;
 import net.momirealms.craftengine.bukkit.api.CraftEngineItems;
 import net.momirealms.craftengine.bukkit.item.BukkitItemDefinition;
 import net.momirealms.craftengine.core.util.Key;

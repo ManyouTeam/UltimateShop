@@ -1,5 +1,8 @@
 package cn.superiormc.ultimateshop.managers;
 
+import cn.gtemc.itembridge.api.ItemBridge;
+import cn.gtemc.itembridge.api.util.Pair;
+import cn.gtemc.itembridge.core.BukkitItemBridge;
 import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.hooks.economy.*;
 import cn.superiormc.ultimateshop.hooks.items.*;
@@ -11,10 +14,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class HookManager {
 
@@ -26,12 +26,22 @@ public class HookManager {
 
     private Map<String, AbstractProtectionHook> protectionHooks;
 
+    private ItemBridge<ItemStack, Player> itemBridgeHook = null;
+
     public HookManager() {
         hookManager = this;
         initProtectionHook();
         initNormalHook();
         initEconomyHook();
-        initItemHook();
+        if (ConfigManager.configManager.getString("hook-item-method").equalsIgnoreCase("DEFAULT")) {
+            initItemHook();
+        } else {
+            itemBridgeHook = BukkitItemBridge.builder()
+                    .onHookSuccess(p -> TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fUSItemBridge successfully hook into " + p + "."))
+                    .detectSupportedPlugins()
+                    .removeById("customplugin")
+                    .build();
+        }
     }
 
     private void initNormalHook() {
@@ -254,6 +264,12 @@ public class HookManager {
     }
 
     public ItemStack getHookItem(Player player, String pluginName, String itemID) {
+        if (itemBridgeHook != null) {
+            Optional<ItemStack> tempVal1 = itemBridgeHook.build(pluginName, player, itemID);
+            if (tempVal1.isPresent()) {
+                return tempVal1.get();
+            }
+        }
         if (!itemHooks.containsKey(pluginName)) {
             ErrorManager.errorManager.sendErrorMessage("§cError: Can not hook into "
                     + pluginName + " plugin, maybe we do not support this plugin, or your server didn't correctly load " +
@@ -309,6 +325,12 @@ public class HookManager {
         if (!hookItem.hasItemMeta()) {
             return null;
         }
+        if (itemBridgeHook != null) {
+            String tempVal1 = itemBridgeHook.getIds(hookItem).get(pluginName);
+            if (tempVal1 != null) {
+                return tempVal1;
+            }
+        }
         if (!itemHooks.containsKey(pluginName)) {
             ErrorManager.errorManager.sendErrorMessage("§cError: Can not hook into "
                     + pluginName + " plugin, maybe we do not support this plugin, or your server didn't correctly load " +
@@ -320,6 +342,12 @@ public class HookManager {
     }
 
     public String[] getHookItemPluginAndID(ItemStack hookItem) {
+        if (itemBridgeHook != null) {
+            Pair<String, String> tempVal1 = itemBridgeHook.getFirstId(hookItem);
+            if (tempVal1 != null) {
+                return new String[]{tempVal1.left, tempVal1.right};
+            }
+        }
         for (AbstractItemHook itemHook : itemHooks.values()) {
             String itemID = itemHook.getIDByItemStack(hookItem);
             if (itemID != null) {
@@ -364,7 +392,6 @@ public class HookManager {
         }
         return true;
     }
-
 
     public List<String> getEconomyHookNames() {
         return new ArrayList<>(economyHooks.keySet());

@@ -18,7 +18,7 @@
     <properties>
         <java.version>16</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <revision>4.5.0</revision>
+        <revision>4.5.1</revision>
         <name>UltimateShop</name>
     </properties>
 
@@ -36,7 +36,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>3.4.1</version>
+                <version>3.6.2</version>
                 <configuration>
                     <relocations>
                         <relocation>
@@ -46,6 +46,34 @@
                         <relocation>
                             <pattern>com.zaxxer.hikari</pattern>
                             <shadedPattern>cn.superiormc.ultimateshop.libs.hikari</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>com.cronutils</pattern>
+                            <shadedPattern>cn.superiormc.ultimateshop.libs.cronutils</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>redempt.crunch</pattern>
+                            <shadedPattern>cn.superiormc.ultimateshop.libs.crunch</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>org.json</pattern>
+                            <shadedPattern>cn.superiormc.ultimateshop.libs.json</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>org.slf4j</pattern>
+                            <shadedPattern>cn.superiormc.ultimateshop.libs.slf4j</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>javax.el</pattern>
+                            <shadedPattern>cn.superiormc.ultimateshop.libs.javax.el</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>com.sun.el</pattern>
+                            <shadedPattern>cn.superiormc.ultimateshop.libs.com.sun.el</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>cn.gtemc.itembridge</pattern>
+                            <shadedPattern>cn.superiormc.ultimateshop.libs.itembridge</shadedPattern>
                         </relocation>
                     </relocations>
                 </configuration>
@@ -233,6 +261,10 @@
         <repository>
             <id>nightexpress-releases</id>
             <url>https://repo.nightexpressdev.com/releases</url>
+        </repository>
+        <repository>
+            <id>gtemc-repo</id>
+            <url>https://repo.gtemc.net/releases/</url>
         </repository>
     </repositories>
 </project>

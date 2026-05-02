@@ -3,6 +3,7 @@ package cn.superiormc.ultimateshop.gui;
 import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.listeners.GUIListener;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
+import cn.superiormc.ultimateshop.managers.ListenerManager;
 import cn.superiormc.ultimateshop.managers.MenuStatusManager;
 import cn.superiormc.ultimateshop.objects.buttons.AbstractButton;
 import cn.superiormc.ultimateshop.utils.PacketInventoryUtil;
@@ -154,7 +155,7 @@ public abstract class InvGUI extends AbstractGUI {
         if (inv != null) {
             player.openInventory(inv);
             this.opened = true;
-            if (ConfigManager.configManager.getBoolean("menu.global-gui-listener")) {
+            if (ListenerManager.listenerManager.usingGlobalGUIListener()) {
                 MenuStatusManager.menuStatusManager.setActiveInvGUI(player, this);
             } else {
                 this.guiListener = new GUIListener(this);
