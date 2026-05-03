@@ -109,6 +109,9 @@ give-item:
   check-full: true
 
 menu:
+  # Require 1.19+ version and Paper servers.
+  # This will cost extra server performance, only enable this if you found any dupe issue from this plugin.
+  anti-dupe-checker: false
   prompt:
     cancel-keyword: '{lang}'
   # Recommend use when you are running big server, it will make player no longer quickly click

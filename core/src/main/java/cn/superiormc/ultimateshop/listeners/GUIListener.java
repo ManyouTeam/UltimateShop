@@ -7,6 +7,7 @@ import cn.superiormc.ultimateshop.managers.ErrorManager;
 import cn.superiormc.ultimateshop.managers.MenuStatusManager;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
 import cn.superiormc.ultimateshop.utils.PacketInventoryUtil;
+import cn.superiormc.ultimateshop.utils.SchedulerUtil;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
@@ -85,14 +86,13 @@ public class GUIListener implements Listener {
             if (!Objects.equals(e.getInventory(), gui.getInv())) {
                 return;
             }
-            HandlerList.unregisterAll(this);
-            boolean closingCurrentGUI = MenuStatusManager.menuStatusManager.getOpeningGUI(player) == gui;
-            if (UltimateShop.usePacketEvents && closingCurrentGUI) {
+            if (UltimateShop.usePacketEvents) {
                 PacketInventoryUtil.packetInventoryUtil.clear(player);
             }
-            if (closingCurrentGUI) {
+            SchedulerUtil.runSync(player, () -> {
+                HandlerList.unregisterAll(this);
                 player.updateInventory();
-            }
+            });
             if (MenuStatusManager.menuStatusManager.hasOpeningGUI(player)) {
                 MenuStatusManager.menuStatusManager.removeOpenGUIStatus(player, gui);
             }

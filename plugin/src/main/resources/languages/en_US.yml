@@ -101,8 +101,6 @@ add-times-shop: "&#98FB98[UltimateShop] &fAdd {times} to {player}'s all {shop}'s
 set-times-shop: "&#98FB98[UltimateShop] &fSet {player}'s all {shop}'s product use times to {times}!"
 success-buy: "&#98FB98[UltimateShop] &fSuccessfully purchased {item}&fx{amount}, cost {price}&f!"
 success-sell: "&#98FB98[UltimateShop] &fSuccessfully sold {item}&fx{amount}, gain {price} &fwith multiplier &cx{multiplier}!"
-favourite-added: "&#98FB98[UltimateShop] &fAdded {item} into favourite menu {menu}."
-favourite-removed: "&#98FB98[UltimateShop] &fRemoved {item} from favourite menu {menu}."
 menu-condition-not-meet: "&#98FB98[UltimateShop] &cYou didn't meet the condition that open this menu!"
 buy-condition-not-meet: "&#98FB98[UltimateShop] &cYou didn't meet the condition that buy this product!"
 sell-condition-not-meet: "&#98FB98[UltimateShop] &cYou didn't meet the condition that sell this product!"
@@ -117,6 +115,10 @@ reset-random-placeholder: "&#98FB98[UltimateShop] &fSuccessfully reset random pl
 set-random-placeholder: "&#98FB98[UltimateShop] &fSuccessfully set random placeholder {placeholder}'s new value to: {value}. Please note that the refresh time does not be reset!"
 gui-updated: "&#98FB98[UltimateShop] &fGUI updated for player {player}!"
 gui-not-opened: "&#98FB98[UltimateShop] &c{player} didn't open any GUI!"
+dupe-removed: "&#98FB98[UltimateShop] &fA illegal item from your inventory has been removed!"
+
+favourite-added: "&#98FB98[UltimateShop] &fAdded {item} into favourite menu {menu}."
+favourite-removed: "&#98FB98[UltimateShop] &fRemoved {item} from favourite menu {menu}."
 
 override-lang:
   search-gui-guide-name: '&eSearch Filters'

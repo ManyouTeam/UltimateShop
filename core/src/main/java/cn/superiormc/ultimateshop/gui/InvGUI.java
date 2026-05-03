@@ -64,9 +64,11 @@ public abstract class InvGUI extends AbstractGUI {
         }
         constructGUI();
         if (inv != null) {
-            player.openInventory(inv);
-            this.guiListener = new GUIListener(this);
-            SchedulerUtil.runSync(() -> Bukkit.getPluginManager().registerEvents(guiListener, UltimateShop.instance));
+            SchedulerUtil.runSync(player, () -> {
+                this.guiListener = new GUIListener(this);
+                Bukkit.getPluginManager().registerEvents(guiListener, UltimateShop.instance);
+                player.openInventory(inv);
+            });
             if (getMenu() != null) {
                 getMenu().doOpenAction(player, reopen);
             }

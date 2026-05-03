@@ -3,6 +3,7 @@ package cn.superiormc.ultimateshop.objects.buttons.subobjects;
 import cn.superiormc.ultimateshop.api.ShopHelper;
 import cn.superiormc.ultimateshop.managers.CacheManager;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
+import cn.superiormc.ultimateshop.methods.Dupe;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import cn.superiormc.ultimateshop.objects.caches.ObjectUseTimesCache;
 import cn.superiormc.ultimateshop.objects.items.prices.ObjectPrices;
@@ -35,13 +36,13 @@ public class ObjectDisplayItemStack {
     private ObjectItem item;
 
     public ObjectDisplayItemStack(ItemStack javaItemOnly) {
-        this.javaItem = javaItemOnly;
-        this.meta = javaItemOnly.getItemMeta();
+        this.javaItem = Dupe.markGuiDisplayItem(javaItemOnly);
+        this.meta = this.javaItem.getItemMeta();
     }
 
     public ObjectDisplayItemStack(Player player, ItemStack javaItem, ConfigurationSection section, ObjectItem item) {
-        this.javaItem = javaItem;
-        this.meta = javaItem.getItemMeta();
+        this.javaItem = Dupe.markGuiDisplayItem(javaItem);
+        this.meta = this.javaItem.getItemMeta();
         this.section = section;
         this.player = player;
         this.item = item;

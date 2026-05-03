@@ -4,6 +4,7 @@ import cn.superiormc.ultimateshop.UltimateShop;
 import io.papermc.paper.threadedregions.scheduler.ScheduledTask;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.entity.Entity;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.util.concurrent.TimeUnit;
@@ -34,6 +35,14 @@ public class SchedulerUtil {
     public static void runSync(Runnable task) {
         if (UltimateShop.isFolia) {
             Bukkit.getGlobalRegionScheduler().execute(UltimateShop.instance, task);
+        } else {
+            Bukkit.getScheduler().runTask(UltimateShop.instance, task);
+        }
+    }
+
+    public static void runSync(Entity entity, Runnable task) {
+        if (UltimateShop.isFolia) {
+            entity.getScheduler().run(UltimateShop.instance, scheduledTask -> task.run(), null);
         } else {
             Bukkit.getScheduler().runTask(UltimateShop.instance, task);
         }
@@ -113,5 +122,6 @@ public class SchedulerUtil {
             return new SchedulerUtil(Bukkit.getScheduler().runTaskLater(UltimateShop.instance, task, delayTicks));
         }
     }
+
 
 }

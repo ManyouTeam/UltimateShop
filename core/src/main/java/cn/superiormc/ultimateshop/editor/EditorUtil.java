@@ -1,6 +1,7 @@
 package cn.superiormc.ultimateshop.editor;
 
 import cn.superiormc.ultimateshop.UltimateShop;
+import cn.superiormc.ultimateshop.methods.Dupe;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
@@ -23,6 +24,7 @@ public class EditorUtil {
             }
             itemStack.setItemMeta(meta);
         }
+        itemStack = Dupe.markGuiDisplayItem(itemStack);
         return itemStack;
     }
 

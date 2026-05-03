@@ -110,6 +110,7 @@ reset-random-placeholder: "&#98FB98[UltimateShop] &f成功重置随机变量符 
 set-random-placeholder: "&#98FB98[UltimateShop] &f成功设置随机变量符 {placeholder} 新的值为 {value}，请注意，变量符的刷新时间并未重置."
 gui-updated: "&#98FB98[UltimateShop] &f已为玩家 {player} 刷新GUI!"
 gui-not-opened: "&#98FB98[UltimateShop] &c{player} 没有打开任何的GUI!"
+dupe-removed: "&#98FB98[UltimateShop] &f你的背包的一件非法物品已被移除!"
 
 favourite-added: "&#98FB98[UltimateShop] &f已将 {item} 加入收藏菜单 {menu}。"
 favourite-removed: "&#98FB98[UltimateShop] &f已从收藏菜单 {menu} 移除 {item}。"
