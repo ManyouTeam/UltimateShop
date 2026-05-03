@@ -3,7 +3,6 @@ package cn.superiormc.ultimateshop.managers;
 import cn.superiormc.ultimateshop.editor.*;
 import cn.superiormc.ultimateshop.gui.AbstractGUI;
 import cn.superiormc.ultimateshop.gui.GUIStatus;
-import cn.superiormc.ultimateshop.gui.InvGUI;
 import cn.superiormc.ultimateshop.gui.inv.editor.EditorFileListGUI;
 import cn.superiormc.ultimateshop.gui.inv.editor.EditorPresetGUI;
 import cn.superiormc.ultimateshop.editor.EditorContext;
@@ -40,8 +39,6 @@ public class MenuStatusManager {
 
     private final Map<UUID, GUIStatus> openGuis = new ConcurrentHashMap<>();
 
-    private final Map<UUID, InvGUI> activeInvGuis = new ConcurrentHashMap<>();
-
     public MenuStatusManager() {
         menuStatusManager = this;
     }
@@ -69,34 +66,6 @@ public class MenuStatusManager {
         return gui.getMenu();
     }
 
-    public InvGUI getActiveInvGUI(Player player) {
-        if (player == null) {
-            return null;
-        }
-        return activeInvGuis.get(player.getUniqueId());
-    }
-
-    public void setActiveInvGUI(Player player, InvGUI gui) {
-        if (player == null || gui == null) {
-            return;
-        }
-        activeInvGuis.put(player.getUniqueId(), gui);
-    }
-
-    public void removeActiveInvGUI(Player player, InvGUI gui) {
-        if (player == null || gui == null) {
-            return;
-        }
-        activeInvGuis.remove(player.getUniqueId(), gui);
-    }
-
-    public void removeActiveInvGUI(Player player) {
-        if (player == null) {
-            return;
-        }
-        activeInvGuis.remove(player.getUniqueId());
-    }
-
     public boolean hasOpeningGUI(Player player) {
         return getGUIStatus(player) != null;
     }
@@ -117,7 +86,6 @@ public class MenuStatusManager {
             return;
         }
         openGuis.remove(player.getUniqueId());
-        activeInvGuis.remove(player.getUniqueId());
     }
 
     public boolean canOpenGUI(Player player, AbstractGUI gui, boolean reopen) {
@@ -155,7 +123,6 @@ public class MenuStatusManager {
         contexts.remove(player.getUniqueId());
         prompts.remove(player.getUniqueId());
         openGuis.remove(player.getUniqueId());
-        activeInvGuis.remove(player.getUniqueId());
     }
 
     public boolean hasPrompt(Player player) {

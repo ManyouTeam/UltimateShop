@@ -41,22 +41,22 @@ public class EditorPresetGUI extends InvGUI {
         List<EditorPresetField> fields = preset.getFields();
         for (int i = 0; i < Math.min(fields.size(), 45); i++) {
             EditorPresetField field = fields.get(i);
-            setInvItem(i, createItem(field));
+            inv.setItem(i, createItem(field));
         }
 
-        setInvItem(45, EditorUtil.createItem(Material.ARROW,
+        inv.setItem(45, EditorUtil.createItem(Material.ARROW,
                 EditorLang.text(player, "editor.common.back.name", "&eBack"),
                 List.of(EditorLang.text(player, "editor.common.back.desc", "&7Return to the previous screen"))));
         if (preset.getKind() == EditorPresetKind.LIMITS_SECTION) {
-            setInvItem(50, EditorUtil.createItem(Material.ANVIL,
+            inv.setItem(50, EditorUtil.createItem(Material.ANVIL,
                     EditorLang.text(player, "editor.preset.add-limit-group.name", "&eAdd Condition Group"),
                     List.of(EditorLang.text(player, "editor.preset.add-limit-group.desc",
                             "&7Create a new named limit group and matching conditions section"))));
         }
-        setInvItem(49, EditorUtil.createItem(Material.CHEST,
+        inv.setItem(49, EditorUtil.createItem(Material.CHEST,
                 EditorLang.text(player, "editor.preset.raw.name", "&eRaw Section"),
                 List.of(EditorLang.text(player, "editor.preset.raw.desc", "&7Open the raw section fallback editor"))));
-        setInvItem(53, EditorUtil.createItem(Material.EMERALD,
+        inv.setItem(53, EditorUtil.createItem(Material.EMERALD,
                 EditorLang.text(player, "editor.common.reload.name", "&aReload Plugin"),
                 List.of(EditorLang.text(player, "editor.preset.reload.desc", "&7Apply changes to live shop/menu objects"))));
     }

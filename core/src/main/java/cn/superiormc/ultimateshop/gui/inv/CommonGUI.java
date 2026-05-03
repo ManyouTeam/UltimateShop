@@ -47,13 +47,22 @@ public class CommonGUI extends InvGUI {
             inv = UltimateShop.methodUtil.createNewInv(player, commonMenu.getInt("size", 54), title);
         }
         for (int slot : menuButtons.keySet()) {
-            setInvItem(slot, menuItems.get(slot));
+            inv.setItem(slot, menuItems.get(slot));
         }
     }
 
     @Override
     public boolean clickEventHandle(Inventory inventory, ClickType type, int slot) {
-        normalButtonClickEventHandle(type, slot);
+        if (menuButtons.get(slot) == null) {
+            return true;
+        }
+        menuButtons.get(slot).clickEvent(type, player);
+        if (ConfigManager.configManager.getBooleanOrDefault("menu.shop.click-update", "menu.menu-update.click-update")) {
+            constructGUI();
+        } else {
+            menuItems.put(slot, getMenuItem(player, slot));
+            inv.setItem(slot, menuItems.get(slot));
+        }
         return true;
     }
 

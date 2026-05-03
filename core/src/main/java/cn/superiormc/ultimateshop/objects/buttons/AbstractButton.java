@@ -1,6 +1,5 @@
 package cn.superiormc.ultimateshop.objects.buttons;
 
-import cn.superiormc.ultimateshop.gui.InvGUI;
 import cn.superiormc.ultimateshop.objects.buttons.subobjects.ObjectDisplayItemStack;
 import cn.superiormc.ultimateshop.objects.menus.MenuSender;
 import org.bukkit.configuration.ConfigurationSection;
@@ -37,10 +36,6 @@ public abstract class AbstractButton {
 
     public boolean canDisplay(MenuSender menuSender) {
         return true;
-    }
-
-    public void guiUpdateSlot(int slot, InvGUI gui) {
-        gui.updateSlot(slot);
     }
 
     @Override

@@ -11,7 +11,6 @@ import cn.superiormc.ultimateshop.objects.ObjectThingRun;
 import cn.superiormc.ultimateshop.objects.buttons.*;
 import cn.superiormc.ultimateshop.objects.items.ObjectAction;
 import cn.superiormc.ultimateshop.objects.menus.MenuSender;
-import cn.superiormc.ultimateshop.objects.menus.ObjectMenu;
 import cn.superiormc.ultimateshop.objects.menus.ObjectMoreMenu;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
@@ -56,13 +55,8 @@ public class BuyMoreGUI extends InvGUI {
             inv = UltimateShop.methodUtil.createNewInv(player, menu.getInt("size", 54), title);
         }
         for (int slot : menuButtons.keySet()) {
-            setInvItem(slot, menuItems.get(slot));
+            inv.setItem(slot, menuItems.get(slot));
         }
-    }
-
-    @Override
-    public ObjectMenu getMenu() {
-        return menu;
     }
 
     @Override
@@ -151,10 +145,10 @@ public class BuyMoreGUI extends InvGUI {
                 }
                 break;
             default:
-                normalButtonClickEventHandle(type, slot);
+                menuButtons.get(slot).clickEvent(type, player);
                 break;
         }
-        updateGUI();
+        constructGUI();
         return true;
     }
 

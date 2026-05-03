@@ -9,8 +9,6 @@ public class ListenerManager {
 
     public static ListenerManager listenerManager;
 
-    private boolean globalGUIListener = false;
-
     public ListenerManager(){
         listenerManager = this;
         registerListeners();
@@ -19,10 +17,6 @@ public class ListenerManager {
     private void registerListeners(){
         Bukkit.getPluginManager().registerEvents(new CacheListener(), UltimateShop.instance);
         Bukkit.getPluginManager().registerEvents(new EditorChatListener(), UltimateShop.instance);
-        if (ConfigManager.configManager.getBoolean("menu.global-gui-listener")) {
-            Bukkit.getPluginManager().registerEvents(new GlobalGUIListener(), UltimateShop.instance);
-            globalGUIListener = true;
-        }
         if (!UltimateShop.freeVersion) {
             Bukkit.getPluginManager().registerEvents(new SellStickListener(), UltimateShop.instance);
             if (!UltimateShop.isFolia) {
@@ -33,9 +27,5 @@ public class ListenerManager {
                 TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §6Warning: Sell chest feature does not support Folia.");
             }
         }
-    }
-
-    public boolean usingGlobalGUIListener() {
-        return globalGUIListener;
     }
 }

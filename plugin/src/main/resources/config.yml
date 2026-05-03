@@ -109,11 +109,6 @@ give-item:
   check-full: true
 
 menu:
-  # Premium version only. Require Paper and PacketEvents.
-  # If enabled, menu display items will only be sent to the player by packets and will not exist in the server-side GUI inventory.
-  packet-mode: false
-  # If set to true, all players and all menu will share same gui listener which will have better performance but maybe has some incompatible issue with other plugins.
-  global-gui-listener: false
   prompt:
     cancel-keyword: '{lang}'
   # Recommend use when you are running big server, it will make player no longer quickly click

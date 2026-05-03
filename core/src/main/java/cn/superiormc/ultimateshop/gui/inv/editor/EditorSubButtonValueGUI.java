@@ -67,7 +67,7 @@ public class EditorSubButtonValueGUI extends InvGUI {
         }
         inv.clear();
 
-        setInvItem(10, EditorUtil.createItem(Material.CHAINMAIL_CHESTPLATE,
+        inv.setItem(10, EditorUtil.createItem(Material.CHAINMAIL_CHESTPLATE,
                 EditorLang.text(player, "editor.sub-button.same-shop.name", "&eCurrent Shop Product"),
                 List.of(
                         EditorLang.text(player, "editor.sub-button.current", "&7Current: &f{value}",
@@ -75,7 +75,7 @@ public class EditorSubButtonValueGUI extends InvGUI {
                         EditorLang.text(player, "editor.action.cycle", "&aLeft click to cycle"),
                         EditorLang.text(player, "editor.action.cycle-back", "&aShift-left to cycle backwards")
                 )));
-        setInvItem(12, EditorUtil.createItem(Material.CHEST,
+        inv.setItem(12, EditorUtil.createItem(Material.CHEST,
                 EditorLang.text(player, "editor.sub-button.cross-shop.name", "&eTarget Shop"),
                 List.of(
                         EditorLang.text(player, "editor.sub-button.current", "&7Current: &f{value}",
@@ -83,7 +83,7 @@ public class EditorSubButtonValueGUI extends InvGUI {
                         EditorLang.text(player, "editor.action.cycle", "&aLeft click to cycle"),
                         EditorLang.text(player, "editor.action.cycle-back", "&aShift-left to cycle backwards")
                 )));
-        setInvItem(14, EditorUtil.createItem(Material.NAME_TAG,
+        inv.setItem(14, EditorUtil.createItem(Material.NAME_TAG,
                 EditorLang.text(player, "editor.sub-button.cross-product.name", "&eTarget Product"),
                 List.of(
                         EditorLang.text(player, "editor.sub-button.current", "&7Current: &f{value}",
@@ -91,7 +91,7 @@ public class EditorSubButtonValueGUI extends InvGUI {
                         EditorLang.text(player, "editor.action.cycle", "&aLeft click to cycle"),
                         EditorLang.text(player, "editor.action.cycle-back", "&aShift-left to cycle backwards")
                 )));
-        setInvItem(16, EditorUtil.createItem(Material.BOOK,
+        inv.setItem(16, EditorUtil.createItem(Material.BOOK,
                 EditorLang.text(player, "editor.sub-button.preview.name", "&ePreview"),
                 List.of(
                         EditorLang.text(player, "editor.sub-button.same-preview", "&7Same shop: &f{value}",
@@ -99,19 +99,19 @@ public class EditorSubButtonValueGUI extends InvGUI {
                         EditorLang.text(player, "editor.sub-button.cross-preview", "&7Cross shop: &f{value}",
                                 "value", buildCrossValue())
                 )));
-        setInvItem(20, EditorUtil.createItem(Material.EMERALD,
+        inv.setItem(20, EditorUtil.createItem(Material.EMERALD,
                 EditorLang.text(player, "editor.sub-button.apply-same.name", "&aUse Current Shop Target"),
                 List.of(EditorLang.text(player, "editor.sub-button.apply-same.desc",
                         "&7Save as &fProductID"))));
-        setInvItem(22, EditorUtil.createItem(Material.EMERALD,
+        inv.setItem(22, EditorUtil.createItem(Material.EMERALD,
                 EditorLang.text(player, "editor.sub-button.apply-cross.name", "&aUse Cross Shop Target"),
                 List.of(EditorLang.text(player, "editor.sub-button.apply-cross.desc",
                         "&7Save as &fShopID;;ProductID"))));
-        setInvItem(24, EditorUtil.createItem(Material.BARRIER,
+        inv.setItem(24, EditorUtil.createItem(Material.BARRIER,
                 EditorLang.text(player, "editor.sub-button.clear.name", "&cClear"),
                 List.of(EditorLang.text(player, "editor.sub-button.clear.desc",
                         "&7Remove the as-sub-button value"))));
-        setInvItem(26, EditorUtil.createItem(Material.ARROW,
+        inv.setItem(26, EditorUtil.createItem(Material.ARROW,
                 EditorLang.text(player, "editor.common.back.name", "&eBack"),
                 List.of(EditorLang.text(player, "editor.common.back.desc", "&7Return to the previous screen"))));
     }

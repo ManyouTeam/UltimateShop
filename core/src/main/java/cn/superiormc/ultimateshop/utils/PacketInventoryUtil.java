@@ -54,33 +54,15 @@ public class PacketInventoryUtil {
 
         PacketEvents.getAPI().getPlayerManager().sendPacket(player, packet);
         if (ConfigManager.configManager.getBoolean("menu.title-update.resend-items-pack")) {
-            updateItems(player, gui);
-        }
-        if (gui.isPacketMode()) {
-            SchedulerUtil.runTaskLater(() -> updateItems(player, gui), 1L);
-        } else {
-            SchedulerUtil.runSync(player::updateInventory);
-        }
-    }
+            ArrayList<ItemStack> items = new ArrayList<>();
+            for (org.bukkit.inventory.ItemStack bukkitItem : gui.getInv().getContents()) {
+                items.add(SpigotConversionUtil.fromBukkitItemStack(bukkitItem));
+            }
 
-    public void updateItems(Player player, InvGUI gui) {
-        UUID uuid = player.getUniqueId();
-        Integer windowId = WINDOW_IDS.get(uuid);
-
-        if (windowId == null) {
-            return;
+            WrapperPlayServerWindowItems itemsPacket = new WrapperPlayServerWindowItems(windowId, 0, items, null);
+            PacketEvents.getAPI().getPlayerManager().sendPacket(player, itemsPacket);
         }
-
-        ArrayList<ItemStack> items = new ArrayList<>();
-        for (int i = 0; i < gui.getInv().getSize(); i++) {
-            org.bukkit.inventory.ItemStack bukkitItem = gui.isPacketMode() && gui.getPacketItems().containsKey(i) ?
-                    gui.getPacketItems().get(i) :
-                    gui.getInv().getItem(i);
-            items.add(SpigotConversionUtil.fromBukkitItemStack(bukkitItem));
-        }
-
-        WrapperPlayServerWindowItems itemsPacket = new WrapperPlayServerWindowItems(windowId, 0, items, null);
-        PacketEvents.getAPI().getPlayerManager().sendPacket(player, itemsPacket);
+        SchedulerUtil.runSync(player::updateInventory);
     }
 
     public void clear(Player player) {

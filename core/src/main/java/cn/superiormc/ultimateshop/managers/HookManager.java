@@ -39,7 +39,6 @@ public class HookManager {
             itemBridgeHook = BukkitItemBridge.builder()
                     .onHookSuccess(p -> TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fUSItemBridge successfully hook into " + p + "."))
                     .detectSupportedPlugins()
-                    .removeById("customplugin")
                     .build();
         }
     }

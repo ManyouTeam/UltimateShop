@@ -67,6 +67,11 @@
       <option name="url" value="https://mvn.lumine.io/repository/maven-public/" />
     </remote-repository>
     <remote-repository>
+      <option name="id" value="gtemc-repo" />
+      <option name="name" value="gtemc-repo" />
+      <option name="url" value="https://repo.gtemc.net/releases/" />
+    </remote-repository>
+    <remote-repository>
       <option name="id" value="paper-repo" />
       <option name="name" value="paper-repo" />
       <option name="url" value="https://repo.papermc.io/repository/maven-public/" />

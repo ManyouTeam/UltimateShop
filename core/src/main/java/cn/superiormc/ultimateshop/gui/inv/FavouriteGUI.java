@@ -67,7 +67,7 @@ public class FavouriteGUI extends InvGUI {
             return;
         }
 
-        title = TextUtil.withPAPI(menu.getString("title", "Favourite"), player);
+        title = TextUtil.withPAPI(CommonUtil.parseLang(player, menu.getString("title", "Favourite")), player);
         if (Objects.isNull(inv)) {
             inv = UltimateShop.methodUtil.createNewInv(player, menu.getInt("size", 54), title);
         }
@@ -80,7 +80,7 @@ public class FavouriteGUI extends InvGUI {
         menuItems = getMenuItems(player);
         for (Map.Entry<Integer, org.bukkit.inventory.ItemStack> entry : menuItems.entrySet()) {
             if (entry.getKey() >= 0 && entry.getKey() < inv.getSize()) {
-                setInvItem(entry.getKey(), entry.getValue());
+                inv.setItem(entry.getKey(), entry.getValue());
             }
         }
 
@@ -105,7 +105,7 @@ public class FavouriteGUI extends InvGUI {
                     editing ? menu.getEditingResultLore() : menu.getResultLore(),
                     editing);
             resultButtons.put(slot, button);
-            setInvItem(slot, button.getDisplayItem(player, 1).getItemStack());
+            inv.setItem(slot, button.getDisplayItem(player, 1).getItemStack());
             displayed++;
         }
 
@@ -117,7 +117,7 @@ public class FavouriteGUI extends InvGUI {
         for (int i = displayed; i < menu.getResultSlots().size(); i++) {
             int slot = menu.getResultSlots().get(i);
             overlayButtons.put(slot, emptyButton);
-            setInvItem(slot, emptyButton.buildDisplayItem(player, favouriteProducts.size(), i + 1));
+            inv.setItem(slot, emptyButton.buildDisplayItem(player, favouriteProducts.size(), i + 1));
         }
     }
 
@@ -130,14 +130,14 @@ public class FavouriteGUI extends InvGUI {
             return;
         }
         overlayButtons.put(slot, button);
-        setInvItem(slot, button.getDisplayItem(player, editing, favouriteAmount).getItemStack());
+        inv.setItem(slot, button.getDisplayItem(player, editing, favouriteAmount).getItemStack());
     }
 
     @Override
     public boolean clickEventHandle(Inventory inventory, ClickType type, int slot) {
         if (slot == menu.getEditModeSlot() && menu.getEditModeButton() != null) {
             editing = !editing;
-            updateGUI();
+            constructGUI();
             return true;
         }
 
@@ -158,7 +158,16 @@ public class FavouriteGUI extends InvGUI {
             return true;
         }
 
-        normalButtonClickEventHandle(type, slot);
+        AbstractButton normalButton = menuButtons.get(slot);
+        if (normalButton != null) {
+            normalButton.clickEvent(type, player);
+            if (ConfigManager.configManager.getBooleanOrDefault("menu.shop.click-update", "menu.menu-update.click-update")) {
+                constructGUI();
+            } else {
+                menuItems.put(slot, getMenuItem(player, slot));
+                inv.setItem(slot, menuItems.get(slot));
+            }
+        }
         return true;
     }
 
@@ -182,7 +191,7 @@ public class FavouriteGUI extends InvGUI {
     private void queueRefresh() {
         SchedulerUtil.runTaskLater(() -> {
             if (inv != null && player.getOpenInventory().getTopInventory().equals(inv)) {
-                updateGUI();
+                constructGUI();
             }
         }, 1L);
     }

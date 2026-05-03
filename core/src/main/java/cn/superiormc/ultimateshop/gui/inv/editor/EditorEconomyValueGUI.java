@@ -43,26 +43,26 @@ public class EditorEconomyValueGUI extends InvGUI {
         String amount = String.valueOf(section.get("amount"));
         String placeholder = section.getString("placeholder", "");
 
-        setInvItem(10, EditorUtil.createItem(Material.GOLD_INGOT,
+        inv.setItem(10, EditorUtil.createItem(Material.GOLD_INGOT,
                 EditorLang.text(player, "editor.economy.provider.name", "&eProvider"),
                 List.of(
                         EditorLang.text(player, "editor.economy.current", "&7Current: &f{value}", "value", provider),
                         EditorLang.text(player, "editor.action.cycle", "&aLeft click to cycle"),
                         EditorLang.text(player, "editor.action.cycle-back", "&aShift-left to cycle backwards")
                 )));
-        setInvItem(12, EditorUtil.createItem(Material.NAME_TAG,
+        inv.setItem(12, EditorUtil.createItem(Material.NAME_TAG,
                 EditorLang.text(player, "editor.economy.currency.name", "&eCurrency Type"),
                 List.of(
                         EditorLang.text(player, "editor.economy.current", "&7Current: &f{value}", "value", currency),
                         EditorLang.text(player, "editor.action.edit", "&aLeft click to edit")
                 )));
-        setInvItem(14, EditorUtil.createItem(Material.SLIME_BALL,
+        inv.setItem(14, EditorUtil.createItem(Material.SLIME_BALL,
                 EditorLang.text(player, "editor.economy.amount.name", "&eAmount"),
                 List.of(
                         EditorLang.text(player, "editor.economy.current", "&7Current: &f{value}", "value", amount),
                         EditorLang.text(player, "editor.action.edit", "&aLeft click to edit")
                 )));
-        setInvItem(16, EditorUtil.createItem(Material.PAPER,
+        inv.setItem(16, EditorUtil.createItem(Material.PAPER,
                 EditorLang.text(player, "editor.economy.placeholder.name", "&ePlaceholder"),
                 List.of(
                         EditorLang.text(player, "editor.economy.current", "&7Current: &f{value}",
@@ -70,16 +70,16 @@ public class EditorEconomyValueGUI extends InvGUI {
                         EditorLang.text(player, "editor.action.edit", "&aLeft click to edit"),
                         EditorLang.text(player, "editor.action.delete", "&cRight click to delete")
                 )));
-        setInvItem(20, EditorUtil.createItem(Material.COMPARATOR,
+        inv.setItem(20, EditorUtil.createItem(Material.COMPARATOR,
                 EditorLang.text(player, "editor.economy.conditions.name", "&eConditions"),
                 List.of(EditorLang.text(player, "editor.economy.conditions.desc", "&7Open the nested conditions section"))));
-        setInvItem(22, EditorUtil.createItem(Material.CHEST,
+        inv.setItem(22, EditorUtil.createItem(Material.CHEST,
                 EditorLang.text(player, "editor.economy.raw.name", "&eRaw Section"),
                 List.of(EditorLang.text(player, "editor.economy.raw.desc", "&7Open all keys inside this economy section"))));
-        setInvItem(24, EditorUtil.createItem(Material.BARRIER,
+        inv.setItem(24, EditorUtil.createItem(Material.BARRIER,
                 EditorLang.text(player, "editor.economy.delete.name", "&cDelete Section"),
                 List.of(EditorLang.text(player, "editor.economy.delete.desc", "&7Delete this economy format section"))));
-        setInvItem(26, EditorUtil.createItem(Material.ARROW,
+        inv.setItem(26, EditorUtil.createItem(Material.ARROW,
                 EditorLang.text(player, "editor.common.back.name", "&eBack"),
                 List.of(EditorLang.text(player, "editor.economy.back.desc", "&7Return to the parent section"))));
     }

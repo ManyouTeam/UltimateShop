@@ -86,10 +86,13 @@ public class GUIListener implements Listener {
                 return;
             }
             HandlerList.unregisterAll(this);
-            if (UltimateShop.usePacketEvents) {
+            boolean closingCurrentGUI = MenuStatusManager.menuStatusManager.getOpeningGUI(player) == gui;
+            if (UltimateShop.usePacketEvents && closingCurrentGUI) {
                 PacketInventoryUtil.packetInventoryUtil.clear(player);
             }
-            player.updateInventory();
+            if (closingCurrentGUI) {
+                player.updateInventory();
+            }
             if (MenuStatusManager.menuStatusManager.hasOpeningGUI(player)) {
                 MenuStatusManager.menuStatusManager.removeOpenGUIStatus(player, gui);
             }

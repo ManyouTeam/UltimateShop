@@ -50,7 +50,7 @@ public class EditorClickTypeBindingGUI extends InvGUI {
         for (int i = 0; i < Math.min(45, clickTypes.size()); i++) {
             String clickType = clickTypes.get(i);
             boolean enabled = selected.contains(clickType);
-            setInvItem(i, EditorUtil.createItem(enabled ? Material.LIME_DYE : Material.GRAY_DYE,
+            inv.setItem(i, EditorUtil.createItem(enabled ? Material.LIME_DYE : Material.GRAY_DYE,
                     "&e" + clickType,
                     List.of(
                             EditorLang.text(player, "editor.click-binding.state",
@@ -62,10 +62,10 @@ public class EditorClickTypeBindingGUI extends InvGUI {
                     )));
         }
 
-        setInvItem(45, EditorUtil.createItem(Material.ARROW,
+        inv.setItem(45, EditorUtil.createItem(Material.ARROW,
                 EditorLang.text(player, "editor.common.back.name", "&eBack"),
                 List.of(EditorLang.text(player, "editor.common.back.desc", "&7Return to the previous screen"))));
-        setInvItem(49, EditorUtil.createItem(Material.BARRIER,
+        inv.setItem(49, EditorUtil.createItem(Material.BARRIER,
                 EditorLang.text(player, "editor.common.clear.name", "&cClear"),
                 List.of(EditorLang.text(player, "editor.common.clear.desc", "&7Remove this value"))));
     }

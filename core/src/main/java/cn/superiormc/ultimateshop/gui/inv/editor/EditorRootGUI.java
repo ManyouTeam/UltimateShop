@@ -26,19 +26,19 @@ public class EditorRootGUI extends InvGUI {
             inv = UltimateShop.methodUtil.createNewInv(player, 27, title);
         }
         inv.clear();
-        setInvItem(11, EditorUtil.createItem(Material.CHEST,
+        inv.setItem(11, EditorUtil.createItem(Material.CHEST,
                 EditorLang.text(player, "editor.root.shops.name", "&eEdit Shops"),
                 List.of(
                         EditorLang.text(player, "editor.root.shops.desc", "&7Open shop yml files under &f/shops"),
                         EditorLang.text(player, "editor.action.open", "&aLeft click to open")
                 )));
-        setInvItem(15, EditorUtil.createItem(Material.BOOK,
+        inv.setItem(15, EditorUtil.createItem(Material.BOOK,
                 EditorLang.text(player, "editor.root.menus.name", "&eEdit Menus"),
                 List.of(
                         EditorLang.text(player, "editor.root.menus.desc", "&7Open menu yml files under &f/menus"),
                         EditorLang.text(player, "editor.action.open", "&aLeft click to open")
                 )));
-        setInvItem(22, EditorUtil.createItem(Material.BARRIER,
+        inv.setItem(22, EditorUtil.createItem(Material.BARRIER,
                 EditorLang.text(player, "editor.root.close.name", "&cClose"),
                 List.of(EditorLang.text(player, "editor.root.close.desc", "&7Close the editor"))));
     }
