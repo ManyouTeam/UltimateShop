@@ -64,7 +64,7 @@ public class MathUtil {
                 throwable.printStackTrace();
             }
             ErrorManager.errorManager.sendErrorMessage("§cError: Your number option value " +
-                    mathStr + " can not be read as a number, maybe" +
+                    mathStr + " can not be read as a number, maybe " +
                     "set math.enabled to false in config.yml maybe solve this problem!");
             return BigDecimal.ZERO;
         }

@@ -8,6 +8,7 @@ import cn.superiormc.ultimateshop.objects.caches.FavouriteProductReference;
 import cn.superiormc.ultimateshop.objects.caches.ObjectRandomPlaceholderCache;
 import cn.superiormc.ultimateshop.objects.caches.ObjectUseTimesCache;
 import cn.superiormc.ultimateshop.objects.caches.UseTimesStorageKey;
+import cn.superiormc.ultimateshop.objects.items.subobjects.ObjectCustomPlaceholder;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -18,6 +19,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 public class YamlDatabase extends AbstractDatabase {
@@ -110,6 +112,16 @@ public class YamlDatabase extends AbstractDatabase {
                     }
                 });
             }
+
+            ConfigurationSection customSection = config.getConfigurationSection("customPlaceholder");
+            if (customSection != null) {
+                customSection.getKeys(false).forEach(phID -> {
+                    String nowValue = customSection.getString(phID, null);
+                    if (nowValue != null) {
+                        cache.setCustomPlaceholderCache(phID, nowValue);
+                    }
+                });
+            }
         }
     }
 
@@ -159,6 +171,11 @@ public class YamlDatabase extends AbstractDatabase {
                 phSection.set("nowValue", CommonUtil.translateStringList(ph.getNowValue()));
                 phSection.set("refreshDoneTime", CommonUtil.timeToString(ph.getRefreshDoneTime()));
             }
+
+            ConfigurationSection customSection = config.createSection("customPlaceholder");
+            for (Map.Entry<ObjectCustomPlaceholder, String> entry : cache.getCustomPlaceholderCache().entrySet()) {
+                customSection.set(entry.getKey().getID(), entry.getValue());
+            }
         }
 
         try {
@@ -191,14 +208,14 @@ public class YamlDatabase extends AbstractDatabase {
     }
 
     private ConfigurationSection getUseTimesSection(ConfigurationSection root, UseTimesStorageKey key) {
-        ConfigurationSection shopSection = root.getConfigurationSection(key.getShop());
+        ConfigurationSection shopSection = root.getConfigurationSection(key.shop());
         if (shopSection == null) {
-            shopSection = root.createSection(key.getShop());
+            shopSection = root.createSection(key.shop());
         }
 
-        ConfigurationSection productSection = shopSection.getConfigurationSection(key.getProduct());
+        ConfigurationSection productSection = shopSection.getConfigurationSection(key.product());
         if (productSection == null) {
-            productSection = shopSection.createSection(key.getProduct());
+            productSection = shopSection.createSection(key.product());
         }
         return productSection;
     }

@@ -113,4 +113,28 @@ public class ItemUtil {
         }
         return false;
     }
+
+    public static String formatMaterialName(String input) {
+        if (input == null || input.isEmpty()) {
+            return input;
+        }
+
+        String[] parts = input.toLowerCase().split("_");
+        StringBuilder result = new StringBuilder();
+
+        for (int i = 0; i < parts.length; i++) {
+            if (parts[i].isEmpty()) {
+                continue;
+            }
+
+            result.append(Character.toUpperCase(parts[i].charAt(0)));
+            result.append(parts[i].substring(1));
+
+            if (i < parts.length - 1) {
+                result.append("_");
+            }
+        }
+
+        return result.toString();
+    }
 }

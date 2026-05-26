@@ -2,11 +2,10 @@ package cn.superiormc.ultimateshop.objects.buttons.subobjects;
 
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import cn.superiormc.ultimateshop.utils.TextUtil;
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
-import org.jetbrains.annotations.NotNull;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -77,7 +76,7 @@ public class ObjectItemConfig {
         return tempVal1;
     }
 
-    public Map<String, ConfigurationSection> mergeCache;
+    public Map<String, ConfigurationSection> mergeCache = new HashMap<>();
 
     public ConfigurationSection getActionOrConditionSection(String path) {
         ConfigurationSection tempVal1 = section.getConfigurationSection(path);

@@ -13,6 +13,7 @@ import cn.superiormc.ultimateshop.objects.caches.FavouriteProductReference;
 import cn.superiormc.ultimateshop.objects.caches.ObjectRandomPlaceholderCache;
 import cn.superiormc.ultimateshop.objects.caches.ObjectUseTimesCache;
 import cn.superiormc.ultimateshop.objects.caches.UseTimesStorageKey;
+import cn.superiormc.ultimateshop.objects.items.subobjects.ObjectCustomPlaceholder;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
 import cn.superiormc.ultimateshop.utils.TextUtil;
 import com.zaxxer.hikari.HikariConfig;
@@ -97,6 +98,7 @@ public class SQLDatabase extends AbstractDatabase {
 
             if (!UltimateShop.freeVersion) {
                 stmt.execute(dialect.createRandomPlaceholderTable());
+                stmt.execute(dialect.createCustomPlaceholderTable());
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -123,6 +125,7 @@ public class SQLDatabase extends AbstractDatabase {
 
             if (!UltimateShop.freeVersion) {
                 loadPlaceholders(conn, cache, playerUUID);
+                loadCustomPlaceholders(conn, cache, playerUUID);
             }
 
         } catch (SQLException e) {
@@ -222,6 +225,32 @@ public class SQLDatabase extends AbstractDatabase {
         }
     }
 
+    private void loadCustomPlaceholders(Connection conn, ObjectCache cache, String playerUUID)
+            throws SQLException {
+
+        String sql = """
+                SELECT placeholderID, nowValue
+                FROM ultimateshop_customPlaceholders
+                WHERE playerUUID = ?
+                """;
+
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, playerUUID);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    String nowValue = rs.getString("nowValue");
+                    if (nowValue == null) continue;
+
+                    cache.setCustomPlaceholderCache(
+                            rs.getString("placeholderID"),
+                            nowValue
+                    );
+                }
+            }
+        }
+    }
+
     @Override
     public void updateData(ObjectCache cache, boolean quitServer) {
         CompletableFuture.runAsync(() -> {
@@ -229,6 +258,7 @@ public class SQLDatabase extends AbstractDatabase {
             saveFavourites(cache);
             if (!UltimateShop.freeVersion) {
                 savePlaceholders(cache);
+                saveCustomPlaceholders(cache);
             }
             if (quitServer) {
                 CacheManager.cacheManager.removeObjectCache(cache.getPlayer());
@@ -256,8 +286,8 @@ public class SQLDatabase extends AbstractDatabase {
                     insertPs.setString(1, playerUUID);
                     insertPs.setString(2, entry.getKey());
                     insertPs.setInt(3, i);
-                    insertPs.setString(4, reference.getShop());
-                    insertPs.setString(5, reference.getProduct());
+                    insertPs.setString(4, reference.shop());
+                    insertPs.setString(5, reference.product());
                     if (dialect.supportBatch()) {
                         insertPs.addBatch();
                     } else {
@@ -336,8 +366,8 @@ public class SQLDatabase extends AbstractDatabase {
                               String cooldownBuyTime,
                               String cooldownSellTime) throws SQLException {
         ps.setString(1, playerUUID);
-        ps.setString(2, key.getShop());
-        ps.setString(3, key.getProduct());
+        ps.setString(2, key.shop());
+        ps.setString(3, key.product());
         ps.setInt(4, buyUseTimes);
         ps.setInt(5, totalBuyUseTimes);
         ps.setInt(6, sellUseTimes);
@@ -394,6 +424,39 @@ public class SQLDatabase extends AbstractDatabase {
         }
     }
 
+    private void saveCustomPlaceholders(ObjectCache cache) {
+        String playerUUID = cache.isServer()
+                ? "Global-Server"
+                : cache.getPlayer().getUniqueId().toString();
+
+        String sql = dialect.upsertCustomPlaceholder();
+
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            for (Map.Entry<ObjectCustomPlaceholder, String> entry
+                    : cache.getCustomPlaceholderCache().entrySet()) {
+
+                ps.setString(1, playerUUID);
+                ps.setString(2, entry.getKey().getID());
+                ps.setString(3, entry.getValue());
+
+                if (dialect.supportBatch()) {
+                    ps.addBatch();
+                } else {
+                    ps.executeUpdate();
+                }
+            }
+
+            if (dialect.supportBatch()) {
+                ps.executeBatch();
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     @Override
     public void updateDataOnDisable(ObjectCache cache, boolean disable) {
         saveUseTimes(cache);
@@ -401,6 +464,7 @@ public class SQLDatabase extends AbstractDatabase {
 
         if (!UltimateShop.freeVersion) {
             savePlaceholders(cache);
+            saveCustomPlaceholders(cache);
         }
 
         CacheManager.cacheManager.removeObjectCache(cache.getPlayer());

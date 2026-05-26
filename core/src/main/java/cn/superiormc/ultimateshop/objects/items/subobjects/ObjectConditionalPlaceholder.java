@@ -91,7 +91,6 @@ public class ObjectConditionalPlaceholder {
 }
 
 enum ConditionalPlaceholderType {
-
     DEFAULT,
     MAX,
     MIN

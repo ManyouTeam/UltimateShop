@@ -4,6 +4,7 @@ import cn.superiormc.ultimateshop.managers.CacheManager;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.ErrorManager;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
+import cn.superiormc.ultimateshop.objects.items.subobjects.ObjectCustomPlaceholder;
 import cn.superiormc.ultimateshop.objects.items.subobjects.ObjectRandomPlaceholder;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
 import org.bukkit.entity.Player;
@@ -22,6 +23,8 @@ public class ObjectCache {
     private final Map<ObjectItem, ObjectUseTimesCache> useTimesCache = new ConcurrentHashMap<>();
 
     private final Map<ObjectRandomPlaceholder, ObjectRandomPlaceholderCache> randomPlaceholderCache = new ConcurrentHashMap<>();
+
+    private final Map<ObjectCustomPlaceholder, String> customPlaceholderCache = new ConcurrentHashMap<>();
 
     private final Map<String, List<FavouriteProductReference>> favouriteProductCache = new ConcurrentHashMap<>();
 
@@ -61,9 +64,11 @@ public class ObjectCache {
         }
     }
 
+    /*
+    USE TIMES CACHE
+     */
     public ObjectUseTimesCache getUseTimesCache(ObjectItem item) {
         if (item == null) {
-            ErrorManager.errorManager.sendErrorMessage("§cThe product is null.");
             return null;
         }
 
@@ -101,10 +106,6 @@ public class ObjectCache {
         });
     }
 
-    public ObjectUseTimesCache createUseTimesCache(ObjectItem product) {
-        return getUseTimesCache(product);
-    }
-
     public void setUseTimesCache(String shop,
                                  String product,
                                  int buyUseTimes,
@@ -133,14 +134,27 @@ public class ObjectCache {
                 false));
     }
 
+    public Map<ObjectItem, ObjectUseTimesCache> getUseTimesCache() {
+        return Collections.unmodifiableMap(useTimesCache);
+    }
+
+    public Map<UseTimesStorageKey, ObjectUseTimesCache> getSharedUseTimesCache() {
+        return Collections.unmodifiableMap(sharedUseTimesCache);
+    }
+
+    /*
+    RANDOM PLACEHOLDER CACHE
+     */
     public void setRandomPlaceholderCache(ObjectRandomPlaceholder placeholder,
                                           String refreshDoneTime,
                                           List<String> nowValue) {
 
-        if (placeholder == null || nowValue == null) return;
-
-        if (!checkPlaceholderScope(placeholder)) return;
-
+        if (placeholder == null || nowValue == null) {
+            return;
+        }
+        if (!checkPlaceholderScope(placeholder)) {
+            return;
+        }
         randomPlaceholderCache.put(
                 placeholder,
                 new ObjectRandomPlaceholderCache(
@@ -156,36 +170,86 @@ public class ObjectCache {
                                           String refreshDoneTime,
                                           List<String> nowValue) {
 
-        if (nowValue == null) return;
+        if (nowValue == null) {
+            return;
+        }
+        ObjectRandomPlaceholder placeholder = ConfigManager.configManager.getRandomPlaceholder(id);
+        setRandomPlaceholderCache(placeholder, refreshDoneTime, nowValue);
+    }
 
-        ObjectRandomPlaceholder placeholder =
-                ConfigManager.configManager.getRandomPlaceholder(id);
-
-        if (placeholder == null) return;
-
-        if (!checkPlaceholderScope(placeholder)) return;
-
-        randomPlaceholderCache.put(
+    public ObjectRandomPlaceholderCache getRandomPlaceholderCache(ObjectRandomPlaceholder placeholder) {
+        if (placeholder == null) {
+            return null;
+        }
+        if (!checkPlaceholderScope(placeholder)) {
+            return null;
+        }
+        return randomPlaceholderCache.computeIfAbsent(
                 placeholder,
-                new ObjectRandomPlaceholderCache(
-                        this,
-                        placeholder,
-                        nowValue,
-                        CommonUtil.stringToTime(refreshDoneTime)
-                )
+                key -> new ObjectRandomPlaceholderCache(this, placeholder)
         );
     }
 
-    public void addRandomPlaceholderCache(ObjectRandomPlaceholder placeholder) {
-        if (placeholder == null) return;
-        if (!checkPlaceholderScope(placeholder)) return;
-
-        randomPlaceholderCache.putIfAbsent(
-                placeholder,
-                new ObjectRandomPlaceholderCache(this, placeholder)
-        );
+    private boolean checkPlaceholderScope(ObjectRandomPlaceholder placeholder) {
+        if (server && placeholder.isPerPlayer()) {
+            ErrorManager.errorManager.sendErrorMessage(
+                    "§cThe random placeholder is per player and can not sync data with server cache.");
+            return false;
+        }
+        if (!server && !placeholder.isPerPlayer()) {
+            ErrorManager.errorManager.sendErrorMessage(
+                    "§cThe random placeholder is globally and can not sync data with player cache.");
+            return false;
+        }
+        return true;
     }
 
+    public Map<ObjectRandomPlaceholder, ObjectRandomPlaceholderCache> getRandomPlaceholderCache() {
+        return Collections.unmodifiableMap(randomPlaceholderCache);
+    }
+
+    /*
+    CUSTOM PLACEHOLDER
+     */
+    public void setCustomPlaceholderCache(ObjectCustomPlaceholder placeholder, String nowValue) {
+        if (placeholder == null || nowValue == null) {
+            return;
+        }
+        if (!checkCustomPlaceholderScope(placeholder)) {
+            return;
+        }
+        customPlaceholderCache.put(placeholder, placeholder.normalizeValue(nowValue));
+    }
+
+    public void setCustomPlaceholderCache(String id, String nowValue) {
+        if (nowValue == null) {
+            return;
+        }
+        ObjectCustomPlaceholder placeholder = ConfigManager.configManager.getCustomPlaceholder(id);
+        setCustomPlaceholderCache(placeholder, nowValue);
+    }
+
+    public Map<ObjectCustomPlaceholder, String> getCustomPlaceholderCache() {
+        return Collections.unmodifiableMap(customPlaceholderCache);
+    }
+
+    private boolean checkCustomPlaceholderScope(ObjectCustomPlaceholder placeholder) {
+        if (server && placeholder.isPerPlayer()) {
+            ErrorManager.errorManager.sendErrorMessage(
+                    "§cThe custom placeholder is per player and can not sync data with server cache.");
+            return false;
+        }
+        if (!server && !placeholder.isPerPlayer()) {
+            ErrorManager.errorManager.sendErrorMessage(
+                    "§cThe custom placeholder is globally and can not sync data with player cache.");
+            return false;
+        }
+        return true;
+    }
+
+    /*
+    FAVOURITE
+     */
     public synchronized void setFavouriteProductCache(String menuName,
                                                       List<FavouriteProductReference> references) {
         if (menuName == null || menuName.isEmpty()) {
@@ -196,6 +260,14 @@ public class ObjectCache {
             return;
         }
         favouriteProductCache.put(menuName, new ArrayList<>(references));
+    }
+
+    public synchronized List<FavouriteProductReference> getFavouriteProductReferences(String menuName) {
+        List<FavouriteProductReference> references = favouriteProductCache.get(menuName);
+        if (references == null) {
+            return new ArrayList<>();
+        }
+        return new ArrayList<>(references);
     }
 
     public synchronized boolean addFavouriteProduct(String menuName, ObjectItem item) {
@@ -250,13 +322,6 @@ public class ObjectCache {
         return removed;
     }
 
-    public synchronized boolean toggleFavouriteProduct(String menuName, ObjectItem item) {
-        if (removeFavouriteProduct(menuName, item)) {
-            return false;
-        }
-        return addFavouriteProduct(menuName, item);
-    }
-
     public synchronized boolean moveFavouriteProduct(String menuName, int fromIndex, int toIndex) {
         List<FavouriteProductReference> references = favouriteProductCache.get(menuName);
         if (references == null || fromIndex < 0 || toIndex < 0
@@ -276,18 +341,6 @@ public class ObjectCache {
             return;
         }
         favouriteProductCache.remove(menuName);
-    }
-
-    public synchronized List<FavouriteProductReference> getFavouriteProductReferences(String menuName) {
-        List<FavouriteProductReference> references = favouriteProductCache.get(menuName);
-        if (references == null) {
-            return new ArrayList<>();
-        }
-        return new ArrayList<>(references);
-    }
-
-    public synchronized List<ObjectItem> getResolvedFavouriteItems(String menuName) {
-        return new ArrayList<>(getResolvedFavouriteProducts(menuName).values());
     }
 
     public synchronized Map<FavouriteProductReference, ObjectItem> getResolvedFavouriteProducts(String menuName) {
@@ -314,38 +367,12 @@ public class ObjectCache {
         return result;
     }
 
-    private boolean checkPlaceholderScope(ObjectRandomPlaceholder placeholder) {
-        if (server && placeholder.isPerPlayer()) {
-            ErrorManager.errorManager.sendErrorMessage(
-                    "§cThe random placeholder is per player and can not sync data with server cache.");
-            return false;
-        }
-        if (!server && !placeholder.isPerPlayer()) {
-            ErrorManager.errorManager.sendErrorMessage(
-                    "§cThe random placeholder is globally and can not sync data with player cache.");
-            return false;
-        }
-        return true;
-    }
-
-    public Map<ObjectRandomPlaceholder, ObjectRandomPlaceholderCache> getRandomPlaceholderCache() {
-        return Collections.unmodifiableMap(randomPlaceholderCache);
-    }
-
-    public Map<UseTimesStorageKey, ObjectUseTimesCache> getSharedUseTimesCache() {
-        return Collections.unmodifiableMap(sharedUseTimesCache);
-    }
-
     public Map<String, List<FavouriteProductReference>> getFavouriteProductCache() {
         Map<String, List<FavouriteProductReference>> result = new LinkedHashMap<>();
         for (Map.Entry<String, List<FavouriteProductReference>> entry : favouriteProductCache.entrySet()) {
             result.put(entry.getKey(), new ArrayList<>(entry.getValue()));
         }
         return Collections.unmodifiableMap(result);
-    }
-
-    public Map<ObjectItem, ObjectUseTimesCache> getUseTimesCache() {
-        return Collections.unmodifiableMap(useTimesCache);
     }
 
     public Player getPlayer() {

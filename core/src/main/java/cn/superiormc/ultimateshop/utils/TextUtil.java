@@ -4,6 +4,7 @@ import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.methods.StaticPlaceholder;
 import cn.superiormc.ultimateshop.objects.items.subobjects.ObjectConditionalPlaceholder;
+import cn.superiormc.ultimateshop.objects.items.subobjects.ObjectCustomPlaceholder;
 import cn.superiormc.ultimateshop.objects.items.subobjects.ObjectRandomPlaceholder;
 import com.cronutils.model.Cron;
 import com.cronutils.model.CronType;
@@ -232,6 +233,7 @@ public class TextUtil {
     public static Pattern pattern5 = Pattern.compile("\\{math_(.*?)}");
     public static Pattern pattern6 = Pattern.compile("\\{random-next_(.*?)}");
     public static Pattern pattern7 = Pattern.compile("\\{cron_\"([^\"]+)\"\\}");
+    public static Pattern pattern8 = Pattern.compile("\\{custom_(.*?)}");
 
     public static String parseBuiltInPlaceholder(String text, Player player) {
         text = text.replace("{discount_", "{conditional_");
@@ -302,6 +304,12 @@ public class TextUtil {
                 time = CommonUtil.timeToString(nextExecution.get().toLocalDateTime(), ConfigManager.configManager.getStringWithLang(player, "placeholder.cron.format"));
             }
             text = text.replace("{cron_\"" + cronExpression + "\"}", time);
+        }
+        Matcher matcher8 = pattern8.matcher(text);
+        while (matcher8.find()) {
+            String placeholder = matcher8.group(1);
+            text = text.replace("{custom_" + placeholder + "}",
+                    ObjectCustomPlaceholder.getNowValue(player, placeholder));
         }
         text = CommonUtil.parseLang(player, text);
         return text;

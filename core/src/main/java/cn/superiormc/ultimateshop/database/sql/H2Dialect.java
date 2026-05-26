@@ -58,6 +58,18 @@ public class H2Dialect extends DatabaseDialect {
     }
 
     @Override
+    public String createCustomPlaceholderTable() {
+        return """
+            CREATE TABLE IF NOT EXISTS ultimateshop_customPlaceholders (
+                playerUUID VARCHAR(36) NOT NULL,
+                placeholderID VARCHAR(48) NOT NULL,
+                nowValue TEXT,
+                PRIMARY KEY (playerUUID, placeholderID)
+            )
+        """;
+    }
+
+    @Override
     public String createFavouriteTable() {
         return """
             CREATE TABLE IF NOT EXISTS ultimateshop_favourites (
@@ -94,6 +106,16 @@ public class H2Dialect extends DatabaseDialect {
              nowValue, refreshDoneTime)
             KEY (playerUUID, placeholderID)
             VALUES (?, ?, ?, ?)
+        """;
+    }
+
+    @Override
+    public String upsertCustomPlaceholder() {
+        return """
+            MERGE INTO ultimateshop_customPlaceholders
+            (playerUUID, placeholderID, nowValue)
+            KEY (playerUUID, placeholderID)
+            VALUES (?, ?, ?)
         """;
     }
 

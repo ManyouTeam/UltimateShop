@@ -81,19 +81,13 @@ public class PlaceholderAPIExpansion extends PlaceholderExpansion {
                 return LanguageManager.languageManager.getStringText(player, "placeholderapi.unknown-product");
             }
             ObjectCache ObjectCache = CacheManager.cacheManager.getObjectCache(player);
-            ObjectUseTimesCache playerTimesCache = ObjectCache.getUseTimesCache().get(item);
+            ObjectUseTimesCache playerTimesCache = ObjectCache.getUseTimesCache(item);
             if (playerTimesCache == null) {
-                playerTimesCache = ObjectCache.createUseTimesCache(item);
-                if (playerTimesCache == null) {
-                    return "ERROR: Can not found player cache.";
-                }
+                return "ERROR: Can not found player cache.";
             }
-            ObjectUseTimesCache serverTimesCache = CacheManager.cacheManager.serverCache.getUseTimesCache().get(item);
+            ObjectUseTimesCache serverTimesCache = CacheManager.cacheManager.serverCache.getUseTimesCache(item);
             if (serverTimesCache == null) {
-                serverTimesCache = CacheManager.cacheManager.serverCache.createUseTimesCache(item);
-                if (serverTimesCache == null) {
-                    return "ERROR: Can not found server cache.";
-                }
+                return "ERROR: Can not found server cache.";
             }
             String tempVal1 = args[2];
             if (tempVal1.startsWith("{") && tempVal1.endsWith("}")) {

@@ -44,19 +44,11 @@ public class ShopHelper {
     }
 
     public static ObjectUseTimesCache getPlayerUseTimesCache(ObjectItem item, Player player) {
-        ObjectUseTimesCache useTimesCache = CacheManager.cacheManager.getObjectCache(player).getUseTimesCache().get(item);
-        if (useTimesCache == null) {
-            useTimesCache = CacheManager.cacheManager.getObjectCache(player).createUseTimesCache(item);
-        }
-        return useTimesCache;
+        return CacheManager.cacheManager.getObjectCache(player).getUseTimesCache(item);
     }
 
     public static ObjectUseTimesCache getServerUseTimesCache(ObjectItem item) {
-        ObjectUseTimesCache useTimesCache = CacheManager.cacheManager.serverCache.getUseTimesCache().get(item);
-        if (useTimesCache == null) {
-            useTimesCache = CacheManager.cacheManager.serverCache.createUseTimesCache(item);
-        }
-        return useTimesCache;
+        return CacheManager.cacheManager.serverCache.getUseTimesCache(item);
     }
 
     public static int getBuyUseTimes(ObjectItem item, Player player) {

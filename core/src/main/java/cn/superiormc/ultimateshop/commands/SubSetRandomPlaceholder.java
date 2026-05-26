@@ -49,11 +49,7 @@ public class SubSetRandomPlaceholder extends AbstractCommand {
             }
             tempVal1 = CacheManager.cacheManager.getObjectCache(changePlayer);
         }
-        ObjectRandomPlaceholderCache cache = tempVal1.getRandomPlaceholderCache().get(placeholder);
-        if (cache == null) {
-            tempVal1.addRandomPlaceholderCache(placeholder);
-            cache = tempVal1.getRandomPlaceholderCache().get(placeholder);
-        }
+        ObjectRandomPlaceholderCache cache = tempVal1.getRandomPlaceholderCache(placeholder);
         if (cache == null) {
             LanguageManager.languageManager.sendStringText(player,
                     "error.random-placeholder-player-arg-required",
@@ -104,11 +100,7 @@ public class SubSetRandomPlaceholder extends AbstractCommand {
             }
             tempVal1 = CacheManager.cacheManager.getObjectCache(changePlayer);
         }
-        ObjectRandomPlaceholderCache cache = tempVal1.getRandomPlaceholderCache().get(placeholder);
-        if (cache == null) {
-            tempVal1.addRandomPlaceholderCache(placeholder);
-            cache = tempVal1.getRandomPlaceholderCache().get(placeholder);
-        }
+        ObjectRandomPlaceholderCache cache = tempVal1.getRandomPlaceholderCache(placeholder);
         if (cache == null) {
             LanguageManager.languageManager.sendStringText(
                     "error.random-placeholder-player-arg-required",

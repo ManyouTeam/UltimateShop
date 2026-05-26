@@ -60,6 +60,7 @@ public class InitManager {
         resourceOutput("random_placeholders/daily.yml", false);
         resourceOutput("random_placeholders/reset.yml", false);
         resourceOutput("random_placeholders/rate_example.yml", false);
+        resourceOutput("custom_placeholders/example.yml", false);
         resourceOutput("sell_sticks/A.yml", false);
         resourceOutput("sell_sticks/B.yml", false);
         resourceOutput("sell_sticks/C.yml", false);

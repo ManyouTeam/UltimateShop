@@ -384,11 +384,11 @@ public class ObjectItem extends AbstractButton {
     }
 
     public String getUseTimesStorageShop() {
-        return getUseTimesStorageKey().getShop();
+        return getUseTimesStorageKey().shop();
     }
 
     public String getUseTimesStorageProduct() {
-        return getUseTimesStorageKey().getProduct();
+        return getUseTimesStorageKey().product();
     }
 
     @Override

@@ -68,6 +68,18 @@ public class SQLiteDialect extends DatabaseDialect {
     }
 
     @Override
+    public String createCustomPlaceholderTable() {
+        return """
+            CREATE TABLE IF NOT EXISTS ultimateshop_customPlaceholders (
+                playerUUID TEXT NOT NULL,
+                placeholderID TEXT NOT NULL,
+                nowValue TEXT,
+                PRIMARY KEY (playerUUID, placeholderID)
+            )
+        """;
+    }
+
+    @Override
     public String createFavouriteTable() {
         return """
             CREATE TABLE IF NOT EXISTS ultimateshop_favourites (
@@ -120,6 +132,19 @@ public class SQLiteDialect extends DatabaseDialect {
             DO UPDATE SET
                 nowValue = excluded.nowValue,
                 refreshDoneTime = excluded.refreshDoneTime
+        """;
+    }
+
+    @Override
+    public String upsertCustomPlaceholder() {
+        return """
+            INSERT INTO ultimateshop_customPlaceholders (
+                playerUUID, placeholderID, nowValue
+            )
+            VALUES (?, ?, ?)
+            ON CONFLICT(playerUUID, placeholderID)
+            DO UPDATE SET
+                nowValue = excluded.nowValue
         """;
     }
 

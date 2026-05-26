@@ -12,7 +12,7 @@ public class Dupe {
     private static final NamespacedKey antiDupe = new NamespacedKey(UltimateShop.instance, "anti_dupe");
 
     public static ItemStack markGuiDisplayItem(ItemStack item) {
-        if (!ConfigManager.configManager.getBoolean("menu.anti-dupe-fixes")) {
+        if (!ConfigManager.configManager.getBoolean("menu.anti-dupe-checker")) {
             return item;
         }
         if (item == null || item.getType().isAir()) {

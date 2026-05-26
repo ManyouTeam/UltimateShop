@@ -1,7 +1,6 @@
 package cn.superiormc.ultimateshop.objects.buttons.subobjects;
 
 import cn.superiormc.ultimateshop.api.ShopHelper;
-import cn.superiormc.ultimateshop.managers.CacheManager;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.methods.Dupe;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;

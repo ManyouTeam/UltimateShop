@@ -7,6 +7,7 @@ import cn.superiormc.ultimateshop.objects.ObjectSellStick;
 import cn.superiormc.ultimateshop.objects.ObjectShop;
 import cn.superiormc.ultimateshop.objects.buttons.AbstractButton;
 import cn.superiormc.ultimateshop.objects.items.subobjects.ObjectConditionalPlaceholder;
+import cn.superiormc.ultimateshop.objects.items.subobjects.ObjectCustomPlaceholder;
 import cn.superiormc.ultimateshop.objects.items.subobjects.ObjectRandomPlaceholder;
 import cn.superiormc.ultimateshop.objects.menus.ObjectFavouriteMenu;
 import cn.superiormc.ultimateshop.objects.menus.ObjectMenu;
@@ -42,6 +43,8 @@ public class ConfigManager {
 
     public Map<String, ObjectRandomPlaceholder> randomPlaceholders = new HashMap<>();
 
+    public Map<String, ObjectCustomPlaceholder> customPlaceholders = new HashMap<>();
+
     public Map<String, ObjectConditionalPlaceholder> conditionalPlaceholders = new HashMap<>();
 
     public Map<String, ObjectSharedUseTimes> sharedUseTimesMap = new HashMap<>();
@@ -63,6 +66,7 @@ public class ConfigManager {
         initMenuConfigs();
         if (!UltimateShop.freeVersion) {
             initRandomPlaceholder();
+            initCustomPlaceholder();
             initConditionalPlaceholder();
             initSellStickConfigs();
             if (!UltimateShop.isFolia && ConfigManager.configManager.getBoolean("sell.sell-chest.enabled")) {
@@ -237,6 +241,24 @@ public class ConfigManager {
             if (fileName.endsWith(".yml")) {
                 String substring = fileName.substring(0, fileName.length() - 4);
                 conditionalPlaceholders.put(substring, new ObjectConditionalPlaceholder(substring, YamlConfiguration.loadConfiguration(file)));
+            }
+        }
+    }
+
+    private void initCustomPlaceholder() {
+        File dir = new File(UltimateShop.instance.getDataFolder(), "custom_placeholders");
+        if (!dir.exists()) {
+            dir.mkdir();
+        }
+        File[] files = dir.listFiles();
+        if (!Objects.nonNull(files) && files.length != 0) {
+            return;
+        }
+        for (File file : files) {
+            String fileName = file.getName();
+            if (fileName.endsWith(".yml")) {
+                String substring = fileName.substring(0, fileName.length() - 4);
+                customPlaceholders.put(substring, new ObjectCustomPlaceholder(substring, YamlConfiguration.loadConfiguration(file)));
             }
         }
     }
@@ -433,6 +455,14 @@ public class ConfigManager {
 
     public Collection<ObjectRandomPlaceholder> getRandomPlaceholders() {
         return randomPlaceholders.values();
+    }
+
+    public ObjectCustomPlaceholder getCustomPlaceholder(String id) {
+        return customPlaceholders.get(id);
+    }
+
+    public Collection<ObjectCustomPlaceholder> getCustomPlaceholders() {
+        return customPlaceholders.values();
     }
 
     public ObjectConditionalPlaceholder getConditionalPlaceholder(String id) {

@@ -29,11 +29,15 @@ public abstract class DatabaseDialect {
 
     public abstract String createRandomPlaceholderTable();
 
+    public abstract String createCustomPlaceholderTable();
+
     public abstract String createFavouriteTable();
 
     public abstract String upsertUseTimes();
 
     public abstract String upsertRandomPlaceholder();
+
+    public abstract String upsertCustomPlaceholder();
 
     public abstract String deleteFavourites();
 

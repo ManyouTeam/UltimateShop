@@ -3,6 +3,7 @@ package cn.superiormc.ultimateshop.commands;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.LanguageManager;
 import cn.superiormc.ultimateshop.objects.items.subobjects.ObjectConditionalPlaceholder;
+import cn.superiormc.ultimateshop.objects.items.subobjects.ObjectCustomPlaceholder;
 import cn.superiormc.ultimateshop.objects.items.subobjects.ObjectRandomPlaceholder;
 import org.bukkit.entity.Player;
 
@@ -35,6 +36,9 @@ public class SubGetPlaceholderValue extends AbstractCommand {
                 }
                 for (ObjectConditionalPlaceholder tempVal3 : ConfigManager.configManager.getConditionalPlaceholders()) {
                     tempVal1.add("{conditional_" + tempVal3.getID() + "}");
+                }
+                for (ObjectCustomPlaceholder tempVal4 : ConfigManager.configManager.getCustomPlaceholders()) {
+                    tempVal1.add("{custom_" + tempVal4.getID() + "}");
                 }
                 tempVal1.add("{compare_50_100}");
                 tempVal1.add("{math_5*6-20}");

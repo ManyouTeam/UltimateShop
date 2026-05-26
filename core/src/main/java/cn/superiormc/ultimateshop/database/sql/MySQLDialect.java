@@ -58,6 +58,18 @@ public class MySQLDialect extends DatabaseDialect {
     }
 
     @Override
+    public String createCustomPlaceholderTable() {
+        return """
+            CREATE TABLE IF NOT EXISTS ultimateshop_customPlaceholders (
+                playerUUID VARCHAR(36) NOT NULL,
+                placeholderID VARCHAR(48) NOT NULL,
+                nowValue TEXT,
+                PRIMARY KEY (playerUUID, placeholderID)
+            )
+        """;
+    }
+
+    @Override
     public String createFavouriteTable() {
         return """
             CREATE TABLE IF NOT EXISTS ultimateshop_favourites (
@@ -101,6 +113,17 @@ public class MySQLDialect extends DatabaseDialect {
             ON DUPLICATE KEY UPDATE
                 nowValue = VALUES(nowValue),
                 refreshDoneTime = VALUES(refreshDoneTime)
+        """;
+    }
+
+    @Override
+    public String upsertCustomPlaceholder() {
+        return """
+            INSERT INTO ultimateshop_customPlaceholders
+            (playerUUID, placeholderID, nowValue)
+            VALUES (?, ?, ?)
+            ON DUPLICATE KEY UPDATE
+                nowValue = VALUES(nowValue)
         """;
     }
 

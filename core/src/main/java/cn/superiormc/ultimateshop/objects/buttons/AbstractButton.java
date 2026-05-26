@@ -12,11 +12,11 @@ public abstract class AbstractButton {
 
     public ButtonType type;
 
-    public AbstractButton(ConfigurationSection config){
+    public AbstractButton(ConfigurationSection config) {
         this.config = config;
     }
 
-    public AbstractButton(){
+    public AbstractButton() {
         // Empty...
     }
 

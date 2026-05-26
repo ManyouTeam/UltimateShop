@@ -47,6 +47,8 @@ public class CommandManager {
        registerNewSubCommand(new SubGetPlaceholderValue());
        registerNewSubCommand(new SubResetRandomPlaceholder());
        registerNewSubCommand(new SubSetRandomPlaceholder());
+       registerNewSubCommand(new SubAddCustomPlaceholder());
+       registerNewSubCommand(new SubSetCustomPlaceholder());
        registerNewSubCommand(new SubSearch());
        registerNewSubCommand(new SubSearchGUI());
        registerNewSubCommand(new SubSellHand());

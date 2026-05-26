@@ -354,4 +354,16 @@ public class CommonUtil {
     public static boolean actionIsRightClick(Action action) {
         return action == Action.RIGHT_CLICK_AIR || action == Action.RIGHT_CLICK_BLOCK;
     }
+
+    public static boolean isNumberValue(String value) {
+        if (value == null || value.isEmpty()) {
+            return false;
+        }
+        try {
+            new BigDecimal(value);
+            return true;
+        } catch (NumberFormatException ignored) {
+            return false;
+        }
+    }
 }

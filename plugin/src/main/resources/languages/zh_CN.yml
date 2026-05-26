@@ -12,6 +12,9 @@ error:
   shop-menu-not-found: '&#98FB98[UltimateShop] &c找不到商店{shop}的菜单：{menu}!'
   shop-does-not-have-menu: '&#98FB98[UltimateShop] &c商店{shop}没有有效的菜单!'
   random-placeholder-not-found: "&#98FB98[UltimateShop] &c找不到随机变量符: {placeholder}!"
+  custom-placeholder-not-found: "&#98FB98[UltimateShop] &c找不到自定义变量符: {placeholder}!"
+  custom-placeholder-invalid-number: "&#98FB98[UltimateShop] &c自定义变量符的值必须是数字: {value}!"
+  custom-placeholder-player-arg-required: "&#98FB98[UltimateShop] &c自定义变量符 {placeholder} 是分玩家输出值的，你需要指定一名玩家!"
   random-placeholder-player-arg-required: "&#98FB98[UltimateShop] &c随机变量符 {placeholder} 是分玩家输出值的，因此你必须指定一名玩家!"
   result-empty: "&#98FB98[UltimateShop] &c该物品在商店中不存在!"
 
@@ -36,6 +39,7 @@ command-tab:
   unknown-shop: "[未知商店]"
   type-item-id: '[输入想要设置的物品ID]'
   unknown-random-placeholder: "[未知随机变量符]"
+  unknown-custom-placeholder: "[未知自定义变量符]"
 
 # All messages also support multi lines, just do it like this!
 help:
@@ -78,6 +82,7 @@ help:
     &f/shop addselltimes <shopName> <itemName> <playerName> <amount> &7- Add sell times.
     &f/shop resetrandomplaceholder <placeholderID> &7- Reset random placeholder value. &c(Premium)
     &f/shop setrandomplaceholder <placeholderID> [element] &7- Set random placeholder value. &c(Premium)
+    &f/shop setcustomplaceholder <placeholderID> <value> [playerName] &7- Set custom placeholder value. &c(Premium)
     &f/shop getplaceholdervalue <text> &7- Parse input text. &c(Premium)
     &f/shop givesellstick <itemID> <playerID> [amount] &7- Give sell stick item. &c(Premium)
 
@@ -108,6 +113,7 @@ sell-products-not-enough: '&#98FB98[UltimateShop] &c您没有足够的 {item} &c
 parsed-value: "&#98FB98[UltimateShop] &f解析后的文本: {text}"
 reset-random-placeholder: "&#98FB98[UltimateShop] &f成功重置随机变量符 {placeholder}，其新的值是 {value}."
 set-random-placeholder: "&#98FB98[UltimateShop] &f成功设置随机变量符 {placeholder} 新的值为 {value}，请注意，变量符的刷新时间并未重置."
+set-custom-placeholder: "&#98FB98[UltimateShop] &f成功设置自定义变量符 {placeholder} 新的值为 {value}."
 gui-updated: "&#98FB98[UltimateShop] &f已为玩家 {player} 刷新GUI!"
 gui-not-opened: "&#98FB98[UltimateShop] &c{player} 没有打开任何的GUI!"
 dupe-removed: "&#98FB98[UltimateShop] &f你的背包的一件非法物品已被移除!"

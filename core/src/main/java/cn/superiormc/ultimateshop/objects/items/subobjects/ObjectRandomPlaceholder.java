@@ -149,11 +149,7 @@ public class ObjectRandomPlaceholder {
     }
 
     public List<String> getNowValue(ObjectCache cache) {
-        ObjectRandomPlaceholderCache tempVal1 = cache.getRandomPlaceholderCache().get(this);
-        if (tempVal1 == null) {
-            cache.addRandomPlaceholderCache(this);
-            tempVal1 = cache.getRandomPlaceholderCache().get(this);
-        }
+        ObjectRandomPlaceholderCache tempVal1 = cache.getRandomPlaceholderCache(this);
         if (tempVal1 == null) {
             return new ArrayList<>();
         }
@@ -190,11 +186,7 @@ public class ObjectRandomPlaceholder {
         } else {
             cache = CacheManager.cacheManager.serverCache;
         }
-        ObjectRandomPlaceholderCache tempVal2 = cache.getRandomPlaceholderCache().get(tempVal1);
-        if (tempVal2 == null) {
-            cache.addRandomPlaceholderCache(tempVal1);
-            tempVal2 = cache.getRandomPlaceholderCache().get(tempVal1);
-        }
+        ObjectRandomPlaceholderCache tempVal2 = cache.getRandomPlaceholderCache(tempVal1);
         if (tempVal2 == null) {
             return "";
         }
@@ -223,11 +215,7 @@ public class ObjectRandomPlaceholder {
         } else {
             cache = CacheManager.cacheManager.serverCache;
         }
-        ObjectRandomPlaceholderCache tempVal2 = cache.getRandomPlaceholderCache().get(tempVal1);
-        if (tempVal2 == null) {
-            cache.addRandomPlaceholderCache(tempVal1);
-            tempVal2 = cache.getRandomPlaceholderCache().get(tempVal1);
-        }
+        ObjectRandomPlaceholderCache tempVal2 = cache.getRandomPlaceholderCache(tempVal1);
         if (tempVal2 == null) {
             return CommonUtil.getNowTime().withYear(2999);
         }

@@ -56,19 +56,12 @@ public class SubSetBuyTimes extends AbstractCommand {
         }
         if (args[2].equals("*") && !UltimateShop.freeVersion) {
             for (ObjectItem item : tempVal1.getProductList()) {
-                ObjectUseTimesCache tempVal4 = tempVal3.getUseTimesCache().get(item);
+                ObjectUseTimesCache tempVal4 = tempVal3.getUseTimesCache(item);
                 switch (args.length) {
                     case 4:
-                        if (tempVal4 == null) {
-                            tempVal3.createUseTimesCache(item);
-                        } else {
-                            tempVal4.setBuyUseTimes(0);
-                        }
+                        tempVal4.setBuyUseTimes(0);
                         break;
                     case 5:
-                        if (tempVal4 == null) {
-                            tempVal4 = tempVal3.createUseTimesCache(item);
-                        }
                         tempVal4.setBuyUseTimes(Integer.parseInt(args[4]));
 
                 }
@@ -90,14 +83,10 @@ public class SubSetBuyTimes extends AbstractCommand {
                     args[2]);
             return;
         }
-        ObjectUseTimesCache tempVal4 = tempVal3.getUseTimesCache().get(tempVal2);
+        ObjectUseTimesCache tempVal4 = tempVal3.getUseTimesCache(tempVal2);
         switch (args.length) {
             case 4:
-                if (tempVal4 == null) {
-                    tempVal3.createUseTimesCache(tempVal2);
-                } else {
-                    tempVal4.setBuyUseTimes(0);
-                }
+                tempVal4.setBuyUseTimes(0);
                 LanguageManager.languageManager.sendStringText(player,
                         "set-times",
                         "player",
@@ -108,9 +97,6 @@ public class SubSetBuyTimes extends AbstractCommand {
                         "0");
                 break;
             case 5:
-                if (tempVal4 == null) {
-                    tempVal4 = tempVal3.createUseTimesCache(tempVal2);
-                }
                 tempVal4.setBuyUseTimes(Integer.parseInt(args[4]));
                 LanguageManager.languageManager.sendStringText(player,
                         "set-times",
@@ -155,19 +141,12 @@ public class SubSetBuyTimes extends AbstractCommand {
         }
         if (args[2].equals("*") && !UltimateShop.freeVersion) {
             for (ObjectItem item : tempVal1.getProductList()) {
-                ObjectUseTimesCache tempVal4 = tempVal3.getUseTimesCache().get(item);
+                ObjectUseTimesCache tempVal4 = tempVal3.getUseTimesCache(item);
                 switch (args.length) {
                     case 4:
-                        if (tempVal4 == null) {
-                            tempVal3.createUseTimesCache(item);
-                        } else {
-                            tempVal4.setBuyUseTimes(0);
-                        }
+                        tempVal4.setBuyUseTimes(0);
                         break;
                     case 5:
-                        if (tempVal4 == null) {
-                            tempVal4 = tempVal3.createUseTimesCache(item);
-                        }
                         tempVal4.setBuyUseTimes(Integer.parseInt(args[4]));
                 }
             }
@@ -188,14 +167,10 @@ public class SubSetBuyTimes extends AbstractCommand {
                     args[2]);
             return;
         }
-        ObjectUseTimesCache tempVal4 = tempVal3.getUseTimesCache().get(tempVal2);
+        ObjectUseTimesCache tempVal4 = tempVal3.getUseTimesCache(tempVal2);
         switch (args.length) {
             case 4:
-                if (tempVal4 == null) {
-                    tempVal3.createUseTimesCache(tempVal2);
-                } else {
-                    tempVal4.setBuyUseTimes(0);
-                }
+                tempVal4.setBuyUseTimes(0);
                 LanguageManager.languageManager.sendStringText("set-times",
                         "player",
                         args[3],
@@ -205,9 +180,6 @@ public class SubSetBuyTimes extends AbstractCommand {
                         "0");
                 break;
             case 5:
-                if (tempVal4 == null) {
-                    tempVal4 = tempVal3.createUseTimesCache(tempVal2);
-                }
                 tempVal4.setBuyUseTimes(Integer.parseInt(args[4]));
                 LanguageManager.languageManager.sendStringText("set-times",
                         "player",

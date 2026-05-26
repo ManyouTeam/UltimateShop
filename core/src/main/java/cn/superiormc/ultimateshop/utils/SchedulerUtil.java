@@ -48,10 +48,18 @@ public class SchedulerUtil {
         }
     }
 
+    public static void runSync(Location location, Runnable task) {
+        if (UltimateShop.isFolia) {
+            Bukkit.getRegionScheduler().run(UltimateShop.instance, location, scheduledTask -> task.run());
+        } else {
+            Bukkit.getScheduler().runTask(UltimateShop.instance, task);
+        }
+    }
+
     // 在异步线程上运行任务
     public static void runTaskAsynchronously(Runnable task) {
         if (UltimateShop.isFolia) {
-            task.run();
+            Bukkit.getAsyncScheduler().runNow(UltimateShop.instance, scheduledTask -> task.run());
         } else {
             Bukkit.getScheduler().runTaskAsynchronously(UltimateShop.instance, task);
         }
@@ -122,6 +130,5 @@ public class SchedulerUtil {
             return new SchedulerUtil(Bukkit.getScheduler().runTaskLater(UltimateShop.instance, task, delayTicks));
         }
     }
-
 
 }

@@ -83,17 +83,8 @@ public class ModifyDisplayItem {
 
         List<String> resultLore = new ArrayList<>();
 
-        ObjectUseTimesCache playerCache =
-                CacheManager.cacheManager.getObjectCache(player).getUseTimesCache().get(item);
-        ObjectUseTimesCache serverCache =
-                CacheManager.cacheManager.serverCache.getUseTimesCache().get(item);
-
-        if (playerCache == null) {
-            playerCache = CacheManager.cacheManager.getObjectCache(player).createUseTimesCache(item);
-        }
-        if (serverCache == null) {
-            serverCache = CacheManager.cacheManager.serverCache.createUseTimesCache(item);
-        }
+        ObjectUseTimesCache playerCache = CacheManager.cacheManager.getObjectCache(player).getUseTimesCache(item);
+        ObjectUseTimesCache serverCache = CacheManager.cacheManager.serverCache.getUseTimesCache(item);
 
         Map<Character, ConditionResolver> conditionResolvers = buildConditionResolvers(player, item, clickType, buyMore, bedrock, playerCache, serverCache);
 

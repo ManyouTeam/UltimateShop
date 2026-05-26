@@ -122,14 +122,14 @@ public class SellProductMethod {
         // limit
         int playerUseTimes = 0;
         int serverUseTimes = 0;
-        ObjectUseTimesCache tempVal9 = tempVal3.getUseTimesCache().get(item);
-        ObjectUseTimesCache tempVal8 = tempVal11.getUseTimesCache().get(item);
+        ObjectUseTimesCache tempVal9 = tempVal3.getUseTimesCache(item);
+        ObjectUseTimesCache tempVal8 = tempVal11.getUseTimesCache(item);
         if (tempVal9 != null) {
             // 重置
             tempVal9.refreshTimes();
             playerUseTimes = tempVal9.getSellUseTimes();
         } else {
-            tempVal9 = tempVal3.createUseTimesCache(item);
+            return ProductTradeStatus.ERROR;
         }
         // 更改multi
         ObjectProducts tempVal5 = item.getReward();
@@ -188,7 +188,7 @@ public class SellProductMethod {
             tempVal8.refreshTimes();
             serverUseTimes = tempVal8.getSellUseTimes();
         } else {
-            tempVal8 = tempVal11.createUseTimesCache(item);
+            return ProductTradeStatus.ERROR;
         }
         if (item.getServerSellLimit(player) != -1 &&
                 serverUseTimes + multi > item.getServerSellLimit(player)) {
@@ -231,7 +231,9 @@ public class SellProductMethod {
                 LanguageManager.languageManager.sendStringText(player,
                         "sell-products-not-enough",
                         "item",
-                        item.getDisplayName(player));
+                        item.getDisplayName(player),
+                        "amount",
+                        String.valueOf(multi * item.getDisplayItemObject().getAmountPlaceholder(player)));
             }
             return ProductTradeStatus.NOT_ENOUGH;
         }
@@ -272,24 +274,21 @@ public class SellProductMethod {
         // 执行动作
         item.getSellAction().runAllActions(new ObjectThingRun(player, playerUseTimes, multi, calculateAmount, sellAll));
         // limit+1
-        if (tempVal9 != null) {
-            if (ConfigManager.configManager.getBoolean("debug")) {
-                int newValue = tempVal9.getSellUseTimes() + multi;
-                TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §aSet player limit value to " + newValue + "!");
-            }
-            tempVal9.setSellUseTimes(tempVal9.getSellUseTimes() + multi);
-            tempVal9.setLastSellTime(CommonUtil.getNowTime());
-            tempVal9.setCooldownSellTime();
+        if (ConfigManager.configManager.getBoolean("debug")) {
+            int newValue = tempVal9.getSellUseTimes() + multi;
+            TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §aSet player limit value to " + newValue + "!");
         }
-        if (tempVal8 != null) {
-            if (ConfigManager.configManager.getBoolean("debug")) {
-                int newValue = tempVal8.getSellUseTimes() + multi;
-                TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §aSet server limit value to " + newValue + "!");
-            }
-            tempVal8.setSellUseTimes(tempVal8.getSellUseTimes() + multi);
-            tempVal8.setLastSellTime(CommonUtil.getNowTime());
-            tempVal8.setCooldownSellTime();
+        tempVal9.setSellUseTimes(tempVal9.getSellUseTimes() + multi);
+        tempVal9.setLastSellTime(CommonUtil.getNowTime());
+        tempVal9.setCooldownSellTime();
+
+        if (ConfigManager.configManager.getBoolean("debug")) {
+            int newValue = tempVal8.getSellUseTimes() + multi;
+            TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §aSet server limit value to " + newValue + "!");
         }
+        tempVal8.setSellUseTimes(tempVal8.getSellUseTimes() + multi);
+        tempVal8.setLastSellTime(CommonUtil.getNowTime());
+        tempVal8.setCooldownSellTime();
         if ((!sellAll || !ConfigManager.configManager.getBoolean("sell.auto-hide-sell-all-message")) && !item.getHideMessage() && !giveResult.empty && !takeResult.empty) {
             LanguageManager.languageManager.sendStringText(player,
                     "success-sell",

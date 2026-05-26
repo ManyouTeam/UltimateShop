@@ -10,6 +10,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.*;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.*;
 import org.bukkit.event.entity.EntityChangeBlockEvent;
@@ -23,7 +24,7 @@ import org.bukkit.persistence.PersistentDataType;
 
 public class SellChestListener implements Listener {
 
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onPlace(BlockPlaceEvent event) {
         if (event.getBlockPlaced().getType() != Material.CHEST) {
             return;
@@ -86,7 +87,7 @@ public class SellChestListener implements Listener {
         SellChestManager.sellChestManager.registerSellChest(chest, event.getPlayer(), sellChest, times);
     }
 
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onBreak(BlockBreakEvent event) {
         Block block = event.getBlock();
         BlockState state = block.getState();
@@ -119,21 +120,21 @@ public class SellChestListener implements Listener {
         handleSellChestDestroy(block, true);
     }
 
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onBlockExplode(BlockExplodeEvent event) {
         for (Block block : event.blockList()) {
             handleSellChestDestroy(block, true);
         }
     }
 
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onEntityExplode(EntityExplodeEvent event) {
         for (Block block : event.blockList()) {
             handleSellChestDestroy(block, true);
         }
     }
 
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onPistonExtend(BlockPistonExtendEvent event) {
         for (Block block : event.getBlocks()) {
             if (isSellChest(block)) {
@@ -143,7 +144,7 @@ public class SellChestListener implements Listener {
         }
     }
 
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onPistonRetract(BlockPistonRetractEvent event) {
         for (Block block : event.getBlocks()) {
             if (isSellChest(block)) {
@@ -153,7 +154,7 @@ public class SellChestListener implements Listener {
         }
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onEntityGrief(EntityChangeBlockEvent event) {
         Block block = event.getBlock();
         if (isSellChest(block)) {

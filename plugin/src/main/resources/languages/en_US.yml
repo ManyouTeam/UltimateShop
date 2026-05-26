@@ -12,6 +12,9 @@ error:
   shop-menu-not-found: "&#98FB98[UltimateShop] &cWe can't find shop {shop}'s menu: {menu}!"
   shop-does-not-have-menu: "&#98FB98[UltimateShop] &cShop {shop} does not have valid menu!"
   random-placeholder-not-found: "&#98FB98[UltimateShop] &cWe can't find random placeholder: {placeholder}!"
+  custom-placeholder-not-found: "&#98FB98[UltimateShop] &cWe can't find custom placeholder: {placeholder}!"
+  custom-placeholder-invalid-number: "&#98FB98[UltimateShop] &cCustom placeholder value must be a number: {value}!"
+  custom-placeholder-player-arg-required: "&#98FB98[UltimateShop] &cCustom placeholder {placeholder} is per player data, you need specific a player!"
   random-placeholder-player-arg-required: "&#98FB98[UltimateShop] &cRandom placeholder {placeholder} is per player data, you need specific a player!"
   result-empty: "&#98FB98[UltimateShop] &cThis item seems does not exist in shop!"
   favourite-empty: "&#98FB98[UltimateShop] &cThis favourite menu does not contain any products yet!"
@@ -42,6 +45,7 @@ placeholderapi:
 command-tab:
   unknown-shop: "[Unknown Shop]"
   unknown-random-placeholder: "[Unknown Random Placeholder]"
+  unknown-custom-placeholder: "[Unknown Custom Placeholder]"
   type-item-id: "[Type Item ID you want]"
 
 # All messages also support multi lines, just do it like this!
@@ -71,6 +75,7 @@ help:
     &f/shop addselltimes <shopName> <itemName> <playerName> <amount> &7- Add sell times.
     &f/shop resetrandomplaceholder <placeholderID> &7- Reset random placeholder value. &c(Premium)
     &f/shop setrandomplaceholder <placeholderID> [element] &7- Set random placeholder value. &c(Premium)
+    &f/shop setcustomplaceholder <placeholderID> <value> [playerName] &7- Set custom placeholder value. &c(Premium)
     &f/shop getplaceholdervalue <text> &7- Parse input text. &c(Premium)
     &f/shop saveitem <itemID> &7- Save hold item.
     &f/shop generateitemformat &7- Parse hold item into ItemFormat.
@@ -113,6 +118,7 @@ sell-products-not-enough: "&#98FB98[UltimateShop] &cYou do not have enough {item
 parsed-value: "&#98FB98[UltimateShop] &fParsed Value: {text}"
 reset-random-placeholder: "&#98FB98[UltimateShop] &fSuccessfully reset random placeholder {placeholder} and it's new value is {value}."
 set-random-placeholder: "&#98FB98[UltimateShop] &fSuccessfully set random placeholder {placeholder}'s new value to: {value}. Please note that the refresh time does not be reset!"
+set-custom-placeholder: "&#98FB98[UltimateShop] &fSuccessfully set custom placeholder {placeholder}'s new value to: {value}."
 gui-updated: "&#98FB98[UltimateShop] &fGUI updated for player {player}!"
 gui-not-opened: "&#98FB98[UltimateShop] &c{player} didn't open any GUI!"
 dupe-removed: "&#98FB98[UltimateShop] &fA illegal item from your inventory has been removed!"
