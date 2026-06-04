@@ -103,13 +103,6 @@ public class CommonUtil {
                     s = s.replace(var, args[i + 1]);
                 }
             }
-            String[] tempVal1 = s.split(";;");
-            if (tempVal1.length > 1) {
-                for (String string : tempVal1) {
-                    resultList.add(TextUtil.withPAPI(string, player));
-                }
-                continue;
-            }
             resultList.add(TextUtil.withPAPI(s, player));
         }
         return resultList;

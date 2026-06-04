@@ -98,6 +98,7 @@ public final class UltimateShop extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        ListenerManager.listenerManager.unregisterAllListener();
         if (CacheManager.cacheManager.serverCache != null) {
             CacheManager.cacheManager.serverCache.shutCacheOnDisable(true);
         }

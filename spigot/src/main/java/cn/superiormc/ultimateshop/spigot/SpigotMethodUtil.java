@@ -21,10 +21,7 @@ import org.bukkit.profile.PlayerTextures;
 
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -81,24 +78,33 @@ public class SpigotMethodUtil implements SpecialMethodUtil {
         player.teleport(location);
     }
 
+    public Map<String, PlayerProfile> playerProfiles = new HashMap<>();
+
     @Override
     public SkullMeta setSkullMeta(SkullMeta meta, String skull) {
         if (!CommonUtil.getMajorVersion(19)) {
             return meta;
         }
-        try {
-            URL skinUrl = resolveSkinUrl(skull);
-            if (skinUrl == null) {
-                return meta;
-            }
-            PlayerProfile profile = Bukkit.createPlayerProfile(UUID.randomUUID(), "custom_head");
-            PlayerTextures textures = profile.getTextures();
-            textures.setSkin(skinUrl);
-            profile.setTextures(textures);
+        if (skull.length() >= 16) {
+            try {
+                URL skinUrl = resolveSkinUrl(skull);
+                if (skinUrl == null) {
+                    return meta;
+                }
+                PlayerProfile profile = Bukkit.createPlayerProfile(UUID.randomUUID(), "custom_head");
+                PlayerTextures textures = profile.getTextures();
+                textures.setSkin(skinUrl);
+                profile.setTextures(textures);
 
-            meta.setOwnerProfile(profile);
-        } catch (Exception e) {
-            e.printStackTrace();
+                meta.setOwnerProfile(profile);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else {
+            if (!playerProfiles.containsKey(skull)) {
+                playerProfiles.put(skull, Bukkit.getOfflinePlayer(skull).getPlayerProfile());
+            }
+            meta.setOwnerProfile(playerProfiles.get(skull));
         }
 
         return meta;
@@ -112,17 +118,16 @@ public class SpigotMethodUtil implements SpecialMethodUtil {
         try {
             PlayerProfile ownerProfile = meta.getOwnerProfile();
             if (ownerProfile != null) {
-                ownerProfile.getTextures();
+                String name = ownerProfile.getName();
+                if (name != null && !name.trim().isEmpty()) {
+                    return name;
+                }
                 URL skinUrl = ownerProfile.getTextures().getSkin();
                 if (skinUrl != null) {
                     return encodeSkinUrl(skinUrl);
                 }
             }
         } catch (Throwable ignored) {
-        }
-
-        if (meta.getOwningPlayer() != null) {
-            return meta.getOwningPlayer().getName();
         }
         return null;
     }

@@ -184,10 +184,13 @@ public class ObjectCache {
         if (!checkPlaceholderScope(placeholder)) {
             return null;
         }
-        return randomPlaceholderCache.computeIfAbsent(
-                placeholder,
-                key -> new ObjectRandomPlaceholderCache(this, placeholder)
-        );
+        ObjectRandomPlaceholderCache existingCache = randomPlaceholderCache.get(placeholder);
+        if (existingCache != null) {
+            return existingCache;
+        }
+        ObjectRandomPlaceholderCache createdCache = new ObjectRandomPlaceholderCache(this, placeholder);
+        ObjectRandomPlaceholderCache racedCache = randomPlaceholderCache.putIfAbsent(placeholder, createdCache);
+        return racedCache == null ? createdCache : racedCache;
     }
 
     private boolean checkPlaceholderScope(ObjectRandomPlaceholder placeholder) {

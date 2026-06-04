@@ -42,6 +42,7 @@ import org.bukkit.tag.DamageTypeTags;
 import java.util.*;
 
 public class BuildItem {
+
     public static ItemStack buildItemStack(Player player,
                                            ConfigurationSection section,
                                            int amount,
@@ -550,11 +551,7 @@ public class BuildItem {
                 if (!UltimateShop.freeVersion) {
                     skullTextureNameKey = TextUtil.withPAPI(skullTextureNameKey, player);
                 }
-                if (skullTextureNameKey.length() > 16) {
-                    UltimateShop.methodUtil.setSkullMeta(skullMeta, skullTextureNameKey);
-                } else {
-                    skullMeta.setOwningPlayer(Bukkit.getOfflinePlayer(skullTextureNameKey));
-                }
+                UltimateShop.methodUtil.setSkullMeta(skullMeta, skullTextureNameKey);
             }
         }
 

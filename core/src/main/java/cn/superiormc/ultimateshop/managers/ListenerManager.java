@@ -1,21 +1,31 @@
 package cn.superiormc.ultimateshop.managers;
 
 import cn.superiormc.ultimateshop.UltimateShop;
+import cn.superiormc.ultimateshop.gui.InvGUI;
 import cn.superiormc.ultimateshop.listeners.*;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
 import cn.superiormc.ultimateshop.utils.TextUtil;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
+import org.bukkit.event.HandlerList;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 public class ListenerManager {
 
     public static ListenerManager listenerManager;
+
+    private final Map<UUID, InvGUI> listeners = new HashMap<>();
 
     public ListenerManager(){
         listenerManager = this;
         registerListeners();
     }
 
-    private void registerListeners(){
+    private void registerListeners() {
+        Bukkit.getPluginManager().registerEvents(new GUIListener(), UltimateShop.instance);
         Bukkit.getPluginManager().registerEvents(new CacheListener(), UltimateShop.instance);
         Bukkit.getPluginManager().registerEvents(new PromptListener(), UltimateShop.instance);
         if (!UltimateShop.freeVersion) {
@@ -31,5 +41,26 @@ public class ListenerManager {
         if (CommonUtil.getMajorVersion(19) && UltimateShop.methodUtil.methodID().equals("paper") && ConfigManager.configManager.getBoolean("menu.anti-dupe-checker")) {
             Bukkit.getPluginManager().registerEvents(new DupeListener(), UltimateShop.instance);
         }
+    }
+
+    public void registerNewGUIListener(Player player, InvGUI inv) {
+        unregisterListeners(player);
+        listeners.put(player.getUniqueId(), inv);
+    }
+
+    public void unregisterNewGUIListener(Player player, InvGUI inv) {
+        listeners.remove(player.getUniqueId(), inv);
+    }
+
+    public void unregisterListeners(Player player) {
+        listeners.remove(player.getUniqueId());
+    }
+
+    public InvGUI getInvGUI(Player player) {
+        return listeners.get(player.getUniqueId());
+    }
+
+    public void unregisterAllListener() {
+        HandlerList.unregisterAll(UltimateShop.instance);
     }
 }

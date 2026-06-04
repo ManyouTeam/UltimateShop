@@ -1,16 +1,14 @@
 package cn.superiormc.ultimateshop.gui;
 
 import cn.superiormc.ultimateshop.UltimateShop;
-import cn.superiormc.ultimateshop.listeners.GUIListener;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
+import cn.superiormc.ultimateshop.managers.ListenerManager;
 import cn.superiormc.ultimateshop.managers.MenuStatusManager;
 import cn.superiormc.ultimateshop.objects.buttons.AbstractButton;
 import cn.superiormc.ultimateshop.utils.PacketInventoryUtil;
 import cn.superiormc.ultimateshop.utils.SchedulerUtil;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -25,8 +23,6 @@ public abstract class InvGUI extends AbstractGUI {
     public Map<Integer, AbstractButton> menuButtons = new HashMap<>();
 
     public Map<Integer, ItemStack> menuItems = new HashMap<>();
-
-    public Listener guiListener;
 
     protected SchedulerUtil runTask = null;
 
@@ -65,8 +61,7 @@ public abstract class InvGUI extends AbstractGUI {
         constructGUI();
         if (inv != null) {
             SchedulerUtil.runSync(player, () -> {
-                this.guiListener = new GUIListener(this);
-                Bukkit.getPluginManager().registerEvents(guiListener, UltimateShop.instance);
+                ListenerManager.listenerManager.registerNewGUIListener(player, this);
                 player.openInventory(inv);
             });
             if (getMenu() != null) {

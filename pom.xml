@@ -18,7 +18,7 @@
     <properties>
         <java.version>16</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <revision>4.5.26</revision>
+        <revision>4.6.0</revision>
         <name>UltimateShop</name>
     </properties>
 
@@ -32,72 +32,6 @@
                     <source>16</source>
                     <target>16</target>
                 </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-shade-plugin</artifactId>
-                <version>3.6.2</version>
-                <configuration>
-                    <relocations>
-                        <relocation>
-                            <pattern>org.bstats</pattern>
-                            <shadedPattern>cn.superiormc.ultimateshop.bstats</shadedPattern>
-                        </relocation>
-                        <relocation>
-                            <pattern>com.zaxxer.hikari</pattern>
-                            <shadedPattern>cn.superiormc.ultimateshop.libs.hikari</shadedPattern>
-                        </relocation>
-                        <relocation>
-                            <pattern>com.cronutils</pattern>
-                            <shadedPattern>cn.superiormc.ultimateshop.libs.cronutils</shadedPattern>
-                        </relocation>
-                        <relocation>
-                            <pattern>redempt.crunch</pattern>
-                            <shadedPattern>cn.superiormc.ultimateshop.libs.crunch</shadedPattern>
-                        </relocation>
-                        <relocation>
-                            <pattern>org.json</pattern>
-                            <shadedPattern>cn.superiormc.ultimateshop.libs.json</shadedPattern>
-                        </relocation>
-                        <relocation>
-                            <pattern>org.slf4j</pattern>
-                            <shadedPattern>cn.superiormc.ultimateshop.libs.slf4j</shadedPattern>
-                        </relocation>
-                        <relocation>
-                            <pattern>javax.el</pattern>
-                            <shadedPattern>cn.superiormc.ultimateshop.libs.javax.el</shadedPattern>
-                        </relocation>
-                        <relocation>
-                            <pattern>com.sun.el</pattern>
-                            <shadedPattern>cn.superiormc.ultimateshop.libs.com.sun.el</shadedPattern>
-                        </relocation>
-                        <relocation>
-                            <pattern>cn.gtemc.itembridge</pattern>
-                            <shadedPattern>cn.superiormc.ultimateshop.libs.itembridge</shadedPattern>
-                        </relocation>
-                    </relocations>
-                </configuration>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>shade</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <artifactId>maven-clean-plugin</artifactId>
-                <version>3.1.0</version>
-                <executions>
-                    <execution>
-                        <id>auto-clean</id>
-                        <phase>initialize</phase>
-                        <goals>
-                            <goal>clean</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
@@ -154,117 +88,219 @@
         <repository>
             <id>spigotmc-repo</id>
             <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>daily</updatePolicy>
+            </snapshots>
         </repository>
         <repository>
             <id>paper-repo</id>
             <url>https://repo.papermc.io/repository/maven-public/</url>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>daily</updatePolicy>
+            </snapshots>
         </repository>
         <repository>
             <id>rosewood-repo</id>
             <url>https://repo.rosewooddev.io/repository/public/</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
         </repository>
         <repository>
             <id>minecraft-repo</id>
             <url>https://libraries.minecraft.net/</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
         </repository>
         <repository>
             <id>sonatype</id>
             <url>https://oss.sonatype.org/content/groups/public/</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
         </repository>
         <repository>
             <id>jitpack-repo</id>
             <url>https://jitpack.io</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
         </repository>
         <repository>
             <id>placeholderapi</id>
             <url>https://repo.extendedclip.com/releases/</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
         </repository>
         <repository>
             <id>nexus</id>
             <name>Lumine Releases</name>
             <url>https://mvn.lumine.io/repository/maven-public/</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
         </repository>
         <repository>
             <id>codemc-snapshots</id>
             <url>https://repo.codemc.org/repository/maven-snapshots</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>daily</updatePolicy>
+            </snapshots>
         </repository>
         <repository>
             <id>codemc-repo</id>
             <url>https://repo.codemc.org/repository/maven-public/</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
         </repository>
         <repository>
             <id>sk89q-repo</id>
             <url>https://maven.enginehub.org/repo/</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
         </repository>
         <repository>
             <id>auxilor</id>
             <url>https://repo.auxilor.io/repository/maven-public/</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
         </repository>
         <repository>
             <id>oraxen-releases</id>
             <name>Oraxen Repository</name>
             <url>https://repo.oraxen.com/releases</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
         </repository>
         <repository>
             <id>techscode</id>
             <url>https://repo.techscode.com/repository/techscode-apis/</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
         </repository>
         <repository>
             <id>bs-repo-releases</id>
             <url>https://repo.bsdevelopment.org/releases</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
         </repository>
         <repository>
             <id>opencollab-snapshot</id>
             <url>https://repo.opencollab.dev/main/</url>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>daily</updatePolicy>
+            </snapshots>
         </repository>
         <repository>
             <id>sonatype-oss-snapshots1</id>
             <url>https://s01.oss.sonatype.org/content/repositories/snapshots/</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>daily</updatePolicy>
+            </snapshots>
         </repository>
         <repository>
             <id>BenCodez Repo</id>
             <url>https://nexus.bencodez.com/repository/maven-public/</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
         </repository>
         <repository>
             <id>william278.net</id>
             <url>https://repo.william278.net/releases</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
         </repository>
         <repository>
             <id>glaremasters repo</id>
             <url>https://repo.glaremasters.me/repository/towny/</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
         </repository>
         <repository>
             <id>momirealms repo</id>
             <url>https://repo.momirealms.net/snapshots</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>daily</updatePolicy>
+            </snapshots>
         </repository>
         <repository>
             <id>bg-repo</id>
             <url>https://repo.bg-software.com/repository/api/</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
         </repository>
         <repository>
             <id>nexo-repo</id>
             <url>https://repo.nexomc.com/releases</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
         </repository>
         <repository>
             <id>codemc-releases</id>
             <url>https://repo.codemc.io/repository/maven-releases/</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
         </repository>
         <repository>
             <id>repo-lanink-cn</id>
             <url>https://repo.lanink.cn/repository/maven-releases/</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
         </repository>
         <repository>
             <id>fancyinnovations-releases</id>
             <name>FancyInnovations Repository</name>
             <url>https://repo.fancyinnovations.com/releases</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
         </repository>
         <repository>
             <id>nightexpress-releases</id>
             <url>https://repo.nightexpressdev.com/releases</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
         </repository>
         <repository>
             <id>gtemc-repo</id>
             <url>https://repo.gtemc.net/releases/</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
         </repository>
     </repositories>
 </project>

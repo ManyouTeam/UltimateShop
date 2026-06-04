@@ -56,6 +56,9 @@ public class PlaceholderAPIExpansion extends PlaceholderExpansion {
 
     @Override
     public String onRequest(OfflinePlayer offlinePlayer, String params) {
+        if (offlinePlayer == null) {
+            return null;
+        }
         Player player = offlinePlayer.getPlayer();
         if (player == null) {
             return null;
