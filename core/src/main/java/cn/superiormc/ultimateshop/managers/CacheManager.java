@@ -5,6 +5,7 @@ import cn.superiormc.ultimateshop.database.AbstractDatabase;
 import cn.superiormc.ultimateshop.database.SQLDatabase;
 import cn.superiormc.ultimateshop.database.YamlDatabase;
 import cn.superiormc.ultimateshop.utils.TextUtil;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.util.Map;
@@ -19,17 +20,17 @@ public class CacheManager {
 
     public ObjectCache serverCache;
 
-    public AbstractDatabase database;
-
     public CacheManager() {
         cacheManager = this;
-        if (ConfigManager.configManager.getBoolean("database.enabled")) {
-            database = new SQLDatabase();
-        } else {
-            database = new YamlDatabase();
-        }
-        database.onInit();
         serverCache = new ObjectCache();
+        reloadCache();
+    }
+
+    public void reloadCache() {
+        shutdown();
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            CacheManager.cacheManager.addObjectCache(player);
+        }
     }
 
     public void addObjectCache(Player player) {
@@ -73,6 +74,7 @@ public class CacheManager {
     }
 
     public void shutdown() {
+        playerCacheMap.values().forEach(ObjectCache::cancelResetTasks);
         playerCacheMap.clear();
     }
 

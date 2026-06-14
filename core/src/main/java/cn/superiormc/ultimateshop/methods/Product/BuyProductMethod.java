@@ -68,6 +68,9 @@ public class BuyProductMethod {
         if (item.getShopObject().getProductNotHidden(player, item) == null) {
             return ProductTradeStatus.ERROR;
         }
+        if (multi >= 10000) {
+            multi = 9999;
+        }
         if (!ConfigManager.configManager.getBoolean("force-display-fail-message")) {
             forceDisplayMessage = false;
         }
@@ -86,11 +89,10 @@ public class BuyProductMethod {
         }
         ObjectCache tempVal3 = CacheManager.cacheManager.getObjectCache(player);
         ObjectCache tempVal11 = CacheManager.cacheManager.serverCache;
-        if (tempVal3 == null) {
-            LanguageManager.languageManager.sendStringText(player,
-                    "error.player-not-found",
-                    "player",
-                    player.getName());
+        if (tempVal3 == null || tempVal11 == null || !tempVal3.isReady() || !tempVal11.isReady()) {
+            if (shouldSendMessage) {
+                LanguageManager.languageManager.sendStringText(player, "error.cache-loading");
+            }
             return ProductTradeStatus.ERROR;
         }
         // limit

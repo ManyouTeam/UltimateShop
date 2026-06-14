@@ -150,7 +150,7 @@ public class SubAddSellTimes extends AbstractCommand {
             return;
         }
         ObjectUseTimesCache tempVal4 = tempVal3.getUseTimesCache(tempVal2);
-        tempVal4.setSellUseTimes(Integer.parseInt(args[4]) + tempVal4.getBuyUseTimes());
+        tempVal4.setSellUseTimes(Integer.parseInt(args[4]) + tempVal4.getSellUseTimes());
         LanguageManager.languageManager.sendStringText("add-times",
                 "player",
                 args[3],

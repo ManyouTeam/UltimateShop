@@ -2,6 +2,7 @@ error:
   product-not-found: "&#98FB98[UltimateShop] &cCan not found product {product}!"
   shop-not-found: "&#98FB98[UltimateShop] &cCan not found shop {shop}!"
   player-not-found: "&#98FB98[UltimateShop] &cWe can't find player {player}!"
+  cache-loading: "&#98FB98[UltimateShop] &cYour shop data is still loading. Please try again shortly!"
   item-not-found: "&#98FB98[UltimateShop] &cWe can't find sell tick {item}!"
   save-item-not-found: "&#98FB98[UltimateShop] &cWe can't find this save item called {item}!"
   args: "&#98FB98[UltimateShop] &cWrong command usage, if you need help, use /shop help!"

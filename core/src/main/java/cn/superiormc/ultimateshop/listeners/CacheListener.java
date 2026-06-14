@@ -10,13 +10,14 @@ import cn.superiormc.ultimateshop.utils.PacketInventoryUtil;
 import cn.superiormc.ultimateshop.utils.SchedulerUtil;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 public class CacheListener implements Listener {
 
     @EventHandler
-    public void onLogin(PlayerLoginEvent event) {
+    public void onJoin(PlayerJoinEvent event) {
         SchedulerUtil.runTaskLater(() -> {
             if (!event.getPlayer().isOnline()) {
                 return;

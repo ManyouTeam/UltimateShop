@@ -19,27 +19,11 @@ public class SubReload extends AbstractCommand {
 
     @Override
     public void executeCommandInGame(String[] args, Player player) {
-        executeReload(args, player);
+        ReloadPlugin.reload(player);
     }
 
     @Override
     public void executeCommandInConsole(String[] args) {
-        executeReload(args, Bukkit.getConsoleSender());
-    }
-
-    @Override
-    public List<String> getTabResult(String[] args, Player player) {
-        if (args.length == 2) {
-            return List.of("all");
-        }
-        return List.of();
-    }
-
-    private void executeReload(String[] args, CommandSender sender) {
-        if (args.length == 2 && !"all".equalsIgnoreCase(args[1])) {
-            LanguageManager.languageManager.sendStringText(sender, "error.args");
-            return;
-        }
-        ReloadPlugin.reload(sender, args.length == 2);
+        ReloadPlugin.reload(Bukkit.getConsoleSender());
     }
 }

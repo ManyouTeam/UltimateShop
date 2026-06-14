@@ -28,6 +28,8 @@ public class HookManager {
 
     private ItemBridge<ItemStack, Player> itemBridgeHook = null;
 
+    public PlaceholderAPIExpansion papi = null;
+
     public HookManager() {
         hookManager = this;
         initProtectionHook();
@@ -44,9 +46,9 @@ public class HookManager {
 
     private void initNormalHook() {
         if (CommonUtil.checkPluginLoad("PlaceholderAPI")) {
-            PlaceholderAPIExpansion.papi = new PlaceholderAPIExpansion(UltimateShop.instance);
+            papi = new PlaceholderAPIExpansion(UltimateShop.instance);
             TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fHooking into PlaceholderAPI...");
-            if (PlaceholderAPIExpansion.papi.register()){
+            if (papi.register()){
                 TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fFinished hook!");
             }
         }

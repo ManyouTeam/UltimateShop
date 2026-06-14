@@ -12,10 +12,6 @@ import org.bukkit.entity.Player;
 public class ReloadPlugin {
 
     public static void reload(CommandSender sender) {
-        reload(sender, false);
-    }
-
-    public static void reload(CommandSender sender, boolean reloadDatabase) {
         LanguageManager.languageManager.sendStringText(sender, "plugin.reloading");
         UltimateShop.instance.reloadConfig();
         for (Player player : Bukkit.getOnlinePlayers()) {
@@ -23,37 +19,20 @@ public class ReloadPlugin {
             if (!UltimateShop.freeVersion) {
                 SellStickListener.playerList.remove(player);
             }
+            CacheManager.cacheManager.saveObjectCacheOnDisable(player, false);
         }
-        if (reloadDatabase) {
-            reloadDatabase();
+        if (CacheManager.cacheManager.serverCache != null) {
+            CacheManager.cacheManager.serverCache.shutCacheOnDisable(false);
         }
+        CacheManager.cacheManager.shutdown();
         TaskManager.taskManager.cancelTask();
         ObjectMenu.commonMenus.clear();
         ObjectMenu.notCommonMenuNames.clear();
         new ConfigManager();
         new ItemManager();
         new LanguageManager();
-        if (reloadDatabase) {
-            new CacheManager();
-        }
+        new CacheManager();
         new TaskManager();
-        if (reloadDatabase) {
-            for (Player player : Bukkit.getOnlinePlayers()) {
-                CacheManager.cacheManager.addObjectCache(player);
-            }
-        }
         LanguageManager.languageManager.sendStringText(sender, "plugin.reloaded");
-    }
-
-    private static void reloadDatabase() {
-        for (Player player : Bukkit.getOnlinePlayers()) {
-            CacheManager.cacheManager.saveObjectCacheOnDisable(player, false);
-        }
-        if (CacheManager.cacheManager.serverCache != null) {
-            CacheManager.cacheManager.serverCache.shutCacheOnDisable(false);
-        }
-        DatabaseExecutor.await();
-        CacheManager.cacheManager.database.onClose();
-        CacheManager.cacheManager.shutdown();
     }
 }

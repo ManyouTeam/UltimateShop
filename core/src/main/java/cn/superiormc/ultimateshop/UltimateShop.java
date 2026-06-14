@@ -77,6 +77,7 @@ public final class UltimateShop extends JavaPlugin {
         new HookManager();
         new ItemManager();
         new LanguageManager();
+        new DatabaseManager();
         new CacheManager();
         new CommandManager();
         new MenuStatusManager();
@@ -107,21 +108,23 @@ public final class UltimateShop extends JavaPlugin {
     public void onDisable() {
         ListenerManager.listenerManager.unregisterAllListener();
         TaskManager.taskManager.cancelTask();
+        TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fWaiting for all pending database task finished, this may freeze your server if your database is lost connection.");
+        DatabaseExecutor.await();
         if (CacheManager.cacheManager.serverCache != null) {
             CacheManager.cacheManager.serverCache.shutCacheOnDisable(true);
         }
         for (Player player : Bukkit.getOnlinePlayers()) {
             CacheManager.cacheManager.saveObjectCacheOnDisable(player, true);
         }
-        CacheManager.cacheManager.database.onClose();
+        DatabaseManager.databaseManager.database.onClose();
         CacheManager.cacheManager.shutdown();
         DatabaseExecutor.shutdown();
         if (PacketInventoryUtil.packetInventoryUtil != null) {
             PacketInventoryUtil.packetInventoryUtil.shutdown();
         }
-        if (PlaceholderAPIExpansion.papi != null) {
-            PlaceholderAPIExpansion.papi.unregister();
-            PlaceholderAPIExpansion.papi = null;
+        if (HookManager.hookManager.papi != null) {
+            HookManager.hookManager.papi.unregister();
+            HookManager.hookManager.papi = null;
         }
         if (BungeeCordManager.enableThis()) {
             BungeeCordManager.bungeeCordManager.disable();

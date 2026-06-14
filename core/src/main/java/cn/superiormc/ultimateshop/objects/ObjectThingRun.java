@@ -1,12 +1,15 @@
 package cn.superiormc.ultimateshop.objects;
 
 import cn.superiormc.ultimateshop.methods.ProductTradeStatus;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 
+import java.util.UUID;
+
 public class ObjectThingRun {
 
-    private final Player player;
+    private final UUID uuid;
 
     private final int times;
 
@@ -23,7 +26,7 @@ public class ObjectThingRun {
     private ProductTradeStatus.Status status;
 
     public ObjectThingRun(Player player) {
-        this.player = player;
+        this.uuid = player.getUniqueId();
         this.times = 1;
         this.amount = 1;
         this.multi = 1;
@@ -33,7 +36,7 @@ public class ObjectThingRun {
     }
 
     public ObjectThingRun(Player player, int multi) {
-        this.player = player;
+        this.uuid = player.getUniqueId();
         this.times = 1;
         this.amount = multi;
         this.multi = multi;
@@ -43,7 +46,7 @@ public class ObjectThingRun {
     }
 
     public ObjectThingRun(Player player, boolean reopen) {
-        this.player = player;
+        this.uuid = player.getUniqueId();
         this.times = 1;
         this.amount = 1;
         this.multi = 1;
@@ -53,7 +56,7 @@ public class ObjectThingRun {
     }
 
     public ObjectThingRun(Player player, ClickType type) {
-        this.player = player;
+        this.uuid = player.getUniqueId();
         this.times = 1;
         this.amount = 1;
         this.multi = 1;
@@ -63,7 +66,7 @@ public class ObjectThingRun {
     }
 
     public ObjectThingRun(Player player, ClickType type, ProductTradeStatus.Status status) {
-        this.player = player;
+        this.uuid = player.getUniqueId();
         this.times = 1;
         this.amount = 1;
         this.multi = 1;
@@ -74,7 +77,7 @@ public class ObjectThingRun {
     }
 
     public ObjectThingRun(Player player, int times, int multi, double amount) {
-        this.player = player;
+        this.uuid = player.getUniqueId();
         this.times = times;
         this.amount = amount;
         this.multi = multi;
@@ -84,7 +87,7 @@ public class ObjectThingRun {
     }
 
     public ObjectThingRun(Player player, int times, int multi, double amount, boolean sellAll) {
-        this.player = player;
+        this.uuid = player.getUniqueId();
         this.times = times;
         this.amount = amount;
         this.multi = multi;
@@ -94,7 +97,11 @@ public class ObjectThingRun {
     }
 
     public Player getPlayer() {
-        return player;
+        return Bukkit.getPlayer(uuid);
+    }
+
+    public UUID getUuid() {
+        return uuid;
     }
 
     public int getTimes() {

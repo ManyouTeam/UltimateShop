@@ -1,7 +1,7 @@
 package cn.superiormc.ultimateshop.objects.caches;
 
-import cn.superiormc.ultimateshop.managers.CacheManager;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
+import cn.superiormc.ultimateshop.managers.DatabaseManager;
 import cn.superiormc.ultimateshop.managers.ErrorManager;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import cn.superiormc.ultimateshop.objects.items.subobjects.ObjectCustomPlaceholder;
@@ -18,6 +18,13 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class ObjectCache {
 
+    private enum LoadState {
+        LOADING,
+        READY,
+        FAILED,
+        CLOSED
+    }
+
     private final Map<UseTimesStorageKey, ObjectUseTimesCache> sharedUseTimesCache = new ConcurrentHashMap<>();
 
     private final Map<ObjectItem, ObjectUseTimesCache> useTimesCache = new ConcurrentHashMap<>();
@@ -32,7 +39,11 @@ public class ObjectCache {
 
     private final Player player;
 
-    private volatile boolean closed;
+    private final ThreadLocal<Long> activeLoadVersion = new ThreadLocal<>();
+
+    private volatile LoadState loadState = LoadState.LOADING;
+
+    private long loadVersion;
 
     public ObjectCache() {
         this.server = true;
@@ -46,12 +57,60 @@ public class ObjectCache {
         initCache();
     }
 
-    public void initCache() {
-        CacheManager.cacheManager.database.checkData(this);
+    public synchronized void initCache() {
+        if (loadState == LoadState.CLOSED) {
+            return;
+        }
+        loadState = LoadState.LOADING;
+        long currentLoadVersion = ++loadVersion;
+        try {
+            DatabaseManager.databaseManager.database.checkData(this, currentLoadVersion);
+        } catch (Throwable throwable) {
+            failLoad(currentLoadVersion);
+            throwable.printStackTrace();
+        }
+    }
+
+    public void executeLoad(long version, Runnable loadTask) {
+        activeLoadVersion.set(version);
+        try {
+            if (!isCurrentLoad(version)) {
+                return;
+            }
+            loadTask.run();
+            completeLoad(version);
+        } catch (RuntimeException exception) {
+            failLoad(version);
+            exception.printStackTrace();
+        } finally {
+            activeLoadVersion.remove();
+        }
+    }
+
+    private synchronized boolean isCurrentLoad(long version) {
+        return loadState == LoadState.LOADING && loadVersion == version;
+    }
+
+    private synchronized void completeLoad(long version) {
+        if (isCurrentLoad(version)) {
+            loadState = LoadState.READY;
+        }
+    }
+
+    private synchronized void failLoad(long version) {
+        if (isCurrentLoad(version)) {
+            loadState = LoadState.FAILED;
+        }
+    }
+
+    private synchronized boolean canModifyCache() {
+        Long version = activeLoadVersion.get();
+        return loadState == LoadState.READY
+                || (version != null && loadState == LoadState.LOADING && loadVersion == version);
     }
 
     public void shutCache(boolean quitServer) {
-        CacheManager.cacheManager.database.updateData(this, quitServer);
+        DatabaseManager.databaseManager.database.updateData(this, quitServer);
 
         if (quitServer) {
             cancelResetTasks();
@@ -59,12 +118,12 @@ public class ObjectCache {
     }
 
     public void shutCacheOnDisable(boolean disable) {
-        CacheManager.cacheManager.database.updateDataOnDisable(this, disable);
+        DatabaseManager.databaseManager.database.updateDataOnDisable(this, disable);
         cancelResetTasks();
     }
 
     public synchronized void cancelResetTasks() {
-        closed = true;
+        loadState = LoadState.CLOSED;
         sharedUseTimesCache.values().forEach(ObjectUseTimesCache::cancelResetTime);
         randomPlaceholderCache.values().forEach(ObjectRandomPlaceholderCache::cancelResetTask);
     }
@@ -73,7 +132,7 @@ public class ObjectCache {
     USE TIMES CACHE
      */
     public ObjectUseTimesCache getUseTimesCache(ObjectItem item) {
-        if (item == null || closed) {
+        if (item == null || isClosed()) {
             return null;
         }
 
@@ -123,7 +182,7 @@ public class ObjectCache {
                                               String lastResetSellTime,
                                               String cooldownBuyTime,
                                               String cooldownSellTime) {
-        if (closed) {
+        if (!canModifyCache()) {
             return;
         }
         ObjectUseTimesCache created = new ObjectUseTimesCache(
@@ -166,7 +225,7 @@ public class ObjectCache {
                                           String refreshDoneTime,
                                           List<String> nowValue) {
 
-        if (placeholder == null || nowValue == null) {
+        if (placeholder == null || nowValue == null || !canModifyCache()) {
             return;
         }
         if (!checkPlaceholderScope(placeholder)) {
@@ -195,7 +254,7 @@ public class ObjectCache {
     }
 
     public ObjectRandomPlaceholderCache getRandomPlaceholderCache(ObjectRandomPlaceholder placeholder) {
-        if (placeholder == null) {
+        if (placeholder == null || !isReady()) {
             return null;
         }
         if (!checkPlaceholderScope(placeholder)) {
@@ -232,7 +291,7 @@ public class ObjectCache {
     CUSTOM PLACEHOLDER
      */
     public void setCustomPlaceholderCache(ObjectCustomPlaceholder placeholder, String nowValue) {
-        if (placeholder == null || nowValue == null) {
+        if (placeholder == null || nowValue == null || !canModifyCache()) {
             return;
         }
         if (!checkCustomPlaceholderScope(placeholder)) {
@@ -272,7 +331,7 @@ public class ObjectCache {
      */
     public synchronized void setFavouriteProductCache(String menuName,
                                                       List<FavouriteProductReference> references) {
-        if (menuName == null || menuName.isEmpty()) {
+        if (menuName == null || menuName.isEmpty() || !canModifyCache()) {
             return;
         }
         if (references == null || references.isEmpty()) {
@@ -291,7 +350,7 @@ public class ObjectCache {
     }
 
     public synchronized boolean addFavouriteProduct(String menuName, ObjectItem item) {
-        if (server || player == null || menuName == null || menuName.isEmpty() || item == null || !item.isAllowFavourite()) {
+        if (!isReady() || server || player == null || menuName == null || menuName.isEmpty() || item == null || !item.isAllowFavourite()) {
             return false;
         }
         FavouriteProductReference reference = FavouriteProductReference.fromItem(item);
@@ -308,7 +367,7 @@ public class ObjectCache {
 
     public synchronized boolean hasFavouriteProduct(String menuName, ObjectItem item) {
         FavouriteProductReference reference = FavouriteProductReference.fromItem(item);
-        if (menuName == null || menuName.isEmpty() || reference == null) {
+        if (!isReady() || menuName == null || menuName.isEmpty() || reference == null) {
             return false;
         }
         List<FavouriteProductReference> references = favouriteProductCache.get(menuName);
@@ -343,6 +402,9 @@ public class ObjectCache {
     }
 
     public synchronized boolean moveFavouriteProduct(String menuName, int fromIndex, int toIndex) {
+        if (!isReady()) {
+            return false;
+        }
         List<FavouriteProductReference> references = favouriteProductCache.get(menuName);
         if (references == null || fromIndex < 0 || toIndex < 0
                 || fromIndex >= references.size() || toIndex >= references.size()) {
@@ -357,7 +419,7 @@ public class ObjectCache {
     }
 
     public synchronized void clearFavouriteProductCache(String menuName) {
-        if (menuName == null || menuName.isEmpty()) {
+        if (!isReady() || menuName == null || menuName.isEmpty()) {
             return;
         }
         favouriteProductCache.remove(menuName);
@@ -404,6 +466,10 @@ public class ObjectCache {
     }
 
     public boolean isClosed() {
-        return closed;
+        return loadState == LoadState.CLOSED;
+    }
+
+    public boolean isReady() {
+        return loadState == LoadState.READY;
     }
 }
