@@ -4,10 +4,8 @@ import cn.superiormc.ultimateshop.managers.CacheManager;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.LanguageManager;
 import cn.superiormc.ultimateshop.objects.caches.ObjectCache;
-import cn.superiormc.ultimateshop.objects.caches.ObjectRandomPlaceholderCache;
 import cn.superiormc.ultimateshop.objects.items.subobjects.ObjectCustomPlaceholder;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -63,7 +61,9 @@ public class SubSetCustomPlaceholder extends AbstractCommand {
             }
             tempVal1 = CacheManager.cacheManager.getObjectCache(changePlayer);
         }
-
+        if (tempVal1 == null) {
+            return;
+        }
         tempVal1.setCustomPlaceholderCache(placeholder, value);
         LanguageManager.languageManager.sendStringText(player,
                 "set-custom-placeholder",

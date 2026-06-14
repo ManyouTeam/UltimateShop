@@ -364,8 +364,6 @@ placeholder:
 
 database:
   enabled: false
-  # Legacy Option, do not enable it.
-  auto-update-server-data: false
   jdbc-url: "jdbc:mysql://localhost:3306/ultimateshop?useSSL=false&autoReconnect=true"
   properties:
     user: root

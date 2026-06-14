@@ -2,7 +2,6 @@ error:
   product-not-found: '&#98FB98[UltimateShop] &c找不到商品 {product}!'
   shop-not-found: '&#98FB98[UltimateShop] &c找不到商店 {shop}!'
   player-not-found: '&#98FB98[UltimateShop] &c找不到玩家 {player}!'
-  cache-loading: '&#98FB98[UltimateShop] &c商店数据仍在加载中，请稍后重试!'
   item-not-found: '&#98FB98[UltimateShop] &c找不到物品 {item}!'
   save-item-not-found: "&#98FB98[UltimateShop] &c找不到保存物品 {item}!"
   args: '&#98FB98[UltimateShop] &c命令用法错误，请使用/shop help获取帮助!'

@@ -186,6 +186,9 @@ public class ObjectRandomPlaceholder {
         } else {
             cache = CacheManager.cacheManager.serverCache;
         }
+        if (cache == null) {
+            return "";
+        }
         ObjectRandomPlaceholderCache tempVal2 = cache.getRandomPlaceholderCache(tempVal1);
         if (tempVal2 == null) {
             return "";
@@ -214,6 +217,9 @@ public class ObjectRandomPlaceholder {
             cache = CacheManager.cacheManager.getObjectCache(player);
         } else {
             cache = CacheManager.cacheManager.serverCache;
+        }
+        if (cache == null) {
+            return CommonUtil.getNowTime().withYear(2999);
         }
         ObjectRandomPlaceholderCache tempVal2 = cache.getRandomPlaceholderCache(tempVal1);
         if (tempVal2 == null) {

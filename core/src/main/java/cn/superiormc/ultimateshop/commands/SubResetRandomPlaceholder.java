@@ -44,6 +44,9 @@ public class SubResetRandomPlaceholder extends AbstractCommand {
             }
             tempVal1 = CacheManager.cacheManager.getObjectCache(changePlayer);
         }
+        if (tempVal1 == null) {
+            return;
+        }
         ObjectRandomPlaceholderCache cache = tempVal1.getRandomPlaceholderCache(placeholder);
         if (cache == null) {
             LanguageManager.languageManager.sendStringText(player,
@@ -82,6 +85,9 @@ public class SubResetRandomPlaceholder extends AbstractCommand {
                 return;
             }
             tempVal1 = CacheManager.cacheManager.getObjectCache(changePlayer);
+        }
+        if (tempVal1 == null) {
+            return;
         }
         ObjectRandomPlaceholderCache cache = tempVal1.getRandomPlaceholderCache(placeholder);
         if (cache == null) {

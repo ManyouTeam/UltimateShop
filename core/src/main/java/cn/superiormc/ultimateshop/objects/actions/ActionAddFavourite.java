@@ -44,6 +44,9 @@ public class ActionAddFavourite extends AbstractRunAction {
         }
 
         ObjectCache cache = CacheManager.cacheManager.getObjectCache(player);
+        if (cache == null) {
+            return;
+        }
         if (cache.hasFavouriteProduct(menuName, item)) {
             return;
         }

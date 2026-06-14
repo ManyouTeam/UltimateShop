@@ -111,9 +111,9 @@ public class SQLDatabase extends AbstractDatabase {
     }
 
     @Override
-    public void checkData(ObjectCache cache, long loadVersion) {
+    public void checkData(ObjectCache cache) {
         CompletableFuture.runAsync(
-                () -> cache.executeLoad(loadVersion, () -> loadData(cache)),
+                () -> loadData(cache),
                 DatabaseExecutor.getExecutor()
         );
     }
@@ -133,8 +133,9 @@ public class SQLDatabase extends AbstractDatabase {
                 loadCustomPlaceholders(conn, cache, playerUUID);
             }
 
+            cache.ready();
         } catch (SQLException e) {
-            throw new IllegalStateException("Can not load cache data for " + playerUUID, e);
+            e.printStackTrace();
         }
     }
 

@@ -43,6 +43,11 @@ public class ObjectUseTimesCache {
 
     private final boolean firstInsert;
 
+    public ObjectUseTimesCache(ObjectCache cache, boolean firstInsert) {
+        this.cache = cache;
+        this.firstInsert = firstInsert;
+    }
+
     public ObjectUseTimesCache(ObjectCache cache,
                                int buyUseTimes,
                                int totalBuyUseTimes,
@@ -112,7 +117,7 @@ public class ObjectUseTimesCache {
     }
 
     public synchronized void initBuyResetTask() {
-        if (product == null || cache.isClosed()) {
+        if (product == null || cache.canNotModify()) {
             return;
         }
         if (!ConfigManager.configManager.getBoolean("use-times.auto-reset-mode")) {
@@ -130,7 +135,7 @@ public class ObjectUseTimesCache {
     }
 
     public synchronized void initSellResetTask() {
-        if (product == null || cache.isClosed()) {
+        if (product == null || cache.canNotModify()) {
             return;
         }
         if (!ConfigManager.configManager.getBoolean("use-times.auto-reset-mode")) {

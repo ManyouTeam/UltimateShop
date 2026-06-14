@@ -89,10 +89,11 @@ public class BuyProductMethod {
         }
         ObjectCache tempVal3 = CacheManager.cacheManager.getObjectCache(player);
         ObjectCache tempVal11 = CacheManager.cacheManager.serverCache;
-        if (tempVal3 == null || tempVal11 == null || !tempVal3.isReady() || !tempVal11.isReady()) {
-            if (shouldSendMessage) {
-                LanguageManager.languageManager.sendStringText(player, "error.cache-loading");
-            }
+        if (tempVal3 == null || tempVal11 == null || tempVal3.canNotModify() || tempVal11.canNotModify()) {
+            LanguageManager.languageManager.sendStringText(player,
+                    "error.player-not-found",
+                    "player",
+                    player.getName());
             return ProductTradeStatus.ERROR;
         }
         // limit

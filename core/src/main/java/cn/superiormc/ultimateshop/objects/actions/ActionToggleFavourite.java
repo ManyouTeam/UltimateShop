@@ -44,6 +44,9 @@ public class ActionToggleFavourite extends AbstractRunAction {
         }
 
         ObjectCache cache = CacheManager.cacheManager.getObjectCache(player);
+        if (cache == null) {
+            return;
+        }
         if (cache.hasFavouriteProduct(menuName, item)) {
             if (cache.removeFavouriteProduct(menuName, item)) {
                 LanguageManager.languageManager.sendStringText(player,

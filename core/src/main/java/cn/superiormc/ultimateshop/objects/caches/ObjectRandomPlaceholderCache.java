@@ -85,7 +85,7 @@ public class ObjectRandomPlaceholderCache {
     }
 
     public synchronized void setRefreshTime(boolean notUseBungee) {
-        if (cache.isClosed()) {
+        if (cache.canNotModify()) {
             cancelResetTask();
             return;
         }

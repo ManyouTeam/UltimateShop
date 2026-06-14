@@ -81,8 +81,11 @@ public class PlaceholderAPIExpansion extends PlaceholderExpansion {
             if (item == null) {
                 return LanguageManager.languageManager.getStringText(player, "placeholderapi.unknown-product");
             }
-            ObjectCache ObjectCache = CacheManager.cacheManager.getObjectCache(player);
-            ObjectUseTimesCache playerTimesCache = ObjectCache.getUseTimesCache(item);
+            ObjectCache cache = CacheManager.cacheManager.getObjectCache(player);
+            if (cache == null) {
+                return "ERROR: Can not found player cache.";
+            }
+            ObjectUseTimesCache playerTimesCache = cache.getUseTimesCache(item);
             if (playerTimesCache == null) {
                 return "ERROR: Can not found player cache.";
             }

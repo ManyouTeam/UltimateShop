@@ -1,12 +1,10 @@
 package cn.superiormc.ultimateshop.managers;
 
 import cn.superiormc.ultimateshop.objects.caches.ObjectCache;
-import cn.superiormc.ultimateshop.database.AbstractDatabase;
-import cn.superiormc.ultimateshop.database.SQLDatabase;
-import cn.superiormc.ultimateshop.database.YamlDatabase;
 import cn.superiormc.ultimateshop.utils.TextUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 import java.util.UUID;
@@ -23,54 +21,67 @@ public class CacheManager {
     public CacheManager() {
         cacheManager = this;
         serverCache = new ObjectCache();
+        serverCache.initCache();
         reloadCache();
     }
 
     public void reloadCache() {
         shutdown();
         for (Player player : Bukkit.getOnlinePlayers()) {
-            CacheManager.cacheManager.addObjectCache(player);
+            addObjectCache(player);
+            loadPlayerCache(player);
         }
     }
 
     public void addObjectCache(Player player) {
-        UUID playerUUID = player.getUniqueId();
-        ObjectCache previous = playerCacheMap.put(playerUUID, new ObjectCache(player));
-        if (previous != null) {
-            previous.cancelResetTasks();
+        if (player != null) {
+            UUID playerUUID = player.getUniqueId();
+            playerCacheMap.put(playerUUID, new ObjectCache(player));
         }
     }
 
-    public ObjectCache getObjectCache(Player player) {
-        UUID playerUUID = player.getUniqueId();
-        ObjectCache tempVal1 = playerCacheMap.get(playerUUID);
-        if (tempVal1 == null) {
-            addObjectCache(player);
-            tempVal1 = playerCacheMap.get(playerUUID);
+    public void loadPlayerCache(Player player) {
+        ObjectCache cache = playerCacheMap.get(player.getUniqueId());
+        if (cache != null) {
+            cache.initCache();
         }
-        return tempVal1;
+    }
+
+    @Nullable
+    public ObjectCache getObjectCache(Player player) {
+        return playerCacheMap.get(player.getUniqueId());
     }
 
     public void saveObjectCache(Player player) {
-        UUID playerUUID = player.getUniqueId();
-        if (playerCacheMap.get(playerUUID) == null) {
+        ObjectCache cache = getObjectCache(player);
+        if (cache == null) {
             TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §cCan not save player data: " + player.getName() + "! " +
                     "This is usually because this player joined the server before server fully started OR other plugins kicked this player" +
                     ", ask him rejoin the server.");
             return;
         }
-        playerCacheMap.get(playerUUID).shutCache(true);
+        if (cache.canNotModify()) {
+            removeObjectCache(cache);
+            cache.close();
+        } else {
+            cache.shutCache(true);
+        }
     }
 
     public void saveObjectCacheOnDisable(Player player, boolean disable) {
-        UUID playerUUID = player.getUniqueId();
-        if (playerCacheMap.get(playerUUID) == null) {
+        ObjectCache cache = getObjectCache(player);
+        if (cache == null) {
             TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §cCan not save player data: " + player.getName() + "! " +
                     "This is usually because this player joined the server before server fully started OR other plugins kicked this player" +
                     ", ask him rejoin the server.");
             return;
         }
-        playerCacheMap.get(playerUUID).shutCacheOnDisable(disable);
+        if (cache.canNotModify()) {
+            removeObjectCache(cache);
+            cache.close();
+        } else {
+            cache.shutCacheOnDisable(disable);
+        }
     }
 
     public void shutdown() {

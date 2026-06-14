@@ -27,11 +27,8 @@ public class YamlDatabase extends AbstractDatabase {
     private final File dataDir = new File(UltimateShop.instance.getDataFolder(), "datas");
 
     @Override
-    public void checkData(ObjectCache cache, long loadVersion) {
-        CompletableFuture.runAsync(
-                () -> cache.executeLoad(loadVersion, () -> loadData(cache)),
-                DatabaseExecutor.getExecutor()
-        );
+    public void checkData(ObjectCache cache) {
+        CompletableFuture.runAsync(() -> loadData(cache), DatabaseExecutor.getExecutor());
     }
 
     private void loadData(ObjectCache cache) {
@@ -53,7 +50,6 @@ public class YamlDatabase extends AbstractDatabase {
             ErrorManager.errorManager.sendErrorMessage(
                     "§cError: Can not create new data file: " + file.getName() + "!"
             );
-            throw new IllegalStateException("Can not create data file: " + file.getName(), e);
         }
 
         YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
@@ -127,6 +123,7 @@ public class YamlDatabase extends AbstractDatabase {
                 });
             }
         }
+        cache.ready();
     }
 
     @Override

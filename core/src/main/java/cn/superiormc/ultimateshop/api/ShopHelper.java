@@ -10,6 +10,7 @@ import cn.superiormc.ultimateshop.objects.ObjectShop;
 import cn.superiormc.ultimateshop.objects.SearchResult;
 import cn.superiormc.ultimateshop.objects.ObjectThingRun;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
+import cn.superiormc.ultimateshop.objects.caches.ObjectCache;
 import cn.superiormc.ultimateshop.objects.caches.ObjectUseTimesCache;
 import cn.superiormc.ultimateshop.objects.items.*;
 import cn.superiormc.ultimateshop.objects.items.ObjectCondition;
@@ -23,7 +24,6 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -44,7 +44,11 @@ public class ShopHelper {
     }
 
     public static ObjectUseTimesCache getPlayerUseTimesCache(ObjectItem item, Player player) {
-        return CacheManager.cacheManager.getObjectCache(player).getUseTimesCache(item);
+        ObjectCache cache = CacheManager.cacheManager.getObjectCache(player);
+        if (cache == null) {
+            return null;
+        }
+        return cache.getUseTimesCache(item);
     }
 
     public static ObjectUseTimesCache getServerUseTimesCache(ObjectItem item) {
@@ -52,11 +56,19 @@ public class ShopHelper {
     }
 
     public static int getBuyUseTimes(ObjectItem item, Player player) {
-        return getPlayerUseTimesCache(item, player).getBuyUseTimes();
+        ObjectUseTimesCache useTimesCache = getPlayerUseTimesCache(item, player);
+        if (useTimesCache == null) {
+            return 0;
+        }
+        return useTimesCache.getBuyUseTimes();
     }
 
     public static int getSellUseTimes(ObjectItem item, Player player) {
-        return getPlayerUseTimesCache(item, player).getSellUseTimes();
+        ObjectUseTimesCache useTimesCache = getPlayerUseTimesCache(item, player);
+        if (useTimesCache == null) {
+            return 0;
+        }
+        return useTimesCache.getSellUseTimes();
     }
 
     @Nullable

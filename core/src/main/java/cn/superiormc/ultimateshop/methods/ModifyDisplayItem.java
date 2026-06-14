@@ -2,8 +2,6 @@ package cn.superiormc.ultimateshop.methods;
 
 import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.api.ShopHelper;
-import cn.superiormc.ultimateshop.gui.AbstractGUI;
-import cn.superiormc.ultimateshop.gui.GUIStatus;
 import cn.superiormc.ultimateshop.managers.CacheManager;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.ErrorManager;
@@ -11,13 +9,12 @@ import cn.superiormc.ultimateshop.methods.Product.BuyProductMethod;
 import cn.superiormc.ultimateshop.methods.Product.SellProductMethod;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import cn.superiormc.ultimateshop.objects.buttons.subobjects.ObjectDisplayItemStack;
+import cn.superiormc.ultimateshop.objects.caches.ObjectCache;
 import cn.superiormc.ultimateshop.objects.caches.ObjectUseTimesCache;
 import cn.superiormc.ultimateshop.objects.items.ThingMode;
 import cn.superiormc.ultimateshop.objects.items.prices.ObjectPrices;
 import cn.superiormc.ultimateshop.objects.menus.MenuType;
-import cn.superiormc.ultimateshop.objects.menus.ObjectMenu;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -83,7 +80,11 @@ public class ModifyDisplayItem {
 
         List<String> resultLore = new ArrayList<>();
 
-        ObjectUseTimesCache playerCache = CacheManager.cacheManager.getObjectCache(player).getUseTimesCache(item);
+        ObjectCache cache = CacheManager.cacheManager.getObjectCache(player);
+        if (cache == null) {
+            return resultLore;
+        }
+        ObjectUseTimesCache playerCache = cache.getUseTimesCache(item);
         ObjectUseTimesCache serverCache = CacheManager.cacheManager.serverCache.getUseTimesCache(item);
 
         Map<Character, ConditionResolver> conditionResolvers = buildConditionResolvers(player, item, clickType, buyMore, bedrock, playerCache, serverCache);

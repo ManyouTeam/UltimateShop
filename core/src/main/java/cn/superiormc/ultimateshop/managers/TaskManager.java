@@ -1,6 +1,7 @@
 package cn.superiormc.ultimateshop.managers;
 
 import cn.superiormc.ultimateshop.UltimateShop;
+import cn.superiormc.ultimateshop.objects.caches.ObjectCache;
 import cn.superiormc.ultimateshop.utils.SchedulerUtil;
 import cn.superiormc.ultimateshop.utils.TextUtil;
 import org.bukkit.Bukkit;
@@ -33,8 +34,9 @@ public class TaskManager {
             }
             CacheManager.cacheManager.serverCache.shutCache(false);
             for (Player player : Bukkit.getOnlinePlayers()) {
-                if (CacheManager.cacheManager.getObjectCache(player) != null) {
-                    CacheManager.cacheManager.getObjectCache(player).shutCache(false);
+                ObjectCache cache = CacheManager.cacheManager.getObjectCache(player);
+                if (cache != null) {
+                    cache.shutCache(false);
                 }
             }
         }, 180L, ConfigManager.configManager.config.getLong("auto-save.period-tick", 600));

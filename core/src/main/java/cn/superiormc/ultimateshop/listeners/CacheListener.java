@@ -5,6 +5,7 @@ import cn.superiormc.ultimateshop.managers.CacheManager;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.ListenerManager;
 import cn.superiormc.ultimateshop.managers.MenuStatusManager;
+import cn.superiormc.ultimateshop.objects.caches.ObjectCache;
 import cn.superiormc.ultimateshop.utils.CommandUtil;
 import cn.superiormc.ultimateshop.utils.PacketInventoryUtil;
 import cn.superiormc.ultimateshop.utils.SchedulerUtil;
@@ -18,14 +19,12 @@ public class CacheListener implements Listener {
 
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
+        CacheManager.cacheManager.addObjectCache(event.getPlayer());
         SchedulerUtil.runTaskLater(() -> {
             if (!event.getPlayer().isOnline()) {
                 return;
             }
-            CacheManager.cacheManager.addObjectCache(event.getPlayer());
-            if (ConfigManager.configManager.getBoolean("database.auto-update-server-data") && CacheManager.cacheManager.serverCache != null) {
-                CacheManager.cacheManager.serverCache.initCache();
-            }
+            CacheManager.cacheManager.loadPlayerCache(event.getPlayer());
         }, ConfigManager.configManager.getLong("cache.load-delay", 7L));
     }
 
@@ -38,9 +37,6 @@ public class CacheListener implements Listener {
         }
         ListenerManager.listenerManager.unregisterListeners(event.getPlayer());
         CacheManager.cacheManager.saveObjectCache(event.getPlayer());
-        if (ConfigManager.configManager.getBoolean("database.auto-update-server-data") && CacheManager.cacheManager.serverCache != null) {
-            CacheManager.cacheManager.serverCache.shutCache(false);
-        }
         MenuStatusManager.menuStatusManager.clear(event.getPlayer());
     }
 }

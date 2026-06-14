@@ -6,6 +6,7 @@ import cn.superiormc.ultimateshop.managers.CacheManager;
 import cn.superiormc.ultimateshop.managers.LanguageManager;
 import cn.superiormc.ultimateshop.objects.ObjectThingRun;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
+import cn.superiormc.ultimateshop.objects.caches.ObjectCache;
 import cn.superiormc.ultimateshop.objects.menus.ObjectFavouriteMenu;
 import cn.superiormc.ultimateshop.objects.menus.ObjectMenu;
 import org.bukkit.entity.Player;
@@ -38,7 +39,11 @@ public class ActionRemoveFavourite extends AbstractRunAction {
             return;
         }
 
-        if (CacheManager.cacheManager.getObjectCache(player).removeFavouriteProduct(menuName, item)) {
+        ObjectCache cache = CacheManager.cacheManager.getObjectCache(player);
+        if (cache == null) {
+            return;
+        }
+        if (cache.removeFavouriteProduct(menuName, item)) {
             LanguageManager.languageManager.sendStringText(player,
                     "favourite-removed",
                     "item", item.getDisplayName(player),

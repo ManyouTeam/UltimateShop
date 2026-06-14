@@ -12,7 +12,7 @@ public abstract class AbstractDatabase {
         // Empty...
     }
 
-    public abstract void checkData(ObjectCache cache, long loadVersion);
+    public abstract void checkData(ObjectCache cache);
 
     public abstract void updateData(ObjectCache cache, boolean quitServer);
 

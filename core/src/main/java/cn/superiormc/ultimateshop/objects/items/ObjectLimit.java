@@ -4,6 +4,7 @@ import cn.superiormc.ultimateshop.managers.CacheManager;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.objects.ObjectThingRun;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
+import cn.superiormc.ultimateshop.objects.caches.ObjectCache;
 import cn.superiormc.ultimateshop.objects.caches.ObjectUseTimesCache;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
 import cn.superiormc.ultimateshop.utils.MathUtil;
@@ -82,7 +83,11 @@ public class ObjectLimit {
                 int serverSellTimes = 0;
                 int serverTotalBuyTimes = 0;
                 int serverTotalSellTimes = 0;
-                ObjectUseTimesCache tempVal3 = CacheManager.cacheManager.getObjectCache(player).getUseTimesCache().get(item);
+                ObjectCache cache = CacheManager.cacheManager.getObjectCache(player);
+                if (cache == null) {
+                    return tempVal2;
+                }
+                ObjectUseTimesCache tempVal3 = cache.getUseTimesCache().get(item);
                 ObjectUseTimesCache tempVal4 = CacheManager.cacheManager.serverCache.getUseTimesCache().get(item);
                 if (tempVal3 != null) {
                     playerBuyTimes = tempVal3.getBuyUseTimes();

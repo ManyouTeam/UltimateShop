@@ -3,6 +3,7 @@ package cn.superiormc.ultimateshop.objects.items.subobjects;
 import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.managers.CacheManager;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
+import cn.superiormc.ultimateshop.objects.caches.ObjectCache;
 import cn.superiormc.ultimateshop.utils.TextUtil;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
@@ -84,9 +85,16 @@ public class ObjectCustomPlaceholder {
         if (placeholder.isPerPlayer() && player == null) {
             return placeholder.getDefaultValue();
         }
-        String value = placeholder.isPerPlayer()
-                ? CacheManager.cacheManager.getObjectCache(player).getCustomPlaceholderCache().get(placeholder)
-                : CacheManager.cacheManager.serverCache.getCustomPlaceholderCache().get(placeholder);
+        ObjectCache cache;
+        if (placeholder.isPerPlayer()) {
+            cache = CacheManager.cacheManager.getObjectCache(player);
+            if (cache == null) {
+                return placeholder.getDefaultValue();
+            }
+        } else {
+            cache = CacheManager.cacheManager.serverCache;
+        }
+        String value = cache.getCustomPlaceholderCache().get(placeholder);
         if (value == null) {
             return placeholder.getDefaultValue();
         }

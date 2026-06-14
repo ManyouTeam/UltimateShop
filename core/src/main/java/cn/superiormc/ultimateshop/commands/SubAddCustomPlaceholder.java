@@ -70,6 +70,9 @@ public class SubAddCustomPlaceholder extends AbstractCommand {
             }
             tempVal1 = CacheManager.cacheManager.getObjectCache(changePlayer);
         }
+        if (tempVal1 == null) {
+            return;
+        }
         tempVal1.setCustomPlaceholderCache(placeholder, value);
         LanguageManager.languageManager.sendStringText(player,
                 "set-custom-placeholder",
