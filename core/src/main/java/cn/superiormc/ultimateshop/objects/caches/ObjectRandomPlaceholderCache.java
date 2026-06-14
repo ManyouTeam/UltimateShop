@@ -58,6 +58,13 @@ public class ObjectRandomPlaceholderCache {
         refreshDoneTime = null;
     }
 
+    public synchronized void cancelResetTask() {
+        if (resetTask != null) {
+            resetTask.cancel();
+            resetTask = null;
+        }
+    }
+
     public List<String> getNowValue() {
         return getNowValue(true, false);
     }
@@ -78,6 +85,10 @@ public class ObjectRandomPlaceholderCache {
     }
 
     public synchronized void setRefreshTime(boolean notUseBungee) {
+        if (cache.isClosed()) {
+            cancelResetTask();
+            return;
+        }
         String mode = placeholder.getMode();
         String time = TextUtil.withPAPI(placeholder.getConfig().getString("reset-time"), null);
         if (mode == null || time.isEmpty()) {

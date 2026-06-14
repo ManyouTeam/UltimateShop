@@ -100,14 +100,14 @@ public class GUIListener implements Listener {
             if (!Objects.equals(e.getInventory(), gui.getInv())) {
                 return;
             }
-            ListenerManager.listenerManager.unregisterNewGUIListener(player, gui);
-            if (UltimateShop.usePacketEvents) {
-                PacketInventoryUtil.packetInventoryUtil.clear(player);
-            }
-            if (MenuStatusManager.menuStatusManager.hasOpeningGUI(player)) {
-                MenuStatusManager.menuStatusManager.removeOpenGUIStatus(player, gui);
-            }
             if (gui.closeEventHandle(e.getInventory())) {
+                ListenerManager.listenerManager.unregisterNewGUIListener(player, gui);
+                if (UltimateShop.usePacketEvents) {
+                    PacketInventoryUtil.packetInventoryUtil.clear(player);
+                }
+                if (MenuStatusManager.menuStatusManager.hasOpeningGUI(player)) {
+                    MenuStatusManager.menuStatusManager.removeOpenGUIStatus(player, gui);
+                }
                 if (gui.getMenu() != null) {
                     gui.getMenu().doCloseAction(player);
                 }

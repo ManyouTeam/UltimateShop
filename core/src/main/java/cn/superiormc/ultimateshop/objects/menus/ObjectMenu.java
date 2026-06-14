@@ -146,6 +146,7 @@ public class ObjectMenu {
             this.openAction = new ObjectAction();
             this.closeAction = new ObjectAction();
             this.useGeyser = true;
+            return;
         } else if (shop != null) {
             this.condition = new ObjectCondition(menuConfigs.getConfigurationSection("conditions"));
             this.openAction = new ObjectAction(menuConfigs.getConfigurationSection("open-actions"), shop);

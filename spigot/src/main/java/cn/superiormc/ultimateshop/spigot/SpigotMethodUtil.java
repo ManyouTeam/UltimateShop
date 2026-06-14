@@ -85,7 +85,7 @@ public class SpigotMethodUtil implements SpecialMethodUtil {
         if (!CommonUtil.getMajorVersion(19)) {
             return meta;
         }
-        if (skull.length() >= 16) {
+        if (skull.length() > 16) {
             try {
                 URL skinUrl = resolveSkinUrl(skull);
                 if (skinUrl == null) {

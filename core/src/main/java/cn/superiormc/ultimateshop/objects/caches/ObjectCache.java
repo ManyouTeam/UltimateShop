@@ -32,6 +32,8 @@ public class ObjectCache {
 
     private final Player player;
 
+    private volatile boolean closed;
+
     public ObjectCache() {
         this.server = true;
         this.player = null;
@@ -51,24 +53,27 @@ public class ObjectCache {
     public void shutCache(boolean quitServer) {
         CacheManager.cacheManager.database.updateData(this, quitServer);
 
-        if (quitServer && ConfigManager.configManager.getBoolean("use-times.auto-reset-mode")) {
-            sharedUseTimesCache.values().forEach(ObjectUseTimesCache::cancelResetTime);
+        if (quitServer) {
+            cancelResetTasks();
         }
     }
 
     public void shutCacheOnDisable(boolean disable) {
         CacheManager.cacheManager.database.updateDataOnDisable(this, disable);
+        cancelResetTasks();
+    }
 
-        if (disable && ConfigManager.configManager.getBoolean("use-times.auto-reset-mode")) {
-            sharedUseTimesCache.values().forEach(ObjectUseTimesCache::cancelResetTime);
-        }
+    public synchronized void cancelResetTasks() {
+        closed = true;
+        sharedUseTimesCache.values().forEach(ObjectUseTimesCache::cancelResetTime);
+        randomPlaceholderCache.values().forEach(ObjectRandomPlaceholderCache::cancelResetTask);
     }
 
     /*
     USE TIMES CACHE
      */
     public ObjectUseTimesCache getUseTimesCache(ObjectItem item) {
-        if (item == null) {
+        if (item == null || closed) {
             return null;
         }
 
@@ -106,19 +111,22 @@ public class ObjectCache {
         });
     }
 
-    public void setUseTimesCache(String shop,
-                                 String product,
-                                 int buyUseTimes,
-                                 int totalBuyUseTimes,
-                                 int sellUseTimes,
-                                 int totalSellUseTimes,
-                                 String lastBuyTime,
-                                 String lastSellTime,
-                                 String lastResetBuyTime,
-                                 String lastResetSellTime,
-                                 String cooldownBuyTime,
-                                 String cooldownSellTime) {
-        sharedUseTimesCache.put(new UseTimesStorageKey(shop, product), new ObjectUseTimesCache(
+    public synchronized void setUseTimesCache(String shop,
+                                              String product,
+                                              int buyUseTimes,
+                                              int totalBuyUseTimes,
+                                              int sellUseTimes,
+                                              int totalSellUseTimes,
+                                              String lastBuyTime,
+                                              String lastSellTime,
+                                              String lastResetBuyTime,
+                                              String lastResetSellTime,
+                                              String cooldownBuyTime,
+                                              String cooldownSellTime) {
+        if (closed) {
+            return;
+        }
+        ObjectUseTimesCache created = new ObjectUseTimesCache(
                 this,
                 buyUseTimes,
                 totalBuyUseTimes,
@@ -131,7 +139,16 @@ public class ObjectCache {
                 cooldownBuyTime,
                 cooldownSellTime,
                 null,
-                false));
+                false);
+        ObjectUseTimesCache previous = sharedUseTimesCache.put(new UseTimesStorageKey(shop, product), created);
+        if (previous != null) {
+            ObjectItem boundProduct = previous.getProduct();
+            if (boundProduct != null) {
+                created.bindProduct(boundProduct);
+                useTimesCache.replaceAll((item, cache) -> cache == previous ? created : cache);
+            }
+            previous.cancelResetTime();
+        }
     }
 
     public Map<ObjectItem, ObjectUseTimesCache> getUseTimesCache() {
@@ -384,5 +401,9 @@ public class ObjectCache {
 
     public boolean isServer() {
         return server;
+    }
+
+    public boolean isClosed() {
+        return closed;
     }
 }

@@ -32,8 +32,10 @@ public class CacheManager {
     }
 
     public void addObjectCache(Player player) {
-        ObjectCacheMap.put(player, new ObjectCache(player));
-        ObjectCacheMap.get(player).initCache();
+        ObjectCache previous = ObjectCacheMap.put(player, new ObjectCache(player));
+        if (previous != null) {
+            previous.cancelResetTasks();
+        }
     }
 
     public ObjectCache getObjectCache(Player player) {
@@ -68,6 +70,12 @@ public class CacheManager {
     public void removeObjectCache(Player player) {
         if (player != null) {
             ObjectCacheMap.remove(player);
+        }
+    }
+
+    public void removeObjectCache(ObjectCache cache) {
+        if (cache != null && cache.getPlayer() != null) {
+            ObjectCacheMap.remove(cache.getPlayer(), cache);
         }
     }
 

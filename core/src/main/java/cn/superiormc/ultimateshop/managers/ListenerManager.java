@@ -53,7 +53,10 @@ public class ListenerManager {
     }
 
     public void unregisterListeners(Player player) {
-        listeners.remove(player.getUniqueId());
+        InvGUI gui = listeners.remove(player.getUniqueId());
+        if (gui != null) {
+            gui.closeEventHandle(gui.getInv());
+        }
     }
 
     public InvGUI getInvGUI(Player player) {
@@ -61,6 +64,8 @@ public class ListenerManager {
     }
 
     public void unregisterAllListener() {
+        listeners.values().forEach(gui -> gui.closeEventHandle(gui.getInv()));
+        listeners.clear();
         HandlerList.unregisterAll(UltimateShop.instance);
     }
 }

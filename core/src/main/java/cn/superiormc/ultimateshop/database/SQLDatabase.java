@@ -261,7 +261,7 @@ public class SQLDatabase extends AbstractDatabase {
                 saveCustomPlaceholders(cache);
             }
             if (quitServer) {
-                CacheManager.cacheManager.removeObjectCache(cache.getPlayer());
+                CacheManager.cacheManager.removeObjectCache(cache);
             }
         }, DatabaseExecutor.EXECUTOR);
     }
@@ -467,6 +467,6 @@ public class SQLDatabase extends AbstractDatabase {
             saveCustomPlaceholders(cache);
         }
 
-        CacheManager.cacheManager.removeObjectCache(cache.getPlayer());
+        CacheManager.cacheManager.removeObjectCache(cache);
     }
 }

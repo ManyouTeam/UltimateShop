@@ -112,7 +112,7 @@ public class ObjectUseTimesCache {
     }
 
     public synchronized void initBuyResetTask() {
-        if (product == null) {
+        if (product == null || cache.isClosed()) {
             return;
         }
         if (!ConfigManager.configManager.getBoolean("use-times.auto-reset-mode")) {
@@ -130,7 +130,7 @@ public class ObjectUseTimesCache {
     }
 
     public synchronized void initSellResetTask() {
-        if (product == null) {
+        if (product == null || cache.isClosed()) {
             return;
         }
         if (!ConfigManager.configManager.getBoolean("use-times.auto-reset-mode")) {

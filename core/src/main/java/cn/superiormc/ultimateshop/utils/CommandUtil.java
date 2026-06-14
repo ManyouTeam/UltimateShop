@@ -43,8 +43,16 @@ public class CommandUtil {
                 guiUpdateTask.put(player,
                         SchedulerUtil.runTaskLater(() -> {
                             guiStatus.getGUI().updateGUI();
+                            guiUpdateTask.remove(player);
                         }, 20L));
             }
+        }
+    }
+
+    public static void cancelGUIUpdate(Player player) {
+        SchedulerUtil task = guiUpdateTask.remove(player);
+        if (task != null) {
+            task.cancel();
         }
     }
 }

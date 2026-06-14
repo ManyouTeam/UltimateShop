@@ -61,8 +61,8 @@ public abstract class InvGUI extends AbstractGUI {
         constructGUI();
         if (inv != null) {
             SchedulerUtil.runSync(player, () -> {
-                ListenerManager.listenerManager.registerNewGUIListener(player, this);
                 player.openInventory(inv);
+                ListenerManager.listenerManager.registerNewGUIListener(player, this);
             });
             if (getMenu() != null) {
                 getMenu().doOpenAction(player, reopen);

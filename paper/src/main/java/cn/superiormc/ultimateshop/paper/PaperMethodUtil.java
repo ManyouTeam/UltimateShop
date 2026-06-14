@@ -122,7 +122,7 @@ public class PaperMethodUtil implements SpecialMethodUtil {
     @Override
     public SkullMeta setSkullMeta(SkullMeta meta, String skull) {
         PlayerProfile profile = Bukkit.createProfile(UUID.randomUUID(), "");
-        if (skull.length() >= 16) {
+        if (skull.length() > 16) {
             profile.setProperty(new ProfileProperty("textures", skull));
             meta.setPlayerProfile(profile);
         } else {
