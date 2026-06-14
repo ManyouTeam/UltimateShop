@@ -8,13 +8,14 @@ import cn.superiormc.ultimateshop.utils.TextUtil;
 import org.bukkit.entity.Player;
 
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class CacheManager {
 
     public static CacheManager cacheManager;
 
-    private final Map<Player, ObjectCache> ObjectCacheMap = new ConcurrentHashMap<>();
+    private final Map<UUID, ObjectCache> playerCacheMap = new ConcurrentHashMap<>();
 
     public ObjectCache serverCache;
 
@@ -32,50 +33,63 @@ public class CacheManager {
     }
 
     public void addObjectCache(Player player) {
-        ObjectCache previous = ObjectCacheMap.put(player, new ObjectCache(player));
+        UUID playerUUID = player.getUniqueId();
+        ObjectCache previous = playerCacheMap.put(playerUUID, new ObjectCache(player));
         if (previous != null) {
             previous.cancelResetTasks();
         }
     }
 
     public ObjectCache getObjectCache(Player player) {
-        ObjectCache tempVal1 = ObjectCacheMap.get(player);
+        UUID playerUUID = player.getUniqueId();
+        ObjectCache tempVal1 = playerCacheMap.get(playerUUID);
         if (tempVal1 == null) {
             addObjectCache(player);
-            tempVal1 = ObjectCacheMap.get(player);
+            tempVal1 = playerCacheMap.get(playerUUID);
         }
         return tempVal1;
     }
 
     public void saveObjectCache(Player player) {
-        if (ObjectCacheMap.get(player) == null) {
+        UUID playerUUID = player.getUniqueId();
+        if (playerCacheMap.get(playerUUID) == null) {
             TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §cCan not save player data: " + player.getName() + "! " +
                     "This is usually because this player joined the server before server fully started OR other plugins kicked this player" +
                     ", ask him rejoin the server.");
             return;
         }
-        ObjectCacheMap.get(player).shutCache(true);
+        playerCacheMap.get(playerUUID).shutCache(true);
     }
 
     public void saveObjectCacheOnDisable(Player player, boolean disable) {
-        if (ObjectCacheMap.get(player) == null) {
+        UUID playerUUID = player.getUniqueId();
+        if (playerCacheMap.get(playerUUID) == null) {
             TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §cCan not save player data: " + player.getName() + "! " +
                     "This is usually because this player joined the server before server fully started OR other plugins kicked this player" +
                     ", ask him rejoin the server.");
             return;
         }
-        ObjectCacheMap.get(player).shutCacheOnDisable(disable);
+        playerCacheMap.get(playerUUID).shutCacheOnDisable(disable);
+    }
+
+    public void shutdown() {
+        playerCacheMap.clear();
+    }
+
+    public void addServerCache() {
+        serverCache = new ObjectCache();
     }
 
     public void removeObjectCache(Player player) {
         if (player != null) {
-            ObjectCacheMap.remove(player);
+            UUID playerUUID = player.getUniqueId();
+            playerCacheMap.remove(playerUUID);
         }
     }
 
     public void removeObjectCache(ObjectCache cache) {
         if (cache != null && cache.getPlayer() != null) {
-            ObjectCacheMap.remove(cache.getPlayer(), cache);
+            playerCacheMap.remove(cache.getPlayer().getUniqueId(), cache);
         }
     }
 

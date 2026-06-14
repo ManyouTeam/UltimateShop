@@ -73,6 +73,11 @@ public class SQLDatabase extends AbstractDatabase {
         if (dataSource != null && !dataSource.isClosed()) {
             dataSource.close();
         }
+        if (dialect != null) {
+            dialect.closeDrivers();
+        }
+        dataSource = null;
+        dialect = null;
     }
 
     private void initDialect(String jdbcUrl) {

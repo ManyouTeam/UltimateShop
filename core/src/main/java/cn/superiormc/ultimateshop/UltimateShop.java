@@ -114,6 +114,7 @@ public final class UltimateShop extends JavaPlugin {
             CacheManager.cacheManager.saveObjectCacheOnDisable(player, true);
         }
         CacheManager.cacheManager.database.onClose();
+        CacheManager.cacheManager.shutdown();
         DatabaseExecutor.shutdown();
         if (PacketInventoryUtil.packetInventoryUtil != null) {
             PacketInventoryUtil.packetInventoryUtil.shutdown();
