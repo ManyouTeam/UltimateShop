@@ -24,6 +24,7 @@ public class ReloadPlugin {
         if (CacheManager.cacheManager.serverCache != null) {
             CacheManager.cacheManager.serverCache.shutCacheOnDisable(false);
         }
+        CacheManager.cacheManager.database.onClose();
         TaskManager.taskManager.cancelTask();
         ObjectMenu.commonMenus.clear();
         ObjectMenu.notCommonMenuNames.clear();

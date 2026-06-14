@@ -1,7 +1,6 @@
 package cn.superiormc.ultimateshop.managers;
 
 import cn.superiormc.ultimateshop.UltimateShop;
-import cn.superiormc.ultimateshop.libs.bstats.Metrics;
 import cn.superiormc.ultimateshop.utils.TextUtil;
 import org.json.JSONObject;
 
@@ -40,7 +39,6 @@ public final class LicenseManager {
 
     public LicenseManager() {
         licenseManager = this;
-        new Metrics(UltimateShop.instance, 20783);
         this.valid = checkIllegal("cn.superiormc.ultimateshop.UltimateShop", "UltimateShop");
 
         if (!UltimateShop.freeVersion) {

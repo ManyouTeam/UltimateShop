@@ -109,7 +109,7 @@ public class SQLDatabase extends AbstractDatabase {
     public void checkData(ObjectCache cache) {
         CompletableFuture.runAsync(
                 () -> loadData(cache),
-                DatabaseExecutor.EXECUTOR
+                DatabaseExecutor.getExecutor()
         );
     }
 
@@ -263,7 +263,7 @@ public class SQLDatabase extends AbstractDatabase {
             if (quitServer) {
                 CacheManager.cacheManager.removeObjectCache(cache);
             }
-        }, DatabaseExecutor.EXECUTOR);
+        }, DatabaseExecutor.getExecutor());
     }
 
     private void saveFavourites(ObjectCache cache) {

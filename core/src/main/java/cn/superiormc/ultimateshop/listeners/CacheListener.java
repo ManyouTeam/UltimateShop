@@ -1,10 +1,12 @@
 package cn.superiormc.ultimateshop.listeners;
 
+import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.managers.CacheManager;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.ListenerManager;
 import cn.superiormc.ultimateshop.managers.MenuStatusManager;
 import cn.superiormc.ultimateshop.utils.CommandUtil;
+import cn.superiormc.ultimateshop.utils.PacketInventoryUtil;
 import cn.superiormc.ultimateshop.utils.SchedulerUtil;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -30,6 +32,9 @@ public class CacheListener implements Listener {
     public void onExit(PlayerQuitEvent event) {
         CommandUtil.cancelGUIUpdate(event.getPlayer());
         SellStickListener.playerList.remove(event.getPlayer());
+        if (UltimateShop.usePacketEvents && PacketInventoryUtil.packetInventoryUtil != null) {
+            PacketInventoryUtil.packetInventoryUtil.clear(event.getPlayer());
+        }
         ListenerManager.listenerManager.unregisterListeners(event.getPlayer());
         CacheManager.cacheManager.saveObjectCache(event.getPlayer());
         if (ConfigManager.configManager.getBoolean("database.auto-update-server-data") && CacheManager.cacheManager.serverCache != null) {

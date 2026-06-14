@@ -4,6 +4,7 @@ import cn.superiormc.ultimateshop.gui.InvGUI;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import com.github.retrooper.packetevents.PacketEvents;
 import com.github.retrooper.packetevents.event.PacketListenerAbstract;
+import com.github.retrooper.packetevents.event.PacketListenerCommon;
 import com.github.retrooper.packetevents.event.PacketSendEvent;
 import com.github.retrooper.packetevents.protocol.item.ItemStack;
 import com.github.retrooper.packetevents.protocol.packettype.PacketType;
@@ -25,6 +26,7 @@ public class PacketInventoryUtil {
     protected final Map<UUID, Integer> WINDOW_IDS = new ConcurrentHashMap<>();
     protected final Map<UUID, Integer> WINDOW_TYPES = new ConcurrentHashMap<>();
     protected PaperUtil PAPER_UTIL;
+    private PacketListenerCommon packetListener;
 
     public PacketInventoryUtil() {
         try {
@@ -37,7 +39,7 @@ public class PacketInventoryUtil {
     }
 
     private void initListener() {
-        PacketEvents.getAPI().getEventManager().registerListener(new PacketListener());
+        packetListener = PacketEvents.getAPI().getEventManager().registerListener(new PacketListener());
     }
 
     public void updateTitle(Player player, InvGUI gui) {
@@ -69,6 +71,16 @@ public class PacketInventoryUtil {
         UUID uuid = player.getUniqueId();
         WINDOW_IDS.remove(uuid);
         WINDOW_TYPES.remove(uuid);
+    }
+
+    public void shutdown() {
+        if (packetListener != null) {
+            PacketEvents.getAPI().getEventManager().unregisterListener(packetListener);
+            packetListener = null;
+        }
+        WINDOW_IDS.clear();
+        WINDOW_TYPES.clear();
+        packetInventoryUtil = null;
     }
 
     private static class PacketListener extends PacketListenerAbstract {

@@ -117,7 +117,13 @@ public class PaperMethodUtil implements SpecialMethodUtil {
         }
     }
 
-    public Map<String, PlayerProfile> playerProfiles = new HashMap<>();
+    public Map<String, PlayerProfile> playerProfiles = Collections.synchronizedMap(
+            new LinkedHashMap<>(256, 0.75f, true) {
+                @Override
+                protected boolean removeEldestEntry(Map.Entry<String, PlayerProfile> eldest) {
+                    return size() > 256;
+                }
+            });
 
     @Override
     public SkullMeta setSkullMeta(SkullMeta meta, String skull) {

@@ -2,7 +2,10 @@ package cn.superiormc.ultimateshop;
 
 import cn.superiormc.ultimateshop.managers.*;
 import cn.superiormc.ultimateshop.managers.MenuStatusManager;
+import cn.superiormc.ultimateshop.database.DatabaseExecutor;
+import cn.superiormc.ultimateshop.papi.PlaceholderAPIExpansion;
 import cn.superiormc.ultimateshop.utils.*;
+import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -10,6 +13,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 public final class UltimateShop extends JavaPlugin {
 
     public static UltimateShop instance;
+
+    private Metrics metrics;
 
     public static final boolean freeVersion = true;
 
@@ -30,6 +35,7 @@ public final class UltimateShop extends JavaPlugin {
     @Override
     public void onEnable() {
         instance = this;
+        DatabaseExecutor.start();
         try {
             String[] versionParts = Bukkit.getBukkitVersion().split("-")[0].split("\\.");
             yearVersion = versionParts.length > 0 ? Integer.parseInt(versionParts[0]) : 1;
@@ -92,6 +98,7 @@ public final class UltimateShop extends JavaPlugin {
             TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fDynamic title enabled. Hooking into packetevents...");
         }
         new LicenseManager();
+        metrics = new Metrics(UltimateShop.instance, 20783);
         TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fYour server version is: " + yearVersion + "." + majorVersion + "." + minorVersion + "!");
         TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fPlugin is loaded. Author: PQguanfang.");
     }
@@ -99,6 +106,7 @@ public final class UltimateShop extends JavaPlugin {
     @Override
     public void onDisable() {
         ListenerManager.listenerManager.unregisterAllListener();
+        TaskManager.taskManager.cancelTask();
         if (CacheManager.cacheManager.serverCache != null) {
             CacheManager.cacheManager.serverCache.shutCacheOnDisable(true);
         }
@@ -106,8 +114,20 @@ public final class UltimateShop extends JavaPlugin {
             CacheManager.cacheManager.saveObjectCacheOnDisable(player, true);
         }
         CacheManager.cacheManager.database.onClose();
+        DatabaseExecutor.shutdown();
+        if (PacketInventoryUtil.packetInventoryUtil != null) {
+            PacketInventoryUtil.packetInventoryUtil.shutdown();
+        }
+        if (PlaceholderAPIExpansion.papi != null) {
+            PlaceholderAPIExpansion.papi.unregister();
+            PlaceholderAPIExpansion.papi = null;
+        }
         if (BungeeCordManager.enableThis()) {
             BungeeCordManager.bungeeCordManager.disable();
+        }
+        if (metrics != null) {
+            metrics.shutdown();
+            metrics = null;
         }
         TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fPlugin is disabled. Author: PQguanfang.");
     }
