@@ -4,6 +4,7 @@ import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.gui.InvGUI;
 import cn.superiormc.ultimateshop.listeners.*;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
+import cn.superiormc.ultimateshop.utils.PacketInventoryUtil;
 import cn.superiormc.ultimateshop.utils.TextUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -67,5 +68,8 @@ public class ListenerManager {
         listeners.values().forEach(gui -> gui.closeEventHandle(gui.getInv()));
         listeners.clear();
         HandlerList.unregisterAll(UltimateShop.instance);
+        if (UltimateShop.usePacketEvents && PacketInventoryUtil.packetInventoryUtil != null) {
+            PacketInventoryUtil.packetInventoryUtil.shutdown();
+        }
     }
 }

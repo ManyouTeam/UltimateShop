@@ -43,13 +43,18 @@ public class CacheManager {
     public void loadPlayerCache(Player player) {
         ObjectCache cache = playerCacheMap.get(player.getUniqueId());
         if (cache != null) {
+            TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fLoading player data: " + player.getName() + "...");
             cache.initCache();
         }
     }
 
     @Nullable
     public ObjectCache getObjectCache(Player player) {
-        return playerCacheMap.get(player.getUniqueId());
+        ObjectCache cache = playerCacheMap.get(player.getUniqueId());
+        if (cache == null || cache.canNotModify()) {
+            return null;
+        }
+        return cache;
     }
 
     public void saveObjectCache(Player player) {

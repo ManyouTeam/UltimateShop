@@ -7,6 +7,7 @@ import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import cn.superiormc.ultimateshop.objects.items.subobjects.ObjectCustomPlaceholder;
 import cn.superiormc.ultimateshop.objects.items.subobjects.ObjectRandomPlaceholder;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
+import cn.superiormc.ultimateshop.utils.TextUtil;
 import org.bukkit.entity.Player;
 
 import java.util.Collections;
@@ -85,7 +86,7 @@ public class ObjectCache {
      */
     public ObjectUseTimesCache getUseTimesCache(ObjectItem item) {
         if (item == null) {
-            return new ObjectUseTimesCache(this, true);
+            return new ObjectUseTimesCache(this);
         }
 
         return useTimesCache.computeIfAbsent(item, key -> {
@@ -115,8 +116,8 @@ public class ObjectCache {
                     null,
                     null,
                     null,
-                    key,
-                    true);
+                    key
+            );
             sharedUseTimesCache.put(storageKey, created);
             return created;
         });
@@ -149,8 +150,8 @@ public class ObjectCache {
                 lastResetSellTime,
                 cooldownBuyTime,
                 cooldownSellTime,
-                null,
-                false);
+                null
+        );
         ObjectUseTimesCache previous = sharedUseTimesCache.put(new UseTimesStorageKey(shop, product), created);
         if (previous != null) {
             ObjectItem boundProduct = previous.getProduct();
@@ -416,10 +417,16 @@ public class ObjectCache {
 
     public void close() {
         closed = true;
+        if (player != null) {
+            TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fUnloaded player data: " + player.getName() + ".");
+        }
     }
 
     public void ready() {
         ready = true;
+        if (player != null) {
+            TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fLoaded player data: " + player.getName() + ".");
+        }
     }
 
     public boolean canNotModify() {

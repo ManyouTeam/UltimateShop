@@ -3,7 +3,6 @@ package cn.superiormc.ultimateshop;
 import cn.superiormc.ultimateshop.managers.*;
 import cn.superiormc.ultimateshop.managers.MenuStatusManager;
 import cn.superiormc.ultimateshop.database.DatabaseExecutor;
-import cn.superiormc.ultimateshop.papi.PlaceholderAPIExpansion;
 import cn.superiormc.ultimateshop.utils.*;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
@@ -119,9 +118,6 @@ public final class UltimateShop extends JavaPlugin {
         DatabaseManager.databaseManager.database.onClose();
         CacheManager.cacheManager.shutdown();
         DatabaseExecutor.shutdown();
-        if (PacketInventoryUtil.packetInventoryUtil != null) {
-            PacketInventoryUtil.packetInventoryUtil.shutdown();
-        }
         if (HookManager.hookManager.papi != null) {
             HookManager.hookManager.papi.unregister();
             HookManager.hookManager.papi = null;

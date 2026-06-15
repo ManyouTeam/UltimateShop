@@ -310,6 +310,9 @@ public class CommonUtil {
 
     public static String translateStringList(List<String> list) {
         StringBuilder builder = new StringBuilder();
+        if (list == null) {
+            return builder.toString();
+        }
         boolean first = true;
         for (String tempVal1 : list) {
             if (!first) {

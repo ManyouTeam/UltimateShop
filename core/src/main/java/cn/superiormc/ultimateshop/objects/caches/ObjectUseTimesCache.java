@@ -10,42 +10,25 @@ import cn.superiormc.ultimateshop.utils.CommandUtil;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
 import cn.superiormc.ultimateshop.utils.TextUtil;
 import org.bukkit.entity.Player;
+import org.jspecify.annotations.NonNull;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.Objects;
 
 public class ObjectUseTimesCache {
 
-    private int buyUseTimes;
-
-    private int totalBuyUseTimes;
-
-    private int sellUseTimes;
-
-    private int totalSellUseTimes;
-
-    private LocalDateTime lastBuyTime = null;
-
-    private LocalDateTime lastSellTime = null;
-
-    private LocalDateTime lastResetBuyTime = null;
-
-    private LocalDateTime lastResetSellTime = null;
-
-    private LocalDateTime cooldownBuyTime = null;
-
-    private LocalDateTime cooldownSellTime = null;
-
-    private ObjectItem product;
+    private static final int NEVER_REFRESH_YEAR = 2999;
 
     private final ObjectCache cache;
 
-    private final boolean firstInsert;
+    private final UseTimesState buy = new UseTimesState();
 
-    public ObjectUseTimesCache(ObjectCache cache, boolean firstInsert) {
+    private final UseTimesState sell = new UseTimesState();
+
+    private ObjectItem product;
+
+    public ObjectUseTimesCache(ObjectCache cache) {
         this.cache = cache;
-        this.firstInsert = firstInsert;
     }
 
     public ObjectUseTimesCache(ObjectCache cache,
@@ -59,42 +42,31 @@ public class ObjectUseTimesCache {
                                String lastResetSellTime,
                                String cooldownBuyTime,
                                String cooldownSellTime,
-                               ObjectItem product,
-                               boolean firstInsert) {
-        this.firstInsert = firstInsert;
-        this.cache = cache;
-        this.buyUseTimes = buyUseTimes;
-        this.totalBuyUseTimes = totalBuyUseTimes;
-        if (lastBuyTime != null) {
-            this.lastBuyTime = CommonUtil.stringToTime(lastBuyTime);
-        }
-        this.sellUseTimes = sellUseTimes;
-        this.totalSellUseTimes = totalSellUseTimes;
-        if (lastSellTime != null) {
-            this.lastSellTime = CommonUtil.stringToTime(lastSellTime);
-        }
-        if (lastResetBuyTime != null) {
-            this.lastResetBuyTime = CommonUtil.stringToTime(lastResetBuyTime);
-        }
-        if (lastResetSellTime != null) {
-            this.lastResetSellTime = CommonUtil.stringToTime(lastResetSellTime);
-        }
-        if (cooldownBuyTime != null) {
-            if (ConfigManager.configManager.getBoolean("debug")) {
-                TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §cSet cooldown time to " + product);
-            }
-            this.cooldownBuyTime = CommonUtil.stringToTime(cooldownBuyTime);
-        }
-        if (cooldownSellTime != null) {
-            if (ConfigManager.configManager.getBoolean("debug")) {
-                TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §cSet cooldown time to " + product);
-            }
-            this.cooldownSellTime = CommonUtil.stringToTime(cooldownSellTime);
-        }
+                               ObjectItem product) {
+        this(cache);
+        loadState(buy, buyUseTimes, totalBuyUseTimes, lastBuyTime, lastResetBuyTime, cooldownBuyTime);
+        loadState(sell, sellUseTimes, totalSellUseTimes, lastSellTime, lastResetSellTime, cooldownSellTime);
         this.product = product;
         if (product != null) {
             refreshTimes();
         }
+    }
+
+    private void loadState(UseTimesState state,
+                           int useTimes,
+                           int totalUseTimes,
+                           String lastTime,
+                           String lastResetTime,
+                           String cooldownTime) {
+        state.useTimes = useTimes;
+        state.totalUseTimes = totalUseTimes;
+        state.lastTime = parseTime(lastTime);
+        state.lastResetTime = parseTime(lastResetTime);
+        state.cooldownTime = parseTime(cooldownTime);
+    }
+
+    private LocalDateTime parseTime(String value) {
+        return value == null ? null : CommonUtil.stringToTime(value);
     }
 
     public synchronized void bindProduct(ObjectItem product) {
@@ -105,749 +77,558 @@ public class ObjectUseTimesCache {
         refreshTimes();
     }
 
-    public ObjectItem getProduct() {
+    public synchronized ObjectItem getProduct() {
         return product;
     }
 
-    public void refreshTimes() {
-        refreshBuyTimes();
-        refreshSellTimes();
-        initBuyResetTask();
-        initSellResetTask();
+    public synchronized void refreshTimes() {
+        refresh(Direction.BUY);
+        refresh(Direction.SELL);
+        initResetTask(Direction.BUY, null);
+        initResetTask(Direction.SELL, null);
     }
 
-    public synchronized void initBuyResetTask() {
-        if (product == null || cache.canNotModify()) {
-            return;
-        }
-        if (!ConfigManager.configManager.getBoolean("use-times.auto-reset-mode")) {
-            return;
-        }
-
-        ResetTaskPool.unregisterBuy(this);
-
-        LocalDateTime refreshTime = getBuyRefreshTime();
-        if (refreshTime == null || refreshTime.getYear() == 2999) {
+    private void initResetTask(Direction direction, LocalDateTime refreshTime) {
+        if (product == null || cache.canNotModify()
+                || !ConfigManager.configManager.getBoolean("use-times.auto-reset-mode")) {
             return;
         }
 
-        ResetTaskPool.registerBuy(this, refreshTime);
+        unregisterResetTask(direction);
+        LocalDateTime target = refreshTime == null ? getRefreshTime(direction, false) : refreshTime;
+        if (isNever(target)) {
+            return;
+        }
+
+        if (direction == Direction.BUY) {
+            ResetTaskPool.registerBuy(this, target);
+        } else {
+            ResetTaskPool.registerSell(this, target);
+        }
     }
 
-    public synchronized void initSellResetTask() {
-        if (product == null || cache.canNotModify()) {
-            return;
+    private void unregisterResetTask(Direction direction) {
+        if (direction == Direction.BUY) {
+            ResetTaskPool.unregisterBuy(this);
+        } else {
+            ResetTaskPool.unregisterSell(this);
         }
-        if (!ConfigManager.configManager.getBoolean("use-times.auto-reset-mode")) {
-            return;
-        }
-
-        ResetTaskPool.unregisterSell(this);
-
-        LocalDateTime refreshTime = getSellRefreshTime();
-        if (refreshTime == null || refreshTime.getYear() == 2999) {
-            return;
-        }
-
-        ResetTaskPool.registerSell(this, refreshTime);
     }
 
     public synchronized void cancelResetTime() {
-        ResetTaskPool.unregisterBuy(this);
-        ResetTaskPool.unregisterSell(this);
+        unregisterResetTask(Direction.BUY);
+        unregisterResetTask(Direction.SELL);
     }
 
-    public int getBuyUseTimes() {
-        return buyUseTimes;
+    public synchronized int getBuyUseTimes() {
+        return buy.useTimes;
     }
 
-    public int getTotalBuyUseTimes() {
-        if (UltimateShop.freeVersion) {
-            return 0;
-        }
-        return totalBuyUseTimes;
+    public synchronized int getTotalBuyUseTimes() {
+        return UltimateShop.freeVersion ? 0 : buy.totalUseTimes;
     }
 
-    public int getSellUseTimes() {
-        return sellUseTimes;
+    public synchronized int getSellUseTimes() {
+        return sell.useTimes;
     }
 
-    public int getTotalSellUseTimes() {
-        if (UltimateShop.freeVersion) {
-            return 0;
-        }
-        return totalSellUseTimes;
+    public synchronized int getTotalSellUseTimes() {
+        return UltimateShop.freeVersion ? 0 : sell.totalUseTimes;
     }
 
-    public void setBuyUseTimes(int i) {
-        setBuyUseTimes(i, false, false);
+    public void setBuyUseTimes(int value) {
+        setBuyUseTimes(value, false, false);
     }
 
-    public void setBuyUseTimes(int i, boolean isReset) {
-        setBuyUseTimes(i, false, isReset);
+    public synchronized void setBuyUseTimes(int value, boolean notUseBungee, boolean isReset) {
+        setUseTimes(Direction.BUY, value, notUseBungee, isReset);
     }
 
-    public synchronized void setBuyUseTimes(int i, boolean notUseBungee, boolean isReset) {
+    public void setSellUseTimes(int value) {
+        setSellUseTimes(value, false, false);
+    }
+
+    public synchronized void setSellUseTimes(int value, boolean notUseBungee, boolean isReset) {
+        setUseTimes(Direction.SELL, value, notUseBungee, isReset);
+    }
+
+    private void setUseTimes(Direction direction, int requestedValue, boolean notUseBungee, boolean isReset) {
+        UseTimesState state = state(direction);
         if (product == null) {
-            buyUseTimes = i;
+            state.useTimes = requestedValue;
             return;
         }
-        int maxTimes = product.getBuyTimesMaxValue(cache.getPlayer());
-        if (i > Integer.MAX_VALUE - 10000) {
-            setSellUseTimes(0);
-            setBuyUseTimes(i - sellUseTimes);
-        }
+
+        int maxTimes = getMaxTimes(direction);
         if (!isReset) {
-            if (totalBuyUseTimes > Integer.MAX_VALUE - 10000) {
-                totalBuyUseTimes = i;
-            } else {
-                totalBuyUseTimes = totalBuyUseTimes + (i - buyUseTimes);
+            state.totalUseTimes = addWithoutOverflow(
+                    state.totalUseTimes,
+                    (long) requestedValue - state.useTimes);
+            if (!UltimateShop.freeVersion
+                    && ConfigManager.configManager.getBoolean("use-times.max-value-for-total-only")
+                    && maxTimes >= 0) {
+                state.totalUseTimes = Math.min(state.totalUseTimes, maxTimes);
             }
-            if (!UltimateShop.freeVersion && ConfigManager.configManager.getBoolean("use-times.max-value-for-total-only")
-                    && maxTimes >= 0 && totalBuyUseTimes > maxTimes) {
-                totalBuyUseTimes = maxTimes;
-            }
         }
-        if (!UltimateShop.freeVersion && maxTimes >= 0 && i > maxTimes) {
-            buyUseTimes = maxTimes;
-        } else {
-            buyUseTimes = i;
-        }
-        if (!notUseBungee && cache.isServer() && BungeeCordManager.bungeeCordManager != null) {
-            BungeeCordManager.bungeeCordManager.sendToOtherServer(
-                    product.getUseTimesStorageShop(),
-                    product.getUseTimesStorageProduct(),
-                    "buy-times",
-                    String.valueOf(i));
-        }
+
+        state.useTimes = !UltimateShop.freeVersion && maxTimes >= 0
+                ? Math.min(requestedValue, maxTimes)
+                : requestedValue;
+        sendBungee(direction.timesChannel, String.valueOf(requestedValue), notUseBungee);
     }
 
-    public void setSellUseTimes(int i) {
-        setSellUseTimes(i, false, false);
-    }
-
-    public void setSellUseTimes(int i, boolean isReset) {
-        setSellUseTimes(i, false, isReset);
-    }
-
-    public synchronized void setSellUseTimes(int i, boolean notUseBungee, boolean isReset) {
-        if (product == null) {
-            sellUseTimes = i;
-            return;
+    private int addWithoutOverflow(int currentValue, long delta) {
+        long result = currentValue + delta;
+        if (result > Integer.MAX_VALUE) {
+            return Integer.MAX_VALUE;
         }
-        int maxTimes = product.getSellTimesMaxValue(cache.getPlayer());
-        if (i > Integer.MAX_VALUE - 10000) {
-            setBuyUseTimes(0);
-            setSellUseTimes(i - buyUseTimes);
+        if (result < Integer.MIN_VALUE) {
+            return Integer.MIN_VALUE;
         }
-        if (!isReset) {
-            if (totalSellUseTimes > Integer.MAX_VALUE - 10000) {
-                totalSellUseTimes = i;
-            } else {
-                totalSellUseTimes = totalSellUseTimes + (i - sellUseTimes);
-            }
-            if (!UltimateShop.freeVersion && ConfigManager.configManager.getBoolean("use-times.max-value-for-total-only")
-                    && maxTimes >= 0 && totalSellUseTimes > maxTimes) {
-                totalSellUseTimes = maxTimes;
-            }
-        }
-        if (!UltimateShop.freeVersion && maxTimes >= 0 && i > maxTimes) {
-            sellUseTimes = maxTimes;
-        } else {
-            sellUseTimes = i;
-        }
-        if (!notUseBungee && cache.isServer() && BungeeCordManager.bungeeCordManager != null) {
-            BungeeCordManager.bungeeCordManager.sendToOtherServer(
-                    product.getUseTimesStorageShop(),
-                    product.getUseTimesStorageProduct(),
-                    "sell-times",
-                    String.valueOf(i));
-        }
+        return (int) result;
     }
 
     public synchronized void setLastBuyTime(LocalDateTime time) {
-        if (time == null) {
-            lastResetBuyTime = Objects.requireNonNullElseGet(cooldownBuyTime, LocalDateTime::now);
-        }
-        setLastBuyTime(time, false);
+        setLastTime(Direction.BUY, time, false, true);
     }
 
     public synchronized void setLastBuyTime(LocalDateTime time, boolean notUseBungee) {
-        lastBuyTime = time;
-        if (!notUseBungee && cache.isServer() && BungeeCordManager.bungeeCordManager != null) {
-            BungeeCordManager.bungeeCordManager.sendToOtherServer(
-                    product.getUseTimesStorageShop(),
-                    product.getUseTimesStorageProduct(),
-                    "last-buy-time",
-                    CommonUtil.timeToString(time));
-        }
+        setLastTime(Direction.BUY, time, notUseBungee, false);
     }
 
     public synchronized void setLastSellTime(LocalDateTime time) {
-        if (time == null) {
-            lastResetSellTime = Objects.requireNonNullElseGet(cooldownSellTime, LocalDateTime::now);
-        }
-        setLastSellTime(time, false);
+        setLastTime(Direction.SELL, time, false, true);
     }
 
     public synchronized void setLastSellTime(LocalDateTime time, boolean notUseBungee) {
-        lastSellTime = time;
-        if (!notUseBungee && cache.isServer() && BungeeCordManager.bungeeCordManager != null) {
-            BungeeCordManager.bungeeCordManager.sendToOtherServer(
-                    product.getUseTimesStorageShop(),
-                    product.getUseTimesStorageProduct(),
-                    "last-sell-time",
-                    CommonUtil.timeToString(time));
+        setLastTime(Direction.SELL, time, notUseBungee, false);
+    }
+
+    private void setLastTime(Direction direction,
+                             LocalDateTime time,
+                             boolean notUseBungee,
+                             boolean updateLastResetTime) {
+        UseTimesState state = state(direction);
+        if (time == null && updateLastResetTime) {
+            state.lastResetTime = state.cooldownTime == null ? CommonUtil.getNowTime() : state.cooldownTime;
+        }
+        state.lastTime = time;
+        sendBungee(direction.lastTimeChannel, formatTime(time), notUseBungee);
+        if (time != null && resetTimeDependsOnLastTime(direction)) {
+            initResetTask(direction, null);
         }
     }
 
     public synchronized void setCooldownBuyTime() {
-        setCooldownBuyTime(false);
-    }
-
-    public synchronized void resetCooldownBuyTime() {
-        cooldownBuyTime = null;
+        initResetTask(Direction.BUY, ensureCooldownTime(Direction.BUY, false));
     }
 
     public synchronized void setCooldownBuyTime(boolean notUseBungee) {
-        if (product == null) {
-            return;
-        }
-        if (cooldownBuyTime == null || cooldownBuyTime.isBefore(CommonUtil.getNowTime())) {
-            String mode = product.getBuyTimesResetMode();
-            String tempVal1 = TextUtil.withPAPI(product.getBuyTimesResetTime(), cache.getPlayer());
-            if (mode == null || tempVal1.isEmpty()) {
-                return;
-            }
-            switch (mode) {
-                case "COOLDOWN_TIMED" -> {
-                    cooldownBuyTime = createTimedBuyRefreshTime(tempVal1);
-                    if (!notUseBungee && cache.isServer() && BungeeCordManager.bungeeCordManager != null) {
-                        BungeeCordManager.bungeeCordManager.sendToOtherServer(
-                                product.getUseTimesStorageShop(),
-                                product.getUseTimesStorageProduct(),
-                                "cooldown-buy-time",
-                                null);
-                    }
-                }
-                case "COOLDOWN_TIMER" -> {
-                    cooldownBuyTime = createTimerBuyRefreshTime(tempVal1);
-                    if (!notUseBungee && cache.isServer() && BungeeCordManager.bungeeCordManager != null) {
-                        BungeeCordManager.bungeeCordManager.sendToOtherServer(
-                                product.getUseTimesStorageShop(),
-                                product.getUseTimesStorageProduct(),
-                                "cooldown-buy-time",
-                                null);
-                    }
-                }
-                case "COOLDOWN_CUSTOM" -> {
-                    if (UltimateShop.freeVersion) {
-                        cooldownBuyTime = CommonUtil.stringToTime(tempVal1);
-                    }
-                    cooldownBuyTime = CommonUtil.stringToTime(tempVal1, TextUtil.withPAPI(product.getBuyTimesResetFormat(), cache.getPlayer()));
-                }
-            }
-        }
+        initResetTask(Direction.BUY, ensureCooldownTime(Direction.BUY, notUseBungee));
     }
 
     public synchronized void setCooldownSellTime() {
-        setCooldownSellTime(false);
-    }
-
-    public synchronized void resetCooldownSellTime() {
-        cooldownSellTime = null;
+        initResetTask(Direction.SELL, ensureCooldownTime(Direction.SELL, false));
     }
 
     public synchronized void setCooldownSellTime(boolean notUseBungee) {
-        if (product == null) {
-            return;
-        }
-        if (cooldownSellTime == null || cooldownSellTime.isBefore(CommonUtil.getNowTime())) {
-            String mode = product.getSellTimesResetMode();
-            String tempVal1 = TextUtil.withPAPI(product.getSellTimesResetTime(), cache.getPlayer());
-            if (mode == null || tempVal1.isEmpty()) {
-                return;
-            }
-            switch (mode) {
-                case "COOLDOWN_TIMED" -> {
-                    cooldownSellTime = createTimedSellRefreshTime(tempVal1);
-                    if (!notUseBungee && cache.isServer() && BungeeCordManager.bungeeCordManager != null) {
-                        BungeeCordManager.bungeeCordManager.sendToOtherServer(
-                                product.getUseTimesStorageShop(),
-                                product.getUseTimesStorageProduct(),
-                                "cooldown-sell-time",
-                                null);
-                    }
-                }
-                case "COOLDOWN_TIMER" -> {
-                    cooldownSellTime = createTimerSellRefreshTime(tempVal1);
-                    if (!notUseBungee && cache.isServer() && BungeeCordManager.bungeeCordManager != null) {
-                        BungeeCordManager.bungeeCordManager.sendToOtherServer(
-                                product.getUseTimesStorageShop(),
-                                product.getUseTimesStorageProduct(),
-                                "cooldown-sell-time",
-                                null);
-                    }
-                }
-                case "COOLDOWN_CUSTOM" -> {
-                    if (UltimateShop.freeVersion) {
-                        cooldownSellTime = CommonUtil.stringToTime(tempVal1);
-                    }
-                    cooldownSellTime = CommonUtil.stringToTime(tempVal1, TextUtil.withPAPI(product.getSellTimesResetFormat(), cache.getPlayer()));
-                }
-            }
-        }
+        initResetTask(Direction.SELL, ensureCooldownTime(Direction.SELL, notUseBungee));
     }
 
-    public String getLastBuyTime() {
-        if (lastBuyTime == null) {
-            return null;
-        }
-        return CommonUtil.timeToString(lastBuyTime);
-    }
-
-    public String getLastSellTime() {
-        if (lastSellTime == null) {
-            return null;
-        }
-        return CommonUtil.timeToString(lastSellTime);
-    }
-
-    public String getLastResetBuyTime() {
-        if (lastResetBuyTime == null) {
-            return null;
-        }
-        return CommonUtil.timeToString(lastResetBuyTime);
-    }
-
-    public String getLastResetSellTime() {
-        if (lastResetSellTime == null) {
-            return null;
-        }
-        return CommonUtil.timeToString(lastResetSellTime);
-    }
-
-    public String getCooldownBuyTime() {
-        if (cooldownBuyTime == null) {
-            return null;
-        }
-        if (ConfigManager.configManager.getBoolean("debug")) {
-            TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §cCooldown time: " + cooldownBuyTime);
-        }
-        return CommonUtil.timeToString(cooldownBuyTime);
-    }
-
-    public String getCooldownSellTime() {
-        if (cooldownSellTime == null) {
-            return null;
-        }
-        if (ConfigManager.configManager.getBoolean("debug")) {
-            TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §cCooldown time: " + cooldownSellTime);
-        }
-        return CommonUtil.timeToString(cooldownSellTime);
-    }
-
-    public LocalDateTime getBuyRefreshTimeWithUpdate() {
+    private LocalDateTime ensureCooldownTime(Direction direction, boolean notUseBungee) {
         if (product == null) {
             return null;
         }
-        String mode = product.getBuyTimesResetMode();
-        String tempVal1 = TextUtil.withPAPI(product.getBuyTimesResetTime(), cache.getPlayer());
-        return createRefreshTime(mode, tempVal1, true);
-    }
 
-    public LocalDateTime getSellRefreshTimeWithUpdate() {
-        if (product == null) {
-            return null;
+        UseTimesState state = state(direction);
+        LocalDateTime now = CommonUtil.getNowTime();
+        if (state.cooldownTime != null && !state.cooldownTime.isBefore(now)) {
+            return state.cooldownTime;
         }
-        String mode = product.getSellTimesResetMode();
-        String tempVal1 = TextUtil.withPAPI(product.getSellTimesResetTime(), cache.getPlayer());
-        return createRefreshTime(mode, tempVal1, false);
-    }
 
-    public LocalDateTime getBuyRefreshTime() {
-        if (product == null) {
-            return null;
+        String mode = getResetMode(direction);
+        String time = getResetTime(direction);
+        if (mode == null || time.isEmpty()) {
+            return state.cooldownTime;
         }
-        String mode = product.getBuyTimesResetMode();
-        String tempVal1 = TextUtil.withPAPI(product.getBuyTimesResetTime(), cache.getPlayer());
-        LocalDateTime result;
+
         switch (mode) {
-            case "COOLDOWN_TIMED", "COOLDOWN_TIMER", "COOLDOWN_CUSTOM": {
-                result = cooldownBuyTime;
-                createRefreshTime(mode, tempVal1, true);
+            case "COOLDOWN_TIMED":
+                state.cooldownTime = createTimedRefreshTime(direction, time, true);
+                sendBungee(direction.cooldownChannel, null, notUseBungee);
                 break;
-            }
-            default: {
-                result = createRefreshTime(mode, tempVal1, true);
+            case "COOLDOWN_TIMER":
+                state.cooldownTime = createTimerRefreshTime(direction, time, true);
+                sendBungee(direction.cooldownChannel, null, notUseBungee);
                 break;
-            }
-        }
-        return result;
-    }
-
-    public LocalDateTime getSellRefreshTime() {
-        if (product == null) {
-            return null;
-        }
-        String mode = product.getSellTimesResetMode();
-        String tempVal1 = TextUtil.withPAPI(product.getSellTimesResetTime(), cache.getPlayer());
-        LocalDateTime result;
-        switch (mode) {
-            case "COOLDOWN_TIMED", "COOLDOWN_TIMER", "COOLDOWN_CUSTOM": {
-                result = cooldownSellTime;
-                createRefreshTime(mode, tempVal1, false);
+            case "COOLDOWN_CUSTOM":
+                state.cooldownTime = UltimateShop.freeVersion
+                        ? CommonUtil.stringToTime(time)
+                        : CommonUtil.stringToTime(time, getResetFormat(direction));
                 break;
-            }
-            default: {
-                result = createRefreshTime(mode, tempVal1, false);
-                break;
-            }
-        }
-        return result;
-    }
-
-    public String getBuyRefreshTimeDisplayName(Player player) {
-        LocalDateTime tempVal1 = getBuyRefreshTimeWithUpdate();
-        if (tempVal1 == null || tempVal1.getYear() == 2999) {
-            return ConfigManager.configManager.getStringWithLang(player, "placeholder.refresh.never");
-        }
-        return CommonUtil.timeToString(tempVal1, ConfigManager.configManager.getStringWithLang(player, "placeholder.refresh.format"));
-    }
-
-    public String getBuyRefreshTimeNextName(Player player) {
-        if (UltimateShop.freeVersion) {
-            return "";
-        }
-        LocalDateTime tempVal1 = getBuyRefreshTimeWithUpdate();
-        if (tempVal1 == null || tempVal1.getYear() == 2999) {
-            return ConfigManager.configManager.getStringWithLang(player, "placeholder.next.never");
-        }
-        Duration duration = Duration.between(CommonUtil.getNowTime(), tempVal1);
-        long totalSeconds = duration.getSeconds();
-        if (totalSeconds < 0) {
-            return ConfigManager.configManager.getStringWithLang(player, "placeholder.next.never");
-        }
-        long days = totalSeconds / (24 * 3600);
-        long hours = (totalSeconds % (24 * 3600)) / 3600;
-        long minutes = (totalSeconds % 3600) / 60;
-        long seconds = totalSeconds % 60;
-        if (days > 0) {
-            return ConfigManager.configManager.getStringWithLang(player, "placeholder.next.with-day-format").replace("{d}", String.valueOf(days))
-                    .replace("{h}", String.format("%02d", hours))
-                    .replace("{m}", String.format("%02d", minutes))
-                    .replace("{s}", String.format("%02d", seconds));
-        }
-        return ConfigManager.configManager.getStringWithLang(player, "placeholder.next.without-day-format").replace("{h}", String.valueOf(hours))
-                .replace("{m}", String.format("%02d", minutes))
-                .replace("{s}", String.format("%02d", seconds));
-    }
-
-    public String getBuyLastTimeName() {
-        if (UltimateShop.freeVersion) {
-            return "0";
-        }
-        LocalDateTime tempVal1 = lastBuyTime;
-        if (tempVal1 == null || tempVal1.getYear() == 2999) {
-            return "0";
-        }
-        Duration duration = Duration.between(tempVal1, CommonUtil.getNowTime());
-        return String.valueOf(duration.getSeconds());
-    }
-
-    public String getBuyLastResetTimeName() {
-        if (UltimateShop.freeVersion) {
-            return "0";
-        }
-        LocalDateTime tempVal1 = lastResetBuyTime;
-        if (tempVal1 == null || tempVal1.getYear() == 2999) {
-            return getBuyLastTimeName();
-        }
-        Duration duration = Duration.between(tempVal1, CommonUtil.getNowTime());
-        return String.valueOf(duration.getSeconds());
-    }
-
-    public String getSellRefreshTimeDisplayName(Player player) {
-        LocalDateTime tempVal1 = getSellRefreshTimeWithUpdate();
-        if (tempVal1 == null || tempVal1.getYear() == 2999) {
-            return ConfigManager.configManager.getStringWithLang(player, "placeholder.refresh.never");
-        }
-        return CommonUtil.timeToString(tempVal1, ConfigManager.configManager.getStringWithLang(player, "placeholder.refresh.format"));
-    }
-
-    public String getSellRefreshTimeNextName(Player player) {
-        if (UltimateShop.freeVersion) {
-            return "0";
-        }
-        LocalDateTime tempVal1 = getSellRefreshTimeWithUpdate();
-        if (tempVal1 == null || tempVal1.getYear() == 2999) {
-            return ConfigManager.configManager.getStringWithLang(player, "placeholder.next.never");
-        }
-        Duration duration = Duration.between(CommonUtil.getNowTime(), tempVal1);
-        long totalSeconds = duration.getSeconds();
-        if (totalSeconds < 0) {
-            return ConfigManager.configManager.getStringWithLang(player, "placeholder.next.never");
-        }
-        long days = totalSeconds / (24 * 3600);
-        long hours = (totalSeconds % (24 * 3600)) / 3600;
-        long minutes = (totalSeconds % 3600) / 60;
-        long seconds = totalSeconds % 60;
-        if (days > 0) {
-            return ConfigManager.configManager.getStringWithLang(player, "placeholder.next.with-day-format").replace("{d}", String.valueOf(days))
-                    .replace("{h}", String.format("%02d", hours))
-                    .replace("{m}", String.format("%02d", minutes))
-                    .replace("{s}", String.format("%02d", seconds));
-        }
-        return ConfigManager.configManager.getStringWithLang(player, "placeholder.next.without-day-format").replace("{h}", String.valueOf(hours))
-                .replace("{m}", String.format("%02d", minutes))
-                .replace("{s}", String.format("%02d", seconds));
-    }
-
-    public String getSellLastTimeName() {
-        if (UltimateShop.freeVersion) {
-            return "0";
-        }
-        LocalDateTime tempVal1 = lastSellTime;
-        if (tempVal1 == null || tempVal1.getYear() == 2999) {
-            return "0";
-        }
-        Duration duration = Duration.between(tempVal1, CommonUtil.getNowTime());
-        return String.valueOf(duration.getSeconds());
-    }
-
-    public String getSellLastResetTimeName() {
-        if (UltimateShop.freeVersion) {
-            return "0";
-        }
-        LocalDateTime tempVal1 = lastResetSellTime;
-        if (tempVal1 == null || tempVal1.getYear() == 2999) {
-            return getSellLastTimeName();
-        }
-        Duration duration = Duration.between(tempVal1, CommonUtil.getNowTime());
-        return String.valueOf(duration.getSeconds());
-    }
-
-    private synchronized LocalDateTime createTimedBuyRefreshTime(String time) {
-        LocalDateTime refreshResult = null;
-        String[] tempVal3 = time.split(";;");
-        for (String tempVal4 : tempVal3) {
-            LocalDateTime thisResult;
-            String[] tempVal2 = tempVal4.split(":");
-            int month = 0;
-            int day = 0;
-            if (tempVal2.length < 3) {
-                ErrorManager.errorManager.sendErrorMessage("§cError: Your reset time " + tempVal4 + " is invalid.");
-                return CommonUtil.getNowTime();
-            }
-            if (tempVal2.length == 5) {
-                month = Integer.parseInt(tempVal2[0]);
-            }
-            if (tempVal2.length >= 4) {
-                day = Integer.parseInt(tempVal2[tempVal2.length - 4]);
-            }
-            LocalDateTime checkTime = lastBuyTime;
-            if (lastBuyTime == null) {
-                checkTime = CommonUtil.getNowTime();
-            }
-            thisResult = checkTime.withHour(Integer.parseInt(tempVal2[tempVal2.length - 3])).withMinute(
-                    Integer.parseInt(tempVal2[tempVal2.length - 2])).withSecond(
-                    Integer.parseInt(tempVal2[tempVal2.length - 1]));
-            thisResult = thisResult.plusDays(day).plusMonths(month);
-            if (!checkTime.isBefore(thisResult)) {
-                thisResult = thisResult.plusDays(1L);
-            }
-            if (refreshResult == null || thisResult.isBefore(refreshResult)) {
-                refreshResult = thisResult;
-            }
-            if (UltimateShop.freeVersion) {
-                break;
-            }
-        }
-        return refreshResult;
-    }
-
-    private synchronized LocalDateTime createTimedSellRefreshTime(String time) {
-        LocalDateTime refreshResult = null;
-        String[] tempVal3 = time.split(";;");
-        for (String tempVal4 : tempVal3) {
-            LocalDateTime thisResult;
-            String[] tempVal2 = tempVal4.split(":");
-            int month = 0;
-            int day = 0;
-            if (tempVal2.length < 3) {
-                ErrorManager.errorManager.sendErrorMessage("§cError: Your reset time " + tempVal4 + " is invalid.");
-                return CommonUtil.getNowTime();
-            }
-            if (tempVal2.length == 5) {
-                month = Integer.parseInt(tempVal2[0]);
-            }
-            if (tempVal2.length >= 4) {
-                day = Integer.parseInt(tempVal2[1]);
-            }
-            LocalDateTime checkTime = lastSellTime;
-            if (lastSellTime == null) {
-                checkTime = CommonUtil.getNowTime();
-            }
-            thisResult = checkTime.withHour(Integer.parseInt(tempVal2[tempVal2.length - 3])).withMinute(
-                    Integer.parseInt(tempVal2[tempVal2.length - 2])).withSecond(
-                    Integer.parseInt(tempVal2[tempVal2.length - 1]));
-            thisResult = thisResult.plusDays(day).plusMonths(month);
-            if (!checkTime.isBefore(thisResult)) {
-                thisResult = thisResult.plusDays(1L);
-            }
-            if (refreshResult == null || thisResult.isBefore(refreshResult)) {
-                refreshResult = thisResult;
-            }
-            if (UltimateShop.freeVersion) {
-                break;
-            }
-        }
-        return refreshResult;
-    }
-
-    private synchronized LocalDateTime createTimerBuyRefreshTime(String time) {
-        LocalDateTime refreshResult = lastBuyTime;
-        if (refreshResult == null) {
-            refreshResult = CommonUtil.getNowTime();
-        }
-        String[] tempVal2 = time.split(":");
-        if (tempVal2.length < 3) {
-            ErrorManager.errorManager.sendErrorMessage("§cError: Your reset time " + time + " is invalid.");
-            return CommonUtil.getNowTime();
-        }
-        int month = 0;
-        int day = 0;
-        if (!UltimateShop.freeVersion) {
-            if (tempVal2.length == 5) {
-                month = Integer.parseInt(tempVal2[0]);
-            }
-            if (tempVal2.length >= 4) {
-                day = Integer.parseInt(tempVal2[1]);
-            }
-        }
-        refreshResult = refreshResult.plusMonths(month).plusDays(day)
-                .plusHours(Integer.parseInt(tempVal2[tempVal2.length - 3]))
-                .plusMinutes(Integer.parseInt(tempVal2[tempVal2.length - 2]))
-                .plusSeconds(Integer.parseInt(tempVal2[tempVal2.length - 1]));
-        if (refreshResult.isBefore(CommonUtil.getNowTime())) {
-            return CommonUtil.getNowTime();
-        }
-        return refreshResult;
-    }
-
-    private synchronized LocalDateTime createTimerSellRefreshTime(String time) {
-        LocalDateTime refreshResult = lastSellTime;
-        if (refreshResult == null) {
-            refreshResult = CommonUtil.getNowTime();
-        }
-        String[] tempVal2 = time.split(":");
-        if (tempVal2.length < 3) {
-            ErrorManager.errorManager.sendErrorMessage("§cError: Your reset time " + time + " is invalid.");
-            return CommonUtil.getNowTime();
-        }
-        int month = 0;
-        int day = 0;
-        if (!UltimateShop.freeVersion) {
-            if (tempVal2.length == 5) {
-                month = Integer.parseInt(tempVal2[0]);
-            }
-            if (tempVal2.length >= 4) {
-                day = Integer.parseInt(tempVal2[1]);
-            }
-        }
-        refreshResult = refreshResult.plusMonths(month).plusDays(day)
-                .plusHours(Integer.parseInt(tempVal2[tempVal2.length - 3]))
-                .plusMinutes(Integer.parseInt(tempVal2[tempVal2.length - 2]))
-                .plusSeconds(Integer.parseInt(tempVal2[tempVal2.length - 1]));
-        if (refreshResult.isBefore(CommonUtil.getNowTime())) {
-            return CommonUtil.getNowTime();
-        }
-        return refreshResult;
-    }
-
-    private LocalDateTime createRefreshTime(String mode, String time, boolean buyOrSell) {
-        switch (mode) {
-            case "COOLDOWN_TIMED", "COOLDOWN_TIMER", "COOLDOWN_CUSTOM":
-                if (buyOrSell) {
-                    setCooldownBuyTime();
-                    return cooldownBuyTime;
-                }
-                setCooldownSellTime();
-                return cooldownSellTime;
-            case "TIMED":
-                if (buyOrSell) {
-                    return createTimedBuyRefreshTime(time);
-                }
-                return createTimedSellRefreshTime(time);
-            case "TIMER":
-                if (buyOrSell) {
-                    return createTimerBuyRefreshTime(time);
-                }
-                return createTimerSellRefreshTime(time);
-            case "CUSTOM":
-                if (UltimateShop.freeVersion) {
-                    return CommonUtil.stringToTime(time);
-                }
-                if (buyOrSell) {
-                    return CommonUtil.stringToTime(time, TextUtil.withPAPI(product.getBuyTimesResetFormat(), cache.getPlayer()));
-                }
-                return CommonUtil.stringToTime(time, TextUtil.withPAPI(product.getSellTimesResetFormat(), cache.getPlayer()));
-            case "RANDOM_PLACEHOLDER":
-                return ObjectRandomPlaceholder.getRefreshDoneTimeObject(cache.getPlayer(), time);
             default:
-                return CommonUtil.getNowTime().withYear(2999);
+                break;
         }
+        return state.cooldownTime;
+    }
+
+    public synchronized String getLastBuyTime() {
+        return formatTime(buy.lastTime);
+    }
+
+    public synchronized String getLastSellTime() {
+        return formatTime(sell.lastTime);
+    }
+
+    public synchronized String getLastResetBuyTime() {
+        return formatTime(buy.lastResetTime);
+    }
+
+    public synchronized String getLastResetSellTime() {
+        return formatTime(sell.lastResetTime);
+    }
+
+    public synchronized String getCooldownBuyTime() {
+        return formatTime(buy.cooldownTime);
+    }
+
+    public synchronized String getCooldownSellTime() {
+        return formatTime(sell.cooldownTime);
+    }
+
+    private String formatTime(LocalDateTime time) {
+        return time == null ? null : CommonUtil.timeToString(time);
+    }
+
+    private LocalDateTime getRefreshTime(Direction direction, boolean updateCooldown) {
+        if (product == null) {
+            return null;
+        }
+
+        String mode = getResetMode(direction);
+        String time = getResetTime(direction);
+        if (isCooldownMode(mode)) {
+            UseTimesState state = state(direction);
+            if (updateCooldown || state.cooldownTime == null) {
+                return ensureCooldownTime(direction, false);
+            }
+            return state.cooldownTime;
+        }
+        return createRefreshTime(direction, mode, time);
+    }
+
+    private boolean isCooldownMode(String mode) {
+        return "COOLDOWN_TIMED".equals(mode)
+                || "COOLDOWN_TIMER".equals(mode)
+                || "COOLDOWN_CUSTOM".equals(mode);
+    }
+
+    private boolean resetTimeDependsOnLastTime(Direction direction) {
+        String mode = getResetMode(direction);
+        return "TIMED".equals(mode) || "TIMER".equals(mode);
+    }
+
+    private LocalDateTime createRefreshTime(Direction direction, String mode, String time) {
+        if (mode == null) {
+            return neverRefresh();
+        }
+        return switch (mode) {
+            case "TIMED" -> createTimedRefreshTime(direction, time, false);
+            case "TIMER" -> createTimerRefreshTime(direction, time, false);
+            case "CUSTOM" -> UltimateShop.freeVersion
+                    ? neverRefresh()
+                    : CommonUtil.stringToTime(time, getResetFormat(direction));
+            case "RANDOM_PLACEHOLDER" -> ObjectRandomPlaceholder.getRefreshDoneTimeObject(cache.getPlayer(), time);
+            default -> neverRefresh();
+        };
+    }
+
+    private LocalDateTime createTimedRefreshTime(Direction direction,
+                                                 String configuredTime,
+                                                 boolean startWithoutTrade) {
+        LocalDateTime earliest = null;
+        LocalDateTime checkTime = state(direction).lastTime;
+        if (checkTime == null) {
+            if (!startWithoutTrade) {
+                return neverRefresh();
+            }
+            checkTime = CommonUtil.getNowTime();
+        }
+
+        for (String candidate : configuredTime.split(";;")) {
+            String[] parts = candidate.split(":");
+            if (parts.length < 3) {
+                reportInvalidResetTime(candidate);
+                return CommonUtil.getNowTime();
+            }
+
+            try {
+                LocalDateTime result = getLocalDateTime(parts, checkTime);
+                if (earliest == null || result.isBefore(earliest)) {
+                    earliest = result;
+                }
+            } catch (NumberFormatException | java.time.DateTimeException exception) {
+                reportInvalidResetTime(candidate);
+                return CommonUtil.getNowTime();
+            }
+
+            if (UltimateShop.freeVersion) {
+                break;
+            }
+        }
+        return earliest;
+    }
+
+    private @NonNull LocalDateTime getLocalDateTime(String[] parts, LocalDateTime checkTime) {
+        int month = parts.length == 5 ? Integer.parseInt(parts[0]) : 0;
+        int day = parts.length >= 4 ? Integer.parseInt(parts[parts.length - 4]) : 0;
+        LocalDateTime result = checkTime
+                .withHour(Integer.parseInt(parts[parts.length - 3]))
+                .withMinute(Integer.parseInt(parts[parts.length - 2]))
+                .withSecond(Integer.parseInt(parts[parts.length - 1]))
+                .plusMonths(month)
+                .plusDays(day);
+        if (!checkTime.isBefore(result)) {
+            result = result.plusDays(1);
+        }
+        return result;
+    }
+
+    private LocalDateTime createTimerRefreshTime(Direction direction,
+                                                 String configuredTime,
+                                                 boolean startWithoutTrade) {
+        String[] parts = configuredTime.split(":");
+        if (parts.length < 3) {
+            reportInvalidResetTime(configuredTime);
+            return CommonUtil.getNowTime();
+        }
+
+        try {
+            int month = !UltimateShop.freeVersion && parts.length == 5 ? Integer.parseInt(parts[0]) : 0;
+            int day = !UltimateShop.freeVersion && parts.length >= 4
+                    ? Integer.parseInt(parts[parts.length - 4])
+                    : 0;
+            LocalDateTime result = state(direction).lastTime;
+            if (result == null) {
+                if (!startWithoutTrade) {
+                    return neverRefresh();
+                }
+                result = CommonUtil.getNowTime();
+            }
+            return result.plusMonths(month)
+                    .plusDays(day)
+                    .plusHours(Integer.parseInt(parts[parts.length - 3]))
+                    .plusMinutes(Integer.parseInt(parts[parts.length - 2]))
+                    .plusSeconds(Integer.parseInt(parts[parts.length - 1]));
+        } catch (NumberFormatException | java.time.DateTimeException exception) {
+            reportInvalidResetTime(configuredTime);
+            return CommonUtil.getNowTime();
+        }
+    }
+
+    private void reportInvalidResetTime(String time) {
+        ErrorManager.errorManager.sendErrorMessage("§cError: Your reset time " + time + " is invalid.");
+    }
+
+    public synchronized String getBuyRefreshTimeDisplayName(Player player) {
+        return getRefreshTimeDisplayName(Direction.BUY, player);
+    }
+
+    public synchronized String getSellRefreshTimeDisplayName(Player player) {
+        return getRefreshTimeDisplayName(Direction.SELL, player);
+    }
+
+    private String getRefreshTimeDisplayName(Direction direction, Player player) {
+        LocalDateTime refreshTime = getRefreshTime(direction, true);
+        if (isNever(refreshTime)) {
+            return ConfigManager.configManager.getStringWithLang(player, "placeholder.refresh.never");
+        }
+        return CommonUtil.timeToString(
+                refreshTime,
+                ConfigManager.configManager.getStringWithLang(player, "placeholder.refresh.format"));
+    }
+
+    public synchronized String getBuyRefreshTimeNextName(Player player) {
+        return UltimateShop.freeVersion ? "" : getRefreshTimeNextName(Direction.BUY, player);
+    }
+
+    public synchronized String getSellRefreshTimeNextName(Player player) {
+        return UltimateShop.freeVersion ? "0" : getRefreshTimeNextName(Direction.SELL, player);
+    }
+
+    private String getRefreshTimeNextName(Direction direction, Player player) {
+        LocalDateTime refreshTime = getRefreshTime(direction, true);
+        if (isNever(refreshTime)) {
+            return ConfigManager.configManager.getStringWithLang(player, "placeholder.next.never");
+        }
+
+        long totalSeconds = Duration.between(CommonUtil.getNowTime(), refreshTime).getSeconds();
+        if (totalSeconds < 0) {
+            return ConfigManager.configManager.getStringWithLang(player, "placeholder.next.never");
+        }
+
+        long days = totalSeconds / 86400;
+        long hours = totalSeconds % 86400 / 3600;
+        long minutes = totalSeconds % 3600 / 60;
+        long seconds = totalSeconds % 60;
+        if (days > 0) {
+            return ConfigManager.configManager.getStringWithLang(player, "placeholder.next.with-day-format")
+                    .replace("{d}", String.valueOf(days))
+                    .replace("{h}", String.format("%02d", hours))
+                    .replace("{m}", String.format("%02d", minutes))
+                    .replace("{s}", String.format("%02d", seconds));
+        }
+        return ConfigManager.configManager.getStringWithLang(player, "placeholder.next.without-day-format")
+                .replace("{h}", String.valueOf(hours))
+                .replace("{m}", String.format("%02d", minutes))
+                .replace("{s}", String.format("%02d", seconds));
+    }
+
+    public synchronized String getBuyLastTimeName() {
+        return getLastTimeName(buy.lastTime);
+    }
+
+    public synchronized String getSellLastTimeName() {
+        return getLastTimeName(sell.lastTime);
+    }
+
+    public synchronized String getBuyLastResetTimeName() {
+        return getLastResetTimeName(buy);
+    }
+
+    public synchronized String getSellLastResetTimeName() {
+        return getLastResetTimeName(sell);
+    }
+
+    private String getLastResetTimeName(UseTimesState state) {
+        return state.lastResetTime == null || state.lastResetTime.getYear() == NEVER_REFRESH_YEAR
+                ? getLastTimeName(state.lastTime)
+                : getLastTimeName(state.lastResetTime);
+    }
+
+    private String getLastTimeName(LocalDateTime time) {
+        if (UltimateShop.freeVersion || time == null || time.getYear() == NEVER_REFRESH_YEAR) {
+            return "0";
+        }
+        return String.valueOf(Duration.between(time, CommonUtil.getNowTime()).getSeconds());
     }
 
     public synchronized void refreshBuyTimes() {
-        if (product == null) {
-            return;
-        }
-        LocalDateTime tempVal1 = getBuyRefreshTime();
-        if (tempVal1 != null && tempVal1.isBefore(CommonUtil.getNowTime())) {
-            setBuyUseTimes(product.getBuyTimesResetValue(cache.getPlayer()), true);
-            setLastBuyTime(null);
-            resetCooldownBuyTime();
-            initBuyResetTask();
-            CommandUtil.updateGUI(cache.getPlayer());
-        }
+        refresh(Direction.BUY);
     }
 
     public synchronized void refreshSellTimes() {
+        refresh(Direction.SELL);
+    }
+
+    private void refresh(Direction direction) {
         if (product == null) {
             return;
         }
-        LocalDateTime tempVal1 = getSellRefreshTime();
-        if (tempVal1 != null && tempVal1.isBefore(CommonUtil.getNowTime())) {
-            setSellUseTimes(product.getSellTimesResetValue(cache.getPlayer()), true);
-            setLastSellTime(null);
-            resetCooldownSellTime();
-            initSellResetTask();
-            CommandUtil.updateGUI(cache.getPlayer());
+
+        LocalDateTime refreshTime = getRefreshTime(direction, false);
+        if (refreshTime == null || refreshTime.isAfter(CommonUtil.getNowTime())) {
+            return;
         }
+
+        setUseTimes(direction, getResetValue(direction), false, true);
+        setLastTime(direction, null, false, true);
+        state(direction).cooldownTime = null;
+        if (resetTimeDependsOnLastTime(direction)) {
+            unregisterResetTask(direction);
+        } else {
+            initResetTask(direction, null);
+        }
+        CommandUtil.updateGUI(cache.getPlayer());
     }
 
-    public LocalDateTime getLastBuyTimeObject() {
-        return lastBuyTime;
+    public synchronized boolean isEmpty() {
+        return buy.isEmpty() && sell.isEmpty();
     }
 
-    public LocalDateTime getLastSellTimeObject() {
-        return lastSellTime;
+    private UseTimesState state(Direction direction) {
+        return direction == Direction.BUY ? buy : sell;
     }
 
-    public boolean isEmpty() {
-        return buyUseTimes == 0 && totalBuyUseTimes == 0 && sellUseTimes == 0 && totalSellUseTimes == 0;
+    private int getMaxTimes(Direction direction) {
+        return direction == Direction.BUY
+                ? product.getBuyTimesMaxValue(cache.getPlayer())
+                : product.getSellTimesMaxValue(cache.getPlayer());
     }
 
-    public boolean isFirstInsert() {
-        return firstInsert;
+    private int getResetValue(Direction direction) {
+        return direction == Direction.BUY
+                ? product.getBuyTimesResetValue(cache.getPlayer())
+                : product.getSellTimesResetValue(cache.getPlayer());
+    }
+
+    private String getResetMode(Direction direction) {
+        return direction == Direction.BUY ? product.getBuyTimesResetMode() : product.getSellTimesResetMode();
+    }
+
+    private String getResetTime(Direction direction) {
+        String configuredTime = direction == Direction.BUY
+                ? product.getBuyTimesResetTime()
+                : product.getSellTimesResetTime();
+        return TextUtil.withPAPI(configuredTime, cache.getPlayer());
+    }
+
+    private String getResetFormat(Direction direction) {
+        String configuredFormat = direction == Direction.BUY
+                ? product.getBuyTimesResetFormat()
+                : product.getSellTimesResetFormat();
+        return TextUtil.withPAPI(configuredFormat, cache.getPlayer());
+    }
+
+    private void sendBungee(String channel, String value, boolean disabled) {
+        if (disabled || product == null || !cache.isServer() || BungeeCordManager.bungeeCordManager == null) {
+            return;
+        }
+        BungeeCordManager.bungeeCordManager.sendToOtherServer(
+                product.getUseTimesStorageShop(),
+                product.getUseTimesStorageProduct(),
+                channel,
+                value);
+    }
+
+    private LocalDateTime neverRefresh() {
+        return CommonUtil.getNowTime().withYear(NEVER_REFRESH_YEAR);
+    }
+
+    private boolean isNever(LocalDateTime time) {
+        return time == null || time.getYear() == NEVER_REFRESH_YEAR;
     }
 
     @Override
     public String toString() {
-        if (cache.isServer()) {
-            return "Server Cache";
+        return cache.isServer() ? "Server Cache" : "Player Cache: " + cache.getPlayer().getName();
+    }
+
+    private enum Direction {
+        BUY("buy-times", "last-buy-time", "cooldown-buy-time"),
+        SELL("sell-times", "last-sell-time", "cooldown-sell-time");
+
+        private final String timesChannel;
+        private final String lastTimeChannel;
+        private final String cooldownChannel;
+
+        Direction(String timesChannel, String lastTimeChannel, String cooldownChannel) {
+            this.timesChannel = timesChannel;
+            this.lastTimeChannel = lastTimeChannel;
+            this.cooldownChannel = cooldownChannel;
         }
-        return "Player Cache: " + cache.getPlayer().getName();
+    }
+
+    private static final class UseTimesState {
+
+        private int useTimes;
+        private int totalUseTimes;
+        private LocalDateTime lastTime;
+        private LocalDateTime lastResetTime;
+        private LocalDateTime cooldownTime;
+
+        private boolean isEmpty() {
+            return useTimes == 0 && totalUseTimes == 0;
+        }
     }
 }

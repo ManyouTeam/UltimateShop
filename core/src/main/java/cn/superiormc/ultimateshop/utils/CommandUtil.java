@@ -32,21 +32,28 @@ public class CommandUtil {
     private static final Map<Player, SchedulerUtil> guiUpdateTask = new HashMap<>();
 
     public static void updateGUI(Player player) {
-        if (player != null) {
-            GUIStatus guiStatus = MenuStatusManager.menuStatusManager.getGUIStatus(player);
-            if (guiStatus != null && guiStatus.getGUI() != null) {
-                SchedulerUtil task = guiUpdateTask.get(player);
-                if (task != null) {
-                    task.cancel();
-                    guiUpdateTask.remove(player);
-                }
-                guiUpdateTask.put(player,
-                        SchedulerUtil.runTaskLater(() -> {
-                            guiStatus.getGUI().updateGUI();
-                            guiUpdateTask.remove(player);
-                        }, 20L));
-            }
+        if (player == null) {
+            Bukkit.getOnlinePlayers().forEach(CommandUtil::updateGUI);
+            return;
         }
+
+        GUIStatus guiStatus = MenuStatusManager.menuStatusManager.getGUIStatus(player);
+        if (guiStatus == null || guiStatus.getGUI() == null) {
+            return;
+        }
+
+        SchedulerUtil task = guiUpdateTask.remove(player);
+        if (task != null) {
+            task.cancel();
+        }
+        guiUpdateTask.put(player,
+                SchedulerUtil.runTaskLater(() -> {
+                    GUIStatus currentStatus = MenuStatusManager.menuStatusManager.getGUIStatus(player);
+                    if (currentStatus != null && currentStatus.getGUI() != null) {
+                        currentStatus.getGUI().updateGUI();
+                    }
+                    guiUpdateTask.remove(player);
+                }, 20L));
     }
 
     public static void cancelGUIUpdate(Player player) {
