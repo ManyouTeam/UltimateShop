@@ -14,7 +14,7 @@ public class EditorLang {
     }
 
     public static void send(Player player, String key, String fallback, String... args) {
-        TextUtil.sendMessage(player, TextUtil.pluginPrefix() + " " + text(player, key, fallback, args));
+        TextUtil.sendMessage(player, text(player, key, fallback, args));
     }
 
     public static String scope(Player player, EditorScope scope) {

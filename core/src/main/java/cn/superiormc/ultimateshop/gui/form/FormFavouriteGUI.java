@@ -190,7 +190,12 @@ public class FormFavouriteGUI extends FormGUI {
                 } else if (actionResponse.clickedButton().equals(moveBackward)) {
                     cache.moveFavouriteProduct(menu.getName(), resultButton.getIndex(), resultButton.getIndex() + 1);
                 } else if (actionResponse.clickedButton().equals(remove)) {
-                    cache.removeFavouriteProduct(menu.getName(), resultButton.getItem());
+                    if (cache.removeFavouriteProduct(menu.getName(), resultButton.getItem())) {
+                        LanguageManager.languageManager.sendStringText(player,
+                                "favourite-removed",
+                                "item", resultButton.getItem().getDisplayName(player),
+                                "menu", menu.getName());
+                    }
                 }
             }
             FormFavouriteGUI favouriteGUI = new FormFavouriteGUI(player, menu, true, true);

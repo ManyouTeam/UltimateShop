@@ -189,15 +189,13 @@ public class ObjectMenu {
         }
 
         ConfigurationSection tempVal1 = menuConfigs.getConfigurationSection("buttons");
-        if (tempVal1 == null) {
-            return;
-        }
-
-        for (String button : tempVal1.getKeys(false)) {
-            if (shop == null) {
-                buttonItems.put(button, new ObjectButton(tempVal1.getConfigurationSection(button)));
-            } else {
-                buttonItems.put(button, new ObjectButton(tempVal1.getConfigurationSection(button), shop));
+        if (tempVal1 != null) {
+            for (String button : tempVal1.getKeys(false)) {
+                if (shop == null) {
+                    buttonItems.put(button, new ObjectButton(tempVal1.getConfigurationSection(button)));
+                } else {
+                    buttonItems.put(button, new ObjectButton(tempVal1.getConfigurationSection(button), shop));
+                }
             }
         }
 

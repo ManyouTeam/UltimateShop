@@ -374,6 +374,7 @@ public class ModifyDisplayItem {
 
         map.put('u', ignored -> parseClickType(item, clickType, true));
         map.put('v', ignored -> parseClickType(item, clickType, false));
+        map.put('w', ignored -> !clickType.equals("general"));
 
         map.put('x', ignored -> bedrock);
         map.put('y', ignored -> !bedrock);

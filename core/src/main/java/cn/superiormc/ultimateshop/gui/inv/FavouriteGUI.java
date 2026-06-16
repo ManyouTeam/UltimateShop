@@ -183,7 +183,14 @@ public class FavouriteGUI extends InvGUI {
             return cache.moveFavouriteProduct(menu.getName(), index, index + 1);
         }
         if (type == ClickType.DROP || type == ClickType.CONTROL_DROP) {
-            return cache.removeFavouriteProduct(menu.getName(), item);
+            boolean result = cache.removeFavouriteProduct(menu.getName(), item);
+            if (result) {
+                LanguageManager.languageManager.sendStringText(player,
+                        "favourite-removed",
+                        "item", item.getDisplayName(player),
+                        "menu", menu.getName());
+            }
+            return result;
         }
         return false;
     }
