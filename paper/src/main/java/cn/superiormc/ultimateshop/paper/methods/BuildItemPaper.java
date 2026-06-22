@@ -48,6 +48,7 @@ import org.bukkit.potion.PotionType;
 import java.util.*;
 
 public class BuildItemPaper {
+
     public static ItemStack buildItemStack(Player player,
                                            ConfigurationSection section,
                                            int amount,

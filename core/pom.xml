@@ -255,7 +255,7 @@
         <dependency>
             <groupId>cn.superiormc.mythicchanger</groupId>
             <artifactId>plugin</artifactId>
-            <version>3.0.7</version>
+            <version>3.3.0</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -338,7 +338,7 @@
         <dependency>
             <groupId>cn.lunadeer</groupId>
             <artifactId>DominionAPI</artifactId>
-            <version>3.5</version>
+            <version>4.7.3</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
