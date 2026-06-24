@@ -49,6 +49,17 @@ public abstract class DatabaseDialect {
 
     public abstract String insertFavourite();
 
+    public abstract String createTransactionLogTable();
+
+    public abstract String insertTransactionLog();
+
+    public String[] createTransactionLogIndexes() {
+        return new String[] {
+                "CREATE INDEX IF NOT EXISTS idx_us_transactions_created_at ON ultimateshop_transactions (created_at)",
+                "CREATE INDEX IF NOT EXISTS idx_us_transactions_player_uuid ON ultimateshop_transactions (player_uuid)"
+        };
+    }
+
     /** 是否支持批量写入 */
     public boolean supportBatch() {
         return true;

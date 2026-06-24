@@ -21,8 +21,8 @@ import cn.superiormc.ultimateshop.objects.items.prices.ObjectPrices;
 import cn.superiormc.ultimateshop.objects.items.products.ObjectProducts;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
 import cn.superiormc.ultimateshop.utils.MathUtil;
-import cn.superiormc.ultimateshop.utils.SchedulerUtil;
 import cn.superiormc.ultimateshop.utils.TextUtil;
+import cn.superiormc.ultimateshop.utils.TransactionLogger;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -307,30 +307,12 @@ public class SellProductMethod {
                     "amount",
                     String.valueOf(calculateAmount));
         }
-        if (ConfigManager.configManager.getBoolean("log-transaction.enabled") && !UltimateShop.freeVersion) {
-            String log = CommonUtil.modifyString(player, ConfigManager.configManager.getString("log-transaction.format"),
-                    "player", player.getName(),
-                    "player-uuid", player.getUniqueId().toString(),
-                    "shop", item.getShop(),
-                    "shop-name", item.getShopObject().getShopDisplayName(),
-                    "item", item.getProduct(),
-                    "item-name", TextUtil.parse(item.getDisplayName(player)),
-                    "amount", String.valueOf(calculateAmount),
-                    "multiplier", MathUtil.toDisplayString(finalMultiplier),
-                    "price", ObjectPrices.getDisplayNameInLine(player,
-                            multi,
-                            giveResult.getResultMap(),
-                            item.getSellPrice().getMode(),
-                            !ConfigManager.configManager.getBoolean("placeholder.status.can-used-everywhere")),
-                    "buy-or-sell", "SELL",
-                    "time", CommonUtil.timeToString(CommonUtil.getNowTime(), ConfigManager.configManager.getString("log-transaction.time-format")));
-            String filePath = ConfigManager.configManager.getString("log-transaction.file");
-            if (filePath.isEmpty()) {
-                TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fLog: " + log);
-            }  else {
-                SchedulerUtil.runTaskAsynchronously(() -> CommonUtil.logFile(filePath, log));
-            }
-        }
+        TransactionLogger.log(player, item, calculateAmount, MathUtil.toDisplayString(finalMultiplier), "SELL",
+                ObjectPrices.getDisplayNameInLine(player,
+                        multi,
+                        giveResult.getResultMap(),
+                        item.getSellPrice().getMode(),
+                        !ConfigManager.configManager.getBoolean("placeholder.status.can-used-everywhere")));
         ItemFinishTransactionEvent event = new ItemFinishTransactionEvent(false, player, multi, item);
         Bukkit.getServer().getPluginManager().callEvent(event);
         return new ProductTradeStatus(ProductTradeStatus.Status.DONE, takeResult, giveResult, multi);

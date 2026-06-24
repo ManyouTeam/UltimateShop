@@ -134,6 +134,36 @@ public class H2Dialect extends DatabaseDialect {
     }
 
     @Override
+    public String createTransactionLogTable() {
+        return """
+            CREATE TABLE IF NOT EXISTS ultimateshop_transactions (
+                id BIGINT AUTO_INCREMENT PRIMARY KEY,
+                created_at TIMESTAMP NOT NULL,
+                player_uuid VARCHAR(36) NOT NULL,
+                player_name VARCHAR(32) NOT NULL,
+                shop_id VARCHAR(48) NOT NULL,
+                shop_name VARCHAR(128) NOT NULL,
+                item_id VARCHAR(48) NOT NULL,
+                item_name VARCHAR(256) NOT NULL,
+                action VARCHAR(4) NOT NULL,
+                amount INT NOT NULL,
+                multiplier DOUBLE NOT NULL,
+                price_text CLOB
+            )
+        """;
+    }
+
+    @Override
+    public String insertTransactionLog() {
+        return """
+            INSERT INTO ultimateshop_transactions
+            (created_at, player_uuid, player_name, shop_id, shop_name, item_id, item_name,
+             action, amount, multiplier, price_text)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """;
+    }
+
+    @Override
     public void needExtraDownload(String jdbcUrl) {
         loadDriver("h2",
                 "https://repo1.maven.org/maven2/com/h2database/h2/2.2.220/h2-2.2.220.jar",
