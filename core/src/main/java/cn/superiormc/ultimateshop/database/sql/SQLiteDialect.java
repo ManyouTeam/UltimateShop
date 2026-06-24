@@ -164,6 +164,37 @@ public class SQLiteDialect extends DatabaseDialect {
     }
 
     @Override
+    public String createTransactionLogTable() {
+        return """
+            CREATE TABLE IF NOT EXISTS ultimateshop_transactions (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                created_at TEXT NOT NULL,
+                player_uuid TEXT NOT NULL,
+                player_name TEXT NOT NULL,
+                shop_id TEXT NOT NULL,
+                shop_name TEXT NOT NULL,
+                item_id TEXT NOT NULL,
+                item_name TEXT NOT NULL,
+                action TEXT NOT NULL,
+                amount INTEGER NOT NULL,
+                multiplier REAL NOT NULL,
+                price_text TEXT,
+                message TEXT
+            )
+        """;
+    }
+
+    @Override
+    public String insertTransactionLog() {
+        return """
+            INSERT INTO ultimateshop_transactions
+            (created_at, player_uuid, player_name, shop_id, shop_name, item_id, item_name,
+             action, amount, multiplier, price_text, message)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """;
+    }
+
+    @Override
     public void needExtraDownload(String jdbcUrl) {
     }
 }
