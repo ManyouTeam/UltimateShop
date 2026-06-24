@@ -24,20 +24,6 @@ public final class TransactionLogger {
             return;
         }
 
-        String message = CommonUtil.modifyString(player, ConfigManager.configManager.getString("log-transaction.format"),
-                "player", player.getName(),
-                "player-uuid", player.getUniqueId().toString(),
-                "shop", item.getShop(),
-                "shop-name", item.getShopObject().getShopDisplayName(),
-                "item", item.getProduct(),
-                "item-name", TextUtil.parse(item.getDisplayName(player)),
-                "amount", String.valueOf(amount),
-                "multiplier", multiplier,
-                "price", priceText,
-                "buy-or-sell", action,
-                "time", CommonUtil.timeToString(CommonUtil.getNowTime(),
-                        ConfigManager.configManager.getString("log-transaction.time-format")));
-
         String storage = ConfigManager.configManager.getString("log-transaction.storage");
         if (storage == null || storage.isBlank()) {
             storage = "file";
@@ -45,11 +31,11 @@ public final class TransactionLogger {
         storage = storage.toLowerCase();
 
         if ("database".equals(storage)) {
-            logToDatabase(player, item, amount, multiplier, action, priceText, message);
+            logToDatabase(player, item, amount, multiplier, action, priceText);
             return;
         }
 
-        logToFile(message);
+        logToFile(buildMessage(player, item, amount, multiplier, action, priceText));
     }
 
     private static void logToDatabase(Player player,
@@ -57,8 +43,7 @@ public final class TransactionLogger {
                                       int amount,
                                       String multiplier,
                                       String action,
-                                      String priceText,
-                                      String message) {
+                                      String priceText) {
         if (!ConfigManager.configManager.getBoolean("database.enabled")) {
             warnDatabaseMisconfiguration();
             return;
@@ -86,9 +71,29 @@ public final class TransactionLogger {
                 action,
                 amount,
                 multiplierValue,
-                priceText,
-                message
+                priceText
         );
+    }
+
+    private static String buildMessage(Player player,
+                                       ObjectItem item,
+                                       int amount,
+                                       String multiplier,
+                                       String action,
+                                       String priceText) {
+        return CommonUtil.modifyString(player, ConfigManager.configManager.getString("log-transaction.format"),
+                "player", player.getName(),
+                "player-uuid", player.getUniqueId().toString(),
+                "shop", item.getShop(),
+                "shop-name", item.getShopObject().getShopDisplayName(),
+                "item", item.getProduct(),
+                "item-name", TextUtil.parse(item.getDisplayName(player)),
+                "amount", String.valueOf(amount),
+                "multiplier", multiplier,
+                "price", priceText,
+                "buy-or-sell", action,
+                "time", CommonUtil.timeToString(CommonUtil.getNowTime(),
+                        ConfigManager.configManager.getString("log-transaction.time-format")));
     }
 
     private static void logToFile(String message) {

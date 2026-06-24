@@ -168,8 +168,7 @@ public class PostgreSQLDialect extends DatabaseDialect {
                 action VARCHAR(4) NOT NULL,
                 amount INT NOT NULL,
                 multiplier DOUBLE PRECISION NOT NULL,
-                price_text TEXT,
-                message TEXT
+                price_text TEXT
             )
         """;
     }
@@ -179,8 +178,8 @@ public class PostgreSQLDialect extends DatabaseDialect {
         return """
             INSERT INTO ultimateshop_transactions
             (created_at, player_uuid, player_name, shop_id, shop_name, item_id, item_name,
-             action, amount, multiplier, price_text, message)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+             action, amount, multiplier, price_text)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """;
     }
 

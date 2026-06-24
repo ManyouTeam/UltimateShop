@@ -148,8 +148,7 @@ public class H2Dialect extends DatabaseDialect {
                 action VARCHAR(4) NOT NULL,
                 amount INT NOT NULL,
                 multiplier DOUBLE NOT NULL,
-                price_text CLOB,
-                message CLOB
+                price_text CLOB
             )
         """;
     }
@@ -159,8 +158,8 @@ public class H2Dialect extends DatabaseDialect {
         return """
             INSERT INTO ultimateshop_transactions
             (created_at, player_uuid, player_name, shop_id, shop_name, item_id, item_name,
-             action, amount, multiplier, price_text, message)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+             action, amount, multiplier, price_text)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """;
     }
 

@@ -178,8 +178,7 @@ public class SQLiteDialect extends DatabaseDialect {
                 action TEXT NOT NULL,
                 amount INTEGER NOT NULL,
                 multiplier REAL NOT NULL,
-                price_text TEXT,
-                message TEXT
+                price_text TEXT
             )
         """;
     }
@@ -189,8 +188,8 @@ public class SQLiteDialect extends DatabaseDialect {
         return """
             INSERT INTO ultimateshop_transactions
             (created_at, player_uuid, player_name, shop_id, shop_name, item_id, item_name,
-             action, amount, multiplier, price_text, message)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+             action, amount, multiplier, price_text)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """;
     }
 

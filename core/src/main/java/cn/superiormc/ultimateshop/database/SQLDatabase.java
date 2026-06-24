@@ -492,8 +492,7 @@ public class SQLDatabase extends AbstractDatabase {
                                String action,
                                int amount,
                                double multiplier,
-                               String priceText,
-                               String message) {
+                               String priceText) {
         if (dataSource == null || dialect == null) {
             return;
         }
@@ -511,7 +510,6 @@ public class SQLDatabase extends AbstractDatabase {
                 ps.setInt(9, amount);
                 ps.setDouble(10, multiplier);
                 ps.setString(11, priceText);
-                ps.setString(12, message);
                 ps.executeUpdate();
             } catch (SQLException e) {
                 e.printStackTrace();

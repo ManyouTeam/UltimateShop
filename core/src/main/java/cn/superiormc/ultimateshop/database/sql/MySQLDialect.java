@@ -157,7 +157,6 @@ public class MySQLDialect extends DatabaseDialect {
                 amount INT NOT NULL,
                 multiplier DOUBLE NOT NULL,
                 price_text TEXT,
-                message TEXT,
                 INDEX idx_us_transactions_created_at (created_at),
                 INDEX idx_us_transactions_player_uuid (player_uuid)
             )
@@ -169,8 +168,8 @@ public class MySQLDialect extends DatabaseDialect {
         return """
             INSERT INTO ultimateshop_transactions
             (created_at, player_uuid, player_name, shop_id, shop_name, item_id, item_name,
-             action, amount, multiplier, price_text, message)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+             action, amount, multiplier, price_text)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """;
     }
 
