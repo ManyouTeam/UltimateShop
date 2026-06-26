@@ -38,9 +38,9 @@ items:
         amount: 1
     buy-prices:
       1:
-        economy-plugin: Vault
+        material: diamond
         amount: 60
-        placeholder: '{amount}$'
+        placeholder: 'Diamond x{amount}'
         start-apply: 0
   #
   # Bundle Example
@@ -347,7 +347,7 @@ items:
       1:
         economy-plugin: Vault
         amount: 150
-        placeholder: '{amount}⛂'
+        placeholder: '{amount}$'
     buy-actions:
       1:
         type: console_command
@@ -365,6 +365,7 @@ items:
     # If UltimateShop does not support your economy plugin.
     buy-prices:
       1:
+        placeholder: '{amount} Custom Economy'
         # Buy Match Placeholder - Put your economy plugin placeholder here!
         match-placeholder: '%economy_now_balance_placeholder%'
         amount: 500
@@ -377,6 +378,7 @@ items:
             command: 'eco take {player} {amount}'
     sell-prices:
       1:
+        placeholder: '{amount} Custom Economy'
         # Sell Give Actions
         give-actions:
           1:
@@ -397,13 +399,13 @@ items:
         economy-type: exp
         amount: 1
         start-apply: 0
-        placeholder: '1 Exp'
+        placeholder: '{amount} Exps'
     sell-prices:
       1:
         economy-type: exp
         amount: 1
         start-apply: 0
-        placeholder: '1 Exp'
+        placeholder: '{amount} Exps'
   #
   # Custom Product
   # Requires MythicChanger plugin!
@@ -436,13 +438,13 @@ items:
         economy-type: exp
         amount: 1
         start-apply: 0
-        placeholder: '1 Exp'
+        placeholder: '{amount} Exps'
     sell-prices:
       1:
         economy-type: exp
         amount: 1
         start-apply: 0
-        placeholder: '1 Exp'
+        placeholder: '{amount} Exps'
   #
   # Custom Reset
   # The Cron expression in this example means to reset at 0:00 every Thursday

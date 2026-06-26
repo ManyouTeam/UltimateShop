@@ -133,7 +133,20 @@ public class ObjectDisplayPlaceholder implements Comparable<ObjectDisplayPlaceho
         if (!section1.getKeys(true).equals(section2.getKeys(true))) {
             return false;
         }
-        List<String> notCheckKey = List.of("apply", "start-apply", "end-apply", "placeholder", "conditions", "amount");
+        List<String> notCheckKey = List.of("apply",
+                "start-apply",
+                "end-apply",
+                "placeholder",
+                "conditions",
+                "apply-conditions",
+                "require-conditions",
+                "give-actions",
+                "take-actions",
+                "give-item",
+                "take",
+                "amount",
+                "min-amount",
+                "max-amount");
         for (String key : section1.getKeys(true)) {
             if (notCheckKey.contains(key)) {
                 continue;
@@ -153,8 +166,20 @@ public class ObjectDisplayPlaceholder implements Comparable<ObjectDisplayPlaceho
         Map<String, Object> values = section.getValues(false);
         Map<String, String> result = new HashMap<>();
 
-        List<String> notCheckKey = List.of("apply", "start-apply", "end-apply", "placeholder", "conditions", "amount");
-
+        List<String> notCheckKey = List.of("apply",
+                "start-apply",
+                "end-apply",
+                "placeholder",
+                "conditions",
+                "apply-conditions",
+                "require-conditions",
+                "give-actions",
+                "take-actions",
+                "give-item",
+                "take",
+                "amount",
+                "min-amount",
+                "max-amount");
         for (String key : values.keySet()) {
             if (notCheckKey.contains(key)) {
                 continue;
