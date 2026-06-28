@@ -36,7 +36,7 @@ public class EditorItemValueGUI extends InvGUI {
         title = EditorLang.text(player, "editor.item.title", "Item Editor: {path}",
                 "path", EditorUtil.displayPath(player, path));
         if (inv == null) {
-            inv = UltimateShop.methodUtil.createNewInv(player, 27, title);
+            inv = UltimateShop.methodUtil.createNewInv(player, 27, title, this);
         }
         inv.clear();
 

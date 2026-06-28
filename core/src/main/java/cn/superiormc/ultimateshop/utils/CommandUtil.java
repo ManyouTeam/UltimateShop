@@ -8,8 +8,8 @@ import org.bukkit.command.defaults.BukkitCommand;
 import org.bukkit.entity.Player;
 
 import java.lang.reflect.Field;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class CommandUtil {
 
@@ -29,7 +29,7 @@ public class CommandUtil {
         commandMap.register("ultimateshop", command);
     }
 
-    private static final Map<Player, SchedulerUtil> guiUpdateTask = new HashMap<>();
+    private static final Map<Player, SchedulerUtil> guiUpdateTask = new ConcurrentHashMap<>();
 
     public static void updateGUI(Player player) {
         if (player == null) {

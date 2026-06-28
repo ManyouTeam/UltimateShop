@@ -34,7 +34,7 @@ public class EditorPresetGUI extends InvGUI {
     public void constructGUI() {
         title = target.getId() + ": " + EditorLang.presetTitle(player, preset);
         if (inv == null) {
-            inv = UltimateShop.methodUtil.createNewInv(player, 54, title);
+            inv = UltimateShop.methodUtil.createNewInv(player, 54, title, this);
         }
         inv.clear();
 

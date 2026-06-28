@@ -39,7 +39,7 @@ public class EditorResetTimeValueGUI extends InvGUI {
         title = EditorLang.text(player, "editor.reset-time.title", "Reset Time: {path}",
                 "path", EditorLang.displayPath(player, path));
         if (inv == null) {
-            inv = UltimateShop.methodUtil.createNewInv(player, 54, title);
+            inv = UltimateShop.methodUtil.createNewInv(player, 54, title, this);
         }
         inv.clear();
 

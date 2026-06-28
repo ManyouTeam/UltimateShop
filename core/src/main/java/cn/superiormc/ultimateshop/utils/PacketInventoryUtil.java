@@ -57,7 +57,7 @@ public class PacketInventoryUtil {
         PacketEvents.getAPI().getPlayerManager().sendPacket(player, packet);
         if (ConfigManager.configManager.getBoolean("menu.title-update.resend-items-pack")) {
             ArrayList<ItemStack> items = new ArrayList<>();
-            for (org.bukkit.inventory.ItemStack bukkitItem : gui.getInv().getContents()) {
+            for (org.bukkit.inventory.ItemStack bukkitItem : gui.getInventory().getContents()) {
                 items.add(SpigotConversionUtil.fromBukkitItemStack(bukkitItem));
             }
 

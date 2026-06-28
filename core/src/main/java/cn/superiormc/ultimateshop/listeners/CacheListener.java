@@ -3,17 +3,13 @@ package cn.superiormc.ultimateshop.listeners;
 import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.managers.CacheManager;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
-import cn.superiormc.ultimateshop.managers.ListenerManager;
 import cn.superiormc.ultimateshop.managers.MenuStatusManager;
-import cn.superiormc.ultimateshop.objects.caches.ObjectCache;
 import cn.superiormc.ultimateshop.utils.CommandUtil;
 import cn.superiormc.ultimateshop.utils.PacketInventoryUtil;
 import cn.superiormc.ultimateshop.utils.SchedulerUtil;
-import cn.superiormc.ultimateshop.utils.TextUtil;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 public class CacheListener implements Listener {
@@ -36,7 +32,6 @@ public class CacheListener implements Listener {
         if (UltimateShop.usePacketEvents && PacketInventoryUtil.packetInventoryUtil != null) {
             PacketInventoryUtil.packetInventoryUtil.clear(event.getPlayer());
         }
-        ListenerManager.listenerManager.unregisterListeners(event.getPlayer());
         CacheManager.cacheManager.saveObjectCache(event.getPlayer());
         MenuStatusManager.menuStatusManager.clear(event.getPlayer());
     }

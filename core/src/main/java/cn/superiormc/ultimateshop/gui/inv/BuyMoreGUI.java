@@ -52,7 +52,7 @@ public class BuyMoreGUI extends InvGUI {
         menuItems = getMenuItems(player);
         title = menu.getString("title", "Buy More Menu");
         if (Objects.isNull(inv)) {
-            inv = UltimateShop.methodUtil.createNewInv(player, menu.getInt("size", 54), title);
+            inv = UltimateShop.methodUtil.createNewInv(player, menu.getInt("size", 54), title, this);
         }
         for (int slot : menuButtons.keySet()) {
             inv.setItem(slot, menuItems.get(slot));

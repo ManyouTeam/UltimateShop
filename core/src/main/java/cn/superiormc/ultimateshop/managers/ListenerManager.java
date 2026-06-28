@@ -7,18 +7,11 @@ import cn.superiormc.ultimateshop.utils.CommonUtil;
 import cn.superiormc.ultimateshop.utils.PacketInventoryUtil;
 import cn.superiormc.ultimateshop.utils.TextUtil;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
-
-import java.util.Map;
-import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class ListenerManager {
 
     public static ListenerManager listenerManager;
-
-    private final Map<UUID, InvGUI> listeners = new ConcurrentHashMap<>();
 
     public ListenerManager(){
         listenerManager = this;
@@ -44,29 +37,10 @@ public class ListenerManager {
         }
     }
 
-    public void registerNewGUIListener(Player player, InvGUI inv) {
-        unregisterListeners(player);
-        listeners.put(player.getUniqueId(), inv);
-    }
-
-    public void unregisterNewGUIListener(Player player, InvGUI inv) {
-        listeners.remove(player.getUniqueId(), inv);
-    }
-
-    public void unregisterListeners(Player player) {
-        InvGUI gui = listeners.remove(player.getUniqueId());
-        if (gui != null) {
-            gui.closeEventHandle(gui.getInv());
-        }
-    }
-
-    public InvGUI getInvGUI(Player player) {
-        return listeners.get(player.getUniqueId());
-    }
-
     public void unregisterAllListener() {
-        listeners.values().forEach(gui -> gui.closeEventHandle(gui.getInv()));
-        listeners.clear();
+        Bukkit.getOnlinePlayers().stream()
+                .filter(player -> player.getOpenInventory().getTopInventory().getHolder() instanceof InvGUI)
+                .forEach(player -> player.closeInventory());
         HandlerList.unregisterAll(UltimateShop.instance);
         if (UltimateShop.usePacketEvents && PacketInventoryUtil.packetInventoryUtil != null) {
             PacketInventoryUtil.packetInventoryUtil.shutdown();

@@ -73,7 +73,7 @@ public class ShopGUI extends InvGUI {
         if (menu != null) {
             title = shop.getShopMenuObject().getString("title", shop.getShopDisplayName()).replace("{shop-name}", shop.getShopDisplayName()).replace("{shop-id}", shop.getShopName().replace("_","-"));
             if (Objects.isNull(inv)) {
-                inv = UltimateShop.methodUtil.createNewInv(player, shop.getShopMenuObject().getInt("size", 54), title);
+                inv = UltimateShop.methodUtil.createNewInv(player, shop.getShopMenuObject().getInt("size", 54), title, this);
             }
         }
         for (int slot : menuButtons.keySet()) {

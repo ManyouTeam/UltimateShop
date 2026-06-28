@@ -23,6 +23,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
@@ -251,8 +252,11 @@ public class PaperMethodUtil implements SpecialMethodUtil {
     }
 
     @Override
-    public Inventory createNewInv(Player player, int size, String text) {
-        return Bukkit.createInventory(player, size, PaperTextUtil.modernParse(text, player));
+    public Inventory createNewInv(Player player, int size, String text, InventoryHolder holder) {
+        if (holder == null) {
+            holder = player;
+        }
+        return Bukkit.createInventory(holder, size, PaperTextUtil.modernParse(text, player));
     }
 
     @Override

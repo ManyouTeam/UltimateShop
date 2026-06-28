@@ -43,7 +43,7 @@ public class EditorSectionGUI extends InvGUI {
         ConfigurationSection section = MenuStatusManager.menuStatusManager.getSection(target, path);
         title = target.getId() + ": " + EditorUtil.displayPath(player, path);
         if (inv == null) {
-            inv = UltimateShop.methodUtil.createNewInv(player, 54, title);
+            inv = UltimateShop.methodUtil.createNewInv(player, 54, title, this);
         }
         inv.clear();
         keys.clear();

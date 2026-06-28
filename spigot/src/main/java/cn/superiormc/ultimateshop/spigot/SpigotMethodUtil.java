@@ -13,6 +13,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
@@ -252,8 +253,11 @@ public class SpigotMethodUtil implements SpecialMethodUtil {
     }
 
     @Override
-    public Inventory createNewInv(Player player, int size, String text) {
-        return Bukkit.createInventory(player, size, TextUtil.parse(text, player));
+    public Inventory createNewInv(Player player, int size, String text, InventoryHolder holder) {
+        if (holder == null) {
+            holder = player;
+        }
+        return Bukkit.createInventory(holder, size, TextUtil.parse(text, player));
     }
 
     @Override

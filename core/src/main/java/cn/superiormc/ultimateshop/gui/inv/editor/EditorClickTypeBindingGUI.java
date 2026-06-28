@@ -42,7 +42,7 @@ public class EditorClickTypeBindingGUI extends InvGUI {
         title = EditorLang.text(player, "editor.click-binding.title", "Click Types: {path}",
                 "path", EditorLang.displayPath(player, path));
         if (inv == null) {
-            inv = UltimateShop.methodUtil.createNewInv(player, 54, title);
+            inv = UltimateShop.methodUtil.createNewInv(player, 54, title, this);
         }
         inv.clear();
 

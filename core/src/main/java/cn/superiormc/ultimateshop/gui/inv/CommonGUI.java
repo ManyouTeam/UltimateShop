@@ -44,7 +44,7 @@ public class CommonGUI extends InvGUI {
         menuItems = getMenuItems(player);
         title = commonMenu.getString("title", "Shop");
         if (Objects.isNull(inv)) {
-            inv = UltimateShop.methodUtil.createNewInv(player, commonMenu.getInt("size", 54), title);
+            inv = UltimateShop.methodUtil.createNewInv(player, commonMenu.getInt("size", 54), title, this);
         }
         for (int slot : menuButtons.keySet()) {
             inv.setItem(slot, menuItems.get(slot));

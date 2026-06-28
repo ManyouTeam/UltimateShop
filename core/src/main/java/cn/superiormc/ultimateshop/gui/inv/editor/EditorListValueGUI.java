@@ -38,7 +38,7 @@ public class EditorListValueGUI extends InvGUI {
         title = EditorLang.text(player, "editor.list.title", "List Editor: {path}",
                 "path", EditorLang.displayPath(player, path));
         if (inv == null) {
-            inv = UltimateShop.methodUtil.createNewInv(player, 54, title);
+            inv = UltimateShop.methodUtil.createNewInv(player, 54, title, this);
         }
         inv.clear();
 

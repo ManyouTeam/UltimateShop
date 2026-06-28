@@ -34,7 +34,7 @@ public class EditorThingEconomyValueGUI extends InvGUI {
         title = EditorLang.text(player, "editor.thing-economy.title", "Thing EconomyFormat: {path}",
                 "path", EditorUtil.displayPath(player, path));
         if (inv == null) {
-            inv = UltimateShop.methodUtil.createNewInv(player, 27, title);
+            inv = UltimateShop.methodUtil.createNewInv(player, 27, title, this);
         }
         inv.clear();
 

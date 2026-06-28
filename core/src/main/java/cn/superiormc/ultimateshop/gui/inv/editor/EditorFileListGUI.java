@@ -34,7 +34,7 @@ public class EditorFileListGUI extends InvGUI {
         title = EditorLang.text(player, "editor.file-list.title", "Editor {scope}s",
                 "scope", EditorLang.scope(player, scope));
         if (inv == null) {
-            inv = UltimateShop.methodUtil.createNewInv(player, 54, title);
+            inv = UltimateShop.methodUtil.createNewInv(player, 54, title, this);
         }
         inv.clear();
 

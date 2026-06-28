@@ -63,7 +63,7 @@ public class EditorSubButtonValueGUI extends InvGUI {
         title = EditorLang.text(player, "editor.sub-button.title", "Sub Button: {path}",
                 "path", EditorLang.displayPath(player, itemPath + ".as-sub-button"));
         if (inv == null) {
-            inv = UltimateShop.methodUtil.createNewInv(player, 27, title);
+            inv = UltimateShop.methodUtil.createNewInv(player, 27, title, this);
         }
         inv.clear();
 

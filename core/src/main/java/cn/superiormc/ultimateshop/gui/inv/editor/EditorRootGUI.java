@@ -23,7 +23,7 @@ public class EditorRootGUI extends InvGUI {
     public void constructGUI() {
         title = EditorLang.text(player, "editor.root.title", "UltimateShop Editor");
         if (inv == null) {
-            inv = UltimateShop.methodUtil.createNewInv(player, 27, title);
+            inv = UltimateShop.methodUtil.createNewInv(player, 27, title, this);
         }
         inv.clear();
         inv.setItem(11, EditorUtil.createItem(Material.CHEST,

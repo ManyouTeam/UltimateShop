@@ -4,11 +4,9 @@ import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.gui.InvGUI;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.ErrorManager;
-import cn.superiormc.ultimateshop.managers.ListenerManager;
 import cn.superiormc.ultimateshop.managers.MenuStatusManager;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
 import cn.superiormc.ultimateshop.utils.PacketInventoryUtil;
-import cn.superiormc.ultimateshop.utils.SchedulerUtil;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -17,6 +15,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.player.PlayerSwapHandItemsEvent;
+import org.bukkit.inventory.Inventory;
 
 import java.util.Objects;
 
@@ -26,17 +25,17 @@ public class GUIListener implements Listener {
     public void onClick(InventoryClickEvent e) {
         if (e.getWhoClicked() instanceof Player player) {
             try {
-                InvGUI gui = ListenerManager.listenerManager.getInvGUI(player);
+                Inventory topInventory = e.getView().getTopInventory();
+                InvGUI gui = topInventory.getHolder() instanceof InvGUI ? (InvGUI) topInventory.getHolder() : null;
                 if (gui == null) {
                     return;
                 }
-                if (!e.getView().getTopInventory().equals(gui.getInv())) {
+                if (!topInventory.equals(gui.getInventory())) {
                     player.closeInventory();
-                    ListenerManager.listenerManager.unregisterListeners(player);
                     ErrorManager.errorManager.sendErrorMessage("§cError: Found unregistered GUI Listener, now force close the inventory and then delete the excess GUI Listener. If this always heppens, please report to the plugin author.");
                     return;
                 }
-                if (!Objects.equals(e.getClickedInventory(), gui.getInv())) {
+                if (!Objects.equals(e.getClickedInventory(), gui.getInventory())) {
                     if (e.getClick().isShiftClick() || e.getClick() == ClickType.DOUBLE_CLICK || ConfigManager.configManager.getBoolean("menu.ignore-click-outside")) {
                         e.setCancelled(!gui.getChangeable());
                     }
@@ -60,7 +59,7 @@ public class GUIListener implements Listener {
                     player.getInventory().setItemInOffHand(player.getInventory().getItemInOffHand());
                 }
                 if (ConfigManager.configManager.getBoolean("menu.title-update.click-update") && UltimateShop.usePacketEvents
-                        && player.getOpenInventory().getTopInventory().equals(gui.getInv())) {
+                        && player.getOpenInventory().getTopInventory().equals(gui.getInventory())) {
                     PacketInventoryUtil.packetInventoryUtil.updateTitle(player, gui);
                 }
             } catch (Throwable throwable) {
@@ -75,13 +74,13 @@ public class GUIListener implements Listener {
     @EventHandler
     public void onDrag(InventoryDragEvent e) {
         if (e.getWhoClicked() instanceof Player player) {
-            InvGUI gui = ListenerManager.listenerManager.getInvGUI(player);
+            Inventory topInventory = e.getView().getTopInventory();
+            InvGUI gui = topInventory.getHolder() instanceof InvGUI ? (InvGUI) topInventory.getHolder() : null;
             if (gui == null) {
                 return;
             }
-            if (!e.getView().getTopInventory().equals(gui.getInv())) {
+            if (!e.getView().getTopInventory().equals(gui.getInventory())) {
                 player.closeInventory();
-                ListenerManager.listenerManager.unregisterListeners(player);
                 ErrorManager.errorManager.sendErrorMessage("§cError: Found unregistered GUI Listener, now force close the inventory and then delete the excess GUI Listener. If this always heppens, please report to the plugin author.");
                 return;
             }
@@ -94,17 +93,15 @@ public class GUIListener implements Listener {
     @EventHandler
     public void onClose(InventoryCloseEvent e) {
         if (e.getPlayer() instanceof Player player) {
-            InvGUI gui = ListenerManager.listenerManager.getInvGUI(player);
+            Inventory topInventory = e.getView().getTopInventory();
+            InvGUI gui = topInventory.getHolder() instanceof InvGUI ? (InvGUI) topInventory.getHolder() : null;
             if (gui == null) {
                 return;
             }
-            if (!Objects.equals(e.getInventory(), gui.getInv())) {
+            if (!Objects.equals(e.getInventory(), gui.getInventory())) {
                 return;
             }
             if (gui.closeEventHandle(e.getInventory())) {
-                SchedulerUtil.runSync(player, () -> {
-                    ListenerManager.listenerManager.unregisterNewGUIListener(player, gui);
-                });
                 if (UltimateShop.usePacketEvents) {
                     PacketInventoryUtil.packetInventoryUtil.clear(player);
                 }
@@ -119,8 +116,9 @@ public class GUIListener implements Listener {
     }
 
     @EventHandler
-    public void onSwap(PlayerSwapHandItemsEvent e){
-        if (ListenerManager.listenerManager.getInvGUI(e.getPlayer()) != null) {
+    public void onSwap(PlayerSwapHandItemsEvent e) {
+        Inventory topInventory = e.getPlayer().getOpenInventory().getTopInventory();
+        if (topInventory.getHolder() instanceof InvGUI) {
             e.setCancelled(true);
         }
     }

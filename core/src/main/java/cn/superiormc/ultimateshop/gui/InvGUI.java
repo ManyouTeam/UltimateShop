@@ -2,7 +2,6 @@ package cn.superiormc.ultimateshop.gui;
 
 import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
-import cn.superiormc.ultimateshop.managers.ListenerManager;
 import cn.superiormc.ultimateshop.managers.MenuStatusManager;
 import cn.superiormc.ultimateshop.objects.buttons.AbstractButton;
 import cn.superiormc.ultimateshop.utils.PacketInventoryUtil;
@@ -11,12 +10,14 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
+import org.jspecify.annotations.NonNull;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public abstract class InvGUI extends AbstractGUI {
+public abstract class InvGUI extends AbstractGUI implements InventoryHolder {
 
     protected Inventory inv;
 
@@ -60,10 +61,7 @@ public abstract class InvGUI extends AbstractGUI {
         }
         constructGUI();
         if (inv != null) {
-            SchedulerUtil.runSync(player, () -> {
-                player.openInventory(inv);
-                ListenerManager.listenerManager.registerNewGUIListener(player, this);
-            });
+            SchedulerUtil.runSync(player, () -> player.openInventory(inv));
             if (getMenu() != null) {
                 getMenu().doOpenAction(player, reopen);
             }
@@ -85,10 +83,6 @@ public abstract class InvGUI extends AbstractGUI {
         }
     }
 
-    public Inventory getInv() {
-        return inv;
-    }
-
     public Map<Integer, ItemStack> getMenuItems(Player player) {
         Map<Integer, AbstractButton> tempVal1 = new HashMap<>(menuButtons);
         Map<Integer, ItemStack> resultItems = new HashMap<>();
@@ -104,5 +98,10 @@ public abstract class InvGUI extends AbstractGUI {
             return new ItemStack(Material.AIR);
         }
         return button.getDisplayItem(player, 1).getItemStack();
+    }
+
+    @Override
+    public @NonNull Inventory getInventory() {
+        return inv;
     }
 }
