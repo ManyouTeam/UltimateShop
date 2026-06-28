@@ -10,15 +10,15 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class ListenerManager {
 
     public static ListenerManager listenerManager;
 
-    private final Map<UUID, InvGUI> listeners = new HashMap<>();
+    private final Map<UUID, InvGUI> listeners = new ConcurrentHashMap<>();
 
     public ListenerManager(){
         listenerManager = this;

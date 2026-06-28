@@ -131,4 +131,14 @@ public class SchedulerUtil {
         }
     }
 
+    public static SchedulerUtil runTaskLater(Entity entity, Runnable task, long delayTicks) {
+        if (UltimateShop.isFolia) {
+            if (delayTicks <= 0) delayTicks = 1;
+            return new SchedulerUtil(entity.getScheduler().runDelayed(
+                    UltimateShop.instance,  scheduledTask -> task.run(), null, delayTicks));
+        } else {
+            return new SchedulerUtil(Bukkit.getScheduler().runTaskLater(UltimateShop.instance, task, delayTicks));
+        }
+    }
+
 }

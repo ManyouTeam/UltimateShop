@@ -8,6 +8,7 @@ import cn.superiormc.ultimateshop.managers.ListenerManager;
 import cn.superiormc.ultimateshop.managers.MenuStatusManager;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
 import cn.superiormc.ultimateshop.utils.PacketInventoryUtil;
+import cn.superiormc.ultimateshop.utils.SchedulerUtil;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -101,7 +102,9 @@ public class GUIListener implements Listener {
                 return;
             }
             if (gui.closeEventHandle(e.getInventory())) {
-                ListenerManager.listenerManager.unregisterNewGUIListener(player, gui);
+                SchedulerUtil.runSync(player, () -> {
+                    ListenerManager.listenerManager.unregisterNewGUIListener(player, gui);
+                });
                 if (UltimateShop.usePacketEvents) {
                     PacketInventoryUtil.packetInventoryUtil.clear(player);
                 }

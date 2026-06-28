@@ -13,6 +13,6 @@ public class ActionClose extends AbstractRunAction {
     @Override
     protected void onDoAction(ObjectSingleAction singleAction, ObjectThingRun thingRun) {
         Player player = thingRun.getPlayer();
-        SchedulerUtil.runTaskLater(player::closeInventory, 2L);
+        SchedulerUtil.runTaskLater(player, player::closeInventory, 2L);
     }
 }
