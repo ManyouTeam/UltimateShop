@@ -94,7 +94,7 @@ public class ModifyDisplayItem {
                         playerCache.getBuyUseTimes(), multi, true).getResultMap(),
                 item.getBuyPrice().getMode(), false);
         List<String> sellPrice = ObjectPrices.getDisplayName(player, multi,
-                item.getSellPrice().give(player, playerCache.getBuyUseTimes(), multi).getResultMap(),
+                item.getSellPrice().give(player, playerCache.getBuyUseTimes(), multi).getResultMapForSellMultiplierDisplay(player),
                 item.getSellPrice().getMode(), false);
 
         for (String rawLine : item.getAddLore(player)) {

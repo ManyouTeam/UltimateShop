@@ -254,9 +254,6 @@ public class SpigotMethodUtil implements SpecialMethodUtil {
 
     @Override
     public Inventory createNewInv(Player player, int size, String text, InventoryHolder holder) {
-        if (holder == null) {
-            holder = player;
-        }
         return Bukkit.createInventory(holder, size, TextUtil.parse(text, player));
     }
 

@@ -10,6 +10,7 @@ import cn.superiormc.ultimateshop.objects.ObjectSellStick;
 import cn.superiormc.ultimateshop.objects.ObjectThingRun;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import cn.superiormc.ultimateshop.objects.items.AbstractSingleThing;
+import cn.superiormc.ultimateshop.objects.items.ItemStorage;
 import cn.superiormc.ultimateshop.objects.items.ThingMode;
 import cn.superiormc.ultimateshop.objects.items.prices.ObjectPrices;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
@@ -80,7 +81,7 @@ public class SellStickListener implements Listener {
                     return;
                 }
                 Map<AbstractSingleThing, BigDecimal> result = new HashMap<>();
-                boolean firstSell = false;
+                boolean hasActionExecuted = false;
                 int cooldown = ConfigManager.configManager.getInt("sell.sell-stick.cooldown", -1);
                 if (cooldown < 5) {
                     cooldown = 5;
@@ -95,20 +96,21 @@ public class SellStickListener implements Listener {
                                 "sell.sell-all.ignore-items").contains(shop + ";;" + products.getProduct())) {
                             continue;
                         }
-                        ProductTradeStatus status = SellProductMethod.startSell(inventory,
+                        ProductTradeStatus status = SellProductMethod.startSell(ItemStorage.of(inventory),
                                 products,
                                 event.getPlayer(),
                                 false,
                                 false,
                                 true,
-                                firstSell,
+                                hasActionExecuted,
+                                false,
                                 1,
                                 sellStick.getMultiplier());
                         if (status.getStatus() == ProductTradeStatus.Status.DONE && status.getGiveResult() != null) {
                             result.putAll(status.getGiveResult().getResultMap());
                         }
                         if (!products.getSellAction().isEmpty()) {
-                            firstSell = true;
+                            hasActionExecuted = true;
                         }
                     }
                 }

@@ -107,7 +107,7 @@ public class ObjectDisplayItemStack {
                         "sell-price",
                         ObjectPrices.getDisplayNameInLine(player,
                                 1,
-                                item.getSellPrice().give(player, tempVal9.getBuyUseTimes(), 1).getResultMap(),
+                                item.getSellPrice().give(player, tempVal9.getBuyUseTimes(), 1).getResultMapForSellMultiplierDisplay(player),
                                 item.getSellPrice().getMode(),
                                 false)));
             }

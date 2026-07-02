@@ -107,7 +107,7 @@ public class PlaceholderAPIExpansion extends PlaceholderExpansion {
                 case "sell-price":
                     return TextUtil.parse(ObjectPrices.getDisplayNameInLine(player,
                             1,
-                            item.getSellPrice().give(player, playerTimesCache.getBuyUseTimes(), 1).getResultMap(),
+                            item.getSellPrice().give(player, playerTimesCache.getBuyUseTimes(), 1).getResultMapForSellMultiplierDisplay(player),
                             item.getSellPrice().getMode(),
                             !ConfigManager.configManager.getBoolean("placeholder.status.can-used-everywhere")));
                 case "buy-limit-player":

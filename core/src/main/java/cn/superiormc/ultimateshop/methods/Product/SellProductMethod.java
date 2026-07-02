@@ -1,6 +1,5 @@
 package cn.superiormc.ultimateshop.methods.Product;
 
-import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.api.ItemFinishTransactionEvent;
 import cn.superiormc.ultimateshop.api.ItemPreTransactionEvent;
 import cn.superiormc.ultimateshop.api.ShopHelper;
@@ -84,6 +83,19 @@ public class SellProductMethod {
                                                boolean sellAll,
                                                int multi,
                                                double multiplier) {
+        return startSell(storage, item, player, forceDisplayMessage, notCost, ableMaxSell, sellAll, false, multi, multiplier);
+    }
+
+    public static ProductTradeStatus startSell(ItemStorage storage,
+                                               ObjectItem item,
+                                               Player player,
+                                               boolean forceDisplayMessage,
+                                               boolean notCost,
+                                               boolean ableMaxSell,
+                                               boolean sellAll,
+                                               boolean ignoreSellMultiplier,
+                                               int multi,
+                                               double multiplier) {
         if (item == null) {
             return ProductTradeStatus.ERROR;
         }
@@ -110,7 +122,7 @@ public class SellProductMethod {
             return ProductTradeStatus.ERROR;
         }
         double finalMultiplier = multiplier;
-        if (!notCost || !ConfigManager.configManager.getBoolean("sell.multiplier.display-original-price")) {
+        if (!ignoreSellMultiplier && !notCost) {
             finalMultiplier = MathUtil.multiply(finalMultiplier, ShopHelper.getSellMultiplier(player));
         }
         ObjectCache tempVal3 = CacheManager.cacheManager.getObjectCache(player);

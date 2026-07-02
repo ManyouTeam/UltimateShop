@@ -1,6 +1,7 @@
 package cn.superiormc.ultimateshop.gui.inv;
 
 import cn.superiormc.ultimateshop.UltimateShop;
+import cn.superiormc.ultimateshop.api.ShopHelper;
 import cn.superiormc.ultimateshop.gui.InvGUI;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.LanguageManager;
@@ -8,6 +9,7 @@ import cn.superiormc.ultimateshop.methods.Product.SellProductMethod;
 import cn.superiormc.ultimateshop.methods.ProductTradeStatus;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import cn.superiormc.ultimateshop.objects.items.AbstractSingleThing;
+import cn.superiormc.ultimateshop.objects.items.ItemStorage;
 import cn.superiormc.ultimateshop.objects.items.ThingMode;
 import cn.superiormc.ultimateshop.objects.items.prices.ObjectPrices;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
@@ -52,20 +54,21 @@ public class SellAllGUI extends InvGUI {
         }
         int soldAmount = 0;
         Map<AbstractSingleThing, BigDecimal> result = new HashMap<>();
-        boolean firstSell = false;
+        boolean hasActionExecuted = false;
         for (String shop : ConfigManager.configManager.shopConfigs.keySet()) {
             for (ObjectItem products : ConfigManager.configManager.getShop(shop).getProductListNotHidden(player)) {
                 if (ConfigManager.configManager.getStringListOrDefault(player, "menu.sell-all.ignore-items",
                         "sell.sell-all.ignore-items").contains(shop + ";;" + products.getProduct())) {
                     continue;
                 }
-                ProductTradeStatus status = SellProductMethod.startSell(inv,
+                ProductTradeStatus status = SellProductMethod.startSell(ItemStorage.of(inv),
                         products,
                         player,
                         false,
                         false,
                         true,
-                        firstSell,
+                        hasActionExecuted,
+                        false,
                         1,
                         1);
                 if (status.getStatus() == ProductTradeStatus.Status.DONE && status.getGiveResult() != null) {
@@ -73,12 +76,13 @@ public class SellAllGUI extends InvGUI {
                     soldAmount = soldAmount + status.getAmount() * products.getDisplayItemObject().getAmountPlaceholder(player);
                 }
                 if (!products.getSellAction().isEmpty()) {
-                    firstSell = true;
+                    hasActionExecuted = true;
                 }
             }
         }
         if (!result.isEmpty()) {
             LanguageManager.languageManager.sendStringText(player, "start-sell-all", "amount", String.valueOf(soldAmount),
+                    "multiplier", String.valueOf(ShopHelper.getSellMultiplier(player)),
                     "reward", ObjectPrices.getDisplayNameInLine(player, 1,
                     result, ThingMode.ALL, true
             ));
