@@ -18,6 +18,11 @@ config-files:
     enabled: false
     generate-new-one: false
     file: 'zh_cn.json'
+  # Premium version only. Generates a Material -> vanilla texture path mapping from the Minecraft client assets.
+  minecraft-item-material-file:
+    enabled: false
+    generate-new-one: false
+    file: 'item-materials.json'
 
 # Support value: COMPONENT or LEGACY
 # COMPONENT mode only supports 1.21.6+ Paper servers and PREMIUM version.
@@ -154,8 +159,45 @@ menu:
     menu:
       - 'favourite'
   # Premium version only
+  # Require Paper 1.21.9+ version.
+  dialog:
+    enabled: false
+    auto-add-sprite:
+      enabled: true
+      format: "<sprite:\"{namespace}:{atlas}\":{path}>"
+    default-button: '{lang:menu.dialog.default-button}'
+    search:
+      input: '{lang:menu.dialog.search.input}'
+      buttons:
+        search: '{lang:menu.dialog.search.buttons.search}'
+    buy-more:
+      display-item: true
+      title: '{lang:menu.dialog.buy-more.title}'
+      input: '{lang:menu.dialog.buy-more.input}'
+      buttons:
+        confirm: '{lang:menu.dialog.buy-more.buttons.confirm}'
+    info:
+      title: '{lang:menu.dialog.info.title}'
+      buttons:
+        buy: '{lang:menu.dialog.info.buttons.buy}'
+        sell: '{lang:menu.dialog.info.buttons.sell}'
+        buy-more: '{lang:menu.dialog.info.buttons.buy-more}'
+        sell-all: '{lang:menu.dialog.info.buttons.sell-all}'
+        back: '{lang:menu.dialog.info.buttons.back}'
+    favourite-edit:
+      title: '{lang:menu.dialog.favourite-edit.title}'
+      content: '{lang:menu.dialog.favourite-edit.content}'
+      buttons:
+        forward: '{lang:menu.dialog.favourite-edit.buttons.forward}'
+        backward: '{lang:menu.dialog.favourite-edit.buttons.backward}'
+        remove: '{lang:menu.dialog.favourite-edit.buttons.remove}'
+        back: '{lang:menu.dialog.favourite-edit.buttons.back}'
+  # Premium version only
   bedrock:
     enabled: true
+    auto-add-icon:
+      enabled: true
+      format: "https://raw.githubusercontent.com/InventivetalentDev/minecraft-assets/refs/heads/{version}/assets/minecraft/textures/{path}.png"
     # Support value: FLOODGATE, UUID
     check-method: FLOODGATE
     # If enabled, we will try to reopen shop menu after player successfully buy or sell products.
@@ -288,6 +330,8 @@ log-transaction:
 display-item:
   # Require Paper 1.17.1+ version.
   auto-translate-item-name: true
+  # Require Paper 1.21.9+ version, only supports Java players.
+  auto-use-sprite-item-name: true
   # If set to true, if your product default amount is 10, and you purchase it x64 in one time, we will display 640 as result in amount placeholder.
   calculate-amount: true
   auto-set-first-product: true
@@ -343,6 +387,7 @@ placeholder:
     unknown-price-type: "{lang}"
     empty: "{lang}"
     filter-for-one-line: ''
+    item-auto-use-sprite: true
   click:
     # If enabled, {buy-click} and {sell-stick} will display different value according to product status.
     # But, it will maybe make server lag if you are running big server and have many products in your shop.

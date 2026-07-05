@@ -262,6 +262,33 @@ override-lang:
     favourite:
       title: '&8Favourite List'
       content: '&7Save the products you trade most often and keep them one click away.'
+    dialog:
+      default-button: 'OK'
+      search:
+        input: 'Search'
+        buttons:
+          search: 'Search'
+      buy-more:
+        title: 'Select Amount: {item-name}'
+        input: 'Amount'
+        buttons:
+          confirm: 'Confirm'
+      info:
+        title: 'Product Info: {item-name} x{amount}'
+        buttons:
+          buy: 'Buy'
+          sell: 'Sell'
+          buy-more: 'Select Amount'
+          sell-all: 'Sell All'
+          back: '&cBack'
+      favourite-edit:
+        title: 'Edit Favourite: {item-name}'
+        content: '&7Choose how to edit favourite entry #{index}.'
+        buttons:
+          forward: '&eMove Forward'
+          backward: '&eMove Backward'
+          remove: '&cRemove'
+          back: '&7Back'
     bedrock:
       price-extra-line:
         default: '&6Buy: {buy-price} &6| Sell: {sell-price}'
@@ -328,7 +355,7 @@ override-lang:
       infinite: "&cInfinite"
   display-item:
     add-lore:
-      - '@n '
+      - '@n@y '
       - '@a&ePurchase: {buy-price}'
       - '@b(@z[rich])&eSell: {sell-price}'
       - '@b@z[rich]&eSell: {sell-price} &8(Tax:&c -10%&8)'
@@ -349,11 +376,11 @@ override-lang:
       - '@j'
       - '@j&#ff3300Can not sell more for server!'
       - '@j&8Refresh Time: {sell-refresh-server}'
-      - '@n '
+      - '@n@y '
       - '@a@u@y{buy-click}'
       - '@b@v@y{sell-click}'
       - '@k@q@y&#FFFACDRight-Shift click to pick amount!'
-      - '@l(@o)(@w)&#FFFACDSwap hand (F Key) to add favourite!'
+      - '@l(@o)@y(@w)&#FFFACDSwap hand (F Key) to add favourite!'
       - '@m@v@y(@w)&#FFFACDDrop (Q key) to sell all!'
       - '(@n)&c&l:( Can not do this'
       - '(@a)@u@p&cThis item can not be purchased'

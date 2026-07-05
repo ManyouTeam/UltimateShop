@@ -119,6 +119,10 @@ public class EditorPresetRegistry {
                 field("dynamic-layout", Material.REDSTONE, EditorPresetFieldType.BOOLEAN),
                 field("bedrock.enabled", Material.MAP, EditorPresetFieldType.BOOLEAN),
                 field("bedrock.content", Material.PAPER, EditorPresetFieldType.STRING),
+                field("dialog.enabled", Material.WRITABLE_BOOK, EditorPresetFieldType.BOOLEAN),
+                field("dialog.content", Material.PAPER, EditorPresetFieldType.STRING),
+                field("dialog.button-width", Material.STONE_BUTTON, EditorPresetFieldType.INTEGER),
+                field("dialog.columns", Material.BOOKSHELF, EditorPresetFieldType.INTEGER),
                 field("layout", Material.PAPER, EditorPresetFieldType.STRING_LIST),
                 field("conditions", Material.COMPARATOR, EditorPresetFieldType.CONDITIONS),
                 field("open-actions", Material.BLAZE_POWDER, EditorPresetFieldType.ACTIONS),
@@ -252,6 +256,7 @@ public class EditorPresetRegistry {
         fields.add(new EditorPresetField("__inline-economy__", Material.GOLD_INGOT, EditorPresetFieldType.ECONOMY_INLINE));
         fields.add(field("amount", Material.SLIME_BALL, EditorPresetFieldType.STRING));
         fields.add(field("material", Material.IRON_INGOT, EditorPresetFieldType.STRING));
+        fields.add(field("sprite", Material.PAINTING, EditorPresetFieldType.STRING));
         fields.add(field("hook-plugin", Material.CHEST_MINECART, EditorPresetFieldType.STRING));
         fields.add(field("hook-item", Material.CHEST_MINECART, EditorPresetFieldType.STRING));
         fields.add(field("match-item", Material.HOPPER, EditorPresetFieldType.SECTION));
@@ -321,6 +326,10 @@ public class EditorPresetRegistry {
                     result.add(field("shop", Material.CHEST, EditorPresetFieldType.STRING));
             case "open_menu" ->
                     result.add(field("menu", Material.BOOK, EditorPresetFieldType.STRING));
+            case "back" -> {
+                result.add(field("menu", Material.BOOK, EditorPresetFieldType.STRING));
+                result.add(field("shop", Material.CHEST, EditorPresetFieldType.STRING));
+            }
             case "buy_more_menu" -> {
                 result.add(field("shop", Material.CHEST, EditorPresetFieldType.STRING));
                 result.add(field("item", Material.NAME_TAG, EditorPresetFieldType.STRING));

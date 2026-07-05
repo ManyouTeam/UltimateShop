@@ -140,7 +140,7 @@ public class FormFavouriteGUI extends FormGUI {
                 menuButtons.get(slot).clickEvent(org.bukkit.event.inventory.ClickType.LEFT, player);
             }
         });
-        builder.closedOrInvalidResultHandler(response -> MenuStatusManager.menuStatusManager.removeOpenGUIStatus(player, this));
+        builder.closedOrInvalidResultHandler(response -> finishGUI());
         form = builder.build();
     }
 

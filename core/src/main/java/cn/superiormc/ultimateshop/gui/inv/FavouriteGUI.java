@@ -2,6 +2,7 @@ package cn.superiormc.ultimateshop.gui.inv;
 
 import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.gui.InvGUI;
+import cn.superiormc.ultimateshop.gui.dialog.DialogFavouriteGUI;
 import cn.superiormc.ultimateshop.managers.CacheManager;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.LanguageManager;
@@ -209,11 +210,19 @@ public class FavouriteGUI extends InvGUI {
     }
 
     public static void openGUI(Player player, ObjectFavouriteMenu menu, boolean bypass, boolean reopen) {
+        if (menu.isUseDialog()) {
+            new DialogFavouriteGUI(player, menu, bypass).openGUI(reopen);
+            return;
+        }
         FavouriteGUI gui = new FavouriteGUI(player, menu, bypass);
         gui.openGUI(reopen);
     }
 
     public static void openGUI(Player player, ObjectFavouriteMenu menu, boolean bypass, boolean reopen, boolean editing) {
+        if (menu.isUseDialog()) {
+            new DialogFavouriteGUI(player, menu, bypass, editing).openGUI(reopen);
+            return;
+        }
         FavouriteGUI gui = new FavouriteGUI(player, menu, bypass, editing);
         gui.openGUI(reopen);
     }

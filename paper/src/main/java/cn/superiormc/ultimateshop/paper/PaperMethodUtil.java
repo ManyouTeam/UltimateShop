@@ -2,10 +2,13 @@ package cn.superiormc.ultimateshop.paper;
 
 import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
+import cn.superiormc.ultimateshop.gui.DialogGUI;
+import cn.superiormc.ultimateshop.gui.dialog.DialogView;
 import cn.superiormc.ultimateshop.managers.ErrorManager;
 import cn.superiormc.ultimateshop.paper.utils.PaperTextUtil;
 import cn.superiormc.ultimateshop.paper.methods.BuildItemPaper;
 import cn.superiormc.ultimateshop.paper.methods.DebuildItemPaper;
+import cn.superiormc.ultimateshop.paper.dialog.PaperDialogFactory;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
 import cn.superiormc.ultimateshop.utils.SchedulerUtil;
 import cn.superiormc.ultimateshop.utils.SpecialMethodUtil;
@@ -296,6 +299,22 @@ public class PaperMethodUtil implements SpecialMethodUtil {
             return null;
         }
         return DebuildItemPaper.serializeItemStack(item);
+    }
+
+    @Override
+    public boolean showDialog(Player player, DialogGUI gui, DialogView view) {
+        if (player == null || !CommonUtil.getMinorVersion(21, 7)) {
+            return false;
+        }
+        player.showDialog(PaperDialogFactory.create(player, gui, view));
+        return true;
+    }
+
+    @Override
+    public void closeDialog(Player player) {
+        if (player != null && CommonUtil.getMinorVersion(21, 7)) {
+            player.closeDialog();
+        }
     }
 
 }

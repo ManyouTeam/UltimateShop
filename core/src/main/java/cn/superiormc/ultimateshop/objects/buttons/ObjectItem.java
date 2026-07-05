@@ -275,6 +275,12 @@ public class ObjectItem extends AbstractButton {
 
     public String getDisplayName(Player player) {
         if (itemConfig.getString("display-name") == null) {
+            if (ConfigManager.configManager.getBoolean("display-item.auto-use-sprite-item-name") && !CommonUtil.isBedrockPlayer(player)) {
+                String sprite = displayItem.getDisplayItem(player).getSprite();
+                if (sprite != null) {
+                    return sprite;
+                }
+            }
             return ItemUtil.getItemName(displayItem.getDisplayItem(player).getItemStack());
         }
         return TextUtil.withPAPI(itemConfig.getString("display-name"), player);
@@ -402,11 +408,6 @@ public class ObjectItem extends AbstractButton {
     @Override
     public void clickEvent(ClickType type, Player player) {
         if (empty) {
-            return;
-        }
-        if (UltimateShop.useGeyser && CommonUtil.isBedrockPlayer(player)) {
-            FormInfoGUI infoGUI = new FormInfoGUI(player, this);
-            infoGUI.openGUI(true);
             return;
         }
         boolean b = ConfigManager.configManager.getBoolean("placeholder.click.enabled");

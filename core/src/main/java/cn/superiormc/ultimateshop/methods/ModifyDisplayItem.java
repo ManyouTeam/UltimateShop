@@ -30,7 +30,7 @@ public class ModifyDisplayItem {
                                                     ObjectDisplayItemStack addLoreDisplayItem,
                                                     ObjectItem item,
                                                     boolean buyMore) {
-        return modifyItem(player, multi, addLoreDisplayItem, item, buyMore, "general");
+        return modifyItem(player, multi, addLoreDisplayItem, item, buyMore, false, "general");
     }
 
     public static ObjectDisplayItemStack modifyItem(Player player,
@@ -38,6 +38,7 @@ public class ModifyDisplayItem {
                                                     ObjectDisplayItemStack addLoreDisplayItem,
                                                     ObjectItem item,
                                                     boolean buyMore,
+                                                    boolean bedrock,
                                                     String clickType) {
         if (clickType == null) {
             clickType = "general";
@@ -61,7 +62,7 @@ public class ModifyDisplayItem {
                     "amount", String.valueOf(multi),
                     "item-name", item.getDisplayName(player)));
         }
-        addLore.addAll(getModifiedLore(player, multi, item, buyMore, false, clickType));
+        addLore.addAll(getModifiedLore(player, multi, item, buyMore, bedrock, clickType));
         if (!addLore.isEmpty()) {
             UltimateShop.methodUtil.setItemLore(tempVal2, addLore, player);
         }

@@ -30,7 +30,7 @@ public class ObjectMoreBuyButton extends AbstractButton {
         if (config != null && !config.getBoolean("modify-lore", true)) {
             return addLoreDisplayItem;
         }
-        return ModifyDisplayItem.modifyItem(player, multi, addLoreDisplayItem, item, true, getClickType());
+        return ModifyDisplayItem.modifyItem(player, multi, addLoreDisplayItem, item, true, false, getClickType());
     }
 
     public String getClickType() {

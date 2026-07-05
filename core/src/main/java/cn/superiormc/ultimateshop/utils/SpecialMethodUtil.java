@@ -1,5 +1,8 @@
 package cn.superiormc.ultimateshop.utils;
 
+import cn.superiormc.ultimateshop.gui.DialogGUI;
+import cn.superiormc.ultimateshop.gui.dialog.DialogView;
+
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.EntityType;
@@ -69,4 +72,11 @@ public interface SpecialMethodUtil {
                             String... args);
 
     ConfigurationSection serializeItemStack(ItemStack item);
+
+    default boolean showDialog(Player player, DialogGUI gui, DialogView view) {
+        return false;
+    }
+
+    default void closeDialog(Player player) {
+    }
 }

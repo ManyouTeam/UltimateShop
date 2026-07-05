@@ -36,9 +36,9 @@ public class SellProductMethod {
     public static ProductTradeStatus startSell(ObjectItem item,
                                                Player player,
                                                boolean forceDisplayMessage,
-                                               boolean test,
+                                               boolean notCost,
                                                int multi) {
-        return startSell(item, player, forceDisplayMessage, test, false, multi);
+        return startSell(item, player, forceDisplayMessage, notCost, false, multi);
     }
 
     public static ProductTradeStatus startSell(ObjectItem item,

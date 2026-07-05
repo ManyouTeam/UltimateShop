@@ -2,9 +2,6 @@ package cn.superiormc.ultimateshop.objects.actions;
 
 import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.gui.AbstractGUI;
-import cn.superiormc.ultimateshop.gui.FormGUI;
-import cn.superiormc.ultimateshop.gui.GUIStatus;
-import cn.superiormc.ultimateshop.gui.InvGUI;
 import cn.superiormc.ultimateshop.gui.Prompt;
 import cn.superiormc.ultimateshop.managers.MenuStatusManager;
 import cn.superiormc.ultimateshop.objects.ObjectThingRun;
@@ -14,6 +11,7 @@ import org.bukkit.configuration.MemoryConfiguration;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class ActionPrompt extends AbstractRunAction {
@@ -43,7 +41,10 @@ public class ActionPrompt extends AbstractRunAction {
         ConfigurationSection cancelSection = singleAction.getSection().getConfigurationSection("cancel-actions");
         boolean reopenOnSubmit = singleAction.getBoolean("reopen-on-submit", false);
         boolean reopenOnCancel = singleAction.getBoolean("reopen-on-cancel", true);
-        AbstractGUI previousGUI = getPreviousGUI(player);
+        AbstractGUI previousGUI = MenuStatusManager.menuStatusManager.getOpeningGUI(player);
+        if (previousGUI == null) {
+            return;
+        }
 
         MenuStatusManager.menuStatusManager.startPrompt(player, new Prompt(
                 description,
@@ -53,7 +54,7 @@ public class ActionPrompt extends AbstractRunAction {
                             copySectionWithPromptArgs(submitSection, promptArguments));
                     action.runAllActions(thingRun);
                     if (reopenOnSubmit) {
-                        reopenGUI(previousGUI);
+                        previousGUI.openGUI(true);
                     }
                 },
                 p -> {
@@ -63,7 +64,7 @@ public class ActionPrompt extends AbstractRunAction {
                         cancelAction.runAllActions(thingRun);
                     }
                     if (reopenOnCancel) {
-                        reopenGUI(previousGUI);
+                        previousGUI.openGUI(true);
                     }
                 },
                 false
@@ -78,24 +79,6 @@ public class ActionPrompt extends AbstractRunAction {
             return singleAction.getString("prompt", player, amount);
         }
         return null;
-    }
-
-    private AbstractGUI getPreviousGUI(Player player) {
-        GUIStatus guiStatus = MenuStatusManager.menuStatusManager.getGUIStatus(player);
-        if (guiStatus == null) {
-            return null;
-        }
-        return guiStatus.getGUI();
-    }
-
-    private void reopenGUI(AbstractGUI gui) {
-        if (gui instanceof InvGUI invGUI) {
-            invGUI.openGUI(true);
-            return;
-        }
-        if (gui instanceof FormGUI formGUI) {
-            formGUI.openGUI(true);
-        }
     }
 
     private ConfigurationSection copySectionWithPromptArgs(ConfigurationSection source, PromptArguments promptArguments) {
@@ -151,9 +134,7 @@ public class ActionPrompt extends AbstractRunAction {
             String trimmedInput = rawInput.trim();
             this.splitArguments = new ArrayList<>();
             if (!trimmedInput.isEmpty()) {
-                for (String value : trimmedInput.split("\\s+")) {
-                    splitArguments.add(value);
-                }
+                Collections.addAll(splitArguments, trimmedInput.split("\\s+"));
             }
         }
 

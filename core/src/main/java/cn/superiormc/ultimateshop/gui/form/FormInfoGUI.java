@@ -170,7 +170,7 @@ public class FormInfoGUI extends FormGUI {
                 }
             }
         });
-        tempVal2.closedOrInvalidResultHandler(response -> MenuStatusManager.menuStatusManager.removeOpenGUIStatus(player, this));
+        tempVal2.closedOrInvalidResultHandler(response -> finishGUI());
         form = tempVal2.build();
     }
 

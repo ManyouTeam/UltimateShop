@@ -7,6 +7,7 @@ import cn.superiormc.ultimateshop.objects.ObjectThingRun;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import cn.superiormc.ultimateshop.objects.items.ObjectCondition;
 import cn.superiormc.ultimateshop.objects.items.products.ObjectSingleProduct;
+import cn.superiormc.ultimateshop.objects.menus.ObjectMenu;
 import cn.superiormc.ultimateshop.utils.MathUtil;
 import cn.superiormc.ultimateshop.utils.TextUtil;
 import org.bukkit.configuration.ConfigurationSection;
@@ -109,7 +110,12 @@ public class ObjectDisplayItem {
             if (section != null && !section.getBoolean("modify-lore", true)) {
                 return addLoreDisplayItem;
             }
-            return ModifyDisplayItem.modifyItem(player, multi, addLoreDisplayItem, item, false);
+            boolean useDialog = false;
+            ObjectMenu menu = item.getShopObject().getShopMenuObject();
+            if (menu != null) {
+                useDialog = menu.isUseDialog();
+            }
+            return ModifyDisplayItem.modifyItem(player, multi, addLoreDisplayItem, item, false, useDialog,  "general");
         }
         return addLoreDisplayItem;
     }

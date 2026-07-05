@@ -1,6 +1,12 @@
 title: '{shop-name}'
 size: 54
 
+dialog:
+  enabled: true
+  content: ''
+  button-width: 150
+  columns: 2
+
 open-actions:
   1:
     type: sound

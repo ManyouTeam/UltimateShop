@@ -1,6 +1,7 @@
 package cn.superiormc.ultimateshop.gui;
 
 import cn.superiormc.ultimateshop.managers.ConfigManager;
+import cn.superiormc.ultimateshop.managers.MenuStatusManager;
 import cn.superiormc.ultimateshop.objects.menus.ObjectMenu;
 import cn.superiormc.ultimateshop.utils.SchedulerUtil;
 import org.bukkit.configuration.ConfigurationSection;
@@ -20,6 +21,19 @@ public abstract class AbstractGUI {
 
     public void updateGUI() {
         constructGUI();
+    }
+
+    public abstract void openGUI(boolean reopen);
+
+    public abstract void closeGUI();
+
+    public void finishGUI() {
+        if (MenuStatusManager.menuStatusManager.hasOpeningGUI(player)) {
+            MenuStatusManager.menuStatusManager.removeOpenGUIStatus(player, this);
+        }
+        if (getMenu() != null) {
+            getMenu().doCloseAction(player);
+        }
     }
 
     public Player getPlayer() {

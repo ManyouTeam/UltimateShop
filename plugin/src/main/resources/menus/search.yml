@@ -2,6 +2,12 @@ menu-type: search
 title: '{lang:menu.search-gui.title}'
 size: 54
 
+dialog:
+  enabled: true
+  content: ''
+  button-width: 150
+  columns: 2
+
 layout:
   - '00H0N0C00'
   - '001111100'
@@ -24,7 +30,7 @@ buttons:
       name: '{lang:back-button}'
     actions:
       1:
-        type: open_menu
+        type: back
         menu: main
   X:
     display-item:

@@ -27,7 +27,7 @@ public class ObjectSearchResultButton extends AbstractButton {
         ItemStack resultDisplayItem = item.getDisplayItem(player, multi).getItemStack();
         ItemMeta meta = resultDisplayItem.getItemMeta();
         if (meta == null) {
-            return new ObjectDisplayItemStack(resultDisplayItem);
+            return new ObjectDisplayItemStack(player, resultDisplayItem, item);
         }
 
         List<String> lore = new ArrayList<>(CommonUtil.modifyList(player, resultLore,
@@ -39,7 +39,7 @@ public class ObjectSearchResultButton extends AbstractButton {
         }
         UltimateShop.methodUtil.setItemLore(meta, lore, player);
         resultDisplayItem.setItemMeta(meta);
-        return new ObjectDisplayItemStack(resultDisplayItem);
+        return new ObjectDisplayItemStack(player, resultDisplayItem, item);
     }
 
     public ObjectItem getItem() {

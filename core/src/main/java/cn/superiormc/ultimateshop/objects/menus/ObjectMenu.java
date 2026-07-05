@@ -2,6 +2,7 @@ package cn.superiormc.ultimateshop.objects.menus;
 
 import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.gui.inv.CommonGUI;
+import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.LanguageManager;
 import cn.superiormc.ultimateshop.objects.ObjectShop;
 import cn.superiormc.ultimateshop.objects.ObjectThingRun;
@@ -11,6 +12,7 @@ import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import cn.superiormc.ultimateshop.objects.items.ObjectAction;
 import cn.superiormc.ultimateshop.objects.items.ObjectCondition;
 import cn.superiormc.ultimateshop.utils.CommandUtil;
+import cn.superiormc.ultimateshop.utils.CommonUtil;
 import cn.superiormc.ultimateshop.utils.TextUtil;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.BukkitCommand;
@@ -47,6 +49,8 @@ public class ObjectMenu {
     protected final Map<String, AbstractButton> buttonItems = new HashMap<>();
 
     private boolean useGeyser;
+
+    private boolean useDialog;
 
     private boolean dynamicLayout;
 
@@ -146,6 +150,7 @@ public class ObjectMenu {
             this.openAction = new ObjectAction();
             this.closeAction = new ObjectAction();
             this.useGeyser = true;
+            this.useDialog = false;
             return;
         } else if (shop != null) {
             this.condition = new ObjectCondition(menuConfigs.getConfigurationSection("conditions"));
@@ -157,6 +162,12 @@ public class ObjectMenu {
             this.openAction = new ObjectAction(menuConfigs.getConfigurationSection("open-actions"));
             this.closeAction = new ObjectAction(menuConfigs.getConfigurationSection("close-actions"));
             this.useGeyser = menuConfigs.getBoolean("bedrock.enabled", true);
+        }
+        if (UltimateShop.freeVersion || !UltimateShop.methodUtil.methodID().equals("paper") || !CommonUtil.getMinorVersion(21, 9) ||
+                !ConfigManager.configManager.getBoolean("menu.dialog.enabled")) {
+            this.useDialog = false;
+        } else {
+            this.useDialog = menuConfigs.getBoolean("dialog.enabled", true);
         }
         this.dynamicLayout = menuConfigs.getBoolean("dynamic-layout", false) && !UltimateShop.freeVersion;
     }
@@ -353,6 +364,10 @@ public class ObjectMenu {
 
     public boolean isUseGeyser() {
         return useGeyser;
+    }
+
+    public boolean isUseDialog() {
+        return useDialog;
     }
 
     public boolean isDynamicLayout() {

@@ -54,6 +54,7 @@ public abstract class InvGUI extends AbstractGUI implements InventoryHolder {
         return;
     }
 
+    @Override
     public void openGUI(boolean reopen) {
         GUIStatus previousStatus = MenuStatusManager.menuStatusManager.getGUIStatus(player);
         if (!MenuStatusManager.menuStatusManager.canOpenGUI(player, this, reopen)) {
@@ -81,6 +82,11 @@ public abstract class InvGUI extends AbstractGUI implements InventoryHolder {
                 }
             }, 20L, 20L);
         }
+    }
+
+    @Override
+    public void closeGUI() {
+        player.closeInventory();
     }
 
     public Map<Integer, ItemStack> getMenuItems(Player player) {

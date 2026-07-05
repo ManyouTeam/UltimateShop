@@ -88,6 +88,9 @@ public final class UltimateShop extends JavaPlugin {
         if (LocateManager.enableThis()) {
             new LocateManager();
         }
+        if (ItemMaterialManager.enableThis()) {
+            new ItemMaterialManager();
+        }
         if (BungeeCordManager.enableThis()) {
             new BungeeCordManager();
         }

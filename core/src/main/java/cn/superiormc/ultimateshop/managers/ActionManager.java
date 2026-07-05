@@ -33,6 +33,7 @@ public class ActionManager {
         registerNewAction("op_command", new ActionOPCommand());
         registerNewAction("player_command", new ActionPlayerCommand());
         registerNewAction("close", new ActionClose());
+        registerNewAction("back", new ActionBack());
         registerNewAction("teleport", new ActionTeleport());
         registerNewAction("entity_spawn", new ActionEntitySpawn());
         registerNewAction("mythicmobs_spawn", new ActionMythicMobsSpawn());

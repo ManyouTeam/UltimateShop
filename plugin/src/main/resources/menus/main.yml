@@ -1,6 +1,12 @@
 title: '{lang:shop-title}'
 size: 54
 
+dialog:
+  enabled: true
+  content: '{lang:welcome-message}'
+  button-width: 150
+  columns: 2
+
 bedrock:
   enabled: true
   content: '{lang:welcome-message}'

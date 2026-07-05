@@ -2,8 +2,8 @@ package cn.superiormc.ultimateshop.gui.inv;
 
 import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.gui.InvGUI;
+import cn.superiormc.ultimateshop.gui.dialog.DialogCommonGUI;
 import cn.superiormc.ultimateshop.gui.form.FormCommonGUI;
-import cn.superiormc.ultimateshop.gui.form.FormFavouriteGUI;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.LanguageManager;
 import cn.superiormc.ultimateshop.objects.ObjectThingRun;
@@ -87,11 +87,6 @@ public class CommonGUI extends InvGUI {
         }
 
         if (commonMenu.getType().equals(MenuType.Favourite)) {
-            if (UltimateShop.useGeyser && commonMenu.isUseGeyser() && CommonUtil.isBedrockPlayer(player)) {
-                FormFavouriteGUI formFavouriteGUI = new FormFavouriteGUI(player, (ObjectFavouriteMenu) commonMenu, bypass);
-                formFavouriteGUI.openGUI(reopen);
-                return;
-            }
             FavouriteGUI.openGUI(player, (ObjectFavouriteMenu) commonMenu, bypass, reopen);
             return;
         }
@@ -100,12 +95,17 @@ public class CommonGUI extends InvGUI {
             LanguageManager.languageManager.sendStringText(player, "error.buy-more-menu-direct-open");
             return;
         }
-
         if (UltimateShop.useGeyser && commonMenu.isUseGeyser() && CommonUtil.isBedrockPlayer(player)) {
             FormCommonGUI formCommonGUI = new FormCommonGUI(player, commonMenu, bypass);
             formCommonGUI.openGUI(reopen);
             return;
         }
+
+        if (commonMenu.isUseDialog()) {
+            new DialogCommonGUI(player, commonMenu, bypass).openGUI(reopen);
+            return;
+        }
+
         CommonGUI gui = new CommonGUI(player, commonMenu, bypass);
         gui.openGUI(reopen);
     }

@@ -1,6 +1,12 @@
 title: '{lang:buy-more-title}'
 size: 54
 
+dialog:
+  enabled: false
+  content: ''
+  button-width: 150
+  columns: 2
+
 layout:
   - '000000000'
   - '0abcdefg0'
@@ -95,7 +101,7 @@ buttons:
       name: '{lang:back-button}'
     actions:
       1:
-        type: shop_menu
+        type: back
         shop: '{shop}'
   C:
     display-item:

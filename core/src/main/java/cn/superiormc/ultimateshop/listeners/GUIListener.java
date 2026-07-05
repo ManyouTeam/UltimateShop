@@ -105,12 +105,7 @@ public class GUIListener implements Listener {
                 if (UltimateShop.usePacketEvents) {
                     PacketInventoryUtil.packetInventoryUtil.clear(player);
                 }
-                if (MenuStatusManager.menuStatusManager.hasOpeningGUI(player)) {
-                    MenuStatusManager.menuStatusManager.removeOpenGUIStatus(player, gui);
-                }
-                if (gui.getMenu() != null) {
-                    gui.getMenu().doCloseAction(player);
-                }
+                gui.finishGUI();
             }
         }
     }

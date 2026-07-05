@@ -31,6 +31,7 @@ public abstract class FormGUI extends AbstractGUI {
         }
     }
 
+    @Override
     public void openGUI(boolean reopen) {
         GUIStatus previousStatus = MenuStatusManager.menuStatusManager.getGUIStatus(player);
         if (!MenuStatusManager.menuStatusManager.canOpenGUI(player, this, reopen)) {
@@ -46,6 +47,11 @@ public abstract class FormGUI extends AbstractGUI {
         } else {
             MenuStatusManager.menuStatusManager.setGUIStatus(player, previousStatus);
         }
+    }
+
+    @Override
+    public void closeGUI() {
+        // Empty...
     }
 
     public Form getForm() {

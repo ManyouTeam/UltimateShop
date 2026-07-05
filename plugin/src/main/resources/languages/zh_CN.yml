@@ -257,6 +257,33 @@ override-lang:
     favourite:
       title: '&8收藏夹'
       content: '&7把常交易的商品保存下来，之后随时快速打开。'
+    dialog:
+      default-button: '确定'
+      search:
+        input: '搜索'
+        buttons:
+          search: '搜索'
+      buy-more:
+        title: '选择物品数量: {item-name}'
+        input: '数量'
+        buttons:
+          confirm: '确认'
+      info:
+        title: '物品信息: {item-name} x{amount}'
+        buttons:
+          buy: '购买'
+          sell: '回收'
+          buy-more: '选择数量'
+          sell-all: '回收全部'
+          back: '&c返回'
+      favourite-edit:
+        title: '编辑收藏: {item-name}'
+        content: '&7请选择如何编辑第 {index} 个收藏商品。'
+        buttons:
+          forward: '&e前移'
+          backward: '&e后移'
+          remove: '&c移除'
+          back: '&7返回'
     bedrock:
       price-extra-line:
         default: '&6购买: {buy-price} &6| 回收: {sell-price}'
@@ -323,7 +350,7 @@ override-lang:
       infinite: "&c无限"
   display-item:
     add-lore:
-      - '@n '
+      - '@n@y '
       - '@a&e买价: {buy-price}'
       - '@b(@z[rich])&e卖价: {sell-price}'
       - '@b@z[rich]&e卖价: {sell-price} &8（税：&c-10%&8)'
@@ -344,11 +371,11 @@ override-lang:
       - '@j'
       - '@j&#ff3300不能再向服务器出售了!'
       - '@j&8补货时间: {sell-refresh-server}'
-      - '@n '
+      - '@n@y '
       - '@a@u@y{buy-click}'
       - '@b@v@y{sell-click}'
       - '@k@q@y&#FFFACDShift + 鼠标右键选择数量！'
-      - '@l(@o)(@w)&#FFFACD键盘 F 键收藏该商品!'
+      - '@l(@o)@y(@w)&#FFFACD键盘 F 键收藏该商品!'
       - '@m@v@y(@w)&#FFFACD键盘 Q 键出售全部！'
       - '(@n)&c&l:( 不能这么做'
       - '(@a)@u@p&c物品无法购买'

@@ -16,7 +16,7 @@ import org.geysermc.cumulus.form.SimpleForm;
 
 public class FormCommonGUI extends FormGUI {
 
-    private ObjectMenu commonMenu;
+    private final ObjectMenu commonMenu;
 
     private final boolean bypass;
 
@@ -52,7 +52,7 @@ public class FormCommonGUI extends FormGUI {
             menuButtons.get(menuItems.get(response.clickedButton())).clickEvent(ClickType.LEFT, player);
             MenuStatusManager.menuStatusManager.removeOpenGUIStatus(player, this);
         });
-        tempVal2.closedOrInvalidResultHandler(response -> MenuStatusManager.menuStatusManager.removeOpenGUIStatus(player, this));
+        tempVal2.closedOrInvalidResultHandler(response -> finishGUI());
         if (commonMenu.getString("bedrock.content", null) != null) {
             tempVal2.content(TextUtil.parse(player, getMenu().getString("bedrock.content", "")));
         }

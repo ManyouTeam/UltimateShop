@@ -1,5 +1,6 @@
 package cn.superiormc.ultimateshop.gui.form;
 
+import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.objects.caches.ObjectCache;
 import cn.superiormc.ultimateshop.gui.FormGUI;
 import cn.superiormc.ultimateshop.managers.CacheManager;
@@ -13,6 +14,7 @@ import cn.superiormc.ultimateshop.objects.buttons.subobjects.ObjectDisplayItemSt
 import cn.superiormc.ultimateshop.objects.caches.ObjectUseTimesCache;
 import cn.superiormc.ultimateshop.objects.menus.MenuSender;
 import cn.superiormc.ultimateshop.objects.menus.ObjectMenu;
+import cn.superiormc.ultimateshop.utils.CommonUtil;
 import cn.superiormc.ultimateshop.utils.TextUtil;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
@@ -109,9 +111,15 @@ public class FormShopGUI extends FormGUI {
                 .replace("{shop-name}", shop.getShopDisplayName())));
         tempVal5.validResultHandler(response -> {
             MenuStatusManager.menuStatusManager.removeOpenGUIStatus(player, this);
-            menuButtons.get(menuItems.get(response.clickedButton())).clickEvent(ClickType.LEFT, player);
+            AbstractButton button = menuButtons.get(menuItems.get(response.clickedButton()));
+            if (button instanceof ObjectItem item) {
+                FormInfoGUI infoGUI = new FormInfoGUI(player, item);
+                infoGUI.openGUI(true);
+            } else {
+                button.clickEvent(ClickType.LEFT, player);
+            }
         });
-        tempVal5.closedOrInvalidResultHandler(response -> MenuStatusManager.menuStatusManager.removeOpenGUIStatus(player, this));
+        tempVal5.closedOrInvalidResultHandler(response -> finishGUI());
         if (getMenu().getString("bedrock.content", null) != null) {
             tempVal5.content(TextUtil.parse(player, getMenu().getString("bedrock.content", "")));
         }
