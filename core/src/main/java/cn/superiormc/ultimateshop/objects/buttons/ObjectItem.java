@@ -4,6 +4,7 @@ import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.gui.form.FormInfoGUI;
 import cn.superiormc.ultimateshop.gui.inv.BuyMoreGUI;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
+import cn.superiormc.ultimateshop.managers.ItemMaterialManager;
 import cn.superiormc.ultimateshop.methods.Product.BuyProductMethod;
 import cn.superiormc.ultimateshop.methods.Product.SellProductMethod;
 import cn.superiormc.ultimateshop.methods.ProductTradeStatus;
@@ -275,7 +276,7 @@ public class ObjectItem extends AbstractButton {
 
     public String getDisplayName(Player player) {
         if (itemConfig.getString("display-name") == null) {
-            if (ConfigManager.configManager.getBoolean("display-item.auto-use-sprite-item-name") && !CommonUtil.isBedrockPlayer(player)) {
+            if (ItemMaterialManager.enableThis() && ConfigManager.configManager.getBoolean("display-item.auto-use-sprite-item-name") && !CommonUtil.isBedrockPlayer(player)) {
                 String sprite = displayItem.getDisplayItem(player).getSprite();
                 if (sprite != null) {
                     return sprite;

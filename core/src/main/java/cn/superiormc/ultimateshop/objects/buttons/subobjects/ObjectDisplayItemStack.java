@@ -54,7 +54,9 @@ public class ObjectDisplayItemStack {
         this.javaItem = Dupe.markGuiDisplayItem(javaItemOnly);
         this.meta = this.javaItem.getItemMeta();
         this.section = section;
-        this.sprite = section == null ? null : section.getString("sprite");
+        if (ItemMaterialManager.enableThis()) {
+            this.sprite = section == null ? null : section.getString("sprite");
+        }
     }
 
     public ObjectDisplayItemStack(Player player, ItemStack javaItem, ObjectItem item) {
@@ -62,7 +64,9 @@ public class ObjectDisplayItemStack {
         this.meta = this.javaItem.getItemMeta();
         this.player = player;
         this.item = item;
-        this.sprite = item == null ? null : item.getDisplayItemObject().getDisplayItem(player).getSprite();
+        if (ItemMaterialManager.enableThis()) {
+            this.sprite = item == null ? null : item.getDisplayItemObject().getDisplayItem(player).getSprite();
+        }
     }
 
     public ObjectDisplayItemStack(Player player, ItemStack javaItem, ConfigurationSection section, ObjectItem item) {
@@ -114,6 +118,7 @@ public class ObjectDisplayItemStack {
         if (!ItemMaterialManager.enableThis()) {
             ErrorManager.errorManager.sendErrorMessage("§cError: Can not use auto-add-sprite feature when item material mapping not enabled, please set config-files." +
                     "minecraft-item-material-file.enabled to true in config.yml and generate the mapping file.");
+            return null;
         }
         String texturePath = ItemMaterialManager.itemMaterialManager.getMaterialTexturePath(javaItem.getType());
         if (texturePath == null || texturePath.isEmpty()) {
@@ -216,7 +221,7 @@ public class ObjectDisplayItemStack {
         if (label.trim().isEmpty()) {
             return null;
         }
-        if (ConfigManager.configManager.getBoolean("menu.dialog.auto-add-sprite.enabled")) {
+        if (ItemMaterialManager.enableThis() && ConfigManager.configManager.getBoolean("menu.dialog.auto-add-sprite.enabled")) {
             String sprite = getSprite();
             if (sprite != null) {
                 label = sprite + " " + label;

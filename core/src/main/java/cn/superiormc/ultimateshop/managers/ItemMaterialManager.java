@@ -24,6 +24,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -31,7 +32,7 @@ public class ItemMaterialManager {
 
     public static ItemMaterialManager itemMaterialManager;
 
-    private final Map<Material, String> materialMap = new HashMap<>();
+    private final Map<Material, String> materialMap = new ConcurrentHashMap<>();
 
     private final String mappingFileName;
 

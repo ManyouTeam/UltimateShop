@@ -28,7 +28,6 @@ import org.bukkit.inventory.ItemStack;
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.function.Consumer;
 
 public class MenuStatusManager {
@@ -37,13 +36,15 @@ public class MenuStatusManager {
 
     private static final Object SECTION_SENTINEL = new Object();
 
+    private static final int MAX_GUI_HISTORY_SIZE = 32;
+
     private final Map<UUID, EditorContext> contexts = new ConcurrentHashMap<>();
 
     private final Map<UUID, Prompt> prompts = new ConcurrentHashMap<>();
 
     private final Map<UUID, GUIStatus> openGuis = new ConcurrentHashMap<>();
 
-    private final Map<UUID, ConcurrentLinkedDeque<AbstractGUI>> guiHistory = new ConcurrentHashMap<>();
+    private final Map<UUID, GUIHistory> guiHistories = new ConcurrentHashMap<>();
 
     private final Set<UUID> returningBack = ConcurrentHashMap.newKeySet();
 
@@ -105,13 +106,14 @@ public class MenuStatusManager {
             return false;
         }
         UUID uuid = player.getUniqueId();
-        if (!returningBack.remove(uuid) && guiStatus != null && guiStatus.getGUI() != gui) {
-            ConcurrentLinkedDeque<AbstractGUI> history = guiHistory.computeIfAbsent(uuid,
-                    ignored -> new ConcurrentLinkedDeque<>());
-            history.addLast(guiStatus.getGUI());
-            while (history.size() > 32) {
-                history.pollFirst();
-            }
+        if (returningBack.remove(uuid)) {
+            setGUIStatus(player, GUIStatus.of(gui,
+                    reopen ? GUIStatus.Status.ACTION_OPEN_MENU : GUIStatus.Status.CAN_REOPEN));
+            return true;
+        }
+        if (guiStatus != null) {
+            guiHistories.computeIfAbsent(uuid, ignored -> new GUIHistory())
+                    .record(guiStatus.getGUI(), gui);
         }
         setGUIStatus(player, GUIStatus.of(gui, reopen ? GUIStatus.Status.ACTION_OPEN_MENU : GUIStatus.Status.CAN_REOPEN));
         return true;
@@ -130,8 +132,12 @@ public class MenuStatusManager {
             return false;
         }
         UUID uuid = player.getUniqueId();
-        ConcurrentLinkedDeque<AbstractGUI> history = guiHistory.get(uuid);
-        AbstractGUI previous = history == null ? null : history.pollLast();
+        GUIHistory history = guiHistories.get(uuid);
+        AbstractGUI current = getOpeningGUI(player);
+        AbstractGUI previous = history == null ? null : history.pollPrevious(current);
+        if (history != null && history.isEmpty()) {
+            guiHistories.remove(uuid, history);
+        }
         if (previous == null) {
             if (fallbackShop != null && !fallbackShop.trim().isEmpty()) {
                 ObjectShop shop = ConfigManager.configManager.getShop(fallbackShop);
@@ -165,9 +171,6 @@ public class MenuStatusManager {
             returningBack.remove(uuid);
             return false;
         }
-        if (history != null && history.isEmpty()) {
-            guiHistory.remove(uuid, history);
-        }
         return true;
     }
 
@@ -194,7 +197,7 @@ public class MenuStatusManager {
         contexts.remove(player.getUniqueId());
         prompts.remove(player.getUniqueId());
         openGuis.remove(player.getUniqueId());
-        guiHistory.remove(player.getUniqueId());
+        guiHistories.remove(player.getUniqueId());
         returningBack.remove(player.getUniqueId());
     }
 
@@ -816,5 +819,49 @@ public class MenuStatusManager {
             return conditionsRootPath.substring(0, conditionsRootPath.length() - "limits-conditions".length()) + "limits";
         }
         return null;
+    }
+
+    private static final class GUIHistory {
+
+        private final Deque<AbstractGUI> entries = new ArrayDeque<>();
+
+        private synchronized void record(AbstractGUI current, AbstractGUI next) {
+            if (current == null || isSamePage(current, next)) {
+                return;
+            }
+            if (!isSamePage(entries.peekLast(), current)) {
+                entries.addLast(current);
+            }
+            while (entries.size() > MAX_GUI_HISTORY_SIZE) {
+                entries.pollFirst();
+            }
+        }
+
+        private synchronized AbstractGUI pollPrevious(AbstractGUI current) {
+            AbstractGUI previous;
+            do {
+                previous = entries.pollLast();
+            } while (previous != null && isSamePage(previous, current));
+            return previous;
+        }
+
+        private synchronized boolean isEmpty() {
+            return entries.isEmpty();
+        }
+
+        private static boolean isSamePage(AbstractGUI first, AbstractGUI second) {
+            if (first == second) {
+                return first != null;
+            }
+            if (first == null || second == null || first.getClass() != second.getClass()) {
+                return false;
+            }
+            ObjectMenu firstMenu = first.getMenu();
+            ObjectMenu secondMenu = second.getMenu();
+            if (firstMenu == null || secondMenu == null) {
+                return false;
+            }
+            return firstMenu == secondMenu || Objects.equals(firstMenu.getName(), secondMenu.getName());
+        }
     }
 }

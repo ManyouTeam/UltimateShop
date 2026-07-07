@@ -121,7 +121,7 @@ menu:
     cancel-keyword: '{lang}'
   # Recommend use when you are running big server, it will make player no longer quickly click
   # and reopen shop menu to make sure UltimateShop not lag your server.
-  # In ticks.
+  # In ticks. Only supports classic inventory type view.
   cooldown:
     click: -1
     reopen: -1
