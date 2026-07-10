@@ -1,0 +1,7 @@
+# Business License
+
+If you are a creator of a paid server setup or similar product and wish to incorporate the UltimateShop premium version into your product, you may consider our business license.
+
+* Price: For every sale of this product, you will need to pay us a license fee of $4. If the product has already been released, considering that some of your old users will no longer update your product, we will consider the average download volume of the last 3 major updates as the number of times it has been sold, and each new purchase by a user thereafter will be considered a sale.
+* Support: Your product buyer cannot access our buyer support service. But you can always contact us and provide us with feedback on the issues your users have encountered.
+* The first payment will be made based on the actual number of copies sold (if less than 10 copies, it will be calculated based on 10 copies, and any excess points can be deducted from subsequent sales activities and can be considered as a prepayment, but this prepayment does not include refunds), and will be settled monthly thereafter. If payment is delayed, it will be deemed as an automatic termination of the cooperation. If it is necessary to terminate the cooperation normally, it should be proposed at least one month in advance. After canceling the cooperation, you need to delete all historical versions containing the UltimateShop Premium jar file.
