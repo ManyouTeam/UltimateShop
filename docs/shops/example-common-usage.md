@@ -16,7 +16,7 @@ items:
     # ...
 ```
 
-## Product A
+## Product A - VIP Limits
 
 This example has sell limits, which means player can only sell this product X times every day.
 
@@ -59,7 +59,7 @@ items:
     sell-limits-reset-time: '00:00:00'  
 ```
 
-## Product B
+## Product B - Experience Price
 
 Product A only brought an item from vanilla, let's try to obtain an item from a third-party plugin! Meanwhile, using **Vault** as an economy is too boring! Let's try something different, such as vanilla's experience points!
 
@@ -91,7 +91,7 @@ Product A only brought an item from vanilla, let's try to obtain an item from a 
         placeholder: '1 Exp'
 </code></pre>
 
-## Product C
+## Product C - Command Product
 
 Sometimes, we do not support the third-party plugin items you are using, so you can solve this by creating a command shop!
 

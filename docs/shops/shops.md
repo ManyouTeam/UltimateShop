@@ -35,118 +35,13 @@ general-configs:
       sound: block.note_block.bass
     
 items:
-  A:
-    display-name: "Apple"
-    price-mode: ANY
-    product-mode: ALL
-    products:
-      1:
-        material: APPLE
-        amount: 1
-      2: 
-        material: BREAD
-        amount: 5
-        conditions:
-          1:
-            type: permission
-            permission: 'group.vip'
-        give-actions:
-          1:
-            type: message
-            message: 'Wow, seems that you are a VIP player, so we bonud give you 5 breads!'
-    buy-prices:
-      1:
-        economy-plugin: Vault
-        amount: 200
-        placeholder: '{amount} Coins'
-        start-apply: 0
-      2:
-        economy-plugin: PlayerPoints
-        amount: 10
-        placeholder: '{amount} Points'
-        start-apply: 5
-    sell-prices:
-      1:
-        economy-plugin: Vault
-        amount: 50
-        placeholder: '{amount} Coins'
-      2:
-        economy-plugin: PlayerPoints
-        amount: 1
-        start-apply: 5
-        placeholder: '{amount} Points'
-        give-actions:
-          1: 
-            type: message: 
-            message: 'Wow, seems that you have already sell 5 apples!'
-    buy-actions:
-      1:
-        type: player_command
-        command: 'say %player_name% purchased an Apple!'
-      2:
-        type: announcement
-        message: '&7%player_name% purchased an Apple!'
-  B:
-    display-item:
-      material: BREAD
-      name: '&cSuper Bread'
-    display-name: "Bread"
-    add-lore:
-      - '@a&ePurchase: {buy-price}'
-      - '@b&eSell: {sell-price}'
-      - '&eDrop to buy, right to sell'
-    click-event:
-      buy: 'DROP'
-      sell: 'RIGHT'
-    bedrock:
-      hide: false
-      icon: 'url;;https://raw.githubusercontent.com/Jens-Co/MinecraftItemImages/main/1.20/bread.png'
-    buy-more: true
-    buy-more-menu:
-      menu: buy-more-2
-      max-amount: 16
-    price-mode: ANY
-    product-mode: ALL
-    products:
-      1:
-        material: BREAD
-        amount: 1
-    buy-prices:
-      1:
-        economy-plugin: Vault
-        amount: 200
-        placeholder: '{amount} Coins'
-        start-apply: 0
-      2:
-        economy-plugin: PlayerPoints
-        amount: 10
-        placeholder: '{amount} Points'
-        start-apply: 5
-    sell-prices:
-      1:
-        economy-plugin: Vault
-        amount: 50
-        placeholder: '{amount} Coins'
-      2:
-        economy-plugin: PlayerPoints
-        amount: 1
-        start-apply: 5
-        placeholder: '{amount} Points'
-    buy-limits:
-      global: 100
-      default: 10
-      test-condition: 20
-    buy-limits-conditions:
-      test-condition:
-        1:
-          type: permission
-          permission: 'test.permission'
-    buy-times-reset-mode: 'TIMED'
-    buy-times-reset-time: '00:00:00'
-  C:
-    display-item: 
-      material: DIAMOND
-    as-sub-button: A
+  A: # Product A config
+  #...
+  B: # Product B config
+  #...
+  C: # Product C config
+  #...
+
 buttons:
   a:
     display-item:
@@ -159,6 +54,41 @@ buttons:
         type: shop_menu
         shop: 'crops'    
 ```
+
+## Create the shop
+
+Create a config file at `plugins/UltimateShop/shops/<shopName>.yml`:
+
+{% code title="PUT_SHOP_ID_INTO_FILE_NAME.yml" %}
+```yaml
+settings:
+  menu: starter-menu
+  buy-more: true
+  shop-name: Starter Shop
+  hide-message: false
+
+items:
+  D:
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: DIAMOND
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: 100
+        placeholder: '&6$100'
+        start-apply: 0
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: 60
+        placeholder: '&6$60'
+        start-apply: 0
+```
+{% endcode %}
 
 ## Settings
 

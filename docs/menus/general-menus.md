@@ -2,6 +2,36 @@
 
 All menu files are saved in `/menus/` folder.
 
+## Create the menu
+
+Create a config file at `plugins/UltimateShop/menus/<menuID>.yml`:
+
+{% code title="PUT_MENU_ID_INTO_FILE_NAME.yml" %}
+```yaml
+title: '{shop-name}'
+size: 18
+
+layout:
+  - '000000000'
+  - '000D00X00'
+
+buttons:
+  0:
+    display-item:
+      material: BLACK_STAINED_GLASS_PANE
+      name: ' '
+  X:
+    display-item:
+      material: BARRIER
+      name: '&cClose'
+    actions:
+      1:
+        type: close
+```
+{% endcode %}
+
+`D` is the product ID used under [shop](../shops/shops.md) config's `items` section. Menu layouts use one-character product IDs directly; advanced sub-buttons can represent the same product in additional slots or menus. For more info, please view [Layout Option](general-menus.md#layout-option).
+
 ## Types
 
 There are 3 types of menus.

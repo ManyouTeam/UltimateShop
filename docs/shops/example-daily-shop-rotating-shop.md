@@ -39,6 +39,8 @@ elements:
 
 The various options used in this example are detailed on the [Shops](shops.md) page. If you are unsure of the purpose of each option, please refer to that article.
 
+Add products `A` through `G`; their IDs must match the placeholder elements.
+
 ```yaml
 settings:
   menu: 'daily-shop-menu' # The menu ID

@@ -5,53 +5,131 @@ Here is an example of 2 product configs:
 ```yaml
 items:
   A:
-    price-mode: CLASSIC_ALL
-    product-mode: CLASSIC_ALL
-    sell-all: true
-    shared-use-times: daily_bundle
+    display-name: "Apple"
+    price-mode: ANY
+    product-mode: ALL
     products:
       1:
-        material: STRING
+        material: APPLE
         amount: 1
+      2: 
+        material: BREAD
+        amount: 5
+        conditions:
+          1:
+            type: permission
+            permission: 'group.vip'
         give-actions:
           1:
             type: message
-            message: 'You get a string!'
+            message: 'Wow, seems that you are a VIP player, so we bonud give you 5 breads!'
     buy-prices:
       1:
-        match-placeholder: '%player_health%'
-        amount: '1.65'
-        placeholder: '{amount}$'
+        economy-plugin: Vault
+        amount: 200
+        placeholder: '{amount} Coins'
         start-apply: 0
+      2:
+        economy-plugin: PlayerPoints
+        amount: 10
+        placeholder: '{amount} Points'
+        start-apply: 5
     sell-prices:
       1:
-        match-placeholder: '%player_health%'
-        amount: '1.65'
-        placeholder: '{amount}$'
-        start-apply: 0
+        economy-plugin: Vault
+        amount: 50
+        placeholder: '{amount} Coins'
+      2:
+        economy-plugin: PlayerPoints
+        amount: 1
+        start-apply: 5
+        placeholder: '{amount} Points'
         give-actions:
-          1:
-            type: console_command
-            command: 'eco give {player} {amount}'
+          1: 
+            type: message: 
+            message: 'Wow, seems that you have already sell 5 apples!'
+    buy-actions:
+      1:
+        type: player_command
+        command: 'say %player_name% purchased an Apple!'
+      2:
+        type: announcement
+        message: '&7%player_name% purchased an Apple!'
   B:
-    price-mode: CLASSIC_ALL
-    product-mode: CLASSIC_ALL
+    display-item:
+      material: BREAD
+      name: '&cSuper Bread'
+    display-name: "Bread"
+    add-lore:
+      - '@a&ePurchase: {buy-price}'
+      - '@b&eSell: {sell-price}'
+      - '&eDrop to buy, right to sell'
+    click-event:
+      buy: 'DROP'
+      sell: 'RIGHT'
+    bedrock:
+      hide: false
+      icon: 'url;;https://raw.githubusercontent.com/Jens-Co/MinecraftItemImages/main/1.20/bread.png'
+    buy-more: true
+    buy-more-menu:
+      menu: buy-more-2
+      max-amount: 16
+    price-mode: ANY
+    product-mode: ALL
     products:
       1:
-        material: FEATHER
+        material: BREAD
         amount: 1
     buy-prices:
       1:
         economy-plugin: Vault
-        amount: '0.55'
-        placeholder: '{amount}$'
+        amount: 200
+        placeholder: '{amount} Coins'
         start-apply: 0
+      2:
+        economy-plugin: PlayerPoints
+        amount: 10
+        placeholder: '{amount} Points'
+        start-apply: 5
     sell-prices:
       1:
         economy-plugin: Vault
-        amount: '0.52'
-        placeholder: '{amount}$'
-        start-apply: 0
+        amount: 50
+        placeholder: '{amount} Coins'
+      2:
+        economy-plugin: PlayerPoints
+        amount: 1
+        start-apply: 5
+        placeholder: '{amount} Points'
+    buy-limits:
+      global: 100
+      default: 10
+      test-condition: 20
+    buy-limits-conditions:
+      test-condition:
+        1:
+          type: permission
+          permission: 'test.permission'
+    buy-times-reset-mode: 'TIMED'
+    buy-times-reset-time: '00:00:00'
+  C:
+    display-item: 
+      material: DIAMOND
+    as-sub-button: A
+```
+
+## Model
+
+```
+Shop file
+└─ Product entry
+   ├─ display item and menu behavior
+   ├─ products       → what changes hands as the product
+   ├─ buy-prices     → what the player pays when buying
+   ├─ sell-prices    → what the player receives when selling
+   ├─ buy-conditions/sell-conditions     → who may use or see it
+   ├─ buy-actions/sell-actions           → what else happens
+   └─ buy-limits/sell-limits             → how often it may be used
 ```
 
 ## General Options
@@ -95,15 +173,7 @@ Click [here](shops.md) to see the detalied example of those general options.
 
     <div data-gb-custom-block data-tag="hint" data-style="warning" class="hint hint-warning"><p>By default, only hide success buy or sell message, for fail message like limit reached or not enough money, you have 2 methods to hide them:</p><ul><li>Try <strong>also</strong> set <code>placeholder.click.enabled</code> option value to <code>true</code> in your <code>config.yml</code> file to hide them. This will display fail status at display item lore and will cost extra performance.</li><li>Try <strong>also</strong> set <code>force-display-fail-message</code> option value to <code>true</code> in your <code>config.yml</code> file. This way is recommended. (4.2.11+)</li></ul></div>
 * buy-prices/sell-prices/products: Please view [this page](products-config-single-thing/).
-* price-mode: Support `ANY, ALL, CLASSIC_ANY, CLASSIC_ALL`. **Required.**
-* product-mode: Same as above. **Required if you have products section.**
-
-{% hint style="info" %}
-**ANY** and **ALL** mode should only be used when you are using dynamic value in products or prices configs. If your configuration uses static values, we will automatically switch your mode to **CLASSIC** mode to avoid unnecessary performance waste.&#x20;
-{% endhint %}
-
-<table><thead><tr><th width="118">Mode</th><th width="179">ANY</th><th>ALL</th><th>CLASSIC_ANY</th><th>CLASSIC_ALL</th></tr></thead><tbody><tr><td>Product Give</td><td>Give random products that meet conditions.</td><td>Give all products.</td><td>Same as ANY.</td><td>Same as ALL.</td></tr><tr><td>Product /Price Take</td><td>First product/price that we found player meet condition and have enough amount.</td><td>Players must have all products/prices that meet conditions to sell.</td><td>Same as ANY.</td><td>Same as ALL.</td></tr><tr><td>Price Give (means sell)</td><td>First prices meet the condition requirements.</td><td>All prices will be given.</td><td>Same as ANY.</td><td>Same as ALL.</td></tr><tr><td>Price Support</td><td>Support dynamic price &#x26; <code>apply</code> option.</td><td>Same as ALL.</td><td>Price must be same at  everytime.</td><td>Same as CLASSIC_ALL.</td></tr><tr><td>Support Sell All if you are using dynamic value in products <code>amount</code>  option.</td><td><strong>No</strong><br>Due to the dynamic nature of price values, plugins have no way of knowing the maximum number of times you can sell a product if you use dynamic product amount.</td><td><strong>No</strong><br>Due to the dynamic nature of price values, plugins have no way of knowing the maximum number of times you can sell a product if you use dynamic product amount.</td><td>Yes</td><td>Yes</td></tr><tr><td>Server  Performances</td><td>Maybe high when you have much buy/sell requests.</td><td>Same as ALL.</td><td>Low, just like other shop plugins doing!</td><td>Same as CLASSIC_ANY.</td></tr></tbody></table>
-
+* price-mode/product-mode: Support `ANY, ALL, CLASSIC_ANY, CLASSIC_ALL`.  Plase see [Mode](products.md#mode) to know more. **Required.**
 * buy-actions: The action will run after buy this product, use [Action Forma](../format/action-format.md)[t](../format/action-format.md) here. **Optional.**&#x20;
 * sell-actions: The action will run after sell this product,  use [Action Format](../format/action-format.md) here. **Optional.**
 * fail-actions: The action will run if we fail to buy or sell this product,  use [Action Format](../format/action-format.md) here. **Optional.**&#x20;
@@ -245,3 +315,45 @@ The example config of **Sub Buttons** can be found at [Shops](shops.md) page, pl
 {% hint style="warning" %}
 If the corresponding product of the sub button is not displayed in the shop GUI, or if the player does not meet the conditions to open the corresponding shop menu, the item cannot be traded. If this is not desired, change the `settings.secret-shop-items` option in the shop configuration to `false`.
 {% endhint %}
+
+## Mode
+
+### ALL example: coins and diamonds
+
+```yaml
+price-mode: ALL
+buy-prices:
+  coins:
+    economy-plugin: Vault
+    amount: 500
+    placeholder: '&6$500'
+  diamonds:
+    material: DIAMOND
+    amount: 8
+    placeholder: '&b8 diamonds'
+```
+
+The player must provide both entries.
+
+### ANY example: money or points
+
+```yaml
+price-mode: ANY
+buy-prices:
+  money:
+    economy-plugin: Vault
+    amount: 1000
+    placeholder: '&6$1,000'
+  points:
+    economy-plugin: PlayerPoints
+    amount: 50
+    placeholder: '&e50 points'
+```
+
+Only one applicable alternative is used. Conditions can control which alternative is available.
+
+### When not to use CLASSIC modes
+
+Use `ALL` or `ANY` when entries rely on staged application such as use dynamic price, use `start-apply`, `end-apply`, or complex per-entry conditions. Use a `CLASSIC_` mode only when the configuration follows the simple immediate-application model.
+
+<table><thead><tr><th width="118">Mode</th><th width="179">ANY</th><th>ALL</th><th>CLASSIC_ANY</th><th>CLASSIC_ALL</th></tr></thead><tbody><tr><td>Product Give</td><td>Give random products that meet conditions.</td><td>Give all products.</td><td>Same as ANY.</td><td>Same as ALL.</td></tr><tr><td>Product /Price Take</td><td>First product/price that we found player meet condition and have enough amount.</td><td>Players must have all products/prices that meet conditions to sell.</td><td>Same as ANY.</td><td>Same as ALL.</td></tr><tr><td>Price Give (means sell)</td><td>First prices meet the condition requirements.</td><td>All prices will be given.</td><td>Same as ANY.</td><td>Same as ALL.</td></tr><tr><td>Price Support</td><td>Support dynamic price &#x26; <code>apply</code> option.</td><td>Same as ALL.</td><td>Price must be same at  everytime.</td><td>Same as CLASSIC_ALL.</td></tr><tr><td>Support Sell All if you are using dynamic value in products <code>amount</code>  option.</td><td><strong>No</strong><br>Due to the dynamic nature of price values, plugins have no way of knowing the maximum number of times you can sell a product if you use dynamic product amount.</td><td><strong>No</strong><br>Due to the dynamic nature of price values, plugins have no way of knowing the maximum number of times you can sell a product if you use dynamic product amount.</td><td>Yes</td><td>Yes</td></tr><tr><td>Server  Performances</td><td>Maybe high when you have much buy/sell requests.</td><td>Same as ALL.</td><td>Low, just like other shop plugins doing!</td><td>Same as CLASSIC_ANY.</td></tr></tbody></table>
