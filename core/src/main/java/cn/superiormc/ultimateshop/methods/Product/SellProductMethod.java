@@ -123,7 +123,7 @@ public class SellProductMethod {
         }
         double finalMultiplier = multiplier;
         if (!ignoreSellMultiplier && !notCost) {
-            finalMultiplier = MathUtil.multiply(finalMultiplier, ShopHelper.getSellMultiplier(player));
+            finalMultiplier = MathUtil.multiply(finalMultiplier, ShopHelper.getSellMultiplier(player, item));
         }
         ObjectCache tempVal3 = CacheManager.cacheManager.getObjectCache(player);
         ObjectCache tempVal11 = CacheManager.cacheManager.serverCache;

@@ -84,6 +84,9 @@ sell:
   multiplier:
     enabled: false
     display-original-price: true
+    black-dynamic-price: true
+    black-shops:
+      - 'example'
     # Support value: MAX, STACK
     # MAX mode: will use the maximum value as the result
     # STACK mode: As long as the player meets the conditions, it will be stacked and multiplied.

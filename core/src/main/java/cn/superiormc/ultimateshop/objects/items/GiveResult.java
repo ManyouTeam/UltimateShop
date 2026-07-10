@@ -2,6 +2,7 @@ package cn.superiormc.ultimateshop.objects.items;
 
 import cn.superiormc.ultimateshop.api.ShopHelper;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
+import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import org.bukkit.entity.Player;
 
 import java.math.BigDecimal;
@@ -38,9 +39,12 @@ public class GiveResult {
 
     public Map<AbstractSingleThing, BigDecimal> getResultMapForSellMultiplierDisplay(Player player) {
         if (!ConfigManager.configManager.getBoolean("sell.multiplier.display-original-price")) {
+            AbstractThings things = getThings();
+            ObjectItem item = things == null ? null : things.getItem();
+            double multiplier = ShopHelper.getSellMultiplier(player, item);
             Map<AbstractSingleThing, BigDecimal> map = new HashMap<>();
             for (Map.Entry<AbstractSingleThing, BigDecimal> entry : resultMap.entrySet()) {
-                map.put(entry.getKey(), entry.getValue().multiply(BigDecimal.valueOf(ShopHelper.getSellMultiplier(player))));
+                map.put(entry.getKey(), entry.getValue().multiply(BigDecimal.valueOf(multiplier)));
             }
             return map;
         }

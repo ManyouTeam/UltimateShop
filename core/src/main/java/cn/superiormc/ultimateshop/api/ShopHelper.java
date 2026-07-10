@@ -5,6 +5,7 @@ import cn.superiormc.ultimateshop.managers.CacheManager;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.LanguageManager;
 import cn.superiormc.ultimateshop.managers.MenuStatusManager;
+import cn.superiormc.ultimateshop.methods.Product.BuyProductMethod;
 import cn.superiormc.ultimateshop.methods.Product.SellProductMethod;
 import cn.superiormc.ultimateshop.methods.ProductTradeStatus;
 import cn.superiormc.ultimateshop.objects.ObjectShop;
@@ -135,6 +136,29 @@ public class ShopHelper {
         return getBuyPrices(ItemStorage.of(items), player, amount);
     }
 
+    public static double getVaultBuyPrice(ItemStack[] items, Player player, int amount) {
+        TakeResult takeResult = getBuyPrices(items, player, amount);
+        if (takeResult == null) {
+            return -1;
+        }
+        Map<AbstractSingleThing, BigDecimal> result = takeResult.getResultMap();
+        if (result.size() != 1) {
+            return -1;
+        }
+        AbstractSingleThing thing = result.keySet().iterator().next();
+        if (thing.empty || thing.type != ThingType.HOOK_ECONOMY) {
+            return -1;
+        }
+        if (thing.getSingleSection().getString("economy-plugin", "").equals("Vault")) {
+            BigDecimal bigDecimal = result.get(thing);
+            if (bigDecimal == null) {
+                return -1;
+            }
+            return bigDecimal.doubleValue();
+        }
+        return -1;
+    }
+
     @Nullable
     public static String getBuyPricesDisplay(ItemStorage storage, Player player, int amount) {
         for (ObjectShop shop : ConfigManager.configManager.getShops()) {
@@ -172,6 +196,29 @@ public class ShopHelper {
     @Nullable
     public static GiveResult getSellPrices(ItemStack[] items, Player player, int amount) {
         return getSellPrices(ItemStorage.of(items), player, amount);
+    }
+
+    public static double getVaultSellPrice(ItemStack[] items, Player player, int amount) {
+        GiveResult giveResult = getSellPrices(items, player, amount);
+        if (giveResult == null) {
+            return -1;
+        }
+        Map<AbstractSingleThing, BigDecimal> result = giveResult.getResultMap();
+        if (result.size() != 1) {
+            return -1;
+        }
+        AbstractSingleThing thing = result.keySet().iterator().next();
+        if (thing.empty || thing.type != ThingType.HOOK_ECONOMY) {
+            return -1;
+        }
+        if (thing.getSingleSection().getString("economy-plugin", "").equals("Vault")) {
+            BigDecimal bigDecimal = result.get(thing);
+            if (bigDecimal == null) {
+                return -1;
+            }
+            return bigDecimal.doubleValue();
+        }
+        return -1;
     }
 
     @Nullable
@@ -229,6 +276,10 @@ public class ShopHelper {
     }
 
     public static double getSellMultiplier(Player player) {
+        return getSellMultiplier(player, null);
+    }
+
+    public static double getSellMultiplier(Player player, @Nullable ObjectItem item) {
         if (player == null || UltimateShop.freeVersion) {
             return 1D;
         }
@@ -236,6 +287,16 @@ public class ShopHelper {
         ConfigurationSection multiplierSection = ConfigManager.configManager.getSection("sell.multiplier");
         if (multiplierSection == null || !multiplierSection.getBoolean("enabled")) {
             return 1D;
+        }
+
+        if (item != null) {
+            if (multiplierSection.getStringList("black-shops").contains(item.getShop())) {
+                return 1D;
+            }
+            if (multiplierSection.getBoolean("black-dynamic-price", true)
+                    && item.getSellPrice().singlePrices.stream().anyMatch(price -> !price.isStatic())) {
+                return 1D;
+            }
         }
 
         ConfigurationSection valueSection = multiplierSection.getConfigurationSection("value");
@@ -376,5 +437,47 @@ public class ShopHelper {
     @Nullable
     public static ObjectMenu getOpeningMenu(Player player) {
         return MenuStatusManager.menuStatusManager.getOpeningMenu(player);
+    }
+
+    public static ProductTradeStatus startBuy(Inventory inventory,
+                                              ObjectItem item,
+                                              Player player,
+                                              boolean forceDisplayMessage,
+                                              boolean notCost,
+                                              int multi) {
+        return BuyProductMethod.startBuy(ItemStorage.of(inventory), item, player, forceDisplayMessage, notCost, multi);
+    }
+
+    public static ProductTradeStatus startBuy(ItemStack[] contents,
+                                              ObjectItem item,
+                                              Player player,
+                                              boolean forceDisplayMessage,
+                                              boolean notCost,
+                                              int multi) {
+        return BuyProductMethod.startBuy(ItemStorage.of(contents), item, player, forceDisplayMessage, notCost, multi);
+    }
+
+    public static ProductTradeStatus startSell(Inventory inventory,
+                                               ObjectItem item,
+                                               Player player,
+                                               boolean forceDisplayMessage,
+                                               boolean notCost,
+                                               boolean ableMaxSell,
+                                               boolean sellAll,
+                                               int multi,
+                                               double multiplier) {
+        return SellProductMethod.startSell(ItemStorage.of(inventory), item, player, forceDisplayMessage, notCost, ableMaxSell, sellAll, multi, multiplier);
+    }
+
+    public static ProductTradeStatus startSell(ItemStack[] contents,
+                                               ObjectItem item,
+                                               Player player,
+                                               boolean forceDisplayMessage,
+                                               boolean notCost,
+                                               boolean ableMaxSell,
+                                               boolean sellAll,
+                                               int multi,
+                                               double multiplier) {
+        return SellProductMethod.startSell(ItemStorage.of(contents), item, player, forceDisplayMessage, notCost, ableMaxSell, sellAll, multi, multiplier);
     }
 }
