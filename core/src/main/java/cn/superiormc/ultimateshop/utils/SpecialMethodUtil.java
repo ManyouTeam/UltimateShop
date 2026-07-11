@@ -17,6 +17,8 @@ import java.util.List;
 
 public interface SpecialMethodUtil {
 
+    void sellChestListener();
+
     String methodID();
 
     void dispatchCommand(String command);

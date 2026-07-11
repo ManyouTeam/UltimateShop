@@ -24,7 +24,7 @@ import org.bukkit.persistence.PersistentDataType;
 
 public class SellChestListener implements Listener {
 
-    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onPlace(BlockPlaceEvent event) {
         if (event.getBlockPlaced().getType() != Material.CHEST) {
             return;
@@ -63,6 +63,7 @@ public class SellChestListener implements Listener {
             return;
         }
         if (!HookManager.hookManager.getProtectionCanPlace(event.getPlayer(), event.getBlockPlaced().getLocation())) {
+            event.setCancelled(true);
             return;
         }
 
@@ -87,7 +88,7 @@ public class SellChestListener implements Listener {
         SellChestManager.sellChestManager.registerSellChest(chest, event.getPlayer(), sellChest, times);
     }
 
-    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onBreak(BlockBreakEvent event) {
         Block block = event.getBlock();
         BlockState state = block.getState();
@@ -100,6 +101,7 @@ public class SellChestListener implements Listener {
             return;
         }
         if (!HookManager.hookManager.getProtectionCanBreak(event.getPlayer(), block.getLocation())) {
+            event.setCancelled(true);
             return;
         }
 
@@ -120,21 +122,21 @@ public class SellChestListener implements Listener {
         handleSellChestDestroy(block, true);
     }
 
-    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onBlockExplode(BlockExplodeEvent event) {
         for (Block block : event.blockList()) {
             handleSellChestDestroy(block, true);
         }
     }
 
-    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onEntityExplode(EntityExplodeEvent event) {
         for (Block block : event.blockList()) {
             handleSellChestDestroy(block, true);
         }
     }
 
-    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onPistonExtend(BlockPistonExtendEvent event) {
         for (Block block : event.getBlocks()) {
             if (isSellChest(block)) {
@@ -144,7 +146,7 @@ public class SellChestListener implements Listener {
         }
     }
 
-    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onPistonRetract(BlockPistonRetractEvent event) {
         for (Block block : event.getBlocks()) {
             if (isSellChest(block)) {
@@ -154,7 +156,7 @@ public class SellChestListener implements Listener {
         }
     }
 
-    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onEntityGrief(EntityChangeBlockEvent event) {
         Block block = event.getBlock();
         if (isSellChest(block)) {
@@ -172,7 +174,7 @@ public class SellChestListener implements Listener {
         SellChestManager.sellChestManager.handleChunkUnload(event);
     }
 
-    private void handleSellChestDestroy(Block block, boolean dropItem) {
+    protected void handleSellChestDestroy(Block block, boolean dropItem) {
         BlockState state = block.getState();
         if (!(state instanceof Chest chest)) {
             return;
@@ -195,7 +197,7 @@ public class SellChestListener implements Listener {
         SellChestManager.sellChestManager.unregisterSellChest(block.getLocation());
     }
 
-    private boolean isSellChest(Block block) {
+    protected boolean isSellChest(Block block) {
         BlockState state = block.getState();
         if (!(state instanceof Chest chest)) {
             return false;

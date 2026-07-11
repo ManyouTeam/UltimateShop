@@ -1,5 +1,7 @@
 package cn.superiormc.ultimateshop.spigot;
 
+import cn.superiormc.ultimateshop.UltimateShop;
+import cn.superiormc.ultimateshop.listeners.SellChestListener;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
 import cn.superiormc.ultimateshop.utils.SchedulerUtil;
 import cn.superiormc.ultimateshop.utils.SpecialMethodUtil;
@@ -27,6 +29,11 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class SpigotMethodUtil implements SpecialMethodUtil {
+
+    @Override
+    public void sellChestListener() {
+        Bukkit.getPluginManager().registerEvents(new SellChestListener(), UltimateShop.instance);
+    }
 
     private static final Pattern TEXTURE_URL_PATTERN = Pattern.compile("\"url\"\\s*:\\s*\"(https?://textures\\.minecraft\\.net/texture/[^\"]+)\"");
 

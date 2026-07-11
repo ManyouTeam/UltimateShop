@@ -259,9 +259,15 @@ public class SellChestManager {
             TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fFound sell chest at this chunk PDC: " + data);
         }
         String[] locStrings = data.split(";");
+        Set<String> validLocations = new LinkedHashSet<>();
 
         for (String s : locStrings) {
-            Location loc = stringToLoc(chunk.getWorld(), s);
+            Location loc;
+            try {
+                loc = stringToLoc(chunk.getWorld(), s);
+            } catch (NumberFormatException exception) {
+                continue;
+            }
             if (loc == null) {
                 continue;
             }
@@ -282,8 +288,11 @@ public class SellChestManager {
                 continue;
             }
 
+            validLocations.add(s);
             add(chest);
         }
+
+        writeChunkLocations(chunkPdc, validLocations);
     }
 
     public void handleChunkUnload(ChunkUnloadEvent event) {
@@ -307,12 +316,12 @@ public class SellChestManager {
         String currentData = chunkPdc.getOrDefault(KEY_CHUNK_CHESTS, PersistentDataType.STRING, "");
         String locStr = locToString(chest.getLocation());
 
-        if (!currentData.contains(locStr)) {
-            String newData = currentData.isEmpty() ? locStr : currentData + ";" + locStr;
-            chunkPdc.set(KEY_CHUNK_CHESTS, PersistentDataType.STRING, newData);
+        Set<String> locations = parseChunkLocations(currentData);
+        if (locations.add(locStr)) {
+            writeChunkLocations(chunkPdc, locations);
             // Debug
             if (ConfigManager.configManager.getBoolean("sell.sell-chest.debug")) {
-                TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fRegister new chest and save in chunk PDC: " + newData + " at chunk " + chunk.getChunkKey());
+                TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fRegister new chest and save in chunk PDC: " + String.join(";", locations) + " at chunk " + chunk.getChunkKey());
             }
         }
 
@@ -393,5 +402,26 @@ public class SellChestManager {
             return null;
         }
         return new Location(world, Double.parseDouble(parts[0]), Double.parseDouble(parts[1]), Double.parseDouble(parts[2]));
+    }
+
+    private Set<String> parseChunkLocations(String data) {
+        Set<String> locations = new LinkedHashSet<>();
+        if (data == null || data.isEmpty()) {
+            return locations;
+        }
+        for (String entry : data.split(";")) {
+            if (!entry.isEmpty()) {
+                locations.add(entry);
+            }
+        }
+        return locations;
+    }
+
+    private void writeChunkLocations(PersistentDataContainer pdc, Collection<String> locations) {
+        if (locations.isEmpty()) {
+            pdc.remove(KEY_CHUNK_CHESTS);
+        } else {
+            pdc.set(KEY_CHUNK_CHESTS, PersistentDataType.STRING, String.join(";", locations));
+        }
     }
 }

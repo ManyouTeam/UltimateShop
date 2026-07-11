@@ -6,6 +6,7 @@ import cn.superiormc.ultimateshop.gui.DialogGUI;
 import cn.superiormc.ultimateshop.gui.dialog.DialogView;
 import cn.superiormc.ultimateshop.managers.ErrorManager;
 import cn.superiormc.ultimateshop.paper.utils.PaperTextUtil;
+import cn.superiormc.ultimateshop.paper.listener.PaperSellChestListener;
 import cn.superiormc.ultimateshop.paper.methods.BuildItemPaper;
 import cn.superiormc.ultimateshop.paper.methods.DebuildItemPaper;
 import cn.superiormc.ultimateshop.paper.dialog.PaperDialogFactory;
@@ -34,6 +35,11 @@ import org.bukkit.inventory.meta.SkullMeta;
 import java.util.*;
 
 public class PaperMethodUtil implements SpecialMethodUtil {
+
+    @Override
+    public void sellChestListener() {
+        Bukkit.getPluginManager().registerEvents(new PaperSellChestListener(), UltimateShop.instance);
+    }
 
     @Override
     public String methodID() {
