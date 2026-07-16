@@ -47,7 +47,7 @@ public final class UltimateShop extends JavaPlugin {
             try {
                 Class<?> paperClass = Class.forName("cn.superiormc.ultimateshop.paper.PaperMethodUtil");
                 methodUtil = (SpecialMethodUtil) paperClass.getDeclaredConstructor().newInstance();
-                TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fPaper is found, entering Paper plugin mode...!");
+                TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fPaper is found, entering Paper plugin mode...");
             } catch (Throwable throwable) {
                 Bukkit.getConsoleSender().sendMessage(TextUtil.pluginPrefix() + " §cError: The plugin seems break, please download it again from site.");
                 Bukkit.getPluginManager().disablePlugin(this);
@@ -56,7 +56,7 @@ public final class UltimateShop extends JavaPlugin {
             try {
                 Class<?> spigotClass = Class.forName("cn.superiormc.ultimateshop.spigot.SpigotMethodUtil");
                 methodUtil = (SpecialMethodUtil) spigotClass.getDeclaredConstructor().newInstance();
-                TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fSpigot is found, entering Spigot plugin mode...!");
+                TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fSpigot is found, entering Spigot plugin mode...");
             } catch (Throwable throwable) {
                 Bukkit.getConsoleSender().sendMessage(TextUtil.pluginPrefix() + " §cError: The plugin seems break, please download it again from site.");
                 Bukkit.getPluginManager().disablePlugin(this);

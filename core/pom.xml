@@ -56,6 +56,12 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
+            <groupId>com.github.boxbeam</groupId>
+            <artifactId>Crunch</artifactId>
+            <version>master-2955c4dff3-1</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
             <groupId>com.sk89q.worldguard</groupId>
             <artifactId>worldguard-bukkit</artifactId>
             <version>7.0.14</version>
@@ -214,12 +220,6 @@
             <version>1.0.0</version>
             <scope>system</scope>
             <systemPath>${project.basedir}/lib/RoyaleEconomyAPI.jar</systemPath>
-        </dependency>
-        <dependency>
-            <groupId>com.github.Redempt</groupId>
-            <artifactId>Crunch</artifactId>
-            <version>2.0</version>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.bencodez</groupId>

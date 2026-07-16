@@ -1,4 +1,4 @@
-'[error:
+error:
   product-not-found: "&#98FB98[UltimateShop] &cCan not found product {product}!"
   shop-not-found: "&#98FB98[UltimateShop] &cCan not found shop {shop}!"
   player-not-found: "&#98FB98[UltimateShop] &cWe can't find player {player}!"

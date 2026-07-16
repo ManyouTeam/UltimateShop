@@ -308,6 +308,7 @@ use-times:
 
 math:
   enabled: true
+  enable-function: true
   scale: 2
   static-scale: false
 
