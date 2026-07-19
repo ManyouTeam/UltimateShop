@@ -13,7 +13,7 @@ public class CommandManager {
 
     public static CommandManager commandManager;
 
-    private Map<String, AbstractCommand> registeredCommands = new HashMap<>();
+    private final Map<String, AbstractCommand> registeredCommands = new HashMap<>();
 
     public CommandManager(){
         commandManager = this;
@@ -50,7 +50,6 @@ public class CommandManager {
        registerNewSubCommand(new SubAddCustomPlaceholder());
        registerNewSubCommand(new SubSetCustomPlaceholder());
        registerNewSubCommand(new SubSearch());
-       registerNewSubCommand(new SubSearchGUI());
        registerNewSubCommand(new SubSellHand());
        registerNewSubCommand(new SubSellAllHand());
        registerNewSubCommand(new SubUpdateGUI());

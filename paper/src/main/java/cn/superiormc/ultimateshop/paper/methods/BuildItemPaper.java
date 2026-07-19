@@ -1,8 +1,7 @@
 package cn.superiormc.ultimateshop.paper.methods;
 
-import cn.superiormc.ultimateshop.UltimateShop;
-import cn.superiormc.ultimateshop.utils.CommonUtil;
 import cn.superiormc.ultimateshop.paper.utils.PaperTextUtil;
+import cn.superiormc.ultimateshop.utils.CommonUtil;
 import cn.superiormc.ultimateshop.utils.TextUtil;
 import com.destroystokyo.paper.profile.PlayerProfile;
 import com.destroystokyo.paper.profile.ProfileProperty;
@@ -24,7 +23,7 @@ import net.kyori.adventure.util.TriState;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
-import org.bukkit.block.*;
+import org.bukkit.block.BlockType;
 import org.bukkit.block.banner.Pattern;
 import org.bukkit.block.banner.PatternType;
 import org.bukkit.configuration.ConfigurationSection;
@@ -48,7 +47,6 @@ import org.bukkit.potion.PotionType;
 import java.util.*;
 
 public class BuildItemPaper {
-
     public static ItemStack buildItemStack(Player player,
                                            ConfigurationSection section,
                                            int amount,
@@ -169,7 +167,7 @@ public class BuildItemPaper {
                     blockTypeKeys.add(key);
                     i ++;
                 }
-                RegistryKeySet<@org.jetbrains.annotations.NotNull BlockType> blockTypes = RegistrySet.keySet(RegistryKey.BLOCK, blockTypeKeys);
+                RegistryKeySet<BlockType> blockTypes = RegistrySet.keySet(RegistryKey.BLOCK, blockTypeKeys);
                 String booleanValue = ruleParseResult[i + 1];
                 Boolean parsedBoolean = null;
                 if (!booleanValue.equalsIgnoreCase("null")) {
@@ -232,17 +230,36 @@ public class BuildItemPaper {
         }
 
         // Attribute
-        ConfigurationSection attributesKey = section.getConfigurationSection("attributes");
-        if (attributesKey != null) {
+        List<Map<?, ?>> attributes = new ArrayList<>(section.getMapList("attributes"));
+        if (!section.isList("attributes")) {
+            // Backwards compatibility for the old attribute-type section format.
+            ConfigurationSection attributesKey = section.getConfigurationSection("attributes");
+            if (attributesKey != null) {
+                for (String attribute : attributesKey.getKeys(false)) {
+                    ConfigurationSection attributeSection = attributesKey.getConfigurationSection(attribute);
+                    if (attributeSection != null) {
+                        Map<String, Object> attributeData = new LinkedHashMap<>(attributeSection.getValues(false));
+                        attributeData.put("type", attribute);
+                        attributes.add(attributeData);
+                    }
+                }
+            }
+        }
+        if (section.isList("attributes") || !attributes.isEmpty()) {
             ItemAttributeModifiers.Builder builder = ItemAttributeModifiers.itemAttributes();
-            for (String attribute : attributesKey.getKeys(false)) {
+            for (Map<?, ?> attributeData : attributes) {
+                Object attributeType = attributeData.get("type");
+                if (attributeType == null) {
+                    continue;
+                }
+                String attribute = attributeType.toString();
                 Attribute attributeInst = Registry.ATTRIBUTE.get(CommonUtil.parseNamespacedKey(attribute));
                 if (attributeInst == null) {
                     continue;
                 }
-                ConfigurationSection subSection = attributesKey.getConfigurationSection(attribute);
-                if (subSection == null) {
-                    continue;
+                ConfigurationSection subSection = new org.bukkit.configuration.MemoryConfiguration();
+                for (Map.Entry<?, ?> attributeEntry : attributeData.entrySet()) {
+                    subSection.set(attributeEntry.getKey().toString(), attributeEntry.getValue());
                 }
 
                 String attribName = subSection.getString("name");
@@ -315,19 +332,38 @@ public class BuildItemPaper {
         }
 
         // Banner
-        ConfigurationSection bannerPatternsKey = section.getConfigurationSection("banner-patterns");
-        if (bannerPatternsKey != null) {
+        List<String> bannerPatterns = section.getStringList("banner-patterns");
+        if (section.isList("banner-patterns")) {
             BannerPatternLayers.Builder builder = BannerPatternLayers.bannerPatternLayers();
-            for (String pattern : bannerPatternsKey.getKeys(false)) {
+            for (String bannerPattern : bannerPatterns) {
+                int separatorIndex = bannerPattern.lastIndexOf(':');
+                if (separatorIndex <= 0 || separatorIndex == bannerPattern.length() - 1) {
+                    continue;
+                }
+                String pattern = bannerPattern.substring(0, separatorIndex).trim();
+                String bannerColor = bannerPattern.substring(separatorIndex + 1).trim();
                 PatternType type = RegistryAccess.registryAccess().getRegistry(RegistryKey.BANNER_PATTERN).get(CommonUtil.parseNamespacedKey(pattern));
-                //PatternType type = Registry.BANNER_PATTERN.get(CommonUtil.parseNamespacedKey(pattern));
-                String bannerColor = bannerPatternsKey.getString(pattern);
-                if (type != null && bannerColor != null) {
+                if (type != null) {
                     DyeColor color = Enums.getIfPresent(DyeColor.class, bannerColor.toUpperCase()).or(DyeColor.WHITE);
                     builder.add(new Pattern(color, type));
                 }
             }
             item.setData(DataComponentTypes.BANNER_PATTERNS, builder.build());
+        } else {
+            // Backwards compatibility for the old "PATTERN: COLOR" map format.
+            ConfigurationSection bannerPatternsKey = section.getConfigurationSection("banner-patterns");
+            if (bannerPatternsKey != null) {
+                BannerPatternLayers.Builder builder = BannerPatternLayers.bannerPatternLayers();
+                for (String pattern : bannerPatternsKey.getKeys(false)) {
+                    PatternType type = RegistryAccess.registryAccess().getRegistry(RegistryKey.BANNER_PATTERN).get(CommonUtil.parseNamespacedKey(pattern));
+                    String bannerColor = bannerPatternsKey.getString(pattern);
+                    if (type != null && bannerColor != null) {
+                        DyeColor color = Enums.getIfPresent(DyeColor.class, bannerColor.toUpperCase()).or(DyeColor.WHITE);
+                        builder.add(new Pattern(color, type));
+                    }
+                }
+                item.setData(DataComponentTypes.BANNER_PATTERNS, builder.build());
+            }
         }
 
         // Potion
@@ -447,9 +483,7 @@ public class BuildItemPaper {
         // Skull
         String skullTextureNameKey = section.getString("skull-meta", section.getString("skull"));
         if (skullTextureNameKey != null) {
-            if (!UltimateShop.freeVersion) {
-                skullTextureNameKey = TextUtil.withPAPI(skullTextureNameKey, player);
-            }
+            skullTextureNameKey = TextUtil.withPAPI(skullTextureNameKey, player);
             PlayerProfile profile = Bukkit.createProfile(UUID.randomUUID(), "");
             profile.setProperty(new ProfileProperty("textures", skullTextureNameKey));
             item.setData(DataComponentTypes.PROFILE, ResolvableProfile.resolvableProfile(profile));
@@ -654,9 +688,19 @@ public class BuildItemPaper {
 
         // Damage Resistant
         String damageResistant = section.getString("damage-resistant");
-        if (damageResistant != null) {
+        if (damageResistant != null && CommonUtil.getYearVersion(26, 0, 0)) {
             TagKey<DamageType> damageTypeTag = TagKey.create(RegistryKey.DAMAGE_TYPE, damageResistant);
-            item.setData(DataComponentTypes.DAMAGE_RESISTANT, DamageResistant.damageResistant(damageTypeTag));
+            RegistryKeySet<DamageType> damageTypes = RegistryAccess.registryAccess()
+                    .getRegistry(RegistryKey.DAMAGE_TYPE)
+                    .getTag(damageTypeTag);
+            item.setData(DataComponentTypes.DAMAGE_RESISTANT, DamageResistant.damageResistant(damageTypes));
+        } else if (section.isList("damage-resistant")) {
+            List<TypedKey<DamageType>> damageTypes = section.getStringList("damage-resistant").stream()
+                    .map(key -> TypedKey.create(RegistryKey.DAMAGE_TYPE, key))
+                    .toList();
+            item.setData(DataComponentTypes.DAMAGE_RESISTANT, DamageResistant.damageResistant(
+                    RegistrySet.keySet(RegistryKey.DAMAGE_TYPE, damageTypes)
+            ));
         }
 
         // Block Attack
@@ -672,9 +716,19 @@ public class BuildItemPaper {
             if (blocksAttacksKey.contains("block-sound")) {
                 builder.blockSound(CommonUtil.parseNamespacedKey(blocksAttacksKey.getString("block-sound", "")));
             }
-            if (blocksAttacksKey.contains("bypassed-by")) {
-                TagKey<DamageType> damageTypeTag = TagKey.create(RegistryKey.DAMAGE_TYPE, blocksAttacksKey.getString("bypassed-by", ""));
-                builder.bypassedBy(damageTypeTag);
+            if (blocksAttacksKey.contains("bypassed-by") && CommonUtil.getYearVersion(26, 0, 0)) {
+                String bypassedBy = blocksAttacksKey.getString("bypassed-by");
+                if (bypassedBy != null) {
+                    TagKey<DamageType> damageTypeTag = TagKey.create(RegistryKey.DAMAGE_TYPE, bypassedBy);
+                    builder.bypassedBy(RegistryAccess.registryAccess()
+                            .getRegistry(RegistryKey.DAMAGE_TYPE)
+                            .getTag(damageTypeTag));
+                } else if (blocksAttacksKey.isList("bypassed-by")) {
+                    List<TypedKey<DamageType>> damageTypes = blocksAttacksKey.getStringList("bypassed-by").stream()
+                            .map(key -> TypedKey.create(RegistryKey.DAMAGE_TYPE, key))
+                            .toList();
+                    builder.bypassedBy(RegistrySet.keySet(RegistryKey.DAMAGE_TYPE, damageTypes));
+                }
             }
             item.setData(DataComponentTypes.BLOCKS_ATTACKS, builder.build());
         }

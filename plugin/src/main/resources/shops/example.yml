@@ -190,7 +190,7 @@ items:
       1:
         material: blue_banner
         patterns:
-          SQUARE_BOTTOM_LEFT: LIGHT_BLUE
+          - 'SQUARE_BOTTOM_LEFT: LIGHT_BLUE'
         amount: 1
     buy-prices:
       1:

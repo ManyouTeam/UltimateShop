@@ -112,8 +112,8 @@ component:
     mending: 1
   glow: true
   attributes:
-    max_health: 
-      name: 'GENERIC_MAX_HEALTH' # Attribute ID
+    - type: MAX_HEALTH
+      name: 'generic.max_health'
       amount: 5
       operation: ADD_NUMBER
       slot: MAINHAND
@@ -263,11 +263,11 @@ custom-model-data: 15
 
 Please note that 1.20.5 has changed attribute format, if you generated item before 1.20.5, you have to reconfig them into new format.
 
-Config section format is `Attribute ID` and then has multi sub options.&#x20;
+Each list entry is one attribute modifier. `type` is the Attribute ID. Entries are applied in list order, and the same attribute type can appear more than once.
 
 ```yaml
 attributes:
-  GENERIC_ATTACK_DAMAGE: 
+  - type: MAX_HEALTH
     name: generic.attack_damage 
     amount: 12
     operation: ADD_NUMBER # ADD_NUMBER, ADD_SCALAR, MULTIPLY_SCALAR_1
@@ -309,11 +309,13 @@ stored-enchants:
 
 ### Patterns
 
-Config section format is: `Pattern ID: Pattern Color`.
+Patterns are applied in list order. The same pattern type can appear more than once.
 
 ```yaml
 patterns:
-  BASE: WHITE
+  - 'RHOMBUS: CYAN'
+  - 'BORDER: LIGHT_GRAY'
+  - 'BORDER: BLACK'
 ```
 
 ## Potion

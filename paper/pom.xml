@@ -15,13 +15,13 @@
         <dependency>
             <groupId>net.kyori</groupId>
             <artifactId>adventure-api</artifactId>
-            <version>4.25.0</version>
+            <version>5.2.0</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>io.papermc.paper</groupId>
             <artifactId>paper-api</artifactId>
-            <version>1.21.11-R0.1-SNAPSHOT</version>
+            <version>26.2.build.55-alpha</version>
             <scope>provided</scope>
         </dependency>
         <dependency>

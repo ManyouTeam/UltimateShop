@@ -12,6 +12,8 @@ import io.papermc.paper.datacomponent.item.consumable.ConsumeEffect;
 import io.papermc.paper.registry.RegistryAccess;
 import io.papermc.paper.registry.RegistryKey;
 import io.papermc.paper.registry.TypedKey;
+import io.papermc.paper.registry.set.RegistryKeySet;
+import io.papermc.paper.registry.tag.Tag;
 import net.kyori.adventure.key.Key;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
@@ -150,7 +152,7 @@ public class DebuildItemPaper {
         if (item.isDataOverridden(DataComponentTypes.ENCHANTMENTS)) {
             ItemEnchantments enchants = item.getData(DataComponentTypes.ENCHANTMENTS);
             if (enchants != null) {
-                ConfigurationSection enchantsSection = section.createSection("enchants"); // 创建子节
+                ConfigurationSection enchantsSection = section.createSection("enchants"); // 
                 enchants.enchantments().forEach((enchantment, level) -> {
                     Key key = RegistryAccess.registryAccess().getRegistry(RegistryKey.ENCHANTMENT).getKey(enchantment);
                     if (key != null) {
@@ -164,34 +166,36 @@ public class DebuildItemPaper {
         if (item.isDataOverridden(DataComponentTypes.ATTRIBUTE_MODIFIERS)) {
             ItemAttributeModifiers attributes = item.getData(DataComponentTypes.ATTRIBUTE_MODIFIERS);
             if (attributes != null) {
-                ConfigurationSection attributesSection = section.createSection("attributes");
+                List<Map<String, Object>> attributeList = new ArrayList<>();
 
                 for (ItemAttributeModifiers.Entry entry : attributes.modifiers()) {
                     Attribute attribute = entry.attribute();
                     AttributeModifier modifier = entry.modifier();
-                    entry.getGroup();
                     EquipmentSlotGroup slot = entry.getGroup();
                     AttributeModifierDisplay display = entry.display();
-                    ConfigurationSection attributeSection = attributesSection.createSection(attribute.getKey().getKey());
-                    attributeSection.set("name", modifier.getName());
-                    attributeSection.set("amount", modifier.getAmount());
-                    attributeSection.set("operation", modifier.getOperation().name());
-                    attributeSection.set("slot", slot.toString());
+                    Map<String, Object> attributeData = new LinkedHashMap<>();
+                    attributeData.put("type", attribute.getKey().getKey().toUpperCase(Locale.ENGLISH));
+                    attributeData.put("name", modifier.getName());
+                    attributeData.put("amount", modifier.getAmount());
+                    attributeData.put("operation", modifier.getOperation().name());
+                    attributeData.put("slot", slot.toString());
 
-                    // Paper 1.21+ 显示模式
+                    // Paper 1.21+ display mode
                     if (CommonUtil.getMinorVersion(21, 6)) {
                         if (display instanceof AttributeModifierDisplay.Hidden) {
-                            attributeSection.set("display-mode", "HIDDEN");
+                            attributeData.put("display-mode", "HIDDEN");
                         } else if (display instanceof AttributeModifierDisplay.Default) {
-                            attributeSection.set("display-mode", "RESET");
+                            attributeData.put("display-mode", "RESET");
                         } else if (display instanceof AttributeModifierDisplay.OverrideText displayText) {
-                            attributeSection.set("display-mode", "OVERRIDE");
-                            attributeSection.set("display-text", displayText.text());
+                            attributeData.put("display-mode", "OVERRIDE");
+                            attributeData.put("display-text", displayText.text());
                         } else {
-                            attributeSection.set("display-mode", "DEFAULT");
+                            attributeData.put("display-mode", "DEFAULT");
                         }
                     }
+                    attributeList.add(attributeData);
                 }
+                section.set("attributes", attributeList);
             }
         }
 
@@ -209,11 +213,11 @@ public class DebuildItemPaper {
         if (item.isDataOverridden(DataComponentTypes.STORED_ENCHANTMENTS)) {
             ItemEnchantments enchants = item.getData(DataComponentTypes.STORED_ENCHANTMENTS);
             if (enchants != null) {
-                ConfigurationSection enchantsSection = section.createSection("stored-enchants"); // 创建子节
+                ConfigurationSection enchantsSection = section.createSection("stored-enchants"); // 
                 enchants.enchantments().forEach((enchantment, level) -> {
                     Key key = RegistryAccess.registryAccess().getRegistry(RegistryKey.ENCHANTMENT).getKey(enchantment);
                     if (key != null) {
-                        enchantsSection.set(key.asString(), level); // 设置到配置
+                        enchantsSection.set(key.asString(), level); // ?
                     }
                 });
             }
@@ -223,14 +227,15 @@ public class DebuildItemPaper {
         if (item.isDataOverridden(DataComponentTypes.BANNER_PATTERNS)) {
             BannerPatternLayers bannerPatterns = item.getData(DataComponentTypes.BANNER_PATTERNS);
             if (bannerPatterns != null) {
-                ConfigurationSection bannerSection = section.createSection("banner-patterns");
+                List<String> bannerPatternList = new ArrayList<>();
                 bannerPatterns.patterns().forEach(layer -> {
-                    org.bukkit.NamespacedKey key = RegistryAccess.registryAccess().getRegistry(RegistryKey.BANNER_PATTERN).
+                    NamespacedKey key = RegistryAccess.registryAccess().getRegistry(RegistryKey.BANNER_PATTERN).
                             getKey(layer.getPattern());
                     if (key != null) {
-                        bannerSection.set(key.asString(), layer.getColor().name());
+                        bannerPatternList.add(key.asString() + ": " + layer.getColor().name());
                     }
                 });
+                section.set("banner-patterns", bannerPatternList);
             }
         }
 
@@ -458,15 +463,18 @@ public class DebuildItemPaper {
                 ConfigurationSection equippableSection = section.createSection("equippable");
                 equippableSection.set("slot", eq.slot().name());
                 equippableSection.set("equip-sound", eq.equipSound().asString());
-                if (eq.assetId() != null) equippableSection.set("asset-id", eq.assetId().asString());
-                if (eq.cameraOverlay() != null)
+                if (eq.assetId() != null) {
+                    equippableSection.set("asset-id", eq.assetId().asString());
+                }
+                if (eq.cameraOverlay() != null) {
                     equippableSection.set("camera-overlay", eq.cameraOverlay().asString());
+                }
                 // Equippable allowed entities
                 if (eq.allowedEntities() != null && !eq.allowedEntities().values().isEmpty()) {
                     equippableSection.set("allowed-entities",
-                            eq.allowedEntities().values().stream()  // <-- 这里用 .values()
-                                    .map(TypedKey::key)                // 获取 NamespacedKey
-                                    .map(Key::asString)              // 转为 String
+                            eq.allowedEntities().values().stream()  // <-- ?.values()
+                                    .map(TypedKey::key)                //  NamespacedKey
+                                    .map(Key::asString)              //  String
                                     .toList()
                     );
                 }
@@ -490,10 +498,10 @@ public class DebuildItemPaper {
         }
 
         // Damage Resistant
-        if (item.isDataOverridden(DataComponentTypes.DAMAGE_RESISTANT)) {
+        if (item.isDataOverridden(DataComponentTypes.DAMAGE_RESISTANT) && CommonUtil.getYearVersion(26, 0, 0)) {
             DamageResistant resistant = item.getData(DataComponentTypes.DAMAGE_RESISTANT);
             if (resistant != null) {
-            section.set("damage-resistant", resistant.types().key().asString());
+                section.set("damage-resistant", serializeDamageTypes(resistant.types()));
             }
         }
 
@@ -506,9 +514,12 @@ public class DebuildItemPaper {
                     blocksSection.set("block-delay-seconds", blocks.blockSound().asString());
                 }
                 blocksSection.set("disable-cooldown-scale", blocks.disableCooldownScale());
-                if (blocks.blockSound() != null) blocksSection.set("block-sound", blocks.blockSound().asString());
-                if (blocks.bypassedBy() != null)
-                    blocksSection.set("bypassed-by", blocks.bypassedBy().key().asString());
+                if (blocks.blockSound() != null) {
+                    blocksSection.set("block-sound", blocks.blockSound().asString());
+                }
+                if (blocks.bypassedBy() != null && CommonUtil.getYearVersion(26, 0, 0)) {
+                    blocksSection.set("bypassed-by", serializeDamageTypes(blocks.bypassedBy()));
+                }
             }
         }
 
@@ -667,12 +678,23 @@ public class DebuildItemPaper {
         return section;
     }
 
+    private static Object serializeDamageTypes(RegistryKeySet<DamageType> damageTypes) {
+        if (damageTypes instanceof Tag<?> tag) {
+            return tag.tagKey().key().asString();
+        }
+        return damageTypes.values().stream()
+                .map(TypedKey::asString)
+                .toList();
+    }
+
     private static void serializeKineticWeaponCondition(
             KineticWeapon.Condition condition,
             ConfigurationSection parent,
             String key
     ) {
-        if (condition == null) return;
+        if (condition == null) {
+            return;
+        }
 
         ConfigurationSection condSection = parent.createSection(key);
         condSection.set("max-duration-ticks", condition.maxDurationTicks());

@@ -217,23 +217,27 @@ public class DebuildItem {
             // Attribute
             Multimap<Attribute, AttributeModifier> attributes = meta.getAttributeModifiers();
             if (attributes != null) {
+                List<Map<String, Object>> attributeList = new ArrayList<>();
                 for (Map.Entry<Attribute, AttributeModifier> attribute : attributes.entries()) {
-                    String path = "attributes." + attribute.getKey().name() + '.';
                     AttributeModifier modifier = attribute.getValue();
+                    Map<String, Object> attributeData = new LinkedHashMap<>();
 
+                    attributeData.put("type", attribute.getKey().name());
                     if (!CommonUtil.getMajorVersion(21)) {
-                        section.set(path + "id", modifier.getUniqueId().toString());
+                        attributeData.put("id", modifier.getUniqueId().toString());
                     }
-                    section.set(path + "name", modifier.getName());
-                    section.set(path + "amount", modifier.getAmount());
-                    section.set(path + "operation", modifier.getOperation().name());
+                    attributeData.put("name", modifier.getName());
+                    attributeData.put("amount", modifier.getAmount());
+                    attributeData.put("operation", modifier.getOperation().name());
 
                     if (CommonUtil.getMinorVersion(20, 5)) {
-                        section.set(path + "slot", modifier.getSlotGroup().toString());
+                        attributeData.put("slot", modifier.getSlotGroup().toString());
                     } else if (modifier.getSlot() != null) {
-                        section.set(path + "slot", modifier.getSlot().name());
+                        attributeData.put("slot", modifier.getSlot().name());
                     }
+                    attributeList.add(attributeData);
                 }
+                section.set("attributes", attributeList);
             }
 
             // Damage
@@ -261,10 +265,11 @@ public class DebuildItem {
             // Banner
             if (meta instanceof BannerMeta) {
                 BannerMeta banner = (BannerMeta) meta;
-                ConfigurationSection patterns = section.createSection("patterns");
+                List<String> patterns = new ArrayList<>();
                 for (Pattern pattern : banner.getPatterns()) {
-                    patterns.set(pattern.getPattern().name(), pattern.getColor().name());
+                    patterns.add(pattern.getPattern().name() + ": " + pattern.getColor().name());
                 }
+                section.set("patterns", patterns);
             }
 
             // Potion

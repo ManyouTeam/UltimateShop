@@ -303,78 +303,90 @@ public class BuildItem {
         }
 
         // Attribute
-        ConfigurationSection attributesKey = section.getConfigurationSection("attributes");
-        if (attributesKey != null) {
-            for (String attribute : attributesKey.getKeys(false)) {
-                Attribute attributeInst;
-                if (CommonUtil.getMinorVersion(21, 2)) {
-                    attributeInst = Registry.ATTRIBUTE.get(CommonUtil.parseNamespacedKey(attribute));
-                } else {
-                    attributeInst = Enums.getIfPresent(Attribute.class, attribute.toUpperCase(Locale.ENGLISH)).orNull();
-                }
-                if (attributeInst == null) {
-                    continue;
-                }
-                ConfigurationSection subSection = attributesKey.getConfigurationSection(attribute);
-                if (subSection == null) {
-                    continue;
-                }
-                String attribId = subSection.getString("id");
-                UUID id = attribId != null ? UUID.fromString(attribId) : UUID.randomUUID();
-
-                String attribName = subSection.getString("name");
-                double attribAmount = subSection.getDouble("amount");
-                String attribOperation = subSection.getString("operation");
-
-                if (CommonUtil.getMinorVersion(20, 5)) {
-                    String attribSlot = subSection.getString("slot");
-
-                    EquipmentSlotGroup slot = EquipmentSlotGroup.ANY;
-
-                    if (attribSlot != null) {
-                        EquipmentSlotGroup targetSlot = EquipmentSlotGroup.getByName(attribSlot);
-                        if (targetSlot != null) {
-                            slot = targetSlot;
-                        }
+        List<Map<?, ?>> attributes = new ArrayList<>(section.getMapList("attributes"));
+        if (!section.isList("attributes")) {
+            // Backwards compatibility for the old attribute-type section format.
+            ConfigurationSection attributesKey = section.getConfigurationSection("attributes");
+            if (attributesKey != null) {
+                for (String attribute : attributesKey.getKeys(false)) {
+                    ConfigurationSection attributeSection = attributesKey.getConfigurationSection(attribute);
+                    if (attributeSection != null) {
+                        Map<String, Object> attributeData = new LinkedHashMap<>(attributeSection.getValues(false));
+                        attributeData.put("type", attribute);
+                        attributes.add(attributeData);
                     }
+                }
+            }
+        }
+        for (Map<?, ?> attributeData : attributes) {
+            String attribute = getMapString(attributeData, "type");
+            if (attribute == null) {
+                continue;
+            }
+            Attribute attributeInst;
+            if (CommonUtil.getMinorVersion(21, 2)) {
+                attributeInst = Registry.ATTRIBUTE.get(CommonUtil.parseNamespacedKey(attribute));
+            } else {
+                attributeInst = Enums.getIfPresent(Attribute.class, attribute.toUpperCase(Locale.ENGLISH)).orNull();
+            }
+            if (attributeInst == null) {
+                continue;
+            }
+            String attribId = getMapString(attributeData, "id");
+            UUID id = attribId != null ? UUID.fromString(attribId) : UUID.randomUUID();
 
-                    if (attribName != null && attribOperation != null) {
-                        AttributeModifier modifier;
-                        if (CommonUtil.getMajorVersion(21)) {
-                            modifier = new AttributeModifier(
-                                    CommonUtil.parseNamespacedKey(attribName),
-                                    attribAmount,
-                                    Enums.getIfPresent(AttributeModifier.Operation.class, attribOperation)
-                                            .or(AttributeModifier.Operation.ADD_NUMBER),
-                                    slot);
-                        } else {
-                            modifier = new AttributeModifier(
-                                    id,
-                                    attribName,
-                                    attribAmount,
-                                    Enums.getIfPresent(AttributeModifier.Operation.class, attribOperation)
-                                            .or(AttributeModifier.Operation.ADD_NUMBER),
-                                    slot);
-                        }
+            String attribName = getMapString(attributeData, "name");
+            double attribAmount = getMapDouble(attributeData, "amount");
+            String attribOperation = getMapString(attributeData, "operation");
 
-                        meta.addAttributeModifier(attributeInst, modifier);
+            if (CommonUtil.getMinorVersion(20, 5)) {
+                String attribSlot = getMapString(attributeData, "slot");
+
+                EquipmentSlotGroup slot = EquipmentSlotGroup.ANY;
+
+                if (attribSlot != null) {
+                    EquipmentSlotGroup targetSlot = EquipmentSlotGroup.getByName(attribSlot);
+                    if (targetSlot != null) {
+                        slot = targetSlot;
                     }
-                } else {
-                    String attribSlot = subSection.getString("slot");
+                }
 
-                    EquipmentSlot slot = attribSlot != null ? Enums.getIfPresent(EquipmentSlot.class, attribSlot).or(EquipmentSlot.HAND) : null;
-
-                    if (attribName != null && attribOperation != null) {
-                        AttributeModifier modifier = new AttributeModifier(
+                if (attribName != null && attribOperation != null) {
+                    AttributeModifier modifier;
+                    if (CommonUtil.getMajorVersion(21)) {
+                        modifier = new AttributeModifier(
+                                CommonUtil.parseNamespacedKey(attribName),
+                                attribAmount,
+                                Enums.getIfPresent(AttributeModifier.Operation.class, attribOperation)
+                                        .or(AttributeModifier.Operation.ADD_NUMBER),
+                                slot);
+                    } else {
+                        modifier = new AttributeModifier(
                                 id,
                                 attribName,
                                 attribAmount,
                                 Enums.getIfPresent(AttributeModifier.Operation.class, attribOperation)
                                         .or(AttributeModifier.Operation.ADD_NUMBER),
                                 slot);
-
-                        meta.addAttributeModifier(attributeInst, modifier);
                     }
+
+                    meta.addAttributeModifier(attributeInst, modifier);
+                }
+            } else {
+                String attribSlot = getMapString(attributeData, "slot");
+
+                EquipmentSlot slot = attribSlot != null ? Enums.getIfPresent(EquipmentSlot.class, attribSlot).or(EquipmentSlot.HAND) : null;
+
+                if (attribName != null && attribOperation != null) {
+                    AttributeModifier modifier = new AttributeModifier(
+                            id,
+                            attribName,
+                            attribAmount,
+                            Enums.getIfPresent(AttributeModifier.Operation.class, attribOperation)
+                                    .or(AttributeModifier.Operation.ADD_NUMBER),
+                            slot);
+
+                    meta.addAttributeModifier(attributeInst, modifier);
                 }
             }
         }
@@ -411,20 +423,42 @@ public class BuildItem {
         // Banner
         if (meta instanceof BannerMeta) {
             BannerMeta banner = (BannerMeta) meta;
-            ConfigurationSection bannerPatternsKey = section.getConfigurationSection("patterns");
-
-            if (bannerPatternsKey != null) {
-                for (String pattern : bannerPatternsKey.getKeys(false)) {
-                    PatternType type = null;
+            List<String> bannerPatterns = section.getStringList("patterns");
+            if (section.isList("patterns")) {
+                for (String bannerPattern : bannerPatterns) {
+                    int separatorIndex = bannerPattern.lastIndexOf(':');
+                    if (separatorIndex <= 0 || separatorIndex == bannerPattern.length() - 1) {
+                        continue;
+                    }
+                    String pattern = bannerPattern.substring(0, separatorIndex).trim();
+                    String bannerColor = bannerPattern.substring(separatorIndex + 1).trim();
+                    PatternType type;
                     if (CommonUtil.getMajorVersion(21)) {
                         type = Registry.BANNER_PATTERN.get(CommonUtil.parseNamespacedKey(pattern));
                     } else {
                         type = Enums.getIfPresent(PatternType.class, pattern.toUpperCase()).or(PatternType.BASE);
                     }
-                    String bannerColor = bannerPatternsKey.getString(pattern);
-                    if (type != null && bannerColor != null) {
+                    if (type != null) {
                         DyeColor color = Enums.getIfPresent(DyeColor.class, bannerColor.toUpperCase()).or(DyeColor.WHITE);
                         banner.addPattern(new Pattern(color, type));
+                    }
+                }
+            } else {
+                // Backwards compatibility for the old "PATTERN: COLOR" map format.
+                ConfigurationSection bannerPatternsKey = section.getConfigurationSection("patterns");
+                if (bannerPatternsKey != null) {
+                    for (String pattern : bannerPatternsKey.getKeys(false)) {
+                        PatternType type;
+                        if (CommonUtil.getMajorVersion(21)) {
+                            type = Registry.BANNER_PATTERN.get(CommonUtil.parseNamespacedKey(pattern));
+                        } else {
+                            type = Enums.getIfPresent(PatternType.class, pattern.toUpperCase()).or(PatternType.BASE);
+                        }
+                        String bannerColor = bannerPatternsKey.getString(pattern);
+                        if (type != null && bannerColor != null) {
+                            DyeColor color = Enums.getIfPresent(DyeColor.class, bannerColor.toUpperCase()).or(DyeColor.WHITE);
+                            banner.addPattern(new Pattern(color, type));
+                        }
                     }
                 }
             }
@@ -920,5 +954,25 @@ public class BuildItem {
             ChangesManager.changesManager.setRealChange(new ObjectAction(), changeSection, item, player);
         }
         return item;
+    }
+
+    private static String getMapString(Map<?, ?> values, String key) {
+        Object value = values.get(key);
+        return value == null ? null : value.toString();
+    }
+
+    private static double getMapDouble(Map<?, ?> values, String key) {
+        Object value = values.get(key);
+        if (value instanceof Number number) {
+            return number.doubleValue();
+        }
+        if (value != null) {
+            try {
+                return Double.parseDouble(value.toString());
+            } catch (NumberFormatException ignored) {
+                // Match ConfigurationSection#getDouble by returning zero for invalid values.
+            }
+        }
+        return 0;
     }
 }

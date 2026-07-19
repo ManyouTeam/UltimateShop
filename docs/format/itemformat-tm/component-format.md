@@ -119,7 +119,7 @@ component:
 ```yaml
 component:
   attributes:
-    max_health: # Attribute ID
+    - type: MAX_HEALTH # Attribute ID
       name: 'UltiamteShop'
       amount: 5
       operation: ADD_NUMBER
@@ -139,7 +139,9 @@ component:
 ```yaml
 component:
   banner-patterns:
-    BASE: WHITE # Pattern ID: Pattern Color
+    - 'BASE: WHITE' # Pattern ID: Pattern Color
+    - 'BORDER: BLACK'
+    - 'BORDER: WHITE'
   potion:
     base-effect: 'WATER'
     effects:
