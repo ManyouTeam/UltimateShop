@@ -1,6 +1,6 @@
 # 🌈Earn Limit
 
-## EconomyLimit&#x20;
+## EconomyLimit
 
 EconomyLimit is _an earning limit plugin_ built around the Vault economy API.\
 It injects into supported economy providers, tracks player income, and applies configurable earning caps based on your rules.\
@@ -11,7 +11,7 @@ If a withdrawal would exceed the current earning limit, it will be denied.
 
 Get it [here](https://www.spigotmc.org/resources/economylimit-limit-your-player-earnings-by-anyway-daily-weekly-monthly-1-20-1-21-11.133458/).
 
-<figure><img src="../.gitbook/assets/image (17).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../.gitbook/assets/image (15).png" alt=""><figcaption></figcaption></figure>
 
 ## Install
 
@@ -26,8 +26,6 @@ Get it [here](https://www.spigotmc.org/resources/economylimit-limit-your-player-
 ## Commands
 
 #### Player Commands
-
-
 
 * `/economylimit` View your bank balance and rule progress
 * `/economylimit status` View your bank balance and rule progress

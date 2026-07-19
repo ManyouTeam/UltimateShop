@@ -7,7 +7,7 @@
 ## Requirements
 
 * Both Geyser and Floodgate are **required in your Spigot server**. If you are using BungeeCord proxy, you need install them both in backward server and proxy server.
-* You must set Geyser's `auth-type` to **`floodgate`**.&#x20;
+* You must set Geyser's `auth-type` to **`floodgate`**.
 * You need carefully follow [those steps](https://geysermc.org/wiki/floodgate/setup/?platform=proxy-servers) to setup floodgate in your backend server if you are using BungeeCord.
 
 {% hint style="info" %}
@@ -17,7 +17,7 @@ If your server is correctly installed and configured with floodgate, the console
 * All bedrock players will use the new UI. If not, you can try set `menu.bedrock.check-method` option value from **FLOODGATE** to **UUID** in `config.yml`.
 * Bedrock UI is auto generated and don't need any manual modification.
 
-<figure><img src="../.gitbook/assets/image (7).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../.gitbook/assets/image (6).png" alt=""><figcaption></figcaption></figure>
 
 ## Extra options for bedrock buttons
 
@@ -95,7 +95,7 @@ For auto add icon feature, please view below.
 
 For example:
 
-<figure><img src="../.gitbook/assets/image (8).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../.gitbook/assets/image (7).png" alt=""><figcaption></figcaption></figure>
 
 with the product config (menu buttons are similar):
 
@@ -175,4 +175,4 @@ By default, we use Minecraft vanilla assets provided by this [GitHub repository]
 
 You can also use these placeholders with URLs from other places. We only support matching various icons through materials. If your item has custom textures or models, we recommend manually setting the bedrock icon, as mentioned earlier.
 
-<figure><img src="../.gitbook/assets/image (18).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../.gitbook/assets/image (16).png" alt=""><figcaption></figcaption></figure>

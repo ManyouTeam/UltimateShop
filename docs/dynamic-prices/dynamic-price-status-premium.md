@@ -2,7 +2,7 @@
 
 ## Dynamic Price Status
 
-You can use `{status}` placeholder in price section's amount option, like this:&#x20;
+You can use `{status}` placeholder in price section's amount option, like this:
 
 ```yaml
     buy-prices:
@@ -42,4 +42,4 @@ Find those content in `config.yml` and change it like me:
 
 ## Showcase
 
-<figure><img src="../.gitbook/assets/image (5).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../.gitbook/assets/image (4).png" alt=""><figcaption></figcaption></figure>
