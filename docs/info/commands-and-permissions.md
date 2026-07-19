@@ -179,12 +179,6 @@ Open in-game editor.
 
 Require `ultimateshop.editor` permission.
 
-## /shop searchgui \[searchMenuID] <mark style="color:red;">**(Premium version only)**</mark>
-
-Open search GUI.
-
-Require `ultimateshop.searchgui` permission.
-
 ## Custom Placeholder Commands <mark style="color:red;">**(Premium version only)**</mark>
 
 For command list of custom placeholder feature, please view [this page](../placeholders/custom-placeholder-premium.md).

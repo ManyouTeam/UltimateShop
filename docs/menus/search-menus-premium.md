@@ -74,15 +74,14 @@ The default search menu file is `menus/search.yml`, and you can duplicate it to 
 Command:
 
 ```yaml
-/shop searchgui
-/shop searchgui <menuName>
+/shop menu <menuName>
 ```
 
 Examples:
 
 ```yaml
-/shop searchgui search
-/shop searchgui search2
+/shop menu search
+/shop menu search2
 ```
 
 ## Search Behavior
