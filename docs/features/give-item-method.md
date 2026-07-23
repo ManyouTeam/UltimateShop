@@ -29,6 +29,6 @@ Smart method is provided by UltimateShop self, it will follow the vanilla max st
 
 This method will cost extra plugin performance, be careful to use if you are running large server and have much online players.
 
-<figure><img src="../.gitbook/assets/image (4).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../.gitbook/assets/image (3).png" alt=""><figcaption></figcaption></figure>
 
 It is very difficult to attempt to restore the vanilla mechanism without contacting NMS, so this method may have a lot of problems and is still under testing.

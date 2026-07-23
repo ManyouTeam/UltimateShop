@@ -18,7 +18,7 @@ config-files:
     file: 'zh_cn.json'
 ```
 
-* Please set `minecraft-locate-file.enabled` option to `true`.&#x20;
+* Please set `minecraft-locate-file.enabled` option to `true`.
 * Then also set `minecraft-locate-file.generate-new-one` option to `true`.
 * Finally, set file option to your language locate file name. Support value:
   * af\_za.json
@@ -151,7 +151,7 @@ config-files:
 * Like I put `zh_cn.json` here. Start the server, the plugin will say it starting download the file.
 * If sucessfully download, you will see new localized item name, like me:
 
-<figure><img src="../.gitbook/assets/image (6).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../.gitbook/assets/image (5).png" alt=""><figcaption></figcaption></figure>
 
 ## Problems
 
@@ -164,7 +164,7 @@ Do you have problems? Try:
 
 ## Note
 
-* **After generate this file, please keep generate-new-one option to false.**&#x20;
+* **After generate this file, please keep generate-new-one option to false.**
 * **If your server upgraded game version, you need delete old locate file and regenerate new one.**
 * Server or plugin maybe lag when **first time** open the shop menu after restart the server, because we need build a cache for those localized item name. Under normal circumstances, you should not feel it unless you have a lot of products.
 

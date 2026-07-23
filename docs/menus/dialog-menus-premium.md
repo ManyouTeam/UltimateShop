@@ -83,7 +83,7 @@ Before you use this feature, you have to download the material -> vanilla text p
 * Plugin will auto download the file.
 * After successfully download, you need set `generate-new-one` to `false`. **If your server upgraded game version, you need delete old mapping file and regenerate new one.**
 
-<figure><img src="../.gitbook/assets/image (19).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../.gitbook/assets/image (17).png" alt=""><figcaption></figcaption></figure>
 
 ### Explicit Display Item Sprite
 
@@ -106,7 +106,7 @@ We only support matching various icons through materials. If your item has custo
 
 You can even use sprite in product message, set `display-item.auto-use-sprite-item-name` option to `true` in `config.yml` file then the product name in message will become a icon! Only supports vanilla items.
 
-<figure><img src="../.gitbook/assets/image (20).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../.gitbook/assets/image (18).png" alt=""><figcaption></figcaption></figure>
 
 ```yaml
 display-item:

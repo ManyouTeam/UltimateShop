@@ -39,7 +39,7 @@ Example:
         start-apply: 0  
 ```
 
-<figure><img src="../.gitbook/assets/image (9).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../.gitbook/assets/image (8).png" alt=""><figcaption></figcaption></figure>
 
 * Start from **2.3.2**, you can just use those options in `config.yml` to let plugin help you change `{amount}` placeholder instead of you change it manually!
 
