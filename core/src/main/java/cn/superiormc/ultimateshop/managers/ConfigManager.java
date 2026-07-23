@@ -12,6 +12,7 @@ import cn.superiormc.ultimateshop.objects.items.subobjects.ObjectRandomPlacehold
 import cn.superiormc.ultimateshop.objects.menus.ObjectFavouriteMenu;
 import cn.superiormc.ultimateshop.objects.menus.ObjectMenu;
 import cn.superiormc.ultimateshop.objects.menus.ObjectSearchMenu;
+import cn.superiormc.ultimateshop.utils.CommonUtil;
 import cn.superiormc.ultimateshop.utils.MathUtil;
 import cn.superiormc.ultimateshop.utils.TextUtil;
 import org.bukkit.configuration.ConfigurationSection;
@@ -81,11 +82,7 @@ public class ConfigManager {
         if (!dir.exists()) {
             dir.mkdir();
         }
-        File[] files = dir.listFiles();
-        if (!Objects.nonNull(files) && files.length != 0) {
-            return;
-        }
-        for (File file : files) {
+        for (File file : CommonUtil.getYamlFiles(dir)) {
             String fileName = file.getName();
             if (fileName.endsWith(".yml")) {
                 String substring = fileName.substring(0, fileName.length() - 4);
@@ -101,11 +98,7 @@ public class ConfigManager {
         if (!dir.exists()) {
             dir.mkdir();
         }
-        File[] files = dir.listFiles();
-        if (!Objects.nonNull(files) && files.length != 0) {
-            return;
-        }
-        for (File file : files) {
+        for (File file : CommonUtil.getYamlFiles(dir)) {
             String fileName = file.getName();
             if (fileName.endsWith(".yml")) {
                 String substring = fileName.substring(0, fileName.length() - 4);
@@ -127,11 +120,7 @@ public class ConfigManager {
         if (!dir.exists()) {
             dir.mkdir();
         }
-        File[] files = dir.listFiles();
-        if (!Objects.nonNull(files) && files.length != 0) {
-            return;
-        }
-        for (File file : files) {
+        for (File file : CommonUtil.getYamlFiles(dir)) {
             String fileName = file.getName();
             if (fileName.endsWith(".yml")) {
                 String substring = fileName.substring(0, fileName.length() - 4);
@@ -146,15 +135,15 @@ public class ConfigManager {
                 if (menuType.equalsIgnoreCase("search")
                         || ConfigManager.configManager.getStringList("menu.search-gui.menu").contains(substring)) {
                     if (!UltimateShop.freeVersion) {
-                        new ObjectSearchMenu(substring);
+                        new ObjectSearchMenu(substring, menuConfig);
                     }
                 } else if (menuType.equalsIgnoreCase("favourite") || menuType.equalsIgnoreCase("favorite")  ||
                         ConfigManager.configManager.getStringList("menu.favourite-gui.menu").contains(substring)) {
                     if (!UltimateShop.freeVersion) {
-                        new ObjectFavouriteMenu(substring);
+                        new ObjectFavouriteMenu(substring, menuConfig);
                     }
                 } else {
-                    new ObjectMenu(substring);
+                    new ObjectMenu(substring, menuConfig);
                 }
             }
         }
@@ -165,11 +154,7 @@ public class ConfigManager {
         if (!dir.exists()) {
             dir.mkdir();
         }
-        File[] files = dir.listFiles();
-        if (!Objects.nonNull(files) && files.length != 0) {
-            return;
-        }
-        for (File file : files) {
+        for (File file : CommonUtil.getYamlFiles(dir)) {
             String fileName = file.getName();
             if (fileName.endsWith(".yml")) {
                 String substring = fileName.substring(0, fileName.length() - 4);
@@ -183,11 +168,7 @@ public class ConfigManager {
         if (!dir.exists()) {
             dir.mkdir();
         }
-        File[] files = dir.listFiles();
-        if (!Objects.nonNull(files) && files.length != 0) {
-            return;
-        }
-        for (File file : files) {
+        for (File file : CommonUtil.getYamlFiles(dir)) {
             String fileName = file.getName();
             if (fileName.endsWith(".yml")) {
                 String substring = fileName.substring(0, fileName.length() - 4);
@@ -201,11 +182,7 @@ public class ConfigManager {
         if (!dir.exists()) {
             dir.mkdir();
         }
-        File[] files = dir.listFiles();
-        if (!Objects.nonNull(files) && files.length != 0) {
-            return;
-        }
-        for (File file : files) {
+        for (File file : CommonUtil.getYamlFiles(dir)) {
             String fileName = file.getName();
             if (fileName.endsWith(".yml")) {
                 String substring = fileName.substring(0, fileName.length() - 4);
@@ -232,11 +209,7 @@ public class ConfigManager {
         if (!dir.exists()) {
             dir.mkdir();
         }
-        File[] files = dir.listFiles();
-        if (!Objects.nonNull(files) && files.length != 0) {
-            return;
-        }
-        for (File file : files) {
+        for (File file : CommonUtil.getYamlFiles(dir)) {
             String fileName = file.getName();
             if (fileName.endsWith(".yml")) {
                 String substring = fileName.substring(0, fileName.length() - 4);
@@ -250,11 +223,7 @@ public class ConfigManager {
         if (!dir.exists()) {
             dir.mkdir();
         }
-        File[] files = dir.listFiles();
-        if (!Objects.nonNull(files) && files.length != 0) {
-            return;
-        }
-        for (File file : files) {
+        for (File file : CommonUtil.getYamlFiles(dir)) {
             String fileName = file.getName();
             if (fileName.endsWith(".yml")) {
                 String substring = fileName.substring(0, fileName.length() - 4);

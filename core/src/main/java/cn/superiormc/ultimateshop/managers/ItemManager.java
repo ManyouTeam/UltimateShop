@@ -3,6 +3,7 @@ package cn.superiormc.ultimateshop.managers;
 import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.methods.Items.BuildItem;
 import cn.superiormc.ultimateshop.methods.Items.DebuildItem;
+import cn.superiormc.ultimateshop.utils.CommonUtil;
 import cn.superiormc.ultimateshop.utils.SchedulerUtil;
 import cn.superiormc.ultimateshop.utils.TextUtil;
 import org.bukkit.configuration.ConfigurationSection;
@@ -37,11 +38,7 @@ public class ItemManager {
         if (!dir.exists()) {
             dir.mkdir();
         }
-        File[] tempList = dir.listFiles();
-        if (tempList == null) {
-            return;
-        }
-        for (File file : tempList) {
+        for (File file : CommonUtil.getYamlFiles(dir)) {
             if (file.getName().endsWith(".yml")) {
                 YamlConfiguration section = YamlConfiguration.loadConfiguration(file);
                 String key = file.getName();

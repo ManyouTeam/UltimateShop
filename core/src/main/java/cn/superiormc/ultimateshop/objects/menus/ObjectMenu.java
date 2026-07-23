@@ -34,6 +34,8 @@ public class ObjectMenu {
 
     public String fileName;
 
+    private final boolean hasMenuFile;
+
     private ObjectShop shop = null;
 
     private ObjectCondition condition;
@@ -58,6 +60,7 @@ public class ObjectMenu {
         this.fileName = fileName;
         this.shop = shop;
         this.type = MenuType.Shop;
+        this.hasMenuFile = true;
         initMenu();
         initButtons();
     }
@@ -66,6 +69,7 @@ public class ObjectMenu {
         this.fileName = shop.getShopName();
         this.shop = shop;
         this.type = MenuType.Shop;
+        this.hasMenuFile = false;
         initMenu();
         initButtons();
     }
@@ -74,6 +78,7 @@ public class ObjectMenu {
         this.fileName = fileName;
         this.shop = item.getShopObject();
         this.type = MenuType.More;
+        this.hasMenuFile = true;
         initMenu();
         initButtons();
     }
@@ -81,6 +86,19 @@ public class ObjectMenu {
     public ObjectMenu(String fileName) {
         this.fileName = fileName;
         this.type = MenuType.Common;
+        this.hasMenuFile = true;
+        initMenu();
+        initButtons();
+        if (!UltimateShop.freeVersion) {
+            initCustomCommand();
+        }
+    }
+
+    public ObjectMenu(String fileName, ConfigurationSection menuConfigs) {
+        this.fileName = fileName;
+        this.type = MenuType.Common;
+        this.hasMenuFile = false;
+        this.menuConfigs = menuConfigs;
         initMenu();
         initButtons();
         if (!UltimateShop.freeVersion) {
@@ -131,7 +149,6 @@ public class ObjectMenu {
             notCommonMenuNames.add(fileName);
         }
 
-        boolean hasMenuFile = fileName != null && !fileName.isEmpty();
         if (hasMenuFile) {
             File file = new File(UltimateShop.instance.getDataFolder() + "/menus/" + fileName + ".yml");
             if (!file.exists()){

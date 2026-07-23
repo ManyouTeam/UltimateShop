@@ -6,6 +6,7 @@ import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public abstract class AbstractCommand {
 
@@ -63,7 +64,18 @@ public abstract class AbstractCommand {
         return false;
     }
 
-    public List<String> getTabResult(String[] args, Player player) {
+    protected List<String> getTabResult(String[] args, Player player) {
         return new ArrayList<>();
+    }
+
+    public List<String> filterTabResult(String[] args, Player player) {
+        List<String> results = getTabResult(args, player);
+        if (args.length == 0) {
+            return results;
+        }
+
+        String currentInput = args[args.length - 1].toLowerCase(Locale.ROOT);
+        results.removeIf(result -> !result.toLowerCase(Locale.ROOT).startsWith(currentInput));
+        return results;
     }
 }

@@ -48,6 +48,24 @@ public class CommonUtil {
         }
     }
 
+    public static List<File> getYamlFiles(File dir) {
+        File[] files = dir.listFiles();
+        if (files == null || files.length == 0) {
+            return Collections.emptyList();
+        }
+
+        Arrays.sort(files, Comparator.comparing(File::getName));
+        List<File> yamlFiles = new ArrayList<>();
+        for (File file : files) {
+            if (file.isDirectory()) {
+                yamlFiles.addAll(getYamlFiles(file));
+            } else if (file.getName().endsWith(".yml")) {
+                yamlFiles.add(file);
+            }
+        }
+        return yamlFiles;
+    }
+
     public static boolean getYearVersion(int year, int majorVersion, int minorVersion) {
         return UltimateShop.yearVersion > year || (UltimateShop.yearVersion == year && UltimateShop.majorVersion >= majorVersion && UltimateShop.minorVersion >= minorVersion);
     }

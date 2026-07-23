@@ -31,6 +31,13 @@ public class ObjectFavouriteMenu extends ObjectMenu {
         TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §f" + fileName + ".yml set as favourite type menu.");
     }
 
+    public ObjectFavouriteMenu(String fileName, ConfigurationSection menuConfig) {
+        super(fileName, menuConfig);
+        this.type = MenuType.Favourite;
+        initFavouriteStructure();
+        TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §f" + fileName + ".yml set as favourite type menu.");
+    }
+
     private void initFavouriteStructure() {
         if (menuConfigs == null) {
             return;

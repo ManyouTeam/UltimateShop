@@ -31,6 +31,13 @@ public class ObjectSearchMenu extends ObjectMenu {
         TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §f" + fileName + ".yml set as search type menu.");
     }
 
+    public ObjectSearchMenu(String fileName, ConfigurationSection menuConfig) {
+        super(fileName, menuConfig);
+        this.type = MenuType.Search;
+        initSearchStructure();
+        TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §f" + fileName + ".yml set as search type menu.");
+    }
+
     private void initSearchStructure() {
         if (menuConfigs == null) {
             return;

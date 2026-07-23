@@ -1,6 +1,7 @@
 package cn.superiormc.ultimateshop.managers;
 
 import cn.superiormc.ultimateshop.UltimateShop;
+import cn.superiormc.ultimateshop.utils.CommonUtil;
 import cn.superiormc.ultimateshop.utils.TextUtil;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -58,14 +59,11 @@ public class LanguageManager {
             mergeMissingKeys(tempMessageFile, fullLanguageFile);
         }
 
-        File[] files = langFolder.listFiles((dir, name) -> name.endsWith(".yml"));
-        if (files != null) {
-            for (File file : files) {
-                String lang = file.getName().replace(".yml", "");
-                YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
-                languageFiles.put(lang.toLowerCase(), config);
-                TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fLoaded language: " + lang + ".yml!");
-            }
+        for (File file : CommonUtil.getYamlFiles(langFolder)) {
+            String lang = file.getName().replace(".yml", "");
+            YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
+            languageFiles.put(lang.toLowerCase(), config);
+            TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fLoaded language: " + lang + ".yml!");
         }
 
         if (!languageFiles.containsKey("en_US".toLowerCase())) {
