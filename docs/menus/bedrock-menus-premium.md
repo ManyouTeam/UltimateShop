@@ -8,7 +8,7 @@
 
 * Both Geyser and Floodgate are **required in your Spigot server**. If you are using BungeeCord proxy, you need install them both in backward server and proxy server.
 * You must set Geyser's `auth-type` to **`floodgate`**.
-* You need carefully follow [those steps](https://geysermc.org/wiki/floodgate/setup/?platform=proxy-servers) to setup floodgate in your backend server if you are using BungeeCord.
+* You need carefully follow [those steps](https://geysermc.org/wiki/floodgate/setup/?platform=proxy-servers) to setup floodgate both in your backend server and your proxy server if you are using BungeeCord.
 
 {% hint style="info" %}
 There should be a navigation bar at the top of this page with "Proxy Server" selected. If not, you may need to select it manually.
