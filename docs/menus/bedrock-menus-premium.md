@@ -11,10 +11,15 @@
 * You need carefully follow [those steps](https://geysermc.org/wiki/floodgate/setup/?platform=proxy-servers) to setup floodgate in your backend server if you are using BungeeCord.
 
 {% hint style="info" %}
-If your server is correctly installed and configured with floodgate, the console will prompt `Hooking into floodgate` when UltimateShop start to run. If this prompt didn't appear but if you insist that your server has a floodgate, it is very likely that you accidentally downloaded the free version of the plugin. The <mark style="color:red;">**PREMIUM**</mark> version will have a special prompt at startup.
+There should be a navigation bar at the top of this page with "Proxy Server" selected. If not, you may need to select it manually.
 {% endhint %}
 
-* All bedrock players will use the new UI. If not, you can try set `menu.bedrock.check-method` option value from **FLOODGATE** to **UUID** in `config.yml`.
+* All bedrock players will use the new UI.&#x20;
+
+{% hint style="info" %}
+If following these instructions didn't work, you can check it yourself. In most cases, it's because your floodgate isn't set up correctly.
+{% endhint %}
+
 * Bedrock UI is auto generated and don't need any manual modification.
 
 <figure><img src="../.gitbook/assets/image (6).png" alt=""><figcaption></figcaption></figure>
