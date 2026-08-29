@@ -6,6 +6,8 @@ This feature is offered to users as an early experimental feature, and will be a
 
 You can find price modifier config section at `config.yml` file. You can create unlimited price modifier with this format and plugin itself register 3 different type of price modifier.
 
+Only product with `price-modifier` option enabled will use this feature, for more info, please view [this page](products.md#general-options).
+
 {% code title="" %}
 ```yaml
 sell:
