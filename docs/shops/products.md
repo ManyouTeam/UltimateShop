@@ -169,7 +169,7 @@ Click [here](shops.md) to see the detalied example of those general options.
 ```
 
 * sell-all: Set whether this product can use sell all feature. **Optional, default to true. (Added in 3.9.3)**
-* price-modifier: Enables global `sell.price-modifier` rules for this product. When enabled, the normal sell price is hidden and the product can only be sold through an item sell menu. Such products remain sellable in that menu even when `sell-all` is false. **Optional, default to false.**
+* price-modifier: Enables global `sell.price-modifier` rules for this product. When enabled, the normal sell price is hidden and the product can only be sold through an item sell menu. Choosing `sell` or `sell-all` opens that menu; buy, amount-selection, and custom actions keep their normal behavior. Such products remain sellable in the item sell menu even when `sell-all` is false. See [Price Modifier](price-modifier.md). **Optional, default to false.**
 * shared-use-times: Please view [this page](shared-product-data-premium.md).
 *   hide-message: Whether we hide the messages that will send after player buy or sell this product. **Optional, default to false. (Added in 4.2.11)**
 

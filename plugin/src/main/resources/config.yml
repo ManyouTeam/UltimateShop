@@ -118,7 +118,7 @@ sell:
   # Modifiers are applied in configuration order and merged into the final multiplier.
   price-modifier:
     item-sell-menu:
-      # Products with `price-modifier: true` open this item sell menu when clicked.
+      # Products with `price-modifier: true` open this item sell menu when a sell action is chosen.
       enabled: true
       menu: item-sell
     durability:
@@ -167,6 +167,7 @@ sell:
         named-item:
           # ADD or MULTIPLY. Invalid operations are reported and this rule is ignored.
           operation: MULTIPLY
+          # Supports math expressions and PlaceholderAPI. Invalid expressions are reported and ignored.
           value: 1.2
           match-item:
             has-name: true
@@ -378,6 +379,7 @@ use-times:
 math:
   enabled: true
   enable-function: true
+  # Decimal places used by math results. Applying a multiplier also counts as a math calculation.
   scale: 2
   static-scale: false
 

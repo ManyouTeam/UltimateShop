@@ -1,5 +1,6 @@
 package cn.superiormc.ultimateshop.objects.items.pricemodifiers;
 
+import cn.superiormc.ultimateshop.managers.ErrorManager;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
 import cn.superiormc.ultimateshop.utils.MathUtil;
 import cn.superiormc.ultimateshop.utils.TextUtil;
@@ -15,6 +16,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
 
 public class MythicChangerPriceModifier implements PriceModifier {
 
@@ -68,8 +70,13 @@ public class MythicChangerPriceModifier implements PriceModifier {
                     || !matches(rule.getConfigurationSection("match-item"), player, itemStack)) {
                 continue;
             }
-            BigDecimal value = MathUtil.doCalculate(TextUtil.withPAPI(rule.getString("value", "1"), player));
-            matchedRules.add(new RuleValue(operation, value));
+            String valueExpression = TextUtil.withPAPI(rule.getString("value", "1"), player);
+            Optional<BigDecimal> value = MathUtil.tryCalculate(valueExpression);
+            if (value.isEmpty()) {
+                reportInvalidValue(rule, valueExpression);
+                continue;
+            }
+            matchedRules.add(new RuleValue(operation, value.get()));
         }
         if (matchedRules.isEmpty()) {
             return BigDecimal.ONE;
@@ -92,6 +99,18 @@ public class MythicChangerPriceModifier implements PriceModifier {
             }
         }
         return result;
+    }
+
+    private static void reportInvalidValue(ConfigurationSection rule, String value) {
+        if (ErrorManager.errorManager == null) {
+            return;
+        }
+        String path = rule == null ? null : rule.getCurrentPath();
+        String location = path == null || path.isEmpty()
+                ? (rule == null ? "unknown price modifier rule" : rule.getName())
+                : path;
+        ErrorManager.errorManager.sendErrorMessage("§cError: Invalid price modifier value '"
+                + value + "' at " + location + ". This rule is ignored.");
     }
 
     private boolean matches(ConfigurationSection matchSection, Player player, ItemStack itemStack) {

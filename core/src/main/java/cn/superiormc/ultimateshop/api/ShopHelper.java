@@ -16,6 +16,7 @@ import cn.superiormc.ultimateshop.objects.caches.ObjectCache;
 import cn.superiormc.ultimateshop.objects.caches.ObjectUseTimesCache;
 import cn.superiormc.ultimateshop.objects.items.*;
 import cn.superiormc.ultimateshop.objects.items.ObjectCondition;
+import cn.superiormc.ultimateshop.objects.items.pricemodifiers.PriceModifierChain;
 import cn.superiormc.ultimateshop.objects.items.prices.ObjectPrices;
 import cn.superiormc.ultimateshop.objects.menus.ObjectMenu;
 import cn.superiormc.ultimateshop.utils.MathUtil;
@@ -28,6 +29,7 @@ import org.bukkit.inventory.PlayerInventory;
 import org.jetbrains.annotations.Nullable;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -255,7 +257,8 @@ public class ShopHelper {
     public static boolean giveThing(int times, int multi, Player player, double multiplier, Map<AbstractSingleThing, BigDecimal> result) {
         boolean resultBoolean = true;
         for (AbstractSingleThing singleThing : result.keySet()) {
-            BigDecimal newValue = result.get(singleThing).multiply(BigDecimal.valueOf(multiplier));
+            BigDecimal newValue = MathUtil.applyConfiguredScale(
+                    result.get(singleThing).multiply(BigDecimal.valueOf(multiplier)));
             result.put(singleThing, newValue);
         }
         Collection<GiveItemStack> giveItemStacks = new ArrayList<>();
@@ -316,17 +319,27 @@ public class ShopHelper {
                                            int playerUseTimes,
                                            int tradeAmount,
                                            BigDecimal basePrice) {
+        return getSellMultiplierDecimal(player, item, storage, playerUseTimes, tradeAmount, basePrice)
+                .doubleValue();
+    }
+
+    public static BigDecimal getSellMultiplierDecimal(Player player,
+                                                      ObjectItem item,
+                                                      ItemStorage storage,
+                                                      int playerUseTimes,
+                                                      int tradeAmount,
+                                                      BigDecimal basePrice) {
         BigDecimal conditionalMultiplier = BigDecimal.valueOf(getSellMultiplier(player, item));
+        PriceModifierChain priceModifiers = ConfigManager.configManager.getSellPriceModifiers();
         if (!item.isPriceModifierEnabled()
                 || storage == null || tradeAmount <= 0 || basePrice.compareTo(BigDecimal.ZERO) <= 0
-                || ConfigManager.configManager.getSellPriceModifiers().getModifiers().isEmpty()) {
-            return conditionalMultiplier.doubleValue();
+                || priceModifiers.getModifiers().isEmpty()) {
+            return conditionalMultiplier;
         }
 
         int remaining = tradeAmount;
         int processed = 0;
-        BigDecimal processedBasePrice = BigDecimal.ZERO;
-        BigDecimal modifiedBasePrice = BigDecimal.ZERO;
+        List<SellModifierSlice> slices = new ArrayList<>();
         for (ItemStack itemStack : storage.getStorageContents()) {
             if (remaining <= 0) {
                 break;
@@ -345,21 +358,65 @@ public class ShopHelper {
 
             GiveResult stackPrice = item.getRawSellPrice().give(
                     player, playerUseTimes + processed, stackTradeAmount);
-            BigDecimal stackBasePrice = sumPrices(stackPrice.getResultMap());
-            BigDecimal modifierMultiplier = ConfigManager.configManager.getSellPriceModifiers().getMultiplier(
-                    player, itemStack, stackBasePrice.multiply(conditionalMultiplier), stackTradeAmount);
-            processedBasePrice = processedBasePrice.add(stackBasePrice);
-            modifiedBasePrice = modifiedBasePrice.add(stackBasePrice.multiply(modifierMultiplier));
+            BigDecimal stackBasePrice = sumPrices(stackPrice.getResultMap()).max(BigDecimal.ZERO);
+            slices.add(new SellModifierSlice(itemStack, stackTradeAmount, stackBasePrice));
             processed += stackTradeAmount;
             remaining -= stackTradeAmount;
         }
 
-        BigDecimal unprocessedBasePrice = basePrice.subtract(processedBasePrice).max(BigDecimal.ZERO);
-        BigDecimal adjustedBasePrice = modifiedBasePrice.add(unprocessedBasePrice);
+        if (remaining > 0) {
+            GiveResult remainingPrice = item.getRawSellPrice().give(
+                    player, playerUseTimes + processed, remaining);
+            slices.add(new SellModifierSlice(null, remaining,
+                    sumPrices(remainingPrice.getResultMap()).max(BigDecimal.ZERO)));
+        }
+        if (slices.isEmpty()) {
+            return conditionalMultiplier;
+        }
+
+        // Stack prices only determine how the transaction price is distributed. The supplied
+        // basePrice remains authoritative because a pre-transaction event may have changed it.
+        BigDecimal totalWeight = slices.stream()
+                .map(SellModifierSlice::basePriceWeight)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        boolean useAmountAsWeight = totalWeight.compareTo(BigDecimal.ZERO) <= 0;
+        if (useAmountAsWeight) {
+            totalWeight = BigDecimal.valueOf(slices.stream()
+                    .mapToInt(SellModifierSlice::tradeAmount)
+                    .sum());
+        }
+
+        int calculationScale = Math.max(12, MathUtil.scale + 4);
+        BigDecimal allocatedBasePrice = BigDecimal.ZERO;
+        BigDecimal adjustedBasePrice = BigDecimal.ZERO;
+        for (int i = 0; i < slices.size(); i++) {
+            SellModifierSlice slice = slices.get(i);
+            BigDecimal sliceBasePrice;
+            if (i == slices.size() - 1) {
+                sliceBasePrice = basePrice.subtract(allocatedBasePrice).max(BigDecimal.ZERO);
+            } else {
+                BigDecimal weight = useAmountAsWeight
+                        ? BigDecimal.valueOf(slice.tradeAmount())
+                        : slice.basePriceWeight();
+                sliceBasePrice = basePrice.multiply(weight)
+                        .divide(totalWeight, calculationScale, RoundingMode.DOWN);
+                allocatedBasePrice = allocatedBasePrice.add(sliceBasePrice);
+            }
+
+            BigDecimal modifierMultiplier = BigDecimal.ONE;
+            if (slice.itemStack() != null) {
+                modifierMultiplier = priceModifiers.getMultiplier(
+                        player,
+                        slice.itemStack(),
+                        sliceBasePrice.multiply(conditionalMultiplier),
+                        slice.tradeAmount());
+            }
+            adjustedBasePrice = adjustedBasePrice.add(sliceBasePrice.multiply(modifierMultiplier));
+        }
+
         return conditionalMultiplier.multiply(adjustedBasePrice)
-                .divide(basePrice, 12, java.math.RoundingMode.HALF_UP)
-                .max(BigDecimal.ZERO)
-                .doubleValue();
+                .divide(basePrice, calculationScale, RoundingMode.HALF_UP)
+                .max(BigDecimal.ZERO);
     }
 
     @Nullable
@@ -419,6 +476,11 @@ public class ShopHelper {
             return BigDecimal.ZERO;
         }
         return prices.values().stream().reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
+    private record SellModifierSlice(ItemStack itemStack,
+                                     int tradeAmount,
+                                     BigDecimal basePriceWeight) {
     }
 
     public static boolean isSellMultiplierActive(Player player, String key) {

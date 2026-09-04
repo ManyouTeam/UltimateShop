@@ -17,6 +17,7 @@ import cn.superiormc.ultimateshop.objects.items.ThingMode;
 import cn.superiormc.ultimateshop.objects.items.prices.ObjectPrices;
 import cn.superiormc.ultimateshop.objects.menus.MenuType;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
+import cn.superiormc.ultimateshop.utils.MathUtil;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -119,7 +120,7 @@ public class ModifyDisplayItem {
             sellResultMap = new LinkedHashMap<>(sellResult.getResultMap());
             BigDecimal basePrice = sellResultMap.values().stream().reduce(BigDecimal.ZERO, BigDecimal::add);
             BigDecimal multiplier = ShopHelper.getSellMultiplier(player, item, displayedItem, basePrice, multi);
-            sellResultMap.replaceAll((thing, value) -> value.multiply(multiplier));
+            sellResultMap.replaceAll((thing, value) -> MathUtil.applyConfiguredScale(value.multiply(multiplier)));
         } else {
             sellResultMap = sellResult.getResultMapForSellMultiplierDisplay(player);
         }

@@ -40,12 +40,16 @@ confirm-button:
 
 The confirmation display supports these placeholders:
 
-* `{price}`: final price after the global sell multiplier and its item-aware modifiers
+* `{price}`: final price after the global sell multiplier and item-aware modifiers
 * `{original-price}`: product sell price before multipliers
-* `{multiplier}`: the combined final sell multiplier
+* `{multiplier}`: combined final sell multiplier
 * `{item-amount}`: amount that can currently be sold
 * `{unsellable-amount}`: amount that cannot currently be sold
 
-The transaction still uses the normal product sell flow, including sell conditions, player/server limits, actions, events, logging, and the global sell multiplier. Item-aware price modifiers are configured globally under `sell.price-modifier` in `config.yml`; an item sell menu does not have its own modifier configuration.
+The transaction still uses the normal product sell flow, including sell conditions, player/server limits, actions, events, logging, and the global sell multiplier. An item sell menu does not have its own modifier configuration.
 
-Products with `price-modifier: true` use these rules. Their sell price is unavailable to other sell flows; enable `sell.price-modifier.item-sell-menu.enabled` and set `sell.price-modifier.item-sell-menu.menu` to redirect product clicks to an item sell menu.
+Products with `price-modifier: true` can only be sold through an item sell menu. Enable `sell.price-modifier.item-sell-menu.enabled` and set `sell.price-modifier.item-sell-menu.menu` to choose that menu.
+
+Choosing `sell` or `sell-all` for one of these products opens the configured item sell menu. Buy, amount-selection, and custom click actions keep their normal behavior. Bedrock forms and dialog shop lists open the product information view first so that buy and sell remain separate choices.
+
+See [Price Modifier](../shops/price-modifier.md) for modifier types, formulas, validation, calculation precision, and the developer API.

@@ -33,10 +33,8 @@ public class DialogBuyMoreGUI extends DialogGUI {
         dialog = builder.input(DialogInput.number("amount", label, 1, max, 1, 1))
                 .action(DialogAction.of("confirm", confirm, response -> {
                     Float amount = response.getFloat("amount");
-                    if (!item.openPriceModifierMenu(player)) {
-                        new DialogInfoGUI(player, item,
-                                String.valueOf(amount == null ? 1 : Math.max(1, amount.intValue()))).openGUI(true);
-                    }
+                    new DialogInfoGUI(player, item,
+                            String.valueOf(amount == null ? 1 : Math.max(1, amount.intValue()))).openGUI(true);
                 }))
                 .build();
     }

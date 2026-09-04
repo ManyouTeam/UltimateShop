@@ -62,14 +62,13 @@ public class ConfigManager extends AbstractManager {
 
     public Map<String, ObjectSellChest> sellChestMap = new HashMap<>();
 
-    private final PriceModifierChain sellPriceModifiers;
+    private volatile PriceModifierChain sellPriceModifiers = new PriceModifierChain(Collections.emptyList());
 
     public ConfigManager() {
         configManager = this;
         UltimateShop.instance.saveDefaultConfig();
         this.config = UltimateShop.instance.getConfig();
-        this.sellPriceModifiers = PriceModifierRegistry.createChain(
-                config.getConfigurationSection("sell.price-modifier"));
+        reloadSellPriceModifiers();
         loadEditorEnableConfirmConfig();
         if (!UltimateShop.freeVersion) {
             initSharedUseTimesConfigs();
@@ -91,6 +90,14 @@ public class ConfigManager extends AbstractManager {
 
     public PriceModifierChain getSellPriceModifiers() {
         return sellPriceModifiers;
+    }
+
+    public synchronized void reloadSellPriceModifiers() {
+        if (config == null) {
+            return;
+        }
+        sellPriceModifiers = PriceModifierRegistry.createChain(
+                config.getConfigurationSection("sell.price-modifier"));
     }
 
     private void initShopConfigs() {

@@ -118,7 +118,7 @@ public class FormInfoGUI extends FormGUI {
         if (!item.getBuyPrice().empty) {
             tempVal2.button(buy);
         }
-        if (!item.getSellPrice().empty) {
+        if (!item.getRawSellPrice().empty) {
             tempVal2.button(sell);
             if (ConfigManager.configManager.containsClickAction("sell-all") && item.isEnableSellAll()) {
                 tempVal2.button(sellAll);
@@ -144,13 +144,17 @@ public class FormInfoGUI extends FormGUI {
                 FormShopGUI shopGUI = new FormShopGUI(player, item.getShopObject(), item.getShopObject().getShopMenuObject(), true);
                 shopGUI.openGUI(true);
             } else if (response.clickedButton().equals(sellAll)) {
-                SellProductMethod.startSell(item,
-                        player,
-                        !ConfigManager.configManager.getBoolean("placeholder.click.enabled"),
-                        false,
-                        true,
-                        1);
-                if (ConfigManager.configManager.getBoolean("menu.bedrock.not-auto-close")) {
+                boolean openedPriceModifierMenu = item.openPriceModifierMenu(player);
+                if (!openedPriceModifierMenu) {
+                    SellProductMethod.startSell(item,
+                            player,
+                            !ConfigManager.configManager.getBoolean("placeholder.click.enabled"),
+                            false,
+                            true,
+                            1);
+                }
+                if (!openedPriceModifierMenu
+                        && ConfigManager.configManager.getBoolean("menu.bedrock.not-auto-close")) {
                     ShopGUI.openGUI(player, item.getShopObject(), true, true);
                 }
             }
@@ -187,6 +191,9 @@ public class FormInfoGUI extends FormGUI {
     public void doThing(boolean buyOrSell) {
         MenuStatusManager.menuStatusManager.removeOpenGUIStatus(player, this);
         if (amount == null) {
+            return;
+        }
+        if (!buyOrSell && item.openPriceModifierMenu(player)) {
             return;
         }
         boolean b = ConfigManager.configManager.getBoolean("placeholder.click.enabled");

@@ -137,22 +137,28 @@ sell:
         1:
           type: permission
           permission: 'group.vip'
+  # Item-aware modifiers are a separate global sell feature.
+  # Modifiers are applied in configuration order and merged into the final multiplier.
   price-modifier:
     item-sell-menu:
-      # Products with `price-modifier: true` open this item sell menu when clicked.
+      # Products with `price-modifier: true` open this item sell menu when a sell action is chosen.
       enabled: true
       menu: item-sell
     durability:
       type: durability
       enabled: true
+      # 1 means losing 1% durability deducts 1% from the price.
       deduction-coefficient: 1
       minimum-multiplier: 0.1
+      # minimum-price: 1
     lore:
       type: lore
       enabled: false
       operation: SET
       pattern: 'Item Value[：:]\s*([+-]?(?:\d+(?:\.\d+)?|\.\d+))'
       value-group: 1
+      strip-color: true
+      case-sensitive: true
       minimum-value: 0
       maximum-value: 1000000
       maximum-number-length: 64
@@ -169,7 +175,20 @@ sell:
       type: match_item
       enabled: false
       mode: STACK
-      rules: {}
+      rules:
+        named-item:
+          # ADD or MULTIPLY. Invalid operations are reported and this rule is ignored.
+          operation: MULTIPLY
+          # Supports math expressions and PlaceholderAPI. Invalid expressions are reported and ignored.
+          value: 1.2
+          match-item:
+            has-name: true
+        special-lore:
+          operation: ADD
+          value: 0.1
+          match-item:
+            contains-lore:
+              - 'Special'
 
 give-item:
   # Support value: BUKKIT, SMART
@@ -370,6 +389,7 @@ use-times:
 
 math:
   enabled: true
+  # Decimal places used by math results. Applying a multiplier also counts as a math calculation.
   scale: 2
   static-scale: false
 

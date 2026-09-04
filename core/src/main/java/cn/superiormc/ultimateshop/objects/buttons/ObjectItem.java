@@ -298,6 +298,13 @@ public class ObjectItem extends AbstractButton {
         return true;
     }
 
+    private boolean shouldOpenPriceModifierMenu(String clickAction) {
+        if ("sell".equals(clickAction) || "sell-all".equals(clickAction)) {
+            return true;
+        }
+        return "buy-or-sell".equals(clickAction) && buyPrice.empty && !sellPrice.empty;
+    }
+
     public String getDisplayName(Player player) {
         if (itemConfig.getString("display-name") == null) {
             if (ItemMaterialManager.enableThis() && ConfigManager.configManager.getBoolean("display-item.auto-use-sprite-item-name") && !CommonUtil.isBedrockPlayer(player)) {
@@ -446,11 +453,11 @@ public class ObjectItem extends AbstractButton {
         if (empty) {
             return;
         }
-        if (openPriceModifierMenu(player)) {
-            return;
-        }
         boolean b = ConfigManager.configManager.getBoolean("placeholder.click.enabled");
         String tempVal1 = ConfigManager.configManager.getClickAction(type, this);
+        if (shouldOpenPriceModifierMenu(tempVal1) && openPriceModifierMenu(player)) {
+            return;
+        }
         switch (tempVal1) {
             case "buy" :
                 if (!buyPrice.empty) {

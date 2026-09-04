@@ -1,5 +1,6 @@
 package cn.superiormc.ultimateshop.objects.items.pricemodifiers;
 
+import cn.superiormc.ultimateshop.managers.ConfigManager;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.ArrayList;
@@ -14,31 +15,40 @@ public final class PriceModifierRegistry {
     private static final Map<String, Function<ConfigurationSection, PriceModifier>> FACTORIES = new LinkedHashMap<>();
 
     static {
-        register("durability", DurabilityPriceModifier::new);
-        register("lore", LorePriceModifier::new);
-        register("nbt", NbtPriceModifier::new);
-        register("match_item", section -> new MythicChangerPriceModifier(section));
+        FACTORIES.put("durability", DurabilityPriceModifier::new);
+        FACTORIES.put("lore", LorePriceModifier::new);
+        FACTORIES.put("nbt", NbtPriceModifier::new);
+        FACTORIES.put("match_item", MythicChangerPriceModifier::new);
         // Legacy alias for configurations created before the type was renamed.
-        register("mythic_changer", section -> new MythicChangerPriceModifier(section));
+        FACTORIES.put("mythic_changer", MythicChangerPriceModifier::new);
     }
 
     private PriceModifierRegistry() {
     }
 
-    public static synchronized void register(String type,
-                                             Function<ConfigurationSection, PriceModifier> factory) {
+    public static void register(String type,
+                                Function<ConfigurationSection, PriceModifier> factory) {
         if (type == null || type.isEmpty() || factory == null) {
             return;
         }
-        FACTORIES.put(type.toLowerCase(Locale.ROOT), factory);
+        synchronized (PriceModifierRegistry.class) {
+            FACTORIES.put(type.toLowerCase(Locale.ROOT), factory);
+        }
+        ConfigManager manager = ConfigManager.configManager;
+        if (manager != null) {
+            manager.reloadSellPriceModifiers();
+        }
     }
 
-    public static synchronized PriceModifier create(ConfigurationSection section) {
+    public static PriceModifier create(ConfigurationSection section) {
         if (section == null || !section.getBoolean("enabled", true)) {
             return null;
         }
         String type = section.getString("type", section.getName()).toLowerCase(Locale.ROOT);
-        Function<ConfigurationSection, PriceModifier> factory = FACTORIES.get(type);
+        Function<ConfigurationSection, PriceModifier> factory;
+        synchronized (PriceModifierRegistry.class) {
+            factory = FACTORIES.get(type);
+        }
         return factory == null ? null : factory.apply(section);
     }
 

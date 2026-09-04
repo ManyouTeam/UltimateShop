@@ -5,6 +5,7 @@ import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import cn.superiormc.ultimateshop.objects.caches.ObjectUseTimesCache;
 import cn.superiormc.ultimateshop.objects.menus.ObjectItemSellMenu;
 import cn.superiormc.ultimateshop.objects.items.prices.PriceMode;
+import cn.superiormc.ultimateshop.utils.MathUtil;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -125,7 +126,8 @@ public class ItemSellQuote {
                 player, item, itemStack, basePrice, tradeAmount);
         Map<AbstractSingleThing, BigDecimal> finalPrices = new LinkedHashMap<>();
         for (Map.Entry<AbstractSingleThing, BigDecimal> entry : originalPrices.entrySet()) {
-            finalPrices.put(entry.getKey(), entry.getValue().multiply(finalMultiplier));
+            finalPrices.put(entry.getKey(), MathUtil.applyConfiguredScale(
+                    entry.getValue().multiply(finalMultiplier)));
         }
         int itemAmount = tradeAmount * item.getDisplayItemObject().getAmountPlaceholder(player);
         if (context != null) {

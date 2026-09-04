@@ -302,11 +302,11 @@ public class SellProductMethod {
             return ProductTradeStatus.REQUIRE_CONDITION_NOT_MEET;
         }
         // 尝试给物品
-        double finalMultiplier = multiplier;
+        BigDecimal finalMultiplier = BigDecimal.valueOf(multiplier);
         if (!ignoreSellMultiplier) {
             BigDecimal basePrice = giveResult.getResultMap().values().stream()
                     .reduce(BigDecimal.ZERO, BigDecimal::add);
-            finalMultiplier = MathUtil.multiply(finalMultiplier, ShopHelper.getSellMultiplier(
+            finalMultiplier = finalMultiplier.multiply(ShopHelper.getSellMultiplierDecimal(
                     player, item, storage, playerUseTimes, multi, basePrice));
         }
         if (!giveResult.give(playerUseTimes, multi, player, finalMultiplier)) {

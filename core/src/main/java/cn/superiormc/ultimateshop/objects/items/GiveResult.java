@@ -3,6 +3,7 @@ package cn.superiormc.ultimateshop.objects.items;
 import cn.superiormc.ultimateshop.api.ShopHelper;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
+import cn.superiormc.ultimateshop.utils.MathUtil;
 import org.bukkit.entity.Player;
 
 import java.math.BigDecimal;
@@ -46,7 +47,8 @@ public class GiveResult {
             double multiplier = ShopHelper.getSellMultiplier(player, item);
             Map<AbstractSingleThing, BigDecimal> map = new HashMap<>();
             for (Map.Entry<AbstractSingleThing, BigDecimal> entry : resultMap.entrySet()) {
-                map.put(entry.getKey(), entry.getValue().multiply(BigDecimal.valueOf(multiplier)));
+                map.put(entry.getKey(), MathUtil.applyConfiguredScale(
+                        entry.getValue().multiply(BigDecimal.valueOf(multiplier))));
             }
             return map;
         }
@@ -54,13 +56,17 @@ public class GiveResult {
     }
 
     public void setMultiplier(double multiplier) {
+        setMultiplier(BigDecimal.valueOf(multiplier));
+    }
+
+    public void setMultiplier(BigDecimal multiplier) {
         if (originalTotal == null) {
             originalTotal = resultMap.values().stream().reduce(BigDecimal.ZERO, BigDecimal::add);
         }
-        this.multiplier = this.multiplier * multiplier;
+        this.multiplier = BigDecimal.valueOf(this.multiplier).multiply(multiplier).doubleValue();
         for (AbstractSingleThing singleThing : resultMap.keySet()) {
-            BigDecimal newValue = resultMap.get(singleThing).multiply(BigDecimal.valueOf(multiplier));
-            resultMap.put(singleThing, newValue);
+            resultMap.put(singleThing, MathUtil.applyConfiguredScale(
+                    resultMap.get(singleThing).multiply(multiplier)));
         }
     }
 
@@ -87,6 +93,10 @@ public class GiveResult {
     }
 
     public boolean give(int times, int multi, Player player, double multiplier) {
+        return give(times, multi, player, BigDecimal.valueOf(multiplier));
+    }
+
+    public boolean give(int times, int multi, Player player, BigDecimal multiplier) {
         boolean resultBoolean = true;
         setMultiplier(multiplier);
         Collection<GiveItemStack> giveItemStacks = new ArrayList<>();

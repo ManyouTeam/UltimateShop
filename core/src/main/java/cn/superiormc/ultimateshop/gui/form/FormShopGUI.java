@@ -113,10 +113,8 @@ public class FormShopGUI extends FormGUI {
             MenuStatusManager.menuStatusManager.removeOpenGUIStatus(player, this);
             AbstractButton button = menuButtons.get(menuItems.get(response.clickedButton()));
             if (button instanceof ObjectItem item) {
-                if (!item.openPriceModifierMenu(player)) {
-                    FormInfoGUI infoGUI = new FormInfoGUI(player, item);
-                    infoGUI.openGUI(true);
-                }
+                FormInfoGUI infoGUI = new FormInfoGUI(player, item);
+                infoGUI.openGUI(true);
             } else {
                 button.clickEvent(ClickType.LEFT, player);
             }

@@ -4,7 +4,7 @@
 This feature is offered to users as an early experimental feature, and will be available after version 5.0.0. This feature is still under testing, so much so that it's not mentioned in the plugin's changelog. If you happen to stumble upon this page someday, then you're in luck!
 {% endhint %}
 
-You can find price modifier config section at `config.yml` file. You can create unlimited price modifier with this format and plugin itself register 3 different type of price modifier.
+Price modifiers adjust a product's sell reward from properties of the actual item stack being sold. They are configured globally under `sell.price-modifier` in `config.yml`. UltimateShop includes four types: `durability`, `lore`, `nbt`, and `match_item` (`mythic_changer` remains as a legacy alias).
 
 Only product with `price-modifier` option enabled will use this feature, for more info, please view [this page](products.md#general-options).
 
@@ -15,7 +15,7 @@ sell:
   # Modifiers are applied in configuration order and merged into the final multiplier.
   price-modifier:
     item-sell-menu:
-      # Products with `price-modifier: true` open this item sell menu when clicked.
+      # Products with `price-modifier: true` open this menu when a sell action is chosen.
       enabled: true
       menu: item-sell
     durability:
@@ -85,7 +85,9 @@ Global item-aware price modifiers are created through `PriceModifierRegistry`. A
 PriceModifierRegistry.register("my-modifier", MyPriceModifier::new);
 ```
 
-Each modifier receives the player, the actual sold `ItemStack`, and the current numeric price. It returns a non-negative multiplier. The backward-compatible four-argument overload also receives the number of trade units when a modifier needs quantity-aware behavior such as `SET`. Modifiers declared under `sell.price-modifier` are applied in configuration order to every sell method.
+Each modifier receives the player, the actual sold `ItemStack`, and the current numeric price. It returns a non-negative multiplier. The four-argument overload also receives the number of trade units when a modifier needs quantity-aware behavior such as `SET`. Modifiers declared under `sell.price-modifier` are applied in configuration order.
+
+Registering a new factory, or replacing a factory with the same type, immediately rebuilds the configured modifier chain. A server reload is not required.
 
 ## Durability modifier
 
@@ -174,10 +176,24 @@ Every matching rule produces a multiplier:
 * `MULTIPLY`: uses `value` directly, so `1.2` means 120% of the current price.
 * `ADD`: adds `value` to the multiplier, so `0.1` means 110%.
 
-Unsupported rule operations are reported as configuration errors and the affected rule is ignored.
+Unsupported operations and invalid `value` expressions are reported through UltimateShop's error manager, and the affected rule is ignored. A valid expression whose result is `0` is still accepted.
 
 `mode` controls multiple matching rules:
 
 * `MAX` or `HIGHEST`: use the highest resulting multiplier.
 * `MIN` or `LOWEST`: use the lowest resulting multiplier.
 * `STACK`: process matching rules in configuration order; `MULTIPLY` values multiply and `ADD` values add to the accumulated multiplier.
+
+## Selling flow and calculation
+
+Enable item-aware pricing on a product:
+
+```yaml
+price-modifier: true
+```
+
+The product's normal sell price is hidden from sell flows that cannot provide the actual item stack. Choosing `sell` or `sell-all` opens the item sell menu configured at `sell.price-modifier.item-sell-menu.menu`. Buy, amount-selection, and custom actions are not redirected. Bedrock forms and dialog shop lists open the product information view first, where buy and sell remain separate choices.
+
+During a transaction, the sell price stored in the post-event `GiveResult` is authoritative. Recalculated stack prices are used only to distribute that total between different item stacks before their modifiers are applied. This means a price changed by `ItemPreTransactionEvent` is preserved instead of being replaced by a second price calculation.
+
+Applying any multiplier is treated as a mathematical calculation. Its result is rounded with `HALF_UP` to `math.scale` decimal places. This rule applies to price modifiers, the global sell multiplier, previews, and the final reward; it is not a special case for one modifier type. See [Math Calculate Format](../format/math-calculate-format.md#result-precision).

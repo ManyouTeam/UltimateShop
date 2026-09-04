@@ -67,13 +67,24 @@ public class DialogInfoGUI extends DialogGUI {
             builder.action(DialogAction.of("buy",
                     getDialogText("info.buttons.buy", "item-name", itemName), response -> BuyProductMethod.startBuy(item, player, !b, false, amount)));
         }
-        if (!item.getSellPrice().empty) {
+        if (!item.getRawSellPrice().empty) {
             builder.action(DialogAction.of("sell", getDialogText("info.buttons.sell", "item-name", itemName),
-                    response -> SellProductMethod.startSell(item, player, !b, false, amount)));
+                    response -> {
+                        if (!item.openPriceModifierMenu(player)) {
+                            SellProductMethod.startSell(item, player, !b, false, amount);
+                        }
+                    }));
             if (ConfigManager.configManager.containsClickAction("sell-all") && item.isEnableSellAll()) {
                 builder.action(DialogAction.of("sell_all", getDialogText("info.buttons.sell-all", "item-name", itemName),
-                        response -> SellProductMethod.startSell(item, player, !b, false, true,
-                                menu.getSection().getInt("max-amount", 64))));
+                        response -> {
+                            if (!item.openPriceModifierMenu(player)) {
+                                int maxAmount = menu == null
+                                        ? 64
+                                        : menu.getSection().getInt("max-amount", 64);
+                                SellProductMethod.startSell(item, player, !b, false, true,
+                                        maxAmount);
+                            }
+                        }));
             }
         }
         if (item.getBuyMore() && ConfigManager.configManager.containsClickAction("select-amount")) {

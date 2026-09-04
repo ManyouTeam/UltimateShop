@@ -6,6 +6,17 @@ Unlike most plugins, UltimateShop allows you to fill in the Placeholder API and 
 You need enable `math.enabled` option in your `config.yml` file to use this feature.
 {% endhint %}
 
+## Result precision
+
+`math.scale` controls the number of decimal places in mathematical results. UltimateShop uses `HALF_UP` rounding. Applying a multiplier also counts as a mathematical calculation, so multiplier results—including sell price modifiers, previews, and final rewards—use the same scale.
+
+```yaml
+math:
+  scale: 2
+```
+
+For example, with `scale: 2`, multiplying `10` by `0.333333` produces `3.33`.
+
 ## List of match calculate format
 
 `max` - Compare two number and return bigger value. (`max(4,5)`)
