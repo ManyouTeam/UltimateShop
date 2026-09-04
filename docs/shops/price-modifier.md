@@ -193,7 +193,7 @@ sell:
 
       # Example:
       # Item Value: 500
-      pattern: 'Item Value[：:]\\s*([+-]?(?:\\d+(?:\\.\\d+)?|\\.\\d+))'
+      pattern: 'Item Value[：:]\s*([+-]?(?:\d+(?:\.\d+)?|\.\d+))'
 
       value-group: 1
       strip-color: true
@@ -446,7 +446,7 @@ sell:
 
       operation: SET
 
-      pattern: 'Item Value[：:]\\s*([+-]?(?:\\d+(?:\\.\\d+)?|\\.\\d+))'
+      pattern: 'Item Value[：:]\s*([+-]?(?:\d+(?:\.\d+)?|\.\d+))'
 
       value-group: 1
       strip-color: true
@@ -1127,7 +1127,7 @@ sell:
       type: lore
       enabled: true
       operation: SET
-      pattern: 'Item Value[：:]\\s*([+-]?(?:\\d+(?:\\.\\d+)?|\\.\\d+))'
+      pattern: 'Item Value[：:]\s*([+-]?(?:\d+(?:\.\d+)?|\.\d+))'
       value-group: 1
       minimum-value: 0
       maximum-value: 1000000
