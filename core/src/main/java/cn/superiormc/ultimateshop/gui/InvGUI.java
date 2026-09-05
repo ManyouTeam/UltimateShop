@@ -66,21 +66,21 @@ public abstract class InvGUI extends AbstractGUI implements InventoryHolder {
             if (getMenu() != null) {
                 getMenu().doOpenAction(player, reopen);
             }
+            if (ConfigManager.configManager.getBooleanOrDefault("menu.shop.update", "menu.menu-update.circle-update") ||
+                    ConfigManager.configManager.getBoolean("menu.title-update.circle-update")) {
+                runTask = SchedulerUtil.runTaskTimer(()->{
+                    if (ConfigManager.configManager.getBooleanOrDefault("menu.shop.update", "menu.menu-update.circle-update")) {
+                        constructGUI();
+                    }
+                    if (ConfigManager.configManager.getBoolean("menu.title-update.circle-update") && UltimateShop.usePacketEvents) {
+                        PacketInventoryUtil.packetInventoryUtil.updateTitle(player, InvGUI.this);
+                    }
+                }, 20L, 20L);
+            }
         } else if (previousStatus == null) {
             MenuStatusManager.menuStatusManager.removeGUIStatus(player);
         } else {
             MenuStatusManager.menuStatusManager.setGUIStatus(player, previousStatus);
-        }
-        if (ConfigManager.configManager.getBooleanOrDefault("menu.shop.update", "menu.menu-update.circle-update") ||
-        ConfigManager.configManager.getBoolean("menu.title-update.circle-update")) {
-            runTask = SchedulerUtil.runTaskTimer(()->{
-                if (ConfigManager.configManager.getBooleanOrDefault("menu.shop.update", "menu.menu-update.circle-update")) {
-                    constructGUI();
-                }
-                if (ConfigManager.configManager.getBoolean("menu.title-update.circle-update") && UltimateShop.usePacketEvents) {
-                    PacketInventoryUtil.packetInventoryUtil.updateTitle(player, InvGUI.this);
-                }
-            }, 20L, 20L);
         }
     }
 

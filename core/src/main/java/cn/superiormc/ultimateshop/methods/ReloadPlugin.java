@@ -31,6 +31,7 @@ public class ReloadPlugin {
             ObjectMenu.commonMenus.clear();
             ObjectMenu.notCommonMenuNames.clear();
             new ConfigManager();
+            new TransactionLoggerManager();
             new ItemManager();
             new LanguageManager();
         } finally {
@@ -38,6 +39,9 @@ public class ReloadPlugin {
         }
         new CacheManager();
         new TaskManager();
+        if (SellChestManager.sellChestManager != null) {
+            SellChestManager.sellChestManager.restoreHologramsAfterReload();
+        }
         AbstractManager.initializeManagers();
         LanguageManager.languageManager.sendStringText(sender, "plugin.reloaded");
     }

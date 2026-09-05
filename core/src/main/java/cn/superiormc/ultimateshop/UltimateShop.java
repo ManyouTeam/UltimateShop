@@ -80,6 +80,7 @@ public final class UltimateShop extends JavaPlugin {
         new ItemManager();
         new LanguageManager();
         new DatabaseManager();
+        new TransactionLoggerManager();
         new CacheManager();
         new CommandManager();
         new MenuStatusManager();
@@ -140,5 +141,4 @@ public final class UltimateShop extends JavaPlugin {
         }
         TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fPlugin is disabled. Author: PQguanfang.");
     }
-
 }

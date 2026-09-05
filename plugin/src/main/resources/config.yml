@@ -397,6 +397,12 @@ log-transaction:
   enabled: false
   # file | database — database requires database.enabled: true
   storage: file
+  # Logs are kept in memory and flushed in batches for both file and database storage.
+  cache:
+    # How often pending logs are written, in ticks (20 ticks = 1 second).
+    flush-period-ticks: 200
+    # Flush early once this many pending logs have accumulated.
+    max-batch-size: 500
   # Used when storage is file. If set to empty value, we will just print the log into console.
   file: 'log.txt'
   format: '{time} | {player} | {shop} | {buy-or-sell} | {item-name} x{amount} | {price} | Price Multiplier: x{multiplier}'

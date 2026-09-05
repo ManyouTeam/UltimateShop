@@ -499,27 +499,57 @@ public class SQLDatabase extends AbstractDatabase {
                                int amount,
                                double multiplier,
                                String priceText) {
+        logTransactions(List.of(new TransactionLog(createdAt, playerUuid, playerName, shopId, shopName,
+                itemId, itemName, action, amount, multiplier, priceText)));
+    }
+
+    public void logTransactions(List<TransactionLog> transactions) {
         if (dataSource == null || dialect == null) {
+            return;
+        }
+        if (transactions == null || transactions.isEmpty()) {
             return;
         }
         DatabaseExecutor.executeTransaction(() -> {
             try (Connection conn = dataSource.getConnection();
                  PreparedStatement ps = conn.prepareStatement(dialect.insertTransactionLog())) {
-                ps.setTimestamp(1, Timestamp.valueOf(createdAt));
-                ps.setString(2, playerUuid);
-                ps.setString(3, playerName);
-                ps.setString(4, shopId);
-                ps.setString(5, shopName);
-                ps.setString(6, itemId);
-                ps.setString(7, itemName);
-                ps.setString(8, action);
-                ps.setInt(9, amount);
-                ps.setDouble(10, multiplier);
-                ps.setString(11, priceText);
-                ps.executeUpdate();
+                for (TransactionLog transaction : transactions) {
+                    ps.setTimestamp(1, Timestamp.valueOf(transaction.createdAt()));
+                    ps.setString(2, transaction.playerUuid());
+                    ps.setString(3, transaction.playerName());
+                    ps.setString(4, transaction.shopId());
+                    ps.setString(5, transaction.shopName());
+                    ps.setString(6, transaction.itemId());
+                    ps.setString(7, transaction.itemName());
+                    ps.setString(8, transaction.action());
+                    ps.setInt(9, transaction.amount());
+                    ps.setDouble(10, transaction.multiplier());
+                    ps.setString(11, transaction.priceText());
+                    if (dialect.supportBatch()) {
+                        ps.addBatch();
+                    } else {
+                        ps.executeUpdate();
+                    }
+                }
+                if (dialect.supportBatch()) {
+                    ps.executeBatch();
+                }
             } catch (SQLException e) {
                 e.printStackTrace();
             }
         });
+    }
+
+    public record TransactionLog(LocalDateTime createdAt,
+                                 String playerUuid,
+                                 String playerName,
+                                 String shopId,
+                                 String shopName,
+                                 String itemId,
+                                 String itemName,
+                                 String action,
+                                 int amount,
+                                 double multiplier,
+                                 String priceText) {
     }
 }

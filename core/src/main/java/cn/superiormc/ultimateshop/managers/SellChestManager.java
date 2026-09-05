@@ -128,6 +128,10 @@ public class SellChestManager extends AbstractManager {
         for (int i = fromIndex; i < toIndex; i++) {
             Location loc = cycleLocations.get(i);
 
+            if (!isLoadedAndRegistered(loc)) {
+                continue;
+            }
+
             if (ConfigManager.configManager.getBoolean("sell.sell-chest.debug")) {
                 TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fSelling chest at location: " + loc);
             }
@@ -296,7 +300,8 @@ public class SellChestManager extends AbstractManager {
     }
 
     public void handleChunkUnload(ChunkUnloadEvent event) {
-        chestLocations.remove(event.getChunk());
+        Set<Location> locations = chestLocations.remove(event.getChunk());
+        removeRuntimeHolograms(locations);
     }
 
     public void registerSellChest(Chest chest, Player owner, ObjectSellChest sellChest, int times) {
@@ -423,5 +428,81 @@ public class SellChestManager extends AbstractManager {
         } else {
             pdc.set(KEY_CHUNK_CHESTS, PersistentDataType.STRING, String.join(";", locations));
         }
+    }
+
+    /** Restores holograms after TaskManager has registered loaded sell chests. */
+    public void restoreHologramsAfterReload() {
+        initHologram();
+        if (hologram == null) {
+            return;
+        }
+
+        for (Set<Location> locations : chestLocations.values()) {
+            for (Location location : locations) {
+                BlockState state = location.getBlock().getState();
+                if (state instanceof Chest chest) {
+                    hologram.create(chest);
+                }
+            }
+        }
+    }
+
+    @Override
+    public void onPluginReload() {
+        clearRuntimeSellChests();
+        hologram = null;
+    }
+
+    @Override
+    public void onPluginDisable() {
+        clearRuntimeSellChests();
+        hologram = null;
+    }
+
+    /**
+     * Releases only runtime state.  Persistent sell-chest registration remains
+     * in the chunk PDC and is restored when its chunk is loaded again.
+     */
+    private void clearRuntimeSellChests() {
+        for (Set<Location> locations : chestLocations.values()) {
+            removeRuntimeHolograms(locations);
+        }
+        chestLocations.clear();
+        resetCycle();
+    }
+
+    private void removeRuntimeHolograms(Collection<Location> locations) {
+        if (hologram == null || locations == null) {
+            return;
+        }
+        for (Location location : locations) {
+            hologram.remove(location);
+        }
+    }
+
+    private void resetCycle() {
+        cycleLocations.clear();
+        currentBatchIndex = 0;
+        activeBatchCount = 0;
+    }
+
+    /**
+     * Avoids accessing a block from a stale batch snapshot after its chunk was
+     * unloaded or its sell-chest registration was removed.
+     */
+    private boolean isLoadedAndRegistered(Location location) {
+        World world = location.getWorld();
+        if (world == null) {
+            return false;
+        }
+
+        int chunkX = location.getBlockX() >> 4;
+        int chunkZ = location.getBlockZ() >> 4;
+        if (!world.isChunkLoaded(chunkX, chunkZ)) {
+            return false;
+        }
+
+        Set<Location> locations = chestLocations.get(world.getChunkAt(chunkX, chunkZ));
+        return locations != null && locations.contains(location);
     }
 }

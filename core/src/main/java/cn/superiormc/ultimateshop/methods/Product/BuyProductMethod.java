@@ -17,7 +17,7 @@ import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import cn.superiormc.ultimateshop.objects.items.TakeResult;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
 import cn.superiormc.ultimateshop.utils.TextUtil;
-import cn.superiormc.ultimateshop.utils.TransactionLogger;
+import cn.superiormc.ultimateshop.managers.TransactionLoggerManager;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -243,7 +243,7 @@ public class BuyProductMethod {
                     "amount",
                     String.valueOf(calculateAmount));
         }
-        TransactionLogger.log(player, item, calculateAmount, String.valueOf(1.0), "BUY",
+        TransactionLoggerManager.transactionLoggerManager.log(player, item, calculateAmount, String.valueOf(1.0), "BUY",
                 ObjectPrices.getDisplayNameInLine(player,
                         multi,
                         takeResult.getResultMap(),

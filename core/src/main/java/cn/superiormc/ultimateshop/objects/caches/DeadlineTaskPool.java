@@ -58,10 +58,15 @@ final class DeadlineTaskPool {
             return;
         }
 
-        ensureTicker();
-
         TaskKey key = new TaskKey(owner, type);
-        DeadlineEntry previous = ENTRIES.remove(key);
+        LocalDateTime mergedDeadline = mergeDeadline(deadline);
+        DeadlineEntry previous = ENTRIES.get(key);
+        if (previous != null && previous.deadline.equals(mergedDeadline)) {
+            return;
+        }
+
+        ensureTicker();
+        ENTRIES.remove(key);
         if (previous != null) {
             QUEUE.remove(previous);
             previous.cancel();
@@ -69,7 +74,7 @@ final class DeadlineTaskPool {
 
         DeadlineEntry entry = new DeadlineEntry(
                 key,
-                mergeDeadline(deadline),
+                mergedDeadline,
                 nextSequence++,
                 action
         );
