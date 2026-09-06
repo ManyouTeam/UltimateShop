@@ -37,12 +37,23 @@ public class DialogCommonGUI extends DialogGUI {
         }
         builder.buttonWidth(menu.getInt("dialog.button-width", 150));
         builder.columns(menu.getInt("dialog.columns", 2));
+        String dialogLayout = menu.getString("dialog.layout", "multi-action");
+        builder.layout(dialogLayout);
         for (Map.Entry<Integer, AbstractButton> entry : menu.getMenu(MenuSender.of(player)).entrySet()) {
             AbstractButton button = entry.getValue();
             ObjectDisplayItemStack display = button.getDisplayItem(player, 1);
             DialogAction action = display.parseToDialogButton("slot_" + entry.getKey(),
                     response -> button.clickEvent(ClickType.LEFT, player));
-            if (action != null) builder.action(action);
+            if (action != null) {
+                if (button.hasCloseAction()) {
+                    builder.action(action);
+                } else if (!button.usesItemActionDialogLayout(dialogLayout)) {
+                    builder.action(action);
+                } else {
+                    builder.layout("item-action-list");
+                    builder.itemAction(display.getItemStack(), action);
+                }
+            }
         }
         dialog = builder.build();
     }

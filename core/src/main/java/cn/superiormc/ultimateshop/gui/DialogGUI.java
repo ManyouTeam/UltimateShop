@@ -15,6 +15,8 @@ public abstract class DialogGUI extends AbstractGUI {
 
     private long generation;
 
+    private long finishedGeneration = Long.MIN_VALUE;
+
     protected DialogGUI(Player owner) {
         super(owner);
     }
@@ -53,6 +55,15 @@ public abstract class DialogGUI extends AbstractGUI {
     public void closeGUI() {
         UltimateShop.methodUtil.closeDialog(player);
         finishGUI();
+    }
+
+    @Override
+    public void finishGUI() {
+        if (finishedGeneration == generation) {
+            return;
+        }
+        finishedGeneration = generation;
+        super.finishGUI();
     }
 
     public boolean handleAction(String actionId, DialogResponse response, long expectedGeneration) {

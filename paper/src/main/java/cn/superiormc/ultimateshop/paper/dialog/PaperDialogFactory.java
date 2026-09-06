@@ -16,6 +16,7 @@ import io.papermc.paper.registry.data.dialog.action.DialogActionCallback;
 import io.papermc.paper.registry.data.dialog.action.DialogAction;
 import io.papermc.paper.registry.data.dialog.input.DialogInput;
 import net.kyori.adventure.text.event.ClickCallback;
+import net.kyori.adventure.text.event.ClickEvent;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -37,6 +38,18 @@ public final class PaperDialogFactory {
         for (org.bukkit.inventory.ItemStack item : view.getItems()) {
             bodies.add(DialogBody.item(item).build());
         }
+        if (view.getLayout() == DialogView.Layout.ITEM_ACTION_LIST) {
+            for (DialogView.ItemAction itemAction : view.getItemActions()) {
+                cn.superiormc.ultimateshop.gui.dialog.DialogAction action = itemAction.getAction();
+                bodies.add(DialogBody.item(itemAction.getItem())
+                        .description(DialogBody.plainMessage(PaperTextUtil.modernParse(action.getLabel(), player)
+                                .clickEvent(ClickEvent.callback(audience ->
+                                                gui.handleAction(action.getId(), DialogResponse.empty(), generation),
+                                        ClickCallback.Options.builder().uses(1).build()))))
+                        .showTooltip(action.getTooltip() != null)
+                        .build());
+            }
+        }
 
         List<DialogInput> inputs = new ArrayList<>();
         for (cn.superiormc.ultimateshop.gui.dialog.DialogInput input : view.getInputs()) {
@@ -44,7 +57,13 @@ public final class PaperDialogFactory {
         }
 
         List<ActionButton> buttons = new ArrayList<>();
-        for (cn.superiormc.ultimateshop.gui.dialog.DialogAction action : view.getActions()) {
+        List<cn.superiormc.ultimateshop.gui.dialog.DialogAction> footerActions = new ArrayList<>(view.getActions());
+        if (view.getLayout() == DialogView.Layout.ITEM_ACTION_LIST) {
+            for (DialogView.ItemAction itemAction : view.getItemActions()) {
+                footerActions.remove(itemAction.getAction());
+            }
+        }
+        for (cn.superiormc.ultimateshop.gui.dialog.DialogAction action : footerActions) {
             DialogActionCallback callback = (response, audience) ->
                     gui.handleAction(action.getId(), response(view, response), generation);
             ActionButton.Builder button = ActionButton.builder(PaperTextUtil.modernParse(action.getLabel(), player))
@@ -57,15 +76,6 @@ public final class PaperDialogFactory {
             buttons.add(button.build());
         }
 
-        if (buttons.isEmpty()) {
-            buttons.add(ActionButton.builder(PaperTextUtil.modernParse(
-                            ConfigManager.configManager.getString("menu.dialog.default-button", ""), player))
-                    .width(view.getButtonWidth())
-                    .action(DialogAction.customClick((response, audience) -> gui.finishGUI(),
-                            ClickCallback.Options.builder().uses(1).build()))
-                    .build());
-        }
-
         DialogBase base = DialogBase.builder(PaperTextUtil.modernParse(view.getTitle(), player))
                 .body(bodies)
                 .inputs(inputs)
@@ -75,7 +85,26 @@ public final class PaperDialogFactory {
 
         return Dialog.create(builder -> builder.empty()
                 .base(base)
-                .type(DialogType.multiAction(buttons).columns(view.getColumns()).build()));
+                .type(createType(player, gui, view, buttons)));
+    }
+
+    private static DialogType createType(Player player, DialogGUI gui, DialogView view, List<ActionButton> buttons) {
+        if (view.getLayout() == DialogView.Layout.ITEM_ACTION_LIST && buttons.size() <= 1) {
+            return DialogType.notice(buttons.isEmpty() ? defaultCloseButton(player, gui, view) : buttons.get(0));
+        }
+        if (buttons.isEmpty()) {
+            buttons.add(defaultCloseButton(player, gui, view));
+        }
+        return DialogType.multiAction(buttons).columns(view.getColumns()).build();
+    }
+
+    private static ActionButton defaultCloseButton(Player player, DialogGUI gui, DialogView view) {
+        return ActionButton.builder(PaperTextUtil.modernParse(
+                        ConfigManager.configManager.getString("menu.dialog.default-button", ""), player))
+                .width(view.getButtonWidth())
+                .action(DialogAction.customClick((response, audience) -> gui.finishGUI(),
+                        ClickCallback.Options.builder().uses(1).build()))
+                .build();
     }
 
     private static DialogInput createInput(

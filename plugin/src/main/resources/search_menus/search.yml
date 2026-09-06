@@ -6,7 +6,7 @@ dialog:
   enabled: true
   content: ''
   button-width: 150
-  columns: 2
+  columns: 1
 
 layout:
   - '00H0N0C00'
@@ -25,6 +25,8 @@ buttons:
       material: GRAY_STAINED_GLASS_PANE
       name: ' '
   B:
+    dialog:
+      layout: multi-action
     display-item:
       material: ARROW
       name: '{lang:back-button}'

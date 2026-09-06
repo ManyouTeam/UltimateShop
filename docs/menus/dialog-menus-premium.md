@@ -26,6 +26,8 @@ Add a Dialog section to each menu that should use it:
 dialog:
   enabled: true # <--- Set it to true.
   content: '<gray>Select a product or action.'
+  # multi-action (default) or item-action-list
+  layout: multi-action
   button-width: 150
   columns: 2
 ```
@@ -51,6 +53,22 @@ A display item with an empty name does not create a Dialog button.
 
 * enabled: Uses Dialog for this menu. The global option must also be enabled.
 * content: Body shown below the title. Supports language placeholders and MiniMessage.
+* layout: `multi-action` (default) displays normal action buttons. `item-action-list` displays menu buttons as an inventory-style icon with its clickable label on the right. A button whose `actions` contains a direct `type: close` is automatically used as the footer, so it can reliably run `close-actions`. If none exists, a footer button using `menu.dialog.default-button` is generated as a fallback. This requires Paper 1.21.9+ and Java clients.
+
+  `item-action-list` is always a single vertical column because it uses Minecraft item body components. `dialog.columns` applies only to `multi-action` buttons.
+
+<figure><img src="../.gitbook/assets/dialog-item-action-list.png" alt="Item action list dialog showing item icons with clickable labels"><figcaption><p>Buttons displayed with the <code>item-action-list</code> layout.</p></figcaption></figure>
+
+Each button may override the menu layout with `buttons.<id>.dialog.layout`:
+
+```yml
+buttons:
+  close:
+    dialog:
+      layout: multi-action
+```
+
+Supported values are `multi-action` and `item-action-list`. When omitted, the button inherits `dialog.layout` from its menu.
 * button-width: Default to 150. Width of each action button.
 * columns: Default to 2. Number of button columns.
 

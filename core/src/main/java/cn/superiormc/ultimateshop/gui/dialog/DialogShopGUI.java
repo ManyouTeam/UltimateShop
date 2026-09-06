@@ -72,11 +72,13 @@ public class DialogShopGUI extends DialogGUI {
         }
         builder.buttonWidth(menu.getInt("dialog.button-width", 150));
         builder.columns(menu.getInt("dialog.columns", 2));
-        ordered.forEach((slot, button) -> addButton(builder, slot, button));
+        String dialogLayout = menu.getString("dialog.layout", "multi-action");
+        builder.layout(dialogLayout);
+        ordered.forEach((slot, button) -> addButton(builder, slot, button, dialogLayout));
         dialog = builder.build();
     }
 
-    private void addButton(DialogView.Builder builder, int slot, AbstractButton button) {
+    private void addButton(DialogView.Builder builder, int slot, AbstractButton button, String menuLayout) {
         ObjectDisplayItemStack display = button.getDisplayItem(player, 1);
         DialogAction action = display.parseToDialogButton("slot_" + slot, response -> {
             if (button instanceof ObjectItem item) {
@@ -86,7 +88,14 @@ public class DialogShopGUI extends DialogGUI {
             }
         });
         if (action != null) {
-            builder.action(action);
+            if (button.hasCloseAction()) {
+                builder.action(action);
+            } else if (button.usesItemActionDialogLayout(menuLayout)) {
+                builder.layout("item-action-list");
+                builder.itemAction(display.getItemStack(), action);
+            } else {
+                builder.action(action);
+            }
         }
     }
 

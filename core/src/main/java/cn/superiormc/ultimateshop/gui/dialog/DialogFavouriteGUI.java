@@ -53,12 +53,17 @@ public class DialogFavouriteGUI extends DialogGUI {
         }
         builder.buttonWidth(menu.getInt("dialog.button-width", 150));
         builder.columns(menu.getInt("dialog.columns", 2));
+        String dialogLayout = menu.getString("dialog.layout", "multi-action");
+        boolean itemActionLayout = DialogView.Layout.fromConfig(dialogLayout) == DialogView.Layout.ITEM_ACTION_LIST;
+        builder.layout(dialogLayout);
         int index = 0;
         for (Map.Entry<FavouriteProductReference, ObjectItem> entry : products.entrySet()) {
-            if (index >= menu.getResultSlots().size()) break;
+            if (index >= menu.getResultSlots().size()) {
+                break;
+            }
             ObjectFavouriteResultButton result = new ObjectFavouriteResultButton(entry.getValue(), index,
                     editing ? menu.getEditingResultLore() : menu.getResultLore(), editing);
-            addResult(builder, result);
+            addResult(builder, result, itemActionLayout);
             index++;
         }
         ObjectFavouriteEditModeButton edit = menu.getEditModeButton();
@@ -66,27 +71,52 @@ public class DialogFavouriteGUI extends DialogGUI {
             ObjectDisplayItemStack display = edit.getDisplayItem(player, editing, products.size());
             DialogAction action = display.parseToDialogButton("edit_mode",
                     response -> new DialogFavouriteGUI(player, menu, true, !editing).openGUI(true));
-            if (action != null) builder.action(action);
+            if (action != null) {
+                if (edit.usesItemActionDialogLayout(dialogLayout)) {
+                    builder.layout("item-action-list");
+                    builder.itemAction(display.getItemStack(), action);
+                } else {
+                    builder.action(action);
+                }
+            }
         }
         for (Map.Entry<Integer, AbstractButton> entry : menu.getMenu(MenuSender.of(player)).entrySet()) {
             AbstractButton button = entry.getValue();
             ObjectDisplayItemStack display = button.getDisplayItem(player, 1);
             DialogAction action = display.parseToDialogButton("slot_" + entry.getKey(),
                     response -> button.clickEvent(ClickType.LEFT, player));
-            if (action != null) builder.action(action);
+            if (action != null) {
+                if (button.hasCloseAction()) {
+                    builder.action(action);
+                } else if (!button.usesItemActionDialogLayout(dialogLayout)) {
+                    builder.action(action);
+                } else {
+                    builder.layout("item-action-list");
+                    builder.itemAction(display.getItemStack(), action);
+                }
+            }
         }
         dialog = builder.build();
     }
 
-    private void addResult(DialogView.Builder builder, ObjectFavouriteResultButton result) {
+    private void addResult(DialogView.Builder builder, ObjectFavouriteResultButton result,
+                           boolean itemActionLayout) {
         ObjectDisplayItemStack display = result.getDisplayItem(player, 1);
         DialogAction action = display.parseToDialogButton("result_" + result.getIndex(), response -> {
-            if (editing) new DialogFavouriteEditGUI(player, menu, result).openGUI(true);
+            if (editing) {
+                new DialogFavouriteEditGUI(player, menu, result).openGUI(true);
+            }
             else {
                 new DialogInfoGUI(player, result.getItem()).openGUI(true);
             }
         });
-        if (action != null) builder.action(action);
+        if (action != null) {
+            if (itemActionLayout) {
+                builder.itemAction(display.getItemStack(), action);
+            } else {
+                builder.action(action);
+            }
+        }
     }
 
     @Override

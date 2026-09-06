@@ -38,6 +38,28 @@ public abstract class AbstractButton {
         return true;
     }
 
+    public boolean hasCloseAction() {
+        if (config == null) {
+            return false;
+        }
+        ConfigurationSection actions = config.getConfigurationSection("actions");
+        if (actions == null) {
+            return false;
+        }
+        for (String key : actions.getKeys(false)) {
+            ConfigurationSection action = actions.getConfigurationSection(key);
+            if (action != null && "close".equalsIgnoreCase(action.getString("type"))) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean usesItemActionDialogLayout(String menuLayout) {
+        String layout = config == null ? menuLayout : config.getString("dialog.layout", menuLayout);
+        return "item-action-list".equalsIgnoreCase(layout);
+    }
+
     @Override
     public String toString() {
         if (config == null) {

@@ -21,6 +21,8 @@ result-items:
 
 edit-mode-item:
   D:
+    dialog:
+      layout: multi-action
     normal-display-item:
       material: NAME_TAG
       name: '{lang:edit-mode-enable-name}'
@@ -61,6 +63,8 @@ buttons:
       material: BLACK_STAINED_GLASS_PANE
       name: ' '
   B:
+    dialog:
+      layout: multi-action
     display-item:
       material: ARROW
       name: '{lang:back-button}'

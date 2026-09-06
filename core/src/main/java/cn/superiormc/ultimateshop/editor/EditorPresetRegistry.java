@@ -121,6 +121,7 @@ public class EditorPresetRegistry {
                 field("bedrock.content", Material.PAPER, EditorPresetFieldType.STRING),
                 field("dialog.enabled", Material.WRITABLE_BOOK, EditorPresetFieldType.BOOLEAN),
                 field("dialog.content", Material.PAPER, EditorPresetFieldType.STRING),
+                field("dialog.layout", Material.ITEM_FRAME, EditorPresetFieldType.STRING),
                 field("dialog.button-width", Material.STONE_BUTTON, EditorPresetFieldType.INTEGER),
                 field("dialog.columns", Material.BOOKSHELF, EditorPresetFieldType.INTEGER),
                 field("layout", Material.PAPER, EditorPresetFieldType.STRING_LIST),
@@ -189,6 +190,7 @@ public class EditorPresetRegistry {
     private static List<EditorPresetField> buttonFields() {
         return List.of(
                 field("display-item", Material.ITEM_FRAME, EditorPresetFieldType.SECTION),
+                field("dialog.layout", Material.ITEM_FRAME, EditorPresetFieldType.STRING),
                 field("actions", Material.BLAZE_POWDER, EditorPresetFieldType.ACTIONS),
                 field("fail-actions", Material.BLAZE_POWDER, EditorPresetFieldType.ACTIONS),
                 field("conditions", Material.COMPARATOR, EditorPresetFieldType.CONDITIONS),

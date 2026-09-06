@@ -51,24 +51,40 @@ public class DialogSearchGUI extends DialogGUI {
         }
         builder.buttonWidth(menu.getInt("dialog.button-width", 150));
         builder.columns(menu.getInt("dialog.columns", 2));
+        String dialogLayout = menu.getString("dialog.layout", "multi-action");
+        boolean itemActionLayout = DialogView.Layout.fromConfig(dialogLayout) == DialogView.Layout.ITEM_ACTION_LIST;
+        builder.layout(dialogLayout);
         builder.input(DialogInput.text("keyword", getDialogText("search.input"), searchKeywords));
         builder.action(DialogAction.of("search", getDialogText("search.buttons.search"), response ->
                 new DialogSearchGUI(player, menu, true,
                         response.getText("keyword") == null ? "" : response.getText("keyword")).openGUI(true)));
-        if (!searchKeywords.trim().isEmpty()) addResults(builder);
+        if (!searchKeywords.trim().isEmpty()) {
+            addResults(builder, itemActionLayout);
+        }
         for (Map.Entry<Integer, AbstractButton> entry : menu.getMenu(MenuSender.of(player)).entrySet()) {
             AbstractButton button = entry.getValue();
             ObjectDisplayItemStack display = button.getDisplayItem(player, 1);
             DialogAction action = display.parseToDialogButton("slot_" + entry.getKey(),
                     response -> button.clickEvent(ClickType.LEFT, player));
-            if (action != null) builder.action(action);
+            if (action != null) {
+                if (button.hasCloseAction()) {
+                    builder.action(action);
+                } else if (!button.usesItemActionDialogLayout(dialogLayout)) {
+                    builder.action(action);
+                } else {
+                    builder.layout("item-action-list");
+                    builder.itemAction(display.getItemStack(), action);
+                }
+            }
         }
         dialog = builder.build();
     }
 
-    private void addResults(DialogView.Builder builder) {
+    private void addResults(DialogView.Builder builder, boolean itemActionLayout) {
         List<ObjectItem> matched = ShopHelper.getTargetItems(searchKeywords, player);
-        if (matched == null) matched = Collections.emptyList();
+        if (matched == null) {
+            matched = Collections.emptyList();
+        }
         int limit = Math.min(matched.size(), menu.getResultSlots().size());
         for (int i = 0; i < limit; i++) {
             ObjectSearchResultButton result = new ObjectSearchResultButton(matched.get(i), menu.getResultLore());
@@ -78,7 +94,13 @@ public class DialogSearchGUI extends DialogGUI {
                     response -> {
                         new DialogInfoGUI(player, item).openGUI(true);
                     });
-            if (action != null) builder.action(action);
+            if (action != null) {
+                if (itemActionLayout) {
+                    builder.itemAction(display.getItemStack(), action);
+                } else {
+                    builder.action(action);
+                }
+            }
         }
     }
 
