@@ -46,6 +46,7 @@ y-offset: 2.25
 holograms:
   - '&e&lSell chest'
   - '&7ID: {id}'
+  - '&7Owner: {owner}'
   - '&7Left Times: {usage}'
   - '&7Multiplier: {multiplier}'
   - '&7Last Earn: {price}'
@@ -64,8 +65,18 @@ The display item of sell chest <mark style="color:red;">**ONLY**</mark> support 
 
 The most thing is same as [Sell Stick](sell-stick-premium.md), I will only tell you about different things:
 
-* holograms: The content of the hologram showed above sell chest. Require DecentHolograms.
+* holograms: The content of the hologram shown above the sell chest. Requires an enabled [supported hologram plugin](../info/compatibility.md#directly-supported-protection-plugins-list-premium-1).
 * y-offset: The height deviation of the hologram compared to the sell chest can be adjusted according to the number of rows in the hologram.
+
+### Hologram placeholders
+
+| Placeholder | Display Info |
+| --- | --- |
+| `{id}` | Sell chest config ID. |
+| `{owner}` | Username of the player who placed the sell chest. |
+| `{usage}` | Remaining usages, or the configured infinite text for an infinite sell chest. |
+| `{multiplier}` | Sell price multiplier. |
+| `{price}` | Earnings from the last successful selling attempt, or the configured `price-empty` text if there is no history. |
 
 ## Setting in config.yml file
 

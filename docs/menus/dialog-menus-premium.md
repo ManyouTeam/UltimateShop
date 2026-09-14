@@ -140,9 +140,11 @@ display-item:
 The following options are under `menu.dialog` in `config.yml`:
 
 * `default-button`: fallback close button when no custom actions exist
+* `not-auto-close`: keeps the product information Dialog open after a buy or sell action
 * `search.*`: search input and button labels
 * `buy-more.*`: amount selection labels
-* `info.*`: product information button labels
+* `info.display-item`: displays the product's display item as an item body in the product information Dialog
+* `info.*`: product information title and button labels
 * `favourite-edit.*`: favourite editing labels
 
 These values support `{lang:...}` language references. Product information strings also support relevant placeholders such as `{item-name}` and `{amount}`.
@@ -163,6 +165,7 @@ These values support `{lang:...}` language references. Product information strin
       buttons:
         confirm: '{lang:menu.dialog.buy-more.buttons.confirm}'
     info:
+      display-item: true
       title: '{lang:menu.dialog.info.title}'
       buttons:
         buy: '{lang:menu.dialog.info.buttons.buy}'

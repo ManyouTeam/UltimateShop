@@ -34,6 +34,8 @@ public class SellChestManager extends AbstractManager {
 
     public static final NamespacedKey KEY_OWNER = new NamespacedKey(UltimateShop.instance, "owner");
 
+    public static final NamespacedKey KEY_OWNER_NAME = new NamespacedKey(UltimateShop.instance, "owner_name");
+
     public static final NamespacedKey SELL_CHEST_TIMES = new NamespacedKey(UltimateShop.instance, "sell_chest_usage");
 
     public static final NamespacedKey SELL_CHEST_ID = new NamespacedKey(UltimateShop.instance, "sell_chest_id");
@@ -204,6 +206,7 @@ public class SellChestManager extends AbstractManager {
             pdc.remove(SELL_CHEST_ID);
             pdc.remove(SELL_CHEST_TIMES);
             pdc.remove(SELL_CHEST_PRICE);
+            pdc.remove(KEY_OWNER_NAME);
             chest.update();
             return;
         }
@@ -227,6 +230,7 @@ public class SellChestManager extends AbstractManager {
                 pdc.remove(SELL_CHEST_ID);
                 pdc.remove(SELL_CHEST_TIMES);
                 pdc.remove(SELL_CHEST_PRICE);
+                pdc.remove(KEY_OWNER_NAME);
             }
         }
 
@@ -309,6 +313,7 @@ public class SellChestManager extends AbstractManager {
 
         pdc.set(KEY_IS_SELL_CHEST, PersistentDataType.BYTE, (byte) 1);
         pdc.set(KEY_OWNER, PersistentDataType.STRING, owner.getUniqueId().toString());
+        pdc.set(KEY_OWNER_NAME, PersistentDataType.STRING, owner.getName());
         pdc.set(SELL_CHEST_ID, PersistentDataType.STRING, sellChest.getID());
 
         if (!sellChest.isInfinite()) {

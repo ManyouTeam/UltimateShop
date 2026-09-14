@@ -18,6 +18,7 @@ import cn.superiormc.ultimateshop.utils.CommonUtil;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,9 +54,15 @@ public class DialogInfoGUI extends DialogGUI {
         String itemName = item.getDisplayName(player);
         String title = getDialogText("info.title", "item-name", itemName, "amount", String.valueOf(amount));
         DialogView.Builder builder = DialogView.builder(title);
+        builder.keepOpenAfterAction(ConfigManager.configManager.getBoolean("menu.dialog.not-auto-close"));
+        ItemStack displayItem = item.getDisplayItem(player);
+        if (ConfigManager.configManager.getBoolean("menu.dialog.info.display-item") &&
+                !displayItem.getType().isAir()) {
+            builder.item(displayItem);
+        }
         List<String> content = new ArrayList<>();
-        if (item.getDisplayItem(player).hasItemMeta()) {
-            List<String> lore = UltimateShop.methodUtil.getItemLore(item.getDisplayItem(player).getItemMeta());
+        if (displayItem.hasItemMeta()) {
+            List<String> lore = UltimateShop.methodUtil.getItemLore(displayItem.getItemMeta());
             if (lore != null) content.addAll(lore);
         }
         content.addAll(ModifyDisplayItem.getModifiedLore(player, amount, item, false, true, "general"));

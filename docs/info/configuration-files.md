@@ -261,6 +261,7 @@ menu:
       buttons:
         confirm: '{lang:menu.dialog.buy-more.buttons.confirm}'
     info:
+      display-item: true
       title: '{lang:menu.dialog.info.title}'
       buttons:
         buy: '{lang:menu.dialog.info.buttons.buy}'

@@ -45,7 +45,7 @@ public final class PaperDialogFactory {
                         .description(DialogBody.plainMessage(PaperTextUtil.modernParse(action.getLabel(), player)
                                 .clickEvent(ClickEvent.callback(audience ->
                                                 gui.handleAction(action.getId(), DialogResponse.empty(), generation),
-                                        ClickCallback.Options.builder().uses(1).build()))))
+                                        callbackOptions(view.keepOpenAfterAction())))))
                         .showTooltip(action.getTooltip() != null)
                         .build());
             }
@@ -69,7 +69,7 @@ public final class PaperDialogFactory {
             ActionButton.Builder button = ActionButton.builder(PaperTextUtil.modernParse(action.getLabel(), player))
                     .width(view.getButtonWidth())
                     .action(DialogAction.customClick(callback,
-                            ClickCallback.Options.builder().uses(1).build()));
+                            callbackOptions(view.keepOpenAfterAction())));
             if (action.getTooltip() != null) {
                 button.tooltip(PaperTextUtil.modernParse(action.getTooltip(), player));
             }
@@ -80,7 +80,10 @@ public final class PaperDialogFactory {
                 .body(bodies)
                 .inputs(inputs)
                 .canCloseWithEscape(view.canCloseWithEscape())
-                .afterAction(DialogBase.DialogAfterAction.CLOSE)
+                .pause(!view.keepOpenAfterAction())
+                .afterAction(view.keepOpenAfterAction()
+                        ? DialogBase.DialogAfterAction.NONE
+                        : DialogBase.DialogAfterAction.CLOSE)
                 .build();
 
         return Dialog.create(builder -> builder.empty()
@@ -102,8 +105,14 @@ public final class PaperDialogFactory {
         return ActionButton.builder(PaperTextUtil.modernParse(
                         ConfigManager.configManager.getString("menu.dialog.default-button", ""), player))
                 .width(view.getButtonWidth())
-                .action(DialogAction.customClick((response, audience) -> gui.finishGUI(),
-                        ClickCallback.Options.builder().uses(1).build()))
+                .action(DialogAction.customClick((response, audience) -> gui.closeGUI(),
+                        callbackOptions(view.keepOpenAfterAction())))
+                .build();
+    }
+
+    private static ClickCallback.Options callbackOptions(boolean repeatable) {
+        return ClickCallback.Options.builder()
+                .uses(repeatable ? Integer.MAX_VALUE : 1)
                 .build();
     }
 

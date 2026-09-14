@@ -25,6 +25,8 @@ public final class DialogView {
 
     private final boolean closeWithEscape;
 
+    private final boolean keepOpenAfterAction;
+
     private final int buttonWidth;
 
     private final int columns;
@@ -38,6 +40,7 @@ public final class DialogView {
         this.itemActions = List.copyOf(builder.itemActions);
         this.layout = builder.layout;
         this.closeWithEscape = builder.closeWithEscape;
+        this.keepOpenAfterAction = builder.keepOpenAfterAction;
         this.buttonWidth = builder.buttonWidth;
         this.columns = builder.columns;
         validateKeys();
@@ -94,6 +97,10 @@ public final class DialogView {
         return closeWithEscape;
     }
 
+    public boolean keepOpenAfterAction() {
+        return keepOpenAfterAction;
+    }
+
     public int getButtonWidth() {
         return buttonWidth;
     }
@@ -118,6 +125,8 @@ public final class DialogView {
         private Layout layout = Layout.MULTI_ACTION;
 
         private boolean closeWithEscape = false;
+
+        private boolean keepOpenAfterAction = false;
 
         private int buttonWidth = 150;
 
@@ -163,6 +172,11 @@ public final class DialogView {
 
         public Builder closeWithEscape(boolean value) {
             closeWithEscape = value;
+            return this;
+        }
+
+        public Builder keepOpenAfterAction(boolean value) {
+            keepOpenAfterAction = value;
             return this;
         }
 

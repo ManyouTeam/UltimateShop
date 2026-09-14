@@ -4,12 +4,15 @@ import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.SellChestManager;
 import cn.superiormc.ultimateshop.objects.sellchests.ObjectSellChest;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Chest;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
 import java.util.List;
+import java.util.UUID;
 
 public abstract class AbstractHologram {
 
@@ -52,10 +55,28 @@ public abstract class AbstractHologram {
 
         return CommonUtil.modifyList(null, sellChest.getHolograms(),
                 "id", sellChest.getID(),
+                "owner", getOwnerName(pdc),
                 "multiplier", String.valueOf(sellChest.getMultiplier()),
                 "price", getPrice(chest),
                 "usage", sellChest.isInfinite() ? ConfigManager.configManager.getStringWithLang(null, "placeholder.sell-stick.infinite") : String.valueOf(usage)
         );
+    }
+
+    private String getOwnerName(PersistentDataContainer pdc) {
+        String ownerName = pdc.get(SellChestManager.KEY_OWNER_NAME, PersistentDataType.STRING);
+        if (ownerName != null) {
+            return ownerName;
+        }
+        String owner = pdc.get(SellChestManager.KEY_OWNER, PersistentDataType.STRING);
+        if (owner == null) {
+            return "";
+        }
+        try {
+            OfflinePlayer player = Bukkit.getOfflinePlayer(UUID.fromString(owner));
+            return player.getName() == null ? owner : player.getName();
+        } catch (IllegalArgumentException exception) {
+            return owner;
+        }
     }
 
     protected String getPrice(Chest chest) {

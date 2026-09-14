@@ -235,6 +235,8 @@ menu:
   # Require Paper 1.21.9+ version.
   dialog:
     enabled: false
+    # If enabled, keep the product information dialog open after a buy or sell action.
+    not-auto-close: true
     auto-add-sprite:
       enabled: true
       format: "<sprite:\"{namespace}:{atlas}\":{path}>"
@@ -250,6 +252,7 @@ menu:
       buttons:
         confirm: '{lang:menu.dialog.buy-more.buttons.confirm}'
     info:
+      display-item: true
       title: '{lang:menu.dialog.info.title}'
       buttons:
         buy: '{lang:menu.dialog.info.buttons.buy}'
