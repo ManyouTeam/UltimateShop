@@ -75,6 +75,8 @@ public interface SpecialMethodUtil {
 
     ConfigurationSection serializeItemStack(ItemStack item);
 
+    String getItemTranslateKey(ItemStack item);
+
     default boolean showDialog(Player player, DialogGUI gui, DialogView view) {
         return false;
     }

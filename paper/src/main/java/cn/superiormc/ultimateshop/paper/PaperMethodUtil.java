@@ -308,6 +308,14 @@ public class PaperMethodUtil implements SpecialMethodUtil {
     }
 
     @Override
+    public String getItemTranslateKey(ItemStack item) {
+        if (CommonUtil.getMajorVersion(18)) {
+            return item.translationKey();
+        }
+        return item.getTranslationKey();
+    }
+
+    @Override
     public boolean showDialog(Player player, DialogGUI gui, DialogView view) {
         if (player == null || !CommonUtil.getMinorVersion(21, 7)) {
             return false;

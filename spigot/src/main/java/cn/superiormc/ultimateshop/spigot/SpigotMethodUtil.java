@@ -295,4 +295,9 @@ public class SpigotMethodUtil implements SpecialMethodUtil {
     public ConfigurationSection serializeItemStack(ItemStack item) {
         return null;
     }
+
+    @Override
+    public String getItemTranslateKey(ItemStack item) {
+        return item.getTranslationKey();
+    }
 }

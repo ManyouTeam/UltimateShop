@@ -149,16 +149,16 @@ public class LocateManager extends AbstractManager {
         if (!enabled || fileContent == null) {
             return ItemUtil.getItemNameWithoutVanilla(item);
         }
-
-        if (!locateMap.containsKey(item.getTranslationKey())) {
-            Object value = getValueFromJson(fileContent, item.getTranslationKey());
+        String itemNameKey = UltimateShop.methodUtil.getItemTranslateKey(item);
+        if (!locateMap.containsKey(itemNameKey)) {
+            Object value = getValueFromJson(fileContent, itemNameKey);
             if (value != null) {
-                locateMap.put(item.getTranslationKey(), String.valueOf(value));
+                locateMap.put(itemNameKey, String.valueOf(value));
             } else {
-                locateMap.put(item.getTranslationKey(), ItemUtil.getItemNameWithoutVanilla(item));
+                locateMap.put(itemNameKey, ItemUtil.getItemNameWithoutVanilla(item));
             }
         }
-        return locateMap.get(item.getTranslationKey());
+        return locateMap.get(itemNameKey);
     }
 
     private Object getValueFromJson(JSONObject jsonObject, String path) {
