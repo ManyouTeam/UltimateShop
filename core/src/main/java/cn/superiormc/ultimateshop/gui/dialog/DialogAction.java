@@ -6,8 +6,11 @@ import java.util.function.Consumer;
 public final class DialogAction {
 
     private final String id;
+
     private final String label;
+
     private final String tooltip;
+
     private final Consumer<DialogResponse> handler;
 
     private final Boolean showSprite;
@@ -32,12 +35,27 @@ public final class DialogAction {
         return new DialogAction(id, label, tooltip, handler);
     }
 
-    public String getId() { return id; }
-    public String getLabel() { return label; }
-    public String getTooltip() { return tooltip; }
-    public Boolean getShowSprite() { return showSprite; }
+    public String getId() {
+        return id;
+    }
+
+    public String getLabel() {
+        return label;
+    }
+
+    public String getTooltip() {
+        return tooltip;
+    }
+
+    public Boolean getShowSprite() {
+        return showSprite;
+    }
+
     public DialogAction withShowSprite(Boolean value) {
         return new DialogAction(id, label, tooltip, handler, value);
     }
-    public void execute(DialogResponse response) { handler.accept(response); }
+
+    public void execute(DialogResponse response) {
+        handler.accept(response);
+    }
 }
