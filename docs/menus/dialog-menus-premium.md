@@ -29,11 +29,11 @@ Supported menus use Dialog instead of the inventory UI for Java players. Bedrock
 
 Choose a layout:
 
-| `dialog.layout` | Appearance | Resource pack |
-| --- | --- | --- |
-| [`multi-action`](#multi-action-layout) | Native action buttons in columns; the default layout | Not required |
-| [`item-action-list`](#item-action-list-layout) | A vertical list of item icons with clickable labels | Not required for vanilla items |
-| [`ore`](#ore-layout) | Graphical product cards and navigation buttons | Required |
+| `dialog.layout`                                                       | Appearance                                           | Resource pack                  |
+| --------------------------------------------------------------------- | ---------------------------------------------------- | ------------------------------ |
+| [`multi-action`](dialog-menus-premium.md#multi-action-layout)         | Native action buttons in columns; the default layout | Not required                   |
+| [`item-action-list`](dialog-menus-premium.md#item-action-list-layout) | A vertical list of item icons with clickable labels  | Not required for vanilla items |
+| [`ore`](dialog-menus-premium.md#ore-layout)                           | Graphical product cards and navigation buttons       | Required                       |
 
 The inventory `layout` still determines which entries appear and their order. Display items with blank names do not create Dialog buttons.
 
@@ -59,13 +59,13 @@ In `item-action-list` and Ore, close buttons appear in the native footer. If no 
 
 These settings belong in the menu file:
 
-| Setting | Default | Purpose |
-| --- | --- | --- |
-| `dialog.enabled` | Must be enabled for the menu | Uses Dialog when the global feature is enabled |
-| `dialog.content` | Empty | Body text below the title; supports language references and MiniMessage |
-| `dialog.layout` | `multi-action` | Selects the presentation |
-| `dialog.button-width` | `150` | Width of native action buttons, including footer buttons |
-| `dialog.columns` | `2` | Native button columns in `multi-action`; product columns in Ore |
+| Setting               | Default                      | Purpose                                                                 |
+| --------------------- | ---------------------------- | ----------------------------------------------------------------------- |
+| `dialog.enabled`      | Must be enabled for the menu | Uses Dialog when the global feature is enabled                          |
+| `dialog.content`      | Empty                        | Body text below the title; supports language references and MiniMessage |
+| `dialog.layout`       | `multi-action`               | Selects the presentation                                                |
+| `dialog.button-width` | `150`                        | Width of native action buttons, including footer buttons                |
+| `dialog.columns`      | `2`                          | Native button columns in `multi-action`; product columns in Ore         |
 
 ## Multi-action layout
 
@@ -80,7 +80,9 @@ dialog:
   columns: 2
 ```
 
-Use `dialog.columns` to arrange buttons across multiple columns and `dialog.button-width` to change their width. This layout does not use Ore templates, graphical positions or a generated resource pack. Labels can include native sprites as described in [Native sprite settings](#native-sprite-settings).
+Use `dialog.columns` to arrange buttons across multiple columns and `dialog.button-width` to change their width. This layout does not use Ore templates, graphical positions or a generated resource pack. Labels can include native sprites as described in [Native sprite settings](dialog-menus-premium.md#native-sprite-settings).
+
+<figure><img src="../.gitbook/assets/屏幕截图 2026-10-02 203245.png" alt=""><figcaption></figcaption></figure>
 
 ## Item action list layout
 
@@ -122,7 +124,7 @@ Set `dialog.layout: item-action-list` for item icons with clickable text on the 
 
 Hovering an icon shows the native item tooltip. Hovering its clickable label shows the configured lore tooltip when present.
 
-<figure><img src="../.gitbook/assets/a4fa41db9c5e6de6003b541c5d0339f9.png" alt="Item action list with item icons and clickable labels"><figcaption>Item action list layout</figcaption></figure>
+<figure><img src="../.gitbook/assets/dialog-item-action-list.png" alt="Item action list with item icons and clickable labels"><figcaption><p>Item action list layout</p></figcaption></figure>
 
 ### Mix native button layouts
 
@@ -141,6 +143,8 @@ buttons:
 
 Ore supports common menus and shop menus. Shop products appear as cards; the details bar opens a product information Dialog where players can buy or sell. Named buttons appear in the left rail, and blank decorative inventory buttons are skipped.
 
+<figure><img src="../.gitbook/assets/屏幕截图 2026-10-02 203217.png" alt=""><figcaption></figcaption></figure>
+
 ### Generate and load the resource pack
 
 1. Enable `menu.dialog.enabled` in `config.yml`.
@@ -152,11 +156,11 @@ Generation does **not** upload or automatically send the pack. Players must load
 
 The generated `pack/` folder is replaced during regeneration. Keep custom source PNGs in `plugins/UltimateShop/textures/`. If generation fails, the previous pack is retained.
 
-| Command | Purpose |
-| --- | --- |
-| `/shop reload` | Reloads configuration and rebuilds the Ore pack |
-| `/shop dialogpack` | Rebuilds the pack from the loaded configuration |
-| `/shop dialogpack 75` | Rebuilds using a specified pack format |
+| Command               | Purpose                                         |
+| --------------------- | ----------------------------------------------- |
+| `/shop reload`        | Reloads configuration and rebuilds the Ore pack |
+| `/shop dialogpack`    | Rebuilds the pack from the loaded configuration |
+| `/shop dialogpack 75` | Rebuilds using a specified pack format          |
 
 Manual generation requires `ultimateshop.dialogpack` (default: op).
 
@@ -176,12 +180,12 @@ menu:
 The plugin's built-in mapping is:
 
 | Minecraft version | Pack format |
-| --- | --- |
-| 1.21.9–1.21.10 | 69 |
-| 1.21.11 | 75 |
-| 26.1.x | 84 |
-| 26.2.x | 88 |
-| 26.3.x | 97 |
+| ----------------- | ----------- |
+| 1.21.9–1.21.10    | 69          |
+| 1.21.11           | 75          |
+| 26.1.x            | 84          |
+| 26.2.x            | 88          |
+| 26.3.x            | 97          |
 
 Newer versions use the latest listed format until support is updated. A positive override can also be useful when the client uses a different pack format from the server.
 
@@ -271,14 +275,14 @@ Small windows or large GUI Scale values may require scrolling. Custom fonts and 
 
 ### Titles, lore and hover text
 
-| Template option | Button default | Product default | Purpose |
-| --- | --- | --- | --- |
-| `height` | `36` | `108` | Widget height in GUI pixels |
-| `name-lines` | `2` | `1` | Maximum title lines, from 1 to 60 |
-| `name-y` | Automatic | `9` | First title row; omit for vertically centered button titles |
-| `lore-y` | `27` | `27` | First lore row |
-| `lore-lines` | `0` | `6` | Maximum visible lore lines |
-| `details-y` | Not used | `height - 27` | Top of the product details bar |
+| Template option | Button default | Product default | Purpose                                                     |
+| --------------- | -------------- | --------------- | ----------------------------------------------------------- |
+| `height`        | `36`           | `108`           | Widget height in GUI pixels                                 |
+| `name-lines`    | `2`            | `1`             | Maximum title lines, from 1 to 60                           |
+| `name-y`        | Automatic      | `9`             | First title row; omit for vertically centered button titles |
+| `lore-y`        | `27`           | `27`            | First lore row                                              |
+| `lore-lines`    | `0`            | `6`             | Maximum visible lore lines                                  |
+| `details-y`     | Not used       | `height - 27`   | Top of the product details bar                              |
 
 Text wraps at the available width. Lines are 9px apart, and text exceeding the available lines ends with `...`. The title and lore limits also respect the space reserved by the template; increase the height and move the details bar when allowing more product lore lines.
 
@@ -286,13 +290,13 @@ Text wraps at the available width. Lines are 9px apart, and text exceeding the a
 
 Ore uses the existing global `display-item.add-lore` or per-product `add-lore` for both card text and hover text. It filters them separately:
 
-| Condition prefix | Where the line appears |
-| --- | --- |
-| `@t[ore]` | Ore card body |
-| `@t[ore-hover]` | Ore hover tooltip |
-| `@t[ore,ore-hover]` | Both |
-| `(@t[ore])` | Tooltips and other presentations, excluding the Ore body |
-| No `@t` condition | Both, when the line's other conditions match |
+| Condition prefix    | Where the line appears                                   |
+| ------------------- | -------------------------------------------------------- |
+| `@t[ore]`           | Ore card body                                            |
+| `@t[ore-hover]`     | Ore hover tooltip                                        |
+| `@t[ore,ore-hover]` | Both                                                     |
+| `(@t[ore])`         | Tooltips and other presentations, excluding the Ore body |
+| No `@t` condition   | Both, when the line's other conditions match             |
 
 The tooltip also retains the item's original lore. The body contains auto-added lore. There is no separate fixed field list or dedicated Ore lore format.
 
@@ -317,14 +321,14 @@ Ore shop menus import navigation buttons from `menus/main.yml` into the left rai
 
 The sidebar reuses the source buttons' display items, names, lore, actions and visibility conditions. The source menu's opening conditions are checked both when displaying and clicking entries. Ordinary Dialog and Form menus do not import this sidebar.
 
-| `dialog.sidebar` option | Default | Purpose |
-| --- | --- | --- |
-| `enabled` | `true` | Enables the sidebar on Ore shop menus |
-| `menu` | `main` | Source common menu |
-| `template` | `button` | Button template from the current Ore menu |
-| `x` | `12` | Horizontal position |
-| `y` | Below the shop menu's existing left-rail buttons | Optional starting position |
-| `gap-y` | `9` | Vertical gap between entries |
+| `dialog.sidebar` option | Default                                          | Purpose                                   |
+| ----------------------- | ------------------------------------------------ | ----------------------------------------- |
+| `enabled`               | `true`                                           | Enables the sidebar on Ore shop menus     |
+| `menu`                  | `main`                                           | Source common menu                        |
+| `template`              | `button`                                         | Button template from the current Ore menu |
+| `x`                     | `12`                                             | Horizontal position                       |
+| `y`                     | Below the shop menu's existing left-rail buttons | Optional starting position                |
+| `gap-y`                 | `9`                                              | Vertical gap between entries              |
 
 Entries must fit to the left of `dialog.products.x`. The body grows to fit them; there is no sidebar pagination. `menu-visibility.ore`, `dialog.enabled` and source-menu slot visibility settings also apply.
 
@@ -350,10 +354,10 @@ Without `selected-texture`, selected colors are used even when the normal frame 
 
 Product icons are separate from native sprites in button labels:
 
-| Graphic | Default size | Control |
-| --- | --- | --- |
-| Ore product icon | 32×32 GUI pixels | Template `icon-size`; global `menu.dialog.ore.show-item-icon.enabled` |
-| Native sprite in a Dialog label | 8×8 | `menu.dialog.auto-add-sprite.enabled` |
+| Graphic                         | Default size     | Control                                                               |
+| ------------------------------- | ---------------- | --------------------------------------------------------------------- |
+| Ore product icon                | 32×32 GUI pixels | Template `icon-size`; global `menu.dialog.ore.show-item-icon.enabled` |
+| Native sprite in a Dialog label | 8×8              | `menu.dialog.auto-add-sprite.enabled`                                 |
 
 To hide Ore icons, set **`menu.dialog.ore.show-item-icon.enabled: false` in `config.yml`**. The default is `true`. With icons hidden, names and lore use the full text area, and rebuilding omits their icon textures/font mappings.
 
@@ -424,7 +428,7 @@ menu:
 
 Restart the server to download the mapping, then set `generate-new-one: false`. After upgrading the Minecraft version, delete the old mapping file and regenerate it.
 
-<figure><img src="../.gitbook/assets/image (17).png" alt="Native sprites added before Dialog button labels"><figcaption>Automatic sprites in button labels</figcaption></figure>
+<figure><img src="../.gitbook/assets/image (17).png" alt="Native sprites added before Dialog button labels"><figcaption><p>Automatic sprites in button labels</p></figcaption></figure>
 
 ### Explicit sprites
 
@@ -448,21 +452,21 @@ display-item:
   auto-use-sprite-item-name: true
 ```
 
-<figure><img src="../.gitbook/assets/image (18).png" alt="Product message using a sprite as the product name"><figcaption>Sprite product names in messages</figcaption></figure>
+<figure><img src="../.gitbook/assets/image (18).png" alt="Product message using a sprite as the product name"><figcaption><p>Sprite product names in messages</p></figcaption></figure>
 
 ## Global text settings
 
 These options belong under **`menu.dialog` in `config.yml`**:
 
-| Option | Purpose |
-| --- | --- |
-| `default-button` | Fallback close button label |
-| `not-auto-close` | Keeps product information open after buying/selling |
-| `search.*` | Search input and button labels |
-| `buy-more.*` | Amount selection labels and display-item setting |
-| `info.display-item` | Shows the display item in the product information Dialog |
-| `info.title`, `info.buttons.*` | Product information title and actions |
-| `favourite-edit.*` | Favourite editing labels |
+| Option                         | Purpose                                                  |
+| ------------------------------ | -------------------------------------------------------- |
+| `default-button`               | Fallback close button label                              |
+| `not-auto-close`               | Keeps product information open after buying/selling      |
+| `search.*`                     | Search input and button labels                           |
+| `buy-more.*`                   | Amount selection labels and display-item setting         |
+| `info.display-item`            | Shows the display item in the product information Dialog |
+| `info.title`, `info.buttons.*` | Product information title and actions                    |
+| `favourite-edit.*`             | Favourite editing labels                                 |
 
 Values support `{lang:...}` references. Relevant product information strings also support `{item-name}` and `{amount}`. For example:
 
@@ -482,12 +486,12 @@ menu:
 
 ## Common issues
 
-| Symptom | Check |
-| --- | --- |
-| Inventory opens instead of Dialog | Server/client requirements, the global switch and the menu's `dialog.enabled` |
-| Ore shows missing glyphs | The generated resource pack is loaded by the client |
-| Graphics use old dimensions or colors | Reload configuration, regenerate the pack and update the client's pack |
-| A long title or lore is truncated | Template width, line limits and the space before the lore/details area |
-| Body and tooltip contain the same lines | Add `@t[ore]` or `@t[ore-hover]` conditions to separate them |
+| Symptom                                             | Check                                                                                                                |
+| --------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| Inventory opens instead of Dialog                   | Server/client requirements, the global switch and the menu's `dialog.enabled`                                        |
+| Ore shows missing glyphs                            | The generated resource pack is loaded by the client                                                                  |
+| Graphics use old dimensions or colors               | Reload configuration, regenerate the pack and update the client's pack                                               |
+| A long title or lore is truncated                   | Template width, line limits and the space before the lore/details area                                               |
+| Body and tooltip contain the same lines             | Add `@t[ore]` or `@t[ore-hover]` conditions to separate them                                                         |
 | English interface but Chinese vanilla product names | A fixed `minecraft-locate-file`, such as `zh_cn.json`, or a custom item/product name may override client translation |
-| Invalid Ore layout error | Overlapping widgets, dimensions and vertical values that are not multiples of 9 |
+| Invalid Ore layout error                            | Overlapping widgets, dimensions and vertical values that are not multiples of 9                                      |
