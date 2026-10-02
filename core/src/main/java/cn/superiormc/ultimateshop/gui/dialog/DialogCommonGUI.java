@@ -39,10 +39,10 @@ public class DialogCommonGUI extends DialogGUI {
         builder.columns(menu.getInt("dialog.columns", 2));
         String dialogLayout = menu.getString("dialog.layout", "multi-action");
         builder.layout(dialogLayout);
-        for (Map.Entry<Integer, AbstractButton> entry : menu.getMenu(MenuSender.of(player)).entrySet()) {
+        for (Map.Entry<Integer, AbstractButton> entry : menu.getMenu(MenuSender.of(player, MenuSender.dialogPresentation(menu.getString("dialog.layout", "multi-action")))).entrySet()) {
             AbstractButton button = entry.getValue();
             ObjectDisplayItemStack display = button.getDisplayItem(player, 1);
-            DialogAction action = display.parseToDialogButton("slot_" + entry.getKey(),
+            DialogAction action = display.parseToDialogButton("slot_" + entry.getKey(), button.getShowSprite(),
                     response -> button.clickEvent(ClickType.LEFT, player));
             if (action != null) {
                 if (button.hasCloseAction()) {

@@ -20,6 +20,7 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class LocateManager extends AbstractManager {
 
@@ -35,7 +36,7 @@ public class LocateManager extends AbstractManager {
 
     public LocateManager() {
         locateManager = this;
-        this.locateMap = new HashMap<>();
+        this.locateMap = new ConcurrentHashMap<>();
         this.languageFileName = ConfigManager.configManager.getString("config-files.minecraft-locate-file.file");
         if (languageFileName == null) {
             return;

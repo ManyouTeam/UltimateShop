@@ -3,9 +3,11 @@ package cn.superiormc.ultimateshop.managers;
 import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
 import cn.superiormc.ultimateshop.utils.TextUtil;
+
 import org.bukkit.Material;
-import org.json.JSONObject;
+import org.bukkit.configuration.ConfigurationSection;
 import org.json.JSONArray;
+import org.json.JSONObject;
 import org.json.JSONTokener;
 
 import java.io.BufferedInputStream;
@@ -18,11 +20,13 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.zip.ZipEntry;
@@ -60,7 +64,103 @@ public class ItemMaterialManager extends AbstractManager {
         if (material == null) {
             return null;
         }
-        return itemMaterialManager.getTexturePath(material);
+        return getTexturePath(material);
+    }
+
+    public String getMaterialSprite(Material material) {
+        String texture = getTexturePath(material);
+        if (texture == null || texture.isEmpty()) {
+            return null;
+        }
+        int separator = texture.indexOf(':');
+        String namespace = separator < 0 ? "minecraft" : texture.substring(0, separator);
+        String path = separator < 0 ? texture : texture.substring(separator + 1);
+        return ConfigManager.configManager.getString("menu.dialog.auto-add-sprite.format", "<sprite:\"{namespace}:{atlas}\":{path}>",
+                "namespace", namespace, "atlas", path.startsWith("block/") ? "blocks" : "items", "path", path);
+    }
+
+    public static Set<String> getConfiguredSprites(ConfigurationSection display) {
+        Set<String> sprites = new HashSet<>();
+        if (display == null) {
+            return sprites;
+        }
+        String sprite = display.getString("sprite");
+        if (sprite != null) {
+            sprites.add(sprite);
+        } else if (display.contains("material") && itemMaterialManager != null && enableThis()) {
+            sprite = itemMaterialManager.getMaterialSprite(Material.matchMaterial(display.getString("material", "")));
+            if (sprite != null) {
+                sprites.add(sprite);
+            }
+        }
+        for (String key : display.getKeys(false)) {
+            ConfigurationSection child = display.getConfigurationSection(key);
+            if (child != null) {
+                sprites.addAll(getConfiguredSprites(child));
+            }
+        }
+        return sprites;
+    }
+
+    private static String getMinecraftClientUrl(String version) throws Exception {
+        JSONObject manifest = CommonUtil.fetchJson("https://launchermeta.mojang.com/mc/game/version_manifest.json");
+        for (Object value : manifest.getJSONArray("versions")) {
+            JSONObject entry = (JSONObject) value;
+            if (version.equals(entry.getString("id"))) {
+                return CommonUtil.fetchJson(entry.getString("url")).getJSONObject("downloads")
+                        .getJSONObject("client").getString("url");
+            }
+        }
+        throw new IOException("Unknown Minecraft version " + version);
+    }
+
+    public static void cacheVanillaTextures(Map<String, Path> requested, String version) throws Exception {
+        Map<String, Path> missing = new HashMap<>();
+        for (var entry : requested.entrySet()) {
+            String texture = entry.getKey();
+            if (!texture.matches("[a-z0-9_.-]+:[a-z0-9_./-]+") || texture.contains("..")) {
+                throw new IOException("Invalid icon texture: " + texture);
+            }
+            if (!Files.exists(entry.getValue())) {
+                if (!texture.startsWith("minecraft:")) {
+                    throw new IOException("Supply custom icon PNG at " + entry.getValue());
+                }
+                missing.put(texture, entry.getValue());
+            }
+        }
+        if (missing.isEmpty()) {
+            return;
+        }
+        HttpURLConnection connection = (HttpURLConnection) new URL(getMinecraftClientUrl(version)).openConnection();
+        connection.setConnectTimeout(10000);
+        connection.setReadTimeout(30000);
+        try (ZipInputStream zip = new ZipInputStream(connection.getInputStream())) {
+            ZipEntry entry;
+            while (!missing.isEmpty() && (entry = zip.getNextEntry()) != null) {
+                String prefix = "assets/minecraft/textures/";
+                String name = entry.getName();
+                if (!name.startsWith(prefix) || !name.endsWith(".png")) {
+                    continue;
+                }
+                Path file = missing.remove("minecraft:" + name.substring(prefix.length(), name.length() - 4));
+                if (file == null) {
+                    continue;
+                }
+                Files.createDirectories(file.getParent());
+                Path temporary = Files.createTempFile(file.getParent(), "icon-", ".png");
+                try {
+                    Files.copy(zip, temporary, StandardCopyOption.REPLACE_EXISTING);
+                    Files.move(temporary, file, StandardCopyOption.REPLACE_EXISTING);
+                } finally {
+                    Files.deleteIfExists(temporary);
+                }
+            }
+        } finally {
+            connection.disconnect();
+        }
+        if (!missing.isEmpty()) {
+            throw new IOException("Missing Minecraft icon textures: " + missing.keySet());
+        }
     }
 
     public Map<Material, String> getMaterialMap() {
@@ -98,21 +198,7 @@ public class ItemMaterialManager extends AbstractManager {
                 version = version.substring(0, version.length() - 2);
             }
 
-            JSONObject manifest = CommonUtil.fetchJson("https://launchermeta.mojang.com/mc/game/version_manifest.json");
-            JSONObject selected = null;
-            for (Object value : manifest.getJSONArray("versions")) {
-                JSONObject entry = (JSONObject) value;
-                if (version.equals(entry.getString("id"))) {
-                    selected = entry;
-                    break;
-                }
-            }
-            if (selected == null) {
-                throw new IOException("Can not get Minecraft version " + version);
-            }
-
-            JSONObject versionInfo = CommonUtil.fetchJson(selected.getString("url"));
-            String clientUrl = versionInfo.getJSONObject("downloads").getJSONObject("client").getString("url");
+            String clientUrl = getMinecraftClientUrl(version);
             clientJar = File.createTempFile("ultimateshop-client-", ".jar");
             download(clientUrl, clientJar);
 
@@ -209,7 +295,6 @@ public class ItemMaterialManager extends AbstractManager {
         return fallbackTexture(id, assets.textures);
     }
 
-    /** Finds the first concrete vanilla model in a modern item-definition tree. */
     private String findModelPath(Object node) {
         if (node instanceof JSONObject object) {
             String type = object.optString("type", "");
@@ -218,7 +303,6 @@ public class ItemMaterialManager extends AbstractManager {
                 return (String) model;
             }
 
-            // Keep insertion order: base/fallback models precede conditional alternatives in Mojang definitions.
             for (String key : object.keySet()) {
                 String result = findModelPath(object.opt(key));
                 if (result != null) {
@@ -295,7 +379,9 @@ public class ItemMaterialManager extends AbstractManager {
     private static final class ClientAssets {
 
         private final Map<String, JSONObject> models;
+
         private final Map<String, JSONObject> items;
+
         private final Set<String> textures;
 
         private ClientAssets(Map<String, JSONObject> models, Map<String, JSONObject> items, Set<String> textures) {

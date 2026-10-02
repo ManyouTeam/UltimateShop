@@ -16,6 +16,7 @@ import cn.superiormc.ultimateshop.objects.items.GiveResult;
 import cn.superiormc.ultimateshop.objects.items.ThingMode;
 import cn.superiormc.ultimateshop.objects.items.prices.ObjectPrices;
 import cn.superiormc.ultimateshop.objects.menus.MenuType;
+import cn.superiormc.ultimateshop.objects.menus.MenuSender;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
 import cn.superiormc.ultimateshop.utils.MathUtil;
 import org.bukkit.entity.Player;
@@ -46,6 +47,15 @@ public class ModifyDisplayItem {
                                                     boolean buyMore,
                                                     boolean bedrock,
                                                     String clickType) {
+        return modifyItem(player, multi, addLoreDisplayItem, item, buyMore, bedrock, clickType,
+                buyMore ? multi : item.getDefaultBuyAmount(), buyMore ? multi : item.getDefaultSellAmount());
+    }
+
+    public static ObjectDisplayItemStack modifyItem(Player player, int multi,
+                                                    ObjectDisplayItemStack addLoreDisplayItem, ObjectItem item,
+                                                    boolean buyMore, boolean bedrock, String clickType,
+                                                    int buyAmount, int sellAmount) {
+        int displayAmount = buyMore ? multi : (item.getBuyPrice().empty ? sellAmount : buyAmount);
         if (clickType == null) {
             clickType = "general";
         }
@@ -58,18 +68,20 @@ public class ModifyDisplayItem {
             UltimateShop.methodUtil.setItemName(tempVal2, item.getDisplayName(player), player);
         }
         if (tempVal2.hasDisplayName()) {
-            UltimateShop.methodUtil.setItemName(tempVal2, CommonUtil.modifyString(player, UltimateShop.methodUtil.getItemName(tempVal2), "amount", String.valueOf(multi),
+            UltimateShop.methodUtil.setItemName(tempVal2, CommonUtil.modifyString(player, UltimateShop.methodUtil.getItemName(tempVal2), "amount", String.valueOf(displayAmount),
+                    "buy-amount", String.valueOf(buyAmount), "sell-amount", String.valueOf(sellAmount),
                     "item-name", item.getDisplayName(player)), player);
         }
         List<String> addLore = new ArrayList<>();
         if (tempVal2.hasLore()) {
             addLore.addAll(CommonUtil.modifyList(player,
                     UltimateShop.methodUtil.getItemLore(tempVal2),
-                    "amount", String.valueOf(multi),
+                    "amount", String.valueOf(displayAmount),
+                    "buy-amount", String.valueOf(buyAmount), "sell-amount", String.valueOf(sellAmount),
                     "item-name", item.getDisplayName(player)));
         }
         addLore.addAll(getModifiedLore(player, multi, item, buyMore, bedrock, clickType,
-                addLoreDisplayItem.getItemStack()));
+                addLoreDisplayItem.getItemStack(), MenuSender.getOpeningPresentation(player), buyAmount, sellAmount));
         if (!addLore.isEmpty()) {
             UltimateShop.methodUtil.setItemLore(tempVal2, addLore, player);
         }
@@ -85,7 +97,18 @@ public class ModifyDisplayItem {
             boolean bedrock,
             String clickType
     ) {
-        return getModifiedLore(player, multi, item, buyMore, bedrock, clickType, item.getDisplayItem(player));
+        return getModifiedLore(player, multi, item, buyMore, bedrock, clickType, MenuSender.getOpeningPresentation(player));
+    }
+
+    public static List<String> getModifiedLore(Player player, int multi, ObjectItem item,
+                                              boolean buyMore, boolean bedrock, String clickType, String presentation) {
+        return getModifiedLore(player, multi, item, buyMore, bedrock, clickType, item.getDisplayItem(player), presentation);
+    }
+
+    public static List<String> getModifiedLore(Player player, ObjectItem item, int buyAmount,
+                                               int sellAmount, String presentation) {
+        return getModifiedLore(player, buyAmount, item, false, true, "general", item.getDisplayItem(player),
+                presentation, buyAmount, sellAmount);
     }
 
     private static List<String> getModifiedLore(
@@ -95,8 +118,18 @@ public class ModifyDisplayItem {
             boolean buyMore,
             boolean bedrock,
             String clickType,
-            ItemStack displayedItem
+            ItemStack displayedItem,
+            String presentation
     ) {
+        return getModifiedLore(player, multi, item, buyMore, bedrock, clickType, displayedItem, presentation,
+                buyMore ? multi : item.getDefaultBuyAmount(), buyMore ? multi : item.getDefaultSellAmount());
+    }
+
+    private static List<String> getModifiedLore(Player player, int multi, ObjectItem item,
+                                                boolean buyMore, boolean bedrock, String clickType,
+                                                ItemStack displayedItem, String presentation,
+                                                int buyAmount, int sellAmount) {
+        int displayAmount = buyMore ? multi : (item.getBuyPrice().empty ? sellAmount : buyAmount);
 
         List<String> resultLore = new ArrayList<>();
 
@@ -108,23 +141,24 @@ public class ModifyDisplayItem {
         ObjectUseTimesCache serverCache = CacheManager.cacheManager.serverCache.getUseTimesCache(item);
 
         Map<Character, ConditionResolver> conditionResolvers = buildConditionResolvers(player, item, clickType, buyMore, bedrock, playerCache, serverCache);
+        conditionResolvers.put('t', argument -> matchesPresentation(presentation, argument));
 
-        List<String> buyPrice = ObjectPrices.getDisplayName(player, multi,
+        List<String> buyPrice = ObjectPrices.getDisplayName(player, buyAmount,
                 item.getBuyPrice().take(player.getInventory(), player,
-                        playerCache.getBuyUseTimes(), multi, true).getResultMap(),
+                        playerCache.getBuyUseTimes(), buyAmount, true).getResultMap(),
                 item.getBuyPrice().getMode(), false);
         ObjectPrices displaySellPrice = item.getDisplaySellPrice();
-        GiveResult sellResult = displaySellPrice.give(player, playerCache.getSellUseTimes(), multi);
+        GiveResult sellResult = displaySellPrice.give(player, playerCache.getSellUseTimes(), sellAmount);
         Map<AbstractSingleThing, BigDecimal> sellResultMap;
         if (item.isPriceModifierEnabled()) {
             sellResultMap = new LinkedHashMap<>(sellResult.getResultMap());
             BigDecimal basePrice = sellResultMap.values().stream().reduce(BigDecimal.ZERO, BigDecimal::add);
-            BigDecimal multiplier = ShopHelper.getSellMultiplier(player, item, displayedItem, basePrice, multi);
+            BigDecimal multiplier = ShopHelper.getSellMultiplier(player, item, displayedItem, basePrice, sellAmount);
             sellResultMap.replaceAll((thing, value) -> MathUtil.applyConfiguredScale(value.multiply(multiplier)));
         } else {
             sellResultMap = sellResult.getResultMapForSellMultiplierDisplay(player);
         }
-        List<String> sellPrice = ObjectPrices.getDisplayName(player, multi,
+        List<String> sellPrice = ObjectPrices.getDisplayName(player, sellAmount,
                 sellResultMap, displaySellPrice.getMode(), false);
 
         for (String rawLine : item.getAddLore(player)) {
@@ -217,14 +251,28 @@ public class ModifyDisplayItem {
                     "last-reset-buy-server", serverCache.getBuyLastResetTimeName(),
                     "last-reset-sell-server", serverCache.getSellLastResetTimeName(),
 
-                    "buy-click", getBuyClickPlaceholder(player, multi, item, clickType),
-                    "sell-click", getSellClickPlaceholder(player, multi, item, clickType),
-                    "amount", String.valueOf(multi),
+                    "buy-click", getBuyClickPlaceholder(player, buyAmount, item, clickType),
+                    "sell-click", getSellClickPlaceholder(player, sellAmount, item, clickType),
+                    "amount", String.valueOf(displayAmount),
+                    "buy-amount", String.valueOf(buyAmount),
+                    "sell-amount", String.valueOf(sellAmount),
                     "item-name", item.getDisplayName(player)
             );
         }
 
         return resultLore;
+    }
+
+    private static boolean matchesPresentation(String presentation, String argument) {
+        if (presentation == null || argument == null) {
+            return false;
+        }
+        for (String type : argument.split(",")) {
+            if (presentation.equalsIgnoreCase(type.trim())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private static class ConditionElement {

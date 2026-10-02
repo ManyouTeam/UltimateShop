@@ -120,18 +120,7 @@ public class ObjectDisplayItemStack {
                     "minecraft-item-material-file.enabled to true in config.yml and generate the mapping file.");
             return null;
         }
-        String texturePath = ItemMaterialManager.itemMaterialManager.getMaterialTexturePath(javaItem.getType());
-        if (texturePath == null || texturePath.isEmpty()) {
-            return null;
-        }
-        int namespaceSeparator = texturePath.indexOf(':');
-        String namespace = namespaceSeparator < 0 ? "minecraft" : texturePath.substring(0, namespaceSeparator);
-        String path = namespaceSeparator < 0 ? texturePath : texturePath.substring(namespaceSeparator + 1);
-        String atlas = path.startsWith("block/") ? "blocks" : "items";
-        return ConfigManager.configManager.getString("menu.dialog.auto-add-sprite.format", "<sprite:\"{namespace}:{atlas}\":{path}>",
-                "namespace", namespace,
-                "atlas", atlas,
-                "path", path);
+        return ItemMaterialManager.itemMaterialManager.getMaterialSprite(javaItem.getType());
     }
 
     public ItemMeta getMeta() {
@@ -222,11 +211,21 @@ public class ObjectDisplayItemStack {
 
     @Nullable
     public DialogAction parseToDialogButton(String id, Consumer<DialogResponse> handler) {
+        Boolean showSprite = item == null ? null : item.getShowSprite();
+        if (section != null && section.contains("dialog.show-sprite")) {
+            showSprite = section.getBoolean("dialog.show-sprite");
+        }
+        return parseToDialogButton(id, showSprite, handler);
+    }
+
+    @Nullable
+    public DialogAction parseToDialogButton(String id, Boolean showSprite, Consumer<DialogResponse> handler) {
         String label = ItemUtil.getItemName(javaItem);
         if (label.trim().isEmpty()) {
             return null;
         }
-        if (ItemMaterialManager.enableThis() && ConfigManager.configManager.getBoolean("menu.dialog.auto-add-sprite.enabled")) {
+        if (ItemMaterialManager.enableThis() && (Boolean.TRUE.equals(showSprite)
+                || showSprite == null && ConfigManager.configManager.getBoolean("menu.dialog.auto-add-sprite.enabled"))) {
             String sprite = getSprite();
             if (sprite != null) {
                 label = sprite + " " + label;
@@ -245,7 +244,7 @@ public class ObjectDisplayItemStack {
                 tooltip = String.join("\n", lore);
             }
         }
-        return DialogAction.of(id, label, tooltip, handler);
+        return DialogAction.of(id, label, tooltip, handler).withShowSprite(showSprite);
     }
 
     public ItemStack getItemStack() {

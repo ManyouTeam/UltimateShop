@@ -5,6 +5,7 @@ import cn.superiormc.ultimateshop.gui.form.FormInfoGUI;
 import cn.superiormc.ultimateshop.gui.inv.BuyMoreGUI;
 import cn.superiormc.ultimateshop.gui.inv.CommonGUI;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
+import cn.superiormc.ultimateshop.managers.ErrorManager;
 import cn.superiormc.ultimateshop.managers.ItemMaterialManager;
 import cn.superiormc.ultimateshop.methods.Product.BuyProductMethod;
 import cn.superiormc.ultimateshop.methods.Product.SellProductMethod;
@@ -77,6 +78,10 @@ public class ObjectItem extends AbstractButton {
 
     private final ObjectItemConfig itemConfig;
 
+    private final int defaultBuyAmount;
+
+    private final int defaultSellAmount;
+
     public final boolean empty;
 
     private final boolean enableSellAll;
@@ -90,6 +95,10 @@ public class ObjectItem extends AbstractButton {
         this.shop = shop;
         this.type = ButtonType.SHOP;
         this.itemConfig = new ObjectItemConfig(this, originalConfig);
+        this.defaultBuyAmount = parseDefaultTradeAmount(itemConfig.getString("default-buy-amount"),
+                1, originalConfig.getCurrentPath() + ".default-buy-amount");
+        this.defaultSellAmount = parseDefaultTradeAmount(itemConfig.getString("default-sell-amount"),
+                1, originalConfig.getCurrentPath() + ".default-sell-amount");
         this.enableSellAll = itemConfig.getBoolean("sell-all", true);
         this.priceModifierEnabled = itemConfig.getBoolean("price-modifier", false);
         initSharedUseTimes();
@@ -306,8 +315,12 @@ public class ObjectItem extends AbstractButton {
     }
 
     public String getDisplayName(Player player) {
+        return getDisplayName(player, true);
+    }
+
+    public String getDisplayName(Player player, boolean useSprite) {
         if (itemConfig.getString("display-name") == null) {
-            if (ItemMaterialManager.enableThis() && ConfigManager.configManager.getBoolean("display-item.auto-use-sprite-item-name") && !CommonUtil.isBedrockPlayer(player)) {
+            if (useSprite && ItemMaterialManager.enableThis() && ConfigManager.configManager.getBoolean("display-item.auto-use-sprite-item-name") && !CommonUtil.isBedrockPlayer(player)) {
                 String sprite = displayItem.getDisplayItem(player).getSprite();
                 if (sprite != null) {
                     return sprite;
@@ -450,18 +463,53 @@ public class ObjectItem extends AbstractButton {
 
     @Override
     public void clickEvent(ClickType type, Player player) {
+        clickEvent(type, player, defaultBuyAmount, defaultSellAmount);
+    }
+
+    public int getDefaultBuyAmount() {
+        return defaultBuyAmount;
+    }
+
+    public int getDefaultSellAmount() {
+        return defaultSellAmount;
+    }
+
+    public static int parseDefaultTradeAmount(String value, int fallback, String path) {
+        if (value == null) {
+            return fallback;
+        }
+        try {
+            if (value.matches("[0-9]+")) {
+                int amount = Integer.parseInt(value);
+                if (amount > 0 && amount < 10000) {
+                    return amount;
+                }
+            }
+        } catch (NumberFormatException ignored) {
+            // Out-of-range values use the same fallback as other invalid values.
+        }
+        ErrorManager.errorManager.sendErrorMessage("§6Invalid default trade amount at " + path +
+                ": " + value + ". Expected an integer from 1 to 9999; using 1.");
+        return 1;
+    }
+
+    public void clickEvent(ClickType type, Player player, int buyAmount, int sellAmount) {
+        clickEvent(type, player, buyAmount, sellAmount, this);
+    }
+
+    public void clickEvent(ClickType type, Player player, int buyAmount, int sellAmount, AbstractButton source) {
         if (empty) {
             return;
         }
         boolean b = ConfigManager.configManager.getBoolean("placeholder.click.enabled");
-        String tempVal1 = ConfigManager.configManager.getClickAction(type, this);
+        String tempVal1 = ConfigManager.configManager.getClickAction(type, source, player);
         if (shouldOpenPriceModifierMenu(tempVal1) && openPriceModifierMenu(player)) {
             return;
         }
         switch (tempVal1) {
             case "buy" :
                 if (!buyPrice.empty) {
-                    ProductTradeStatus.Status status = BuyProductMethod.startBuy(this, player, !b).getStatus();
+                    ProductTradeStatus.Status status = BuyProductMethod.startBuy(this, player, !b, false, buyAmount).getStatus();
                     if (status != ProductTradeStatus.Status.DONE) {
                         failAction.runAllActions(new ObjectThingRun(player, type, status));
                     }
@@ -469,7 +517,7 @@ public class ObjectItem extends AbstractButton {
                 return;
             case "sell" :
                 if (!sellPrice.empty) {
-                    ProductTradeStatus.Status status = SellProductMethod.startSell(this, player, !b).getStatus();
+                    ProductTradeStatus.Status status = SellProductMethod.startSell(this, player, !b, false, sellAmount).getStatus();
                     if (status != ProductTradeStatus.Status.DONE) {
                         failAction.runAllActions(new ObjectThingRun(player, type, status));
                     }
@@ -477,12 +525,12 @@ public class ObjectItem extends AbstractButton {
                 return;
             case "buy-or-sell" :
                 if (buyPrice.empty && !sellPrice.empty) {
-                    ProductTradeStatus.Status status = SellProductMethod.startSell(this, player, !b).getStatus();
+                    ProductTradeStatus.Status status = SellProductMethod.startSell(this, player, !b, false, sellAmount).getStatus();
                     if (status != ProductTradeStatus.Status.DONE) {
                         failAction.runAllActions(new ObjectThingRun(player, type, status));
                     }
                 } else if (!buyPrice.empty) {
-                    ProductTradeStatus.Status status = BuyProductMethod.startBuy(this, player, !b).getStatus();
+                    ProductTradeStatus.Status status = BuyProductMethod.startBuy(this, player, !b, false, buyAmount).getStatus();
                     if (status != ProductTradeStatus.Status.DONE) {
                         failAction.runAllActions(new ObjectThingRun(player, type, status));
                     }
@@ -511,7 +559,7 @@ public class ObjectItem extends AbstractButton {
             ObjectAction action = new ObjectAction(
                     ConfigManager.configManager.getSection("menu.click-event-actions." + tempVal1),
                     this);
-            action.runAllActions(new ObjectThingRun(player, type));
+            action.runAllActions(new ObjectThingRun(player, type, buyAmount, sellAmount));
             if (action.getLastTradeStatus() != null) {
                 ProductTradeStatus.Status status = action.getLastTradeStatus().getStatus();
                 if (status != ProductTradeStatus.Status.DONE) {

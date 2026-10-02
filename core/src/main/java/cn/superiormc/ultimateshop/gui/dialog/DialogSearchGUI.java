@@ -61,10 +61,10 @@ public class DialogSearchGUI extends DialogGUI {
         if (!searchKeywords.trim().isEmpty()) {
             addResults(builder, itemActionLayout);
         }
-        for (Map.Entry<Integer, AbstractButton> entry : menu.getMenu(MenuSender.of(player)).entrySet()) {
+        for (Map.Entry<Integer, AbstractButton> entry : menu.getMenu(MenuSender.of(player, MenuSender.dialogPresentation(menu.getString("dialog.layout", "multi-action")))).entrySet()) {
             AbstractButton button = entry.getValue();
             ObjectDisplayItemStack display = button.getDisplayItem(player, 1);
-            DialogAction action = display.parseToDialogButton("slot_" + entry.getKey(),
+            DialogAction action = display.parseToDialogButton("slot_" + entry.getKey(), button.getShowSprite(),
                     response -> button.clickEvent(ClickType.LEFT, player));
             if (action != null) {
                 if (button.hasCloseAction()) {
@@ -90,7 +90,7 @@ public class DialogSearchGUI extends DialogGUI {
             ObjectSearchResultButton result = new ObjectSearchResultButton(matched.get(i), menu.getResultLore());
             ObjectDisplayItemStack display = result.getDisplayItem(player, 1);
             ObjectItem item = matched.get(i);
-            DialogAction action = display.parseToDialogButton("result_" + i,
+            DialogAction action = display.parseToDialogButton("result_" + i, result.getItem().getShowSprite(),
                     response -> {
                         new DialogInfoGUI(player, item).openGUI(true);
                     });

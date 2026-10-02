@@ -69,7 +69,7 @@ public class DialogFavouriteGUI extends DialogGUI {
         ObjectFavouriteEditModeButton edit = menu.getEditModeButton();
         if (edit != null) {
             ObjectDisplayItemStack display = edit.getDisplayItem(player, editing, products.size());
-            DialogAction action = display.parseToDialogButton("edit_mode",
+            DialogAction action = display.parseToDialogButton("edit_mode", edit.getShowSprite(),
                     response -> new DialogFavouriteGUI(player, menu, true, !editing).openGUI(true));
             if (action != null) {
                 if (edit.usesItemActionDialogLayout(dialogLayout)) {
@@ -80,10 +80,10 @@ public class DialogFavouriteGUI extends DialogGUI {
                 }
             }
         }
-        for (Map.Entry<Integer, AbstractButton> entry : menu.getMenu(MenuSender.of(player)).entrySet()) {
+        for (Map.Entry<Integer, AbstractButton> entry : menu.getMenu(MenuSender.of(player, MenuSender.dialogPresentation(menu.getString("dialog.layout", "multi-action")))).entrySet()) {
             AbstractButton button = entry.getValue();
             ObjectDisplayItemStack display = button.getDisplayItem(player, 1);
-            DialogAction action = display.parseToDialogButton("slot_" + entry.getKey(),
+            DialogAction action = display.parseToDialogButton("slot_" + entry.getKey(), button.getShowSprite(),
                     response -> button.clickEvent(ClickType.LEFT, player));
             if (action != null) {
                 if (button.hasCloseAction()) {
@@ -102,7 +102,7 @@ public class DialogFavouriteGUI extends DialogGUI {
     private void addResult(DialogView.Builder builder, ObjectFavouriteResultButton result,
                            boolean itemActionLayout) {
         ObjectDisplayItemStack display = result.getDisplayItem(player, 1);
-        DialogAction action = display.parseToDialogButton("result_" + result.getIndex(), response -> {
+        DialogAction action = display.parseToDialogButton("result_" + result.getIndex(), result.getItem().getShowSprite(), response -> {
             if (editing) {
                 new DialogFavouriteEditGUI(player, menu, result).openGUI(true);
             }

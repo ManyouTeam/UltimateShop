@@ -6,6 +6,7 @@ import cn.superiormc.ultimateshop.gui.form.FormShopGUI;
 import cn.superiormc.ultimateshop.objects.caches.ObjectCache;
 import cn.superiormc.ultimateshop.gui.InvGUI;
 import cn.superiormc.ultimateshop.gui.dialog.DialogShopGUI;
+import cn.superiormc.ultimateshop.gui.dialog.DialogOreGUI;
 import cn.superiormc.ultimateshop.managers.CacheManager;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.LanguageManager;
@@ -165,7 +166,11 @@ public class ShopGUI extends InvGUI {
             return;
         }
         if (shopMenu.isUseDialog()) {
-            new DialogShopGUI(player, shop, shopMenu, bypass).openGUI(reopen);
+            if ("ore".equalsIgnoreCase(shopMenu.getString("dialog.layout", "multi-action"))) {
+                new DialogOreGUI(player, shopMenu, shop, bypass).openGUI(reopen);
+            } else {
+                new DialogShopGUI(player, shop, shopMenu, bypass).openGUI(reopen);
+            }
             return;
         }
 

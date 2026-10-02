@@ -6,6 +6,8 @@ import cn.superiormc.ultimateshop.objects.sellchests.ObjectSellChest;
 import cn.superiormc.ultimateshop.objects.ObjectSellStick;
 import cn.superiormc.ultimateshop.objects.ObjectShop;
 import cn.superiormc.ultimateshop.objects.buttons.AbstractButton;
+import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
+import cn.superiormc.ultimateshop.objects.buttons.ObjectCopyItem;
 import cn.superiormc.ultimateshop.objects.items.subobjects.ObjectConditionalPlaceholder;
 import cn.superiormc.ultimateshop.objects.items.subobjects.ObjectCustomPlaceholder;
 import cn.superiormc.ultimateshop.objects.items.subobjects.ObjectRandomPlaceholder;
@@ -449,21 +451,72 @@ public class ConfigManager extends AbstractManager {
     }
 
     public String getClickAction(ClickType type, AbstractButton button) {
-        ConfigurationSection tempVal1 = button.getButtonConfig().getConfigurationSection("click-event");;
-        if (tempVal1 == null) {
-            tempVal1 = config.getConfigurationSection("menu.click-event");
-            if (tempVal1 == null) {
-                return "none";
-            }
+        return findClickAction(type, getClickEventSection(button));
+    }
+
+    public String getClickAction(ClickType type, AbstractButton button, Player player) {
+        String bedrockAction = getBedrockClickAction(button, player);
+        if (bedrockAction != null) {
+            return type == ClickType.LEFT ? bedrockAction : "none";
         }
-        for (String s : tempVal1.getKeys(false)) {
-            for (String t : tempVal1.getString(s).split(";;")) {
-                if (t.equals(type.name())){
-                    return s;
+        return findClickAction(type, getClickEventSection(button));
+    }
+
+    private String findClickAction(ClickType type, ConfigurationSection section) {
+        if (section != null) {
+            for (String action : section.getKeys(false)) {
+                String clicks = section.getString(action);
+                if (clicks == null || section.isConfigurationSection(action)) {
+                    continue;
+                }
+                for (String click : clicks.split(";;")) {
+                    if (click.trim().equals(type.name())) {
+                        return action;
+                    }
                 }
             }
         }
         return "none";
+    }
+
+    private String getBedrockClickAction(AbstractButton button, Player player) {
+        // Quantity menu confirmation controls keep their own click rules.
+        if (player == null || !(button instanceof ObjectItem || button instanceof ObjectCopyItem)
+                || !CommonUtil.isBedrockPlayer(player)) {
+            return null;
+        }
+        ConfigurationSection settings = button.getButtonConfig();
+        String action = settings == null ? null : settings.getString("bedrock.click-event");
+        if (action == null && button instanceof ObjectCopyItem copy) {
+            action = copy.getTargetItem().getButtonConfig().getString("bedrock.click-event");
+        }
+        if (action == null) {
+            action = config.getString("menu.bedrock.click-event");
+        }
+        return action == null || action.isBlank() ? null : action.trim();
+    }
+
+    public boolean hasBedrockClickEvent(AbstractButton button, Player player) {
+        return getBedrockClickAction(button, player) != null;
+    }
+
+    private ConfigurationSection getClickEventSection(AbstractButton button) {
+        ConfigurationSection section;
+        ConfigurationSection settings = button.getButtonConfig();
+        section = settings == null ? null : settings.getConfigurationSection("click-event");
+        if (section == null && button instanceof ObjectCopyItem copy) {
+            section = copy.getTargetItem().getButtonConfig().getConfigurationSection("click-event");
+        }
+        return section == null ? config.getConfigurationSection("menu.click-event") : section;
+    }
+
+    public boolean containsClickAction(String clickEvent, AbstractButton button, Player player) {
+        for (ClickType type : ClickType.values()) {
+            if (clickEvent.equals(getClickAction(type, button, player))) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public boolean containsClickAction(String clickEvent) {

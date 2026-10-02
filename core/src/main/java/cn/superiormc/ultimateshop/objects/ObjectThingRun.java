@@ -25,6 +25,10 @@ public class ObjectThingRun {
 
     private ProductTradeStatus.Status status;
 
+    private Integer clickBuyAmount;
+
+    private Integer clickSellAmount;
+
     public ObjectThingRun(Player player) {
         this.uuid = player.getUniqueId();
         this.times = 1;
@@ -74,6 +78,17 @@ public class ObjectThingRun {
         this.type = type;
         this.reopen = false;
         this.status = status;
+    }
+
+    public ObjectThingRun(Player player, ClickType type, int buyAmount, int sellAmount) {
+        this(player, type);
+        this.clickBuyAmount = buyAmount;
+        this.clickSellAmount = sellAmount;
+    }
+
+    public double getActionTradeAmount(boolean buy) {
+        Integer clickAmount = buy ? clickBuyAmount : clickSellAmount;
+        return clickAmount == null ? getAmount() : clickAmount;
     }
 
     public ObjectThingRun(Player player, int times, int multi, double amount) {

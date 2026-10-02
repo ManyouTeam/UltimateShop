@@ -43,6 +43,9 @@ public class ReloadPlugin {
             SellChestManager.sellChestManager.restoreHologramsAfterReload();
         }
         AbstractManager.initializeManagers();
+        if (DialogPackManager.dialogPackManager != null) {
+            DialogPackManager.dialogPackManager.regenerate(null, null);
+        }
         LanguageManager.languageManager.sendStringText(sender, "plugin.reloaded");
     }
 }

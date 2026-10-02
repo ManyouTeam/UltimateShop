@@ -58,6 +58,8 @@ commands:
     usage: "/ultimateshop"
     description: "UltimateShop Main Command."
 permissions:
+  ultimateshop.dialogpack:
+    default: op
   ultimateshop.generateitemformat:
     default: op
   ultimateshop.editor:

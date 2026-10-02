@@ -17,6 +17,8 @@ public abstract class DialogGUI extends AbstractGUI {
 
     private long finishedGeneration = Long.MIN_VALUE;
 
+    private long consumedGeneration = Long.MIN_VALUE;
+
     protected DialogGUI(Player owner) {
         super(owner);
     }
@@ -59,6 +61,7 @@ public abstract class DialogGUI extends AbstractGUI {
 
     @Override
     public void finishGUI() {
+        consumedGeneration = generation;
         if (finishedGeneration == generation) {
             return;
         }
@@ -67,17 +70,37 @@ public abstract class DialogGUI extends AbstractGUI {
     }
 
     public boolean handleAction(String actionId, DialogResponse response, long expectedGeneration) {
-        if (expectedGeneration != generation || dialog == null) {
+        if (!canHandleResponse(expectedGeneration)) {
             return false;
         }
         for (DialogAction action : dialog.getActions()) {
             if (action.getId().equals(actionId)) {
-                finishGUI();
+                consumedGeneration = expectedGeneration;
+                boolean keepOpen = dialog.keepOpenAfterAction();
+                if (!keepOpen) {
+                    finishGUI();
+                }
                 action.execute(response == null ? DialogResponse.empty() : response);
+                // A persistent dialog needs a fresh generation for its next intentional submission.
+                if (keepOpen && generation == expectedGeneration && finishedGeneration != expectedGeneration
+                        && player.isOnline() && MenuStatusManager.menuStatusManager.getOpeningGUI(player) == this) {
+                    updateGUI();
+                }
                 return true;
             }
         }
         return false;
+    }
+
+    public void closeGUI(long expectedGeneration) {
+        if (canHandleResponse(expectedGeneration)) {
+            closeGUI();
+        }
+    }
+
+    private boolean canHandleResponse(long expectedGeneration) {
+        return player.isOnline() && expectedGeneration == generation && expectedGeneration != consumedGeneration
+                && dialog != null && MenuStatusManager.menuStatusManager.getOpeningGUI(player) == this;
     }
 
     public DialogView getDialog() {

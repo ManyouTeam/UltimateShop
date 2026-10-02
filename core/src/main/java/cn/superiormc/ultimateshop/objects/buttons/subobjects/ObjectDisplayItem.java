@@ -1,18 +1,25 @@
 package cn.superiormc.ultimateshop.objects.buttons.subobjects;
 
 import cn.superiormc.ultimateshop.managers.ConfigManager;
-import cn.superiormc.ultimateshop.methods.ModifyDisplayItem;
+import cn.superiormc.ultimateshop.managers.ItemMaterialManager;
 import cn.superiormc.ultimateshop.methods.Items.BuildItem;
+import cn.superiormc.ultimateshop.methods.ModifyDisplayItem;
 import cn.superiormc.ultimateshop.objects.ObjectThingRun;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import cn.superiormc.ultimateshop.objects.items.ObjectCondition;
 import cn.superiormc.ultimateshop.objects.items.products.ObjectSingleProduct;
 import cn.superiormc.ultimateshop.objects.menus.ObjectMenu;
 import cn.superiormc.ultimateshop.utils.MathUtil;
+import cn.superiormc.ultimateshop.utils.CommonUtil;
 import cn.superiormc.ultimateshop.utils.TextUtil;
+
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+
+import java.util.HashSet;
+import java.util.Set;
 
 public class ObjectDisplayItem {
 
@@ -43,6 +50,12 @@ public class ObjectDisplayItem {
     }
 
     public ObjectDisplayItemStack getDisplayItem(Player player) {
+        return getDisplayItem(player, item == null ? 1 : item.getDefaultBuyAmount(),
+                item == null ? 1 : item.getDefaultSellAmount());
+    }
+
+    public ObjectDisplayItemStack getDisplayItem(Player player, int buyAmount, int sellAmount) {
+        usedSection = null;
         ItemStack addLoreDisplayItem = null;
         if (useFirstProduct) {
             if (item != null && ConfigManager.configManager.getBoolean("display-item.auto-set-first-product")) {
@@ -53,18 +66,19 @@ public class ObjectDisplayItem {
                 double cost = singleProduct.getAmount(player, 0, true).doubleValue();
                 ItemStack tempVal2 = singleProduct.getItemThing(null, player, cost, true).getDisplayItem();
                 if (tempVal2 != null) {
-                    addLoreDisplayItem = tempVal2;
+                    addLoreDisplayItem = tempVal2.clone();
+                    if (buyAmount == sellAmount) {
+                        addLoreDisplayItem.setAmount(buyAmount);
+                    }
                     if (!section.contains("bedrock")) {
                         usedSection = singleProduct.singleSection;
                     }
                 }
             }
         } else {
-            // 显示物品
             if (conditionSection == null) {
-                String amount = section.getString("amount", "1");
                 ItemStack displayItem = BuildItem.buildItemStack(player, section,
-                        MathUtil.doCalculate(TextUtil.withPAPI(amount, player)).intValue());
+                        getDisplayAmount(section, player, buyAmount, sellAmount));
                 addLoreDisplayItem = displayItem.clone();
             } else {
                 for (String conditionID : section.getKeys(false)) {
@@ -76,10 +90,9 @@ public class ObjectDisplayItem {
                             if (tempVal2 == null) {
                                 continue;
                             }
-                            String amount = tempVal2.getString("amount", "1");
                             ItemStack displayItem = BuildItem.buildItemStack(player,
                                     tempVal2,
-                                    MathUtil.doCalculate(TextUtil.withPAPI(amount, player)).intValue());
+                                    getDisplayAmount(tempVal2, player, buyAmount, sellAmount));
                             addLoreDisplayItem = displayItem.clone();
                             usedSection = tempVal2;
                             break;
@@ -91,10 +104,40 @@ public class ObjectDisplayItem {
         if (addLoreDisplayItem == null) {
             return ObjectDisplayItemStack.getAir();
         }
+        if (ConfigManager.configManager.getBoolean("menu.buy-more-menu.display-item-max-stack")
+                && CommonUtil.getMinorVersion(20, 5)) {
+            ItemMeta meta = addLoreDisplayItem.getItemMeta();
+            if (meta != null) {
+                meta.setMaxStackSize(99);
+                addLoreDisplayItem.setItemMeta(meta);
+            }
+        }
         if (usedSection == null) {
             usedSection = section;
         }
         return new ObjectDisplayItemStack(player, addLoreDisplayItem, usedSection, item);
+    }
+
+    private int getDisplayAmount(ConfigurationSection settings, Player player, int buyAmount, int sellAmount) {
+        if (!settings.contains("amount") && item != null && buyAmount == sellAmount) {
+            return buyAmount;
+        }
+        return MathUtil.doCalculate(TextUtil.withPAPI(settings.getString("amount", "1"), player)).intValue();
+    }
+
+    public Set<String> getPossibleSprites() {
+        if (!useFirstProduct) {
+            return ItemMaterialManager.getConfiguredSprites(section);
+        }
+        Set<String> result = new HashSet<>();
+        if (section != null && section.contains("sprite")) {
+            result.add(section.getString("sprite"));
+        } else if (item != null && ConfigManager.configManager.getBoolean("display-item.auto-set-first-product")) {
+            for (ObjectSingleProduct product : item.getReward().singleProducts) {
+                result.addAll(ItemMaterialManager.getConfiguredSprites(product.singleSection));
+            }
+        }
+        return result;
     }
 
     public int getAmountPlaceholder(Player player) {
@@ -105,7 +148,12 @@ public class ObjectDisplayItem {
     }
 
     public ObjectDisplayItemStack getDisplayItem(Player player, int multi) {
-        ObjectDisplayItemStack addLoreDisplayItem = getDisplayItem(player);
+        return getDisplayItem(player, multi, item == null ? multi : item.getDefaultBuyAmount(),
+                item == null ? multi : item.getDefaultSellAmount());
+    }
+
+    public ObjectDisplayItemStack getDisplayItem(Player player, int multi, int buyAmount, int sellAmount) {
+        ObjectDisplayItemStack addLoreDisplayItem = getDisplayItem(player, buyAmount, sellAmount);
         if (item != null) {
             if (section != null && !section.getBoolean("modify-lore", true)) {
                 return addLoreDisplayItem;
@@ -115,7 +163,8 @@ public class ObjectDisplayItem {
             if (menu != null) {
                 useDialog = menu.isUseDialog();
             }
-            return ModifyDisplayItem.modifyItem(player, multi, addLoreDisplayItem, item, false, useDialog,  "general");
+            return ModifyDisplayItem.modifyItem(player, multi, addLoreDisplayItem, item, false, useDialog,
+                    "general", buyAmount, sellAmount);
         }
         return addLoreDisplayItem;
     }

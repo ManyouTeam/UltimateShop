@@ -73,6 +73,11 @@ public class ObjectButton extends AbstractButton {
     }
 
     @Override
+    public ObjectAction getAction() {
+        return action;
+    }
+
+    @Override
     public void clickEvent(ClickType type, Player player) {
         if (condition != null && !condition.getAllBoolean(new ObjectThingRun(player, type))) {
             failAction.runAllActions(new ObjectThingRun(player, type));

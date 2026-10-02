@@ -8,6 +8,7 @@ import cn.superiormc.ultimateshop.managers.MenuStatusManager;
 import cn.superiormc.ultimateshop.methods.Product.BuyProductMethod;
 import cn.superiormc.ultimateshop.methods.Product.SellProductMethod;
 import cn.superiormc.ultimateshop.methods.ProductTradeStatus;
+import cn.superiormc.ultimateshop.methods.ModifyDisplayItem;
 import cn.superiormc.ultimateshop.objects.ObjectShop;
 import cn.superiormc.ultimateshop.objects.SearchResult;
 import cn.superiormc.ultimateshop.objects.ObjectThingRun;
@@ -19,6 +20,7 @@ import cn.superiormc.ultimateshop.objects.items.ObjectCondition;
 import cn.superiormc.ultimateshop.objects.items.pricemodifiers.PriceModifierChain;
 import cn.superiormc.ultimateshop.objects.items.prices.ObjectPrices;
 import cn.superiormc.ultimateshop.objects.menus.ObjectMenu;
+import cn.superiormc.ultimateshop.objects.menus.MenuSender;
 import cn.superiormc.ultimateshop.utils.MathUtil;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
@@ -39,6 +41,32 @@ import java.util.Map;
 import java.util.Set;
 
 public class ShopHelper {
+
+    public static List<String> getProductInfoContent(Player player, ObjectItem item, int amount) {
+        return getProductInfoContent(player, item, amount,
+                MenuSender.getOpeningPresentation(player));
+    }
+
+    public static List<String> getProductInfoContent(Player player, ObjectItem item, int amount, String presentation) {
+        return getProductInfoContent(player, item, amount, amount, presentation);
+    }
+
+    public static List<String> getProductInfoContent(Player player, ObjectItem item, int buyAmount,
+                                                     int sellAmount, String presentation) {
+        List<String> result = new ArrayList<>();
+        ItemStack displayItem = item.getDisplayItem(player);
+        if (displayItem.hasItemMeta()) {
+            List<String> lore = UltimateShop.methodUtil.getItemLore(displayItem.getItemMeta());
+            if (lore != null && !lore.isEmpty()) {
+                result.addAll(cn.superiormc.ultimateshop.utils.CommonUtil.modifyList(player, lore,
+                        "amount", String.valueOf(item.getBuyPrice().empty ? sellAmount : buyAmount),
+                        "buy-amount", String.valueOf(buyAmount), "sell-amount", String.valueOf(sellAmount)));
+                result.add(" ");
+            }
+        }
+        result.addAll(ModifyDisplayItem.getModifiedLore(player, item, buyAmount, sellAmount, presentation));
+        return result;
+    }
 
     @Nullable
     public static ObjectItem getItemFromID(String shop, String product) {

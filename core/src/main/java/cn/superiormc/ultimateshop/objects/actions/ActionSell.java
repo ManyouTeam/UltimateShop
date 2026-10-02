@@ -22,6 +22,6 @@ public class ActionSell extends AbstractRunAction {
                 true,
                 false,
                 singleAction.getBoolean("sell-all", false),
-                singleAction.getInt("amount", 1)));
+                singleAction.getTradeAmount(thingRun, false)));
     }
 }

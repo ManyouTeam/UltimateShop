@@ -4,6 +4,7 @@ import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.objects.caches.ObjectCache;
 import cn.superiormc.ultimateshop.gui.FormGUI;
 import cn.superiormc.ultimateshop.managers.CacheManager;
+import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.LanguageManager;
 import cn.superiormc.ultimateshop.managers.MenuStatusManager;
 import cn.superiormc.ultimateshop.objects.ObjectShop;
@@ -84,7 +85,7 @@ public class FormShopGUI extends FormGUI {
                 tempVal4.refreshTimes();
             }
         }
-        menuButtons = shop.getShopMenuObject().getMenu(MenuSender.of(player));
+        menuButtons = shop.getShopMenuObject().getMenu(MenuSender.of(player, "form"));
         SimpleForm.Builder tempVal5 = SimpleForm.builder();
         Map<Integer, AbstractButton> tempVal8 = new LinkedHashMap<>();
         Map<Integer, AbstractButton> tempVal7 = new LinkedHashMap<>();
@@ -109,17 +110,17 @@ public class FormShopGUI extends FormGUI {
 
         tempVal5.title(TextUtil.parse(player, shop.getShopMenuObject().getString("title", shop.getShopDisplayName())
                 .replace("{shop-name}", shop.getShopDisplayName())));
-        tempVal5.validResultHandler(response -> {
+        tempVal5.validResultHandler((submittedForm, response) -> handleResponse(submittedForm, () -> {
             MenuStatusManager.menuStatusManager.removeOpenGUIStatus(player, this);
             AbstractButton button = menuButtons.get(menuItems.get(response.clickedButton()));
-            if (button instanceof ObjectItem item) {
+            if (button instanceof ObjectItem item && !ConfigManager.configManager.hasBedrockClickEvent(item, player)) {
                 FormInfoGUI infoGUI = new FormInfoGUI(player, item);
                 infoGUI.openGUI(true);
             } else {
                 button.clickEvent(ClickType.LEFT, player);
             }
-        });
-        tempVal5.closedOrInvalidResultHandler(response -> finishGUI());
+        }));
+        tempVal5.closedOrInvalidResultHandler((submittedForm, response) -> handleResponse(submittedForm, this::finishGUI));
         if (getMenu().getString("bedrock.content", null) != null) {
             tempVal5.content(TextUtil.parse(player, getMenu().getString("bedrock.content", "")));
         }

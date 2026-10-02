@@ -269,6 +269,7 @@ override-lang:
       content: '&7把常交易的商品保存下来，之后随时快速打开。'
     dialog:
       default-button: '确定'
+      details: '查看详情'
       search:
         input: '搜索'
         buttons:
@@ -874,9 +875,22 @@ editor:
         as-sub-button:
           name: '作为子按钮'
           desc: '把这个商品作为另一个商品的子按钮显示。'
+        default-buy-amount:
+          name: '默认购买数量'
+          desc: '直接购买的份数，范围 1-9999，默认 1；子按钮未设置时继承目标商品。'
+        dialog:
+          show-sprite:
+            name: '显示 Sprite'
+            desc: '显示或隐藏文字中的 Sprite；未设置时使用自动规则。'
+        default-sell-amount:
+          name: '默认回收数量'
+          desc: '直接回收的份数，范围 1-9999，默认 1；子按钮未设置时继承目标商品。'
         bedrock:
           name: '基岩版设置'
           desc: '这个商品的基岩版专用显示设置。'
+          click-event:
+            name: '基岩版点击动作'
+            desc: '基岩版点击商品时直接执行的动作，如 select-amount；仅 LEFT 生效。'
           hide:
             name: '隐藏'
             desc: '是否在基岩版中隐藏这个商品。'
@@ -937,6 +951,10 @@ editor:
     button_entry:
       title: '按钮预设'
       fields:
+        dialog:
+          show-sprite:
+            name: '显示 Sprite'
+            desc: '显示或隐藏文字中的 Sprite；未设置时使用自动规则。'
         display-item:
           name: '显示物品'
           desc: '这个按钮使用的显示物品。'

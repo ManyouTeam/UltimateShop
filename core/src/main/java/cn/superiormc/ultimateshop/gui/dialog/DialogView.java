@@ -1,5 +1,7 @@
 package cn.superiormc.ultimateshop.gui.dialog;
 
+import cn.superiormc.ultimateshop.objects.dialog.ObjectDialogScreen;
+
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
@@ -23,6 +25,8 @@ public final class DialogView {
 
     private final Layout layout;
 
+    private final ObjectDialogScreen screen;
+
     private final boolean closeWithEscape;
 
     private final boolean keepOpenAfterAction;
@@ -39,6 +43,7 @@ public final class DialogView {
         this.actions = List.copyOf(builder.actions);
         this.itemActions = List.copyOf(builder.itemActions);
         this.layout = builder.layout;
+        this.screen = builder.screen;
         this.closeWithEscape = builder.closeWithEscape;
         this.keepOpenAfterAction = builder.keepOpenAfterAction;
         this.buttonWidth = builder.buttonWidth;
@@ -85,12 +90,30 @@ public final class DialogView {
         return actions;
     }
 
+    public List<DialogAction> getFooterActions() {
+        List<DialogAction> result = new ArrayList<>(actions);
+        if (layout == Layout.ITEM_ACTION_LIST) {
+            for (ItemAction itemAction : itemActions) {
+                result.remove(itemAction.getAction());
+            }
+        }
+        if (screen != null) {
+            result.removeIf(action -> screen.getWidgets().stream()
+                    .anyMatch(widget -> action.getId().equals(widget.getActionId())));
+        }
+        return List.copyOf(result);
+    }
+
     public List<ItemAction> getItemActions() {
         return itemActions;
     }
 
     public Layout getLayout() {
         return layout;
+    }
+
+    public ObjectDialogScreen getScreen() {
+        return screen;
     }
 
     public boolean canCloseWithEscape() {
@@ -123,6 +146,13 @@ public final class DialogView {
         private final List<ItemAction> itemActions = new ArrayList<>();
 
         private Layout layout = Layout.MULTI_ACTION;
+
+        private ObjectDialogScreen screen;
+
+        public Builder screen(ObjectDialogScreen value) {
+            screen = value;
+            return this;
+        }
 
         private boolean closeWithEscape = false;
 
@@ -196,9 +226,13 @@ public final class DialogView {
 
     public enum Layout {
         MULTI_ACTION,
-        ITEM_ACTION_LIST;
+        ITEM_ACTION_LIST,
+        ORE;
 
         public static Layout fromConfig(String value) {
+            if ("ore".equalsIgnoreCase(value)) {
+                return ORE;
+            }
             return "item-action-list".equalsIgnoreCase(value) ? ITEM_ACTION_LIST : MULTI_ACTION;
         }
     }

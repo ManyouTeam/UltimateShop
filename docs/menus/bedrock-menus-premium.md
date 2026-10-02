@@ -181,3 +181,7 @@ By default, we use Minecraft vanilla assets provided by this [GitHub repository]
 You can also use these placeholders with URLs from other places. We only support matching various icons through materials. If your item has custom textures or models, we recommend manually setting the bedrock icon, as mentioned earlier.
 
 <figure><img src="../.gitbook/assets/image (16).png" alt=""><figcaption></figcaption></figure>
+
+## Button visibility
+
+Set `menu-visibility.form: false` inside an existing menu button to hide it from Bedrock Form menus. Unspecified values remain visible. See [Button visibility by menu presentation](general-menus.md#button-visibility-by-menu-presentation) to control inventory, ordinary Dialog, item-action-list and Ore menus separately.

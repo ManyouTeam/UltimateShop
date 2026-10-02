@@ -67,7 +67,7 @@ public class FormFavouriteGUI extends FormGUI {
                 ? new LinkedHashMap<>()
                 : cache.getResolvedFavouriteProducts(menu.getName());
 
-        menuButtons = menu.getMenu(MenuSender.of(player));
+        menuButtons = menu.getMenu(MenuSender.of(player, "form"));
         menuItems.clear();
         resultActions.clear();
         normalActions.clear();
@@ -115,7 +115,7 @@ public class FormFavouriteGUI extends FormGUI {
             builder.content(TextUtil.parse(player, CommonUtil.parseLang(player, menu.getString("bedrock.content", ""))));
         }
 
-        builder.validResultHandler(response -> {
+        builder.validResultHandler((submittedForm, response) -> handleResponse(submittedForm, () -> {
             MenuStatusManager.menuStatusManager.removeOpenGUIStatus(player, this);
             ButtonComponent clickedButton = response.clickedButton();
             if (clickedButton == null) {
@@ -139,8 +139,8 @@ public class FormFavouriteGUI extends FormGUI {
             if (slot != null && menuButtons.get(slot) != null) {
                 menuButtons.get(slot).clickEvent(org.bukkit.event.inventory.ClickType.LEFT, player);
             }
-        });
-        builder.closedOrInvalidResultHandler(response -> finishGUI());
+        }));
+        builder.closedOrInvalidResultHandler((submittedForm, response) -> handleResponse(submittedForm, this::finishGUI));
         form = builder.build();
     }
 
@@ -181,7 +181,7 @@ public class FormFavouriteGUI extends FormGUI {
         builder.button(moveBackward);
         builder.button(remove);
         builder.button(back);
-        builder.validResultHandler(actionResponse -> {
+        builder.validResultHandler((submittedForm, actionResponse) -> handleResponse(submittedForm, () -> {
             MenuStatusManager.menuStatusManager.removeOpenGUIStatus(player, this);
             ObjectCache cache = CacheManager.cacheManager.getObjectCache(player);
             if (cache != null) {
@@ -200,12 +200,12 @@ public class FormFavouriteGUI extends FormGUI {
             }
             FormFavouriteGUI favouriteGUI = new FormFavouriteGUI(player, menu, true, true);
             favouriteGUI.openGUI(true);
-        });
-        builder.closedOrInvalidResultHandler(actionResponse -> {
+        }));
+        builder.closedOrInvalidResultHandler((submittedForm, actionResponse) -> handleResponse(submittedForm, () -> {
             MenuStatusManager.menuStatusManager.removeOpenGUIStatus(player, this);
             FormFavouriteGUI favouriteGUI = new FormFavouriteGUI(player, menu, true, true);
             favouriteGUI.openGUI(true);
-        });
+        }));
         form = builder.build();
         openGUI(true);
     }

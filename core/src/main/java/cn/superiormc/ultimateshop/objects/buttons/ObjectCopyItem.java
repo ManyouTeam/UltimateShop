@@ -16,10 +16,19 @@ public class ObjectCopyItem extends AbstractButton {
 
     private ObjectDisplayItem displayItem;
 
+    private final int defaultBuyAmount;
+
+    private final int defaultSellAmount;
+
     public ObjectCopyItem(ConfigurationSection section, ObjectItem item) {
+        super(section);
         this.type = ButtonType.SHOP;
         this.section = section;
         this.item = item;
+        this.defaultBuyAmount = ObjectItem.parseDefaultTradeAmount(section.getString("default-buy-amount"),
+                item.getDefaultBuyAmount(), section.getCurrentPath() + ".default-buy-amount");
+        this.defaultSellAmount = ObjectItem.parseDefaultTradeAmount(section.getString("default-sell-amount"),
+                item.getDefaultSellAmount(), section.getCurrentPath() + ".default-sell-amount");
         initDisplayItem();
         TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fLoaded sub button for product " + item.getProduct() + " in shop " +
                 item.getShop() + "!");
@@ -40,11 +49,21 @@ public class ObjectCopyItem extends AbstractButton {
         if (displayItem == null) {
             return item.getDisplayItem(player, multi);
         }
-        return displayItem.getDisplayItem(player, multi);
+        return displayItem.getDisplayItem(player, multi, defaultBuyAmount, defaultSellAmount);
     }
 
     @Override
     public void clickEvent(ClickType type, Player player) {
-        item.clickEvent(type, player);
+        item.clickEvent(type, player, defaultBuyAmount, defaultSellAmount, this);
+    }
+
+    public ObjectItem getTargetItem() {
+        return item;
+    }
+
+    @Override
+    public Boolean getShowSprite() {
+        Boolean own = super.getShowSprite();
+        return own == null ? item.getShowSprite() : own;
     }
 }

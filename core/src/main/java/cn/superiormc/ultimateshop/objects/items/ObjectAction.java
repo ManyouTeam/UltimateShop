@@ -11,6 +11,7 @@ import org.bukkit.configuration.MemoryConfiguration;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Stream;
 
 public class ObjectAction {
 
@@ -132,5 +133,13 @@ public class ObjectAction {
 
     public ConfigurationSection getSection() {
         return section;
+    }
+
+    public ObjectSingleAction getMenuNavigationAction() {
+        // Match the execution order: once actions run before every actions.
+        return Stream.concat(onceActions.stream(), everyActions.stream())
+                .filter(action -> "shop_menu".equalsIgnoreCase(action.getString("type"))
+                        || "open_menu".equalsIgnoreCase(action.getString("type")))
+                .reduce((previous, next) -> next).orElse(null);
     }
 }

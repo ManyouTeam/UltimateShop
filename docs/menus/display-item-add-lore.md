@@ -43,6 +43,16 @@ Default example:
 
 ## Per Product Setting
 
+For products with `default-buy-amount` / `default-sell-amount`, `{buy-price}`, `{sell-price}`, `{buy-click}`, and `{sell-click}` use the corresponding default trade count. Sub buttons use their own override or inherit from the target product. Use `{buy-amount}` and `{sell-amount}` to show the counts separately:
+
+```yaml
+add-lore:
+  - '@a&eBuy {buy-amount} trades: {buy-price}'
+  - '@b&aSell {sell-amount} trades: {sell-price}'
+```
+
+In quantity selection menus, both placeholders use the selected amount. Explicit `display-item.amount` remains independent. When it is omitted and the default buy and sell counts match, the icon automatically uses that common count. See [Default Trade Amounts](../shops/products.md#default-trade-amounts).
+
 You can set different add lore format for each product, add the `add-lore` option in the product config. Check [shops](../shops/shops.md) page product **B** to find the example.
 
 ```yaml
@@ -120,6 +130,21 @@ Each line start with `@+lower case` will be consider as conditional line. We wil
 @v - This button can sell product.&#x20;
 
 @w - This button exist in buy more menu and already set `click-type` option.
+
+@t\[ore] - Only show in the specified menu presentation. Supported targets are `inventory`, `form`, `dialog`, `item-action-list`, `ore` and `ore-hover`. `ore` targets the Ore product card body; `ore-hover` targets its hover tooltip. Match several targets with commas, for example `@t[inventory,ore]`. Matching ignores case and spaces around each value. `dialog` matches ordinary Dialog menus; use `dialog,item-action-list,ore,ore-hover` to include all Dialog presentations. `(@t[ore])` hides the line from the Ore card body while retaining it in tooltips and other menus. With no active menu, a positive presentation condition does not match.
+
+This condition reuses the presentation names from button `menu-visibility`, with `ore-hover` added for the separate Ore tooltip. It applies to both global `display-item.add-lore` and per-product `add-lore`, and can be combined with existing price/stock conditions. Lines without a presentation condition are shown in both the body and tooltip when their other conditions match. The card body uses auto-added lore; the tooltip also retains the item's original lore. No fixed set of fields is imposed:
+
+```yaml
+display-item:
+  add-lore:
+    - '@a@t[inventory,ore,ore-hover]&ePurchase: {buy-price}'
+    - '@b@t[inventory,ore,ore-hover]&eSell: {sell-price}'
+    - '@t[inventory]&7Left click to buy'
+    - '@t[ore]&7View details to buy or sell'
+    - '@t[ore-hover]&7Additional tooltip information'
+    - '(@t[ore])&7This line is hidden in Ore'
+```
 
 @z\[vip] - Only show when [multiplier](../shops/sell-multiplier-premium.md) id `vip` is active.
 

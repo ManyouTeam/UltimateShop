@@ -187,7 +187,8 @@ public class MenuStatusManager extends AbstractManager {
         }
         if (time > 0L && guiStatus.getStatus() != GUIStatus.Status.ALREADY_IN_COOLDOWN) {
             setGUIStatus(player, GUIStatus.of(gui, GUIStatus.Status.ALREADY_IN_COOLDOWN));
-            SchedulerUtil.runTaskLater(() -> removeGUIStatus(player), time);
+            GUIStatus closingStatus = getGUIStatus(player);
+            SchedulerUtil.runTaskLater(() -> openGuis.remove(player.getUniqueId(), closingStatus), time);
         }
     }
 
@@ -561,7 +562,7 @@ public class MenuStatusManager extends AbstractManager {
     }
 
     private void applyDefaultEconomyFields(ConfigurationSection section) {
-        List<String> economyHooks = cn.superiormc.ultimateshop.managers.HookManager.hookManager.getEconomyHookNames();
+        List<String> economyHooks = HookManager.hookManager.getEconomyHookNames();
         if (economyHooks.isEmpty()) {
             section.set("economy-plugin", null);
             section.set("economy-type", "levels");

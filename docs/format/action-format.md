@@ -350,6 +350,8 @@ Open specified common menus.
 
 ## Buy Product
 
+`amount: '{amount}'` resolves the action context's quantity. In custom product click events it uses `default-buy-amount`, including sub-button overrides. Explicit amounts remain fixed; omitting `amount` defaults to 1. Resolved amounts must be integers from 1 to 9999.
+
 ```yaml
     actions:
       1:
@@ -360,6 +362,8 @@ Open specified common menus.
 ```
 
 ## Sell Product
+
+`amount: '{amount}'` resolves the action context's quantity. In custom product click events it uses `default-sell-amount`, including sub-button overrides. This can differ from the default buy amount. Explicit amounts remain fixed; omitting `amount` defaults to 1. `sell-all: true` retains the existing maximum-sell behavior.
 
 ```yaml
     actions:

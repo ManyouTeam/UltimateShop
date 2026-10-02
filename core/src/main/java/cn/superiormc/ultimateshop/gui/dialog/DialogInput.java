@@ -7,17 +7,31 @@ import java.util.Objects;
 
 public final class DialogInput {
 
-    public enum Type { TEXT, BOOLEAN, NUMBER, SINGLE_OPTION }
+    public enum Type {
+        TEXT,
+        BOOLEAN,
+        NUMBER,
+        SINGLE_OPTION
+    }
 
     private final Type type;
+
     private final String key;
+
     private final String label;
+
     private String initialText = "";
+
     private boolean initialBoolean;
+
     private float min;
+
     private float max = 1;
+
     private float step = 1;
+
     private float initialNumber;
+
     private List<String> options = Collections.emptyList();
 
     private DialogInput(Type type, String key, String label) {
@@ -53,14 +67,43 @@ public final class DialogInput {
         return input;
     }
 
-    public Type getType() { return type; }
-    public String getKey() { return key; }
-    public String getLabel() { return label; }
-    public String getInitialText() { return initialText; }
-    public boolean isInitialBoolean() { return initialBoolean; }
-    public float getMin() { return min; }
-    public float getMax() { return max; }
-    public float getStep() { return step; }
-    public float getInitialNumber() { return initialNumber; }
-    public List<String> getOptions() { return options; }
+    public Type getType() {
+        return type;
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public String getLabel() {
+        return label;
+    }
+
+    public String getInitialText() {
+        return initialText;
+    }
+
+    public boolean isInitialBoolean() {
+        return initialBoolean;
+    }
+
+    public float getMin() {
+        return min;
+    }
+
+    public float getMax() {
+        return max;
+    }
+
+    public float getStep() {
+        return step;
+    }
+
+    public float getInitialNumber() {
+        return initialNumber;
+    }
+
+    public List<String> getOptions() {
+        return options;
+    }
 }

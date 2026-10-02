@@ -63,6 +63,13 @@ buttons:
       1:
         type: sell_all_menu
   A:
+    # Optional: unspecified presentation types remain visible.
+    menu-visibility:
+      inventory: true
+      form: true
+      dialog: true
+      item-action-list: true
+      ore: true
     display-item:
       material: WHEAT
       name: '{lang:farming-name}'

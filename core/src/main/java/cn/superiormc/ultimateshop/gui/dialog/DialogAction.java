@@ -10,7 +10,14 @@ public final class DialogAction {
     private final String tooltip;
     private final Consumer<DialogResponse> handler;
 
+    private final Boolean showSprite;
+
     private DialogAction(String id, String label, String tooltip, Consumer<DialogResponse> handler) {
+        this(id, label, tooltip, handler, null);
+    }
+
+    private DialogAction(String id, String label, String tooltip, Consumer<DialogResponse> handler, Boolean showSprite) {
+        this.showSprite = showSprite;
         this.id = Objects.requireNonNull(id, "id");
         this.label = Objects.requireNonNull(label, "label");
         this.tooltip = tooltip;
@@ -28,5 +35,9 @@ public final class DialogAction {
     public String getId() { return id; }
     public String getLabel() { return label; }
     public String getTooltip() { return tooltip; }
+    public Boolean getShowSprite() { return showSprite; }
+    public DialogAction withShowSprite(Boolean value) {
+        return new DialogAction(id, label, tooltip, handler, value);
+    }
     public void execute(DialogResponse response) { handler.accept(response); }
 }

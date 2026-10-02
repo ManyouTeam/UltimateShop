@@ -16,8 +16,7 @@ layout:
   - '011111110'
   - '00B0D0C00'
 
-result-items:
-  - '1'
+result-item: 1
 
 edit-mode-item:
   D:

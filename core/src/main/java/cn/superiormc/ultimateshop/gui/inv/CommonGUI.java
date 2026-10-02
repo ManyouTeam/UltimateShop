@@ -3,6 +3,7 @@ package cn.superiormc.ultimateshop.gui.inv;
 import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.gui.InvGUI;
 import cn.superiormc.ultimateshop.gui.dialog.DialogCommonGUI;
+import cn.superiormc.ultimateshop.gui.dialog.DialogOreGUI;
 import cn.superiormc.ultimateshop.gui.form.FormCommonGUI;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.LanguageManager;
@@ -108,7 +109,11 @@ public class CommonGUI extends InvGUI {
         }
 
         if (commonMenu.isUseDialog()) {
-            new DialogCommonGUI(player, commonMenu, bypass).openGUI(reopen);
+            if ("ore".equalsIgnoreCase(commonMenu.getString("dialog.layout", "multi-action"))) {
+                new DialogOreGUI(player, commonMenu, null, bypass).openGUI(reopen);
+            } else {
+                new DialogCommonGUI(player, commonMenu, bypass).openGUI(reopen);
+            }
             return;
         }
 

@@ -2,6 +2,7 @@ package cn.superiormc.ultimateshop.gui;
 
 import cn.superiormc.ultimateshop.managers.MenuStatusManager;
 import cn.superiormc.ultimateshop.objects.buttons.AbstractButton;
+import cn.superiormc.ultimateshop.utils.SchedulerUtil;
 import org.bukkit.entity.Player;
 import org.geysermc.cumulus.component.ButtonComponent;
 import org.geysermc.cumulus.form.Form;
@@ -15,6 +16,8 @@ public abstract class FormGUI extends AbstractGUI {
 
     protected Form form;
 
+    private Form consumedForm;
+
     public Map<Integer, AbstractButton> menuButtons = new TreeMap<>();
 
     public Map<ButtonComponent, Integer> menuItems = new LinkedHashMap<>();
@@ -25,6 +28,8 @@ public abstract class FormGUI extends AbstractGUI {
 
     @Override
     public void updateGUI() {
+        form = null;
+        menuItems.clear();
         constructGUI();
         if (form != null) {
             FloodgateApi.getInstance().sendForm(player.getUniqueId(), form);
@@ -36,6 +41,11 @@ public abstract class FormGUI extends AbstractGUI {
         GUIStatus previousStatus = MenuStatusManager.menuStatusManager.getGUIStatus(player);
         if (!MenuStatusManager.menuStatusManager.canOpenGUI(player, this, reopen)) {
             return;
+        }
+        if (form != null && form == consumedForm) {
+            form = null;
+            menuItems.clear();
+            constructGUI();
         }
         if (form != null) {
             FloodgateApi.getInstance().sendForm(player.getUniqueId(), form);
@@ -56,5 +66,16 @@ public abstract class FormGUI extends AbstractGUI {
 
     public Form getForm() {
         return form;
+    }
+
+    protected void handleResponse(Form submittedForm, Runnable action) {
+        SchedulerUtil.runSync(player, () -> {
+            if (!player.isOnline() || submittedForm == null || submittedForm != form || submittedForm == consumedForm
+                    || MenuStatusManager.menuStatusManager.getOpeningGUI(player) != this) {
+                return;
+            }
+            consumedForm = submittedForm;
+            action.run();
+        });
     }
 }

@@ -9,6 +9,7 @@ import cn.superiormc.ultimateshop.objects.menus.ObjectMenu;
 import org.bukkit.entity.Player;
 
 public class DialogBuyMoreGUI extends DialogGUI {
+
     private final ObjectItem item;
 
     public DialogBuyMoreGUI(Player player, ObjectItem item) {

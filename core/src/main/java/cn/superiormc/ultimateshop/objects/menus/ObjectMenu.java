@@ -14,6 +14,7 @@ import cn.superiormc.ultimateshop.objects.items.ObjectAction;
 import cn.superiormc.ultimateshop.objects.items.ObjectCondition;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
 import cn.superiormc.ultimateshop.utils.TextUtil;
+
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.BukkitCommand;
 import org.bukkit.configuration.ConfigurationSection;
@@ -217,7 +218,6 @@ public class ObjectMenu {
             return file;
         }
 
-        // Compatibility for installations created before menu configs were split into dedicated folders.
         return findMenuFile(new File(UltimateShop.instance.getDataFolder(), COMMON_MENU_FOLDER));
     }
 
@@ -241,7 +241,7 @@ public class ObjectMenu {
 
         parseLayout(menuConfigs.getStringList("layout"), (slot, rawId) -> {
             String id = rawId;
-            if (!menuSender.isStatic()) {
+            if (dynamicLayout && !menuSender.isStatic()) {
                 id = TextUtil.withPAPI(id, menuSender.getPlayer());
             }
 
@@ -280,7 +280,7 @@ public class ObjectMenu {
     private void buildButtonItems(MenuSender menuSender, Map<Integer, AbstractButton> target) {
         parseLayout(menuConfigs.getStringList("layout"), (slot, rawId) -> {
             String id = rawId;
-            if (!menuSender.isStatic()) {
+            if (dynamicLayout && !menuSender.isStatic()) {
                 id = TextUtil.withPAPI(id, menuSender.getPlayer());
             }
 
@@ -290,8 +290,6 @@ public class ObjectMenu {
             }
         });
     }
-
-
 
     private AbstractButton getButtonByLayoutId(String id, MenuSender menuSender, boolean includeShopItems) {
         if (id == null || id.isEmpty()) {
@@ -320,24 +318,24 @@ public class ObjectMenu {
         if (includeShopItems && shop != null) {
             if (!UltimateShop.freeVersion) {
                 AbstractButton copyItem = shop.getCopyItem(id);
-                if (copyItem != null && copyItem.canDisplay(menuSender)) {
+                if (copyItem != null && copyItem.isVisibleInMenu(menuSender.getPresentation()) && copyItem.canDisplay(menuSender)) {
                     return copyItem;
                 }
             }
 
             AbstractButton button = shop.getButton(id);
-            if (button != null && button.canDisplay(menuSender)) {
+            if (button != null && button.isVisibleInMenu(menuSender.getPresentation()) && button.canDisplay(menuSender)) {
                 return button;
             }
 
             AbstractButton product = shop.getProduct(id);
-            if (product != null && product.canDisplay(menuSender)) {
+            if (product != null && product.isVisibleInMenu(menuSender.getPresentation()) && product.canDisplay(menuSender)) {
                 return product;
             }
         }
 
         AbstractButton buttonObj = buttonItems.get(id);
-        if (buttonObj != null && buttonObj.canDisplay(menuSender)) {
+        if (buttonObj != null && buttonObj.isVisibleInMenu(menuSender.getPresentation()) && buttonObj.canDisplay(menuSender)) {
             return buttonObj;
         }
         return null;
@@ -379,18 +377,85 @@ public class ObjectMenu {
     }
 
     public Map<Integer, AbstractButton> getMenu(MenuSender menuSender) {
-        if (!dynamicLayout) {
+        MenuSender effectiveSender = menuSender == null ? MenuSender.empty : menuSender;
+        boolean typeVisibility = effectiveSender.getPresentation() != null && hasMenuVisibilitySettings();
+        if (!dynamicLayout && !typeVisibility) {
             return new TreeMap<>(menuItems);
         }
-
-        MenuSender effectiveSender = menuSender == null ? MenuSender.empty : menuSender;
-        Map<Integer, AbstractButton> result = new TreeMap<>(menuItems);
+        Map<Integer, AbstractButton> result = new TreeMap<>();
         if (type == MenuType.Shop) {
             buildShopItems(effectiveSender, result);
         } else {
             buildButtonItems(effectiveSender, result);
         }
         return result;
+    }
+
+    public Map<Integer, List<AbstractButton>> getPossibleMenuButtons(String presentation) {
+        Map<Integer, List<AbstractButton>> result = new TreeMap<>();
+        MenuSender sender = MenuSender.of(null, presentation);
+        parseLayout(menuConfigs.getStringList("layout"), (slot, rawId) -> {
+            Set<AbstractButton> candidates = new LinkedHashSet<>();
+            if (dynamicLayout && rawId.contains("%")) {
+                candidates.addAll(buttonItems.values());
+                if (shop != null) {
+                    candidates.addAll(shop.getProductList());
+                    ConfigurationSection buttons = shop.getShopConfig().getConfigurationSection("buttons");
+                    if (buttons != null) {
+                        for (String id : buttons.getKeys(false)) {
+                            AbstractButton button = shop.getButton(id);
+                            if (button != null) {
+                                candidates.add(button);
+                            }
+                        }
+                    }
+                }
+            } else {
+                for (String id : rawId.split("\\|\\|")) {
+                    AbstractButton button = getSingleButtonById(id.trim(), sender, type == MenuType.Shop);
+                    if (button != null) {
+                        candidates.add(button);
+                        ConfigurationSection config = button.getButtonConfig();
+                        if (config == null || !config.isConfigurationSection("display-conditions")
+                                || config.getConfigurationSection("display-conditions").getKeys(false).isEmpty()) break;
+                    }
+                }
+            }
+            candidates.removeIf(button -> !button.isVisibleInMenu(presentation));
+            if (!candidates.isEmpty()) {
+                result.put(slot, new ArrayList<>(candidates));
+            }
+        });
+        return result;
+    }
+
+    public Map<Integer, AbstractButton> getShopEntryButtons(MenuSender sender) {
+        return getNavigationButtons(sender, false);
+    }
+
+    public Map<Integer, AbstractButton> getMenuNavigationButtons(MenuSender sender) {
+        return getNavigationButtons(sender, true);
+    }
+
+    private Map<Integer, AbstractButton> getNavigationButtons(MenuSender sender, boolean includeCommonMenus) {
+        Map<Integer, AbstractButton> result = getMenu(sender);
+        result.entrySet().removeIf(entry -> {
+            AbstractButton button = entry.getValue();
+            boolean visible = button.getButtonConfig() == null || button.getButtonConfig().getBoolean("dialog.enabled", true);
+            return !(includeCommonMenus ? button.hasMenuNavigationAction() : button.hasShopMenuAction())
+                    || (includeCommonMenus && button.hasCloseAction()) || !button.canDisplay(sender)
+                    || !menuConfigs.getBoolean("dialog.slots." + entry.getKey() + ".enabled", visible);
+        });
+        return result;
+    }
+
+    private boolean hasMenuVisibilitySettings() {
+        if (buttonItems.values().stream().anyMatch(button -> button.getButtonConfig() != null
+                && button.getButtonConfig().contains("menu-visibility"))) {
+            return true;
+        }
+        return shop != null && shop.getShopConfig().getKeys(true).stream()
+                .anyMatch(key -> key.equals("menu-visibility") || key.endsWith(".menu-visibility"));
     }
 
     public ObjectCondition getCondition() {

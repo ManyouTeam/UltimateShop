@@ -107,3 +107,63 @@ Do not forgot also update your auto add lore configs to make product description
           menu: buy-more-sell
           max-amount: 128  
 ```
+
+## Example: Java Defaults and Bedrock Left Click Only
+
+Keep the existing `menu.click-event` mapping for Java players. Add one option under `menu.bedrock` in `config.yml`:
+
+```yaml
+menu:
+  bedrock:
+    enabled: true
+    check-method: FLOODGATE
+    click-event: 'select-amount'
+```
+
+Java players keep all their existing click actions. Bedrock players can only use `LEFT` (tap the product) to open its Buy More menu. Right click, shift clicks, Q, and F have no product action for Bedrock players. Form and Dialog shop product buttons execute this action directly instead of opening the product info screen first. Quantity selection and confirmation controls inside Buy More menus keep their own behavior.
+
+Products must have `buy-more: true` and a valid Buy More menu. Use `UUID` instead of `FLOODGATE` if that is your server's supported Bedrock detection method. The value can be a built-in action such as `select-amount`, or a custom event name defined under `menu.click-event-actions`. Omit this option or set it to an empty string to keep the existing Bedrock product info flow. Use `none` to disable Bedrock product clicks.
+
+A product or sub button may override the global setting with the same single string:
+
+```yaml
+items:
+  A:
+    buy-more: true
+    bedrock:
+      click-event: 'select-amount'
+```
+
+Resolution order is: sub-button setting, target product setting, global `menu.bedrock.click-event`. Java players always use their existing product/global `click-event` mapping. These overrides apply to shop products and sub buttons, not Buy More confirmation buttons.
+
+Update auto add lore using `@y` for Java hints and `@x` for a Bedrock hint such as `@x&eClick to select an amount`; see [Display Item Add Lore](../menus/display-item-add-lore.md).
+
+### Custom Buy/Sell Actions Using Default Amounts
+
+For custom actions, use `amount: '{amount}'` to use the click's default buy or sell count. This supports different defaults and sub-button overrides:
+
+```yaml
+menu:
+  click-event:
+    custom-buy: 'LEFT'
+    custom-sell: 'RIGHT'
+  bedrock:
+    click-event: 'select-amount'
+  click-event-actions:
+    custom-buy:
+      display-name: 'Buy'
+      1:
+        type: buy
+        shop: '{shop}'
+        item: '{item}'
+        amount: '{amount}'
+    custom-sell:
+      display-name: 'Sell'
+      1:
+        type: sell
+        shop: '{shop}'
+        item: '{item}'
+        amount: '{amount}'
+```
+
+With `default-buy-amount: 10` and `default-sell-amount: 5`, the Java custom buy action trades 10 times and the sell action trades 5 times. A sub button uses its corresponding override or inherits the target product's defaults. Explicit values such as `amount: 1` or `amount: 64` remain fixed. If `amount` is omitted, it retains the existing default of 1. Outside product clicks, `{amount}` keeps the action context's existing amount. Actions run once per click; the default amount does not repeat the action list.

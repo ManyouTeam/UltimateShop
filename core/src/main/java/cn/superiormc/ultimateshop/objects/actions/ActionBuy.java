@@ -23,6 +23,6 @@ public class ActionBuy extends AbstractRunAction {
                 player,
                 true,
                 false,
-                singleAction.getInt("amount", 1)));
+                singleAction.getTradeAmount(thingRun, true)));
     }
 }

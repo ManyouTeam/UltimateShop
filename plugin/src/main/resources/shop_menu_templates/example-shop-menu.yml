@@ -6,6 +6,53 @@ dialog:
   content: ''
   button-width: 150
   columns: 2
+  # Set to ore, then restart or /shop reload to rebuild the loose pack/ folder automatically.
+  # Load that resource folder before opening this menu.
+  # The same buttons/layout/actions below are shared with inventory and Bedrock menus.
+  layout: multi-action
+  width: 576
+  height: 396
+  # Reuse main-menu shop_menu/open_menu buttons in the Ore sidebar, after this menu's own buttons.
+  sidebar:
+    enabled: true
+    menu: main
+    template: button
+    x: 12
+    gap-y: 9
+  products:
+    template: product
+    x: 144
+    y: 18
+    gap-x: 12
+    gap-y: 9
+  templates:
+    product:
+      type: product
+      height: 108
+      padding: 12
+      icon-size: 32
+      name-y: 9
+      lore-y: 27
+      lore-lines: 6
+      details-y: 81
+      text-align: left
+      background: '#262c36'
+      border: '#596373'
+      accent: '#83cfce'
+      footer: '#294b54'
+    button:
+      type: button
+      width: 96
+      height: 36
+      name-lines: 2
+      text-align: center
+      background: '#303846'
+      border: '#596373'
+      accent: '#83cfce'
+      selected-background: '#244A32'
+      selected-border: '#65D98B'
+      # Optional image inside plugins/UltimateShop/textures/.
+      # selected-texture: ore/selected-button.png
 
 open-actions:
   1:
@@ -42,6 +89,11 @@ buttons:
       material: LIGHT_BLUE_STAINED_GLASS_PANE
       name: ' '
   3:
+    dialog:
+      template: button
+      position:
+        x: 12
+        y: 108
     display-item:
       material: ARROW
       name: '{lang:back-button}'
@@ -50,6 +102,11 @@ buttons:
         type: open_menu
         menu: main
   f:
+    dialog:
+      template: button
+      position:
+        x: 12
+        y: 18
     display-item:
       material: NAME_TAG
       name: '{lang:favourite-menu-button-name} &c(PREMIUM)'
@@ -61,6 +118,11 @@ buttons:
         type: open_menu
         menu: favourite
   s:
+    dialog:
+      template: button
+      position:
+        x: 12
+        y: 63
     display-item:
       material: HOPPER
       name: '{lang:search-menu-button-name} &c(PREMIUM)'

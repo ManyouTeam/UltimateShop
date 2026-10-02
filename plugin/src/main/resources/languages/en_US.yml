@@ -274,6 +274,7 @@ override-lang:
       content: '&7Save the products you trade most often and keep them one click away.'
     dialog:
       default-button: 'OK'
+      details: 'View details'
       search:
         input: 'Search'
         buttons:
@@ -880,9 +881,22 @@ editor:
         as-sub-button:
           name: 'As Sub Button'
           desc: 'Show this product as a sub button of another product.'
+        default-buy-amount:
+          name: 'Default Buy Amount'
+          desc: 'Direct buy trade count (1-9999), default 1. Unset sub buttons inherit the target product.'
+        dialog:
+          show-sprite:
+            name: 'Show Sprite'
+            desc: 'Show or hide label sprites; unset uses automatic visibility.'
+        default-sell-amount:
+          name: 'Default Sell Amount'
+          desc: 'Direct sell trade count (1-9999), default 1. Unset sub buttons inherit the target product.'
         bedrock:
           name: 'Bedrock Settings'
           desc: 'Bedrock specific display settings for this product.'
+          click-event:
+            name: 'Bedrock Click Action'
+            desc: 'Action executed directly when Bedrock players tap a product, e.g. select-amount. LEFT only.'
           hide:
             name: 'Hide'
             desc: 'Whether this product should be hidden on Bedrock.'
@@ -943,6 +957,10 @@ editor:
     button_entry:
       title: 'Button Preset'
       fields:
+        dialog:
+          show-sprite:
+            name: 'Show Sprite'
+            desc: 'Show or hide label sprites; unset uses automatic visibility.'
         display-item:
           name: 'Display Item'
           desc: 'The display item used for this button.'

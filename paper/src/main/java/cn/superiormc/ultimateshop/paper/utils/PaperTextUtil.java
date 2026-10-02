@@ -1,8 +1,10 @@
 package cn.superiormc.ultimateshop.paper.utils;
 
 import cn.superiormc.ultimateshop.managers.ErrorManager;
+import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.utils.TextUtil;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.ObjectComponent;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.entity.Player;
@@ -19,6 +21,18 @@ import static cn.superiormc.ultimateshop.utils.TextUtil.LEGACY_COLOR_PATTERN;
 import static cn.superiormc.ultimateshop.utils.TextUtil.SINGLE_HEX_PATTERN;
 
 public class PaperTextUtil {
+
+    public static boolean shouldShowSprite(Boolean override, boolean hasItemIcon) {
+        return override != null ? override : !hasItemIcon
+                || !ConfigManager.configManager.config.getBoolean("menu.dialog.auto-add-sprite.auto-hide", true);
+    }
+
+    public static Component withoutObjects(Component component) {
+        List<Component> children = component.children().stream().map(PaperTextUtil::withoutObjects).toList();
+        return component instanceof ObjectComponent
+                ? Component.empty().style(component.style()).children(children)
+                : component.children(children);
+    }
 
     private static final MiniMessage MINI_MESSAGE = MiniMessage.miniMessage();
 

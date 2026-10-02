@@ -79,6 +79,17 @@ public class CommonUtil {
                 UltimateShop.minorVersion >= minorVersion);
     }
 
+    public static int getPackFormat() {
+        if (UltimateShop.yearVersion >= 26) {
+            if (UltimateShop.yearVersion > 26 || UltimateShop.majorVersion >= 3) return 97;
+            if (UltimateShop.majorVersion >= 2) return 88;
+            return 84;
+        }
+        if (getMinorVersion(21, 11)) return 75;
+        if (getMinorVersion(21, 9)) return 69;
+        return 97;
+    }
+
     public static LocalDateTime getNowTime() {
         LocalDateTime now = LocalDateTime.now();
 

@@ -305,6 +305,49 @@ Please carefully note that if you want to use our PlaceholderAPI extansion's pla
 
 Additionally, you need to set `menu.shop.click-update` to `true` if the related to product is also in the menu you opened. Otherwise this price won't auto update after you sell B product.
 
+## Default Trade Amounts
+
+Set `default-buy-amount` and `default-sell-amount` at the product level to control the number of trades for direct buying and selling. Both default to `1` and accept integers from `1` to `9999`. Invalid values produce a warning and fall back to `1`.
+
+```yaml
+items:
+  A:
+    default-buy-amount: 1
+    default-sell-amount: 1
+    products:
+      1:
+        material: DIAMOND
+        amount: 1
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: 100
+    sell-prices:
+      1:
+        economy-plugin: Vault
+        amount: 50
+  B:
+    as-sub-button: A
+    default-buy-amount: 10
+    default-sell-amount: 5
+    display-item:
+      material: DIAMOND
+      amount: 1
+      lore:
+        - '&eBuy {buy-amount} trades'
+        - '&aSell {sell-amount} trades'
+```
+
+Clicking B buys 10 diamonds for 1000 or sells 5 diamonds for 250. Each unset amount on a sub button inherits the corresponding amount from its target product. This also works for cross-shop references (`ShopID;;ProductID`).
+
+Amounts are **trade counts**, multiplying each configured product quantity and its prices. If one trade gives 3 items, a default amount of 10 trades gives 30 items. Existing conditions and limits apply to the trade count.
+
+These defaults apply to direct `buy`, `sell`, and `buy-or-sell` clicks and the initial Form/Dialog product info buttons. Explicit amounts in quantity selection menus, commands, actions, and API calls keep their existing meaning; `sell-all` retains its existing behavior.
+
+Displayed buy/sell prices and click availability use their respective amounts. Use `{buy-amount}` and `{sell-amount}` in display names, display item lore, or `add-lore` to show both counts. `{amount}` uses the buy count when buying is available, otherwise the sell count; in quantity selection menus it remains the selected count. If `display-item.amount` is omitted and the resolved default buy and sell counts are equal, the icon stack uses that count automatically. Explicit `display-item.amount` always takes precedence. Different buy/sell counts retain the original display quantity. Sub buttons use their own resolved defaults. This is a visual count and does not multiply the product's per-trade quantity again. `modify-lore: false` still disables automatic lore modification.
+
+On Minecraft 1.20.5+, `menu.buy-more-menu.display-item-max-stack: true` also sets display items' maximum stack size to `99`, including explicit display quantities and quantities inferred from default buy/sell amounts. This affects display items only. With the option disabled, their configured or original maximum stack size is preserved.
+
 ## Sub Buttons <mark style="color:red;">- Premium</mark>
 
 Sometimes, you want to display same product in different menus, or you want to make 2 or more buttons for same product. Well, `as-sub-button` option can help you. Just set another product ID here, then this button will also be considered as the product you set here.

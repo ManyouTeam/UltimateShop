@@ -2,6 +2,7 @@ package cn.superiormc.ultimateshop.gui.dialog;
 
 import cn.superiormc.ultimateshop.gui.DialogGUI;
 import cn.superiormc.ultimateshop.managers.CacheManager;
+import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.LanguageManager;
 import cn.superiormc.ultimateshop.objects.ObjectShop;
 import cn.superiormc.ultimateshop.objects.ObjectThingRun;
@@ -21,7 +22,9 @@ import java.util.Map;
 public class DialogShopGUI extends DialogGUI {
 
     private final ObjectShop shop;
+
     private final ObjectMenu menu;
+
     private final boolean bypass;
 
     public DialogShopGUI(Player player, ObjectShop shop, ObjectMenu menu, boolean bypass) {
@@ -52,7 +55,7 @@ public class DialogShopGUI extends DialogGUI {
                 cache.refreshTimes();
             }
         }
-        Map<Integer, AbstractButton> source = menu.getMenu(MenuSender.of(player));
+        Map<Integer, AbstractButton> source = menu.getMenu(MenuSender.of(player, MenuSender.dialogPresentation(menu.getString("dialog.layout", "multi-action"))));
         Map<Integer, AbstractButton> ordered = new LinkedHashMap<>();
         source.forEach((slot, button) -> {
             if (button instanceof ObjectItem) {
@@ -80,8 +83,8 @@ public class DialogShopGUI extends DialogGUI {
 
     private void addButton(DialogView.Builder builder, int slot, AbstractButton button, String menuLayout) {
         ObjectDisplayItemStack display = button.getDisplayItem(player, 1);
-        DialogAction action = display.parseToDialogButton("slot_" + slot, response -> {
-            if (button instanceof ObjectItem item) {
+        DialogAction action = display.parseToDialogButton("slot_" + slot, button.getShowSprite(), response -> {
+            if (button instanceof ObjectItem item && !ConfigManager.configManager.hasBedrockClickEvent(item, player)) {
                 new DialogInfoGUI(player, item).openGUI(true);
             } else {
                 button.clickEvent(ClickType.LEFT, player);

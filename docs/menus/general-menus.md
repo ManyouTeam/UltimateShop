@@ -304,3 +304,35 @@ If you just want us trying to refresh the product button when we reset buy or se
     # But maybe lead to server lag if you have much online players, and they are all opening shop GUI.
     click-update: false
 ```
+
+## Button visibility by menu presentation
+
+Configure `menu-visibility` inside an existing button to select which menu presentations display it. Unspecified settings default to `true`. These settings apply to menu layout buttons and shop product buttons; existing display conditions still apply. No `dynamic-layout` setting is required for presentation visibility, and `A||B` candidates are checked before choosing the button for a slot.
+
+```yaml
+buttons:
+  A:
+    menu-visibility:
+      inventory: true
+      form: true
+      dialog: false
+      item-action-list: true
+      ore: true
+    display-item:
+      material: WHEAT
+      name: 'Farming'
+    actions:
+      1:
+        type: shop_menu
+        shop: farming
+```
+
+| Key | Menu presentation |
+| --- | --- |
+| `inventory` | Java inventory/chest menu |
+| `form` | Bedrock Form menu |
+| `dialog` | Ordinary Java Dialog; also the default for other Dialog presentations |
+| `item-action-list` | Java Dialog with item icons and action labels |
+| `ore` | Java Ore Dialog, including imported shop buttons in its sidebar |
+
+`ore` and `item-action-list` inherit `dialog` when their own setting is omitted. An explicit setting overrides that inherited value: the example hides the button in ordinary Dialogs while keeping it visible in Ore and item-action-list Dialogs. Visibility follows the menu presentation being displayed.

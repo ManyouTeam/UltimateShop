@@ -105,6 +105,7 @@ public final class UltimateShop extends JavaPlugin {
             TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fDynamic title enabled. Hooking into packetevents...");
         }
         new LicenseManager();
+        new DialogPackManager();
         AbstractManager.initializeManagers();
         metrics = new Metrics(UltimateShop.instance, 20783);
         TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fYour server version is: " + yearVersion + "." + majorVersion + "." + minorVersion + "!");

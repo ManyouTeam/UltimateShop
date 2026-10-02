@@ -239,8 +239,21 @@ menu:
     not-auto-close: true
     auto-add-sprite:
       enabled: true
+      # Hide label sprites when Ore/item-action-list already displays an item icon.
+      # Per-button dialog.show-sprite overrides this automatic rule.
+      auto-hide: true
       format: "<sprite:\"{namespace}:{atlas}\":{path}>"
     default-button: '{lang:menu.dialog.default-button}'
+    details: '{lang:menu.dialog.details}'
+    ore:
+      show-item-icon:
+        enabled: true
+        # Hide the overlaid quantity text when the display-item count is 1.
+        auto-hide-one: true
+      # Rebuilds pack/ on startup and /shop reload only on supported Paper servers,
+      # with menu.dialog.enabled enabled and an enabled Ore menu.
+      # 0 selects the built-in format for your Minecraft version; override for a different client.
+      pack-format: 0
     search:
       input: '{lang:menu.dialog.search.input}'
       buttons:
@@ -276,6 +289,9 @@ menu:
       format: "https://raw.githubusercontent.com/InventivetalentDev/minecraft-assets/refs/heads/{version}/assets/minecraft/textures/{path}.png"
     # Support value: FLOODGATE, UUID
     check-method: FLOODGATE
+    # Optional action when Bedrock players tap shop products, skipping product info.
+    # Only LEFT executes this action. Buy More confirmation controls are unchanged.
+    # click-event: select-amount
     # If enabled, we will try to reopen shop menu after player successfully buy or sell products.
     not-auto-close: true
     # Make this option be empty to disable.
@@ -300,6 +316,7 @@ menu:
         back: '{lang}'
   buy-more-menu:
     not-open-when-invalid: true
+    # Also sets the maximum stack size of display items to 99 on Minecraft 1.20.5+.
     display-item-max-stack: true
     default:
       menu: buy-more

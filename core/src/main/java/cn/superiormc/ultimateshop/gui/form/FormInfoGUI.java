@@ -1,13 +1,12 @@
 package cn.superiormc.ultimateshop.gui.form;
 
-import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.gui.FormGUI;
 import cn.superiormc.ultimateshop.gui.inv.ShopGUI;
 import cn.superiormc.ultimateshop.managers.CacheManager;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.LanguageManager;
 import cn.superiormc.ultimateshop.managers.MenuStatusManager;
-import cn.superiormc.ultimateshop.methods.ModifyDisplayItem;
+import cn.superiormc.ultimateshop.api.ShopHelper;
 import cn.superiormc.ultimateshop.methods.Product.BuyProductMethod;
 import cn.superiormc.ultimateshop.methods.Product.SellProductMethod;
 import cn.superiormc.ultimateshop.methods.ProductTradeStatus;
@@ -24,7 +23,6 @@ import org.bukkit.event.inventory.ClickType;
 import org.geysermc.cumulus.component.ButtonComponent;
 import org.geysermc.cumulus.form.SimpleForm;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,7 +38,7 @@ public class FormInfoGUI extends FormGUI {
     private final boolean enableBuyMore;
 
     public FormInfoGUI(Player owner, ObjectItem item) {
-        this(owner, item, "1");
+        this(owner, item, null);
     }
 
     public FormInfoGUI(Player owner, ObjectItem item, String amount) {
@@ -48,7 +46,7 @@ public class FormInfoGUI extends FormGUI {
         this.item = item;
         this.menu = item.getBuyMoreMenu();
         this.amount = amount;
-        this.enableBuyMore = item.getBuyMore() && menu != null && ConfigManager.configManager.containsClickAction("select-amount");
+        this.enableBuyMore = item.getBuyMore() && menu != null && ConfigManager.configManager.containsClickAction("select-amount", item, player);
         constructGUI();
     }
 
@@ -66,18 +64,7 @@ public class FormInfoGUI extends FormGUI {
         tempVal2.title(TextUtil.parse(player, ConfigManager.configManager.getStringWithLang(player, "menu.bedrock.info.title", "Shop",
                         "item-name", item.getDisplayName(player),
                         "amount", String.valueOf(getAmount()))));
-        List<String> content = new ArrayList<>();
-        if (item.getDisplayItem(player).hasItemMeta() && item.getDisplayItem(player).getItemMeta().hasLore()) {
-            content.addAll(UltimateShop.methodUtil.getItemLore(item.getDisplayItem(player).getItemMeta()));
-            content.add(" ");
-        }
-        content.addAll(ModifyDisplayItem.getModifiedLore(player,
-                getAmount(),
-                item,
-                false,
-                true,
-                "general"
-        ));
+        List<String> content = ShopHelper.getProductInfoContent(player, item, getBuyAmount(), getSellAmount(), "form");
         tempVal2.content(TextUtil.parse(bedrockTransfer(content)));
         String itemName = item.getDisplayName(player);
         // 购买
@@ -94,7 +81,7 @@ public class FormInfoGUI extends FormGUI {
                 "menu.bedrock.info.buttons.buy-more", "Buy More", "item-name", itemName)));
         Map<ClickType, ButtonComponent> clickEvents = new HashMap<>();
         for (ClickType type : ClickType.values()) {
-            String clickType = ConfigManager.configManager.getClickAction(type, item);
+            String clickType = ConfigManager.configManager.getClickAction(type, item, player);
             if (CommonUtil.containsAnyString(clickType, "buy", "sell", "buy-or-sell", "sell-all", "select-amount")) {
                 continue;
             }
@@ -120,18 +107,18 @@ public class FormInfoGUI extends FormGUI {
         }
         if (!item.getRawSellPrice().empty) {
             tempVal2.button(sell);
-            if (ConfigManager.configManager.containsClickAction("sell-all") && item.isEnableSellAll()) {
+            if (ConfigManager.configManager.containsClickAction("sell-all", item, player) && item.isEnableSellAll()) {
                 tempVal2.button(sellAll);
             }
         }
-        if (item.getBuyMore() && menu != null && ConfigManager.configManager.containsClickAction("select-amount")) {
+        if (item.getBuyMore() && menu != null && ConfigManager.configManager.containsClickAction("select-amount", item, player)) {
             tempVal2.button(buyMore);
         }
         for (ButtonComponent buttonComponent : clickEvents.values()) {
             tempVal2.button(buttonComponent);
         }
         tempVal2.button(back);
-        tempVal2.validResultHandler(response -> {
+        tempVal2.validResultHandler((submittedForm, response) -> handleResponse(submittedForm, () -> {
             MenuStatusManager.menuStatusManager.removeOpenGUIStatus(player, this);
             if (response.clickedButton().equals(buy)) {
                 doThing(true);
@@ -161,18 +148,18 @@ public class FormInfoGUI extends FormGUI {
             for (ClickType type : clickEvents.keySet()) {
                 ButtonComponent buttonComponent = clickEvents.get(type);
                 if (response.clickedButton().equals(buttonComponent)) {
-                    String clickType = ConfigManager.configManager.getClickAction(type, item);
+                    String clickType = ConfigManager.configManager.getClickAction(type, item, player);
                     ObjectAction action = new ObjectAction(
                             ConfigManager.configManager.getSection("menu.click-event-actions." + clickType),
                             item);
-                    action.runAllActions(new ObjectThingRun(player, type));
+                    action.runAllActions(new ObjectThingRun(player, type, getBuyAmount(), getSellAmount()));
                     if (action.getLastTradeStatus() != null && action.getLastTradeStatus().getStatus() != ProductTradeStatus.Status.DONE) {
                         item.getFailAction().runAllActions(new ObjectThingRun(player, type));
                     }
                 }
             }
-        });
-        tempVal2.closedOrInvalidResultHandler(response -> finishGUI());
+        }));
+        tempVal2.closedOrInvalidResultHandler((submittedForm, response) -> handleResponse(submittedForm, this::finishGUI));
         form = tempVal2.build();
     }
 
@@ -190,14 +177,11 @@ public class FormInfoGUI extends FormGUI {
 
     public void doThing(boolean buyOrSell) {
         MenuStatusManager.menuStatusManager.removeOpenGUIStatus(player, this);
-        if (amount == null) {
-            return;
-        }
         if (!buyOrSell && item.openPriceModifierMenu(player)) {
             return;
         }
         boolean b = ConfigManager.configManager.getBoolean("placeholder.click.enabled");
-        if (!buyOrSell && amount.equals("all")) {
+        if (!buyOrSell && "all".equals(amount)) {
             if (!item.getSellPrice().empty) {
                 SellProductMethod.startSell(item,
                         player,
@@ -215,7 +199,7 @@ public class FormInfoGUI extends FormGUI {
                         player,
                         !b,
                         false,
-                        getAmount());
+                        getBuyAmount());
             }
         } else {
             if (!item.getSellPrice().empty) {
@@ -223,7 +207,7 @@ public class FormInfoGUI extends FormGUI {
                         player,
                         !b,
                         false,
-                        getAmount());
+                        getSellAmount());
             }
         }
         if (ConfigManager.configManager.getBoolean("menu.bedrock.not-auto-close")) {
@@ -232,6 +216,9 @@ public class FormInfoGUI extends FormGUI {
     }
 
     public int getAmount() {
+        if (amount == null) {
+            return item.getBuyPrice().empty ? item.getDefaultSellAmount() : item.getDefaultBuyAmount();
+        }
         if (!enableBuyMore) {
             return 1;
         }
@@ -248,5 +235,13 @@ public class FormInfoGUI extends FormGUI {
             realAmount = 1;
         }
         return realAmount;
+    }
+
+    private int getBuyAmount() {
+        return amount == null ? item.getDefaultBuyAmount() : getAmount();
+    }
+
+    private int getSellAmount() {
+        return amount == null ? item.getDefaultSellAmount() : getAmount();
     }
 }
