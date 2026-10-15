@@ -12,13 +12,18 @@ import com.cronutils.model.definition.CronDefinitionBuilder;
 import com.cronutils.model.time.ExecutionTime;
 import com.cronutils.parser.CronParser;
 import me.clip.placeholderapi.PlaceholderAPI;
+import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
 import java.awt.Color;
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -27,6 +32,56 @@ public class TextUtil {
     public static final Pattern SINGLE_HEX_PATTERN = Pattern.compile("&#([A-Fa-f0-9]{6})");
     public static final Pattern GRADIENT_PATTERN = Pattern.compile("&<#([A-Fa-f0-9]{6})>(.*?)&<#([A-Fa-f0-9]{6})>");
     public static final Pattern LEGACY_COLOR_PATTERN = Pattern.compile("[&§]([0-9a-frlomn])", Pattern.CASE_INSENSITIVE);
+
+    public static int getGlyphWidth(int code) {
+        if (code == '\n') {
+            return 0;
+        }
+        if (code == ' ') {
+            return 4;
+        }
+        if (code < 128 && "!.,:;i|'".indexOf(code) >= 0) {
+            return 2;
+        }
+        if (code == '`' || code == 'l') {
+            return 3;
+        }
+        if (code < 128 && "\"()*I[]t{}".indexOf(code) >= 0) {
+            return 4;
+        }
+        if (code < 128 && "<>fk".indexOf(code) >= 0) {
+            return 5;
+        }
+        if (code == '@' || code == '~') {
+            return 7;
+        }
+        return code < 256 ? 6 : 9;
+    }
+
+    public static int getTextWidth(String value) {
+        int width = 0;
+        int maximum = 0;
+        boolean bold = false;
+        for (int i = 0; i < value.length(); i++) {
+            char c = value.charAt(i);
+            if (c == '§' && i + 1 < value.length()) {
+                char format = Character.toLowerCase(value.charAt(++i));
+                if (format == 'l') {
+                    bold = true;
+                } else if ("0123456789abcdefrx".indexOf(format) >= 0) {
+                    bold = false;
+                }
+                continue;
+            }
+            if (c == '\n') {
+                maximum = Math.max(maximum, width);
+                width = 0;
+            } else {
+                width += getGlyphWidth(c) + (bold && c != ' ' ? 1 : 0);
+            }
+        }
+        return Math.max(maximum, width);
+    }
 
     public static String clear(String text) {
         text = SINGLE_HEX_PATTERN.matcher(text).replaceAll("");
@@ -48,23 +103,23 @@ public class TextUtil {
 
     // Minecraft 16 原生颜色码映射
     private static final Map<Character, Color> LEGACY_COLORS = Map.ofEntries(
-            Map.entry('0', new Color(0, 0, 0)),
-            Map.entry('1', new Color(0, 0, 170)),
-            Map.entry('2', new Color(0, 170, 0)),
-            Map.entry('3', new Color(0, 170, 170)),
-            Map.entry('4', new Color(170, 0, 0)),
-            Map.entry('5', new Color(170, 0, 170)),
-            Map.entry('6', new Color(255, 170, 0)),
-            Map.entry('7', new Color(170, 170, 170)),
-            Map.entry('8', new Color(85, 85, 85)),
-            Map.entry('9', new Color(85, 85, 255)),
-            Map.entry('a', new Color(85, 255, 85)),
-            Map.entry('b', new Color(85, 255, 255)),
-            Map.entry('c', new Color(255, 85, 85)),
-            Map.entry('d', new Color(255, 85, 255)),
-            Map.entry('e', new Color(255, 255, 85)),
-            Map.entry('f', new Color(255, 255, 255))
-    );
+        Map.entry('0', new Color(0, 0, 0)),
+        Map.entry('1', new Color(0, 0, 170)),
+        Map.entry('2', new Color(0, 170, 0)),
+        Map.entry('3', new Color(0, 170, 170)),
+        Map.entry('4', new Color(170, 0, 0)),
+        Map.entry('5', new Color(170, 0, 170)),
+        Map.entry('6', new Color(255, 170, 0)),
+        Map.entry('7', new Color(170, 170, 170)),
+        Map.entry('8', new Color(85, 85, 85)),
+        Map.entry('9', new Color(85, 85, 255)),
+        Map.entry('a', new Color(85, 255, 85)),
+        Map.entry('b', new Color(85, 255, 255)),
+        Map.entry('c', new Color(255, 85, 85)),
+        Map.entry('d', new Color(255, 85, 255)),
+        Map.entry('e', new Color(255, 255, 85)),
+        Map.entry('f', new Color(255, 255, 255))
+        );
 
     public static String pluginPrefix() {
         if (!CommonUtil.getMajorVersion(16)) {
@@ -119,8 +174,8 @@ public class TextUtil {
             String endColor = matcher.group(3);
 
             String gradientText = supportHex
-                    ? applyGradient(startColor, endColor, text)
-                    : applyLegacyGradient(startColor, endColor, text);
+            ? applyGradient(startColor, endColor, text)
+            : applyLegacyGradient(startColor, endColor, text);
 
             matcher.appendReplacement(buffer, gradientText);
         }
@@ -243,7 +298,7 @@ public class TextUtil {
             while (matcher1.find()) {
                 String discount = matcher1.group(1);
                 text = text.replace("{conditional_" + discount + "}",
-                        String.valueOf(ObjectConditionalPlaceholder.getNowValue(discount, player)));
+                    String.valueOf(ObjectConditionalPlaceholder.getNowValue(discount, player)));
             }
         }
         Matcher matcher2 = pattern2.matcher(text);
@@ -256,32 +311,32 @@ public class TextUtil {
                 number = Integer.parseInt(tempVal1[1]);
             }
             text = text.replace("{random_" + matcher2.group(1) + "}",
-                    ObjectRandomPlaceholder.getNowValue(player, placeholder, number));
+                ObjectRandomPlaceholder.getNowValue(player, placeholder, number));
         }
         Matcher matcher3 = pattern3.matcher(text);
         while (matcher3.find()) {
             String placeholder = matcher3.group(1);
             text = text.replace("{random-times_" + placeholder + "}",
-                    ObjectRandomPlaceholder.getRefreshDoneTime(player, placeholder));
+                ObjectRandomPlaceholder.getRefreshDoneTime(player, placeholder));
         }
         Matcher matcher4 = pattern4.matcher(text);
         while (matcher4.find()) {
             String compareNumber = matcher4.group(1);
             String baseNumber = matcher4.group(2);
             text = text.replace("{compare_" + compareNumber + "_" + baseNumber + "}",
-                    StaticPlaceholder.getCompareValue(player, new BigDecimal(baseNumber), new BigDecimal(compareNumber)));
+                StaticPlaceholder.getCompareValue(player, new BigDecimal(baseNumber), new BigDecimal(compareNumber)));
         }
         Matcher matcher5 = pattern5.matcher(text);
         while (matcher5.find()) {
             String placeholder = matcher5.group(1);
             text = text.replace("{math_" + placeholder + "}",
-                    MathUtil.doCalculate(placeholder, ConfigManager.configManager.getInt("placeholder.math.scale", 0)).toString());
+                MathUtil.doCalculate(placeholder, ConfigManager.configManager.getInt("placeholder.math.scale", 0)).toString());
         }
         Matcher matcher6 = pattern6.matcher(text);
         while (matcher6.find()) {
             String placeholder = matcher6.group(1);
             text = text.replace("{random-next_" + placeholder + "}",
-                    ObjectRandomPlaceholder.getNextTime(player, placeholder));
+                ObjectRandomPlaceholder.getNextTime(player, placeholder));
         }
         Matcher matcher7 = pattern7.matcher(text);
         while (matcher7.find()) {
@@ -310,13 +365,13 @@ public class TextUtil {
         while (matcher8.find()) {
             String placeholder = matcher8.group(1);
             text = text.replace("{custom_" + placeholder + "}",
-                    ObjectCustomPlaceholder.getNowValue(player, placeholder));
+                ObjectCustomPlaceholder.getNowValue(player, placeholder));
         }
         Matcher matcher9 = pattern9.matcher(text);
         while (matcher9.find()) {
             String placeholder = matcher9.group(1);
             text = text.replace("{random-last-reset_" + placeholder + "}",
-                    ObjectRandomPlaceholder.getLastResetTime(player, placeholder));
+                ObjectRandomPlaceholder.getLastResetTime(player, placeholder));
         }
         text = CommonUtil.parseLang(player, text);
         return text;
@@ -324,6 +379,11 @@ public class TextUtil {
 
     public static void sendMessage(Player player, String rawText) {
         if (rawText == null || rawText.isEmpty()) {
+            return;
+        }
+
+        if (UltimateShop.methodUtil == null) {
+            Bukkit.getConsoleSender().sendMessage(rawText);
             return;
         }
 
@@ -344,13 +404,13 @@ public class TextUtil {
         for (TagResult tag : parseArgTag(rawText, "title")) {
             TitleData data = parseTitle(tag);
             UltimateShop.methodUtil.sendTitle(
-                    player,
-                    data.title,
-                    data.subTitle,
-                    data.fadeIn,
-                    data.stay,
-                    data.fadeOut
-            );
+                player,
+                data.title,
+                data.subTitle,
+                data.fadeIn,
+                data.stay,
+                data.fadeOut
+                );
             sentAny = true;
         }
 
@@ -364,12 +424,12 @@ public class TextUtil {
         for (TagResult tag : parseArgTag(rawText, "bossbar")) {
             BossBarData data = parseBossBar(tag);
             UltimateShop.methodUtil.sendBossBar(
-                    player,
-                    data.title,
-                    data.progress,
-                    data.color,
-                    data.style
-            );
+                player,
+                data.title,
+                data.progress,
+                data.color,
+                data.style
+                );
             sentAny = true;
         }
 
@@ -393,9 +453,9 @@ public class TextUtil {
     private static List<String> parseSimpleTag(String text, String tag) {
         List<String> list = new ArrayList<>();
         Pattern p = Pattern.compile(
-                "\\[" + tag + "]([\\s\\S]*?)\\[/" + tag + "]",
-                Pattern.CASE_INSENSITIVE
-        );
+            "\\[" + tag + "]([\\s\\S]*?)\\[/" + tag + "]",
+            Pattern.CASE_INSENSITIVE
+            );
         Matcher m = p.matcher(text);
         while (m.find()) {
             list.add(m.group(1).trim());
@@ -406,15 +466,15 @@ public class TextUtil {
     private static List<TagResult> parseArgTag(String text, String tag) {
         List<TagResult> list = new ArrayList<>();
         Pattern p = Pattern.compile(
-                "\\[" + tag + "(?:=([^\\]]+))?]([\\s\\S]*?)\\[/" + tag + "]",
-                Pattern.CASE_INSENSITIVE
-        );
+            "\\[" + tag + "(?:=([^\\]]+))?]([\\s\\S]*?)\\[/" + tag + "]",
+            Pattern.CASE_INSENSITIVE
+            );
         Matcher m = p.matcher(text);
         while (m.find()) {
             list.add(new TagResult(
-                    m.group(1),
-                    m.group(2).trim()
-            ));
+                m.group(1),
+                m.group(2).trim()
+                ));
         }
         return list;
     }
@@ -449,9 +509,15 @@ public class TextUtil {
 
         if (tag.args != null) {
             String[] a = tag.args.split(",");
-            if (a.length > 0) color = a[0];
-            if (a.length > 1) style = a[1];
-            if (a.length > 2) progress = parseFloat(a[2], progress);
+            if (a.length > 0) {
+                color = a[0];
+            }
+            if (a.length > 1) {
+                style = a[1];
+            }
+            if (a.length > 2) {
+                progress = parseFloat(a[2], progress);
+            }
         }
 
         return new BossBarData(tag.content, progress, color, style);
@@ -529,8 +595,12 @@ public class TextUtil {
                     sound = null; // 无效音效忽略
                 }
             }
-            if (args.length > 1) volume = parseFloat(args[1], 1f);
-            if (args.length > 2) pitch = parseFloat(args[2], 1f);
+            if (args.length > 1) {
+                volume = parseFloat(args[1], 1f);
+            }
+            if (args.length > 2) {
+                pitch = parseFloat(args[2], 1f);
+            }
         }
 
         return new SoundData(sound, volume, pitch);

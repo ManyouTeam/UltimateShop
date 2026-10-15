@@ -17,6 +17,7 @@ import io.papermc.paper.registry.data.dialog.body.DialogBody;
 import io.papermc.paper.registry.data.dialog.input.DialogInput;
 import io.papermc.paper.registry.data.dialog.input.SingleOptionDialogInput;
 import io.papermc.paper.registry.data.dialog.type.DialogType;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickCallback;
 import net.kyori.adventure.text.event.ClickEvent;
 import org.bukkit.entity.Player;
@@ -107,7 +108,7 @@ public final class PaperDialogFactory {
         return buttons;
     }
 
-    private static net.kyori.adventure.text.Component itemActionLabel(Player player, DialogView.ItemAction itemAction) {
+    private static Component itemActionLabel(Player player, DialogView.ItemAction itemAction) {
         var label = PaperTextUtil.modernParse(itemAction.getAction().getLabel(), player);
         return PaperTextUtil.shouldShowSprite(itemAction.getAction().getShowSprite(), !itemAction.getItem().getType().isAir())
                 ? label : PaperTextUtil.withoutObjects(label);
@@ -126,7 +127,9 @@ public final class PaperDialogFactory {
     private static ActionButton defaultCloseButton(Player player, DialogGUI gui, DialogView view) {
         long generation = gui.getGeneration();
         return ActionButton.builder(PaperTextUtil.modernParse(
-                        ConfigManager.configManager.getString("menu.dialog.default-button", ""), player))
+                        ConfigManager.configManager.getMenuRendererText(
+                            gui.getMenu() == null ? null : gui.getMenu().getConfig(),
+                            player, "dialog", "default-button", "Close"), player))
                 .width(view.getButtonWidth())
                 .action(DialogAction.customClick((response, audience) -> {
                     if (audience instanceof Player actor && actor.getUniqueId().equals(player.getUniqueId())) {

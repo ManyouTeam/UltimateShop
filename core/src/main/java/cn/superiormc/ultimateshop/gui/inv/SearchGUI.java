@@ -3,12 +3,13 @@ package cn.superiormc.ultimateshop.gui.inv;
 import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.api.ShopHelper;
 import cn.superiormc.ultimateshop.gui.InvGUI;
-import cn.superiormc.ultimateshop.gui.dialog.DialogSearchGUI;
 import cn.superiormc.ultimateshop.gui.Prompt;
+import cn.superiormc.ultimateshop.gui.arc.ArcMenuBridge;
+import cn.superiormc.ultimateshop.gui.dialog.DialogSearchGUI;
+import cn.superiormc.ultimateshop.gui.form.FormSearchGUI;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
-import cn.superiormc.ultimateshop.managers.MenuStatusManager;
 import cn.superiormc.ultimateshop.managers.LanguageManager;
-import cn.superiormc.ultimateshop.objects.ObjectThingRun;
+import cn.superiormc.ultimateshop.managers.MenuStatusManager;
 import cn.superiormc.ultimateshop.objects.buttons.AbstractButton;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectSearchActionButton;
@@ -21,6 +22,7 @@ import cn.superiormc.ultimateshop.objects.menus.ObjectSearchMenu;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
 import cn.superiormc.ultimateshop.utils.SchedulerUtil;
 import cn.superiormc.ultimateshop.utils.TextUtil;
+
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.Inventory;
@@ -37,8 +39,6 @@ public class SearchGUI extends InvGUI {
 
     private final ObjectSearchMenu menu;
 
-    private final boolean bypass;
-
     private final Map<Integer, ObjectSearchResultButton> resultButtons = new HashMap<>();
 
     private final Map<Integer, ItemStack> inputButtons = new HashMap<>();
@@ -48,9 +48,8 @@ public class SearchGUI extends InvGUI {
     private boolean suppressCloseReturn;
 
     private SearchGUI(Player owner, ObjectSearchMenu menu, boolean bypass) {
-        super(owner);
+        super(owner, bypass);
         this.menu = menu;
-        this.bypass = bypass;
     }
 
     @Override
@@ -58,11 +57,11 @@ public class SearchGUI extends InvGUI {
         if (menu == null || menu.getConfig() == null) {
             return;
         }
-        if (!bypass && !menu.getCondition().getAllBoolean(new ObjectThingRun(player))) {
+        if (!canDisplayMenu()) {
             LanguageManager.languageManager.sendStringText(player,
-                    "menu-condition-not-meet",
-                    "menu",
-                    menu.getName());
+                "menu-condition-not-meet",
+                "menu",
+                menu.getName());
             return;
         }
 
@@ -75,7 +74,7 @@ public class SearchGUI extends InvGUI {
         inv.clear();
         resultButtons.clear();
 
-        menuButtons = menu.getMenu(MenuSender.of(player));
+        menuButtons = menu.getMenu(MenuSender.of(player, getPresentation()));
         menuItems = getMenuItems(player);
         for (Map.Entry<Integer, ItemStack> entry : menuItems.entrySet()) {
             if (entry.getKey() >= 0 && entry.getKey() < inv.getSize()) {
@@ -107,6 +106,7 @@ public class SearchGUI extends InvGUI {
             if (entry.getKey() < 0 || entry.getKey() >= inv.getSize()) {
                 continue;
             }
+            menuButtons.put(entry.getKey(), entry.getValue());
             inv.setItem(entry.getKey(), entry.getValue().getDisplayItem(player, 1).getItemStack());
         }
     }
@@ -117,12 +117,13 @@ public class SearchGUI extends InvGUI {
         String keywordDisplay = getSearchKeywordDisplay();
 
         for (Map.Entry<Integer, ObjectSearchStateButton> entry : menu.getStateButtons().entrySet()) {
+            menuButtons.put(entry.getKey(), entry.getValue());
             inv.setItem(entry.getKey(), entry.getValue().buildDisplayItem(player,
-                    hasSearchFilters,
-                    resultAmount,
-                    showingAmount,
-                    inputAmount,
-                    keywordDisplay));
+                hasSearchFilters,
+                resultAmount,
+                showingAmount,
+                inputAmount,
+                keywordDisplay));
         }
     }
 
@@ -133,6 +134,7 @@ public class SearchGUI extends InvGUI {
             int slot = resultSlots.get(i);
             ObjectSearchResultButton button = new ObjectSearchResultButton(matchedItems.get(i), menu.getResultLore());
             resultButtons.put(slot, button);
+            menuButtons.put(slot, button);
             inv.setItem(slot, button.getDisplayItem(player, 1).getItemStack());
         }
     }
@@ -146,6 +148,7 @@ public class SearchGUI extends InvGUI {
         if (slot < 0 || slot >= inv.getSize()) {
             return;
         }
+        menuButtons.put(slot, button);
         inv.setItem(slot, button.buildDisplayItem(player, countInputItems(), getSearchKeywordDisplay()));
     }
 
@@ -181,15 +184,15 @@ public class SearchGUI extends InvGUI {
         switch (button.getActionType()) {
             case "input-name":
             case "search-name":
-                promptName();
-                return;
+            promptName();
+            return;
             case "clear-search":
-                returnInputItems();
-                searchKeyword = "";
-                constructGUI();
-                return;
+            returnInputItems();
+            searchKeyword = "";
+            constructGUI();
+            return;
             default:
-                return;
+            return;
         }
     }
 
@@ -236,6 +239,10 @@ public class SearchGUI extends InvGUI {
     }
 
     private void returnInputItems() {
+        if ("arcmenu".equals(getPresentation())) {
+            inputButtons.clear();
+            return;
+        }
         List<ItemStack> items = new ArrayList<>();
         for (int slot : menu.getInputSlots()) {
             ItemStack item = inv == null ? null : inv.getItem(slot);
@@ -252,6 +259,9 @@ public class SearchGUI extends InvGUI {
 
     private void initInputItemMap() {
         inputButtons.clear();
+        if ("arcmenu".equals(getPresentation())) {
+            return;
+        }
         for (int slot : menu.getInputSlots()) {
             ItemStack itemStack = inv.getItem(slot);
             if (itemStack != null && !itemStack.getType().isAir()) {
@@ -279,23 +289,23 @@ public class SearchGUI extends InvGUI {
     private void promptName() {
         suppressCloseReturn = true;
         MenuStatusManager.menuStatusManager.startPrompt(player, new Prompt(
-                LanguageManager.languageManager.getStringText(player, "plugin.search-gui-name-input", "&fType the item name you want to search in chat. Type {value} to remove the name filter.", "value", ConfigManager.configManager.getStringWithLang(player, "menu.search-gui.prompt.clear-keyword")),
-                (p, input) -> {
-                    suppressCloseReturn = false;
-                    String normalizedInput = input == null ? "" : input.trim();
-                    if (normalizedInput.equalsIgnoreCase("clear")
-                            || normalizedInput.equalsIgnoreCase(ConfigManager.configManager.getStringWithLang(player, "menu.search-gui.prompt.clear-keyword"))) {
-                        normalizedInput = "";
-                    }
-                    searchKeyword = normalizedInput;
-                    openGUI(true);
-                },
-                p -> {
-                    suppressCloseReturn = false;
-                    openGUI(true);
-                },
-                false
-        ));
+            LanguageManager.languageManager.getStringText(player, "plugin.search-gui-name-input", "&fType the item name you want to search in chat. Type {value} to remove the name filter.", "value", ConfigManager.configManager.getStringWithLang(player, "menu.search-gui.prompt.clear-keyword")),
+            (p, input) -> {
+                suppressCloseReturn = false;
+                String normalizedInput = input == null ? "" : input.trim();
+                if (normalizedInput.equalsIgnoreCase("clear")
+                    || normalizedInput.equalsIgnoreCase(ConfigManager.configManager.getStringWithLang(player, "menu.search-gui.prompt.clear-keyword"))) {
+                    normalizedInput = "";
+                }
+                searchKeyword = normalizedInput;
+                openGUI(true);
+            },
+            p -> {
+                suppressCloseReturn = false;
+                openGUI(true);
+            },
+            false
+            ));
     }
 
     private void queueRefresh() {
@@ -303,7 +313,8 @@ public class SearchGUI extends InvGUI {
             if (inv != null && player.getOpenInventory().getTopInventory().equals(inv)) {
                 constructGUI();
             }
-        }, 1L);
+        }
+            , 1L);
     }
 
     public static void openGUI(Player player) {
@@ -314,16 +325,20 @@ public class SearchGUI extends InvGUI {
         ObjectMenu menu = ObjectMenu.commonMenus.get(menuName);
         if (!(menu instanceof ObjectSearchMenu searchMenu) || searchMenu.getConfig() == null) {
             LanguageManager.languageManager.sendStringText(player,
-                    "error.menu-not-found",
-                    "menu",
-                    menuName);
+                "error.menu-not-found",
+                "menu",
+                menuName);
             return;
         }
         openGUI(player, searchMenu, false, true);
     }
 
     public static void openGUI(Player player, ObjectSearchMenu menu, boolean bypass, boolean reopen) {
-        if (menu.isUseDialog()) {
+        if (UltimateShop.useGeyser && menu.isUseGeyser() && CommonUtil.isBedrockPlayer(player)) {
+            new FormSearchGUI(player, menu, bypass).openGUI(reopen);
+            return;
+        }
+        if (!ArcMenuBridge.arcMenuBridge.enabled(menu, player) && menu.isUseDialog()) {
             new DialogSearchGUI(player, menu, bypass).openGUI(reopen);
             return;
         }

@@ -41,7 +41,7 @@ public class FormCommonGUI extends FormGUI {
         for (int slot : menuButtons.keySet()) {
             AbstractButton button = menuButtons.get(slot);
             ObjectDisplayItemStack displayItem = button.getDisplayItem(player, 1);
-            ButtonComponent tempVal1 = displayItem.parseToBedrockButton();
+            ButtonComponent tempVal1 = displayItem.parseToBedrockButton(getMenu());
             if (tempVal1 != null) {
                 tempVal2.button(tempVal1);
             }
@@ -53,8 +53,8 @@ public class FormCommonGUI extends FormGUI {
             MenuStatusManager.menuStatusManager.removeOpenGUIStatus(player, this);
         }));
         tempVal2.closedOrInvalidResultHandler((submittedForm, response) -> handleResponse(submittedForm, this::finishGUI));
-        if (commonMenu.getString("bedrock.content", null) != null) {
-            tempVal2.content(TextUtil.parse(player, getMenu().getString("bedrock.content", "")));
+        if (commonMenu.getString("content", null) != null) {
+            tempVal2.content(TextUtil.parse(player, getMenu().getString("content", "")));
         }
         form = tempVal2.build();
     }

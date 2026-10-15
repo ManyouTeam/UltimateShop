@@ -55,7 +55,7 @@ public class DialogShopGUI extends DialogGUI {
                 cache.refreshTimes();
             }
         }
-        Map<Integer, AbstractButton> source = menu.getMenu(MenuSender.of(player, MenuSender.dialogPresentation(menu.getString("dialog.layout", "multi-action"))));
+        Map<Integer, AbstractButton> source = menu.getMenu(MenuSender.of(player, MenuSender.dialogPresentation(ConfigManager.configManager.getDialogLayout(menu.getConfig()))));
         Map<Integer, AbstractButton> ordered = new LinkedHashMap<>();
         source.forEach((slot, button) -> {
             if (button instanceof ObjectItem) {
@@ -69,13 +69,13 @@ public class DialogShopGUI extends DialogGUI {
         String title = menu.getString("title", shop.getShopDisplayName())
                 .replace("{shop-name}", shop.getShopDisplayName()).replace("{shop-id}", shop.getShopName());
         DialogView.Builder builder = DialogView.builder(title);
-        String content = menu.getString("dialog.content", null);
+        String content = menu.getString("content", null);
         if (content != null && !content.isEmpty()) {
             builder.body(content);
         }
-        builder.buttonWidth(menu.getInt("dialog.button-width", 150));
-        builder.columns(menu.getInt("dialog.columns", 2));
-        String dialogLayout = menu.getString("dialog.layout", "multi-action");
+        builder.buttonWidth(menu.getInt("ui.renderers.dialog.button-width", 150));
+        builder.columns(menu.getInt("ui.renderers.dialog.columns", 2));
+        String dialogLayout = ConfigManager.configManager.getDialogLayout(menu.getConfig());
         builder.layout(dialogLayout);
         ordered.forEach((slot, button) -> addButton(builder, slot, button, dialogLayout));
         dialog = builder.build();

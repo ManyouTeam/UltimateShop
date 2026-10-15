@@ -2,8 +2,10 @@ package cn.superiormc.ultimateshop.utils;
 
 import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
-import cn.superiormc.ultimateshop.managers.LocateManager;
+import cn.superiormc.ultimateshop.managers.LanguageManager;
+import cn.superiormc.ultimateshop.managers.MinecraftResourceManager;
 import cn.superiormc.ultimateshop.methods.Items.DebuildItem;
+
 import org.bukkit.configuration.MemoryConfiguration;
 import org.bukkit.configuration.MemorySection;
 import org.bukkit.inventory.ItemStack;
@@ -25,10 +27,28 @@ public class ItemUtil {
         if (displayItem.getItemMeta().hasDisplayName()) {
             return UltimateShop.methodUtil.getItemName(displayItem.getItemMeta());
         }
-        if (LocateManager.enableThis() && LocateManager.locateManager != null) {
-            return LocateManager.locateManager.getLocateName(displayItem);
+        // Preserve Paper client-side translation. Other paths load server-language names on demand.
+        if (CommonUtil.getMajorVersion(16)
+            && !UltimateShop.freeVersion
+            && ConfigManager.configManager.getBoolean("display-item.auto-translate-item-name")
+            && !UltimateShop.methodUtil.methodID().equals("paper")) {
+            return getLocateName(displayItem);
         }
         return getItemNameWithoutVanilla(displayItem);
+    }
+
+    public static String getLocateName(ItemStack item) {
+        if (item == null || MinecraftResourceManager.minecraftResourceManager == null) {
+            return getItemNameWithoutVanilla(item);
+        }
+        String language =
+            LanguageManager.languageManager == null
+        ? ConfigManager.configManager.getString("config-files.language", "en_US")
+        : LanguageManager.languageManager.getPlayerLanguage(null);
+        String name =
+            MinecraftResourceManager.minecraftResourceManager.getLocalizedName(
+            UltimateShop.methodUtil.getItemTranslateKey(item), language);
+        return name == null ? getItemNameWithoutVanilla(item) : name;
     }
 
     // No Color Code
@@ -39,7 +59,9 @@ public class ItemUtil {
         if (displayItem.getItemMeta().hasDisplayName()) {
             return UltimateShop.methodUtil.getItemName(displayItem.getItemMeta());
         }
-        if (UltimateShop.methodUtil.methodID().equals("paper") && ConfigManager.configManager.getBoolean("display-item.auto-translate-item-name")) {
+        if (UltimateShop.methodUtil.methodID().equals("paper")
+            && ConfigManager.configManager.getBoolean(
+            "display-item.auto-translate-item-name")) {
             return "<lang:" + displayItem.translationKey() + ">";
         }
         StringBuilder result = new StringBuilder();
@@ -55,15 +77,20 @@ public class ItemUtil {
     }
 
     public static boolean isSameItem(ItemStack item1, ItemStack item2) {
-        if (ConfigManager.configManager.getStringOrDefault("sell-mode", "sell.sell-method", "Bukkit").equals("Bukkit")) {
+        if (ConfigManager.configManager
+            .getStringOrDefault("sell-mode", "sell.sell-method", "Bukkit")
+            .equals("Bukkit")) {
             if (ConfigManager.configManager.getBoolean("debug")) {
-                TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fItem in player inventory: " + item1);
+                TextUtil.sendMessage(
+                    null, TextUtil.pluginPrefix() + " §fItem in player inventory: " + item1);
                 TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fItem in shop: " + item2);
             }
             return item1.isSimilar(item2);
         }
-        Map<String, Object> item1Result = DebuildItem.debuildItem(item1, new MemoryConfiguration()).getValues(true);
-        Map<String, Object> item2Result = DebuildItem.debuildItem(item2, new MemoryConfiguration()).getValues(true);
+        Map<String, Object> item1Result =
+            DebuildItem.debuildItem(item1, new MemoryConfiguration()).getValues(true);
+        Map<String, Object> item2Result =
+            DebuildItem.debuildItem(item2, new MemoryConfiguration()).getValues(true);
         if (ConfigManager.configManager.getBoolean("sell.item-format.require-same-key")) {
             for (String key : item1Result.keySet()) {
                 if (canIgnore(key)) {
@@ -106,7 +133,9 @@ public class ItemUtil {
         if (key.equals("amount")) {
             return true;
         }
-        for (String tempVal1 : ConfigManager.configManager.getStringListOrDefault("sell.ignore-item-format-key", "sell.item-format.ignore-key")) {
+        for (String tempVal1 :
+            ConfigManager.configManager.getStringListOrDefault(
+            "sell.ignore-item-format-key", "sell.item-format.ignore-key")) {
             if (tempVal1.equals(key) || key.startsWith(tempVal1 + ".")) {
                 return true;
             }

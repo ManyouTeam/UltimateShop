@@ -1,6 +1,5 @@
 package cn.superiormc.ultimateshop.gui.form;
 
-import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.objects.caches.ObjectCache;
 import cn.superiormc.ultimateshop.gui.FormGUI;
 import cn.superiormc.ultimateshop.managers.CacheManager;
@@ -15,7 +14,6 @@ import cn.superiormc.ultimateshop.objects.buttons.subobjects.ObjectDisplayItemSt
 import cn.superiormc.ultimateshop.objects.caches.ObjectUseTimesCache;
 import cn.superiormc.ultimateshop.objects.menus.MenuSender;
 import cn.superiormc.ultimateshop.objects.menus.ObjectMenu;
-import cn.superiormc.ultimateshop.utils.CommonUtil;
 import cn.superiormc.ultimateshop.utils.TextUtil;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
@@ -101,7 +99,7 @@ public class FormShopGUI extends FormGUI {
         for (int slot : tempVal8.keySet()) {
             AbstractButton button = tempVal8.get(slot);
             ObjectDisplayItemStack displayItem = button.getDisplayItem(player, 1);
-            ButtonComponent tempVal6 = displayItem.parseToBedrockButton();
+            ButtonComponent tempVal6 = displayItem.parseToBedrockButton(getMenu());
             if (tempVal6 != null) {
                 tempVal5.button(tempVal6);
             }
@@ -121,8 +119,8 @@ public class FormShopGUI extends FormGUI {
             }
         }));
         tempVal5.closedOrInvalidResultHandler((submittedForm, response) -> handleResponse(submittedForm, this::finishGUI));
-        if (getMenu().getString("bedrock.content", null) != null) {
-            tempVal5.content(TextUtil.parse(player, getMenu().getString("bedrock.content", "")));
+        if (getMenu().getString("content", null) != null) {
+            tempVal5.content(TextUtil.parse(player, getMenu().getString("content", "")));
         }
         form = tempVal5.build();
     }

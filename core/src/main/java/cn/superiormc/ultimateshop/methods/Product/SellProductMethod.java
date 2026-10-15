@@ -184,8 +184,7 @@ public class SellProductMethod {
                     maxAmount > item.getServerSellLimit(player) - serverUseTimes) {
                 maxAmount = item.getServerSellLimit(player) - serverUseTimes;
             }
-            int configMaxAmount = ConfigManager.configManager.getIntOrDefault("menu.sell-all.max-amount",
-                    "sell.max-amount", 128);
+            int configMaxAmount = ConfigManager.configManager.getInt("sell.max-amount", 128);
             if (configMaxAmount >= 0 && maxAmount > configMaxAmount) {
                 maxAmount = configMaxAmount;
             }

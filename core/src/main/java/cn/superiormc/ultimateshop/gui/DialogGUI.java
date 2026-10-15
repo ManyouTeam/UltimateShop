@@ -5,8 +5,7 @@ import cn.superiormc.ultimateshop.gui.dialog.DialogAction;
 import cn.superiormc.ultimateshop.gui.dialog.DialogResponse;
 import cn.superiormc.ultimateshop.gui.dialog.DialogView;
 import cn.superiormc.ultimateshop.managers.MenuStatusManager;
-import cn.superiormc.ultimateshop.managers.ConfigManager;
-import cn.superiormc.ultimateshop.utils.CommonUtil;
+
 import org.bukkit.entity.Player;
 
 public abstract class DialogGUI extends AbstractGUI {
@@ -23,13 +22,12 @@ public abstract class DialogGUI extends AbstractGUI {
         super(owner);
     }
 
-    protected String getDialogText(String path, String... replacements) {
-        return CommonUtil.modifyString(player,
-                ConfigManager.configManager.getString("menu.dialog." + path, ""), replacements);
-    }
-
     @Override
     public void openGUI(boolean reopen) {
+        openGUI(reopen, true);
+    }
+
+    protected void openGUI(boolean reopen, boolean runOpenActions) {
         GUIStatus previousStatus = MenuStatusManager.menuStatusManager.getGUIStatus(player);
         if (!MenuStatusManager.menuStatusManager.canOpenGUI(player, this, reopen)) {
             return;
@@ -37,8 +35,8 @@ public abstract class DialogGUI extends AbstractGUI {
         constructGUI();
         generation++;
         player.closeInventory();
-        if (dialog != null && UltimateShop.methodUtil.showDialog(player, this, dialog)) {
-            if (getMenu() != null) {
+        if (dialog != null && dialog.isValid() && UltimateShop.methodUtil.showDialog(player, this, dialog)) {
+            if (runOpenActions && getMenu() != null) {
                 getMenu().doOpenAction(player, reopen);
             }
         } else if (previousStatus == null) {
@@ -83,7 +81,7 @@ public abstract class DialogGUI extends AbstractGUI {
                 action.execute(response == null ? DialogResponse.empty() : response);
                 // A persistent dialog needs a fresh generation for its next intentional submission.
                 if (keepOpen && generation == expectedGeneration && finishedGeneration != expectedGeneration
-                        && player.isOnline() && MenuStatusManager.menuStatusManager.getOpeningGUI(player) == this) {
+                    && player.isOnline() && MenuStatusManager.menuStatusManager.getOpeningGUI(player) == this) {
                     updateGUI();
                 }
                 return true;
@@ -100,7 +98,7 @@ public abstract class DialogGUI extends AbstractGUI {
 
     private boolean canHandleResponse(long expectedGeneration) {
         return player.isOnline() && expectedGeneration == generation && expectedGeneration != consumedGeneration
-                && dialog != null && MenuStatusManager.menuStatusManager.getOpeningGUI(player) == this;
+            && dialog != null && MenuStatusManager.menuStatusManager.getOpeningGUI(player) == this;
     }
 
     public DialogView getDialog() {

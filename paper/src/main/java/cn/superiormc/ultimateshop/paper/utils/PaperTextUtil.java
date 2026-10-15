@@ -24,7 +24,7 @@ public class PaperTextUtil {
 
     public static boolean shouldShowSprite(Boolean override, boolean hasItemIcon) {
         return override != null ? override : !hasItemIcon
-                || !ConfigManager.configManager.config.getBoolean("menu.dialog.auto-add-sprite.auto-hide", true);
+                || !ConfigManager.configManager.config.getBoolean("menu.ui.renderers.dialog.auto-add-sprite.auto-hide", true);
     }
 
     public static Component withoutObjects(Component component) {

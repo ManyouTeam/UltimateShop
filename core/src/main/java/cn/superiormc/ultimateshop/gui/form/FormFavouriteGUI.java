@@ -20,6 +20,7 @@ import cn.superiormc.ultimateshop.objects.menus.ObjectMenu;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
 import cn.superiormc.ultimateshop.utils.TextUtil;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.ClickType;
 import org.geysermc.cumulus.component.ButtonComponent;
 import org.geysermc.cumulus.form.SimpleForm;
 
@@ -54,6 +55,7 @@ public class FormFavouriteGUI extends FormGUI {
 
     @Override
     public void constructGUI() {
+        form = null;
         if (!bypass && !menu.getCondition().getAllBoolean(new ObjectThingRun(player))) {
             LanguageManager.languageManager.sendStringText(player,
                     "menu-condition-not-meet",
@@ -111,8 +113,8 @@ public class FormFavouriteGUI extends FormGUI {
             }
         }
 
-        if (menu.getString("bedrock.content", null) != null) {
-            builder.content(TextUtil.parse(player, CommonUtil.parseLang(player, menu.getString("bedrock.content", ""))));
+        if (menu.getString("content", null) != null) {
+            builder.content(TextUtil.parse(player, CommonUtil.parseLang(player, menu.getString("content", ""))));
         }
 
         builder.validResultHandler((submittedForm, response) -> handleResponse(submittedForm, () -> {
@@ -132,12 +134,12 @@ public class FormFavouriteGUI extends FormGUI {
                     openEditActionForm(resultButton);
                     return;
                 }
-                resultButton.getItem().clickEvent(org.bukkit.event.inventory.ClickType.LEFT, player);
+                new FormInfoGUI(player, resultButton.getItem()).openGUI(true);
                 return;
             }
             Integer slot = normalActions.get(clickedButton);
             if (slot != null && menuButtons.get(slot) != null) {
-                menuButtons.get(slot).clickEvent(org.bukkit.event.inventory.ClickType.LEFT, player);
+                menuButtons.get(slot).clickEvent(ClickType.LEFT, player);
             }
         }));
         builder.closedOrInvalidResultHandler((submittedForm, response) -> handleResponse(submittedForm, this::finishGUI));
@@ -148,7 +150,7 @@ public class FormFavouriteGUI extends FormGUI {
         if (displayItem == null) {
             return null;
         }
-        ButtonComponent component = displayItem.parseToBedrockButton();
+        ButtonComponent component = displayItem.parseToBedrockButton(getMenu());
         if (component != null) {
             builder.button(component);
         }
@@ -158,25 +160,30 @@ public class FormFavouriteGUI extends FormGUI {
     private void openEditActionForm(ObjectFavouriteResultButton resultButton) {
         SimpleForm.Builder builder = SimpleForm.builder();
         builder.title(TextUtil.parse(player, CommonUtil.parseLang(player,
-                ConfigManager.configManager.getStringWithLang(player,
-                        "menu.bedrock.favourite-edit.title",
-                        "Edit Favourite: {item-name}",
-                        "item-name", resultButton.getItem().getDisplayName(player)))));
+                ConfigManager.configManager.getMenuRendererText(
+                    getMenu() == null ? null : getMenu().getConfig(),
+                    player, "form", "favourite-edit.title", "Edit Favourite: {item-name}", "item-name", resultButton.getItem().getDisplayName(player)))));
         builder.content(TextUtil.parse(player, CommonUtil.parseLang(player,
-                ConfigManager.configManager.getStringWithLang(player,
-                        "menu.bedrock.favourite-edit.content",
-                        "Choose how to edit this favourite entry.",
-                        "item-name", resultButton.getItem().getDisplayName(player),
-                        "index", String.valueOf(resultButton.getIndex() + 1)))));
+                ConfigManager.configManager.getMenuRendererText(
+                    getMenu() == null ? null : getMenu().getConfig(),
+                    player, "form", "favourite-edit.content", "Choose how to edit this favourite entry.", "item-name", resultButton.getItem().getDisplayName(player), "index", String.valueOf(resultButton.getIndex() + 1)))));
 
         ButtonComponent moveForward = ButtonComponent.of(TextUtil.parse(player,
-                ConfigManager.configManager.getStringWithLang(player, "menu.bedrock.favourite-edit.buttons.forward", "Move Forward")));
+                ConfigManager.configManager.getMenuRendererText(
+                    getMenu() == null ? null : getMenu().getConfig(),
+                    player, "form", "favourite-edit.buttons.forward", "Move Forward")));
         ButtonComponent moveBackward = ButtonComponent.of(TextUtil.parse(player,
-                ConfigManager.configManager.getStringWithLang(player, "menu.bedrock.favourite-edit.buttons.backward", "Move Backward")));
+                ConfigManager.configManager.getMenuRendererText(
+                    getMenu() == null ? null : getMenu().getConfig(),
+                    player, "form", "favourite-edit.buttons.backward", "Move Backward")));
         ButtonComponent remove = ButtonComponent.of(TextUtil.parse(player,
-                ConfigManager.configManager.getStringWithLang(player, "menu.bedrock.favourite-edit.buttons.remove", "Remove")));
+                ConfigManager.configManager.getMenuRendererText(
+                    getMenu() == null ? null : getMenu().getConfig(),
+                    player, "form", "favourite-edit.buttons.remove", "Remove")));
         ButtonComponent back = ButtonComponent.of(TextUtil.parse(player,
-                ConfigManager.configManager.getStringWithLang(player, "menu.bedrock.favourite-edit.buttons.back", "Back")));
+                ConfigManager.configManager.getMenuRendererText(
+                    getMenu() == null ? null : getMenu().getConfig(),
+                    player, "form", "favourite-edit.buttons.back", "Back")));
         builder.button(moveForward);
         builder.button(moveBackward);
         builder.button(remove);

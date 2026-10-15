@@ -1,6 +1,5 @@
 package cn.superiormc.ultimateshop.listeners;
 
-import cn.superiormc.ultimateshop.api.ShopHelper;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.HookManager;
 import cn.superiormc.ultimateshop.managers.LanguageManager;
@@ -16,7 +15,10 @@ import cn.superiormc.ultimateshop.objects.items.prices.ObjectPrices;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
 import cn.superiormc.ultimateshop.utils.MathUtil;
 import cn.superiormc.ultimateshop.utils.SchedulerUtil;
-import org.bukkit.block.*;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockState;
+import org.bukkit.block.Container;
+import org.bukkit.block.EnderChest;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
@@ -28,6 +30,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -94,8 +97,7 @@ public class SellStickListener implements Listener {
                 playerList.add(event.getPlayer());
                 for (String shop : ConfigManager.configManager.shopConfigs.keySet()) {
                     for (ObjectItem products : ConfigManager.configManager.getShop(shop).getProductListNotHidden(event.getPlayer())) {
-                        if (ConfigManager.configManager.getStringListOrDefault(event.getPlayer(), "menu.sell-all.ignore-items",
-                                "sell.sell-all.ignore-items").contains(shop + ";;" + products.getProduct())) {
+                        if (ConfigManager.configManager.getStringList(event.getPlayer(), "sell.sell-all.ignore-items").contains(shop + ";;" + products.getProduct())) {
                             continue;
                         }
                         ProductTradeStatus status = SellProductMethod.startSell(ItemStorage.of(inventory),
@@ -123,7 +125,7 @@ public class SellStickListener implements Listener {
                 if (!result.isEmpty()) {
                     BigDecimal finalMultiplier = originalTotal.compareTo(BigDecimal.ZERO) <= 0
                             ? BigDecimal.ONE
-                            : finalTotal.divide(originalTotal, 12, java.math.RoundingMode.HALF_UP);
+                            : finalTotal.divide(originalTotal, 12, RoundingMode.HALF_UP);
                     LanguageManager.languageManager.sendStringText(event.getPlayer(), "start-sell-stick",
                             "reward", ObjectPrices.getDisplayNameInLine(event.getPlayer(), 1,
                                     result, ThingMode.ALL, true),

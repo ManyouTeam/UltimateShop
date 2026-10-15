@@ -1,20 +1,17 @@
 package cn.superiormc.ultimateshop.commands;
 
 import cn.superiormc.ultimateshop.methods.ReloadPlugin;
-import cn.superiormc.ultimateshop.managers.LanguageManager;
-import org.bukkit.Bukkit;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
-import java.util.List;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 
 public class SubReload extends AbstractCommand {
 
     public SubReload() {
         this.id = "reload";
-        this.requiredPermission =  "ultimateshop." + id;
+        this.requiredPermission = "ultimateshop." + id;
         this.onlyInGame = false;
-        this.requiredArgLength = new Integer[]{1};
+        this.requiredArgLength = new Integer[] {1};
     }
 
     @Override
@@ -26,4 +23,5 @@ public class SubReload extends AbstractCommand {
     public void executeCommandInConsole(String[] args) {
         ReloadPlugin.reload(Bukkit.getConsoleSender());
     }
+
 }

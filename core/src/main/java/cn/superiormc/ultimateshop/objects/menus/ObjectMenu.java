@@ -22,22 +22,31 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
 import java.io.File;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.TreeSet;
 import java.util.function.BiConsumer;
 
 public class ObjectMenu {
 
-    public static final String COMMON_MENU_FOLDER = "menus";
+    public static final String COMMON_MENU_FOLDER = "menus/common_menus";
 
-    public static final String SHOP_MENU_TEMPLATE_FOLDER = "shop_menu_templates";
+    public static final String SHOP_MENU_TEMPLATE_FOLDER = "menus/shop_menu_templates";
 
-    public static final String BUY_MORE_MENU_FOLDER = "buy_more_menus";
+    public static final String BUY_MORE_MENU_FOLDER = "menus/buy_more_menus";
 
-    public static final String FAVOURITE_MENU_FOLDER = "favourite_menus";
+    public static final String FAVOURITE_MENU_FOLDER = "menus/favourite_menus";
 
-    public static final String SEARCH_MENU_FOLDER = "search_menus";
+    public static final String SEARCH_MENU_FOLDER = "menus/search_menus";
 
-    public static final String ITEM_SELL_MENU_FOLDER = "item_sell_menus";
+    public static final String ITEM_SELL_MENU_FOLDER = "menus/item_sell_menus";
 
     public MenuType type;
 
@@ -173,9 +182,9 @@ public class ObjectMenu {
 
         if (hasMenuFile) {
             File file = findMenuFile(menuFolder);
-            if (!file.exists()){
+            if (!file.exists()) {
                 TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §cError: We can not found your menu file: " +
-                        menuFolder + "/" + fileName + ".yml!");
+                    menuFolder + "/" + fileName + ".yml!");
             } else {
                 if (type == MenuType.Common) {
                     TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fLoaded menu: " + fileName + ".yml!");
@@ -184,6 +193,9 @@ public class ObjectMenu {
             }
         }
         applyShopMenuOverrides();
+        if (menuConfigs != null) {
+            ConfigManager.configManager.applyMenuUI(menuConfigs);
+        }
         if (menuConfigs == null) {
             this.condition = new ObjectCondition();
             this.openAction = new ObjectAction();
@@ -200,14 +212,15 @@ public class ObjectMenu {
             this.condition = new ObjectCondition(menuConfigs.getConfigurationSection("conditions"), shop);
             this.openAction = new ObjectAction(menuConfigs.getConfigurationSection("open-actions"));
             this.closeAction = new ObjectAction(menuConfigs.getConfigurationSection("close-actions"));
-            this.useGeyser = menuConfigs.getBoolean("bedrock.enabled", true);
+            this.useGeyser = true;
         }
-        if (UltimateShop.freeVersion || !UltimateShop.methodUtil.methodID().equals("paper") || !CommonUtil.getMinorVersion(21, 9) ||
-                !ConfigManager.configManager.getBoolean("menu.dialog.enabled")) {
-            this.useDialog = false;
-        } else {
-            this.useDialog = menuConfigs.getBoolean("dialog.enabled", true);
-        }
+        this.useGeyser = !UltimateShop.freeVersion
+            && ConfigManager.configManager.getMenuUIMode(menuConfigs, "bedrock").equals("form");
+        this.useDialog = !UltimateShop.freeVersion
+            && UltimateShop.methodUtil.methodID().equals("paper")
+            && CommonUtil.getMinorVersion(21, 9)
+            && Set.of("dialog", "ore").contains(
+                ConfigManager.configManager.getMenuUIMode(menuConfigs, "java"));
         this.dynamicLayout = menuConfigs.getBoolean("dynamic-layout", false) && !UltimateShop.freeVersion;
     }
 
@@ -391,6 +404,56 @@ public class ObjectMenu {
         return result;
     }
 
+    public Map<Integer, AbstractButton> getUiMenu(MenuSender sender) {
+        Map<Integer, AbstractButton> result = getMenu(sender);
+        int key = 10000;
+        List<AbstractButton> candidates = getUiCandidates();
+        for (AbstractButton button : candidates) {
+            int candidateKey = key++;
+            if (!result.containsValue(button) && button.isVisibleInMenu(sender.getPresentation()) && button.canDisplay(sender)) {
+                if (button instanceof ObjectItem item && shop != null && shop.getProductNotHidden(sender, item) == null) {
+                    continue;
+                }
+                result.put(candidateKey, button);
+            }
+        }
+        return result;
+    }
+
+    public Map<Integer, List<AbstractButton>> getPossibleUiButtons(String presentation) {
+        Map<Integer, List<AbstractButton>> result = getPossibleMenuButtons(presentation);
+        Set<AbstractButton> present = new HashSet<>();
+        result.values().forEach(present::addAll);
+        int key = 10000;
+        for (AbstractButton button : getUiCandidates()) {
+            int candidateKey = key++;
+            if (!present.contains(button) && button.isVisibleInMenu(presentation)) {
+                result.put(candidateKey, List.of(button));
+            }
+        }
+        return result;
+    }
+
+    private List<AbstractButton> getUiCandidates() {
+        List<AbstractButton> result = new ArrayList<>();
+        for (String id : new TreeSet<>(buttonItems.keySet())) {
+            AbstractButton button = buttonItems.get(id);
+            if (button.getButtonConfig() != null && button.getButtonConfig().contains("ui.placement")) {
+                result.add(button);
+            }
+        }
+        // Auxiliary menus retain their parent shop for trade context, but only
+        // shop menus should include products that are absent from the slot layout.
+        if (type == MenuType.Shop && shop != null) {
+            for (ObjectItem item : shop.getProductList()) {
+                if (!dynamicLayout || item.getButtonConfig().contains("ui.placement")) {
+                    result.add(item);
+                }
+            }
+        }
+        return result;
+    }
+
     public Map<Integer, List<AbstractButton>> getPossibleMenuButtons(String presentation) {
         Map<Integer, List<AbstractButton>> result = new TreeMap<>();
         MenuSender sender = MenuSender.of(null, presentation);
@@ -417,7 +480,9 @@ public class ObjectMenu {
                         candidates.add(button);
                         ConfigurationSection config = button.getButtonConfig();
                         if (config == null || !config.isConfigurationSection("display-conditions")
-                                || config.getConfigurationSection("display-conditions").getKeys(false).isEmpty()) break;
+                            || config.getConfigurationSection("display-conditions").getKeys(false).isEmpty()) {
+                            break;
+                        }
                     }
                 }
             }
@@ -439,23 +504,23 @@ public class ObjectMenu {
 
     private Map<Integer, AbstractButton> getNavigationButtons(MenuSender sender, boolean includeCommonMenus) {
         Map<Integer, AbstractButton> result = getMenu(sender);
+        String presentation = "arcmenu".equals(sender.getPresentation()) ? "arcmenu" : "dialog";
         result.entrySet().removeIf(entry -> {
             AbstractButton button = entry.getValue();
-            boolean visible = button.getButtonConfig() == null || button.getButtonConfig().getBoolean("dialog.enabled", true);
             return !(includeCommonMenus ? button.hasMenuNavigationAction() : button.hasShopMenuAction())
-                    || (includeCommonMenus && button.hasCloseAction()) || !button.canDisplay(sender)
-                    || !menuConfigs.getBoolean("dialog.slots." + entry.getKey() + ".enabled", visible);
+                || (includeCommonMenus && button.hasCloseAction()) || !button.canDisplay(sender)
+                || !button.isVisibleInMenu(presentation);
         });
         return result;
     }
 
     private boolean hasMenuVisibilitySettings() {
         if (buttonItems.values().stream().anyMatch(button -> button.getButtonConfig() != null
-                && button.getButtonConfig().contains("menu-visibility"))) {
+            && button.getButtonConfig().contains("ui.visible-in"))) {
             return true;
         }
         return shop != null && shop.getShopConfig().getKeys(true).stream()
-                .anyMatch(key -> key.equals("menu-visibility") || key.endsWith(".menu-visibility"));
+            .anyMatch(key -> key.endsWith("ui.visible-in"));
     }
 
     public ObjectCondition getCondition() {

@@ -1,7 +1,13 @@
 package cn.superiormc.ultimateshop.objects.menus;
 
-import cn.superiormc.ultimateshop.objects.buttons.*;
+import cn.superiormc.ultimateshop.objects.buttons.AbstractButton;
+import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
+import cn.superiormc.ultimateshop.objects.buttons.ObjectMoreButton;
+import cn.superiormc.ultimateshop.objects.buttons.ObjectMoreBuyButton;
+import cn.superiormc.ultimateshop.objects.buttons.ObjectMoreDisplayButton;
+
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.MemoryConfiguration;
 
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
@@ -43,11 +49,11 @@ public class ObjectMoreMenu extends ObjectMenu {
                 }
                 displayItemSlots.add(slot);
                 getButtons().put(slot, new ObjectMoreDisplayButton(
-                        null,
-                        paddingItemSection,
-                        item,
-                        index
-                ));
+                    displayUi(index),
+                    paddingItemSection,
+                    item,
+                    index
+                    ));
             });
             return;
         }
@@ -61,13 +67,25 @@ public class ObjectMoreMenu extends ObjectMenu {
             if (displayItem.equals(id)) {
                 displayItemSlots.add(slot);
                 getButtons().put(slot, new ObjectMoreDisplayButton(
-                        null,
-                        paddingItemSection,
-                        item,
-                        displayItemSlots.size() - 1
-                ));
+                    displayUi(displayItemSlots.size() - 1),
+                    paddingItemSection,
+                    item,
+                    displayItemSlots.size() - 1
+                    ));
             }
         });
+    }
+
+    private ConfigurationSection displayUi(int index) {
+        MemoryConfiguration result = new MemoryConfiguration();
+        ConfigurationSection configured = menuConfigs.getConfigurationSection("display-items-ui");
+        if (configured != null) {
+            configured.getValues(true).forEach(result::set);
+        }
+        if (index > 0) {
+            result.set("ui.placement.enabled", false);
+        }
+        return result;
     }
 
     private List<String> getConfiguredDisplayItems() {

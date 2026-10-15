@@ -9,10 +9,11 @@ import cn.superiormc.ultimateshop.managers.LanguageManager;
 import cn.superiormc.ultimateshop.objects.buttons.AbstractButton;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectButton;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectCopyItem;
+import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import cn.superiormc.ultimateshop.objects.menus.MenuSender;
 import cn.superiormc.ultimateshop.objects.menus.ObjectMenu;
-import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import cn.superiormc.ultimateshop.utils.TextUtil;
+
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.BukkitCommand;
 import org.bukkit.configuration.ConfigurationSection;
@@ -184,17 +185,19 @@ public class ObjectShop {
     }
 
     public ObjectItem getProductNotHidden(Player player, ObjectItem item) {
-        return getProductNotHidden(MenuSender.of(player), item);
+        String presentation = MenuSender.getOpeningPresentation(player);
+        return getProductNotHidden("arcmenu".equals(presentation)
+            ? MenuSender.of(player, presentation) : MenuSender.of(player), item);
     }
 
     public ObjectItem getProductNotHidden(MenuSender menuSender, ObjectItem item) {
         if (ConfigManager.configManager.getBoolean("secret-shop-items.require-meet-menu-open-conditions") &&
-                menu != null && menuSender.getPlayer() != null && !menu.getCondition().getAllBoolean(new ObjectThingRun(menuSender.getPlayer())) &&
-                config.getBoolean("settings.secret-shop-items", true)) {
+            menu != null && menuSender.getPlayer() != null && !menu.getCondition().getAllBoolean(new ObjectThingRun(menuSender.getPlayer())) &&
+            config.getBoolean("settings.secret-shop-items", true)) {
             return null;
         }
         if (ConfigManager.configManager.getBoolean("secret-shop-items.require-display-in-menu") &&
-                menu != null && !menu.getMenu(menuSender).containsValue(item) && config.getBoolean("settings.secret-shop-items", true)) {
+            menu != null && !menu.getMenu(menuSender).containsValue(item) && config.getBoolean("settings.secret-shop-items", true)) {
             return null;
         }
         return item;
@@ -223,14 +226,14 @@ public class ObjectShop {
     public List<ObjectItem> getProductListNotHidden(MenuSender sender) {
         List<ObjectItem> resultItems = new ArrayList<>();
         if (ConfigManager.configManager.getBoolean("secret-shop-items.require-meet-menu-open-conditions") &&
-                menu != null && sender.getPlayer() != null && !menu.getCondition().getAllBoolean(new ObjectThingRun(sender.getPlayer()))
-                && config.getBoolean("settings.secret-shop-items", true)) {
+            menu != null && sender.getPlayer() != null && !menu.getCondition().getAllBoolean(new ObjectThingRun(sender.getPlayer()))
+            && config.getBoolean("settings.secret-shop-items", true)) {
             return resultItems;
         }
         for (String key : items.keySet()) {
             ObjectItem item = items.get(key);
             if (ConfigManager.configManager.getBoolean("secret-shop-items.require-display-in-menu") &&
-                    menu != null && !menu.getMenu(sender).containsValue(item) && config.getBoolean("settings.secret-shop-items", true)) {
+                menu != null && !menu.getMenu(sender).containsValue(item) && config.getBoolean("settings.secret-shop-items", true)) {
                 continue;
             }
             resultItems.add(item);

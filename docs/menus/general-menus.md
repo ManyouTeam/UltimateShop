@@ -1,32 +1,81 @@
 # 🔲General Menus
 
-Menu files are separated by purpose:
+A menu defines what players see and how they navigate. A shop defines products, prices and trade rules. The same shop can use Inventory, Bedrock Form, native Dialog, Ore or ArcMenu without duplicating its products.
 
-* `/menus/`: common menus
-* `/shop_menu_templates/`: shop menu templates
-* `/buy_more_menus/`: buy more menus
-* `/favourite_menus/`: favourite menus
-* `/search_menus/`: search menus
-* `/item_sell_menus/`: menus where players place and confirm the sale of items
+This chapter documents the current bundled configuration. Start from the examples shipped with your build when migrating: old root `bedrock`/`dialog` settings and old graphical layouts are not automatically converted into the unified `ui` format.
 
-## Create the menu
+## Menu types and files
 
-Create a config file at `plugins/UltimateShop/menus/<menuID>.yml`:
+All paths below are relative to `plugins/UltimateShop/`. The file name without `.yml` is the menu ID. Keep IDs unique across the folders used by `/shop menu`.
 
-{% code title="PUT_MENU_ID_INTO_FILE_NAME.yml" %}
+| Type | Location | Purpose and entry point |
+| --- | --- | --- |
+| Common | `menus/common_menus/` | Navigation and custom action buttons; `/shop menu <id>` or `open_menu` |
+| Shop | `menus/shop_menu_templates/` | Products from the shop that opens it; shop configuration `settings.menu`, `/shop menu <shop>` or `shop_menu` |
+| Buy More | `menus/buy_more_menus/` | Quantity selection for an already selected product; `select-amount` or `buy_more_menu` action |
+| Search (Premium) | `menus/search_menus/` | Search visible products; `/shop menu <id>` |
+| Favourite (Premium) | `menus/favourite_menus/` | Saved products and editing; `/shop menu <id>` |
+| Item Sell | `menus/item_sell_menus/` | Place physical items, preview value, confirm sale; `/shop menu <id>` |
+| Sell All | `config.yml`: `menu.sell-all` | Deposit items and sell on close; `/shop sellall` |
+
+Search, Favourite and Item Sell files in their dedicated folders are loaded as that type. Files in `common_menus` can instead declare `menu-type: search`, `favourite` (alias `favorite`) or `item-sell` (alias `item_sell`). The legacy `menu.search-gui.menu` and `menu.favourite-gui.menu` lists also classify common-folder files. Shop templates and Buy More files need a shop/product context; they are not standalone common menus.
+
+## Choose the presentation
+
+Defaults in `config.yml`:
+
 ```yaml
-title: '{shop-name}'
-size: 18
+menu:
+  ui:
+    mode:
+      java: inventory
+      bedrock: form
+```
 
+Overrides in any menu file:
+
+```yaml
+ui:
+  mode:
+    java: inherit
+    bedrock: inherit
+```
+
+| Client | Modes | Requirements |
+| --- | --- | --- |
+| Java | `inventory` | Standard chest interface |
+| Java | `dialog` | Premium and supported Paper Dialog API; native multi-action or item-action-list |
+| Java | `ore` | Premium, supported Paper Dialog API and generated Ore resource pack |
+| Java | `arcmenu` | Premium, compatible ArcMenu plugin and client resources |
+| Bedrock | `inventory`, `form` | Form requires Premium and working Bedrock/Floodgate integration |
+
+`inherit` uses the global choice. Invalid mode values report an error and resolve to Inventory. Unsupported integrations/menu types also use their supported fallback. Item Sell and Sell All require Inventory because players deposit real items; choosing Form or ArcMenu does not turn them into graphical deposit screens.
+
+Use [Bedrock](bedrock-menus-premium.md), [Dialog/Ore](dialog-menus-premium.md) and [ArcMenu/shared graphical layout](arcmenu-menus-premium.md) for renderer options. Shared settings live in `menu.ui` globally and root `ui` in menu files. Missing menu settings inherit global values recursively. Bundled menus contain many explicit overrides: changing a global value does not replace an explicit menu value.
+
+## Create a common menu
+
+Save as `menus/common_menus/main.yml`:
+
+```yaml
+title: '&8Categories'
+content: 'Choose a category.'
+size: 18
 layout:
   - '000000000'
-  - '000D00X00'
-
+  - '000A0X000'
 buttons:
-  0:
+  A:
     display-item:
-      material: BLACK_STAINED_GLASS_PANE
-      name: ' '
+      material: WHEAT
+      name: '&aFarming'
+      bedrock:
+        icon: 'path;;textures/items/wheat.png'
+        extra-line: '&7Open the farming shop'
+    actions:
+      1:
+        type: shop_menu
+        shop: farming
   X:
     display-item:
       material: BARRIER
@@ -34,305 +83,173 @@ buttons:
     actions:
       1:
         type: close
-```
-{% endcode %}
-
-`D` is the product ID used under [shop](../shops/shops.md) config's `items` section. Menu layouts use one-character product IDs directly; advanced sub-buttons can represent the same product in additional slots or menus. For more info, please view [Layout Option](general-menus.md#layout-option).
-
-## Types
-
-There are 3 types of menus.
-
-* Common Menus: Just like other menu plugins doing. You can use them open other shop menus.
-* Shop Menus: Shop menus will display products in specified shop in it. The shop menu has all features of a common menu.&#x20;
-  * Set `menu` option to set their corresponding shop menu in shop configs.
-  * Or, use `menu-settings` directly in the shop configuration to set up a separate menu configuration exclusively for this shop.
-* Buy More Menus: Can select amount of you will buy or sell. This type of menus have more settings, please view [Buy More Menus](buy-more-menus.md) page to know more. **Buy more menu can only open from shop menus with selecting a product, it can not be directly opened**.
-
-## Configs
-
-* title: Menu title, for shop menu type, support `{shop-name}` to display shop displayname which set in it's config.
-* size: Menu size, only support one of the number: **9,18,27,36,45,54**. For detalied info, please view below.
-* layout: Button layout, this is a list option. For more info, please view below. For detalied info, please view below.
-
-{% hint style="warning" %}
-The `layout` option and `size` option must correspond. If your layout is based on **4x9** format, then your size must be set to **36**, otherwise the plugin will encounter errors.
-{% endhint %}
-
-* dynamic-layout: If you are using dynamic value like placeholders in `layout` option, you need enable this option. This will cost extra performance. <mark style="color:red;">**(PREMIUM)**</mark>
-* buttons: Button configs, button ID is being used in `layout` option to set where this button display in menu.
-* conditions: Only players who meet the conditions can open this menu, use [Condition Format](../format/condition-format.md) here.
-* open-actions: Do action when open this menu, use [Action Format](../format/action-format.md) here.
-* close-actions: Do action when close this menu, use [Action Format](../format/action-format.md) here. <mark style="color:red;">**Please carefully note that when you have already opened a menu, if you open other menus through actions or other means, it will also trigger close actions of the opened menu**</mark>**.**&#x20;
-* bedrock: Please view [Bedrock Menus](bedrock-menus-premium.md) page to know about it. <mark style="color:red;">**(PREMIUM)**</mark>
-* dialog: Please view [Dialog Menus](dialog-menus-premium.md) page to know about it. <mark style="color:red;">**(PREMIUM)**</mark>
-* custom-command: Custom Command settings for common menu, if you want to set custom command for shop menu, please add them at [Shops](../shops/shops.md) config. <mark style="color:red;">**(PREMIUM)**</mark>
-
-Example:
-
-```yaml
-title: 'Shop'
-
-size: 54
-
-bedrock:
-  enabled: true
-  content: '&fWelcome to shop.'
-  
-dialog:
-  enabled: true
-  content: '<gray>Select a category.'
-  button-width: 180
-  columns: 2
-  
-custom-command:
-  name: 'mineral'
-  description: 'Custom Words'
-
-conditions: 
-  1:
-    type: permission
-    permission: 'test.required'
-  
-open-actions:
-  1:
-    type: sound
-    sound: 'ui.button.click' 
-
-close-actions:
-  1:
-    type: sound
-    sound: 'ui.button.click' 
-
-dynamic-layout: false
-
-layout:
-  - '000000000'
-  - '000000000'
-  - '0000A0000'
-  - '000000000'
-  - '000000000'
-  - '000000000'
-
-buttons:
-  A:
-    display-item:
-      material: BREAD
-      name: '&dFoods'
-      lore:
-        - '&7Click to open food shop!'
-    actions:
-      1:
-        type: shop_menu
-        menu: 'example'
+ui:
+  mode:
+    java: inventory
+    bedrock: form
 ```
 
-For each button, we have those options:
+Open it with `/shop menu main` (`ultimateshop.menu`). Console can use `/shop menu main <player>`. `/shop menu <id> -b` bypasses opening conditions for Premium administrators with `ultimateshop.menu.admin`; console can also append `-b`. If a shop and standalone menu share the same ID, this command resolves the shop first. `0` is empty here because no button has that ID. Define button `0` if you want a decorative filler. Form omits blank-name fillers. To use this menu in Ore/ArcMenu, add graphical placements as described on the graphical layout page.
 
-* display-item: The display item of this button, should use [Display Item Format](../format/display-item-format.md).
-* actions: The action will executed after we click this button. Use [Action Forma](../format/action-format.md)[t](../format/action-format.md) here.
-* fail-actions: The action will executed if we don't meet the condition of this button. Use [Action Forma](../format/action-format.md)[t](../format/action-format.md) here.
-* conditions: The condition of this button, if player don't meet this condition, then we will execute the `fail-action`. Use [Condition Format](../format/condition-format.md) here.
+## Common menu configuration
 
-## Layout Option
+| Key | Meaning |
+| --- | --- |
+| `menu-type` | Optional type selector for files in the common folder; dedicated folders already determine their type |
+| `title` | Menu title; supports language references and placeholders; shop templates support `{shop-name}` |
+| `content` | Shared body/header text for Form, Dialog and graphical headers; not a chest inventory slot |
+| `size` | Inventory slots: `9`, `18`, `27`, `36`, `45`, `54` |
+| `layout` | Ordered list of slot IDs; nine slots per row, matching `size`; also identifies entries/result capacity for list presentations |
+| `dynamic-layout` | Premium; resolve placeholders and conditional alternatives when obtaining the layout; defaults to false |
+| `buttons.<id>` | Ordinary buttons; use their IDs in the layout |
+| `conditions` | Requirements to open the menu; [Condition Format](../format/condition-format.md) |
+| `open-actions` | [Actions](../format/action-format.md) executed on opening; individual actions can use `open-once` |
+| `close-actions` | Actions executed when leaving the menu, including navigation to another menu |
+| `custom-command.name` | Premium; register a command for this common menu |
+| `custom-command.description` | Description of that command; shop commands belong in the shop configuration |
+| `ui.mode` | Client presentation selection |
+| `ui.renderers` | Settings specific to Inventory, Form, Dialog, Ore or ArcMenu |
+| `ui.layout`, `ui.theme`, `ui.text` | Graphical canvas/areas, appearance and interface labels |
+| `ui.products` | Shared product actions, price text, card style and placement |
 
-The menu and shop feature in the plugin are separate, and their configurations are stored in the menus folder and shops folder respectively.
+Special menu types add the keys documented on their own pages; do not place product prices in common menu buttons.
 
-* To know more info about menu feature, please read the **Menus** chapter.
-* To know more info about menu feature, please read the **Shops** chapter.
-* To know more info about the effect of other folder, please read the [Configuration files](../info/configuration-files.md) page.
+## Button configuration
 
-The following is a sample configuration file for a shop:
+| Key inside `buttons.<id>` | Meaning |
+| --- | --- |
+| `display-item` | Icon, name, lore and item metadata; [Display Item Format](../format/display-item-format.md) |
+| `display-conditions` | Premium; whether this entry is displayed |
+| `conditions` | Requirements checked when the player clicks |
+| `actions` | Actions run when click conditions pass |
+| `fail-actions` | Actions run when click conditions fail |
+| `ui.visible-in` | Presentations allowed to show this entry |
+| `ui.placement` | Graphical placement for Ore/ArcMenu |
+| `ui.appearance` | Graphical `button` or `card` |
+| `ui.font-size`, `ui.text-align` | Graphical button font scale and `left`/`center`/`right` alignment |
+| `ui.show-sprite` | Override the native Dialog sprite choice |
+| `ui.renderers.dialog.layout` | Per-button native Dialog layout override, including `item-action-list` |
+| `display-item.bedrock` | Form icon, extra line and hiding; see the Bedrock reference |
+
+A click condition does not hide a button. Use a display condition for visibility. Product entries have their own trade and click settings; see [Products](../shops/products.md) and [custom click events](../features/custom-click-event-premium.md).
+
+## Shop templates and inline overrides
+
+A shop in `shops/farming.yml` can select a reusable template:
 
 ```yaml
-# This is a shop config exist in /shops/ folder.
 settings:
-  menu: 'example-shop-menu'
+  shop-name: '&aFarming'
+  menu: example-shop-menu
   buy-more: true
-  shop-name: 'Blocks Shop'
-  hide-message: false
-
 items:
   A:
-    # ...
-  B:
-    # ...
-  C:
-    # ...
+    # Define the product, prices and display here.
 ```
 
-In there you’ll find the `settings.menu` option, which is crucial because it’s the central hub that connects your shop and menu. In this example, we set it to `example-shop-menu`.
+`menus/shop_menu_templates/example-shop-menu.yml` then uses product ID `A` in its layout. Ordinary navigation buttons can be defined in the template or shop. The template provides presentation, while the opening shop provides products. Use `shop: farming` with the `shop_menu` action; `open_menu` opens a standalone menu ID.
 
-You should be find the menu file at the `menus` folder, it will called `example-shop-menu.yml`.
+For a menu exclusive to one shop, put menu settings under `settings.menu-settings` in the shop file. This also overrides values of a selected template:
 
-<pre class="language-yaml"><code class="lang-yaml"># This is a menu config exist in /menus/ folder.
-title: '{shop-name}'
-size: 54
-
-layout:
-  - '000000000'
-  - '0ABCDEFG0'
-  - '0HIJKLMN0'
-  - '0OPQRSTU0'
-  - '000000000'
-  - 'a0003000b'
-
-buttons:
-<strong>  # ...
-</strong></code></pre>
-
-Also, you can set up a separate menu configuration for this shop through the `menu-settings` option in shop configs, for example:
-
-<pre class="language-yaml"><code class="lang-yaml"><strong># This is a shop config exist in /shops/ folder.
-</strong><strong>settings:
-</strong>  shop-name: 'Example Shop'
-  # Override menu config for this shop.
+```yaml
+settings:
+  shop-name: 'Farming'
+  menu: example-shop-menu
   menu-settings:
     title: '{shop-name}'
-    size: 18
-    dynamic-layout: false
-    layout:
-      - '000000000'
-      - '0ABCDEFG0'
-    buttons:
-      3:
-        display-item:
-          material: ARROW
-          name: '{lang:back-button}'
-</code></pre>
+    content: 'Fresh supplies'
+    ui:
+      mode:
+        java: arcmenu
+```
 
-Among them, the `layout` option is crucial, as it determines where your products or buttons will be displayed. You will find that it consists of **6x9** characters, with each character corresponding to a slot in the Minecraft chest inventory. The characters entered in the corresponding position represent the items or buttons with the corresponding ID that we will display.
+## Layout option
 
-In this example:
+Each ordinary character is one slot. Rows are read left to right, top to bottom. Slots use zero-based numbering where a setting requests a slot number. For an 18-slot menu, provide two nine-slot rows.
 
-* Actually, since there is no product or button with an ID of `0`, nothing will be displayed in the slot with a character of `0`.
-* If the shop using this menu has products with IDs `A, B, C, D, etc`., the corresponding products will be displayed in the corresponding slots.
-* The same goes for buttons. I forgot to tell you that you can set custom buttons not only in the menu configuration file, but also in the shop configuration file.
-* If you change the value of the `size` option, don't forget to remove the extra lines in the `layout` option. For example, if you set the value of the size option to **36**, then the character composition of the layout option is **4x9**.
-
-You can also use multiple characters to represent slots, in which case you need to use `` ` `` symbols to separate these multiple characters for the plugin to recognize them. For example:
+Multi-character IDs use backtick delimiters and still occupy one slot:
 
 ```yaml
 layout:
   - '000000000'
-  - '0`b1``b2``b3``b4``b5``b6``b7`0'
-  - '0HIJKLMN0'
-  - '0OPQRSTU0'
-  - '000000000'
-  - 'a0003000b'
+  - '0`food_buy``food_sell`000000'
 ```
 
-with this shop or button configs:
+That second row contains nine slots. Define `food_buy` and `food_sell` under `buttons`, or use matching shop product/sub-button IDs. IDs are case-sensitive. An undefined ID leaves an empty slot.
 
-```yaml
-items: # or buttons:
-  b1: # Product ID
-    price-mode: CLASSIC_ALL
-    product-mode: CLASSIC_ALL
-    products: 
-      #...
-    sell-prices:
-      #...
-  b2:
-    #...
-  b3:
-    #...
-  b4:
-    #...
-  b5:
-    #...
-  b6:
-    #...
-  b7:
-    #...
-```
-
-You can also use conditional display in `layout` option, for more info, please view [Conditional Display](conditional-display-premium.md) page.
-
-## Dynamic Layout <mark style="color:red;">- Premium</mark>
-
-You can even also use PlaceholderAPI or built-in placeholder value in `layout` option, but you need enable `dynamic-layout` option in menu configs. Like:
+[Conditional display](conditional-display-premium.md) supports alternatives such as `` `A||B||C` ``. Premium dynamic layouts also support placeholder values:
 
 ```yaml
 dynamic-layout: true
-
 layout:
   - '000000000'
-  # Using random placeholder here!
-  - '0`{random_daily;;1}``{random_daily;;2}``b3``b4``b5``b6``b7`0'
-  - '0HIJKLMN0'
-  - '0OPQRSTU0'
-  - '000000000'
-  - 'a0003000b'
+  - '0`{random_daily;;1}`0000000'
 ```
 
-## Title Update <mark style="color:red;">- Premium, Require Paper</mark>
-
-Require your server install both **packetevents and MythicChanger** plugin in your server, only support for Paper server users.
-
-Set `menu.title-update.enabled` option value to `true`, then set  `menu.title-update.click-update` or `menu.title-update.circle-update` option value to `true` in `config.yml` file to active title update feature. After enable, after each click button in menu, the title will be updated, very useful for display placeholder in title and then auto update value fater each click or every second auto update.
-
-```yaml
-  # PREMIUM version only, if enabled, can update dynamic value used in GUI title.
-  title-update:
-    enabled: true # <--- Set it to true
-    # Whether gui title will refresh every buttons every 1 second.
-    # This will refresh placeholder that displayed in menu title.
-    circle-update: false
-    # Whether gui title will refresh every buttons when click any of them.
-    # This will refresh placeholder that displayed in menu title.
-    click-update: true # <--- Set it to true
-    resend-items-pack: false
-```
-
-The Minecraft client itself does not support changing the title of a container after opening it, so you will see items flashing and quickly reappearing, which cannot be solved. You can try enable `menu.title-update.resend-items-pack` value to `true` in `config.yml` file. This will only slightly alleviate the situation.
-
-## All Buttons Update
-
-Set whether keep trying to refresh the button display in the GUI after the player opens it. Find those content at `config.yml` file. Do not recommend enable it as it will cost more performance.
-
-If you just want us trying to refresh the product button when we reset buy or sell times of it, you can use `use-times.auto-reset-mode` option instead. That option can help you filter out all button displays that only refresh when reset occurs, thereby saving server performance.
-
-```yaml
-  menu-update:
-    # Whether menu will refresh every buttons every 1 second.
-    # This will refresh placeholder that displayed in display item lore.
-    # But maybe lead to server lag if you have much online players, and they are all opening shop GUI.
-    circle-update: false
-    # Whether menu will refresh every buttons when click any of them.
-    # This will refresh placeholder that displayed in display item lore.
-    # But maybe lead to server lag if you have much online players, and they are all opening shop GUI.
-    click-update: false
-```
+Keep the resolved slot count consistent with `size`. Graphical presentations use `ui.layout` and placements for coordinates; root `layout` still identifies menu entries and special markers.
 
 ## Button visibility by menu presentation
 
-Configure `menu-visibility` inside an existing button to select which menu presentations display it. Unspecified settings default to `true`. These settings apply to menu layout buttons and shop product buttons; existing display conditions still apply. No `dynamic-layout` setting is required for presentation visibility, and `A||B` candidates are checked before choosing the button for a slot.
-
 ```yaml
-buttons:
-  A:
-    menu-visibility:
-      inventory: true
-      form: true
-      dialog: false
-      item-action-list: true
-      ore: true
-    display-item:
-      material: WHEAT
-      name: 'Farming'
-    actions:
-      1:
-        type: shop_menu
-        shop: farming
+ui:
+  visible-in: [inventory, form, dialog, ore, arcmenu]
 ```
 
-| Key | Menu presentation |
-| --- | --- |
-| `inventory` | Java inventory/chest menu |
-| `form` | Bedrock Form menu |
-| `dialog` | Ordinary Java Dialog; also the default for other Dialog presentations |
-| `item-action-list` | Java Dialog with item icons and action labels |
-| `ore` | Java Ore Dialog, including imported shop buttons in its sidebar |
+Set this inside a button/product, not at menu root. `dialog` includes native multi-action and item-action-list; `ore` is separate. An empty list hides an entry everywhere. Removing the list restores default visibility. The removed `menu-visibility` fallback is not read. Display conditions still apply. No dynamic layout is needed for `ui.visible-in`.
 
-`ore` and `item-action-list` inherit `dialog` when their own setting is omitted. An explicit setting overrides that inherited value: the example hides the button in ordinary Dialogs while keeping it visible in Ore and item-action-list Dialogs. Visibility follows the menu presentation being displayed.
+`ui.placement.enabled: false` disables graphical placement only. Bedrock's display-item `bedrock.hide` only hides the Form button. Lore presentation conditions are separate; see [Display Item Add Lore](display-item-add-lore.md).
+
+## Global menu controls in config.yml
+
+These settings are under `menu`, outside `menu.ui`:
+
+| Path | Meaning |
+| --- | --- |
+| `auto-open.enabled` | Allow bare `/shop` to open the configured target |
+| `auto-open.menu` | Menu/shop ID opened by bare `/shop`, normally `main` |
+| `anti-dupe-checker` | Additional Inventory GUI item checks; see the shipped configuration for the default |
+| `prompt.cancel-keyword` | Keyword to cancel chat input; `{lang}` uses the language setting |
+| `cooldown.click` | Menu click cooldown in ticks, also used by ArcMenu; `-1` disables it |
+| `cooldown.reopen` | Menu reopen cooldown in ticks, also used by ArcMenu; `-1` disables it |
+| `ignore-click-outside` | Ignore Inventory clicks outside the window |
+| `title-update.enabled` | Premium; enable Inventory title updates using PacketEvents on supported Paper |
+| `title-update.circle-update` | Refresh title periodically |
+| `title-update.click-update` | Refresh title on clicks |
+| `title-update.resend-items-pack` | Resend items after title changes to reduce visual flashing |
+| `menu-update.circle-update` | Refresh Inventory button display periodically |
+| `menu-update.click-update` | Refresh Inventory button display on clicks |
+| `sell-all` | Deposit-and-close sale configuration; [Sell All](sell-all-menu.md) |
+| `search-gui.menu`, `search-gui.prompt.clear-keyword` | Legacy search classification list and chat clear keyword |
+| `favourite-gui.menu` | Legacy favourite classification list |
+| `buy-more-menu` | Default quantity menus and maximum amount; [Buy More](buy-more-menus.md) |
+| `click-event` | Product action ID to Bukkit click type mapping; `NEVER` disables a binding |
+| `click-event-actions` | Custom product action definitions, labels and buy/sell restrictions |
+
+A typical binding section is:
+
+```yaml
+menu:
+  click-event:
+    buy: SHIFT_LEFT
+    sell: RIGHT
+    buy-or-sell: LEFT
+    select-amount: SHIFT_RIGHT
+    add-favourite: SWAP_OFFHAND
+    sell-all: DROP
+```
+
+A binding may contain several Bukkit click names separated by `;;`, for example `LEFT;;SHIFT_LEFT`. Custom IDs under `click-event-actions.<id>` define `display-name`, optional `buy-only`/`sell-only`, and numbered Action Format entries. Product action lists only expose custom operations that have an available click binding. Products and sub-buttons may override click bindings. Shared `ui.products.actions` selects which available actions appear in Form/Dialog/graphical interfaces; it does not create an unbound action. See [custom click events](../features/custom-click-event-premium.md) for `click-event-actions` definitions.
+
+<a id="all-buttons-update"></a>
+<a id="title-update-premium"></a>
+<a id="title-update-premium-require-paper"></a>
+
+Periodic refresh resolves dynamic text repeatedly and costs more work with many open menus. Keep it disabled unless needed; `use-times.auto-reset-mode` can handle stock-reset refresh separately. Inventory title refresh can flash on the client. ArcMenu refresh has its own renderer interval. Only `menu.menu-update.circle-update` and `menu.menu-update.click-update` control button refresh; removed `menu.shop` refresh aliases are not read.
+
+`ui.renderers.inventory` is currently reserved and should stay empty (`{}`). Configure Inventory `size`, `layout` and `title` at menu root. Inheritance fills missing values only inside `ui`; renderer values are not copied into root menu fields.
+
+## Editing and troubleshooting
+
+The Premium [in-game editor](../features/in-game-editor-premium.md) exposes menu type and UI presets. You can also edit YAML and run `/shop reload`. Regenerate/reload the Ore resource pack after changing graphical assets or layout.
+
+For a missing entry, check the ID, layout marker, display condition, `ui.visible-in`, Form blank-name/hide rules and graphical placement. For an unexpected renderer, check both global and per-menu modes and the type's supported interfaces. For unchanged appearance, check explicit settings in the menu before changing global defaults again.

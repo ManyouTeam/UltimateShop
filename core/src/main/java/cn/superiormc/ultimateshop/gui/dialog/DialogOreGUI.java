@@ -1,18 +1,16 @@
 package cn.superiormc.ultimateshop.gui.dialog;
 
 import cn.superiormc.ultimateshop.UltimateShop;
-import cn.superiormc.ultimateshop.api.ShopHelper;
 import cn.superiormc.ultimateshop.gui.DialogGUI;
+import cn.superiormc.ultimateshop.gui.MenuUILayout;
+import cn.superiormc.ultimateshop.gui.ProductUIModel;
 import cn.superiormc.ultimateshop.managers.CacheManager;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.DialogPackManager;
 import cn.superiormc.ultimateshop.managers.ErrorManager;
 import cn.superiormc.ultimateshop.managers.LanguageManager;
-import cn.superiormc.ultimateshop.managers.MenuStatusManager;
-import cn.superiormc.ultimateshop.methods.ModifyDisplayItem;
 import cn.superiormc.ultimateshop.objects.ObjectShop;
 import cn.superiormc.ultimateshop.objects.ObjectThingRun;
-import cn.superiormc.ultimateshop.objects.actions.ObjectSingleAction;
 import cn.superiormc.ultimateshop.objects.buttons.AbstractButton;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import cn.superiormc.ultimateshop.objects.buttons.subobjects.ObjectDisplayItemStack;
@@ -24,11 +22,8 @@ import cn.superiormc.ultimateshop.objects.dialog.ObjectDialogWidget;
 import cn.superiormc.ultimateshop.objects.menus.MenuSender;
 import cn.superiormc.ultimateshop.objects.menus.ObjectMenu;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
-import cn.superiormc.ultimateshop.objects.dialog.DialogLayoutUtil;
 import cn.superiormc.ultimateshop.utils.ItemUtil;
-import cn.superiormc.ultimateshop.utils.TextUtil;
 
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 
@@ -43,6 +38,8 @@ public class DialogOreGUI extends DialogGUI {
     private final ObjectShop shop;
 
     private final boolean bypass;
+
+    private int page;
 
     public DialogOreGUI(Player player, ObjectMenu menu, ObjectShop shop, boolean bypass) {
         super(player);
@@ -59,222 +56,270 @@ public class DialogOreGUI extends DialogGUI {
         }
         try {
             constructOreGUI();
+            if (dialog == null) {
+                dialog =
+                    DialogView.builder(menu.getString("title", ""))
+                    .body("Invalid UI configuration: " + menu.getName())
+                    .action(
+                    DialogAction.of(
+                    "ui_error_close",
+                    ConfigManager.configManager.getMenuRendererText(
+                        getMenu() == null ? null : getMenu().getConfig(),
+                        player, "dialog", "default-button", ""),
+                    response -> closeGUI()))
+                    .build();
+            }
         } catch (IllegalArgumentException exception) {
-            ErrorManager.errorManager.sendErrorMessage("§cInvalid Ore Dialog in " + menu.getName() + ": " + exception.getMessage());
-            dialog = DialogView.builder(menu.getString("title", ""))
-                    .body("Invalid Dialog layout: " + menu.getName())
-                    .action(DialogAction.of("ore_close", getDialogText("default-button"), response -> closeGUI())).build();
+            ErrorManager.errorManager.sendErrorMessage(
+                "§cInvalid Ore Dialog in " + menu.getName() + ": " + exception.getMessage());
+            dialog =
+                DialogView.builder(menu.getString("title", ""))
+                .body("Invalid Dialog layout: " + menu.getName())
+                .action(
+                DialogAction.of(
+                "ore_close",
+                ConfigManager.configManager.getMenuRendererText(
+                    getMenu() == null ? null : getMenu().getConfig(),
+                    player, "dialog", "default-button", ""),
+                response -> closeGUI()))
+                .build();
         }
     }
 
     private boolean canDisplayMenu() {
         if (CacheManager.cacheManager.getObjectCache(player) == null) {
-            LanguageManager.languageManager.sendStringText(player, "error.player-not-found", "player", player.getName());
+            LanguageManager.languageManager.sendStringText(
+                player, "error.player-not-found", "player", player.getName());
             return false;
         }
         if (!bypass && !menu.getCondition().getAllBoolean(new ObjectThingRun(player))) {
-            LanguageManager.languageManager.sendStringText(player, "menu-condition-not-meet", "menu", menu.getName());
+            LanguageManager.languageManager.sendStringText(
+                player, "menu-condition-not-meet", "menu", menu.getName());
             return false;
         }
         return true;
     }
 
     private void constructOreGUI() {
-        ObjectDialogScreen screen = new ObjectDialogScreen(menu.getInt("dialog.width", 576), menu.getInt("dialog.height", 396));
+        MenuUILayout layout = new MenuUILayout(menu.getConfig());
+        if (!layout.isValid()) {
+            return;
+        }
+        ObjectDialogScreen screen = new ObjectDialogScreen(layout.getWidth(), layout.getHeight());
         String title = menu.getString("title", shop == null ? "" : shop.getShopDisplayName());
         if (shop != null) {
-            title = title.replace("{shop-name}", shop.getShopDisplayName()).replace("{shop-id}", shop.getShopName());
+            title =
+                title.replace("{shop-name}", shop.getShopDisplayName())
+                .replace("{shop-id}", shop.getShopName());
         }
-        DialogView.Builder builder = DialogView.builder(CommonUtil.parseLang(player, title)).layout("ore").keepOpenAfterAction(true);
-        builder.buttonWidth(menu.getInt("dialog.button-width", 150));
-        builder.columns(menu.getInt("dialog.columns", 2));
-        String content = menu.getString("dialog.content", menu.getString("bedrock.content", ""));
-        if (!content.isEmpty()) {
-            builder.body(content);
-        }
-        List<Map.Entry<Integer, AbstractButton>> products = new ArrayList<>();
-        int buttonIndex = 0;
-        boolean hasClose = false;
-        for (Map.Entry<Integer, AbstractButton> entry : menu.getMenu(MenuSender.of(player, "ore")).entrySet()) {
+        DialogView.Builder builder =
+            DialogView.builder(CommonUtil.parseLang(player, title))
+            .layout("ore")
+            .keepOpenAfterAction(true);
+        Map<Integer, AbstractButton> buttons = menu.getUiMenu(MenuSender.of(player, "ore"));
+        List<MenuUILayout.Entry> entries = new ArrayList<>();
+        for (var entry : buttons.entrySet()) {
             AbstractButton button = entry.getValue();
-            if (!button.canDisplay(MenuSender.of(player, "ore"))) {
+            if (button.isVisibleInMenu("ore") && button.canDisplay(MenuSender.of(player, "ore"))) {
+                entries.add(
+                    new MenuUILayout.Entry(
+                    entry.getKey(),
+                    button.getButtonConfig(),
+                    button instanceof ObjectItem));
+            }
+        }
+        List<MenuUILayout.Element> elements = layout.arrange(entries);
+        if (!layout.isValid()) {
+            return;
+        }
+        int pages =
+            Math.max(
+            1,
+            elements.stream().mapToInt(MenuUILayout.Element::page).max().orElse(0) + 1);
+        page = Math.min(page, pages - 1);
+        ProductUIModel controls = new ProductUIModel(menu, player);
+        for (MenuUILayout.Element element : elements) {
+            if (element.page() >= 0 && element.page() != page) {
                 continue;
             }
-            boolean visible = button.getButtonConfig() == null || button.getButtonConfig().getBoolean("dialog.enabled", true);
-            if (!menu.menuConfigs.getBoolean("dialog.slots." + entry.getKey() + ".enabled", visible)) {
-                continue;
-            }
-            if (button instanceof ObjectItem) {
-                products.add(entry);
-                continue;
-            }
+            AbstractButton button = buttons.get(element.slot());
             ObjectDisplayItemStack display = button.getDisplayItem(player, 1);
+            String id = "ui_slot_" + element.slot();
             String name = ItemUtil.getItemName(display.getItemStack());
-            if (ChatColor.stripColor(TextUtil.parse(name)).isBlank()) {
-                continue;
+            List<String> lore =
+                display.getMeta() == null
+            ? List.of()
+            : UltimateShop.methodUtil.getItemLore(display.getMeta());
+            if (lore == null) {
+                lore = List.of();
             }
-            boolean close = button.hasCloseAction();
-            String id = "ore_slot_" + entry.getKey();
-            List<String> lore = display.getMeta() == null ? null : UltimateShop.methodUtil.getItemLore(display.getMeta());
-            if (!close) {
-                ObjectDialogTemplate template = getTemplate(DialogLayoutUtil.getTemplateName(menu.menuConfigs, entry.getKey(), button.getButtonConfig(), "button"));
-                int[] position = getPosition(entry.getKey(), button, 12,
-                        DialogLayoutUtil.getButtonY(menu.menuConfigs, buttonIndex));
-                screen.ensureHeight(position[1] + template.getHeight() + 9);
-                screen.addWidget(new ObjectDialogWidget(template, position[0], position[1], name,
-                        lore == null ? List.of() : lore, id, "", false, null, isCurrentMenuButton(button))
-                        .withShowSprite(button.getShowSprite()));
-            }
-            builder.action(DialogAction.of(id, name, lore == null || lore.isEmpty() ? null : String.join("\n", lore), response -> {
-                boolean allowed = canDisplayMenu() && button.canDisplay(MenuSender.of(player, "ore"));
-                closeGUI();
-                if (allowed) {
-                    button.clickEvent(ClickType.LEFT, player);
+            List<ObjectDialogWidget.ToolbarAction> toolbar = new ArrayList<>();
+            boolean product = button instanceof ObjectItem;
+            if (button instanceof ObjectItem item) {
+                ObjectCache cache = CacheManager.cacheManager.getObjectCache(player);
+                ObjectUseTimesCache uses = cache.getUseTimesCache(item);
+                if (uses != null) {
+                    uses.refreshTimes();
                 }
-            }).withShowSprite(button.getShowSprite()));
-            hasClose |= close;
-            if (!close) {
-                buttonIndex++;
+                lore = controls.getLore(item, "ore");
+                for (ProductUIModel.Action action : controls.getPrimaryActions(item)) {
+                    String actionId = id + "_" + action.id();
+                    toolbar.add(new ObjectDialogWidget.ToolbarAction(actionId, action.label()));
+                    builder.action(
+                        DialogAction.of(
+                        actionId,
+                        action.label(),
+                        response -> {
+                            if (canDisplayMenu()
+                                && item.isVisibleInMenu("ore")
+                                && item.canDisplay(MenuSender.of(player, "ore"))) {
+                                action.execute(item, player);
+                                updateGUI();
+                            }
+                        }));
+                }
+                toolbar.add(new ObjectDialogWidget.ToolbarAction(id, ConfigManager.configManager.getMenuRendererText(
+                    getMenu() == null ? null : getMenu().getConfig(),
+                    player, "dialog", "details", "")));
             }
-        }
-        if (!hasClose) {
-            String name = getDialogText("default-button");
-            builder.action(DialogAction.of("ore_close", name, response -> closeGUI()));
-        }
-        addShopSidebar(screen, builder);
-        List<int[]> positions = getProductPositions(screen, getTemplate(menu.getString("dialog.products.template", "product")), products.size());
-        for (int i = 0; i < products.size(); i++) {
-            Map.Entry<Integer, AbstractButton> entry = products.get(i);
-            ObjectItem item = (ObjectItem) entry.getValue();
-            int index = i;
-            int[] fallback = index < positions.size() ? positions.get(index) : new int[]{-1, -1};
-            int[] position = getPosition(entry.getKey(), item, fallback[0], fallback[1]);
-            ObjectDialogTemplate template = getTemplate(DialogLayoutUtil.getTemplateName(menu.menuConfigs, entry.getKey(), item.getButtonConfig(), menu.getString("dialog.products.template", "product")));
-            refreshProduct(item);
-            String id = "ore_product_" + entry.getKey();
-            String name = item.getDisplayName(player, false);
-            var displayItem = item.getDisplayItemObject().getDisplayItem(player);
-            screen.addWidget(new ObjectDialogWidget(template, position[0], position[1], name,
-                    ModifyDisplayItem.getModifiedLore(player, 1, item, false, true, "general", "ore"), id, CommonUtil.modifyString(player,
-                    ConfigManager.configManager.getString("menu.dialog.details", "{lang:menu.dialog.details}")), true,
-                    DialogPackManager.showsItemIcon() ? displayItem.getSprite() : null,
-                    false, ShopHelper.getProductInfoContent(player, item,
-                            item.getDefaultBuyAmount(), item.getDefaultSellAmount(), "ore-hover"),
-                    String.valueOf(displayItem.getItemStack().getAmount())).withShowSprite(item.getShowSprite()));
-            builder.action(DialogAction.of(id, name, response -> {
-                boolean allowed = canDisplayMenu() && item.getShopObject().getProductNotHidden(player, item) != null;
-                closeGUI();
-                if (allowed) {
-                    if (ConfigManager.configManager.hasBedrockClickEvent(item, player)) {
-                        item.clickEvent(ClickType.LEFT, player);
-                    } else {
-                        new DialogInfoGUI(player, item, null, this::updateGUI).openGUI(true);
+            ObjectDialogTemplate template =
+                ObjectDialogTemplate.fromUi(
+                menu.getConfig(), element, button.getButtonConfig());
+            if (!template.isValid()) {
+                return;
+            }
+            screen.addWidget(
+                new ObjectDialogWidget(
+                template,
+                element.bounds().x(),
+                element.bounds().y(),
+                name,
+                lore,
+                id,
+                product ? ConfigManager.configManager.getMenuRendererText(
+                    getMenu() == null ? null : getMenu().getConfig(),
+                    player, "dialog", "details", "") : "",
+                product,
+                DialogPackManager.showsItemIcon()
+                && element.appearance().equals("card")
+                ? display.getSprite()
+                : null,
+                false,
+                product
+                ? controls.getHoverLore(
+                (ObjectItem) button, "ore-hover")
+                : lore)
+                .withShowSprite(button.getShowSprite())
+                .withToolbar(toolbar));
+            builder.action(
+                DialogAction.of(
+                id,
+                name,
+                response -> {
+                    if (!canDisplayMenu()
+                        || !button.isVisibleInMenu("ore")
+                        || !button.canDisplay(MenuSender.of(player, "ore"))) {
+                        return;
                     }
-                }
-            }));
+                    closeGUI();
+                    if (button instanceof ObjectItem item) {
+                        new DialogInfoGUI(
+                            player,
+                            item,
+                            null,
+                            () -> openGUI(true),
+                            controls.getExtraActions(item))
+                            .openGUI(true);
+                    } else {
+                        button.clickEvent(ClickType.LEFT, player);
+                    }
+                }));
         }
-        dialog = builder.screen(screen).build();
+        addHeader(layout, screen, title);
+        if (pages > 1) {
+            for (MenuUILayout.Element element : layout.getPaginationElements()) {
+                String key = element.area().substring(11);
+                String text =
+                    key.equals("indicator")
+                ? (page + 1) + " / " + pages
+                : key.equals("previous") ? "<" : ">";
+                String id = key.equals("indicator") ? "" : element.area();
+                screen.addWidget(
+                    new ObjectDialogWidget(
+                    ObjectDialogTemplate.fromUi(menu.getConfig(), element),
+                    element.bounds().x(),
+                    element.bounds().y(),
+                    text,
+                    List.of(),
+                    id,
+                    "",
+                    false));
+                if (!id.isEmpty()) {
+                    builder.action(
+                        DialogAction.of(
+                        id,
+                        text,
+                        response -> {
+                            page =
+                                Math.max(
+                                0,
+                                Math.min(
+                                pages - 1,
+                                page
+                                + (key.equals("previous")
+                                ? -1
+                                : 1)));
+                            updateGUI();
+                        }));
+                }
+            }
+        }
+        if (screen.isValid()) {
+            screen.compactTop();
+            dialog = builder.screen(screen).build();
+        }
     }
 
-    private void addShopSidebar(ObjectDialogScreen screen, DialogView.Builder builder) {
-        if (shop == null || !menu.menuConfigs.getBoolean("dialog.sidebar.enabled", true)) {
+    private void addHeader(MenuUILayout layout, ObjectDialogScreen screen, String title) {
+        var header = layout.getUi().getConfigurationSection("layout.header");
+        if (header == null) {
             return;
         }
-        ObjectMenu source = ObjectMenu.commonMenus.get(menu.getString("dialog.sidebar.menu", "main"));
-        if (source == null || source == menu || !source.getCondition().getAllBoolean(new ObjectThingRun(player))) {
-            return;
-        }
-        int x = menu.getInt("dialog.sidebar.x", 12);
-        int bottom = screen.getWidgets().stream()
-                .filter(widget -> widget.getX() < menu.getInt("dialog.products.x", 144))
-                .mapToInt(widget -> widget.getY() + widget.getTemplate().getHeight()).max().orElse(9);
-        int y = menu.getInt("dialog.sidebar.y", bottom + 9);
-        int gap = menu.getInt("dialog.sidebar.gap-y", 9);
-        if (gap < 0 || gap % 9 != 0) {
-            throw new IllegalArgumentException("Sidebar gap-y must be a non-negative multiple of 9");
-        }
-        ObjectDialogTemplate template = getTemplate(menu.getString("dialog.sidebar.template", "button"));
-        if (x + template.getWidth() > menu.getInt("dialog.products.x", 144)) {
-            throw new IllegalArgumentException("Sidebar must fit to the left of products.x");
-        }
-        MenuSender sender = MenuSender.of(player, "ore");
-        for (Map.Entry<Integer, AbstractButton> entry : source.getMenuNavigationButtons(sender).entrySet()) {
-            AbstractButton button = entry.getValue();
-            ObjectDisplayItemStack display = button.getDisplayItem(player, 1);
-            String name = ItemUtil.getItemName(display.getItemStack());
-            if (ChatColor.stripColor(TextUtil.parse(name)).isBlank()) {
+        int index = -1;
+        for (String key : header.getKeys(false)) {
+            if (key.equals("title")) {
                 continue;
             }
-            String id = "ore_sidebar_" + entry.getKey();
-            List<String> lore = display.getMeta() == null ? null : UltimateShop.methodUtil.getItemLore(display.getMeta());
-            screen.ensureHeight(y + template.getHeight() + 9);
-            screen.addWidget(new ObjectDialogWidget(template, x, y, name,
-                    lore == null ? List.of() : lore, id, "", false, null, isCurrentMenuButton(button))
-                    .withShowSprite(button.getShowSprite()));
-            builder.action(DialogAction.of(id, name, response -> {
-                boolean allowed = canDisplayMenu() && source.getCondition().getAllBoolean(new ObjectThingRun(player))
-                        && button.isVisibleInMenu("ore") && button.canDisplay(sender);
-                closeGUI();
-                if (allowed) {
-                    button.clickEvent(ClickType.LEFT, player);
-                }
-            }));
-            y += template.getHeight() + gap;
-        }
-    }
-
-    private boolean isCurrentMenuButton(AbstractButton button) {
-        var currentGUI = MenuStatusManager.menuStatusManager.getOpeningGUI(player);
-        if (!(currentGUI instanceof DialogOreGUI current)) {
-            return false;
-        }
-        ObjectMenu currentMenu = MenuStatusManager.menuStatusManager.getOpeningMenu(player);
-        ObjectSingleAction action = button.getAction() == null ? null : button.getAction().getMenuNavigationAction();
-        if (action == null) {
-            return false;
-        }
-        if ("shop_menu".equalsIgnoreCase(action.getString("type"))) {
-            return current.shop != null && action.getString("shop") != null
-                    && current.shop.getShopName().equals(action.getString("shop", player, 1));
-        }
-        return current.shop == null && currentMenu != null && action.getString("menu") != null
-                && currentMenu.getName().equals(action.getString("menu", player, 1));
-    }
-
-    private void refreshProduct(ObjectItem item) {
-        ObjectCache cache = CacheManager.cacheManager.getObjectCache(player);
-        ObjectUseTimesCache uses = cache.getUseTimesCache(item);
-        if (uses != null) {
-            uses.refreshTimes();
-        }
-        if (CacheManager.cacheManager.serverCache != null) {
-            uses = CacheManager.cacheManager.serverCache.getUseTimesCache(item);
-            if (uses != null) {
-                uses.refreshTimes();
+            var settings = header.getConfigurationSection(key);
+            if (settings == null || !settings.getBoolean("enabled", true)) {
+                continue;
             }
-        }
-    }
-
-    private ObjectDialogTemplate getTemplate(String name) {
-        return ObjectDialogTemplate.fromMenu(menu.menuConfigs, name);
-    }
-
-    private int[] getPosition(int slot, AbstractButton button, int x, int y) {
-        return DialogLayoutUtil.getPosition(menu.menuConfigs, slot, button.getButtonConfig(), x, y);
-    }
-
-    private List<int[]> getProductPositions(ObjectDialogScreen screen, ObjectDialogTemplate template, int productCount) {
-        List<int[]> positions = DialogLayoutUtil.getConfiguredProductPositions(menu.menuConfigs);
-        if (positions.isEmpty() || positions.size() < productCount) {
-            positions.clear();
-            for (int index = 0; index < productCount; index++) {
-                positions.add(DialogLayoutUtil.getGridProductPosition(menu.menuConfigs, template, index));
+            String text =
+                settings.getString("text", "")
+                .replace("{title}", title)
+                .replace("{content}", menu.getString("content", ""));
+            if (text.isBlank()) {
+                continue;
             }
+            int y = settings.getInt("y");
+            MenuUILayout.Element element =
+                new MenuUILayout.Element(
+                index--,
+                "header:" + key,
+                "button",
+                new MenuUILayout.Box(
+                settings.getInt("x"), y, settings.getInt("width", 108), 27),
+                -1);
+            ObjectDialogTemplate template = ObjectDialogTemplate.fromUi(menu.getConfig(), element);
+            if (!template.isValid()) {
+                return;
+            }
+            screen.addWidget(
+                new ObjectDialogWidget(
+                template, element.bounds().x(), y, text, List.of(), "", "", false));
         }
-        int bottom = positions.stream().mapToInt(position -> position[1] + template.getHeight()).max().orElse(0);
-        screen.ensureHeight(bottom + Math.max(18, menu.getInt("dialog.products.gap-y", 9) + 9));
-        return positions;
     }
+
     @Override
     public void updateGUI() {
         if (!canDisplayMenu()) {

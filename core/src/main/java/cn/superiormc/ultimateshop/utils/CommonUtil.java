@@ -4,17 +4,25 @@ import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.ErrorManager;
 import cn.superiormc.ultimateshop.managers.LanguageManager;
+
 import io.lumine.mythic.bukkit.BukkitAdapter;
 import io.lumine.mythic.bukkit.MythicBukkit;
 import net.luckperms.api.LuckPermsProvider;
-import org.bukkit.*;
+import org.bukkit.Color;
+import org.bukkit.Location;
+import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 import org.bukkit.inventory.ItemStack;
 import org.geysermc.floodgate.api.FloodgateApi;
 import org.json.JSONObject;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.net.HttpURLConnection;
@@ -22,11 +30,23 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class CommonUtil {
+
+    public static String getMinecraftVersion() {
+        return UltimateShop.yearVersion
+                + "."
+                + UltimateShop.majorVersion
+                + (UltimateShop.minorVersion == 0 ? "" : "." + UltimateShop.minorVersion);
+    }
 
     public static boolean checkPluginLoad(String pluginName) {
         if (pluginName == null) {
@@ -41,8 +61,8 @@ public class CommonUtil {
     public static boolean checkPermission(Player player, String permission) {
         if (CommonUtil.checkPluginLoad("LuckPerms")) {
             return LuckPermsProvider.get().getPlayerAdapter(Player.class).
-                    getPermissionData(player).
-                    checkPermission(permission).asBoolean();
+            getPermissionData(player).
+            checkPermission(permission).asBoolean();
         } else {
             return player.hasPermission(permission);
         }
@@ -76,17 +96,26 @@ public class CommonUtil {
 
     public static boolean getMinorVersion(int majorVersion, int minorVersion) {
         return UltimateShop.yearVersion > 1 || UltimateShop.majorVersion > majorVersion || (UltimateShop.majorVersion == majorVersion &&
-                UltimateShop.minorVersion >= minorVersion);
+            UltimateShop.minorVersion >= minorVersion);
     }
 
     public static int getPackFormat() {
         if (UltimateShop.yearVersion >= 26) {
-            if (UltimateShop.yearVersion > 26 || UltimateShop.majorVersion >= 3) return 97;
-            if (UltimateShop.majorVersion >= 2) return 88;
+            if (UltimateShop.yearVersion > 26 || UltimateShop.majorVersion >= 3) {
+                return 97;
+            }
+            if (UltimateShop.majorVersion >= 2) {
+                return 88;
+            }
             return 84;
+
         }
-        if (getMinorVersion(21, 11)) return 75;
-        if (getMinorVersion(21, 9)) return 69;
+        if (getMinorVersion(21, 11)) {
+            return 75;
+        }
+        if (getMinorVersion(21, 9)) {
+            return 69;
+        }
         return 97;
     }
 
@@ -95,13 +124,13 @@ public class CommonUtil {
 
         if (ConfigManager.configManager.getBoolean("time-offset.enabled")) {
             return now.plusHours(ConfigManager.configManager.getInt("time-offset.offset-hours", 0))
-                    .plusMinutes(ConfigManager.configManager.getInt("time-offset.offset-minutes", 0))
-                    .plusSeconds(ConfigManager.configManager.getInt("time-offset.offset-seconds", 0));
+                .plusMinutes(ConfigManager.configManager.getInt("time-offset.offset-minutes", 0))
+                .plusSeconds(ConfigManager.configManager.getInt("time-offset.offset-seconds", 0));
         }
-        
+
         return now;
     }
-    
+
     public static void summonMythicMobs(Location location, String mobID, int level) {
         MythicBukkit.inst().getMobManager().getMythicMob(mobID).ifPresent(mob -> mob.spawn(BukkitAdapter.adapt(location), level));
     }
@@ -197,8 +226,7 @@ public class CommonUtil {
         try {
             Class.forName(className);
             return true;
-        }
-        catch (ClassNotFoundException e) {
+        } catch (ClassNotFoundException e) {
             return false;
         }
     }
@@ -221,10 +249,10 @@ public class CommonUtil {
     }
 
     public static boolean isBedrockPlayer(Player player) {
-        if (!UltimateShop.useGeyser || !ConfigManager.configManager.getBoolean("menu.bedrock.enabled")) {
+        if (!UltimateShop.useGeyser) {
             return false;
         }
-        if (ConfigManager.configManager.getString("menu.bedrock.check-method", "FLOODGATE").equalsIgnoreCase("FLOODGATE")) {
+        if (ConfigManager.configManager.getString("menu.ui.renderers.form.check-method", "FLOODGATE").equalsIgnoreCase("FLOODGATE")) {
             return FloodgateApi.getInstance().getPlayer(player.getUniqueId()) != null;
         } else {
             return player.getUniqueId().toString().startsWith("00000000-0000-0000-000");
@@ -258,10 +286,10 @@ public class CommonUtil {
         String[] keySplit = color.replace(" ", "").split(",");
         if (keySplit.length == 3) {
             return Color.fromRGB(
-                    Integer.parseInt(keySplit[0]),
-                    Integer.parseInt(keySplit[1]),
-                    Integer.parseInt(keySplit[2])
-            );
+                Integer.parseInt(keySplit[0]),
+                Integer.parseInt(keySplit[1]),
+                Integer.parseInt(keySplit[2])
+                );
         }
 
         // 默认：单值 RGB int

@@ -4,7 +4,7 @@ We added `{random}` built-in placeholder in premium version. You can use random 
 
 ## Config
 
-All random placeholder configs are stored in `random_placeholders` folder. The file name is it's ID, for example: `rotate.yml` means it's ID is `rotate`. An example of it's config is like below:
+All random placeholder configs are stored in `placeholders/random_placeholders` folder. The file name is it's ID, for example: `rotate.yml` means it's ID is `rotate`. An example of it's config is like below:
 
 ```yaml
 reset-mode: TIMED

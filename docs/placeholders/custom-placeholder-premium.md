@@ -10,7 +10,7 @@ The main purpose of a custom placeholder is to record desired information, such 
 
 ## Config
 
-All custom placeholder configs are stored in `custom_placeholders` folder. The file name is it's ID, for example: `example.yml` means it's ID is `example`. An example of it's config is like below:
+All custom placeholder configs are stored in `placeholders/custom_placeholders` folder. The file name is it's ID, for example: `example.yml` means it's ID is `example`. An example of it's config is like below:
 
 ```yaml
 type: number

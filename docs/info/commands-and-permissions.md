@@ -8,7 +8,7 @@ A: Use `/shop` can directly open a menu called `main`. This is a feature called 
 
 ### Why it say condition not meet when open daily example menu?
 
-A: That menu already has a condition, which you can find in `shop_menu_templates/daily-shop-menu.yml`.
+A: That menu already has a condition, which you can find in `menus/shop_menu_templates/daily-shop-menu.yml`.
 
 ## ultimateshop.bypassprice
 
@@ -155,7 +155,8 @@ Sell all hand item.
 Require `ultimateshop.sellallhand` permission.
 
 {% hint style="info" %}
-sellhand = sell only the held stack.\
+sellhand = sell only the held stack.
+\
 sellallhand = use the held item as selector, then sell matching items from inventory.
 {% endhint %}
 
@@ -175,7 +176,9 @@ Require `ultimateshop.updateguititle` permission.
 
 ## /shop editor <mark style="color:red;">**(Premium version only)**</mark>
 
-Open in-game editor.
+Open the built-in in-game editor. It uses `editor-enable-confirm.yml` and requires all confirmations to be enabled. No separate editor addon is needed.
+
+Use `/shop editor <scope> <id>` to open a file directly. Scopes are `shop`, `menu`, `shop_menu_template`, `buy_more_menu`, `favourite_menu`, `search_menu` and `item_sell_menu`. IDs omit `.yml`; specialized menu scopes use their matching folders under `menus/`. See [In-game Editor](../features/in-game-editor-premium.md) for UI presets and saving changes.
 
 Require `ultimateshop.editor` permission.
 

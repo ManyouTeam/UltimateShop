@@ -2,11 +2,12 @@ package cn.superiormc.ultimateshop.gui.inv;
 
 import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.gui.InvGUI;
+import cn.superiormc.ultimateshop.gui.arc.ArcMenuBridge;
 import cn.superiormc.ultimateshop.gui.dialog.DialogFavouriteGUI;
+import cn.superiormc.ultimateshop.gui.form.FormFavouriteGUI;
 import cn.superiormc.ultimateshop.managers.CacheManager;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.LanguageManager;
-import cn.superiormc.ultimateshop.objects.ObjectThingRun;
 import cn.superiormc.ultimateshop.objects.buttons.AbstractButton;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectFavouriteEditModeButton;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectFavouriteEmptyButton;
@@ -20,9 +21,11 @@ import cn.superiormc.ultimateshop.objects.menus.ObjectMenu;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
 import cn.superiormc.ultimateshop.utils.SchedulerUtil;
 import cn.superiormc.ultimateshop.utils.TextUtil;
+
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -33,8 +36,6 @@ public class FavouriteGUI extends InvGUI {
 
     private final ObjectFavouriteMenu menu;
 
-    private final boolean bypass;
-
     private boolean editing;
 
     private final Map<Integer, ObjectFavouriteResultButton> resultButtons = new LinkedHashMap<>();
@@ -42,16 +43,14 @@ public class FavouriteGUI extends InvGUI {
     private final Map<Integer, AbstractButton> overlayButtons = new LinkedHashMap<>();
 
     private FavouriteGUI(Player owner, ObjectFavouriteMenu menu, boolean bypass) {
-        super(owner);
+        super(owner, bypass);
         this.menu = menu;
-        this.bypass = bypass;
         this.editing = false;
     }
 
     private FavouriteGUI(Player owner, ObjectFavouriteMenu menu, boolean bypass, boolean editing) {
-        super(owner);
+        super(owner, bypass);
         this.menu = menu;
-        this.bypass = bypass;
         this.editing = editing;
     }
 
@@ -60,11 +59,11 @@ public class FavouriteGUI extends InvGUI {
         if (menu == null || menu.getConfig() == null) {
             return;
         }
-        if (!bypass && !menu.getCondition().getAllBoolean(new ObjectThingRun(player))) {
+        if (!canDisplayMenu()) {
             LanguageManager.languageManager.sendStringText(player,
-                    "menu-condition-not-meet",
-                    "menu",
-                    menu.getName());
+                "menu-condition-not-meet",
+                "menu",
+                menu.getName());
             return;
         }
 
@@ -77,9 +76,9 @@ public class FavouriteGUI extends InvGUI {
         resultButtons.clear();
         overlayButtons.clear();
 
-        menuButtons = menu.getMenu(MenuSender.of(player));
+        menuButtons = menu.getMenu(MenuSender.of(player, getPresentation()));
         menuItems = getMenuItems(player);
-        for (Map.Entry<Integer, org.bukkit.inventory.ItemStack> entry : menuItems.entrySet()) {
+        for (Map.Entry<Integer, ItemStack> entry : menuItems.entrySet()) {
             if (entry.getKey() >= 0 && entry.getKey() < inv.getSize()) {
                 inv.setItem(entry.getKey(), entry.getValue());
             }
@@ -87,13 +86,15 @@ public class FavouriteGUI extends InvGUI {
 
         renderFavouriteItems();
         renderEditModeButton();
+        menuButtons.putAll(resultButtons);
+        menuButtons.putAll(overlayButtons);
     }
 
     private void renderFavouriteItems() {
         ObjectCache cache = CacheManager.cacheManager.getObjectCache(player);
         Map<FavouriteProductReference, ObjectItem> favouriteProducts = cache == null
-                ? Collections.emptyMap()
-                : cache.getResolvedFavouriteProducts(menu.getName());
+        ? Collections.emptyMap()
+        : cache.getResolvedFavouriteProducts(menu.getName());
 
         int displayed = 0;
         for (Map.Entry<FavouriteProductReference, ObjectItem> entry : favouriteProducts.entrySet()) {
@@ -102,9 +103,9 @@ public class FavouriteGUI extends InvGUI {
             }
             int slot = menu.getResultSlots().get(displayed);
             ObjectFavouriteResultButton button = new ObjectFavouriteResultButton(entry.getValue(),
-                    displayed,
-                    editing ? menu.getEditingResultLore() : menu.getResultLore(),
-                    editing);
+                displayed,
+                editing ? menu.getEditingResultLore() : menu.getResultLore(),
+                editing);
             resultButtons.put(slot, button);
             inv.setItem(slot, button.getDisplayItem(player, 1).getItemStack());
             displayed++;
@@ -120,6 +121,10 @@ public class FavouriteGUI extends InvGUI {
             overlayButtons.put(slot, emptyButton);
             inv.setItem(slot, emptyButton.buildDisplayItem(player, favouriteProducts.size(), i + 1));
         }
+    }
+
+    public boolean isEditing() {
+        return editing;
     }
 
     private void renderEditModeButton() {
@@ -162,7 +167,7 @@ public class FavouriteGUI extends InvGUI {
         AbstractButton normalButton = menuButtons.get(slot);
         if (normalButton != null) {
             normalButton.clickEvent(type, player);
-            if (ConfigManager.configManager.getBooleanOrDefault("menu.shop.click-update", "menu.menu-update.click-update")) {
+            if (ConfigManager.configManager.getBoolean("menu.menu-update.click-update")) {
                 constructGUI();
             } else {
                 menuItems.put(slot, getMenuItem(player, slot));
@@ -173,6 +178,9 @@ public class FavouriteGUI extends InvGUI {
     }
 
     private boolean handleEdit(ClickType type, int index, ObjectItem item) {
+        if ("arcmenu".equals(getPresentation()) && type == ClickType.MIDDLE) {
+            type = ClickType.DROP;
+        }
         ObjectCache cache = CacheManager.cacheManager.getObjectCache(player);
         if (cache == null) {
             return false;
@@ -187,9 +195,9 @@ public class FavouriteGUI extends InvGUI {
             boolean result = cache.removeFavouriteProduct(menu.getName(), item);
             if (result) {
                 LanguageManager.languageManager.sendStringText(player,
-                        "favourite-removed",
-                        "item", item.getDisplayName(player),
-                        "menu", menu.getName());
+                    "favourite-removed",
+                    "item", item.getDisplayName(player),
+                    "menu", menu.getName());
             }
             return result;
         }
@@ -201,7 +209,8 @@ public class FavouriteGUI extends InvGUI {
             if (inv != null && player.getOpenInventory().getTopInventory().equals(inv)) {
                 constructGUI();
             }
-        }, 1L);
+        }
+            , 1L);
     }
 
     @Override
@@ -210,7 +219,11 @@ public class FavouriteGUI extends InvGUI {
     }
 
     public static void openGUI(Player player, ObjectFavouriteMenu menu, boolean bypass, boolean reopen) {
-        if (menu.isUseDialog()) {
+        if (UltimateShop.useGeyser && menu.isUseGeyser() && CommonUtil.isBedrockPlayer(player)) {
+            new FormFavouriteGUI(player, menu, bypass).openGUI(reopen);
+            return;
+        }
+        if (!ArcMenuBridge.arcMenuBridge.enabled(menu, player) && menu.isUseDialog()) {
             new DialogFavouriteGUI(player, menu, bypass).openGUI(reopen);
             return;
         }
@@ -219,7 +232,11 @@ public class FavouriteGUI extends InvGUI {
     }
 
     public static void openGUI(Player player, ObjectFavouriteMenu menu, boolean bypass, boolean reopen, boolean editing) {
-        if (menu.isUseDialog()) {
+        if (UltimateShop.useGeyser && menu.isUseGeyser() && CommonUtil.isBedrockPlayer(player)) {
+            new FormFavouriteGUI(player, menu, bypass, editing).openGUI(reopen);
+            return;
+        }
+        if (!ArcMenuBridge.arcMenuBridge.enabled(menu, player) && menu.isUseDialog()) {
             new DialogFavouriteGUI(player, menu, bypass, editing).openGUI(reopen);
             return;
         }

@@ -2,7 +2,9 @@ package cn.superiormc.ultimateshop.gui.dialog;
 
 import cn.superiormc.ultimateshop.api.ShopHelper;
 import cn.superiormc.ultimateshop.gui.DialogGUI;
+import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.LanguageManager;
+import cn.superiormc.ultimateshop.managers.MenuStatusManager;
 import cn.superiormc.ultimateshop.objects.ObjectThingRun;
 import cn.superiormc.ultimateshop.objects.buttons.AbstractButton;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
@@ -25,7 +27,7 @@ public class DialogSearchGUI extends DialogGUI {
 
     private final boolean bypass;
 
-    private final String searchKeywords;
+    private String searchKeywords;
 
     public DialogSearchGUI(Player player, ObjectSearchMenu menu, boolean bypass) {
         this(player, menu, bypass, "");
@@ -40,32 +42,42 @@ public class DialogSearchGUI extends DialogGUI {
 
     @Override
     public void constructGUI() {
+        dialog = null;
         if (!bypass && !menu.getCondition().getAllBoolean(new ObjectThingRun(player))) {
             LanguageManager.languageManager.sendStringText(player, "menu-condition-not-meet", "menu", menu.getName());
             return;
         }
         DialogView.Builder builder = DialogView.builder(CommonUtil.parseLang(player, menu.getString("title", "")));
-        String content = menu.getString("dialog.content", null);
+        builder.keepOpenAfterAction(true);
+        String content = menu.getString("content", null);
         if (content != null && !content.isEmpty()) {
             builder.body(content);
         }
-        builder.buttonWidth(menu.getInt("dialog.button-width", 150));
-        builder.columns(menu.getInt("dialog.columns", 2));
-        String dialogLayout = menu.getString("dialog.layout", "multi-action");
+        builder.buttonWidth(menu.getInt("ui.renderers.dialog.button-width", 150));
+        builder.columns(menu.getInt("ui.renderers.dialog.columns", 2));
+        String dialogLayout = ConfigManager.configManager.getDialogLayout(menu.getConfig());
         boolean itemActionLayout = DialogView.Layout.fromConfig(dialogLayout) == DialogView.Layout.ITEM_ACTION_LIST;
         builder.layout(dialogLayout);
-        builder.input(DialogInput.text("keyword", getDialogText("search.input"), searchKeywords));
-        builder.action(DialogAction.of("search", getDialogText("search.buttons.search"), response ->
-                new DialogSearchGUI(player, menu, true,
-                        response.getText("keyword") == null ? "" : response.getText("keyword")).openGUI(true)));
+        builder.input(DialogInput.text("keyword", ConfigManager.configManager.getMenuRendererText(
+            getMenu() == null ? null : getMenu().getConfig(),
+            player, "dialog", "search.input", ""), searchKeywords));
+        builder.action(DialogAction.of("search", ConfigManager.configManager.getMenuRendererText(
+            getMenu() == null ? null : getMenu().getConfig(),
+            player, "dialog", "search.buttons.search", ""), response -> {
+            String keyword = response.getText("keyword");
+            searchKeywords = keyword == null ? "" : keyword;
+        }));
         if (!searchKeywords.trim().isEmpty()) {
             addResults(builder, itemActionLayout);
         }
-        for (Map.Entry<Integer, AbstractButton> entry : menu.getMenu(MenuSender.of(player, MenuSender.dialogPresentation(menu.getString("dialog.layout", "multi-action")))).entrySet()) {
+        for (Map.Entry<Integer, AbstractButton> entry : menu.getMenu(MenuSender.of(player, MenuSender.dialogPresentation(ConfigManager.configManager.getDialogLayout(menu.getConfig())))).entrySet()) {
             AbstractButton button = entry.getValue();
             ObjectDisplayItemStack display = button.getDisplayItem(player, 1);
             DialogAction action = display.parseToDialogButton("slot_" + entry.getKey(), button.getShowSprite(),
-                    response -> button.clickEvent(ClickType.LEFT, player));
+                    response -> {
+                        closeGUI();
+                        button.clickEvent(ClickType.LEFT, player);
+                    });
             if (action != null) {
                 if (button.hasCloseAction()) {
                     builder.action(action);
@@ -92,7 +104,8 @@ public class DialogSearchGUI extends DialogGUI {
             ObjectItem item = matched.get(i);
             DialogAction action = display.parseToDialogButton("result_" + i, result.getItem().getShowSprite(),
                     response -> {
-                        new DialogInfoGUI(player, item).openGUI(true);
+                        closeGUI();
+                        new DialogInfoGUI(player, item, null, () -> openGUI(true)).openGUI(true);
                     });
             if (action != null) {
                 if (itemActionLayout) {
@@ -101,6 +114,14 @@ public class DialogSearchGUI extends DialogGUI {
                     builder.action(action);
                 }
             }
+        }
+    }
+
+    @Override
+    public void updateGUI() {
+        openGUI(true, false);
+        if (dialog == null && MenuStatusManager.menuStatusManager.getOpeningGUI(player) == this) {
+            closeGUI();
         }
     }
 

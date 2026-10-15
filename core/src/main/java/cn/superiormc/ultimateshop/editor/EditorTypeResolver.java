@@ -12,6 +12,9 @@ public class EditorTypeResolver {
         String path = buildPath(parent.getCurrentPath(), key);
 
         if (value instanceof ConfigurationSection section) {
+            if (isUiPath(path)) {
+                return EditorValueKind.SECTION;
+            }
             if (isActionCollection(path)) {
                 return EditorValueKind.ACTION_COLLECTION;
             }
@@ -63,6 +66,9 @@ public class EditorTypeResolver {
     }
 
     public static boolean isActionCollection(String path) {
+        if (isUiPath(path)) {
+            return false;
+        }
         String last = lastSegment(path);
         return last.endsWith("actions");
     }
@@ -77,12 +83,20 @@ public class EditorTypeResolver {
     }
 
     public static boolean isThingCollection(String path) {
+        if (isUiPath(path)) {
+            return false;
+        }
         String last = lastSegment(path);
         return last.equals("products") || last.equals("buy-prices") || last.equals("sell-prices");
     }
 
     public static boolean isActionEntry(String parentPath) {
         return isActionCollection(parentSectionPath(parentPath));
+    }
+
+    public static boolean isUiPath(String path) {
+        return path != null && (path.equals("ui") || path.startsWith("ui.")
+                || path.endsWith(".ui") || path.contains(".ui."));
     }
 
     public static boolean isConditionEntry(String parentPath) {

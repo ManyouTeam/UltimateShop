@@ -14,7 +14,7 @@ A: Use `/shop` can directly open a menu called `main`. This is a feature called 
 
 ## Q: Why it say condition not meet when open daily example menu?
 
-A: That menu already has a condition, which you can find in `shop_menu_templates/daily-shop-menu.yml`.
+A: That menu already has a condition, which you can find in `menus/shop_menu_templates/daily-shop-menu.yml`.
 
 ## **Q: Why can I only sell 64x (or other amunt) items at once?**
 

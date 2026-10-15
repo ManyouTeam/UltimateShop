@@ -1,45 +1,103 @@
 package cn.superiormc.ultimateshop.objects.dialog;
 
+import cn.superiormc.ultimateshop.gui.MenuUILayout;
+import cn.superiormc.ultimateshop.managers.ErrorManager;
+
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.MemoryConfiguration;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.Set;
+import java.util.List;
+import java.util.Map;
 
 public class ObjectDialogTemplate {
 
-    public static ObjectDialogTemplate fromMenu(ConfigurationSection menu, String name) {
-        if (name == null || name.isBlank()) {
-            throw new IllegalArgumentException("Dialog template name must not be empty");
-        }
-        ConfigurationSection config = menu.getConfigurationSection("dialog.templates." + name);
-        if (config == null && !Set.of("product", "button").contains(name)) {
-            throw new IllegalArgumentException("Unknown Dialog template: " + name);
-        }
-        String type = config == null ? name : config.getString("type", name);
-        if (type.equals("product")) {
-            int columns = menu.getInt("dialog.columns", 2);
-            int gap = menu.getInt("dialog.products.gap-x", 12);
-            int available = menu.getInt("dialog.width", 576) - menu.getInt("dialog.products.x", 144) - 12;
-            if (columns < 1 || columns > 12 || gap < 0) {
-                throw new IllegalArgumentException("Invalid product columns or horizontal gap");
-            }
-            int cardWidth = (available - (columns - 1) * gap) / columns;
-            MemoryConfiguration fitted = new MemoryConfiguration();
-            if (config != null) {
-                config.getValues(true).forEach(fitted::set);
-            }
-            fitted.set("type", "product");
-            fitted.set("width", Math.min(integerWidth(config, cardWidth), cardWidth));
-            config = fitted;
-        }
-        return new ObjectDialogTemplate(name, config);
+    public static ObjectDialogTemplate fromUi(
+        ConfigurationSection menu, MenuUILayout.Element element) {
+        return fromUi(menu, element, null);
     }
 
-    private static int integerWidth(ConfigurationSection config, int fallback) {
-        return config == null ? fallback : config.getInt("width", fallback);
+    public static ObjectDialogTemplate fromUi(
+        ConfigurationSection menu, MenuUILayout.Element element, ConfigurationSection button) {
+        MemoryConfiguration style = new MemoryConfiguration();
+        boolean card = element.appearance().equals("card");
+        ConfigurationSection configured =
+            menu.getConfigurationSection(
+            "ui.renderers.ore.templates." + (card ? "product" : "button"));
+        if (configured != null) {
+            configured.getValues(true).forEach(style::set);
+        }
+        style.set("type", card ? "product" : "button");
+        style.set("width", element.bounds().width());
+        style.set("height", element.bounds().height());
+        style.set(
+            "padding",
+            card
+            ? menu.getInt("ui.products.card.padding", 9)
+            : Math.min(12, (element.bounds().width() - 1) / 2));
+        style.set("icon-size", card ? menu.getInt("ui.products.card.icon-size", 32) : 0);
+        style.set("name-y", 9);
+        style.set("name-lines", card ? 1 : 2);
+        style.set("lore-y", 27);
+        style.set(
+            "lore-lines",
+            card
+            ? Math.min(
+            menu.getInt(
+            element.product()
+            ? "ui.products.card.lore-lines"
+            : "ui.products.card.description-lines",
+            element.product() ? 6 : 2),
+            element.bounds().height() / 9 - 6)
+            : 0);
+        style.set("details-y", element.bounds().height() - 27);
+        for (var entry :
+            Map.of(
+            "background",
+            card ? "card" : "button.background",
+            "border",
+            card ? "border" : "button.border",
+            "accent",
+            "accent",
+            "footer",
+            "button.background")
+            .entrySet()) {
+            String color = menu.getString("ui.theme." + entry.getValue(), "#354861");
+            if (color.length() == 9) {
+                color = "#" + color.substring(3);
+            }
+            style.set(entry.getKey(), color);
+        }
+        if (element.area().startsWith("header:")) {
+            String key = element.area().substring(7);
+            String background = menu.getString("ui.theme.card", "#141E30");
+            if (background.length() == 9) {
+                background = "#" + background.substring(3);
+            }
+            for (String color : List.of("background", "border", "accent", "footer")) {
+                style.set(color, background);
+            }
+        }
+        return new ObjectDialogTemplate(card ? "product" : "button", style);
+    }
+
+    private boolean valid = true;
+
+    private final boolean card;
+
+    public boolean isCard() {
+        return card;
+    }
+
+    public boolean isValid() {
+        return valid;
+    }
+
+    private void invalidate(String message) {
+        valid = false;
+        ErrorManager.errorManager.sendErrorMessage("§c" + message);
     }
 
     private final int width;
@@ -62,8 +120,6 @@ public class ObjectDialogTemplate {
 
     private final int detailsRow;
 
-    private final boolean centered;
-
     private final int background;
 
     private final int border;
@@ -85,17 +141,22 @@ public class ObjectDialogTemplate {
     public ObjectDialogTemplate(String name, ConfigurationSection config) {
         String type = config == null ? name : config.getString("type", name);
         boolean product = type.equals("product");
+        card = product;
         width = integer(config, "width", product ? 408 : 96);
         height = integer(config, "height", product ? 108 : 36);
         padding = integer(config, "padding", product ? 12 : 6);
         iconSize = integer(config, "icon-size", product ? 32 : 0);
-        nameRow = integer(config, "name-y", product ? 9 : Math.max(0, Math.round((height - 3 - 7) / 18.0f)) * 9) / 9;
+        nameRow =
+            integer(
+            config,
+            "name-y",
+            product ? 9 : Math.max(0, Math.round((height - 3 - 7) / 18.0f)) * 9)
+        / 9;
         nameLines = integer(config, "name-lines", product ? 1 : 2);
         autoNameY = !product && (config == null || !config.contains("name-y"));
         loreRow = integer(config, "lore-y", 27) / 9;
         loreLines = integer(config, "lore-lines", product ? 6 : 0);
         detailsRow = integer(config, "details-y", height - 27) / 9;
-        centered = config == null ? !product : config.getString("text-align", product ? "left" : "center").equals("center");
         background = color(config, "background", "#262c36");
         border = color(config, "border", "#596373");
         accent = color(config, "accent", "#83cfce");
@@ -104,40 +165,98 @@ public class ObjectDialogTemplate {
         selectedBackground = color(config, "selected-background", "#244A32");
         selectedBorder = color(config, "selected-border", "#65D98B");
         selectedTexture = config == null ? "" : config.getString("selected-texture", "");
-        for (String path : new String[]{texture, selectedTexture}) {
-            if (!path.isEmpty() && (!path.matches("[a-zA-Z0-9_/-]+\\.png") || path.contains("..") || path.startsWith("/"))) {
-                throw new IllegalArgumentException("Dialog texture must be a relative PNG path inside the plugin textures folder");
+        for (String path : new String[] {
+                texture, selectedTexture
+            }
+            ) {
+            if (!path.isEmpty()
+                && (!path.matches("[a-zA-Z0-9_/-]+\\.png")
+                || path.contains("..")
+                || path.startsWith("/"))) {
+                invalidate(
+                    "Dialog texture must be a relative PNG path inside the plugin textures"
+                    + " folder");
             }
         }
-        if (iconSize < 0 || iconSize > 64 || (product && iconSize > 0 && (padding * 2 + iconSize + 8 >= width || loreRow * 9 + iconSize > detailsRow * 9))) {
-            throw new IllegalArgumentException("Invalid product icon size: " + name);
+        if (iconSize < 0
+            || iconSize > 64
+            || (product
+            && iconSize > 0
+            && (padding * 2 + iconSize + 8 >= width
+            || loreRow * 9 + iconSize > detailsRow * 9))) {
+            invalidate("Invalid product icon size: " + name);
         }
-        if (width < 24 || width > 900 || height < 27 || height > 540 || height % 9 != 0
-                || padding < 0 || padding * 2 >= width || nameRow < 0 || nameRow >= height / 9
-                || nameLines < 1 || nameLines > 60
-                || getNameLines(product) < 1
-                || detailsRow < 0 || detailsRow + 2 > height / 9 || loreRow < 0 || loreLines < 0
-                || loreLines > height / 9 || (product && (loreRow + loreLines > detailsRow || nameRow >= detailsRow))
-                || (loreLines > 0 && nameRow >= loreRow && nameRow < loreRow + loreLines)) {
-            throw new IllegalArgumentException("Invalid Dialog template: " + name);
+        if (width < 24
+            || width > 900
+            || height < 27
+            || height > 540
+            || height % 9 != 0
+            || padding < 0
+            || padding * 2 >= width
+            || nameRow < 0
+            || nameRow >= height / 9
+            || nameLines < 1
+            || nameLines > 60
+            || getNameLines(product) < 1
+            || detailsRow < 0
+            || detailsRow + 2 > height / 9
+            || loreRow < 0
+            || loreLines < 0
+            || loreLines > height / 9
+            || (product && (loreRow + loreLines > detailsRow || nameRow >= detailsRow))
+            || (loreLines > 0 && nameRow >= loreRow && nameRow < loreRow + loreLines)) {
+            invalidate("Invalid Dialog template: " + name);
         }
-        for (String key : new String[]{"name-y", "lore-y", "details-y"}) {
+        for (String key : new String[] {
+                "name-y", "lore-y", "details-y"
+            }
+            ) {
             if (config != null && config.getInt(key, 0) % 9 != 0) {
-                throw new IllegalArgumentException("Dialog template " + key + " must be a multiple of 9: " + name);
+                invalidate("Dialog template " + key + " must be a multiple of 9: " + name);
             }
         }
-        String signature = "anchors-v8:" + width + ":" + height + ":" + background + ":" + border + ":" + accent + ":" + footer + ":" + detailsRow + ":" + iconSize + ":" + loreRow + ":" + texture
-                + ":" + selectedBackground + ":" + selectedBorder + ":" + selectedTexture;
+        String signature =
+            "anchors-v8:"
+            + width
+        + ":"
+            + height
+        + ":"
+            + background
+        + ":"
+            + border
+        + ":"
+            + accent
+        + ":"
+            + footer
+        + ":"
+            + detailsRow
+        + ":"
+            + iconSize
+        + ":"
+            + loreRow
+        + ":"
+            + texture
+        + ":"
+            + selectedBackground
+        + ":"
+            + selectedBorder
+        + ":"
+            + selectedTexture;
+        String generatedId;
         try {
-            byte[] digest = MessageDigest.getInstance("SHA-256").digest(signature.getBytes(StandardCharsets.UTF_8));
+            byte[] digest =
+                MessageDigest.getInstance("SHA-256")
+                .digest(signature.getBytes(StandardCharsets.UTF_8));
             StringBuilder hex = new StringBuilder();
             for (int i = 0; i < 12; i++) {
                 hex.append(String.format("%02x", digest[i] & 255));
             }
-            resourceId = "ore/" + hex;
+            generatedId = "ore/" + hex;
         } catch (NoSuchAlgorithmException exception) {
-            throw new IllegalStateException(exception);
+            invalidate("Unable to calculate Ore resource ID: " + exception.getMessage());
+            generatedId = "ore/" + Integer.toHexString(signature.hashCode());
         }
+        resourceId = generatedId;
     }
 
     private int integer(ConfigurationSection config, String key, int fallback) {
@@ -147,7 +266,8 @@ public class ObjectDialogTemplate {
     private int color(ConfigurationSection config, String key, String fallback) {
         String value = config == null ? fallback : config.getString(key, fallback);
         if (!value.matches("#[a-fA-F0-9]{6}")) {
-            throw new IllegalArgumentException("Dialog template color must be #RRGGBB: " + key);
+            invalidate("Dialog template color must be #RRGGBB: " + key);
+            return Integer.parseInt(fallback.substring(1), 16);
         }
         return Integer.parseInt(value.substring(1), 16);
     }
@@ -206,10 +326,6 @@ public class ObjectDialogTemplate {
     public int getDetailsTextRow() {
         int footerHeight = height - 3 - detailsRow * 9;
         return detailsRow + Math.max(0, Math.round((footerHeight - 7) / 18.0f));
-    }
-
-    public boolean isCentered() {
-        return centered;
     }
 
     public int getBackground() {

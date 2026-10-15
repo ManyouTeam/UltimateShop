@@ -3,6 +3,7 @@ package cn.superiormc.ultimateshop.objects.menus;
 import cn.superiormc.ultimateshop.gui.DialogGUI;
 import cn.superiormc.ultimateshop.gui.FormGUI;
 import cn.superiormc.ultimateshop.gui.dialog.DialogView;
+import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.MenuStatusManager;
 import org.bukkit.entity.Player;
 
@@ -51,7 +52,7 @@ public class MenuSender {
 
     public static String dialogPresentation(String layout) {
         return "ore".equalsIgnoreCase(layout) ? "ore"
-                : "item-action-list".equalsIgnoreCase(layout) ? "item-action-list" : "dialog";
+        : "item-action-list".equalsIgnoreCase(layout) ? "item-action-list" : "dialog";
     }
 
     public static String getOpeningPresentation(Player player) {
@@ -69,12 +70,12 @@ public class MenuSender {
             var view = dialogGUI.getDialog();
             if (view != null) {
                 return view.getScreen() != null ? "ore"
-                        : view.getLayout() == DialogView.Layout.ITEM_ACTION_LIST
-                        ? "item-action-list" : "dialog";
+                : view.getLayout() == DialogView.Layout.ITEM_ACTION_LIST
+                ? "item-action-list" : "dialog";
             }
-            return dialogPresentation(gui.getMenu() == null ? null : gui.getMenu().getString("dialog.layout", "multi-action"));
+            return dialogPresentation(gui.getMenu() == null ? null : ConfigManager.configManager.getDialogLayout(gui.getMenu().getConfig()));
         }
-        return "inventory";
+        return gui.getPresentation();
     }
 
     @Override
@@ -96,7 +97,7 @@ public class MenuSender {
         }
 
         return !isStatic && !that.isStatic &&
-                player.getUniqueId().equals(that.player.getUniqueId());
+        player.getUniqueId().equals(that.player.getUniqueId());
     }
 
     @Override

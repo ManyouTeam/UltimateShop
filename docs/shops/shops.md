@@ -94,7 +94,7 @@ items:
 
 *   menu: Shop menu name, which means menu file name. It’s the central hub that connects your shop and menu. In this example, we set it to `example-shop-menu`.
 
-    You can find the menu file in the `shop_menu_templates` folder; it is called `example-shop-menu.yml`. For info about menus, please view [Menus](../menus/general-menus.md) page.&#x20;
+    You can find the menu file in the `menus/shop_menu_templates` folder; it is called `example-shop-menu.yml`. For info about menus, please view [Menus](../menus/general-menus.md) page.&#x20;
 * menu-settings: You can set up a separate menu configuration exclusively for this shop. This part will overwrite the corresponding menu configuration. You can remove `menu` option if this part include all menu options you want to.
 * buy-more: Whether product in this shop can open buy more menu.&#x20;
 * shop-name: Shop display name, which used in `{shop-name}` placeholder.&#x20;

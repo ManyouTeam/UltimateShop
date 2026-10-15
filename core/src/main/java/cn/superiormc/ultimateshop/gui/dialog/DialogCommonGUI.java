@@ -1,6 +1,7 @@
 package cn.superiormc.ultimateshop.gui.dialog;
 
 import cn.superiormc.ultimateshop.gui.DialogGUI;
+import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.LanguageManager;
 import cn.superiormc.ultimateshop.objects.ObjectThingRun;
 import cn.superiormc.ultimateshop.objects.buttons.AbstractButton;
@@ -31,15 +32,15 @@ public class DialogCommonGUI extends DialogGUI {
             return;
         }
         DialogView.Builder builder = DialogView.builder(menu.getString("title", ""));
-        String content = menu.getString("dialog.content", null);
+        String content = menu.getString("content", null);
         if (content != null && !content.isEmpty()) {
             builder.body(content);
         }
-        builder.buttonWidth(menu.getInt("dialog.button-width", 150));
-        builder.columns(menu.getInt("dialog.columns", 2));
-        String dialogLayout = menu.getString("dialog.layout", "multi-action");
+        builder.buttonWidth(menu.getInt("ui.renderers.dialog.button-width", 150));
+        builder.columns(menu.getInt("ui.renderers.dialog.columns", 2));
+        String dialogLayout = ConfigManager.configManager.getDialogLayout(menu.getConfig());
         builder.layout(dialogLayout);
-        for (Map.Entry<Integer, AbstractButton> entry : menu.getMenu(MenuSender.of(player, MenuSender.dialogPresentation(menu.getString("dialog.layout", "multi-action")))).entrySet()) {
+        for (Map.Entry<Integer, AbstractButton> entry : menu.getMenu(MenuSender.of(player, MenuSender.dialogPresentation(ConfigManager.configManager.getDialogLayout(menu.getConfig())))).entrySet()) {
             AbstractButton button = entry.getValue();
             ObjectDisplayItemStack display = button.getDisplayItem(player, 1);
             DialogAction action = display.parseToDialogButton("slot_" + entry.getKey(), button.getShowSprite(),

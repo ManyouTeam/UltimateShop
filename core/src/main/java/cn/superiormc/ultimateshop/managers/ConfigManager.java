@@ -1,26 +1,25 @@
 package cn.superiormc.ultimateshop.managers;
 
 import cn.superiormc.ultimateshop.UltimateShop;
-import cn.superiormc.ultimateshop.objects.ObjectSharedUseTimes;
-import cn.superiormc.ultimateshop.objects.sellchests.ObjectSellChest;
 import cn.superiormc.ultimateshop.objects.ObjectSellStick;
+import cn.superiormc.ultimateshop.objects.ObjectSharedUseTimes;
 import cn.superiormc.ultimateshop.objects.ObjectShop;
 import cn.superiormc.ultimateshop.objects.buttons.AbstractButton;
-import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectCopyItem;
+import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import cn.superiormc.ultimateshop.objects.items.subobjects.ObjectConditionalPlaceholder;
 import cn.superiormc.ultimateshop.objects.items.subobjects.ObjectCustomPlaceholder;
 import cn.superiormc.ultimateshop.objects.items.subobjects.ObjectRandomPlaceholder;
-import cn.superiormc.ultimateshop.objects.items.pricemodifiers.PriceModifierChain;
-import cn.superiormc.ultimateshop.objects.items.pricemodifiers.PriceModifierRegistry;
+import cn.superiormc.ultimateshop.objects.menus.MenuType;
 import cn.superiormc.ultimateshop.objects.menus.ObjectFavouriteMenu;
 import cn.superiormc.ultimateshop.objects.menus.ObjectItemSellMenu;
 import cn.superiormc.ultimateshop.objects.menus.ObjectMenu;
 import cn.superiormc.ultimateshop.objects.menus.ObjectSearchMenu;
-import cn.superiormc.ultimateshop.objects.menus.MenuType;
+import cn.superiormc.ultimateshop.objects.sellchests.ObjectSellChest;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
 import cn.superiormc.ultimateshop.utils.MathUtil;
 import cn.superiormc.ultimateshop.utils.TextUtil;
+
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -31,7 +30,12 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 
 import java.io.File;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 import static cn.superiormc.ultimateshop.managers.SellChestManager.SELL_CHEST_ID;
 import static cn.superiormc.ultimateshop.objects.ObjectSellStick.SELL_STICK_ID;
@@ -64,13 +68,13 @@ public class ConfigManager extends AbstractManager {
 
     public Map<String, ObjectSellChest> sellChestMap = new HashMap<>();
 
-    private volatile PriceModifierChain sellPriceModifiers = new PriceModifierChain(Collections.emptyList());
-
     public ConfigManager() {
         configManager = this;
         UltimateShop.instance.saveDefaultConfig();
         this.config = UltimateShop.instance.getConfig();
-        reloadSellPriceModifiers();
+        if (!config.isConfigurationSection("menu.ui")) {
+            ErrorManager.errorManager.sendErrorMessage("§cError: config.yml requires menu.ui");
+        }
         loadEditorEnableConfirmConfig();
         if (!UltimateShop.freeVersion) {
             initSharedUseTimesConfigs();
@@ -90,29 +94,17 @@ public class ConfigManager extends AbstractManager {
         MathUtil.init();
     }
 
-    public PriceModifierChain getSellPriceModifiers() {
-        return sellPriceModifiers;
-    }
-
-    public synchronized void reloadSellPriceModifiers() {
-        if (config == null) {
-            return;
-        }
-        sellPriceModifiers = PriceModifierRegistry.createChain(
-                config.getConfigurationSection("sell.price-modifier"));
-    }
-
     private void initShopConfigs() {
         File dir = new File(UltimateShop.instance.getDataFolder(), "shops");
         if (!dir.exists()) {
-            dir.mkdir();
+            dir.mkdirs();
         }
         for (File file : CommonUtil.getYamlFiles(dir)) {
             String fileName = file.getName();
             if (fileName.endsWith(".yml")) {
                 String substring = fileName.substring(0, fileName.length() - 4);
                 shopConfigs.put(substring,
-                        new ObjectShop(substring, YamlConfiguration.loadConfiguration(file)));
+                    new ObjectShop(substring, YamlConfiguration.loadConfiguration(file)));
                 TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fLoaded shop: " + fileName + "!");
             }
         }
@@ -121,7 +113,7 @@ public class ConfigManager extends AbstractManager {
     private void initSharedUseTimesConfigs() {
         File dir = new File(UltimateShop.instance.getDataFolder(), "shared_use_times");
         if (!dir.exists()) {
-            dir.mkdir();
+            dir.mkdirs();
         }
         for (File file : CommonUtil.getYamlFiles(dir)) {
             String fileName = file.getName();
@@ -147,7 +139,7 @@ public class ConfigManager extends AbstractManager {
 
         File dir = new File(UltimateShop.instance.getDataFolder(), COMMON_MENU_FOLDER);
         if (!dir.exists()) {
-            dir.mkdir();
+            dir.mkdirs();
         }
         for (File file : CommonUtil.getYamlFiles(dir)) {
             String fileName = file.getName();
@@ -162,12 +154,12 @@ public class ConfigManager extends AbstractManager {
                 YamlConfiguration menuConfig = YamlConfiguration.loadConfiguration(file);
                 String menuType = menuConfig.getString("menu-type", "");
                 if (menuType.equalsIgnoreCase("search")
-                        || ConfigManager.configManager.getStringList("menu.search-gui.menu").contains(substring)) {
+                    || ConfigManager.configManager.getStringList("menu.search-gui.menu").contains(substring)) {
                     if (!UltimateShop.freeVersion) {
                         new ObjectSearchMenu(substring, menuConfig);
                     }
                 } else if (menuType.equalsIgnoreCase("favourite") || menuType.equalsIgnoreCase("favorite")  ||
-                        ConfigManager.configManager.getStringList("menu.favourite-gui.menu").contains(substring)) {
+                    ConfigManager.configManager.getStringList("menu.favourite-gui.menu").contains(substring)) {
                     if (!UltimateShop.freeVersion) {
                         new ObjectFavouriteMenu(substring, menuConfig);
                     }
@@ -183,7 +175,7 @@ public class ConfigManager extends AbstractManager {
     private void initTypedMenuConfigs(String folderName, MenuType menuType) {
         File dir = new File(UltimateShop.instance.getDataFolder(), folderName);
         if (!dir.exists()) {
-            dir.mkdir();
+            dir.mkdirs();
         }
         if (UltimateShop.freeVersion && menuType != MenuType.ItemSell) {
             return;
@@ -210,7 +202,7 @@ public class ConfigManager extends AbstractManager {
     private void initSellStickConfigs() {
         File dir = new File(UltimateShop.instance.getDataFolder(), "sell_sticks");
         if (!dir.exists()) {
-            dir.mkdir();
+            dir.mkdirs();
         }
         for (File file : CommonUtil.getYamlFiles(dir)) {
             String fileName = file.getName();
@@ -224,7 +216,7 @@ public class ConfigManager extends AbstractManager {
     private void initSellChestConfigs() {
         File dir = new File(UltimateShop.instance.getDataFolder(), "sell_chests");
         if (!dir.exists()) {
-            dir.mkdir();
+            dir.mkdirs();
         }
         for (File file : CommonUtil.getYamlFiles(dir)) {
             String fileName = file.getName();
@@ -236,9 +228,9 @@ public class ConfigManager extends AbstractManager {
     }
 
     private void initRandomPlaceholder() {
-        File dir = new File(UltimateShop.instance.getDataFolder(), "random_placeholders");
+        File dir = new File(UltimateShop.instance.getDataFolder(), "placeholders/random_placeholders");
         if (!dir.exists()) {
-            dir.mkdir();
+            dir.mkdirs();
         }
         for (File file : CommonUtil.getYamlFiles(dir)) {
             String fileName = file.getName();
@@ -263,9 +255,9 @@ public class ConfigManager extends AbstractManager {
     }
 
     private void initConditionalPlaceholder() {
-        File dir = new File(UltimateShop.instance.getDataFolder(), "conditional_placeholders");
+        File dir = new File(UltimateShop.instance.getDataFolder(), "placeholders/conditional_placeholders");
         if (!dir.exists()) {
-            dir.mkdir();
+            dir.mkdirs();
         }
         for (File file : CommonUtil.getYamlFiles(dir)) {
             String fileName = file.getName();
@@ -277,9 +269,9 @@ public class ConfigManager extends AbstractManager {
     }
 
     private void initCustomPlaceholder() {
-        File dir = new File(UltimateShop.instance.getDataFolder(), "custom_placeholders");
+        File dir = new File(UltimateShop.instance.getDataFolder(), "placeholders/custom_placeholders");
         if (!dir.exists()) {
-            dir.mkdir();
+            dir.mkdirs();
         }
         for (File file : CommonUtil.getYamlFiles(dir)) {
             String fileName = file.getName();
@@ -308,10 +300,10 @@ public class ConfigManager extends AbstractManager {
     public boolean isEditorConfirmedEnabled() {
         loadEditorEnableConfirmConfig();
         return editorEnableConfirmConfig.getBoolean("confirmations.understand-testing-status")
-                && editorEnableConfirmConfig.getBoolean("confirmations.backed-up-data-folder")
-                && editorEnableConfirmConfig.getBoolean("confirmations.read-related-wiki")
-                && editorEnableConfirmConfig.getBoolean("confirmations.accept-possible-errors")
-                && editorEnableConfirmConfig.getBoolean("confirmations.enable-editor");
+            && editorEnableConfirmConfig.getBoolean("confirmations.backed-up-data-folder")
+            && editorEnableConfirmConfig.getBoolean("confirmations.read-related-wiki")
+            && editorEnableConfirmConfig.getBoolean("confirmations.accept-possible-errors")
+            && editorEnableConfirmConfig.getBoolean("confirmations.enable-editor");
     }
 
     public ObjectShop getShop(String fileName) {
@@ -455,11 +447,30 @@ public class ConfigManager extends AbstractManager {
     }
 
     public String getClickAction(ClickType type, AbstractButton button, Player player) {
+        if (type == ClickType.RIGHT) {
+            String arcMenuAction = getArcMenuRightClickAction(button, player);
+            if (arcMenuAction != null) {
+                return arcMenuAction;
+            }
+        }
         String bedrockAction = getBedrockClickAction(button, player);
         if (bedrockAction != null) {
             return type == ClickType.LEFT ? bedrockAction : "none";
         }
         return findClickAction(type, getClickEventSection(button));
+    }
+
+    public String getArcMenuRightClickAction(AbstractButton button, Player player) {
+        if (player == null || !(button instanceof ObjectItem || button instanceof ObjectCopyItem)
+            || MenuStatusManager.menuStatusManager == null) {
+            return null;
+        }
+        var gui = MenuStatusManager.menuStatusManager.getOpeningGUI(player);
+        if (gui == null || !gui.getPresentation().equals("arcmenu") || gui.getMenu() == null) {
+            return null;
+        }
+        return gui.getMenu().getString("ui.renderers.arcmenu.right-click-action",
+            getString("menu.ui.renderers.arcmenu.right-click-action", "select-amount"));
     }
 
     private String findClickAction(ClickType type, ConfigurationSection section) {
@@ -482,7 +493,7 @@ public class ConfigManager extends AbstractManager {
     private String getBedrockClickAction(AbstractButton button, Player player) {
         // Quantity menu confirmation controls keep their own click rules.
         if (player == null || !(button instanceof ObjectItem || button instanceof ObjectCopyItem)
-                || !CommonUtil.isBedrockPlayer(player)) {
+            || !CommonUtil.isBedrockPlayer(player)) {
             return null;
         }
         ConfigurationSection settings = button.getButtonConfig();
@@ -491,7 +502,11 @@ public class ConfigManager extends AbstractManager {
             action = copy.getTargetItem().getButtonConfig().getString("bedrock.click-event");
         }
         if (action == null) {
-            action = config.getString("menu.bedrock.click-event");
+            ObjectItem item = button instanceof ObjectItem product
+                ? product : ((ObjectCopyItem) button).getTargetItem();
+            Object configured = getMenuRendererSetting(
+                item.getShopObject().getShopMenuObject().getConfig(), "form", "click-event", null);
+            action = configured instanceof String value ? value : null;
         }
         return action == null || action.isBlank() ? null : action.trim();
     }
@@ -583,5 +598,91 @@ public class ConfigManager extends AbstractManager {
 
     public Collection<ObjectSellChest> getSellChests() {
         return sellChestMap.values();
+    }
+
+    public void applyMenuUI(ConfigurationSection menu) {
+        copyMenuUIDefaults(config.getConfigurationSection("menu.ui"), getOrCreateMenuUISection(menu, "ui"));
+    }
+
+    public Object getMenuRendererSetting(
+        ConfigurationSection menu, String renderer, String path, Object fallback) {
+        String key = "ui.renderers." + renderer + "." + path;
+        Object global = config.get("menu." + key, fallback);
+        return menu == null ? global : menu.get(key, global);
+    }
+
+    public boolean getMenuRendererBoolean(
+        ConfigurationSection menu, String renderer, String path, boolean fallback) {
+        return Boolean.TRUE.equals(getMenuRendererSetting(menu, renderer, path, fallback));
+    }
+
+    public String getMenuRendererText(
+        ConfigurationSection menu, Player player, String renderer, String path,
+        String fallback, String... replacements) {
+        Object value = getMenuRendererSetting(menu, renderer, path, fallback);
+        String text = value instanceof String configured ? configured : fallback;
+        if (text.equalsIgnoreCase("{lang}")) {
+            String languageRenderer = renderer.equals("form") ? "bedrock" : renderer;
+            text = LanguageManager.languageManager.getStringText(
+                player, "override-lang.menu." + languageRenderer + "." + path, fallback);
+        }
+        if (text.contains("{plugin_folder}")) {
+            text = text.replace("{plugin_folder}", String.valueOf(UltimateShop.instance.getDataFolder()));
+        }
+        return CommonUtil.modifyString(player, text, replacements);
+    }
+
+    public String getDialogLayout(ConfigurationSection menu) {
+        if (getMenuUIMode(menu, "java").equals("ore")) {
+            return "ore";
+        }
+        return String.valueOf(getMenuRendererSetting(menu, "dialog", "layout", "multi-action"));
+    }
+
+    public String getMenuUIMode(ConfigurationSection menu, String client) {
+        String mode = menu == null ? "inherit" : menu.getString("ui.mode." + client, "inherit");
+        if (mode.equalsIgnoreCase("inherit")) {
+            mode =
+                config.getString(
+                "menu.ui.mode." + client, client.equals("java") ? "inventory" : "form");
+        }
+        mode = mode.toLowerCase(Locale.ROOT);
+        List<String> allowed =
+            client.equals("java")
+        ? List.of("inventory", "dialog", "ore", "arcmenu")
+        : List.of("inventory", "form");
+        if (!allowed.contains(mode)) {
+            ErrorManager.errorManager.sendErrorMessage(
+                "§cInvalid UI mode for " + client + ": " + mode);
+            return "inventory";
+        }
+        return mode;
+    }
+
+    public Object getProductUISetting(
+        ConfigurationSection menu, ConfigurationSection product, String path, Object fallback) {
+        if (product != null && product.contains("ui." + path)) {
+            return product.get("ui." + path);
+        }
+        Object global = config.get("menu.ui.products." + path, fallback);
+        return menu == null ? global : menu.get("ui.products." + path, global);
+    }
+
+    private ConfigurationSection getOrCreateMenuUISection(ConfigurationSection parent, String path) {
+        ConfigurationSection result = parent.getConfigurationSection(path);
+        return result == null ? parent.createSection(path) : result;
+    }
+
+    private void copyMenuUIDefaults(ConfigurationSection source, ConfigurationSection target) {
+        if (source == null) {
+            return;
+        }
+        for (String key : source.getKeys(false)) {
+            if (source.isConfigurationSection(key)) {
+                copyMenuUIDefaults(source.getConfigurationSection(key), getOrCreateMenuUISection(target, key));
+            } else if (!target.contains(key)) {
+                target.set(key, source.get(key));
+            }
+        }
     }
 }

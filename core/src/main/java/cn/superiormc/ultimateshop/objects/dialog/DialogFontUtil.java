@@ -1,5 +1,10 @@
 package cn.superiormc.ultimateshop.objects.dialog;
 
+import cn.superiormc.ultimateshop.managers.ErrorManager;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class DialogFontUtil {
 
     public static final int TILE_WIDTH = 128;
@@ -7,8 +12,15 @@ public class DialogFontUtil {
     public static final int BACKGROUND_TILE_HEIGHT = 126;
 
     public static String getBackgroundCharacter(int y, int verticalTile, int tile) {
-        if (y < 0 || y > 8190 || y % 9 != 0 || verticalTile < 0 || verticalTile >= 8 || tile < 0 || tile >= 8) {
-            throw new IllegalArgumentException("Invalid Ore background position");
+        if (y < 0
+            || y > 8190
+            || y % 9 != 0
+            || verticalTile < 0
+            || verticalTile >= 8
+            || tile < 0
+            || tile >= 8) {
+            ErrorManager.errorManager.sendErrorMessage("§cInvalid Ore background position");
+            return "";
         }
         return Character.toString(0x100000 + y / 9 * 64 + verticalTile * 8 + tile);
     }
@@ -17,8 +29,9 @@ public class DialogFontUtil {
         if (sprite == null) {
             return null;
         }
-        java.util.regex.Matcher match = java.util.regex.Pattern.compile(
-                "<sprite:\"([a-z0-9_.-]+):[a-z0-9_/-]+\":([a-z0-9_.:/-]+)>").matcher(sprite);
+        Matcher match =
+            Pattern.compile("<sprite:\"([a-z0-9_.-]+):[a-z0-9_/-]+\":([a-z0-9_.:/-]+)>")
+            .matcher(sprite);
         if (!match.find()) {
             return null;
         }
@@ -34,7 +47,14 @@ public class DialogFontUtil {
     }
 
     public static String getIconFontId(String texture, int size, int background, int loreRow) {
-        return getIconId(texture) + "_" + size + "_" + Integer.toHexString(background) + "_" + loreRow + "_anchored";
+        return getIconId(texture)
+        + "_"
+            + size
+        + "_"
+            + Integer.toHexString(background)
+        + "_"
+            + loreRow
+            + "_anchored";
     }
 
     public static String getIconCharacter(int row) {
@@ -51,7 +71,8 @@ public class DialogFontUtil {
 
     public static String getSpace(int pixels) {
         if (Math.abs(pixels) > 1999) {
-            throw new IllegalArgumentException("Ore Dialog spacing exceeds 1999 pixels");
+            ErrorManager.errorManager.sendErrorMessage("§cOre Dialog spacing exceeds 1999 pixels");
+            return "";
         }
         StringBuilder result = new StringBuilder();
         int remaining = Math.abs(pixels);
@@ -67,10 +88,14 @@ public class DialogFontUtil {
 
     public static String getSpace(double pixels) {
         if (!Double.isFinite(pixels) || Math.abs(pixels) > 1999) {
-            throw new IllegalArgumentException("Ore Dialog spacing exceeds 1999 pixels");
+            ErrorManager.errorManager.sendErrorMessage("§cOre Dialog spacing exceeds 1999 pixels");
+            return "";
         }
-        int halves = (int) Math.round(pixels * 2);
-        return getSpace(halves / 2) + (halves % 2 == 0 ? "" : Character.toString(halves > 0 ? 0xf1080 : 0xf1081));
+        int quarters = (int) Math.round(pixels * 4);
+        int fraction = Math.abs(quarters % 4);
+        return getSpace(quarters / 4)
+            + (fraction >= 2 ? Character.toString(quarters > 0 ? 0xf1080 : 0xf1081) : "")
+            + (fraction % 2 != 0 ? Character.toString(quarters > 0 ? 0xf1082 : 0xf1083) : "");
     }
 
     public static String getRowCharacter(int row) {

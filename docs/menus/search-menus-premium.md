@@ -1,128 +1,104 @@
 # 🔍Search Menus - Premium
 
-## Search Menus Config
+Search menus find products visible to the player by physical item and/or name. Store files in `plugins/UltimateShop/menus/search_menus/`; the bundled example is `search.yml`. Open with `/shop menu search` or an `open_menu` action.
 
-Search menus have those special options compare than common menu:
+A file in this folder is automatically a Search menu. For a file in `menus/common_menus/`, use `menu-type: search` or list its ID under `menu.search-gui.menu` in `config.yml`. Dedicated-folder files do not need that list. Keep IDs unique.
+
+## Inventory example
 
 ```yaml
+menu-type: search
+title: 'Search'
+content: 'Find a product.'
+size: 27
+layout:
+  - '000HNC000'
+  - '001111100'
+  - '066666660'
 input-item: '1'
 result-item: '6'
-
 action-items:
-  2:
+  H:
     action-type: input-name
     display-item:
       material: HOPPER
-      name: '&eSearch'
-  4:
+      name: '&eEnter a name'
+  C:
     action-type: clear-search
     display-item:
       material: BARRIER
       name: '&cClear'
-
 state-items:
-  3:
+  N:
     empty-input:
       display-item:
         material: PAPER
-        name: '&eWaiting'
+        name: '&7Waiting for input'
     has-input:
       display-item:
         material: COMPASS
-        name: '&aResult'
-
+        name: '&a{showing-amount}/{result-amount} results'
 no-result-item:
-  slot: 31
+  slot: 22
   display-item:
     material: BARRIER
-    name: '&cNo Result'
+    name: '&cNo results'
+result-lore:
+  - '&7Shop: {shop}'
+  - '&7Product: {product}'
 ```
 
-* input-item: Defines the marker used for input slot, these slots allow players to place items for matching. Must be a single char, use this char in `layout` option to set where it will display in menu.
-* result-item: Defines the marker used for result slots. Matched products are displayed into these slots in order. Must be a single char, use this char in `layout` option to set where it will display in menu.
-* action-items: Defines special Search GUI buttons. Current supported `action-type` values:
-  * `input-name` : open a chat prompt to search by text
-  * `clear-search`: return input items and clear the current text filt
-* state-items: Displays the current search status. Each state button supports:
-  * `empty-input`
-  * `has-input`
-  * Useful placeholders:
-    * `{result-amount}` total matched products
-    * `{showing-amount}` currently displayed amount
-    * `{input-amount}` total amount of input items
-    * `{name-keyword}` current text filter
-* no-result-item: Displayed when the current search has no matches. This is a fixed slot item defined by `slot`.
-* result-lore: Extra lore added to each result item.
-  * Useful placeholders:
-    * `{shop}`
-    * `{product}`
+## Configuration reference
 
-## Set Search Menu
+The [common menu settings](general-menus.md#common-menu-configuration) remain available. Use ordinary `buttons` for Back/Close/navigation.
 
-You should put seach menu ID in `menu.search-gui.menu` option in `config.yml` file.
+| Additional key | Meaning |
+| --- | --- |
+| `input-item` | Single input-slot marker, default `1` when no input markers are configured |
+| `input-items` | Additional input markers; combined with `input-item` |
+| `result-item` | Result-slot marker, default `6`; occurrences determine how many results can be shown |
+| `action-items.<id>.action-type` | `input-name` (alias `search-name`) for keyword entry; `clear-search` to clear the search |
+| `action-items.<id>.display-item` | Appearance of the special action button |
+| `clear-search-item.<id>` | Legacy action-button section; defaults `action-type` to `clear-search` |
+| `state-items.<id>.empty-input.display-item` | Display before items/keywords are present |
+| `state-items.<id>.has-input.display-item` | Display when search input is present |
+| `no-result-item.slot` | Fixed Inventory slot, zero-based; `-1` means no valid slot |
+| `no-result-item.display-item` | Display when a search has no matches |
+| `result-lore` | Extra lore on result entries; `{shop}` and `{product}` identify the source |
+| Special button `ui` | Visibility, appearance and placement for supported graphical renderers |
+
+Layout markers use the [normal token rules](general-menus.md#layout-option), including backtick-delimited longer IDs. Do not fill input/result markers with ordinary buttons. Place each special action/state ID in root `layout`; use a valid `no-result-item.slot`. Result capacity remains relevant to non-Inventory views.
+
+Status display placeholders are `{result-amount}` (all matches), `{showing-amount}` (shown matches), `{input-amount}` (physical input count) and `{name-keyword}` (keyword). These are search status values, not global placeholders available in arbitrary menus.
+
+## Matching and input lifecycle
+
+Inventory input slots accept physical item stacks. Search finds shop products linked to those items; a keyword filters by product/item names. Text-only search works without item stacks. Name matching uses the shared item-name/localization system; see [Localized Item Name](../features/localized-item-name-premium.md).
+
+In Inventory, `input-name` opens a chat prompt. The shared cancellation and clearing settings in `config.yml` are:
 
 ```yaml
-menu:
-  search-gui:
-    menu:
-      - 'search'
-      - 'search2' # Put more search menu ID here.
-```
-
-The default search menu file is `search_menus/search.yml`, and you can duplicate it to create more search menus.
-
-Command:
-
-```yaml
-/shop menu <menuName>
-```
-
-Examples:
-
-```yaml
-/shop menu search
-/shop menu search2
-```
-
-## Search Behavior
-
-The Search GUI uses two matching sources:
-
-### **Item Search**
-
-When players place items into input slots, the plugin looks for shop products linked to those items.
-
-### **Text Search**
-
-When players click an `input-name` or `search-name` button, they can type text in chat.\
-That text is used to match product display names, item names, and vanilla item names.
-
-If no input items are present, text-only search can still search across all visible products.
-
-{% hint style="info" %}
-Vanilla item name only supports English ID by default, if you want to support other language, you need to enable [Localized Item Name ](../features/localized-item-name-premium.md)feature.
-{% endhint %}
-
-Also, in Text Search we uses the shared prompt system.
-
-Unified cancel keyword in `config.yml`:
-
-```yml
 menu:
   prompt:
-    cancel-keyword: 'cancel'
-```
-
-Unified clear keyword for Search GUI:
-
-```yml
-menu:
+    cancel-keyword: cancel
   search-gui:
     prompt:
-      clear-keyword: '{lang}'
+      clear-keyword: clear
 ```
 
-Meaning:
+`{lang}` uses the configured language value. Cancel leaves the prior keyword; clear removes it. Clear-search also returns physical input items in Inventory. Closing/navigating away returns remaining input rather than consuming display/result icons. Result icons are GUI items, not player-owned stock.
 
-* typing `cancel-keyword`: cancels the current prompt
-* typing `clear-keyword`: clears the current name filter
+## Behaviour by presentation
+
+| Presentation | Search input and controls |
+| --- | --- |
+| Inventory | Physical item slots, chat keyword entry, action/state/no-result items |
+| Form | Dedicated Search button opens a Custom Form; ordinary buttons are included; no physical input or Inventory special status controls |
+| Native Dialog / Ore | Keyword input and result information; no physical item deposit filter |
+| ArcMenu | Chat keyword entry, clear-search, action/state/no-result controls, graphical result cards |
+
+Form opens its home first. Search input prefills the previous keyword; cancel returns to that home and preserves it. Form/Dialog blank keywords show no products. Selecting a result opens information; Back restores the search and keyword. Editing/submitting/cancelling the built-in input flow does not repeatedly run menu open/close actions. Ordinary navigation buttons leave the search flow and run with LEFT click in Form/Dialog.
+
+Form text defaults are `menu.ui.renderers.form.search.input` and `search.buttons.search`. Dialog uses the corresponding `menu.ui.renderers.dialog.search` keys. Chat keyword controls still use the prompt keywords above. Configure modes in this search menu's `ui.mode`, or inherit global modes.
+
+For ArcMenu/Ore, configure `ui.layout`, `ui.products.placement`, and `ui.placement` on graphical controls. Layout pagination does not remove the result-slot capacity defined at root. See [Unified UI and ArcMenu](arcmenu-menus-premium.md) and [Dialog/Ore](dialog-menus-premium.md) for exact renderer differences.

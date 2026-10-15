@@ -4,7 +4,7 @@ We added `{conditional}` built-in placeholder in plugin.
 
 ## Config
 
-All conditional placeholder configs are stored in `conditional_placeholders` folder. The file name is it's ID, for example: `buy.yml` means it's ID is `buy`. An example of it's config is like below:
+All conditional placeholder configs are stored in `placeholders/conditional_placeholders` folder. The file name is it's ID, for example: `buy.yml` means it's ID is `buy`. An example of it's config is like below:
 
 ```yaml
 mode: MAX

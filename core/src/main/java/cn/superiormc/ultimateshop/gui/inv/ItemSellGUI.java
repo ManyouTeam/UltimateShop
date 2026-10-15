@@ -5,7 +5,6 @@ import cn.superiormc.ultimateshop.gui.InvGUI;
 import cn.superiormc.ultimateshop.managers.LanguageManager;
 import cn.superiormc.ultimateshop.methods.Product.SellProductMethod;
 import cn.superiormc.ultimateshop.methods.ProductTradeStatus;
-import cn.superiormc.ultimateshop.objects.ObjectThingRun;
 import cn.superiormc.ultimateshop.objects.buttons.AbstractButton;
 import cn.superiormc.ultimateshop.objects.items.AbstractSingleThing;
 import cn.superiormc.ultimateshop.objects.items.ItemSellQuote;
@@ -35,14 +34,11 @@ public class ItemSellGUI extends InvGUI {
 
     private final ObjectItemSellMenu menu;
 
-    private final boolean bypass;
-
     private boolean selling;
 
     private ItemSellGUI(Player owner, ObjectItemSellMenu menu, boolean bypass) {
-        super(owner);
+        super(owner, bypass);
         this.menu = menu;
-        this.bypass = bypass;
     }
 
     @Override
@@ -50,7 +46,7 @@ public class ItemSellGUI extends InvGUI {
         if (menu == null || menu.getConfig() == null) {
             return;
         }
-        if (!bypass && !menu.getCondition().getAllBoolean(new ObjectThingRun(player))) {
+        if (!canDisplayMenu()) {
             LanguageManager.languageManager.sendStringText(player, "menu-condition-not-meet", "menu", menu.getName());
             return;
         }

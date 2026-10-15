@@ -1,11 +1,15 @@
 package cn.superiormc.ultimateshop.gui;
 
 import cn.superiormc.ultimateshop.UltimateShop;
+import cn.superiormc.ultimateshop.gui.arc.ArcMenuBridge;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.MenuStatusManager;
+import cn.superiormc.ultimateshop.objects.ObjectThingRun;
 import cn.superiormc.ultimateshop.objects.buttons.AbstractButton;
+import cn.superiormc.ultimateshop.objects.menus.ObjectMenu;
 import cn.superiormc.ultimateshop.utils.PacketInventoryUtil;
 import cn.superiormc.ultimateshop.utils.SchedulerUtil;
+
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
@@ -19,6 +23,24 @@ import java.util.Map;
 
 public abstract class InvGUI extends AbstractGUI implements InventoryHolder {
 
+    private String presentation = "inventory";
+
+    private final boolean bypass;
+
+    public void setPresentation(String presentation) {
+        this.presentation = presentation;
+    }
+
+    public String getPresentation() {
+        return presentation;
+    }
+
+    public final boolean canDisplayMenu() {
+        ObjectMenu menu = getMenu();
+        return menu != null && (bypass || menu.getCondition().getAllBoolean(
+            new ObjectThingRun(player)));
+    }
+
     protected Inventory inv;
 
     public Map<Integer, AbstractButton> menuButtons = new HashMap<>();
@@ -30,7 +52,12 @@ public abstract class InvGUI extends AbstractGUI implements InventoryHolder {
     public String title;
 
     public InvGUI(Player owner) {
+        this(owner, false);
+    }
+
+    public InvGUI(Player owner, boolean bypass) {
         super(owner);
+        this.bypass = bypass;
     }
 
     public boolean getChangeable() {
@@ -56,6 +83,10 @@ public abstract class InvGUI extends AbstractGUI implements InventoryHolder {
 
     @Override
     public void openGUI(boolean reopen) {
+        if (ArcMenuBridge.arcMenuBridge.open(this, reopen)) {
+            return;
+        }
+        setPresentation("inventory");
         GUIStatus previousStatus = MenuStatusManager.menuStatusManager.getGUIStatus(player);
         if (!MenuStatusManager.menuStatusManager.canOpenGUI(player, this, reopen)) {
             return;
@@ -66,16 +97,17 @@ public abstract class InvGUI extends AbstractGUI implements InventoryHolder {
             if (getMenu() != null) {
                 getMenu().doOpenAction(player, reopen);
             }
-            if (ConfigManager.configManager.getBooleanOrDefault("menu.shop.update", "menu.menu-update.circle-update") ||
-                    ConfigManager.configManager.getBoolean("menu.title-update.circle-update")) {
-                runTask = SchedulerUtil.runTaskTimer(()->{
-                    if (ConfigManager.configManager.getBooleanOrDefault("menu.shop.update", "menu.menu-update.circle-update")) {
+            if (ConfigManager.configManager.getBoolean("menu.menu-update.circle-update") ||
+                ConfigManager.configManager.getBoolean("menu.title-update.circle-update")) {
+                runTask = SchedulerUtil.runTaskTimer(()-> {
+                    if (ConfigManager.configManager.getBoolean("menu.menu-update.circle-update")) {
                         constructGUI();
                     }
                     if (ConfigManager.configManager.getBoolean("menu.title-update.circle-update") && UltimateShop.usePacketEvents) {
                         PacketInventoryUtil.packetInventoryUtil.updateTitle(player, InvGUI.this);
                     }
-                }, 20L, 20L);
+                }
+                    , 20L, 20L);
             }
         } else if (previousStatus == null) {
             MenuStatusManager.menuStatusManager.removeGUIStatus(player);

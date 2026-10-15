@@ -15,10 +15,11 @@ import cn.superiormc.ultimateshop.objects.items.AbstractSingleThing;
 import cn.superiormc.ultimateshop.objects.items.GiveResult;
 import cn.superiormc.ultimateshop.objects.items.ThingMode;
 import cn.superiormc.ultimateshop.objects.items.prices.ObjectPrices;
-import cn.superiormc.ultimateshop.objects.menus.MenuType;
 import cn.superiormc.ultimateshop.objects.menus.MenuSender;
+import cn.superiormc.ultimateshop.objects.menus.MenuType;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
 import cn.superiormc.ultimateshop.utils.MathUtil;
+
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -33,28 +34,28 @@ import java.util.Map;
 public class ModifyDisplayItem {
 
     public static ObjectDisplayItemStack modifyItem(Player player,
-                                                    int multi,
-                                                    ObjectDisplayItemStack addLoreDisplayItem,
-                                                    ObjectItem item,
-                                                    boolean buyMore) {
+        int multi,
+        ObjectDisplayItemStack addLoreDisplayItem,
+        ObjectItem item,
+        boolean buyMore) {
         return modifyItem(player, multi, addLoreDisplayItem, item, buyMore, false, "general");
     }
 
     public static ObjectDisplayItemStack modifyItem(Player player,
-                                                    int multi,
-                                                    ObjectDisplayItemStack addLoreDisplayItem,
-                                                    ObjectItem item,
-                                                    boolean buyMore,
-                                                    boolean bedrock,
-                                                    String clickType) {
+        int multi,
+        ObjectDisplayItemStack addLoreDisplayItem,
+        ObjectItem item,
+        boolean buyMore,
+        boolean bedrock,
+        String clickType) {
         return modifyItem(player, multi, addLoreDisplayItem, item, buyMore, bedrock, clickType,
-                buyMore ? multi : item.getDefaultBuyAmount(), buyMore ? multi : item.getDefaultSellAmount());
+            buyMore ? multi : item.getDefaultBuyAmount(), buyMore ? multi : item.getDefaultSellAmount());
     }
 
     public static ObjectDisplayItemStack modifyItem(Player player, int multi,
-                                                    ObjectDisplayItemStack addLoreDisplayItem, ObjectItem item,
-                                                    boolean buyMore, boolean bedrock, String clickType,
-                                                    int buyAmount, int sellAmount) {
+        ObjectDisplayItemStack addLoreDisplayItem, ObjectItem item,
+        boolean buyMore, boolean bedrock, String clickType,
+        int buyAmount, int sellAmount) {
         int displayAmount = buyMore ? multi : (item.getBuyPrice().empty ? sellAmount : buyAmount);
         if (clickType == null) {
             clickType = "general";
@@ -69,19 +70,19 @@ public class ModifyDisplayItem {
         }
         if (tempVal2.hasDisplayName()) {
             UltimateShop.methodUtil.setItemName(tempVal2, CommonUtil.modifyString(player, UltimateShop.methodUtil.getItemName(tempVal2), "amount", String.valueOf(displayAmount),
-                    "buy-amount", String.valueOf(buyAmount), "sell-amount", String.valueOf(sellAmount),
-                    "item-name", item.getDisplayName(player)), player);
+                "buy-amount", String.valueOf(buyAmount), "sell-amount", String.valueOf(sellAmount),
+                "item-name", item.getDisplayName(player)), player);
         }
         List<String> addLore = new ArrayList<>();
         if (tempVal2.hasLore()) {
             addLore.addAll(CommonUtil.modifyList(player,
-                    UltimateShop.methodUtil.getItemLore(tempVal2),
-                    "amount", String.valueOf(displayAmount),
-                    "buy-amount", String.valueOf(buyAmount), "sell-amount", String.valueOf(sellAmount),
-                    "item-name", item.getDisplayName(player)));
+                UltimateShop.methodUtil.getItemLore(tempVal2),
+                "amount", String.valueOf(displayAmount),
+                "buy-amount", String.valueOf(buyAmount), "sell-amount", String.valueOf(sellAmount),
+                "item-name", item.getDisplayName(player)));
         }
         addLore.addAll(getModifiedLore(player, multi, item, buyMore, bedrock, clickType,
-                addLoreDisplayItem.getItemStack(), MenuSender.getOpeningPresentation(player), buyAmount, sellAmount));
+            addLoreDisplayItem.getItemStack(), MenuSender.getOpeningPresentation(player), buyAmount, sellAmount));
         if (!addLore.isEmpty()) {
             UltimateShop.methodUtil.setItemLore(tempVal2, addLore, player);
         }
@@ -90,45 +91,54 @@ public class ModifyDisplayItem {
     }
 
     public static List<String> getModifiedLore(
-            Player player,
-            int multi,
-            ObjectItem item,
-            boolean buyMore,
-            boolean bedrock,
-            String clickType
-    ) {
+        Player player,
+        int multi,
+        ObjectItem item,
+        boolean buyMore,
+        boolean bedrock,
+        String clickType
+        ) {
         return getModifiedLore(player, multi, item, buyMore, bedrock, clickType, MenuSender.getOpeningPresentation(player));
     }
 
     public static List<String> getModifiedLore(Player player, int multi, ObjectItem item,
-                                              boolean buyMore, boolean bedrock, String clickType, String presentation) {
+        boolean buyMore, boolean bedrock, String clickType, String presentation) {
         return getModifiedLore(player, multi, item, buyMore, bedrock, clickType, item.getDisplayItem(player), presentation);
     }
 
     public static List<String> getModifiedLore(Player player, ObjectItem item, int buyAmount,
-                                               int sellAmount, String presentation) {
-        return getModifiedLore(player, buyAmount, item, false, true, "general", item.getDisplayItem(player),
-                presentation, buyAmount, sellAmount);
+        int sellAmount, String presentation) {
+        return getModifiedLore(
+            player,
+            buyAmount,
+            item,
+            false,
+            CommonUtil.isBedrockPlayer(player),
+            "general",
+            item.getDisplayItem(player),
+            presentation,
+            buyAmount,
+            sellAmount);
     }
 
     private static List<String> getModifiedLore(
-            Player player,
-            int multi,
-            ObjectItem item,
-            boolean buyMore,
-            boolean bedrock,
-            String clickType,
-            ItemStack displayedItem,
-            String presentation
-    ) {
+        Player player,
+        int multi,
+        ObjectItem item,
+        boolean buyMore,
+        boolean bedrock,
+        String clickType,
+        ItemStack displayedItem,
+        String presentation
+        ) {
         return getModifiedLore(player, multi, item, buyMore, bedrock, clickType, displayedItem, presentation,
-                buyMore ? multi : item.getDefaultBuyAmount(), buyMore ? multi : item.getDefaultSellAmount());
+            buyMore ? multi : item.getDefaultBuyAmount(), buyMore ? multi : item.getDefaultSellAmount());
     }
 
     private static List<String> getModifiedLore(Player player, int multi, ObjectItem item,
-                                                boolean buyMore, boolean bedrock, String clickType,
-                                                ItemStack displayedItem, String presentation,
-                                                int buyAmount, int sellAmount) {
+        boolean buyMore, boolean bedrock, String clickType,
+        ItemStack displayedItem, String presentation,
+        int buyAmount, int sellAmount) {
         int displayAmount = buyMore ? multi : (item.getBuyPrice().empty ? sellAmount : buyAmount);
 
         List<String> resultLore = new ArrayList<>();
@@ -144,9 +154,9 @@ public class ModifyDisplayItem {
         conditionResolvers.put('t', argument -> matchesPresentation(presentation, argument));
 
         List<String> buyPrice = ObjectPrices.getDisplayName(player, buyAmount,
-                item.getBuyPrice().take(player.getInventory(), player,
-                        playerCache.getBuyUseTimes(), buyAmount, true).getResultMap(),
-                item.getBuyPrice().getMode(), false);
+            item.getBuyPrice().take(player.getInventory(), player,
+            playerCache.getBuyUseTimes(), buyAmount, true).getResultMap(),
+            item.getBuyPrice().getMode(), false);
         ObjectPrices displaySellPrice = item.getDisplaySellPrice();
         GiveResult sellResult = displaySellPrice.give(player, playerCache.getSellUseTimes(), sellAmount);
         Map<AbstractSingleThing, BigDecimal> sellResultMap;
@@ -159,13 +169,13 @@ public class ModifyDisplayItem {
             sellResultMap = sellResult.getResultMapForSellMultiplierDisplay(player);
         }
         List<String> sellPrice = ObjectPrices.getDisplayName(player, sellAmount,
-                sellResultMap, displaySellPrice.getMode(), false);
+            sellResultMap, displaySellPrice.getMode(), false);
 
         for (String rawLine : item.getAddLore(player)) {
 
             if (rawLine.endsWith("-i") || rawLine.endsWith("-m") || rawLine.endsWith("-b")) {
                 ErrorManager.errorManager.sendErrorMessage("§cYour display item add lore config is not updated, please reconfigure your " +
-                        "display item add lore configs at config.yml file! You can get latest config at plugin Wiki: https://ultimateshop.superiormc.cn/info/configuration-files .");
+                    "display item add lore configs at config.yml file! You can get latest config at plugin Wiki: https://ultimateshop.superiormc.cn/info/configuration-files .");
             }
 
             ParsedLine parsed = ParsedLine.parse(rawLine);
@@ -180,7 +190,7 @@ public class ModifyDisplayItem {
                 String pureText = parsed.getPureText();
 
                 if (pureText.endsWith("{buy-price}") && parseEnableNewLineForPrice(item.getBuyPrice().getMode())) {
-                     if (!buyPrice.isEmpty()) {
+                    if (!buyPrice.isEmpty()) {
                         String prefix = pureText.replace("{buy-price}", "");
                         if (!prefix.isEmpty()) {
                             List<String> tempVal1 = new ArrayList<>();
@@ -213,51 +223,51 @@ public class ModifyDisplayItem {
 
         if (!resultLore.isEmpty()) {
             resultLore = CommonUtil.modifyList(player, resultLore,
-                    "buy-price", ObjectPrices.getDisplayNameInLine(player, buyPrice, item.getBuyPrice().getMode()),
-                    "sell-price", ObjectPrices.getDisplayNameInLine(player, sellPrice, item.getDisplaySellPrice().getMode()),
-                    "buy-limit-player", String.valueOf(item.getPlayerBuyLimit(player)),
-                    "sell-limit-player", String.valueOf(item.getPlayerSellLimit(player)),
-                    "buy-limit-server", String.valueOf(item.getServerBuyLimit(player)),
-                    "sell-limit-server", String.valueOf(item.getServerSellLimit(player)),
+                "buy-price", ObjectPrices.getDisplayNameInLine(player, buyPrice, item.getBuyPrice().getMode()),
+                "sell-price", ObjectPrices.getDisplayNameInLine(player, sellPrice, item.getDisplaySellPrice().getMode()),
+                "buy-limit-player", String.valueOf(item.getPlayerBuyLimit(player)),
+                "sell-limit-player", String.valueOf(item.getPlayerSellLimit(player)),
+                "buy-limit-server", String.valueOf(item.getServerBuyLimit(player)),
+                "sell-limit-server", String.valueOf(item.getServerSellLimit(player)),
 
-                    "buy-total-player", String.valueOf(playerCache.getTotalBuyUseTimes()),
-                    "sell-total-player", String.valueOf(playerCache.getTotalSellUseTimes()),
-                    "buy-total-server", String.valueOf(serverCache.getTotalBuyUseTimes()),
-                    "sell-total-server", String.valueOf(serverCache.getTotalSellUseTimes()),
+                "buy-total-player", String.valueOf(playerCache.getTotalBuyUseTimes()),
+                "sell-total-player", String.valueOf(playerCache.getTotalSellUseTimes()),
+                "buy-total-server", String.valueOf(serverCache.getTotalBuyUseTimes()),
+                "sell-total-server", String.valueOf(serverCache.getTotalSellUseTimes()),
 
-                    "buy-times-player", String.valueOf(playerCache.getBuyUseTimes()),
-                    "sell-times-player", String.valueOf(playerCache.getSellUseTimes()),
+                "buy-times-player", String.valueOf(playerCache.getBuyUseTimes()),
+                "sell-times-player", String.valueOf(playerCache.getSellUseTimes()),
 
-                    "buy-refresh-player", playerCache.getBuyRefreshTimeDisplayName(player),
-                    "sell-refresh-player", playerCache.getSellRefreshTimeDisplayName(player),
-                    "buy-next-player", playerCache.getBuyRefreshTimeNextName(player),
-                    "sell-next-player", playerCache.getSellRefreshTimeNextName(player),
+                "buy-refresh-player", playerCache.getBuyRefreshTimeDisplayName(player),
+                "sell-refresh-player", playerCache.getSellRefreshTimeDisplayName(player),
+                "buy-next-player", playerCache.getBuyRefreshTimeNextName(player),
+                "sell-next-player", playerCache.getSellRefreshTimeNextName(player),
 
-                    "buy-times-server", String.valueOf(serverCache.getBuyUseTimes()),
-                    "sell-times-server", String.valueOf(serverCache.getSellUseTimes()),
+                "buy-times-server", String.valueOf(serverCache.getBuyUseTimes()),
+                "sell-times-server", String.valueOf(serverCache.getSellUseTimes()),
 
-                    "buy-refresh-server", serverCache.getBuyRefreshTimeDisplayName(player),
-                    "sell-refresh-server", serverCache.getSellRefreshTimeDisplayName(player),
-                    "buy-next-server", serverCache.getBuyRefreshTimeNextName(player),
-                    "sell-next-server", serverCache.getSellRefreshTimeNextName(player),
+                "buy-refresh-server", serverCache.getBuyRefreshTimeDisplayName(player),
+                "sell-refresh-server", serverCache.getSellRefreshTimeDisplayName(player),
+                "buy-next-server", serverCache.getBuyRefreshTimeNextName(player),
+                "sell-next-server", serverCache.getSellRefreshTimeNextName(player),
 
-                    "last-buy-player", playerCache.getBuyLastTimeName(),
-                    "last-sell-player", playerCache.getSellLastTimeName(),
-                    "last-buy-server", serverCache.getBuyLastTimeName(),
-                    "last-sell-server", serverCache.getSellLastTimeName(),
+                "last-buy-player", playerCache.getBuyLastTimeName(),
+                "last-sell-player", playerCache.getSellLastTimeName(),
+                "last-buy-server", serverCache.getBuyLastTimeName(),
+                "last-sell-server", serverCache.getSellLastTimeName(),
 
-                    "last-reset-buy-player", playerCache.getBuyLastResetTimeName(),
-                    "last-reset-sell-player", playerCache.getSellLastResetTimeName(),
-                    "last-reset-buy-server", serverCache.getBuyLastResetTimeName(),
-                    "last-reset-sell-server", serverCache.getSellLastResetTimeName(),
+                "last-reset-buy-player", playerCache.getBuyLastResetTimeName(),
+                "last-reset-sell-player", playerCache.getSellLastResetTimeName(),
+                "last-reset-buy-server", serverCache.getBuyLastResetTimeName(),
+                "last-reset-sell-server", serverCache.getSellLastResetTimeName(),
 
-                    "buy-click", getBuyClickPlaceholder(player, buyAmount, item, clickType),
-                    "sell-click", getSellClickPlaceholder(player, sellAmount, item, clickType),
-                    "amount", String.valueOf(displayAmount),
-                    "buy-amount", String.valueOf(buyAmount),
-                    "sell-amount", String.valueOf(sellAmount),
-                    "item-name", item.getDisplayName(player)
-            );
+                "buy-click", getBuyClickPlaceholder(player, buyAmount, item, clickType),
+                "sell-click", getSellClickPlaceholder(player, sellAmount, item, clickType),
+                "amount", String.valueOf(displayAmount),
+                "buy-amount", String.valueOf(buyAmount),
+                "sell-amount", String.valueOf(sellAmount),
+                "item-name", item.getDisplayName(player)
+                );
         }
 
         return resultLore;
@@ -417,14 +427,14 @@ public class ModifyDisplayItem {
     }
 
     private static Map<Character, ConditionResolver> buildConditionResolvers(
-            Player player,
-            ObjectItem item,
-            String clickType,
-            boolean buyMore,
-            boolean bedrock,
-            ObjectUseTimesCache p,
-            ObjectUseTimesCache s
-    ) {
+        Player player,
+        ObjectItem item,
+        String clickType,
+        boolean buyMore,
+        boolean bedrock,
+        ObjectUseTimesCache p,
+        ObjectUseTimesCache s
+        ) {
         Map<Character, ConditionResolver> map = new HashMap<>();
 
         map.put('a', ignored -> !item.getBuyPrice().empty);
@@ -444,7 +454,7 @@ public class ModifyDisplayItem {
         map.put('l', ignored -> item.isAllowFavourite());
         map.put('m', ignored -> !item.getDisplaySellPrice().empty && item.isEnableSellAll());
         map.put('n', ignored -> (!item.getBuyPrice().empty && parseClickType(item, clickType, true)) ||
-                (!item.getDisplaySellPrice().empty && parseClickType(item, clickType, false)));
+            (!item.getDisplaySellPrice().empty && parseClickType(item, clickType, false)));
         map.put('o', ignored -> ShopHelper.getOpeningMenu(player) != null && ShopHelper.getOpeningMenu(player).getType() == MenuType.Favourite);
 
         map.put('p', ignored -> buyMore);
@@ -472,28 +482,28 @@ public class ModifyDisplayItem {
         String s = "";
         switch (BuyProductMethod.startBuy(item, player, false, true, multi).getStatus()) {
             case ERROR:
-                s = ConfigManager.configManager.getStringWithLang(player, "placeholder.click.error", "",  "amount", String.valueOf(multi));
-                break;
+            s = ConfigManager.configManager.getStringWithLang(player, "placeholder.click.error", "",  "amount", String.valueOf(multi));
+            break;
             case PERMISSION:
             case REQUIRE_CONDITION_NOT_MEET:
-                s = ConfigManager.configManager.getStringWithLang(player, "placeholder.click.buy-condition-not-meet", "",  "amount", String.valueOf(multi));
-                break;
+            s = ConfigManager.configManager.getStringWithLang(player, "placeholder.click.buy-condition-not-meet", "",  "amount", String.valueOf(multi));
+            break;
             case PLAYER_MAX:
-                s = ConfigManager.configManager.getStringWithLang(player, "placeholder.click.buy-max-limit-player", "", "amount", String.valueOf(multi));
-                break;
+            s = ConfigManager.configManager.getStringWithLang(player, "placeholder.click.buy-max-limit-player", "", "amount", String.valueOf(multi));
+            break;
             case SERVER_MAX:
-                s = ConfigManager.configManager.getStringWithLang(player, "placeholder.click.buy-max-limit-server", "", "amount", String.valueOf(multi));
-                break;
+            s = ConfigManager.configManager.getStringWithLang(player, "placeholder.click.buy-max-limit-server", "", "amount", String.valueOf(multi));
+            break;
             case NOT_ENOUGH :
-                s = ConfigManager.configManager.getStringWithLang(player, "placeholder.click.buy-price-not-enough", "", "amount", String.valueOf(multi));
-                break;
+            s = ConfigManager.configManager.getStringWithLang(player, "placeholder.click.buy-price-not-enough", "", "amount", String.valueOf(multi));
+            break;
             case DONE :
-                if (item.getDisplaySellPrice().empty || clickType.equals("buy")) {
-                    s = ConfigManager.configManager.getStringWithLang(player, "placeholder.click.buy-with-no-sell", "", "amount", String.valueOf(multi));
-                } else {
-                    s = ConfigManager.configManager.getStringWithLang(player, "placeholder.click.buy", "", "amount", String.valueOf(multi));
-                }
-                break;
+            if (item.getDisplaySellPrice().empty || clickType.equals("buy")) {
+                s = ConfigManager.configManager.getStringWithLang(player, "placeholder.click.buy-with-no-sell", "", "amount", String.valueOf(multi));
+            } else {
+                s = ConfigManager.configManager.getStringWithLang(player, "placeholder.click.buy", "", "amount", String.valueOf(multi));
+            }
+            break;
         }
         return s;
     }
@@ -509,31 +519,31 @@ public class ModifyDisplayItem {
         String s;
         switch (SellProductMethod.startSell(item, player, false, true, multi).getStatus()) {
             case ERROR :
-                s = ConfigManager.configManager.getStringWithLang(player, "placeholder.click.error", "",  "amount", String.valueOf(multi));
-                break;
+            s = ConfigManager.configManager.getStringWithLang(player, "placeholder.click.error", "",  "amount", String.valueOf(multi));
+            break;
             case PERMISSION:
             case REQUIRE_CONDITION_NOT_MEET:
-                s = ConfigManager.configManager.getStringWithLang(player, "placeholder.click.sell-condition-not-meet", "",  "amount", String.valueOf(multi));
-                break;
+            s = ConfigManager.configManager.getStringWithLang(player, "placeholder.click.sell-condition-not-meet", "",  "amount", String.valueOf(multi));
+            break;
             case PLAYER_MAX:
-                s = ConfigManager.configManager.getStringWithLang(player, "placeholder.click.sell-max-limit-player", "",  "amount", String.valueOf(multi));
-                break;
+            s = ConfigManager.configManager.getStringWithLang(player, "placeholder.click.sell-max-limit-player", "",  "amount", String.valueOf(multi));
+            break;
             case SERVER_MAX:
-                s = ConfigManager.configManager.getStringWithLang(player, "placeholder.click.sell-max-limit-server", "",  "amount", String.valueOf(multi));
-                break;
+            s = ConfigManager.configManager.getStringWithLang(player, "placeholder.click.sell-max-limit-server", "",  "amount", String.valueOf(multi));
+            break;
             case NOT_ENOUGH :
-                s = ConfigManager.configManager.getStringWithLang(player, "placeholder.click.sell-price-not-enough", "",  "amount", String.valueOf(multi));
-                break;
+            s = ConfigManager.configManager.getStringWithLang(player, "placeholder.click.sell-price-not-enough", "",  "amount", String.valueOf(multi));
+            break;
             case DONE :
-                if (item.getBuyPrice().empty || clickType.equals("sell")) {
-                    s = ConfigManager.configManager.getStringWithLang(player, "placeholder.click.sell-with-no-buy", "",  "amount", String.valueOf(multi));
-                } else {
-                    s = ConfigManager.configManager.getStringWithLang(player, "placeholder.click.sell", "",  "amount", String.valueOf(multi));
-                }
-                break;
+            if (item.getBuyPrice().empty || clickType.equals("sell")) {
+                s = ConfigManager.configManager.getStringWithLang(player, "placeholder.click.sell-with-no-buy", "",  "amount", String.valueOf(multi));
+            } else {
+                s = ConfigManager.configManager.getStringWithLang(player, "placeholder.click.sell", "",  "amount", String.valueOf(multi));
+            }
+            break;
             default :
-                s = "Unknown";
-                break;
+            s = "Unknown";
+            break;
         }
         return s;
     }
@@ -544,28 +554,28 @@ public class ModifyDisplayItem {
         }
         switch (clickType) {
             case "buy" :
-                return buyOrSell;
+            return buyOrSell;
             case "sell" :
-                return !buyOrSell;
+            return !buyOrSell;
             case "sell-all" :
-                return !buyOrSell && item.isEnableSellAll();
+            return !buyOrSell && item.isEnableSellAll();
             case "buy-or-sell" :
-                if (item.getBuyPrice().empty && !item.getDisplaySellPrice().empty) {
-                    return !buyOrSell;
-                } else {
-                    return buyOrSell;
-                }
+            if (item.getBuyPrice().empty && !item.getDisplaySellPrice().empty) {
+                return !buyOrSell;
+            } else {
+                return buyOrSell;
+            }
             default:
-                return false;
+            return false;
         }
     }
 
     private static boolean parseEnableNewLineForPrice(ThingMode mode) {
         return switch (mode) {
             case ALL, CLASSIC_ALL ->
-                    ConfigManager.configManager.getString("placeholder.price.split-symbol-all").equals(";;");
+            ConfigManager.configManager.getString("placeholder.price.split-symbol-all").equals(";;");
             case ANY, CLASSIC_ANY ->
-                    ConfigManager.configManager.getString("placeholder.price.split-symbol-any").equals(";;");
+            ConfigManager.configManager.getString("placeholder.price.split-symbol-any").equals(";;");
             default -> false;
         };
     }

@@ -10,6 +10,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.inventory.ClickType;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -27,11 +28,11 @@ public class EditorPresetRegistry {
             "COOLDOWN_CUSTOM"
     };
 
-    private static final String[] CLICK_TYPES = java.util.Arrays.stream(ClickType.values())
+    private static final String[] CLICK_TYPES = Arrays.stream(ClickType.values())
             .map(Enum::name)
             .toArray(String[]::new);
 
-    private static final String[] FAIL_TYPES = java.util.Arrays.stream(ProductTradeStatus.Status.values())
+    private static final String[] FAIL_TYPES = Arrays.stream(ProductTradeStatus.Status.values())
             .map(Enum::name)
             .toArray(String[]::new);
 
@@ -43,7 +44,8 @@ public class EditorPresetRegistry {
 
         return switch (kind) {
             case ROOT_SHOP -> new EditorPreset(kind, rootShopFields());
-            case ROOT_MENU -> new EditorPreset(kind, rootMenuFields());
+            case ROOT_MENU -> new EditorPreset(kind, rootMenuFields(target));
+            case UI_SECTION -> new EditorPreset(kind, uiFields(target, path));
             case SHOP_ITEM -> new EditorPreset(kind, shopItemFields());
             case BUTTON_ENTRY -> new EditorPreset(kind, buttonFields());
             case LIMITS_SECTION -> new EditorPreset(kind, limitFields(target, path));
@@ -60,6 +62,10 @@ public class EditorPresetRegistry {
 
         if (normalizedPath.isEmpty()) {
             return target.getScope() == EditorScope.SHOP ? EditorPresetKind.ROOT_SHOP : EditorPresetKind.ROOT_MENU;
+        }
+        if (normalizedPath.equals("ui") || normalizedPath.endsWith(".ui")
+                || normalizedPath.equals("ui.products") || normalizedPath.endsWith(".ui.products")) {
+            return EditorPresetKind.UI_SECTION;
         }
         if (target.getScope() == EditorScope.SHOP && normalizedPath.equals("settings.menu-settings")) {
             return EditorPresetKind.ROOT_MENU;
@@ -112,24 +118,13 @@ public class EditorPresetRegistry {
         );
     }
 
-    private static List<EditorPresetField> rootMenuFields() {
-        return List.of(
+    private static List<EditorPresetField> rootMenuFields(EditorTarget target) {
+        List<EditorPresetField> fields = new ArrayList<>(List.of(
                 field("title", Material.NAME_TAG, EditorPresetFieldType.STRING),
+                field("content", Material.PAPER, EditorPresetFieldType.STRING),
+                field("ui", Material.PAINTING, EditorPresetFieldType.SECTION),
                 field("size", Material.CHEST, EditorPresetFieldType.INTEGER),
                 field("dynamic-layout", Material.REDSTONE, EditorPresetFieldType.BOOLEAN),
-                field("bedrock.enabled", Material.MAP, EditorPresetFieldType.BOOLEAN),
-                field("bedrock.content", Material.PAPER, EditorPresetFieldType.STRING),
-                field("dialog.enabled", Material.WRITABLE_BOOK, EditorPresetFieldType.BOOLEAN),
-                field("dialog.content", Material.PAPER, EditorPresetFieldType.STRING),
-                field("dialog.layout", Material.ITEM_FRAME, EditorPresetFieldType.STRING),
-                field("dialog.button-width", Material.STONE_BUTTON, EditorPresetFieldType.INTEGER),
-                field("dialog.columns", Material.BOOKSHELF, EditorPresetFieldType.INTEGER),
-                field("dialog.sidebar.enabled", Material.LEVER, EditorPresetFieldType.BOOLEAN),
-                field("dialog.sidebar.menu", Material.CHEST, EditorPresetFieldType.STRING),
-                field("dialog.sidebar.template", Material.PAINTING, EditorPresetFieldType.STRING),
-                field("dialog.sidebar.x", Material.PAPER, EditorPresetFieldType.INTEGER),
-                field("dialog.sidebar.y", Material.PAPER, EditorPresetFieldType.INTEGER),
-                field("dialog.sidebar.gap-y", Material.PAPER, EditorPresetFieldType.INTEGER),
                 field("layout", Material.PAPER, EditorPresetFieldType.STRING_LIST),
                 field("conditions", Material.COMPARATOR, EditorPresetFieldType.CONDITIONS),
                 field("open-actions", Material.BLAZE_POWDER, EditorPresetFieldType.ACTIONS),
@@ -137,13 +132,126 @@ public class EditorPresetRegistry {
                 field("buttons", Material.STONE_BUTTON, EditorPresetFieldType.SECTION),
                 field("custom-command.name", Material.COMMAND_BLOCK, EditorPresetFieldType.STRING),
                 field("custom-command.description", Material.WRITABLE_BOOK, EditorPresetFieldType.STRING)
+        ));
+        switch (target.getScope()) {
+            case SEARCH_MENU -> {
+                fields.add(field("input-item", Material.HOPPER, EditorPresetFieldType.STRING));
+                fields.add(field("result-item", Material.CHEST, EditorPresetFieldType.STRING));
+                fields.add(field("action-items", Material.STONE_BUTTON, EditorPresetFieldType.SECTION));
+                fields.add(field("state-items", Material.PAPER, EditorPresetFieldType.SECTION));
+                fields.add(field("no-result-item", Material.BARRIER, EditorPresetFieldType.SECTION));
+                fields.add(field("result-lore", Material.WRITABLE_BOOK, EditorPresetFieldType.STRING_LIST));
+            }
+            case FAVOURITE_MENU -> {
+                fields.add(field("result-item", Material.CHEST, EditorPresetFieldType.STRING));
+                fields.add(field("edit-mode-item", Material.NAME_TAG, EditorPresetFieldType.SECTION));
+                fields.add(field("empty-item", Material.BARRIER, EditorPresetFieldType.SECTION));
+                fields.add(field("result-lore", Material.WRITABLE_BOOK, EditorPresetFieldType.STRING_LIST));
+                fields.add(field("editing-result-lore", Material.WRITABLE_BOOK, EditorPresetFieldType.STRING_LIST));
+            }
+            case BUY_MORE_MENU -> {
+                fields.add(field("amount-items", Material.SLIME_BALL, EditorPresetFieldType.SECTION));
+                fields.add(field("display-items", Material.WRITABLE_BOOK, EditorPresetFieldType.STRING_LIST));
+                fields.add(field("display-items-ui", Material.PAINTING, EditorPresetFieldType.SECTION));
+                fields.add(field("confirm-items", Material.STONE_BUTTON, EditorPresetFieldType.SECTION));
+            }
+            case ITEM_SELL_MENU -> {
+                fields.add(field("input-item", Material.HOPPER, EditorPresetFieldType.STRING));
+                fields.add(field("confirm-item", Material.STONE_BUTTON, EditorPresetFieldType.STRING));
+                fields.add(field("confirm-button", Material.STONE_BUTTON, EditorPresetFieldType.SECTION));
+                fields.add(field("max-sell-amount", Material.SLIME_BALL, EditorPresetFieldType.INTEGER));
+            }
+            default -> {
+                // Common and shop template menus use the shared fields.
+            }
+        }
+        return fields;
+    }
+
+    private static String[] clickActionIds() {
+        LinkedHashSet<String> actions = new LinkedHashSet<>(
+                List.of("select-amount", "buy", "sell", "buy-or-sell", "sell-all", "add-favourite", "none"));
+        if (ConfigManager.configManager != null) {
+            ConfigurationSection custom = ConfigManager.configManager.getSection("menu.click-event-actions");
+            if (custom != null) {
+                actions.addAll(custom.getKeys(false));
+            }
+        }
+        return actions.toArray(new String[0]);
+    }
+
+    private static List<EditorPresetField> uiFields(EditorTarget target, String path) {
+        if (path.endsWith("ui.products")) {
+            return List.of(
+                    field("placement", Material.PAINTING, EditorPresetFieldType.SECTION),
+                    field("card", Material.PAINTING, EditorPresetFieldType.SECTION),
+                    field("price.enabled", Material.GOLD_INGOT, EditorPresetFieldType.BOOLEAN),
+                    field("price.formats", Material.GOLD_INGOT, EditorPresetFieldType.SECTION),
+                    field("actions.primary", Material.STONE_BUTTON, EditorPresetFieldType.STRING_LIST),
+                    field("actions", Material.STONE_BUTTON, EditorPresetFieldType.SECTION)
+            );
+        }
+        boolean menu = path.equals("settings.menu-settings.ui")
+                || path.equals("ui") && target.getScope() != EditorScope.SHOP;
+        if (!menu) {
+            return List.of(
+                    field("visible-in", Material.ENDER_EYE, EditorPresetFieldType.STRING_LIST),
+                    field("show-sprite", Material.ITEM_FRAME, EditorPresetFieldType.BOOLEAN),
+                    choice("appearance", Material.PAINTING, "card", "button"),
+                    field("placement.enabled", Material.LEVER, EditorPresetFieldType.BOOLEAN),
+                    field("placement.area", Material.NAME_TAG, EditorPresetFieldType.STRING),
+                    field("placement.order", Material.SLIME_BALL, EditorPresetFieldType.INTEGER),
+                    field("placement.row", Material.SLIME_BALL, EditorPresetFieldType.INTEGER),
+                    field("placement.column", Material.SLIME_BALL, EditorPresetFieldType.INTEGER),
+                    field("placement.x", Material.SLIME_BALL, EditorPresetFieldType.INTEGER),
+                    field("placement.y", Material.SLIME_BALL, EditorPresetFieldType.INTEGER),
+                    field("placement.width", Material.SLIME_BALL, EditorPresetFieldType.INTEGER),
+                    field("placement.height", Material.SLIME_BALL, EditorPresetFieldType.INTEGER),
+                    field("font-size", Material.WRITABLE_BOOK, EditorPresetFieldType.DOUBLE),
+                    choice("text-align", Material.WRITABLE_BOOK, "left", "center", "right"),
+                    field("price.enabled", Material.GOLD_INGOT, EditorPresetFieldType.BOOLEAN),
+                    field("price.formats", Material.GOLD_INGOT, EditorPresetFieldType.SECTION),
+                    field("actions.primary", Material.STONE_BUTTON, EditorPresetFieldType.STRING_LIST),
+                    field("actions", Material.STONE_BUTTON, EditorPresetFieldType.SECTION)
+            );
+        }
+        return List.of(
+                choice("mode.java", Material.CHEST, "inherit", "inventory", "dialog", "ore", "arcmenu"),
+                choice("mode.bedrock", Material.MAP, "inherit", "inventory", "form"),
+                field("layout.canvas.width", Material.PAPER, EditorPresetFieldType.INTEGER),
+                field("layout.canvas.height", Material.PAPER, EditorPresetFieldType.INTEGER),
+                field("layout.header", Material.NAME_TAG, EditorPresetFieldType.SECTION),
+                field("layout.areas", Material.PAINTING, EditorPresetFieldType.SECTION),
+                field("layout.pagination", Material.ARROW, EditorPresetFieldType.SECTION),
+                field("products", Material.CHEST, EditorPresetFieldType.SECTION),
+                field("theme", Material.PAINTING, EditorPresetFieldType.SECTION),
+                field("text", Material.WRITABLE_BOOK, EditorPresetFieldType.SECTION),
+                field("renderers.inventory", Material.CHEST, EditorPresetFieldType.SECTION),
+                field("renderers.form", Material.MAP, EditorPresetFieldType.SECTION),
+                choice("renderers.dialog.layout", Material.BOOK, "multi-action", "item-action-list"),
+                field("renderers.dialog.button-width", Material.STONE_BUTTON, EditorPresetFieldType.INTEGER),
+                field("renderers.dialog.columns", Material.BOOKSHELF, EditorPresetFieldType.INTEGER),
+                field("renderers.dialog", Material.BOOK, EditorPresetFieldType.SECTION),
+                field("renderers.ore", Material.PAINTING, EditorPresetFieldType.SECTION),
+                EditorPresetField.choice("renderers.arcmenu.right-click-action", "ArcMenu Right-click Action",
+                        "Product right-click action. Default select-amount opens product details.",
+                        Material.STONE_BUTTON, clickActionIds()),
+                field("renderers.arcmenu.screen-scale", Material.SPYGLASS, EditorPresetFieldType.DOUBLE),
+                field("renderers.arcmenu.update-interval", Material.CLOCK, EditorPresetFieldType.INTEGER),
+                field("renderers.arcmenu.animation.enabled", Material.LEVER, EditorPresetFieldType.BOOLEAN),
+                field("renderers.arcmenu.animation.duration", Material.CLOCK, EditorPresetFieldType.INTEGER),
+                field("renderers.arcmenu.more-menu.columns", Material.BOOKSHELF, EditorPresetFieldType.INTEGER),
+                field("renderers.arcmenu.tooltip.enabled", Material.LEVER, EditorPresetFieldType.BOOLEAN),
+                field("renderers.arcmenu.tooltip.width", Material.PAPER, EditorPresetFieldType.INTEGER),
+                field("renderers.arcmenu.tooltip.font-size", Material.PAPER, EditorPresetFieldType.DOUBLE),
+                field("renderers.arcmenu.tooltip.padding", Material.PAPER, EditorPresetFieldType.DOUBLE)
         );
     }
 
     private static List<EditorPresetField> shopItemFields() {
         return List.of(
                 field("display-name", Material.NAME_TAG, EditorPresetFieldType.STRING),
-                field("dialog.show-sprite", Material.ITEM_FRAME, EditorPresetFieldType.BOOLEAN),
+                field("ui", Material.PAINTING, EditorPresetFieldType.SECTION),
                 field("display-item", Material.ITEM_FRAME, EditorPresetFieldType.SECTION),
                 field("add-lore", Material.WRITABLE_BOOK, EditorPresetFieldType.STRING_LIST),
                 choice("price-mode", Material.CLOCK, "ANY", "ALL", "CLASSIC_ANY", "CLASSIC_ALL"),
@@ -159,7 +267,7 @@ public class EditorPresetRegistry {
                 field("sell-actions", Material.BLAZE_POWDER, EditorPresetFieldType.ACTIONS),
                 field("fail-actions", Material.BLAZE_POWDER, EditorPresetFieldType.ACTIONS),
                 field("click-event", Material.STONE_BUTTON, EditorPresetFieldType.SECTION),
-                field("bedrock.click-event", Material.STONE_BUTTON, EditorPresetFieldType.STRING),
+                choice("bedrock.click-event", Material.STONE_BUTTON, clickActionIds()),
                 field("buy-more", Material.CHEST, EditorPresetFieldType.BOOLEAN),
                 new EditorPresetField("default-buy-amount", "Default Buy Amount",
                         "Direct buy trade count (1-9999). Sub buttons inherit the target when unset.",
@@ -168,16 +276,15 @@ public class EditorPresetRegistry {
                         "Direct sell trade count (1-9999). Sub buttons inherit the target when unset.",
                         Material.EMERALD, EditorPresetFieldType.INTEGER),
                 EditorPresetField.choice("buy-more-menu.menu", "Buy More Menu File",
-                        "Menu file used when this product opens the buy-more GUI.", Material.CHEST,
+                        "Quantity menu file; ArcMenu select-amount opens product details instead.", Material.CHEST,
                         EditorScope.BUY_MORE_MENU.listIds().toArray(new String[0])),
                 new EditorPresetField("buy-more-menu.max-amount", "Buy More Max Amount",
-                        "Maximum amount selectable in the buy-more menu.", Material.SLIME_BALL, EditorPresetFieldType.INTEGER),
+                        "Maximum selectable quantity, including ArcMenu product details.", Material.SLIME_BALL, EditorPresetFieldType.INTEGER),
                 field("hide-message", Material.PAPER, EditorPresetFieldType.BOOLEAN),
                 new EditorPresetField("allow-favourite", "Allow Favourite",
                         "Allow this product to be added into favourite menus.", Material.NAME_TAG, EditorPresetFieldType.BOOLEAN),
                 field("sell-all", Material.HOPPER, EditorPresetFieldType.BOOLEAN),
                 field("as-sub-button", Material.CHAINMAIL_HELMET, EditorPresetFieldType.STRING),
-                field("bedrock.hide", Material.MAP, EditorPresetFieldType.BOOLEAN),
                 field("bedrock.icon", Material.ITEM_FRAME, EditorPresetFieldType.STRING),
                 field("limits", Material.BARRIER, EditorPresetFieldType.SECTION),
                 field("limits-conditions", Material.COMPARATOR, EditorPresetFieldType.SECTION),
@@ -204,13 +311,8 @@ public class EditorPresetRegistry {
     private static List<EditorPresetField> buttonFields() {
         return List.of(
                 field("display-item", Material.ITEM_FRAME, EditorPresetFieldType.SECTION),
-                field("dialog.layout", Material.ITEM_FRAME, EditorPresetFieldType.STRING),
-                field("dialog.show-sprite", Material.ITEM_FRAME, EditorPresetFieldType.BOOLEAN),
-                field("menu-visibility.inventory", Material.CHEST, EditorPresetFieldType.BOOLEAN),
-                field("menu-visibility.form", Material.MAP, EditorPresetFieldType.BOOLEAN),
-                field("menu-visibility.dialog", Material.WRITABLE_BOOK, EditorPresetFieldType.BOOLEAN),
-                field("menu-visibility.item-action-list", Material.ITEM_FRAME, EditorPresetFieldType.BOOLEAN),
-                field("menu-visibility.ore", Material.PAINTING, EditorPresetFieldType.BOOLEAN),
+                choice("ui.renderers.dialog.layout", Material.ITEM_FRAME, "multi-action", "item-action-list"),
+                field("ui", Material.PAINTING, EditorPresetFieldType.SECTION),
                 field("actions", Material.BLAZE_POWDER, EditorPresetFieldType.ACTIONS),
                 field("fail-actions", Material.BLAZE_POWDER, EditorPresetFieldType.ACTIONS),
                 field("conditions", Material.COMPARATOR, EditorPresetFieldType.CONDITIONS),
@@ -255,7 +357,7 @@ public class EditorPresetRegistry {
         result.add(EditorPresetField.clickBinding("sell-all", "Sell All",
                 "Click types that trigger sell-all for this product.", Material.HOPPER));
         result.add(EditorPresetField.clickBinding("select-amount", "Select Amount",
-                "Click types that open the amount selection menu.", Material.CHEST));
+                "Opens quantity selection; ArcMenu opens product details. ArcMenu right-click has its own UI setting.", Material.CHEST));
 
         ConfigurationSection customActions = ConfigManager.configManager.getSection("menu.click-event-actions");
         if (customActions != null) {

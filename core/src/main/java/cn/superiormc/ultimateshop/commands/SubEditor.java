@@ -40,7 +40,8 @@ public class SubEditor extends AbstractCommand {
 
         EditorScope scope = EditorScope.ofName(args[1]);
         if (scope == null) {
-            EditorLang.send(player, "editor.message.command-usage", "&cUse /shop editor [shop|menu] <id>");
+            EditorLang.send(player, "editor.message.command-usage",
+                    "&cUse /shop editor [shop|menu|shop_menu_template|buy_more_menu|favourite_menu|search_menu|item_sell_menu] <id>");
             return;
         }
 
@@ -61,6 +62,11 @@ public class SubEditor extends AbstractCommand {
         if (args.length == 2) {
             result.add("shop");
             result.add("menu");
+            result.add("shop_menu_template");
+            result.add("buy_more_menu");
+            result.add("favourite_menu");
+            result.add("search_menu");
+            result.add("item_sell_menu");
             return result;
         }
         if (args.length == 3) {

@@ -1,11 +1,37 @@
 package cn.superiormc.ultimateshop;
 
-import cn.superiormc.ultimateshop.managers.*;
-import cn.superiormc.ultimateshop.managers.MenuStatusManager;
 import cn.superiormc.ultimateshop.database.DatabaseExecutor;
+import cn.superiormc.ultimateshop.gui.arc.ArcMenuBridge;
+import cn.superiormc.ultimateshop.managers.AbstractManager;
+import cn.superiormc.ultimateshop.managers.ActionManager;
+import cn.superiormc.ultimateshop.managers.BungeeCordManager;
+import cn.superiormc.ultimateshop.managers.CacheManager;
+import cn.superiormc.ultimateshop.managers.CommandManager;
+import cn.superiormc.ultimateshop.managers.ConditionManager;
+import cn.superiormc.ultimateshop.managers.ConfigManager;
+import cn.superiormc.ultimateshop.managers.DatabaseManager;
+import cn.superiormc.ultimateshop.managers.DialogPackManager;
+import cn.superiormc.ultimateshop.managers.DynamicCommandManager;
+import cn.superiormc.ultimateshop.managers.ErrorManager;
+import cn.superiormc.ultimateshop.managers.HookManager;
+import cn.superiormc.ultimateshop.managers.InitManager;
+import cn.superiormc.ultimateshop.managers.ItemManager;
+import cn.superiormc.ultimateshop.managers.LanguageManager;
+import cn.superiormc.ultimateshop.managers.LicenseManager;
+import cn.superiormc.ultimateshop.managers.ListenerManager;
+import cn.superiormc.ultimateshop.managers.MenuStatusManager;
+import cn.superiormc.ultimateshop.managers.PriceModifierManager;
+import cn.superiormc.ultimateshop.managers.MinecraftResourceManager;
+import cn.superiormc.ultimateshop.managers.SellChestManager;
+import cn.superiormc.ultimateshop.managers.TaskManager;
+import cn.superiormc.ultimateshop.managers.TransactionLoggerManager;
 import cn.superiormc.ultimateshop.objects.caches.RandomPlaceholderResetTaskPool;
 import cn.superiormc.ultimateshop.objects.caches.ResetTaskPool;
-import cn.superiormc.ultimateshop.utils.*;
+import cn.superiormc.ultimateshop.utils.CommonUtil;
+import cn.superiormc.ultimateshop.utils.PacketInventoryUtil;
+import cn.superiormc.ultimateshop.utils.SpecialMethodUtil;
+import cn.superiormc.ultimateshop.utils.TextUtil;
+
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -76,6 +102,8 @@ public final class UltimateShop extends JavaPlugin {
         new ConditionManager();
         new DynamicCommandManager();
         new ConfigManager();
+        new PriceModifierManager();
+        new MinecraftResourceManager();
         new HookManager();
         new ItemManager();
         new LanguageManager();
@@ -84,17 +112,12 @@ public final class UltimateShop extends JavaPlugin {
         new CacheManager();
         new CommandManager();
         new MenuStatusManager();
+        new ArcMenuBridge();
         if (!UltimateShop.freeVersion && !UltimateShop.isFolia) {
             new SellChestManager();
         }
         new ListenerManager();
         new TaskManager();
-        if (LocateManager.enableThis()) {
-            new LocateManager();
-        }
-        if (ItemMaterialManager.enableThis()) {
-            new ItemMaterialManager();
-        }
         if (BungeeCordManager.enableThis()) {
             new BungeeCordManager();
         }
@@ -116,7 +139,11 @@ public final class UltimateShop extends JavaPlugin {
     public void onDisable() {
         AbstractManager.disableManagers();
         DatabaseExecutor.quiesce();
-        TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fWaiting for all pending database task finished, this may freeze your server if your database is lost connection.");
+        TextUtil.sendMessage(
+            null,
+            TextUtil.pluginPrefix()
+            + " §fWaiting for all pending database task finished, this may freeze your"
+            + " server if your database is lost connection.");
         DatabaseExecutor.await();
         if (CacheManager.cacheManager.serverCache != null) {
             CacheManager.cacheManager.serverCache.shutCacheOnDisable(true);

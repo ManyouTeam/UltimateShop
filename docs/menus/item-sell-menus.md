@@ -1,17 +1,16 @@
 # 💰Item Sell Menus
 
-Item sell menus let players place item stacks into configured slots, preview their adjusted sell price, and confirm the sale with one button. Files are stored in `/item_sell_menus/` and can be opened with `/shop menu <menuName>`.
+Item Sell lets players place real item stacks into input slots, preview their adjusted sell value, and explicitly confirm the sale. Closing without confirming returns the items. This differs from [Sell All](sell-all-menu.md), which sells on close.
 
-The default example is `item_sell_menus/item-sell.yml`.
+Files live in `plugins/UltimateShop/menus/item_sell_menus/`; the bundled example is `item-sell.yml`. Open with `/shop menu item-sell` or an `open_menu` action. The dedicated folder determines the type; files in `common_menus` can use `menu-type: item-sell` (alias `item_sell`).
 
-## Menu structure
+## Example
 
 ```yaml
 menu-type: item-sell
 title: 'Sell Items'
 size: 54
 max-sell-amount: -1
-
 layout:
   - '000000000'
   - '0IIIIIII0'
@@ -19,10 +18,8 @@ layout:
   - '0IIIIIII0'
   - '000000000'
   - '00B0C0X00'
-
 input-item: 'I'
 confirm-item: 'C'
-
 confirm-button:
   display-item:
     material: EMERALD
@@ -33,23 +30,60 @@ confirm-button:
       - '&7Final multiplier: &fx{multiplier}'
       - '&7Sellable items: &f{item-amount}'
       - '&7Unsellable items: &f{unsellable-amount}'
-      - '&aClick to sell.'
+buttons:
+  X:
+    display-item:
+      material: BARRIER
+      name: '&cClose'
+    actions:
+      1:
+        type: close
 ```
 
-`input-item` is the layout marker for slots that accept player items. `confirm-item` is the marker for the confirmation button. `max-sell-amount` limits the total number of product trade units sold by one confirmation across all input slots; `-1` means unlimited. Unsold or unsupported items remain in the menu and are returned when it closes.
+Define `B` under ordinary `buttons` if you want a Back button. Undefined `0` slots are empty but are not input slots; define filler button `0` if desired.
 
-The confirmation display supports these placeholders:
+## Configuration reference
 
-* `{price}`: final price after the global sell multiplier and item-aware modifiers
-* `{original-price}`: product sell price before multipliers
-* `{multiplier}`: combined final sell multiplier
-* `{item-amount}`: amount that can currently be sold
-* `{unsellable-amount}`: amount that cannot currently be sold
+Common title, size, layout, buttons, open conditions and open/close actions are described in [General Menus](general-menus.md#common-menu-configuration).
 
-The transaction still uses the normal product sell flow, including sell conditions, player/server limits, actions, events, logging, and the global sell multiplier. An item sell menu does not have its own modifier configuration.
+| Additional key | Meaning |
+| --- | --- |
+| `input-item` | Input layout marker, default `I` |
+| `input-items` | Additional input markers, combined with `input-item` |
+| `confirm-item` | Confirmation layout marker, default `C`; may occur in multiple slots |
+| `confirm-button.display-item` | Display Item Format for the confirmation control |
+| `max-sell-amount` | Maximum product trade units sold across all input slots per confirmation; `-1` means unlimited |
 
-Products with `price-modifier: true` can only be sold through an item sell menu. Enable `sell.price-modifier.item-sell-menu.enabled` and set `sell.price-modifier.item-sell-menu.menu` to choose that menu.
+Only input slots accept the items to be sold. Use the layout token rules for longer IDs. The confirmation appearance is configured in `confirm-button`, not as a Buy More `confirm-items` entry. This menu's confirmation has a built-in sale handler; its name/lore does not define the sale formula.
 
-Choosing `sell` or `sell-all` for one of these products opens the configured item sell menu. Buy, amount-selection, and custom click actions keep their normal behavior. Bedrock forms and dialog shop lists open the product information view first so that buy and sell remain separate choices.
+The preview placeholders are:
 
-See [Price Modifier](../shops/price-modifier.md) for modifier types, formulas, validation, calculation precision, and the developer API.
+| Placeholder | Value |
+| --- | --- |
+| `{price}` | Final reward after global sell multiplier and applicable item-aware modifiers |
+| `{original-price}` | Reward before those multipliers |
+| `{multiplier}` | Combined effective sell multiplier |
+| `{item-amount}` | Amount currently eligible to sell |
+| `{unsellable-amount}` | Amount currently not eligible to sell |
+
+Preview is recalculated from input. Confirmation still runs normal product sell validation, including conditions, player/server limits, actions, events and logging. Unsupported or unsold items remain in the menu and return on close. Display/confirmation icons are not part of the player's sale stock.
+
+## Price-modifier routing
+
+Products with `price-modifier: true` must be sold through Item Sell so the calculation can inspect the supplied item. The menu has no independent modifier formula; configure modifiers on the product. Select the routing target globally:
+
+```yaml
+sell:
+  price-modifier:
+    item-sell-menu:
+      enabled: true
+      menu: item-sell
+```
+
+For those products, `sell` and `sell-all` route to the selected Item Sell menu. Buy, quantity selection and custom operations keep their normal behaviour. Form/Dialog shop listings first open product information so buying and selling remain separate choices; choosing the routed sell operation opens the physical Inventory menu.
+
+## Presentation and related settings
+
+This is an Inventory deposit interface, including for players whose ordinary shops use Form, Dialog, Ore or ArcMenu. Its bundled `ui` settings do not create Form input slots or ArcMenu drag/drop sale controls. Configure Inventory `size`, `layout`, input and confirmation markers for this screen.
+
+`max-sell-amount` belongs to this menu and caps the combined confirmation. The global sell engine still applies its own restrictions; raising this value does not bypass stock, limits or product conditions. See [Price Modifier](../shops/price-modifier.md) for calculation and [Sell Multiplier](../shops/sell-multiplier-premium.md) for reward multipliers.

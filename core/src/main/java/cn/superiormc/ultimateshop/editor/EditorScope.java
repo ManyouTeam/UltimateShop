@@ -11,12 +11,12 @@ import java.util.List;
 public enum EditorScope {
 
     SHOP("shops", "Shop"),
-    MENU("menus", "Menu"),
-    SHOP_MENU_TEMPLATE("shop_menu_templates", "Shop Menu Template"),
-    BUY_MORE_MENU("buy_more_menus", "Buy More Menu"),
-    FAVOURITE_MENU("favourite_menus", "Favourite Menu"),
-    SEARCH_MENU("search_menus", "Search Menu"),
-    ITEM_SELL_MENU("item_sell_menus", "Item Sell Menu");
+    MENU("menus/common_menus", "Menu"),
+    SHOP_MENU_TEMPLATE("menus/shop_menu_templates", "Shop Menu Template"),
+    BUY_MORE_MENU("menus/buy_more_menus", "Buy More Menu"),
+    FAVOURITE_MENU("menus/favourite_menus", "Favourite Menu"),
+    SEARCH_MENU("menus/search_menus", "Search Menu"),
+    ITEM_SELL_MENU("menus/item_sell_menus", "Item Sell Menu");
 
     private final String folderName;
 

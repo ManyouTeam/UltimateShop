@@ -198,7 +198,7 @@ Use this placeholder at `buy-times-reset-time` option in any product configs.
 
 By default, each reset will lead to player's buy times or sell times to 0, but you can also change it to different value, and even the random value!
 
-Created a random placeholder config called `resetvalue.yml` in `random_placeholders` folder:
+Created a random placeholder config called `resetvalue.yml` in `placeholders/random_placeholders` folder:
 
 ```yaml
 reset-mode: ONCE

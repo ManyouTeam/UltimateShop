@@ -4,6 +4,52 @@ import java.util.List;
 
 public class ObjectDialogWidget {
 
+    private final List<ToolbarAction> toolbar;
+
+    public record ToolbarAction(String id, String label) {
+
+    }
+
+    public List<ToolbarAction> getToolbar() {
+        return toolbar;
+    }
+
+    public ObjectDialogWidget withPosition(int horizontalPosition, int verticalPosition) {
+        return new ObjectDialogWidget(
+            template,
+            horizontalPosition,
+            verticalPosition,
+            name,
+            lore,
+            actionId,
+            actionLabel,
+            product,
+            icon,
+            selected,
+            hoverLore,
+            iconText,
+            showSprite,
+            toolbar);
+    }
+
+    public ObjectDialogWidget withToolbar(List<ToolbarAction> actions) {
+        return new ObjectDialogWidget(
+            template,
+            x,
+            y,
+            name,
+            lore,
+            actionId,
+            actionLabel,
+            product,
+            icon,
+            selected,
+            hoverLore,
+            iconText,
+            showSprite,
+            actions);
+    }
+
     private final ObjectDialogTemplate template;
 
     private final int x;
@@ -30,36 +76,118 @@ public class ObjectDialogWidget {
 
     private final boolean selected;
 
-    public ObjectDialogWidget(ObjectDialogTemplate template, int x, int y, String name, List<String> lore,
-                              String actionId, String actionLabel, boolean product) {
+    public ObjectDialogWidget(
+        ObjectDialogTemplate template,
+        int x,
+        int y,
+        String name,
+        List<String> lore,
+        String actionId,
+        String actionLabel,
+        boolean product) {
         this(template, x, y, name, lore, actionId, actionLabel, product, null);
     }
 
-    public ObjectDialogWidget(ObjectDialogTemplate template, int x, int y, String name, List<String> lore,
-                              String actionId, String actionLabel, boolean product, String icon) {
+    public ObjectDialogWidget(
+        ObjectDialogTemplate template,
+        int x,
+        int y,
+        String name,
+        List<String> lore,
+        String actionId,
+        String actionLabel,
+        boolean product,
+        String icon) {
         this(template, x, y, name, lore, actionId, actionLabel, product, icon, false);
     }
 
-    public ObjectDialogWidget(ObjectDialogTemplate template, int x, int y, String name, List<String> lore,
-                              String actionId, String actionLabel, boolean product, String icon, boolean selected) {
+    public ObjectDialogWidget(
+        ObjectDialogTemplate template,
+        int x,
+        int y,
+        String name,
+        List<String> lore,
+        String actionId,
+        String actionLabel,
+        boolean product,
+        String icon,
+        boolean selected) {
         this(template, x, y, name, lore, actionId, actionLabel, product, icon, selected, lore);
     }
 
-    public ObjectDialogWidget(ObjectDialogTemplate template, int x, int y, String name, List<String> lore,
-                              String actionId, String actionLabel, boolean product, String icon, boolean selected,
-                              List<String> hoverLore) {
-        this(template, x, y, name, lore, actionId, actionLabel, product, icon, selected, hoverLore, null);
+    public ObjectDialogWidget(
+        ObjectDialogTemplate template,
+        int x,
+        int y,
+        String name,
+        List<String> lore,
+        String actionId,
+        String actionLabel,
+        boolean product,
+        String icon,
+        boolean selected,
+        List<String> hoverLore) {
+        this(
+            template,
+            x,
+            y,
+            name,
+            lore,
+            actionId,
+            actionLabel,
+            product,
+            icon,
+            selected,
+            hoverLore,
+            null);
     }
 
-    public ObjectDialogWidget(ObjectDialogTemplate template, int x, int y, String name, List<String> lore,
-                              String actionId, String actionLabel, boolean product, String icon, boolean selected,
-                              List<String> hoverLore, String iconText) {
-        this(template, x, y, name, lore, actionId, actionLabel, product, icon, selected, hoverLore, iconText, null);
+    public ObjectDialogWidget(
+        ObjectDialogTemplate template,
+        int x,
+        int y,
+        String name,
+        List<String> lore,
+        String actionId,
+        String actionLabel,
+        boolean product,
+        String icon,
+        boolean selected,
+        List<String> hoverLore,
+        String iconText) {
+        this(
+            template,
+            x,
+            y,
+            name,
+            lore,
+            actionId,
+            actionLabel,
+            product,
+            icon,
+            selected,
+            hoverLore,
+            iconText,
+            null,
+            List.of());
     }
 
-    private ObjectDialogWidget(ObjectDialogTemplate template, int x, int y, String name, List<String> lore,
-                               String actionId, String actionLabel, boolean product, String icon, boolean selected,
-                               List<String> hoverLore, String iconText, Boolean showSprite) {
+    private ObjectDialogWidget(
+        ObjectDialogTemplate template,
+        int x,
+        int y,
+        String name,
+        List<String> lore,
+        String actionId,
+        String actionLabel,
+        boolean product,
+        String icon,
+        boolean selected,
+        List<String> hoverLore,
+        String iconText,
+        Boolean showSprite,
+        List<ToolbarAction> toolbar) {
+        this.toolbar = List.copyOf(toolbar);
         this.showSprite = showSprite;
         this.iconText = iconText;
         this.selected = selected;
@@ -76,8 +204,10 @@ public class ObjectDialogWidget {
     }
 
     public boolean intersects(ObjectDialogWidget other) {
-        return x < other.x + other.template.getWidth() && x + template.getWidth() > other.x
-                && y < other.y + other.template.getHeight() && y + template.getHeight() > other.y;
+        return x < other.x + other.template.getWidth()
+            && x + template.getWidth() > other.x
+            && y < other.y + other.template.getHeight()
+            && y + template.getHeight() > other.y;
     }
 
     public ObjectDialogTemplate getTemplate() {
@@ -108,6 +238,12 @@ public class ObjectDialogWidget {
         return actionId;
     }
 
+    public boolean canClickRow(int row) {
+        return actionId != null
+            && !actionId.isEmpty()
+            && (!product || row >= template.getDetailsRow());
+    }
+
     public String getActionLabel() {
         return actionLabel;
     }
@@ -125,8 +261,21 @@ public class ObjectDialogWidget {
     }
 
     public ObjectDialogWidget withShowSprite(Boolean value) {
-        return new ObjectDialogWidget(template, x, y, name, lore, actionId, actionLabel, product,
-                icon, selected, hoverLore, iconText, value);
+        return new ObjectDialogWidget(
+            template,
+            x,
+            y,
+            name,
+            lore,
+            actionId,
+            actionLabel,
+            product,
+            icon,
+            selected,
+            hoverLore,
+            iconText,
+            value,
+            toolbar);
     }
 
     public boolean isProduct() {

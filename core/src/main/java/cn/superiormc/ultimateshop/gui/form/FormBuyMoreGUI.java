@@ -6,6 +6,7 @@ import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.LanguageManager;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import cn.superiormc.ultimateshop.objects.caches.ObjectCache;
+import cn.superiormc.ultimateshop.objects.menus.ObjectMenu;
 import cn.superiormc.ultimateshop.utils.TextUtil;
 import org.bukkit.entity.Player;
 import org.geysermc.cumulus.form.CustomForm;
@@ -22,6 +23,7 @@ public class FormBuyMoreGUI extends FormGUI {
 
     @Override
     public void constructGUI() {
+        ObjectMenu sourceMenu = item.getShopObject().getShopMenuObject();
         ObjectCache tempVal1 = CacheManager.cacheManager.getObjectCache(player);
         if (tempVal1 == null) {
             LanguageManager.languageManager.sendStringText(player,
@@ -32,10 +34,13 @@ public class FormBuyMoreGUI extends FormGUI {
         }
         CustomForm.Builder tempVal2 = CustomForm.builder();
 
-        tempVal2.title(TextUtil.parse(player, ConfigManager.configManager.getStringWithLang(player, "menu.bedrock.buy-or-sell.title", "Buy More Menu",
-                "item-name", item.getDisplayName(player))));
+        tempVal2.title(TextUtil.parse(player, ConfigManager.configManager.getMenuRendererText(
+            sourceMenu == null ? null : sourceMenu.getConfig(),
+            player, "form", "buy-or-sell.title", "Buy More Menu", "item-name", item.getDisplayName(player))));
 
-        tempVal2.input(TextUtil.parse(player, ConfigManager.configManager.getStringWithLang(player, "menu.bedrock.buy-or-sell.buttons.amount.name")), getButtonTab());
+        tempVal2.input(TextUtil.parse(player, ConfigManager.configManager.getMenuRendererText(
+            sourceMenu == null ? null : sourceMenu.getConfig(),
+            player, "form", "buy-or-sell.buttons.amount.name", "Amount")), getButtonTab());
         tempVal2.validResultHandler((submittedForm, response) -> handleResponse(submittedForm, () -> {
             FormInfoGUI infoGUI = new FormInfoGUI(player, item, response.next());
             infoGUI.openGUI(true);
@@ -45,6 +50,9 @@ public class FormBuyMoreGUI extends FormGUI {
     }
 
     private String getButtonTab() {
-        return TextUtil.parse(player, ConfigManager.configManager.getStringWithLang(player, "menu.bedrock.buy-or-sell.buttons.amount.tip"));
+        ObjectMenu sourceMenu = item.getShopObject().getShopMenuObject();
+        return TextUtil.parse(player, ConfigManager.configManager.getMenuRendererText(
+            sourceMenu == null ? null : sourceMenu.getConfig(),
+            player, "form", "buy-or-sell.buttons.amount.tip", "1"));
     }
 }

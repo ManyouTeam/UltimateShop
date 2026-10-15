@@ -1,12 +1,11 @@
 package cn.superiormc.ultimateshop.objects.buttons;
 
 import cn.superiormc.ultimateshop.UltimateShop;
-import cn.superiormc.ultimateshop.gui.form.FormInfoGUI;
+import cn.superiormc.ultimateshop.gui.arc.ArcMenuBridge;
 import cn.superiormc.ultimateshop.gui.inv.BuyMoreGUI;
 import cn.superiormc.ultimateshop.gui.inv.CommonGUI;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.ErrorManager;
-import cn.superiormc.ultimateshop.managers.ItemMaterialManager;
 import cn.superiormc.ultimateshop.methods.Product.BuyProductMethod;
 import cn.superiormc.ultimateshop.methods.Product.SellProductMethod;
 import cn.superiormc.ultimateshop.methods.ProductTradeStatus;
@@ -16,6 +15,7 @@ import cn.superiormc.ultimateshop.objects.ObjectThingRun;
 import cn.superiormc.ultimateshop.objects.buttons.subobjects.ObjectDisplayItem;
 import cn.superiormc.ultimateshop.objects.buttons.subobjects.ObjectDisplayItemStack;
 import cn.superiormc.ultimateshop.objects.buttons.subobjects.ObjectItemConfig;
+import cn.superiormc.ultimateshop.objects.caches.UseTimesStorageKey;
 import cn.superiormc.ultimateshop.objects.items.ObjectAction;
 import cn.superiormc.ultimateshop.objects.items.ObjectCondition;
 import cn.superiormc.ultimateshop.objects.items.ObjectLimit;
@@ -24,10 +24,10 @@ import cn.superiormc.ultimateshop.objects.items.prices.PriceMode;
 import cn.superiormc.ultimateshop.objects.items.products.ObjectProducts;
 import cn.superiormc.ultimateshop.objects.menus.MenuSender;
 import cn.superiormc.ultimateshop.objects.menus.ObjectMoreMenu;
-import cn.superiormc.ultimateshop.objects.caches.UseTimesStorageKey;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
 import cn.superiormc.ultimateshop.utils.ItemUtil;
 import cn.superiormc.ultimateshop.utils.TextUtil;
+
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
@@ -96,9 +96,9 @@ public class ObjectItem extends AbstractButton {
         this.type = ButtonType.SHOP;
         this.itemConfig = new ObjectItemConfig(this, originalConfig);
         this.defaultBuyAmount = parseDefaultTradeAmount(itemConfig.getString("default-buy-amount"),
-                1, originalConfig.getCurrentPath() + ".default-buy-amount");
+            1, originalConfig.getCurrentPath() + ".default-buy-amount");
         this.defaultSellAmount = parseDefaultTradeAmount(itemConfig.getString("default-sell-amount"),
-                1, originalConfig.getCurrentPath() + ".default-sell-amount");
+            1, originalConfig.getCurrentPath() + ".default-sell-amount");
         this.enableSellAll = itemConfig.getBoolean("sell-all", true);
         this.priceModifierEnabled = itemConfig.getBoolean("price-modifier", false);
         initSharedUseTimes();
@@ -135,8 +135,8 @@ public class ObjectItem extends AbstractButton {
 
     private void initDisplayItem() {
         displayItem = new ObjectDisplayItem(itemConfig.getConfigurationSection("display-item"),
-                itemConfig.getConfigurationSection(ConfigManager.configManager.getString("conditions.display-item-key")),
-                this);
+            itemConfig.getConfigurationSection(ConfigManager.configManager.getString("conditions.display-item-key")),
+            this);
     }
 
     private void initReward() {
@@ -145,8 +145,8 @@ public class ObjectItem extends AbstractButton {
             return;
         }
         reward = new ObjectProducts(itemConfig.getConfigurationSection("products"),
-                itemConfig.getString("product-mode", "ANY"),
-                this);
+            itemConfig.getString("product-mode", "ANY"),
+            this);
     }
 
     private void initBuyPrice() {
@@ -155,16 +155,16 @@ public class ObjectItem extends AbstractButton {
                 buyPrice = new ObjectPrices();
             } else {
                 buyPrice = new ObjectPrices(itemConfig.getConfigurationSection("prices"),
-                        itemConfig.getString("price-mode", "ANY"),
-                        this,
-                        PriceMode.BUY);
+                    itemConfig.getString("price-mode", "ANY"),
+                    this,
+                    PriceMode.BUY);
             }
             return;
         }
         buyPrice = new ObjectPrices(itemConfig.getConfigurationSection("buy-prices"),
-                itemConfig.getString("price-mode", "ANY"),
-                this,
-                PriceMode.BUY);
+            itemConfig.getString("price-mode", "ANY"),
+            this,
+            PriceMode.BUY);
     }
 
     private void initSellPrice() {
@@ -173,16 +173,16 @@ public class ObjectItem extends AbstractButton {
                 sellPrice = new ObjectPrices();
             } else {
                 sellPrice = new ObjectPrices(itemConfig.getConfigurationSection("prices"),
-                        itemConfig.getString("price-mode", "ANY"),
-                        this,
-                        PriceMode.SELL);
+                    itemConfig.getString("price-mode", "ANY"),
+                    this,
+                    PriceMode.SELL);
             }
             return;
         }
         sellPrice = new ObjectPrices(itemConfig.getConfigurationSection("sell-prices"),
-                itemConfig.getString("price-mode", "ANY"),
-                this,
-                PriceMode.SELL);
+            itemConfig.getString("price-mode", "ANY"),
+            this,
+            PriceMode.SELL);
     }
 
     private void initBuyAction() {
@@ -203,14 +203,14 @@ public class ObjectItem extends AbstractButton {
                 buyLimit = new ObjectLimit();
             } else {
                 buyLimit = new ObjectLimit(getLocalOrSharedUseTimesSection("buy-limits"),
-                        getLocalOrSharedUseTimesSection("buy-limits-conditions"),
-                        this);
+                    getLocalOrSharedUseTimesSection("buy-limits-conditions"),
+                    this);
             }
             return;
         }
         buyLimit = new ObjectLimit(getLocalOrSharedUseTimesSection("limits"),
-                getLocalOrSharedUseTimesSection("limits-conditions"),
-                this);
+            getLocalOrSharedUseTimesSection("limits-conditions"),
+            this);
     }
 
     private void initSellLimit() {
@@ -219,8 +219,8 @@ public class ObjectItem extends AbstractButton {
                 sellLimit = new ObjectLimit();
             } else {
                 sellLimit = new ObjectLimit(getLocalOrSharedUseTimesSection("sell-limits"),
-                        getLocalOrSharedUseTimesSection("sell-limits-conditions"),
-                        this);
+                    getLocalOrSharedUseTimesSection("sell-limits-conditions"),
+                    this);
             }
             return;
         }
@@ -246,17 +246,14 @@ public class ObjectItem extends AbstractButton {
         if (buyMoreSection == null) {
             if (buyPrice.empty) {
                 if (!sellPrice.empty) {
-                    buyMoreMenu = new ObjectMoreMenu(ConfigManager.configManager.getSectionOrDefault(
-                            "menu.buy-more", "menu.buy-more-menu.only-sell"), this);
+                    buyMoreMenu = new ObjectMoreMenu(ConfigManager.configManager.getSection("menu.buy-more-menu.only-sell"), this);
                 } else {
                     buyMore = false;
                 }
             } else if (sellPrice.empty) {
-                buyMoreMenu = new ObjectMoreMenu(ConfigManager.configManager.getSectionOrDefault(
-                        "menu.buy-more", "menu.buy-more-menu.only-buy"), this);
+                buyMoreMenu = new ObjectMoreMenu(ConfigManager.configManager.getSection("menu.buy-more-menu.only-buy"), this);
             } else {
-                buyMoreMenu = new ObjectMoreMenu(ConfigManager.configManager.getSectionOrDefault(
-                        "menu.buy-more", "menu.buy-more-menu.default"), this);
+                buyMoreMenu = new ObjectMoreMenu(ConfigManager.configManager.getSection("menu.buy-more-menu.default"), this);
             }
         } else {
             buyMoreMenu = new ObjectMoreMenu(buyMoreSection, this);
@@ -279,7 +276,6 @@ public class ObjectItem extends AbstractButton {
         sellCondition = new ObjectCondition(section, this);
     }
 
-
     private void initDisplayCondition() {
         ConfigurationSection section = itemConfig.getActionOrConditionSection("display-conditions");
         displayCondition = new ObjectCondition(section, this);
@@ -295,11 +291,11 @@ public class ObjectItem extends AbstractButton {
 
     public boolean openPriceModifierMenu(Player player) {
         if (!priceModifierEnabled || !ConfigManager.configManager.getBoolean(
-                "sell.price-modifier.item-sell-menu.enabled")) {
+            "sell.price-modifier.item-sell-menu.enabled")) {
             return false;
         }
         String itemSellMenu = ConfigManager.configManager.getString(
-                "sell.price-modifier.item-sell-menu.menu", "");
+            "sell.price-modifier.item-sell-menu.menu", "");
         if (itemSellMenu.isEmpty()) {
             return false;
         }
@@ -320,7 +316,7 @@ public class ObjectItem extends AbstractButton {
 
     public String getDisplayName(Player player, boolean useSprite) {
         if (itemConfig.getString("display-name") == null) {
-            if (useSprite && ItemMaterialManager.enableThis() && ConfigManager.configManager.getBoolean("display-item.auto-use-sprite-item-name") && !CommonUtil.isBedrockPlayer(player)) {
+            if (useSprite && !UltimateShop.freeVersion && ConfigManager.configManager.getBoolean("display-item.auto-use-sprite-item-name") && !CommonUtil.isBedrockPlayer(player)) {
                 String sprite = displayItem.getDisplayItem(player).getSprite();
                 if (sprite != null) {
                     return sprite;
@@ -489,7 +485,7 @@ public class ObjectItem extends AbstractButton {
             // Out-of-range values use the same fallback as other invalid values.
         }
         ErrorManager.errorManager.sendErrorMessage("§6Invalid default trade amount at " + path +
-                ": " + value + ". Expected an integer from 1 to 9999; using 1.");
+            ": " + value + ". Expected an integer from 1 to 9999; using 1.");
         return 1;
     }
 
@@ -498,67 +494,76 @@ public class ObjectItem extends AbstractButton {
     }
 
     public void clickEvent(ClickType type, Player player, int buyAmount, int sellAmount, AbstractButton source) {
+        executeClickAction(ConfigManager.configManager.getClickAction(type, source, player),
+            type, player, buyAmount, sellAmount);
+    }
+
+    public void executeClickAction(String actionId, ClickType type, Player player,
+        int buyAmount, int sellAmount) {
         if (empty) {
             return;
         }
         boolean b = ConfigManager.configManager.getBoolean("placeholder.click.enabled");
-        String tempVal1 = ConfigManager.configManager.getClickAction(type, source, player);
-        if (shouldOpenPriceModifierMenu(tempVal1) && openPriceModifierMenu(player)) {
+
+        if (shouldOpenPriceModifierMenu(actionId) && openPriceModifierMenu(player)) {
             return;
         }
-        switch (tempVal1) {
+        switch (actionId) {
             case "buy" :
-                if (!buyPrice.empty) {
-                    ProductTradeStatus.Status status = BuyProductMethod.startBuy(this, player, !b, false, buyAmount).getStatus();
-                    if (status != ProductTradeStatus.Status.DONE) {
-                        failAction.runAllActions(new ObjectThingRun(player, type, status));
-                    }
+            if (!buyPrice.empty) {
+                ProductTradeStatus.Status status = BuyProductMethod.startBuy(this, player, !b, false, buyAmount).getStatus();
+                if (status != ProductTradeStatus.Status.DONE) {
+                    failAction.runAllActions(new ObjectThingRun(player, type, status));
                 }
-                return;
+            }
+            return;
             case "sell" :
-                if (!sellPrice.empty) {
-                    ProductTradeStatus.Status status = SellProductMethod.startSell(this, player, !b, false, sellAmount).getStatus();
-                    if (status != ProductTradeStatus.Status.DONE) {
-                        failAction.runAllActions(new ObjectThingRun(player, type, status));
-                    }
+            if (!sellPrice.empty) {
+                ProductTradeStatus.Status status = SellProductMethod.startSell(this, player, !b, false, sellAmount).getStatus();
+                if (status != ProductTradeStatus.Status.DONE) {
+                    failAction.runAllActions(new ObjectThingRun(player, type, status));
                 }
-                return;
+            }
+            return;
             case "buy-or-sell" :
-                if (buyPrice.empty && !sellPrice.empty) {
-                    ProductTradeStatus.Status status = SellProductMethod.startSell(this, player, !b, false, sellAmount).getStatus();
-                    if (status != ProductTradeStatus.Status.DONE) {
-                        failAction.runAllActions(new ObjectThingRun(player, type, status));
-                    }
-                } else if (!buyPrice.empty) {
-                    ProductTradeStatus.Status status = BuyProductMethod.startBuy(this, player, !b, false, buyAmount).getStatus();
-                    if (status != ProductTradeStatus.Status.DONE) {
-                        failAction.runAllActions(new ObjectThingRun(player, type, status));
-                    }
+            if (buyPrice.empty && !sellPrice.empty) {
+                ProductTradeStatus.Status status = SellProductMethod.startSell(this, player, !b, false, sellAmount).getStatus();
+                if (status != ProductTradeStatus.Status.DONE) {
+                    failAction.runAllActions(new ObjectThingRun(player, type, status));
                 }
-                return;
+            } else if (!buyPrice.empty) {
+                ProductTradeStatus.Status status = BuyProductMethod.startBuy(this, player, !b, false, buyAmount).getStatus();
+                if (status != ProductTradeStatus.Status.DONE) {
+                    failAction.runAllActions(new ObjectThingRun(player, type, status));
+                }
+            }
+            return;
             case "sell-all" :
-                if (!sellPrice.empty && isEnableSellAll()) {
-                    ProductTradeStatus.Status status = SellProductMethod.startSell(this,
-                            player,
-                            !b,
-                            false,
-                            true,
-                            1).getStatus();
-                    if (status != ProductTradeStatus.Status.DONE) {
-                        failAction.runAllActions(new ObjectThingRun(player, type, status));
-                    }
+            if (!sellPrice.empty && isEnableSellAll()) {
+                ProductTradeStatus.Status status = SellProductMethod.startSell(this,
+                    player,
+                    !b,
+                    false,
+                    true,
+                    1).getStatus();
+                if (status != ProductTradeStatus.Status.DONE) {
+                    failAction.runAllActions(new ObjectThingRun(player, type, status));
                 }
-                return;
+            }
+            return;
             case "select-amount" :
-                if (getBuyMore()) {
-                    BuyMoreGUI.openGUI(player, this);
+            if (getBuyMore()) {
+                if (ArcMenuBridge.arcMenuBridge.openInfo(player, this)) {
+                    return;
                 }
-                return;
+                BuyMoreGUI.openGUI(player, this);
+            }
+            return;
         }
         if (!UltimateShop.freeVersion) {
             ObjectAction action = new ObjectAction(
-                    ConfigManager.configManager.getSection("menu.click-event-actions." + tempVal1),
-                    this);
+                ConfigManager.configManager.getSection("menu.click-event-actions." + actionId),
+                this);
             action.runAllActions(new ObjectThingRun(player, type, buyAmount, sellAmount));
             if (action.getLastTradeStatus() != null) {
                 ProductTradeStatus.Status status = action.getLastTradeStatus().getStatus();
@@ -623,8 +628,8 @@ public class ObjectItem extends AbstractButton {
     public String getBuyTimesResetMode() {
         if (sharedUseTimes != null) {
             return sharedUseTimes.getSharedUseTimesStringOrDefault("buy-times-reset-mode",
-                    "buy-limits-reset-mode",
-                    ConfigManager.configManager.getString("use-times.default-reset-mode", "NEVER"));
+                "buy-limits-reset-mode",
+                ConfigManager.configManager.getString("use-times.default-reset-mode", "NEVER"));
         }
         if (itemConfig.getString("buy-limits-reset-mode") != null) {
             return itemConfig.getString("buy-limits-reset-mode");
@@ -637,8 +642,8 @@ public class ObjectItem extends AbstractButton {
     public String getBuyTimesResetTime() {
         if (sharedUseTimes != null) {
             return sharedUseTimes.getSharedUseTimesStringOrDefault("buy-times-reset-time",
-                    "buy-limits-reset-time",
-                    ConfigManager.configManager.getString("use-times.default-reset-time", "00:00:00"));
+                "buy-limits-reset-time",
+                ConfigManager.configManager.getString("use-times.default-reset-time", "00:00:00"));
         }
         if (itemConfig.getString("buy-limits-reset-time") != null) {
             return itemConfig.getString("buy-limits-reset-time");
@@ -651,7 +656,7 @@ public class ObjectItem extends AbstractButton {
     public String getBuyTimesResetFormat() {
         if (sharedUseTimes != null) {
             return sharedUseTimes.getSharedUseTimesStringOrDefault("buy-times-reset-time-format",
-                    ConfigManager.configManager.getString("use-times.default-reset-time-format", "yyyy-MM-dd HH:mm:ss"));
+                ConfigManager.configManager.getString("use-times.default-reset-time-format", "yyyy-MM-dd HH:mm:ss"));
         }
         if (itemConfig.getString("buy-times-reset-time-format") != null) {
             return itemConfig.getString("buy-times-reset-time-format");
@@ -698,8 +703,8 @@ public class ObjectItem extends AbstractButton {
     public String getSellTimesResetMode() {
         if (sharedUseTimes != null) {
             return sharedUseTimes.getSharedUseTimesStringOrDefault("sell-times-reset-mode",
-                    "sell-limits-reset-mode",
-                    ConfigManager.configManager.getString("use-times.default-reset-mode", "NEVER"));
+                "sell-limits-reset-mode",
+                ConfigManager.configManager.getString("use-times.default-reset-mode", "NEVER"));
         }
         if (itemConfig.getString("sell-limits-reset-mode") != null) {
             return itemConfig.getString("sell-limits-reset-mode");
@@ -712,8 +717,8 @@ public class ObjectItem extends AbstractButton {
     public String getSellTimesResetTime() {
         if (sharedUseTimes != null) {
             return sharedUseTimes.getSharedUseTimesStringOrDefault("sell-times-reset-time",
-                    "sell-limits-reset-time",
-                    ConfigManager.configManager.getString("use-times.default-reset-time", "00:00:00"));
+                "sell-limits-reset-time",
+                ConfigManager.configManager.getString("use-times.default-reset-time", "00:00:00"));
         }
         if (itemConfig.getString("sell-limits-reset-time") != null) {
             return itemConfig.getString("sell-limits-reset-time");
@@ -726,7 +731,7 @@ public class ObjectItem extends AbstractButton {
     public String getSellTimesResetFormat() {
         if (sharedUseTimes != null) {
             return sharedUseTimes.getSharedUseTimesStringOrDefault("sell-times-reset-time-format",
-                    ConfigManager.configManager.getString("use-times.default-reset-time-format", "yyyy-MM-dd HH:mm:ss"));
+                ConfigManager.configManager.getString("use-times.default-reset-time-format", "yyyy-MM-dd HH:mm:ss"));
         }
         if (itemConfig.getString("sell-times-reset-time-format") != null) {
             return itemConfig.getString("sell-times-reset-time-format");

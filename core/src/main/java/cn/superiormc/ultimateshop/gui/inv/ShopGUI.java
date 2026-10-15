@@ -1,23 +1,23 @@
 package cn.superiormc.ultimateshop.gui.inv;
 
 import cn.superiormc.ultimateshop.UltimateShop;
-
-import cn.superiormc.ultimateshop.gui.form.FormShopGUI;
-import cn.superiormc.ultimateshop.objects.caches.ObjectCache;
 import cn.superiormc.ultimateshop.gui.InvGUI;
-import cn.superiormc.ultimateshop.gui.dialog.DialogShopGUI;
+import cn.superiormc.ultimateshop.gui.arc.ArcMenuBridge;
 import cn.superiormc.ultimateshop.gui.dialog.DialogOreGUI;
+import cn.superiormc.ultimateshop.gui.dialog.DialogShopGUI;
+import cn.superiormc.ultimateshop.gui.form.FormShopGUI;
 import cn.superiormc.ultimateshop.managers.CacheManager;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.LanguageManager;
 import cn.superiormc.ultimateshop.objects.ObjectShop;
-import cn.superiormc.ultimateshop.objects.ObjectThingRun;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
+import cn.superiormc.ultimateshop.objects.caches.ObjectCache;
 import cn.superiormc.ultimateshop.objects.caches.ObjectUseTimesCache;
 import cn.superiormc.ultimateshop.objects.caches.UseTimesStorageKey;
 import cn.superiormc.ultimateshop.objects.menus.MenuSender;
 import cn.superiormc.ultimateshop.objects.menus.ObjectMenu;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
+
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.Inventory;
@@ -31,12 +31,9 @@ public class ShopGUI extends InvGUI {
 
     private final ObjectMenu shopMenu;
 
-    private final boolean bypass;
-
     private ShopGUI(Player owner, ObjectShop shop, ObjectMenu shopMenu, boolean bypass) {
-        super(owner);
+        super(owner, bypass);
         this.shop = shop;
-        this.bypass = bypass;
         this.shopMenu = shopMenu;
     }
 
@@ -46,16 +43,16 @@ public class ShopGUI extends InvGUI {
         ObjectCache tempVal2 = CacheManager.cacheManager.serverCache;
         if (tempVal1 == null) {
             LanguageManager.languageManager.sendStringText(player,
-                    "error.player-not-found",
-                    "player",
-                    player.getName());
+                "error.player-not-found",
+                "player",
+                player.getName());
             return;
         }
-        if (!bypass && !shopMenu.getCondition().getAllBoolean(new ObjectThingRun(player))) {
+        if (!canDisplayMenu()) {
             LanguageManager.languageManager.sendStringText(player,
-                    "menu-condition-not-meet",
-                    "menu",
-                    shop.getShopMenu());
+                "menu-condition-not-meet",
+                "menu",
+                shop.getShopMenu());
             return;
         }
         for (ObjectItem tempVal5 : shop.getProductListNotHidden(player)) {
@@ -68,7 +65,7 @@ public class ShopGUI extends InvGUI {
                 tempVal4.refreshTimes();
             }
         }
-        menuButtons = shopMenu.getMenu(MenuSender.of(player));
+        menuButtons = shopMenu.getMenu(MenuSender.of(player, getPresentation()));
         menuItems = getMenuItems(player);
 
         ObjectMenu menu = shop.getShopMenuObject();
@@ -90,7 +87,7 @@ public class ShopGUI extends InvGUI {
         }
         if (menuButtons.get(slot) instanceof ObjectItem itemButton) {
             itemButton.clickEvent(type, player);
-            if (ConfigManager.configManager.getBooleanOrDefault("menu.shop.click-update", "menu.menu-update.click-update")) {
+            if (ConfigManager.configManager.getBoolean("menu.menu-update.click-update")) {
                 constructGUI();
             } else {
                 updateSharedUseTimesSlots(itemButton, slot);
@@ -98,7 +95,7 @@ public class ShopGUI extends InvGUI {
             return true;
         }
         menuButtons.get(slot).clickEvent(type, player);
-        if (ConfigManager.configManager.getBooleanOrDefault("menu.shop.click-update", "menu.menu-update.click-update")) {
+        if (ConfigManager.configManager.getBoolean("menu.menu-update.click-update")) {
             constructGUI();
         } else {
             updateSlot(slot);
@@ -108,7 +105,7 @@ public class ShopGUI extends InvGUI {
 
     @Override
     public ObjectMenu getMenu() {
-        return shop.getShopMenuObject();
+        return shopMenu;
     }
 
     public void updateSlot(int slot) {
@@ -144,29 +141,29 @@ public class ShopGUI extends InvGUI {
         ObjectMenu shopMenu = shop.getShopMenuObject();
         if (shopMenu == null) {
             LanguageManager.languageManager.sendStringText(player,
-                    "error.shop-does-not-have-menu",
-                    "shop",
-                    shop.getShopName());
+                "error.shop-does-not-have-menu",
+                "shop",
+                shop.getShopName());
             return;
         }
         if (shopMenu.menuConfigs == null) {
             LanguageManager.languageManager.sendStringText(player,
-                    "error.shop-menu-not-found",
-                    "shop",
-                    shop.getShopName(),
-                    "menu",
-                    shop.getShopMenu());
+                "error.shop-menu-not-found",
+                "shop",
+                shop.getShopName(),
+                "menu",
+                shop.getShopMenu());
             return;
         }
         if (UltimateShop.useGeyser &&
-                shopMenu.isUseGeyser() &&
-                CommonUtil.isBedrockPlayer(player)) {
+            shopMenu.isUseGeyser() &&
+            CommonUtil.isBedrockPlayer(player)) {
             FormShopGUI formShopGUI = new FormShopGUI(player, shop, shopMenu, bypass);
             formShopGUI.openGUI(reopen);
             return;
         }
-        if (shopMenu.isUseDialog()) {
-            if ("ore".equalsIgnoreCase(shopMenu.getString("dialog.layout", "multi-action"))) {
+        if (!ArcMenuBridge.arcMenuBridge.enabled(shopMenu, player) && shopMenu.isUseDialog()) {
+            if ("ore".equalsIgnoreCase(ConfigManager.configManager.getDialogLayout(shopMenu.getConfig()))) {
                 new DialogOreGUI(player, shopMenu, shop, bypass).openGUI(reopen);
             } else {
                 new DialogShopGUI(player, shop, shopMenu, bypass).openGUI(reopen);

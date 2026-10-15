@@ -717,14 +717,6 @@ Use `/shop generateitemformat` to determine the most specific ItemFormat key ava
 
 The `match_item` modifier uses MythicChanger `match-item` rules.
 
-The legacy type:
-
-```yaml
-type: mythic_changer
-```
-
-remains available as an alias.
-
 {% hint style="warning" %}
 This modifier requires **MythicChanger**.
 
@@ -1299,16 +1291,20 @@ Use the most specific key possible.
 
 ## Price Modifier API
 
-Global item-aware Price Modifiers are registered through `PriceModifierRegistry`.
+Global item-aware Price Modifiers are managed by `PriceModifierManager` in `cn.superiormc.ultimateshop.managers`. It loads `sell.price-modifier` through the existing `ConfigManager` and rebuilds the configured chain on plugin reload. Custom factories remain registered across `/shop reload`.
 
 A custom implementation only needs to implement `PriceModifier` and register a factory:
 
 ```java
-PriceModifierRegistry.register(
+import cn.superiormc.ultimateshop.managers.PriceModifierManager;
+
+PriceModifierManager.priceModifierManager.registerNewPriceModifier(
         "my-modifier",
         MyPriceModifier::new
 );
 ```
+
+Register after UltimateShop has enabled, using a unique type ID. As with the action manager, registering an existing ID leaves the existing type unchanged. Registering a new type rebuilds the configured chain, so configured entries using that type become available immediately.
 
 Each modifier receives:
 

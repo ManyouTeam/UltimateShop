@@ -45,6 +45,7 @@ softdepend:
   - CMI
   - FancyHolograms
   # Others
+  - ArcMenu
   - NBTAPI
   - packetevents
   - floodgate

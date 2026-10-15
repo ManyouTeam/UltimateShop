@@ -1,7 +1,7 @@
 package cn.superiormc.ultimateshop.objects.buttons.subobjects;
 
 import cn.superiormc.ultimateshop.managers.ConfigManager;
-import cn.superiormc.ultimateshop.managers.ItemMaterialManager;
+import cn.superiormc.ultimateshop.managers.MinecraftResourceManager;
 import cn.superiormc.ultimateshop.methods.Items.BuildItem;
 import cn.superiormc.ultimateshop.methods.ModifyDisplayItem;
 import cn.superiormc.ultimateshop.objects.ObjectThingRun;
@@ -127,14 +127,14 @@ public class ObjectDisplayItem {
 
     public Set<String> getPossibleSprites() {
         if (!useFirstProduct) {
-            return ItemMaterialManager.getConfiguredSprites(section);
+            return MinecraftResourceManager.minecraftResourceManager.getConfiguredSprites(section);
         }
         Set<String> result = new HashSet<>();
         if (section != null && section.contains("sprite")) {
             result.add(section.getString("sprite"));
         } else if (item != null && ConfigManager.configManager.getBoolean("display-item.auto-set-first-product")) {
             for (ObjectSingleProduct product : item.getReward().singleProducts) {
-                result.addAll(ItemMaterialManager.getConfiguredSprites(product.singleSection));
+                result.addAll(MinecraftResourceManager.minecraftResourceManager.getConfiguredSprites(product.singleSection));
             }
         }
         return result;

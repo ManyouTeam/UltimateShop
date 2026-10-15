@@ -1,8 +1,8 @@
 package cn.superiormc.ultimateshop.methods;
 
+import cn.superiormc.ultimateshop.objects.dialog.DialogFontUtil;
 import cn.superiormc.ultimateshop.objects.dialog.ObjectDialogPackUsage;
 import cn.superiormc.ultimateshop.objects.dialog.ObjectDialogTemplate;
-import cn.superiormc.ultimateshop.objects.dialog.DialogFontUtil;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -27,35 +27,60 @@ import javax.imageio.ImageIO;
 
 public class GenerateDialogPack {
 
-    public static void generate(Path file, Collection<ObjectDialogTemplate> templates, int format) throws IOException {
+    public static void generate(Path file, Collection<ObjectDialogTemplate> templates, int format)
+    throws IOException {
         generate(file, templates, format, null);
     }
 
-    public static void generate(Path file, Collection<ObjectDialogTemplate> templates, int format, Path textures) throws IOException {
+    public static void generate(
+        Path file, Collection<ObjectDialogTemplate> templates, int format, Path textures)
+    throws IOException {
         generate(file, templates, format, textures, Set.of());
     }
 
-    public static void generate(Path folder, Collection<ObjectDialogTemplate> templates, int format, Path textures,
-                                Collection<String> icons) throws IOException {
+    public static void generate(
+        Path folder,
+        Collection<ObjectDialogTemplate> templates,
+        int format,
+        Path textures,
+        Collection<String> icons)
+    throws IOException {
         generateFolder(folder, templates, format, textures, icons, () -> true);
     }
 
-    public static boolean generateFolder(Path folder, Collection<ObjectDialogTemplate> templates, int format, Path textures,
-                                         Collection<String> icons, BooleanSupplier current) throws IOException {
-        return generateFolder(folder, templates, format, textures, icons, current,
-                List.of(0));
+    public static boolean generateFolder(
+        Path folder,
+        Collection<ObjectDialogTemplate> templates,
+        int format,
+        Path textures,
+        Collection<String> icons,
+        BooleanSupplier current)
+    throws IOException {
+        return generateFolder(folder, templates, format, textures, icons, current, List.of(0));
     }
 
-    public static boolean generateFolder(Path folder, Collection<ObjectDialogTemplate> templates, int format, Path textures,
-                                         Collection<String> icons, BooleanSupplier current,
-                                         Collection<Integer> backgroundOffsets) throws IOException {
+    public static boolean generateFolder(
+        Path folder,
+        Collection<ObjectDialogTemplate> templates,
+        int format,
+        Path textures,
+        Collection<String> icons,
+        BooleanSupplier current,
+        Collection<Integer> backgroundOffsets)
+    throws IOException {
         ObjectDialogPackUsage usage = new ObjectDialogPackUsage();
         for (ObjectDialogTemplate template : templates) {
             for (String icon : icons) {
                 usage.addIcon(template, icon, backgroundOffsets);
             }
-            for (boolean product : new boolean[]{false, true}) {
-                for (boolean enabled : new boolean[]{false, true}) {
+            for (boolean product : new boolean[] {
+                    false, true
+                }
+                ) {
+                for (boolean enabled : new boolean[] {
+                        false, true
+                    }
+                    ) {
                     usage.addBackground(template, product, enabled, backgroundOffsets);
                 }
             }
@@ -63,8 +88,13 @@ public class GenerateDialogPack {
         return generateFolder(folder, usage, format, textures, current);
     }
 
-    public static boolean generateFolder(Path folder, ObjectDialogPackUsage usage, int format, Path textures,
-                                         BooleanSupplier current) throws IOException {
+    public static boolean generateFolder(
+        Path folder,
+        ObjectDialogPackUsage usage,
+        int format,
+        Path textures,
+        BooleanSupplier current)
+    throws IOException {
         if (format < 69 || format > 10000) {
             throw new IllegalArgumentException("Resource format must be in 69..10000");
         }
@@ -74,32 +104,69 @@ public class GenerateDialogPack {
         Path staging = Files.createTempDirectory(parent, ".ore-pack-build-");
         Path backup = null;
         try {
-            JSONObject pack = new JSONObject().put("description", "UltimateShop Ore Dialog")
-                    .put("min_format", format).put("max_format", format);
-            write(staging, "pack.mcmeta", new JSONObject().put("pack", pack).toString(2).getBytes(StandardCharsets.UTF_8));
+            JSONObject pack =
+                new JSONObject()
+                .put("description", "UltimateShop Ore Dialog")
+                .put("min_format", format)
+                .put("max_format", format);
+            write(
+                staging,
+                "pack.mcmeta",
+                new JSONObject()
+                .put("pack", pack)
+                .toString(2)
+                .getBytes(StandardCharsets.UTF_8));
             JSONObject advances = new JSONObject();
             int power = 1;
             for (int place = 0; place < 4; place++, power *= 10) {
                 for (int digit = 1; digit < 10; digit++) {
-                    advances.put(Character.toString(DialogFontUtil.getSpaceCharacter(place, digit, false)), power * digit);
-                    advances.put(Character.toString(DialogFontUtil.getSpaceCharacter(place, digit, true)), -power * digit);
+                    advances.put(
+                        Character.toString(
+                        DialogFontUtil.getSpaceCharacter(place, digit, false)),
+                        power * digit);
+                    advances.put(
+                        Character.toString(
+                        DialogFontUtil.getSpaceCharacter(place, digit, true)),
+                        -power * digit);
                 }
             }
             advances.put(Character.toString(0xf1080), 0.5);
             advances.put(Character.toString(0xf1081), -0.5);
-            writeJson(staging, "assets/ultimateshop/font/ore/spacing.json", new JSONObject().put("type", "space").put("advances", advances));
+            advances.put(Character.toString(0xf1082), 0.25);
+            advances.put(Character.toString(0xf1083), -0.25);
+            writeJson(
+                staging,
+                "assets/ultimateshop/font/ore/spacing.json",
+                new JSONObject().put("type", "space").put("advances", advances));
             for (ObjectDialogPackUsage.Icon icon : usage.getIcons()) {
-                writeIcon(staging, icon.getTemplate(), icon.getTexture(), textures, icon.getPositions());
+                writeIcon(
+                    staging,
+                    icon.getTemplate(),
+                    icon.getTexture(),
+                    textures,
+                    icon.getPositions());
             }
             for (ObjectDialogTemplate template : usage.getTemplates().values()) {
-                for (boolean product : new boolean[]{false, true}) {
-                    for (boolean enabled : new boolean[]{false, true}) {
-                        String id = template.getResourceId() + (product ? "_product" : "_button") + (enabled ? "_enabled" : "_disabled");
+                for (boolean product : new boolean[] {
+                        false, true
+                    }
+                    ) {
+                    for (boolean enabled : new boolean[] {
+                            false, true
+                        }
+                        ) {
+                        String id =
+                            template.getResourceId()
+                            + (product ? "_product" : "_button")
+                            + (enabled ? "_enabled" : "_disabled");
                         Collection<Integer> positions = usage.getBackgrounds().get(id);
                         if (positions != null && !positions.isEmpty()) {
-                            writeTemplate(staging, template, product, enabled, false, textures, positions);
+                            writeTemplate(
+                                staging, template, product, enabled, false, textures,
+                                positions);
                             if (!product && enabled) {
-                                writeTemplate(staging, template, false, true, true, textures, positions);
+                                writeTemplate(
+                                    staging, template, false, true, true, textures, positions);
                             }
                         }
                     }
@@ -144,7 +211,8 @@ public class GenerateDialogPack {
                     Thread.sleep(100L * (attempt + 1));
                 } catch (InterruptedException interrupted) {
                     Thread.currentThread().interrupt();
-                    throw new IOException("Interrupted while publishing Ore resource pack", interrupted);
+                    throw new IOException(
+                        "Interrupted while publishing Ore resource pack", interrupted);
                 }
             }
         }
@@ -152,9 +220,10 @@ public class GenerateDialogPack {
 
     private static void deleteGeneratedDirectory(Path folder, Path parent) throws IOException {
         Path resolved = folder.toAbsolutePath().normalize();
-        if (!resolved.startsWith(parent) || resolved.equals(parent)
-                || !(resolved.getFileName().toString().startsWith(".ore-pack-build-")
-                || resolved.getFileName().toString().startsWith(".ore-pack-backup-"))) {
+        if (!resolved.startsWith(parent)
+            || resolved.equals(parent)
+            || !(resolved.getFileName().toString().startsWith(".ore-pack-build-")
+            || resolved.getFileName().toString().startsWith(".ore-pack-backup-"))) {
             throw new IOException("Refusing to clean an unexpected generated folder: " + resolved);
         }
         if (Files.exists(resolved)) {
@@ -166,9 +235,16 @@ public class GenerateDialogPack {
         }
     }
 
-    private static void writeIcon(Path output, ObjectDialogTemplate template, String texture, Path textures,
-                                  Collection<Integer> backgroundOffsets) throws IOException {
-        if (textures == null || !texture.matches("[a-z0-9_.-]+:[a-z0-9_./-]+") || texture.contains("..")) {
+    private static void writeIcon(
+        Path output,
+        ObjectDialogTemplate template,
+        String texture,
+        Path textures,
+        Collection<Integer> backgroundOffsets)
+    throws IOException {
+        if (textures == null
+            || !texture.matches("[a-z0-9_.-]+:[a-z0-9_./-]+")
+            || texture.contains("..")) {
             throw new IOException("Invalid Ore icon texture: " + texture);
         }
         Path base = textures.toRealPath();
@@ -183,32 +259,68 @@ public class GenerateDialogPack {
         int size = template.getIconSize();
         BufferedImage icon = new BufferedImage(size + 1, size, BufferedImage.TYPE_INT_ARGB);
         Graphics2D graphics = icon.createGraphics();
-        graphics.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
-        graphics.drawImage(original, 0, 0, size, size, 0, 0, original.getWidth(),
-                Math.min(original.getWidth(), original.getHeight()), null);
+        graphics.setRenderingHint(
+            RenderingHints.KEY_INTERPOLATION,
+            RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
+        graphics.drawImage(
+            original,
+            0,
+            0,
+            size,
+            size,
+            0,
+            0,
+            original.getWidth(),
+            Math.min(original.getWidth(), original.getHeight()),
+            null);
         graphics.dispose();
         icon.setRGB(size, size - 1, 0xff000000 | template.getBackground());
-        String id = DialogFontUtil.getIconFontId(texture, size, template.getBackground(), template.getLoreRow());
+        String id =
+            DialogFontUtil.getIconFontId(
+            texture, size, template.getBackground(), template.getLoreRow());
         ByteArrayOutputStream data = new ByteArrayOutputStream();
         ImageIO.write(icon, "png", data);
         write(output, "assets/ultimateshop/textures/" + id + ".png", data.toByteArray());
         JSONArray providers = new JSONArray();
         for (int y : new TreeSet<>(backgroundOffsets)) {
-            providers.put(new JSONObject().put("type", "bitmap").put("file", "ultimateshop:" + id + ".png")
-                    .put("height", size).put("ascent", 7 - 9 - y - template.getLoreRow() * 9)
-                    .put("chars", new JSONArray().put(DialogFontUtil.getBackgroundCharacter(y, 0, 0))));
+            providers.put(
+                new JSONObject()
+                .put("type", "bitmap")
+                .put("file", "ultimateshop:" + id + ".png")
+                .put("height", size)
+                .put("ascent", 7 - 9 - y - template.getLoreRow() * 9)
+                .put(
+                "chars",
+                new JSONArray()
+                .put(DialogFontUtil.getBackgroundCharacter(y, 0, 0))));
         }
-        write(output, "assets/ultimateshop/font/" + id + ".json",
-                new JSONObject().put("providers", providers).toString().getBytes(StandardCharsets.UTF_8));
+        write(
+            output,
+            "assets/ultimateshop/font/" + id + ".json",
+            new JSONObject()
+            .put("providers", providers)
+            .toString()
+            .getBytes(StandardCharsets.UTF_8));
     }
 
-    private static void writeTemplate(Path output, ObjectDialogTemplate template,
-                                      boolean product, boolean enabled, boolean selected, Path textures, Collection<Integer> backgroundOffsets) throws IOException {
-        String id = template.getResourceId() + (product ? "_product" : "_button") + (enabled ? "_enabled" : "_disabled")
-                + (selected ? "_selected" : "");
+    private static void writeTemplate(
+        Path output,
+        ObjectDialogTemplate template,
+        boolean product,
+        boolean enabled,
+        boolean selected,
+        Path textures,
+        Collection<Integer> backgroundOffsets)
+    throws IOException {
+        String id =
+            template.getResourceId()
+            + (product ? "_product" : "_button")
+            + (enabled ? "_enabled" : "_disabled")
+            + (selected ? "_selected" : "");
         String texture = selected ? template.getSelectedTexture() : template.getTexture();
         int width = template.getWidth() - 1;
-        BufferedImage image = new BufferedImage(width, template.getHeight(), BufferedImage.TYPE_INT_ARGB);
+        BufferedImage image =
+            new BufferedImage(width, template.getHeight(), BufferedImage.TYPE_INT_ARGB);
         for (int y = 0; y < image.getHeight(); y++) {
             for (int x = 0; x < width; x++) {
                 int color = selected ? template.getSelectedBackground() : template.getBackground();
@@ -244,7 +356,9 @@ public class GenerateDialogPack {
                 throw new IOException("Invalid Dialog PNG: " + texture);
             }
             Graphics2D graphics = image.createGraphics();
-            graphics.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
+            graphics.setRenderingHint(
+                RenderingHints.KEY_INTERPOLATION,
+                RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
             graphics.drawImage(custom, 0, 0, width, template.getHeight(), null);
             graphics.dispose();
             if (!enabled) {
@@ -259,8 +373,11 @@ public class GenerateDialogPack {
         ImageIO.write(image, "png", data);
         write(output, "assets/ultimateshop/textures/" + id + ".png", data.toByteArray());
         JSONArray backgrounds = new JSONArray();
-        for (int top = 0, verticalTile = 0; top < image.getHeight(); top += DialogFontUtil.BACKGROUND_TILE_HEIGHT, verticalTile++) {
-            int tileHeight = Math.min(DialogFontUtil.BACKGROUND_TILE_HEIGHT, image.getHeight() - top);
+        for (int top = 0, verticalTile = 0;
+            top < image.getHeight();
+            top += DialogFontUtil.BACKGROUND_TILE_HEIGHT, verticalTile++) {
+            int tileHeight =
+                Math.min(DialogFontUtil.BACKGROUND_TILE_HEIGHT, image.getHeight() - top);
             for (int tile = 0; tile < DialogFontUtil.getTileCount(template.getWidth()); tile++) {
                 int left = tile * DialogFontUtil.TILE_WIDTH;
                 int tileWidth = Math.min(DialogFontUtil.TILE_WIDTH, width - left);
@@ -268,20 +385,44 @@ public class GenerateDialogPack {
                 String textureId = id + "_background_" + verticalTile + "_" + tile;
                 ByteArrayOutputStream bytes = new ByteArrayOutputStream();
                 ImageIO.write(part, "png", bytes);
-                write(output, "assets/ultimateshop/textures/" + textureId + ".png", bytes.toByteArray());
+                write(
+                    output,
+                    "assets/ultimateshop/textures/" + textureId + ".png",
+                    bytes.toByteArray());
                 for (int y : new TreeSet<>(backgroundOffsets)) {
-                    backgrounds.put(new JSONObject().put("type", "bitmap").put("file", "ultimateshop:" + textureId + ".png")
-                            .put("height", tileHeight).put("ascent", 7 - 9 - y - top)
-                            .put("chars", new JSONArray().put(DialogFontUtil.getBackgroundCharacter(y, verticalTile, tile))));
+                    backgrounds.put(
+                        new JSONObject()
+                        .put("type", "bitmap")
+                        .put("file", "ultimateshop:" + textureId + ".png")
+                        .put("height", tileHeight)
+                        .put("ascent", 7 - 9 - y - top)
+                        .put(
+                        "chars",
+                        new JSONArray()
+                        .put(
+                        DialogFontUtil.getBackgroundCharacter(
+                        y, verticalTile, tile))));
                 }
             }
         }
-        write(output, "assets/ultimateshop/font/" + id + "_background.json",
-                new JSONObject().put("providers", backgrounds).toString().getBytes(StandardCharsets.UTF_8));
+        write(
+            output,
+            "assets/ultimateshop/font/" + id + "_background.json",
+            new JSONObject()
+            .put("providers", backgrounds)
+            .toString()
+            .getBytes(StandardCharsets.UTF_8));
     }
 
-    private static void writeJson(Path output, String path, JSONObject provider) throws IOException {
-        write(output, path, new JSONObject().put("providers", new JSONArray().put(provider)).toString().getBytes(StandardCharsets.UTF_8));
+    private static void writeJson(Path output, String path, JSONObject provider)
+    throws IOException {
+        write(
+            output,
+            path,
+            new JSONObject()
+            .put("providers", new JSONArray().put(provider))
+            .toString()
+            .getBytes(StandardCharsets.UTF_8));
     }
 
     private static void write(Path output, String path, byte[] data) throws IOException {

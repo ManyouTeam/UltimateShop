@@ -1,8 +1,9 @@
 package cn.superiormc.ultimateshop.objects.buttons;
 
 import cn.superiormc.ultimateshop.objects.buttons.subobjects.ObjectDisplayItemStack;
-import cn.superiormc.ultimateshop.objects.menus.MenuSender;
 import cn.superiormc.ultimateshop.objects.items.ObjectAction;
+import cn.superiormc.ultimateshop.objects.menus.MenuSender;
+
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
@@ -24,7 +25,7 @@ public abstract class AbstractButton {
     public abstract ObjectDisplayItemStack getDisplayItem(Player player, int multi);
 
     public void clickEvent(ClickType type, Player player) {
-       return;
+        return;
     }
 
     public ConfigurationSection getButtonConfig() {
@@ -33,8 +34,8 @@ public abstract class AbstractButton {
 
     public Boolean getShowSprite() {
         ConfigurationSection settings = getButtonConfig();
-        return settings != null && settings.contains("dialog.show-sprite")
-                ? settings.getBoolean("dialog.show-sprite") : null;
+        return settings != null && settings.contains("ui.show-sprite")
+        ? settings.getBoolean("ui.show-sprite") : null;
     }
 
     public ButtonType getType() {
@@ -54,11 +55,11 @@ public abstract class AbstractButton {
         if (settings == null || presentation == null) {
             return true;
         }
-        boolean fallback = true;
-        if ("ore".equals(presentation) || "item-action-list".equals(presentation)) {
-            fallback = settings.getBoolean("menu-visibility.dialog", true);
+        if (settings.isList("ui.visible-in")) {
+            String mode = "item-action-list".equals(presentation) ? "dialog" : presentation;
+            return settings.getStringList("ui.visible-in").contains(mode);
         }
-        return settings.getBoolean("menu-visibility." + presentation, fallback);
+        return true;
     }
 
     public boolean hasShopMenuAction() {
@@ -88,7 +89,7 @@ public abstract class AbstractButton {
     }
 
     public boolean usesItemActionDialogLayout(String menuLayout) {
-        String layout = config == null ? menuLayout : config.getString("dialog.layout", menuLayout);
+        String layout = config == null ? menuLayout : config.getString("ui.renderers.dialog.layout", menuLayout);
         return "item-action-list".equalsIgnoreCase(layout);
     }
 

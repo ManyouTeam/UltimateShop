@@ -38,8 +38,9 @@
 * [❤️Favourite Menus - Premium](menus/favourite-menus-premium.md)
 * [🛒Sell All Menu](menus/sell-all-menu.md)
 * [🔀Conditional Display - Premium](menus/conditional-display-premium.md)
-* [🛏️Bedrock Menus - Premium](menus/bedrock-menus-premium.md)
-* [💬Dialog Menus - Premium](menus/dialog-menus-premium.md)
+* [🛏️Bedrock Form Menus - Premium](menus/bedrock-menus-premium.md)
+* [💬Dialog and Ore Menus - Premium](menus/dialog-menus-premium.md)
+* [✨Unified UI and ArcMenu - Premium](menus/arcmenu-menus-premium.md)
 * [🥉Display Item Add Lore](menus/display-item-add-lore.md)
 
 ## 🛍️Shops

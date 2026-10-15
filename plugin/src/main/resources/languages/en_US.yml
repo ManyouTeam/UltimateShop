@@ -272,6 +272,28 @@ override-lang:
     favourite:
       title: '&8Favourite List'
       content: '&7Save the products you trade most often and keep them one click away.'
+    arcmenu:
+      cancel: Cancel
+      navigation: QUICK ACTIONS
+      no-extra: No extra actions
+      favourite: 'Toggle favourite'
+      categories: 'CATEGORIES'
+      products: 'PRODUCTS'
+      select-product: 'Select a product'
+      back: 'Back'
+      close: 'Close'
+      buy: 'Buy'
+      sell: 'Sell'
+      trade:
+        done: 'Transaction completed'
+        error: 'Transaction failed'
+        permission: 'Permission required'
+        player-max: 'Your limit was reached'
+        server-max: 'Server limit reached'
+        not-enough: 'Insufficient funds or items'
+        condition: 'Requirements not met'
+        inventory-full: 'Inventory full'
+        cancelled: 'Transaction cancelled'
     dialog:
       default-button: 'OK'
       details: 'View details'
@@ -301,6 +323,10 @@ override-lang:
           remove: '&cRemove'
           back: '&7Back'
     bedrock:
+      search:
+        input: 'Search'
+        buttons:
+          search: 'Search'
       price-extra-line:
         default: '&6Buy: {buy-price} &6| Sell: {sell-price}'
         only-buy: '&6Buy: {buy-price}'
@@ -387,12 +413,12 @@ override-lang:
       - '@j'
       - '@j&#ff3300Can not sell more for server!'
       - '@j&8Refresh Time: {sell-refresh-server}'
-      - '@n@y '
-      - '@a@u@y{buy-click}'
-      - '@b@v@y{sell-click}'
-      - '@k@q@y&#FFFACDRight-Shift click to pick amount!'
-      - '@l(@o)@y(@w)&#FFFACDSwap hand (F Key) to add favourite!'
-      - '@m@v@y(@w)&#FFFACDDrop (Q key) to sell all!'
+      - '@t[inventory]@n@y '
+      - '@t[inventory]@a@u@y{buy-click}'
+      - '@t[inventory]@b@v@y{sell-click}'
+      - '@t[inventory]@k@q@y&#FFFACDRight-Shift click to pick amount!'
+      - '@t[inventory]@l(@o)@y(@w)&#FFFACDSwap hand (F Key) to add favourite!'
+      - '@t[inventory]@m@v@y(@w)&#FFFACDDrop (Q key) to sell all!'
       - '(@n)&c&l:( Can not do this'
       - '(@a)@u@p&cThis item can not be purchased'
       - '(@b)@v@p&cThis item can not be sold'
@@ -475,22 +501,22 @@ editor:
       desc: '&7Open shop yml files under &f/shops'
     menus:
       name: '&eEdit Menus'
-      desc: '&7Open menu yml files under &f/menus'
+      desc: '&7Open menu yml files under &f/menus/common_menus'
     shop-menu-templates:
       name: '&eEdit Shop Menu Templates'
-      desc: '&7Open menu yml files under &f/shop_menu_templates'
+      desc: '&7Open menu yml files under &f/menus/shop_menu_templates'
     buy-more-menus:
       name: '&eEdit Buy More Menus'
-      desc: '&7Open menu yml files under &f/buy_more_menus'
+      desc: '&7Open menu yml files under &f/menus/buy_more_menus'
     favourite-menus:
       name: '&eEdit Favourite Menus'
-      desc: '&7Open menu yml files under &f/favourite_menus'
+      desc: '&7Open menu yml files under &f/menus/favourite_menus'
     search-menus:
       name: '&eEdit Search Menus'
-      desc: '&7Open menu yml files under &f/search_menus'
+      desc: '&7Open menu yml files under &f/menus/search_menus'
     item-sell-menus:
       name: '&eEdit Item Sell Menus'
-      desc: '&7Open menu yml files under &f/item_sell_menus'
+      desc: '&7Open menu yml files under &f/menus/item_sell_menus'
     close:
       name: '&cClose'
       desc: '&7Close the editor'
@@ -663,7 +689,7 @@ editor:
     invalid-new-child-value: '&#98FB98[UltimateShop] &cInvalid value. Use section/{}, boolean, number, list (;;), or plain text.'
     invalid-integer-list: '&#98FB98[UltimateShop] &cOne of the values is not an integer.'
     child-format: '&#98FB98[UltimateShop] &cUse format: key type'
-    command-usage: '&#98FB98[UltimateShop] &cUse /shop editor [shop|menu] <id>'
+    command-usage: '&cUse /shop editor [shop|menu|shop_menu_template|buy_more_menu|favourite_menu|search_menu|item_sell_menu] <id>'
     target-missing: '&#98FB98[UltimateShop] &cCould not find {scope}: {id}'
   list:
     title: 'List Editor: {path}'
@@ -763,12 +789,219 @@ editor:
         buttons:
           name: 'Buttons'
           desc: 'Extra menu buttons shown in this shop menu.'
+    ui_section:
+      title: Unified UI Settings
+      fields:
+        placement:
+          name: Product Placement
+          desc: Default placement for products in Ore and ArcMenu.
+          enabled:
+            name: Enable Placement
+            desc: Include this entry in the graphical layout.
+          area:
+            name: Layout Area
+            desc: Name of an area defined in ui.layout.areas.
+          order:
+            name: Layout Order
+            desc: Sort order inside an area.
+          row:
+            name: Grid Row
+            desc: Zero-based grid row; remove for automatic placement.
+          column:
+            name: Grid Column
+            desc: Zero-based grid column.
+          x:
+            name: Placement X
+            desc: Edit placement.x in this UI section.
+          y:
+            name: Placement Y
+            desc: Edit placement.y in this UI section.
+          width:
+            name: Placement Width
+            desc: Edit placement.width in this UI section.
+          height:
+            name: Placement Height
+            desc: Edit placement.height in this UI section.
+        card:
+          name: Product Card Style
+          desc: Shared card sizes, fonts and button spacing.
+        price:
+          enabled:
+            name: Show Price
+            desc: Show the product price line.
+          formats:
+            name: Price Formats
+            desc: Formats for both, only-buy and only-sell.
+        actions:
+          name: Product Action Display
+          desc: Edit primary, extra (auto or a list), and labels; these are not numbered actions.
+          primary:
+            name: Actions Primary
+            desc: Edit actions.primary in this UI section.
+        visible-in:
+          name: Visible Presentations
+          desc: List inventory, form, dialog, ore or arcmenu. Empty hides everywhere.
+        show-sprite:
+          name: Show Sprite
+          desc: Override native Dialog sprite display for this entry.
+        appearance:
+          name: Appearance
+          desc: Graphical card or button appearance.
+        font-size:
+          name: Font Size
+          desc: Edit font-size in this UI section.
+        text-align:
+          name: Text Align
+          desc: Edit text-align in this UI section.
+        mode:
+          java:
+            name: Java Presentation
+            desc: inherit, inventory, dialog, ore or arcmenu.
+          bedrock:
+            name: Bedrock Presentation
+            desc: inherit, inventory or form.
+        layout:
+          canvas:
+            width:
+              name: Layout Canvas Width
+              desc: Edit layout.canvas.width in this UI section.
+            height:
+              name: Layout Canvas Height
+              desc: Edit layout.canvas.height in this UI section.
+          header:
+            name: Layout Headers
+            desc: Named text entries using title and content placeholders.
+          areas:
+            name: Layout Areas
+            desc: Named grid, stack and free areas. Keep entries inside the canvas.
+          pagination:
+            name: Layout Pagination
+            desc: Edit layout.pagination in this UI section.
+        products:
+          name: Product Defaults
+          desc: Placement, card style, price formats and product actions.
+        theme:
+          name: Theme
+          desc: Edit theme in this UI section.
+        text:
+          name: Text
+          desc: Edit text in this UI section.
+        renderers:
+          inventory:
+            name: Renderers Inventory
+            desc: Edit renderers.inventory in this UI section.
+          form:
+            name: Renderers Form
+            desc: Edit renderers.form in this UI section.
+          dialog:
+            name: Renderers Dialog
+            desc: Edit renderers.dialog in this UI section.
+            layout:
+              name: Renderers Dialog Layout
+              desc: Edit renderers.dialog.layout in this UI section.
+            button-width:
+              name: Renderers Dialog Button Width
+              desc: Edit renderers.dialog.button-width in this UI section.
+            columns:
+              name: Renderers Dialog Columns
+              desc: Edit renderers.dialog.columns in this UI section.
+          ore:
+            name: Renderers Ore
+            desc: Edit renderers.ore in this UI section.
+          arcmenu:
+            right-click-action:
+              name: ArcMenu Right-click Action
+              desc: Default select-amount opens product details. Custom product actions are supported.
+            screen-scale:
+              name: Renderers Arcmenu Screen Scale
+              desc: Edit renderers.arcmenu.screen-scale in this UI section.
+            update-interval:
+              name: Renderers Arcmenu Update Interval
+              desc: Edit renderers.arcmenu.update-interval in this UI section.
+            animation:
+              enabled:
+                name: Renderers Arcmenu Animation Enabled
+                desc: Edit renderers.arcmenu.animation.enabled in this UI section.
+              duration:
+                name: Renderers Arcmenu Animation Duration
+                desc: Edit renderers.arcmenu.animation.duration in this UI section.
+            more-menu:
+              columns:
+                name: Renderers Arcmenu More Menu Columns
+                desc: Edit renderers.arcmenu.more-menu.columns in this UI section.
+            tooltip:
+              enabled:
+                name: Renderers Arcmenu Tooltip Enabled
+                desc: Edit renderers.arcmenu.tooltip.enabled in this UI section.
+              width:
+                name: Renderers Arcmenu Tooltip Width
+                desc: Edit renderers.arcmenu.tooltip.width in this UI section.
+              font-size:
+                name: Renderers Arcmenu Tooltip Font Size
+                desc: Edit renderers.arcmenu.tooltip.font-size in this UI section.
+              padding:
+                name: Renderers Arcmenu Tooltip Padding
+                desc: Edit renderers.arcmenu.tooltip.padding in this UI section.
     root_menu:
       title: 'Menu Preset'
       fields:
+        content:
+          name: Menu Content
+          desc: Shared content for Form, Dialog and graphical headers.
+        ui:
+          name: Unified Menu UI
+          desc: Presentation modes, layout, product styles and renderer settings.
+        input-item:
+          name: Input Slot Identifier
+          desc: Identifier reserved for input slots in Inventory layout.
+        result-item:
+          name: Result Slot Identifier
+          desc: Identifier reserved for results in Inventory layout.
+        action-items:
+          name: Search Actions
+          desc: Input and clear-search controls.
+        state-items:
+          name: Search State
+          desc: Search state display buttons.
+        no-result-item:
+          name: No Results
+          desc: Display when no product matches.
+        result-lore:
+          name: Result Lore
+          desc: Additional result lore.
+        editing-result-lore:
+          name: Editing Result Lore
+          desc: Favourite result lore in edit mode.
+        edit-mode-item:
+          name: Favourite Edit Toggle
+          desc: Normal and editing button displays.
+        empty-item:
+          name: Empty Favourites
+          desc: Display for unused favourite slots.
+        amount-items:
+          name: Quantity Buttons
+          desc: Inventory quantity controls; ArcMenu uses product details.
+        display-items:
+          name: Preview Identifiers
+          desc: Inventory layout identifiers that display the selected product.
+        display-items-ui:
+          name: Preview UI
+          desc: Display-item UI settings for supported graphical menus.
+        confirm-items:
+          name: Quantity Confirm Buttons
+          desc: Inventory quantity purchase and sale controls.
+        confirm-item:
+          name: Sell Confirm Identifier
+          desc: Identifier for the Inventory sell confirmation slot.
+        confirm-button:
+          name: Sell Confirm Button
+          desc: Item-sell confirmation control.
+        max-sell-amount:
+          name: Maximum Sell Amount
+          desc: Maximum quantity accepted by this item-sell menu.
         title:
           name: 'Title'
-          desc: 'Inventory title shown to players.'
+          desc: 'Menu title shared by the selected presentations.'
         size:
           name: 'Size'
           desc: 'Inventory size, usually a multiple of 9.'
@@ -809,6 +1042,9 @@ editor:
     shop_item:
       title: 'Product Preset'
       fields:
+        ui:
+          name: Product and Button UI
+          desc: Visibility, sprites, placement, fonts and product operation display.
         display-name:
           name: 'Display Name'
           desc: 'Logical display name of this product.'
@@ -865,10 +1101,10 @@ editor:
           desc: 'Dedicated buy-more menu for this product.'
           menu:
             name: 'Menu File'
-            desc: 'Menu file used when this product opens the buy-more GUI.'
+            desc: 'Quantity menu file; ArcMenu select-amount opens product details instead.'
           max-amount:
             name: 'Max Amount'
-            desc: 'Maximum amount selectable in the buy-more menu.'
+            desc: 'Maximum selectable quantity, including ArcMenu product details.'
           hide-message:
             name: 'Hide Message'
             desc: 'Hide this product success message.'
@@ -957,6 +1193,9 @@ editor:
     button_entry:
       title: 'Button Preset'
       fields:
+        ui:
+          name: Product and Button UI
+          desc: Visibility, sprites, placement, fonts and product operation display.
         dialog:
           show-sprite:
             name: 'Show Sprite'

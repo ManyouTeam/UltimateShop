@@ -19,16 +19,25 @@ public class DialogBuyMoreGUI extends DialogGUI {
 
     @Override
     public void constructGUI() {
+        ObjectMenu sourceMenu = item.getShopObject().getShopMenuObject();
         if (CacheManager.cacheManager.getObjectCache(player) == null) {
             LanguageManager.languageManager.sendStringText(player, "error.player-not-found", "player", player.getName());
             return;
         }
         int max = item.getBuyMoreMenu().getSection().getInt("max-amount", 64);
-        String title = getDialogText("buy-more.title", "item-name", item.getDisplayName(player));
-        String label = getDialogText("buy-more.input");
-        String confirm = getDialogText("buy-more.buttons.confirm", "item-name", item.getDisplayName(player));
+        String title = ConfigManager.configManager.getMenuRendererText(
+            sourceMenu == null ? null : sourceMenu.getConfig(),
+            player, "dialog", "buy-more.title", "", "item-name", item.getDisplayName(player));
+        String label = ConfigManager.configManager.getMenuRendererText(
+            sourceMenu == null ? null : sourceMenu.getConfig(),
+            player, "dialog", "buy-more.input", "");
+        String confirm = ConfigManager.configManager.getMenuRendererText(
+            sourceMenu == null ? null : sourceMenu.getConfig(),
+            player, "dialog", "buy-more.buttons.confirm", "", "item-name", item.getDisplayName(player));
         DialogView.Builder builder = DialogView.builder(title);
-        if (ConfigManager.configManager.getBoolean("menu.dialog.buy-more.display-item")) {
+        if (ConfigManager.configManager.getMenuRendererBoolean(
+            sourceMenu == null ? null : sourceMenu.getConfig(),
+            "dialog", "buy-more.display-item", true)) {
             builder.item(item.getDisplayItem(player));
         }
         dialog = builder.input(DialogInput.number("amount", label, 1, max, 1, 1))
@@ -41,5 +50,7 @@ public class DialogBuyMoreGUI extends DialogGUI {
     }
 
     @Override
-    public ObjectMenu getMenu() { return item.getBuyMoreMenu(); }
+    public ObjectMenu getMenu() {
+        return item.getBuyMoreMenu();
+    }
 }

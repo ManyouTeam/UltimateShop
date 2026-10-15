@@ -12,6 +12,13 @@
     <artifactId>core</artifactId>
 
     <dependencies>
+        <!-- Public API only; supplied by the optional ArcMenu plugin at runtime. -->
+        <dependency>
+            <groupId>com.fentai</groupId>
+            <artifactId>arcmenu-api</artifactId>
+            <version>3.0.1</version>
+            <scope>provided</scope>
+        </dependency>
         <dependency>
             <groupId>cn.superiormc.ultimateshop</groupId>
             <artifactId>LegacyCodesCompatibility</artifactId>

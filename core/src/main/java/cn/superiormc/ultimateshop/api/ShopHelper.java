@@ -5,6 +5,7 @@ import cn.superiormc.ultimateshop.managers.CacheManager;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.LanguageManager;
 import cn.superiormc.ultimateshop.managers.MenuStatusManager;
+import cn.superiormc.ultimateshop.managers.PriceModifierManager;
 import cn.superiormc.ultimateshop.methods.Product.BuyProductMethod;
 import cn.superiormc.ultimateshop.methods.Product.SellProductMethod;
 import cn.superiormc.ultimateshop.methods.ProductTradeStatus;
@@ -15,12 +16,19 @@ import cn.superiormc.ultimateshop.objects.ObjectThingRun;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import cn.superiormc.ultimateshop.objects.caches.ObjectCache;
 import cn.superiormc.ultimateshop.objects.caches.ObjectUseTimesCache;
-import cn.superiormc.ultimateshop.objects.items.*;
+import cn.superiormc.ultimateshop.objects.items.AbstractSingleThing;
+import cn.superiormc.ultimateshop.objects.items.GiveItemStack;
+import cn.superiormc.ultimateshop.objects.items.GiveResult;
+import cn.superiormc.ultimateshop.objects.items.ItemStorage;
+import cn.superiormc.ultimateshop.objects.items.MaxSellResult;
+import cn.superiormc.ultimateshop.objects.items.TakeResult;
+import cn.superiormc.ultimateshop.objects.items.ThingType;
 import cn.superiormc.ultimateshop.objects.items.ObjectCondition;
 import cn.superiormc.ultimateshop.objects.items.pricemodifiers.PriceModifierChain;
 import cn.superiormc.ultimateshop.objects.items.prices.ObjectPrices;
 import cn.superiormc.ultimateshop.objects.menus.ObjectMenu;
 import cn.superiormc.ultimateshop.objects.menus.MenuSender;
+import cn.superiormc.ultimateshop.utils.CommonUtil;
 import cn.superiormc.ultimateshop.utils.MathUtil;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
@@ -58,7 +66,7 @@ public class ShopHelper {
         if (displayItem.hasItemMeta()) {
             List<String> lore = UltimateShop.methodUtil.getItemLore(displayItem.getItemMeta());
             if (lore != null && !lore.isEmpty()) {
-                result.addAll(cn.superiormc.ultimateshop.utils.CommonUtil.modifyList(player, lore,
+                result.addAll(CommonUtil.modifyList(player, lore,
                         "amount", String.valueOf(item.getBuyPrice().empty ? sellAmount : buyAmount),
                         "buy-amount", String.valueOf(buyAmount), "sell-amount", String.valueOf(sellAmount)));
                 result.add(" ");
@@ -336,7 +344,7 @@ public class ShopHelper {
                 || itemStack == null || itemStack.getType().isAir()) {
             return conditionalMultiplier;
         }
-        BigDecimal modifierMultiplier = ConfigManager.configManager.getSellPriceModifiers().getMultiplier(
+        BigDecimal modifierMultiplier = PriceModifierManager.priceModifierManager.getSellPriceModifiers().getMultiplier(
                 player, itemStack, basePrice.max(BigDecimal.ZERO).multiply(conditionalMultiplier), tradeAmount);
         return conditionalMultiplier.multiply(modifierMultiplier).max(BigDecimal.ZERO);
     }
@@ -358,7 +366,7 @@ public class ShopHelper {
                                                       int tradeAmount,
                                                       BigDecimal basePrice) {
         BigDecimal conditionalMultiplier = BigDecimal.valueOf(getSellMultiplier(player, item));
-        PriceModifierChain priceModifiers = ConfigManager.configManager.getSellPriceModifiers();
+        PriceModifierChain priceModifiers = PriceModifierManager.priceModifierManager.getSellPriceModifiers();
         if (!item.isPriceModifierEnabled()
                 || storage == null || tradeAmount <= 0 || basePrice.compareTo(BigDecimal.ZERO) <= 0
                 || priceModifiers.getModifiers().isEmpty()) {

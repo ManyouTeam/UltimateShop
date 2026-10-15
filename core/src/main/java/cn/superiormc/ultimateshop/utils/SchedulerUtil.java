@@ -7,6 +7,9 @@ import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.scheduler.BukkitTask;
 
+import java.util.concurrent.CancellationException;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 import java.util.concurrent.TimeUnit;
 
 public class SchedulerUtil {
@@ -28,6 +31,14 @@ public class SchedulerUtil {
             scheduledTask.cancel();
         } else {
             bukkitTask.cancel();
+        }
+    }
+
+    public static <T> T getAvailableResult(CompletableFuture<T> future) {
+        try {
+            return future.getNow(null);
+        } catch (CompletionException | CancellationException exception) {
+            return null;
         }
     }
 

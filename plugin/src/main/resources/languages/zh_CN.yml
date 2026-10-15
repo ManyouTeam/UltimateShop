@@ -267,6 +267,28 @@ override-lang:
     favourite:
       title: '&8收藏夹'
       content: '&7把常交易的商品保存下来，之后随时快速打开。'
+    arcmenu:
+      cancel: 取消
+      navigation: 快捷操作
+      no-extra: 没有额外操作
+      favourite: '收藏 / 取消收藏'
+      categories: '商店分类'
+      products: '商品'
+      select-product: '选择商品查看详情'
+      back: '返回'
+      close: '关闭'
+      buy: '购买'
+      sell: '出售'
+      trade:
+        done: '交易成功'
+        error: '交易失败'
+        permission: '没有交易权限'
+        player-max: '已达到个人交易上限'
+        server-max: '已达到全服交易上限'
+        not-enough: '余额或物品不足'
+        condition: '未满足交易条件'
+        inventory-full: '背包空间不足'
+        cancelled: '交易已取消'
     dialog:
       default-button: '确定'
       details: '查看详情'
@@ -296,6 +318,10 @@ override-lang:
           remove: '&c移除'
           back: '&7返回'
     bedrock:
+      search:
+        input: '搜索'
+        buttons:
+          search: '搜索'
       price-extra-line:
         default: '&6购买: {buy-price} &6| 回收: {sell-price}'
         only-buy: '&6购买: {buy-price}'
@@ -382,12 +408,12 @@ override-lang:
       - '@j'
       - '@j&#ff3300不能再向服务器出售了!'
       - '@j&8补货时间: {sell-refresh-server}'
-      - '@n@y '
-      - '@a@u@y{buy-click}'
-      - '@b@v@y{sell-click}'
-      - '@k@q@y&#FFFACDShift + 鼠标右键选择数量！'
-      - '@l(@o)@y(@w)&#FFFACD键盘 F 键收藏该商品!'
-      - '@m@v@y(@w)&#FFFACD键盘 Q 键出售全部！'
+      - '@t[inventory]@n@y '
+      - '@t[inventory]@a@u@y{buy-click}'
+      - '@t[inventory]@b@v@y{sell-click}'
+      - '@t[inventory]@k@q@y&#FFFACDShift + 鼠标右键选择数量！'
+      - '@t[inventory]@l(@o)@y(@w)&#FFFACD键盘 F 键收藏该商品!'
+      - '@t[inventory]@m@v@y(@w)&#FFFACD键盘 Q 键出售全部！'
       - '(@n)&c&l:( 不能这么做'
       - '(@a)@u@p&c物品无法购买'
       - '(@b)@v@p&c物品无法出售'
@@ -469,22 +495,22 @@ editor:
       desc: '&7打开 &f/shops &7目录下的商店 yml 文件'
     menus:
       name: '&e编辑菜单'
-      desc: '&7打开 &f/menus &7目录下的菜单 yml 文件'
+      desc: '&7打开 &f/menus/common_menus &7目录下的菜单 yml 文件'
     shop-menu-templates:
       name: '&e编辑商店菜单模板'
-      desc: '&7打开 &f/shop_menu_templates &7目录下的菜单 yml 文件'
+      desc: '&7打开 &f/menus/shop_menu_templates &7目录下的菜单 yml 文件'
     buy-more-menus:
       name: '&e编辑批量购买菜单'
-      desc: '&7打开 &f/buy_more_menus &7目录下的菜单 yml 文件'
+      desc: '&7打开 &f/menus/buy_more_menus &7目录下的菜单 yml 文件'
     favourite-menus:
       name: '&e编辑收藏菜单'
-      desc: '&7打开 &f/favourite_menus &7目录下的菜单 yml 文件'
+      desc: '&7打开 &f/menus/favourite_menus &7目录下的菜单 yml 文件'
     search-menus:
       name: '&e编辑搜索菜单'
-      desc: '&7打开 &f/search_menus &7目录下的菜单 yml 文件'
+      desc: '&7打开 &f/menus/search_menus &7目录下的菜单 yml 文件'
     item-sell-menus:
       name: '&e编辑物品出售菜单'
-      desc: '&7打开 &f/item_sell_menus &7目录下的菜单 yml 文件'
+      desc: '&7打开 &f/menus/item_sell_menus &7目录下的菜单 yml 文件'
     close:
       name: '&c关闭'
       desc: '&7关闭编辑器'
@@ -657,7 +683,7 @@ editor:
     invalid-new-child-value: '&#98FB98[UltimateShop] &c无效值。可使用 section/{}, 布尔值, 数字, 列表 (;;), 或普通文本。'
     invalid-integer-list: '&#98FB98[UltimateShop] &c列表里有某个值不是整数。'
     child-format: '&#98FB98[UltimateShop] &c请输入: 键名 类型'
-    command-usage: '&#98FB98[UltimateShop] &c请使用 /shop editor [shop|menu] <id>'
+    command-usage: '&c使用 /shop editor [shop|menu|shop_menu_template|buy_more_menu|favourite_menu|search_menu|item_sell_menu] <id>'
     target-missing: '&#98FB98[UltimateShop] &c找不到{scope}: {id}'
   list:
     title: '列表编辑器: {path}'
@@ -757,12 +783,219 @@ editor:
         buttons:
           name: '按钮列表'
           desc: '这个商店菜单里额外显示的按钮。'
+    ui_section:
+      title: 统一 UI 配置
+      fields:
+        placement:
+          name: 商品默认布局
+          desc: Ore、ArcMenu 商品的默认布局。
+          enabled:
+            name: 启用布局
+            desc: 是否在图形菜单中排版此按钮。
+          area:
+            name: 布局区域
+            desc: 填写 ui.layout.areas 中已定义的区域名称。
+          order:
+            name: 排列顺序
+            desc: 此按钮在区域内的排列顺序。
+          row:
+            name: 网格行
+            desc: 从 0 开始的网格行；删除此值可自动排版。
+          column:
+            name: 网格列
+            desc: 从 0 开始的网格列。
+          x:
+            name: Placement X
+            desc: 编辑此 UI 下的 placement.x 配置。
+          y:
+            name: Placement Y
+            desc: 编辑此 UI 下的 placement.y 配置。
+          width:
+            name: Placement Width
+            desc: 编辑此 UI 下的 placement.width 配置。
+          height:
+            name: Placement Height
+            desc: 编辑此 UI 下的 placement.height 配置。
+        card:
+          name: 商品卡片样式
+          desc: 商品卡片尺寸、字号和按钮间距。
+        price:
+          enabled:
+            name: 显示价格
+            desc: 是否显示商品价格行。
+          formats:
+            name: 价格格式
+            desc: 编辑 both、only-buy、only-sell 的价格格式。
+        actions:
+          name: 商品操作显示
+          desc: 编辑 primary、extra（auto 或列表）、labels；此处不是编号动作列表。
+          primary:
+            name: 商品主要操作
+            desc: 编辑此 UI 下的 actions.primary 配置。
+        visible-in:
+          name: 显示的菜单类型
+          desc: 填写 inventory、form、dialog、ore、arcmenu；空列表全部隐藏。
+        show-sprite:
+          name: 显示图标
+          desc: 覆盖此按钮的原生 Dialog 图标显示。
+        appearance:
+          name: 显示样式
+          desc: 图形界面使用 card 商品卡片或 button 按钮。
+        font-size:
+          name: Font Size
+          desc: 编辑此 UI 下的 font-size 配置。
+        text-align:
+          name: Text Align
+          desc: 编辑此 UI 下的 text-align 配置。
+        mode:
+          java:
+            name: Java 菜单类型
+            desc: 可选 inherit、inventory、dialog、ore、arcmenu。
+          bedrock:
+            name: 基岩菜单类型
+            desc: 可选 inherit、inventory、form。
+        layout:
+          canvas:
+            width:
+              name: Layout Canvas Width
+              desc: 编辑此 UI 下的 layout.canvas.width 配置。
+            height:
+              name: Layout Canvas Height
+              desc: 编辑此 UI 下的 layout.canvas.height 配置。
+          header:
+            name: 菜单标题布局
+            desc: 标题文字布局，支持 title、content 占位符。
+          areas:
+            name: 布局区域定义
+            desc: 定义 grid、stack、free 区域；区域必须位于画布内。
+          pagination:
+            name: Layout Pagination
+            desc: 编辑此 UI 下的 layout.pagination 配置。
+        products:
+          name: 商品默认配置
+          desc: 商品默认布局、卡片、价格格式和商品操作。
+        theme:
+          name: Theme
+          desc: 编辑此 UI 下的 theme 配置。
+        text:
+          name: Text
+          desc: 编辑此 UI 下的 text 配置。
+        renderers:
+          inventory:
+            name: Renderers Inventory
+            desc: 编辑此 UI 下的 renderers.inventory 配置。
+          form:
+            name: Renderers Form
+            desc: 编辑此 UI 下的 renderers.form 配置。
+          dialog:
+            name: Renderers Dialog
+            desc: 编辑此 UI 下的 renderers.dialog 配置。
+            layout:
+              name: 原生 Dialog 布局
+              desc: 编辑此 UI 下的 renderers.dialog.layout 配置。
+            button-width:
+              name: Dialog 按钮宽度
+              desc: 编辑此 UI 下的 renderers.dialog.button-width 配置。
+            columns:
+              name: Dialog 按钮列数
+              desc: 编辑此 UI 下的 renderers.dialog.columns 配置。
+          ore:
+            name: Renderers Ore
+            desc: 编辑此 UI 下的 renderers.ore 配置。
+          arcmenu:
+            right-click-action:
+              name: ArcMenu 右键商品动作
+              desc: 默认 select-amount 打开商品详情；支持自定义商品动作。
+            screen-scale:
+              name: Renderers Arcmenu Screen Scale
+              desc: 编辑此 UI 下的 renderers.arcmenu.screen-scale 配置。
+            update-interval:
+              name: Renderers Arcmenu Update Interval
+              desc: 编辑此 UI 下的 renderers.arcmenu.update-interval 配置。
+            animation:
+              enabled:
+                name: Renderers Arcmenu Animation Enabled
+                desc: 编辑此 UI 下的 renderers.arcmenu.animation.enabled 配置。
+              duration:
+                name: Renderers Arcmenu Animation Duration
+                desc: 编辑此 UI 下的 renderers.arcmenu.animation.duration 配置。
+            more-menu:
+              columns:
+                name: Renderers Arcmenu More Menu Columns
+                desc: 编辑此 UI 下的 renderers.arcmenu.more-menu.columns 配置。
+            tooltip:
+              enabled:
+                name: Renderers Arcmenu Tooltip Enabled
+                desc: 编辑此 UI 下的 renderers.arcmenu.tooltip.enabled 配置。
+              width:
+                name: Renderers Arcmenu Tooltip Width
+                desc: 编辑此 UI 下的 renderers.arcmenu.tooltip.width 配置。
+              font-size:
+                name: Renderers Arcmenu Tooltip Font Size
+                desc: 编辑此 UI 下的 renderers.arcmenu.tooltip.font-size 配置。
+              padding:
+                name: Renderers Arcmenu Tooltip Padding
+                desc: 编辑此 UI 下的 renderers.arcmenu.tooltip.padding 配置。
     root_menu:
       title: '菜单预设'
       fields:
+        content:
+          name: 菜单正文
+          desc: Form、Dialog 与图形菜单共用的正文。
+        ui:
+          name: 统一菜单 UI
+          desc: 菜单类型、布局、商品样式和渲染器配置。
+        input-item:
+          name: 输入槽标识
+          desc: Inventory layout 中用于输入槽的标识。
+        result-item:
+          name: 结果槽标识
+          desc: Inventory layout 中用于结果槽的标识。
+        action-items:
+          name: 搜索操作按钮
+          desc: 输入关键词、清空搜索等按钮。
+        state-items:
+          name: 搜索状态按钮
+          desc: 搜索状态显示按钮。
+        no-result-item:
+          name: 无搜索结果
+          desc: 没有匹配商品时的显示配置。
+        result-lore:
+          name: 结果说明
+          desc: 结果商品的附加说明。
+        editing-result-lore:
+          name: 编辑模式结果说明
+          desc: 收藏编辑模式下的结果商品说明。
+        edit-mode-item:
+          name: 收藏编辑切换按钮
+          desc: 编辑模式启用前后的按钮显示。
+        empty-item:
+          name: 空收藏显示
+          desc: 尚未使用的收藏结果槽显示。
+        amount-items:
+          name: 数量按钮
+          desc: Inventory 数量控制按钮；ArcMenu 使用商品详情。
+        display-items:
+          name: 商品预览标识
+          desc: Inventory layout 中显示所选商品的标识列表。
+        display-items-ui:
+          name: 商品预览 UI
+          desc: 支持此功能的图形菜单中的商品预览配置。
+        confirm-items:
+          name: 数量确认按钮
+          desc: Inventory 数量菜单中的购买和出售确认按钮。
+        confirm-item:
+          name: 出售确认标识
+          desc: Inventory 出售确认槽使用的标识。
+        confirm-button:
+          name: 出售确认按钮
+          desc: 物品出售菜单的确认按钮。
+        max-sell-amount:
+          name: 最大出售数量
+          desc: 此物品出售菜单接受的最大数量。
         title:
           name: '标题'
-          desc: '玩家打开后看到的背包标题。'
+          desc: '所选菜单类型共用的标题。'
         size:
           name: '大小'
           desc: '菜单大小，通常是 9 的倍数。'
@@ -803,6 +1036,9 @@ editor:
     shop_item:
       title: '商品预设'
       fields:
+        ui:
+          name: 按钮与商品 UI
+          desc: 可见性、图标、布局、字体和商品操作显示。
         display-name:
           name: '显示名'
           desc: '这个商品的逻辑显示名称。'
@@ -859,10 +1095,10 @@ editor:
           desc: '这个商品专属的数量选择菜单。'
           menu:
             name: '菜单文件'
-            desc: '这个商品打开 Buy More GUI 时使用的菜单文件。'
+            desc: '数量菜单文件；ArcMenu 的 select-amount 直接打开商品详情。'
           max-amount:
             name: '最大数量'
-            desc: 'Buy More 菜单里允许选择的最大数量。'
+            desc: '最大可选数量，也限制 ArcMenu 商品详情中的数量调整。'
           hide-message:
             name: '隐藏消息'
             desc: '是否隐藏这个商品的成功消息。'
@@ -951,6 +1187,9 @@ editor:
     button_entry:
       title: '按钮预设'
       fields:
+        ui:
+          name: 按钮与商品 UI
+          desc: 可见性、图标、布局、字体和商品操作显示。
         dialog:
           show-sprite:
             name: '显示 Sprite'

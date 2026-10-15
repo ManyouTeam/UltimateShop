@@ -1,5 +1,6 @@
 package cn.superiormc.ultimateshop.gui.dialog;
 
+import cn.superiormc.ultimateshop.managers.ErrorManager;
 import cn.superiormc.ultimateshop.objects.dialog.ObjectDialogScreen;
 
 import org.bukkit.inventory.ItemStack;
@@ -10,6 +11,12 @@ import java.util.List;
 import java.util.Set;
 
 public final class DialogView {
+
+    private boolean valid = true;
+
+    public boolean isValid() {
+        return valid && (screen == null || screen.isValid());
+    }
 
     private final String title;
 
@@ -59,13 +66,17 @@ public final class DialogView {
         Set<String> keys = new HashSet<>();
         for (DialogInput input : inputs) {
             if (!keys.add(input.getKey())) {
-                throw new IllegalArgumentException("Duplicate dialog input key: " + input.getKey());
+                valid = false;
+                ErrorManager.errorManager.sendErrorMessage("§cDuplicate dialog input key: " + input.getKey());
+                return;
             }
         }
         keys.clear();
         for (DialogAction action : actions) {
             if (!keys.add(action.getId())) {
-                throw new IllegalArgumentException("Duplicate dialog action id: " + action.getId());
+                valid = false;
+                ErrorManager.errorManager.sendErrorMessage("§cDuplicate dialog action id: " + action.getId());
+                return;
             }
         }
     }
@@ -99,7 +110,8 @@ public final class DialogView {
         }
         if (screen != null) {
             result.removeIf(action -> screen.getWidgets().stream()
-                    .anyMatch(widget -> action.getId().equals(widget.getActionId())));
+                .anyMatch(widget -> action.getId().equals(widget.getActionId())
+                || widget.getToolbar().stream().anyMatch(control -> control.id().equals(action.getId()))));
         }
         return List.copyOf(result);
     }

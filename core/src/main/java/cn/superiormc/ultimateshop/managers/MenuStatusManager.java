@@ -1,34 +1,48 @@
 package cn.superiormc.ultimateshop.managers;
 
-import cn.superiormc.ultimateshop.editor.*;
+import cn.superiormc.ultimateshop.editor.EditorContext;
+import cn.superiormc.ultimateshop.editor.EditorLang;
+import cn.superiormc.ultimateshop.editor.EditorPreset;
+import cn.superiormc.ultimateshop.editor.EditorPresetRegistry;
+import cn.superiormc.ultimateshop.editor.EditorScope;
+import cn.superiormc.ultimateshop.editor.EditorTarget;
+import cn.superiormc.ultimateshop.editor.EditorTypeResolver;
 import cn.superiormc.ultimateshop.gui.AbstractGUI;
 import cn.superiormc.ultimateshop.gui.DialogGUI;
 import cn.superiormc.ultimateshop.gui.FormGUI;
 import cn.superiormc.ultimateshop.gui.GUIStatus;
 import cn.superiormc.ultimateshop.gui.InvGUI;
+import cn.superiormc.ultimateshop.gui.Prompt;
+import cn.superiormc.ultimateshop.gui.PromptUtil;
 import cn.superiormc.ultimateshop.gui.inv.CommonGUI;
 import cn.superiormc.ultimateshop.gui.inv.ShopGUI;
 import cn.superiormc.ultimateshop.gui.inv.editor.EditorFileListGUI;
 import cn.superiormc.ultimateshop.gui.inv.editor.EditorPresetGUI;
-import cn.superiormc.ultimateshop.editor.EditorContext;
-import cn.superiormc.ultimateshop.gui.Prompt;
-import cn.superiormc.ultimateshop.utils.CommandUtil;
-import cn.superiormc.ultimateshop.gui.PromptUtil;
 import cn.superiormc.ultimateshop.gui.inv.editor.EditorRootGUI;
 import cn.superiormc.ultimateshop.gui.inv.editor.EditorSectionGUI;
 import cn.superiormc.ultimateshop.methods.Items.DebuildItem;
 import cn.superiormc.ultimateshop.methods.ReloadPlugin;
-import cn.superiormc.ultimateshop.objects.menus.ObjectMenu;
 import cn.superiormc.ultimateshop.objects.ObjectShop;
+import cn.superiormc.ultimateshop.objects.menus.ObjectMenu;
+import cn.superiormc.ultimateshop.utils.CommandUtil;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
 import cn.superiormc.ultimateshop.utils.SchedulerUtil;
+
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Deque;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 
@@ -104,18 +118,24 @@ public class MenuStatusManager extends AbstractManager {
             return false;
         }
         GUIStatus guiStatus = getGUIStatus(player);
+        if (guiStatus != null && "arcmenu".equals(guiStatus.getGUI().getPresentation())
+            && !guiStatus.getGUI().isActivePresentation()
+            && guiStatus.getStatus() != GUIStatus.Status.ALREADY_IN_COOLDOWN) {
+            removeGUIStatus(player);
+            guiStatus = null;
+        }
         if (!reopen && guiStatus != null && ConfigManager.configManager.getLong("menu.cooldown.reopen", -1L) > 0L) {
             return false;
         }
         UUID uuid = player.getUniqueId();
         if (returningBack.remove(uuid)) {
             setGUIStatus(player, GUIStatus.of(gui,
-                    reopen ? GUIStatus.Status.ACTION_OPEN_MENU : GUIStatus.Status.CAN_REOPEN));
+                reopen ? GUIStatus.Status.ACTION_OPEN_MENU : GUIStatus.Status.CAN_REOPEN));
             return true;
         }
         if (guiStatus != null) {
             guiHistories.computeIfAbsent(uuid, ignored -> new GUIHistory())
-                    .record(guiStatus.getGUI(), gui);
+                .record(guiStatus.getGUI(), gui);
         }
         setGUIStatus(player, GUIStatus.of(gui, reopen ? GUIStatus.Status.ACTION_OPEN_MENU : GUIStatus.Status.CAN_REOPEN));
         return true;
@@ -144,7 +164,7 @@ public class MenuStatusManager extends AbstractManager {
             if (fallbackShop != null && !fallbackShop.trim().isEmpty()) {
                 ObjectShop shop = ConfigManager.configManager.getShop(fallbackShop);
                 if (shop == null || shop.getShopMenuObject() == null
-                        || shop.getShopMenuObject().menuConfigs == null) {
+                    || shop.getShopMenuObject().menuConfigs == null) {
                     return false;
                 }
                 returningBack.add(uuid);
@@ -170,8 +190,7 @@ public class MenuStatusManager extends AbstractManager {
         } else if (previous instanceof DialogGUI dialogGUI) {
             dialogGUI.openGUI(true);
         } else {
-            returningBack.remove(uuid);
-            return false;
+            previous.openGUI(true);
         }
         return true;
     }
@@ -213,6 +232,10 @@ public class MenuStatusManager extends AbstractManager {
         if (player == null) {
             return;
         }
+        AbstractGUI opening = getOpeningGUI(player);
+        if (opening != null && "arcmenu".equals(opening.getPresentation())) {
+            opening.closeGUI();
+        }
         player.closeInventory();
         clear(player);
     }
@@ -233,10 +256,14 @@ public class MenuStatusManager extends AbstractManager {
 
     public void startPrompt(Player player, Prompt prompt) {
         prompts.put(player.getUniqueId(), prompt);
+        AbstractGUI opening = getOpeningGUI(player);
+        if (opening != null && "arcmenu".equals(opening.getPresentation())) {
+            opening.closeGUI();
+        }
         player.closeInventory();
         EditorLang.send(player, "editor.prompt.description", "&f{value}", "value", prompt.getDescription());
         EditorLang.send(player, "editor.prompt.cancel-tip", "&7Type &f{value} &7to abort this edit.",
-                "value", PromptUtil.getCancelKeyword(player));
+            "value", PromptUtil.getCancelKeyword(player));
     }
 
     public void cancelPrompt(Player player) {
@@ -358,10 +385,10 @@ public class MenuStatusManager extends AbstractManager {
         try {
             target.getConfig().save(target.getFile());
             EditorLang.send(player, "editor.message.saved", "&aSaved &f{value}",
-                    "value", target.getScope().getFolderName() + "/" + target.getId() + ".yml");
+                "value", target.getScope().getFolderName() + "/" + target.getId() + ".yml");
         } catch (IOException e) {
             EditorLang.send(player, "editor.message.save-failed", "&cFailed to save file: {value}",
-                    "value", e.getMessage());
+                "value", e.getMessage());
         }
     }
 
@@ -459,56 +486,56 @@ public class MenuStatusManager extends AbstractManager {
     }
 
     public void promptCreateLimitConditionGroup(Player player,
-                                                EditorTarget target,
-                                                String limitsPath,
-                                                Consumer<String> successAction,
-                                                Runnable cancelAction) {
+        EditorTarget target,
+        String limitsPath,
+        Consumer<String> successAction,
+        Runnable cancelAction) {
         startPrompt(player, new Prompt(
-                EditorLang.text(player, "editor.prompt.new-condition-id", "Input the new condition id"),
-                (p, input) -> {
-                    String groupId = createLimitConditionGroup(p, target, limitsPath, input);
-                    if (groupId == null) {
-                        cancelAction.run();
-                        return;
-                    }
-                    successAction.accept(groupId);
-                },
-                p -> cancelAction.run()
-        ));
+            EditorLang.text(player, "editor.prompt.new-condition-id", "Input the new condition id"),
+            (p, input) -> {
+                String groupId = createLimitConditionGroup(p, target, limitsPath, input);
+                if (groupId == null) {
+                    cancelAction.run();
+                    return;
+                }
+                successAction.accept(groupId);
+            },
+            p -> cancelAction.run()
+            ));
     }
 
     public void promptCreateLimitConditionRootEntry(Player player, EditorTarget target, String conditionsRootPath, Runnable reopenAction) {
         startPrompt(player, new Prompt(
-                EditorLang.text(player, "editor.prompt.new-condition-id", "Input the new condition id"),
-                (p, input) -> {
-                    createLimitConditionGroupFromRoot(p, target, conditionsRootPath, input);
-                    reopenAction.run();
-                },
-                p -> reopenAction.run()
-        ));
+            EditorLang.text(player, "editor.prompt.new-condition-id", "Input the new condition id"),
+            (p, input) -> {
+                createLimitConditionGroupFromRoot(p, target, conditionsRootPath, input);
+                reopenAction.run();
+            },
+            p -> reopenAction.run()
+            ));
     }
 
     public void promptCreateNamedSection(Player player, EditorTarget target, String parentPath, Runnable reopenAction) {
         startPrompt(player, new Prompt(
-                EditorLang.text(player, "editor.prompt.new-entry-id", "Input the new entry id"),
-                (p, input) -> {
-                    String fullPath = parentPath == null || parentPath.isEmpty() ? input : parentPath + "." + input;
-                    ensureSection(target, fullPath);
-                    if ("items".equals(parentPath)) {
-                        target.getConfig().set(fullPath + ".display-name", input);
-                        target.getConfig().set(fullPath + ".price-mode", "CLASSIC_ALL");
-                        target.getConfig().set(fullPath + ".product-mode", "CLASSIC_ALL");
-                        target.getConfig().set(fullPath + ".products.1.material", "STONE");
-                        target.getConfig().set(fullPath + ".products.1.amount", 1);
-                    } else if (EditorTypeResolver.lastSegment(parentPath).equals("buttons")) {
-                        target.getConfig().set(fullPath + ".display-item.material", "STONE");
-                        target.getConfig().set(fullPath + ".actions.1.type", "close");
-                    }
-                    save(p, target);
-                    reopenAction.run();
-                },
-                p -> reopenAction.run()
-        ));
+            EditorLang.text(player, "editor.prompt.new-entry-id", "Input the new entry id"),
+            (p, input) -> {
+                String fullPath = parentPath == null || parentPath.isEmpty() ? input : parentPath + "." + input;
+                ensureSection(target, fullPath);
+                if ("items".equals(parentPath)) {
+                    target.getConfig().set(fullPath + ".display-name", input);
+                    target.getConfig().set(fullPath + ".price-mode", "CLASSIC_ALL");
+                    target.getConfig().set(fullPath + ".product-mode", "CLASSIC_ALL");
+                    target.getConfig().set(fullPath + ".products.1.material", "STONE");
+                    target.getConfig().set(fullPath + ".products.1.amount", 1);
+                } else if (EditorTypeResolver.lastSegment(parentPath).equals("buttons")) {
+                    target.getConfig().set(fullPath + ".display-item.material", "STONE");
+                    target.getConfig().set(fullPath + ".actions.1.type", "close");
+                }
+                save(p, target);
+                reopenAction.run();
+            },
+            p -> reopenAction.run()
+            ));
     }
 
     public void replaceInlineThingItem(Player player, EditorTarget target, String path, ItemStack itemStack) {
@@ -535,7 +562,7 @@ public class MenuStatusManager extends AbstractManager {
     }
 
     private Map<String, Object> preserveThingControls(ConfigurationSection section) {
-        Map<String, Object> preserved = new java.util.LinkedHashMap<>();
+        Map<String, Object> preserved = new LinkedHashMap<>();
         for (String key : section.getKeys(false)) {
             if (isThingControlKey(key)) {
                 preserved.put(key, section.get(key));
@@ -546,19 +573,19 @@ public class MenuStatusManager extends AbstractManager {
 
     private boolean isThingControlKey(String key) {
         return key.equals("amount")
-                || key.equals("apply-conditions")
-                || key.equals("require-conditions")
-                || key.equals("conditions")
-                || key.equals("give-actions")
-                || key.equals("take-actions")
-                || key.equals("give-item")
-                || key.equals("take")
-                || key.equals("placeholder")
-                || key.equals("min-amount")
-                || key.equals("max-amount")
-                || key.equals("start-apply")
-                || key.equals("end-apply")
-                || key.equals("apply");
+            || key.equals("apply-conditions")
+            || key.equals("require-conditions")
+            || key.equals("conditions")
+            || key.equals("give-actions")
+            || key.equals("take-actions")
+            || key.equals("give-item")
+            || key.equals("take")
+            || key.equals("placeholder")
+            || key.equals("min-amount")
+            || key.equals("max-amount")
+            || key.equals("start-apply")
+            || key.equals("end-apply")
+            || key.equals("apply");
     }
 
     private void applyDefaultEconomyFields(ConfigurationSection section) {
@@ -587,7 +614,7 @@ public class MenuStatusManager extends AbstractManager {
             section.set("placeholder", placeholder);
         } else if (!section.contains("placeholder")) {
             section.set("placeholder", normalizedProvider.equalsIgnoreCase("levels") || normalizedProvider.isEmpty()
-                    ? "{amount} levels" : "{amount}");
+                ? "{amount} levels" : "{amount}");
         }
     }
 
@@ -595,171 +622,171 @@ public class MenuStatusManager extends AbstractManager {
         String childPath = parentPath == null || parentPath.isEmpty() ? key : parentPath + "." + key;
         switch (type.toLowerCase()) {
             case "section":
-                ensureSection(target, childPath);
-                break;
+            ensureSection(target, childPath);
+            break;
             case "string":
-                setValue(player, target, childPath, "");
-                return;
+            setValue(player, target, childPath, "");
+            return;
             case "int":
             case "integer":
-                setValue(player, target, childPath, 0);
-                return;
+            setValue(player, target, childPath, 0);
+            return;
             case "double":
             case "number":
-                setValue(player, target, childPath, 0.0D);
-                return;
+            setValue(player, target, childPath, 0.0D);
+            return;
             case "boolean":
             case "bool":
-                setValue(player, target, childPath, false);
-                return;
+            setValue(player, target, childPath, false);
+            return;
             case "list":
             case "string-list":
-                setValue(player, target, childPath, new ArrayList<String>());
-                return;
+            setValue(player, target, childPath, new ArrayList<String>());
+            return;
             case "int-list":
             case "integer-list":
-                setValue(player, target, childPath, new ArrayList<Integer>());
-                return;
+            setValue(player, target, childPath, new ArrayList<Integer>());
+            return;
             default:
-                EditorLang.send(player, "editor.message.unknown-type",
-                        "&cUnknown type. Use section/string/int/double/boolean/list/int-list.");
-                return;
+            EditorLang.send(player, "editor.message.unknown-type",
+                "&cUnknown type. Use section/string/int/double/boolean/list/int-list.");
+            return;
         }
         save(player, target);
     }
 
     public void promptString(Player player, EditorTarget target, String path, Runnable reopenAction) {
         startPrompt(player, new Prompt(
-                EditorLang.text(player, "editor.prompt.string", "Input the new string for &f{path}",
-                        "path", path),
-                (p, input) -> {
-                    if (input.equalsIgnoreCase("null")) {
-                        removeValue(p, target, path);
-                    } else {
-                        setValue(p, target, path, input);
-                    }
-                    reopenAction.run();
-                },
-                p -> reopenAction.run()
-        ));
+            EditorLang.text(player, "editor.prompt.string", "Input the new string for &f{path}",
+            "path", path),
+            (p, input) -> {
+                if (input.equalsIgnoreCase("null")) {
+                    removeValue(p, target, path);
+                } else {
+                    setValue(p, target, path, input);
+                }
+                reopenAction.run();
+            },
+            p -> reopenAction.run()
+            ));
     }
 
     public void promptInteger(Player player, EditorTarget target, String path, Runnable reopenAction) {
         startPrompt(player, new Prompt(
-                EditorLang.text(player, "editor.prompt.integer", "Input the new integer for &f{path}",
-                        "path", path),
-                (p, input) -> {
-                    try {
-                        setValue(p, target, path, Integer.parseInt(input));
-                        reopenAction.run();
-                    } catch (NumberFormatException e) {
-                        EditorLang.send(p, "editor.message.invalid-integer", "&cThat is not a valid integer.");
-                        promptInteger(p, target, path, reopenAction);
-                    }
-                },
-                p -> reopenAction.run()
-        ));
+            EditorLang.text(player, "editor.prompt.integer", "Input the new integer for &f{path}",
+            "path", path),
+            (p, input) -> {
+                try {
+                    setValue(p, target, path, Integer.parseInt(input));
+                    reopenAction.run();
+                } catch (NumberFormatException e) {
+                    EditorLang.send(p, "editor.message.invalid-integer", "&cThat is not a valid integer.");
+                    promptInteger(p, target, path, reopenAction);
+                }
+            },
+            p -> reopenAction.run()
+            ));
     }
 
     public void promptDouble(Player player, EditorTarget target, String path, Runnable reopenAction) {
         startPrompt(player, new Prompt(
-                EditorLang.text(player, "editor.prompt.double", "Input the new number for &f{path}",
-                        "path", path),
-                (p, input) -> {
-                    try {
-                        setValue(p, target, path, Double.parseDouble(input));
-                        reopenAction.run();
-                    } catch (NumberFormatException e) {
-                        EditorLang.send(p, "editor.message.invalid-number", "&cThat is not a valid number.");
-                        promptDouble(p, target, path, reopenAction);
-                    }
-                },
-                p -> reopenAction.run()
-        ));
+            EditorLang.text(player, "editor.prompt.double", "Input the new number for &f{path}",
+            "path", path),
+            (p, input) -> {
+                try {
+                    setValue(p, target, path, Double.parseDouble(input));
+                    reopenAction.run();
+                } catch (NumberFormatException e) {
+                    EditorLang.send(p, "editor.message.invalid-number", "&cThat is not a valid number.");
+                    promptDouble(p, target, path, reopenAction);
+                }
+            },
+            p -> reopenAction.run()
+            ));
     }
 
     public void promptStringList(Player player, EditorTarget target, String path, Runnable reopenAction) {
         startPrompt(player, new Prompt(
-                EditorLang.text(player, "editor.prompt.string-list",
-                        "Input the new list for &f{path} &7(use &f;; &7as separator)",
-                        "path", path),
-                (p, input) -> {
-                    if (input.equalsIgnoreCase("null")) {
-                        removeValue(p, target, path);
-                    } else {
-                        setValue(p, target, path, CommonUtil.translateString(input));
-                    }
-                    reopenAction.run();
-                },
-                p -> reopenAction.run()
-        ));
+            EditorLang.text(player, "editor.prompt.string-list",
+            "Input the new list for &f{path} &7(use &f;; &7as separator)",
+            "path", path),
+            (p, input) -> {
+                if (input.equalsIgnoreCase("null")) {
+                    removeValue(p, target, path);
+                } else {
+                    setValue(p, target, path, CommonUtil.translateString(input));
+                }
+                reopenAction.run();
+            },
+            p -> reopenAction.run()
+            ));
     }
 
     public void promptIntegerList(Player player, EditorTarget target, String path, Runnable reopenAction) {
         startPrompt(player, new Prompt(
-                EditorLang.text(player, "editor.prompt.integer-list",
-                        "Input the new integer list for &f{path} &7(use &f;; &7as separator)",
-                        "path", path),
-                (p, input) -> {
-                    try {
-                        List<Integer> values = new ArrayList<>();
-                        for (String part : input.split(";;")) {
-                            values.add(Integer.parseInt(part.trim()));
-                        }
-                        setValue(p, target, path, values);
-                        reopenAction.run();
-                    } catch (NumberFormatException e) {
-                        EditorLang.send(p, "editor.message.invalid-integer-list", "&cOne of the values is not an integer.");
-                        promptIntegerList(p, target, path, reopenAction);
+            EditorLang.text(player, "editor.prompt.integer-list",
+            "Input the new integer list for &f{path} &7(use &f;; &7as separator)",
+            "path", path),
+            (p, input) -> {
+                try {
+                    List<Integer> values = new ArrayList<>();
+                    for (String part : input.split(";;")) {
+                        values.add(Integer.parseInt(part.trim()));
                     }
-                },
-                p -> reopenAction.run()
-        ));
+                    setValue(p, target, path, values);
+                    reopenAction.run();
+                } catch (NumberFormatException e) {
+                    EditorLang.send(p, "editor.message.invalid-integer-list", "&cOne of the values is not an integer.");
+                    promptIntegerList(p, target, path, reopenAction);
+                }
+            },
+            p -> reopenAction.run()
+            ));
     }
 
     public void promptNewChild(Player player, EditorTarget target, String parentPath, Runnable reopenAction) {
         startPrompt(player, new Prompt(
-                EditorLang.text(player, "editor.prompt.new-child",
-                        "Input the new child key"),
-                (p, input) -> {
-                    String key = input == null ? "" : input.trim();
-                    if (key.isEmpty()) {
-                        EditorLang.send(p, "editor.message.empty-id", "&cEntry id can not be empty.");
-                        promptNewChild(p, target, parentPath, reopenAction);
-                        return;
-                    }
-                    promptNewChildValue(p, target, parentPath, key, reopenAction);
-                },
-                p -> reopenAction.run()
-        ));
+            EditorLang.text(player, "editor.prompt.new-child",
+            "Input the new child key"),
+            (p, input) -> {
+                String key = input == null ? "" : input.trim();
+                if (key.isEmpty()) {
+                    EditorLang.send(p, "editor.message.empty-id", "&cEntry id can not be empty.");
+                    promptNewChild(p, target, parentPath, reopenAction);
+                    return;
+                }
+                promptNewChildValue(p, target, parentPath, key, reopenAction);
+            },
+            p -> reopenAction.run()
+            ));
     }
 
     private void promptNewChildValue(Player player, EditorTarget target, String parentPath, String key, Runnable reopenAction) {
         String childPath = parentPath == null || parentPath.isEmpty() ? key : parentPath + "." + key;
         startPrompt(player, new Prompt(
-                EditorLang.text(player, "editor.prompt.new-child-value",
-                        "Input the value for &f{path}&7. Use &fsection &7or &f{} &7to create a section. Use &f;; &7for lists.",
-                        "path", childPath),
-                (p, input) -> {
-                    Object parsed = parseNewChildValue(input);
-                    if (parsed == null) {
-                        EditorLang.send(p, "editor.message.invalid-new-child-value",
-                                "&cInvalid value. Use section/{}, boolean, number, list (;;), or plain text.");
-                        promptNewChildValue(p, target, parentPath, key, reopenAction);
-                        return;
-                    }
-                    if (parsed == SECTION_SENTINEL) {
-                        ensureSection(target, childPath);
-                    } else {
-                        setValue(p, target, childPath, parsed);
-                        reopenAction.run();
-                        return;
-                    }
-                    save(p, target);
+            EditorLang.text(player, "editor.prompt.new-child-value",
+            "Input the value for &f{path}&7. Use &fsection &7or &f{} &7to create a section. Use &f;; &7for lists.",
+            "path", childPath),
+            (p, input) -> {
+                Object parsed = parseNewChildValue(input);
+                if (parsed == null) {
+                    EditorLang.send(p, "editor.message.invalid-new-child-value",
+                        "&cInvalid value. Use section/{}, boolean, number, list (;;), or plain text.");
+                    promptNewChildValue(p, target, parentPath, key, reopenAction);
+                    return;
+                }
+                if (parsed == SECTION_SENTINEL) {
+                    ensureSection(target, childPath);
+                } else {
+                    setValue(p, target, childPath, parsed);
                     reopenAction.run();
-                },
-                p -> reopenAction.run()
-        ));
+                    return;
+                }
+                save(p, target);
+                reopenAction.run();
+            },
+            p -> reopenAction.run()
+            ));
     }
 
     private Object parseNewChildValue(String input) {
@@ -867,7 +894,8 @@ public class MenuStatusManager extends AbstractManager {
             AbstractGUI previous;
             do {
                 previous = entries.pollLast();
-            } while (previous != null && isSamePage(previous, current));
+            }
+            while (previous != null && isSamePage(previous, current));
             return previous;
         }
 

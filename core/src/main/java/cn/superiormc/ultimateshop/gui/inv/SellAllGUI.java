@@ -1,7 +1,6 @@
 package cn.superiormc.ultimateshop.gui.inv;
 
 import cn.superiormc.ultimateshop.UltimateShop;
-import cn.superiormc.ultimateshop.api.ShopHelper;
 import cn.superiormc.ultimateshop.gui.InvGUI;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.LanguageManager;
@@ -20,6 +19,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -60,8 +60,7 @@ public class SellAllGUI extends InvGUI {
         boolean hasActionExecuted = false;
         for (String shop : ConfigManager.configManager.shopConfigs.keySet()) {
             for (ObjectItem products : ConfigManager.configManager.getShop(shop).getProductListNotHidden(player)) {
-                if (ConfigManager.configManager.getStringListOrDefault(player, "menu.sell-all.ignore-items",
-                        "sell.sell-all.ignore-items").contains(shop + ";;" + products.getProduct())) {
+                if (ConfigManager.configManager.getStringList(player, "sell.sell-all.ignore-items").contains(shop + ";;" + products.getProduct())) {
                     continue;
                 }
                 ProductTradeStatus status = SellProductMethod.startSell(ItemStorage.of(inv),
@@ -90,7 +89,7 @@ public class SellAllGUI extends InvGUI {
         if (!result.isEmpty()) {
             BigDecimal finalMultiplier = originalTotal.compareTo(BigDecimal.ZERO) <= 0
                     ? BigDecimal.ONE
-                    : finalTotal.divide(originalTotal, 12, java.math.RoundingMode.HALF_UP);
+                    : finalTotal.divide(originalTotal, 12, RoundingMode.HALF_UP);
             LanguageManager.languageManager.sendStringText(player, "start-sell-all", "amount", String.valueOf(soldAmount),
                     "multiplier", MathUtil.toDisplayString(finalMultiplier),
                     "reward", ObjectPrices.getDisplayNameInLine(player, 1,

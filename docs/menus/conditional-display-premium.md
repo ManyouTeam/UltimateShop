@@ -1,56 +1,54 @@
 # 🔀Conditional Display - Premium
 
-Sometimes, you may want to display Product A when the first condition is met, Product B when the second condition is met, and Product C when neither condition is met, or follow a similar logic. This feature can assist you in achieving this.
+Display conditions decide whether a product/button can appear. They are separate from click/trade conditions: hiding an entry is a presentation decision, while buying and selling still run their own validation.
 
-## Set display condition
+## Configure display conditions
 
-You can set `display-conditions` option both in button configs or product configs. This section is following [Condition Format](../format/condition-format.md). For example:
-
-```yaml
-  D: 
-    price-mode: CLASSIC_ALL
-    product-mode: CLASSIC_ALL
-    products:
-      1:
-        material: ROOTED_DIRT
-        amount: 1
-    buy-prices:
-      1:
-        economy-plugin: Vault
-        amount: '0.58'
-        placeholder: '{amount}$'
-        start-apply: 0
-    sell-prices:
-      1:
-        economy-plugin: Vault
-        amount: '0.53'
-        placeholder: '{amount}$'
-        start-apply: 0
-    display-conditions: # <--- Added content
-      1: 
-        type: world
-        world: 'world1'
-```
-
-## Set menu configs layout option
-
-You should use this new format in layout option:
+Use `display-conditions` at button/product root with [Condition Format](../format/condition-format.md):
 
 ```yaml
-`D||E||F`
+buttons:
+  A:
+    display-item:
+      material: DIAMOND
+      name: '&bVIP offers'
+    display-conditions:
+      1:
+        type: permission
+        permission: shop.vip
+  B:
+    display-item:
+      material: PAPER
+      name: '&7Regular offers'
 ```
 
-This means that the products or buttons with IDs D, E, and F will be checked in order until the display conditions of the corresponding product or button are met. For example, if the display conditions for D are not met, but the display conditions for E are met, then the corresponding slot will display the product or button with ID E.
+Enable `dynamic-layout: true` for layouts that must be evaluated per player. Without dynamic evaluation, a cached static layout cannot reliably choose player-dependent alternatives. `ui.visible-in` is checked separately and does not require dynamic layout.
 
-Also, you need set menu config's `dynamic-layout` option to `true` to use this feature.
+## Ordered alternatives
+
+Use one backtick-delimited token containing candidate IDs separated by `||`:
 
 ```yaml
 dynamic-layout: true
 layout:
   - '000000000'
-  - '0ABC`D||E||F`EFG0'
-  - '0HIJKLMN0'
-  - '0OPQRSTU0'
-  - '000000000'
-  - 'a0003000b'
+  - '000`A||B`00000'
 ```
+
+This is two nine-slot rows. The token occupies one slot. Candidates are checked from left to right; the first existing entry that is visible in the presentation and meets display conditions is used. `B` has no condition here and acts as the fallback. If no candidate qualifies, the slot is empty. An unconditional candidate placed first prevents later alternatives from being selected.
+
+The same form works for shop product IDs and sub-buttons. IDs are case-sensitive; whitespace around alternatives is trimmed. Use valid one-slot tokens rather than writing `A||B` without backticks, which would be read as separate characters.
+
+## Related configuration
+
+| Setting | Purpose |
+| --- | --- |
+| `display-conditions` | Whether a whole button/product appears |
+| `dynamic-layout` | Resolve layout placeholders/conditions per player |
+| `ui.visible-in` | Restrict entries to Inventory/Form/Dialog/Ore/ArcMenu |
+| `conditions`, `fail-actions` | Ordinary button click requirements and failure response |
+| Product buy/sell conditions | Authorize the actual trade |
+| Conditional display-item variants | Change a display item's appearance using the configured `conditions.display-item-key`; see [Display Item Format](../format/display-item-format.md) |
+| Add-lore `@` conditions | Show/hide individual generated lore lines; see [Add Lore](display-item-add-lore.md) |
+
+Form and native Dialog reuse selected entries from the root layout. Ore/ArcMenu also need graphical placements; an allowed entry without a placement may still be absent from a graphical view. Give alternatives suitable placements and keep them consistent when they replace one another. Do not use display conditions as a substitute for trade permissions or purchase conditions.

@@ -9,10 +9,16 @@ import cn.superiormc.ultimateshop.methods.Product.BuyProductMethod;
 import cn.superiormc.ultimateshop.methods.Product.SellProductMethod;
 import cn.superiormc.ultimateshop.methods.ProductTradeStatus;
 import cn.superiormc.ultimateshop.objects.ObjectThingRun;
-import cn.superiormc.ultimateshop.objects.buttons.*;
+import cn.superiormc.ultimateshop.objects.buttons.AbstractButton;
+import cn.superiormc.ultimateshop.objects.buttons.ButtonType;
+import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
+import cn.superiormc.ultimateshop.objects.buttons.ObjectMoreBuyButton;
+import cn.superiormc.ultimateshop.objects.buttons.ObjectMoreDisplayButton;
 import cn.superiormc.ultimateshop.objects.items.ObjectAction;
 import cn.superiormc.ultimateshop.objects.menus.MenuSender;
+import cn.superiormc.ultimateshop.objects.menus.ObjectMenu;
 import cn.superiormc.ultimateshop.objects.menus.ObjectMoreMenu;
+
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.Inventory;
@@ -49,7 +55,8 @@ public class BuyMoreGUI extends InvGUI {
         if (menu == null) {
             return;
         }
-        menuButtons = menu.getMenu(MenuSender.of(player));
+        setAmount(nowingAmount);
+        menuButtons = menu.getMenu(MenuSender.of(player, getPresentation()));
         menuItems = getMenuItems(player);
         title = menu.getString("title", "Buy More Menu");
         if (Objects.isNull(inv)) {
@@ -61,6 +68,46 @@ public class BuyMoreGUI extends InvGUI {
     }
 
     @Override
+    public ObjectMenu getMenu() {
+        return menu;
+    }
+
+    public ObjectItem getProduct() {
+        return item;
+    }
+
+    public int getAmount() {
+        return nowingAmount;
+    }
+
+    public int getMaxAmount() {
+        return Math.max(1, menu.getSection().getInt("max-amount", 64));
+    }
+
+    public void changeAmount(long change) {
+        long boundedChange = Math.max(1L - nowingAmount, Math.min((long) getMaxAmount() - nowingAmount, change));
+        setAmount(nowingAmount + boundedChange);
+    }
+
+    private void setAmount(long amount) {
+        nowingAmount = (int) Math.max(1L, Math.min(getMaxAmount(), amount));
+    }
+
+    @Override
+    public ItemStack getMenuItem(Player player, int slot) {
+        AbstractButton button = menuButtons.get(slot);
+        if (button == null) {
+            button = menu.getUiMenu(MenuSender.of(player, getPresentation())).get(slot);
+        }
+        if (button == null) {
+            return super.getMenuItem(player, slot);
+        }
+        int amount = button.type == ButtonType.BUY_MORE_DISPLAY || button.type == ButtonType.BUY_MORE_CONFIRM
+            ? nowingAmount : 1;
+        return button.getDisplayItem(player, amount).getItemStack();
+    }
+
+    @Override
     public boolean clickEventHandle(Inventory inventory, ClickType type, int slot) {
         AbstractButton button = menuButtons.get(slot);
         if (button == null) {
@@ -68,86 +115,80 @@ public class BuyMoreGUI extends InvGUI {
         }
         switch (button.type) {
             case BUY_MORE_SELECT_AMOUNT:
-                if (button.config.getInt("add-amount", 0) == 0) {
-                    if (button.config.getInt("set-amount", -1) == -1) {
-                        ErrorManager.errorManager.sendErrorMessage("§cError: Can not find add-amount section " +
-                                        "in select amount button, or you are setting add-amount to 0?");
-                        return true;
-                    } else {
-                        nowingAmount = button.config.getInt("set-amount");
-                    }
+            if (button.config.getInt("add-amount", 0) == 0) {
+                if (button.config.getInt("set-amount", -1) == -1) {
+                    ErrorManager.errorManager.sendErrorMessage("§cError: Can not find add-amount section " +
+                        "in select amount button, or you are setting add-amount to 0?");
+                    return true;
                 } else {
-                    nowingAmount = nowingAmount + button.config.getInt("add-amount");
+                    setAmount(button.config.getInt("set-amount"));
                 }
-                if (nowingAmount < 1) {
-                    nowingAmount = 1;
-                }
-                if (nowingAmount >= menu.getSection().getInt("max-amount", 64)) {
-                    nowingAmount = menu.getSection().getInt("max-amount", 64);
-                }
-                break;
+            } else {
+                changeAmount(button.config.getInt("add-amount"));
+            }
+            break;
             case BUY_MORE_DISPLAY:
-                break;
+            break;
             case BUY_MORE_CONFIRM:
-                boolean b = ConfigManager.configManager.getBoolean("placeholder.click.enabled");
-                String clickType = ConfigManager.configManager.getClickAction(type, button);
-                if (((ObjectMoreBuyButton)button).getClickType() != null) {
-                    clickType = ((ObjectMoreBuyButton)button).getClickType().toLowerCase();
-                }
-                switch (clickType) {
-                    case "buy" :
-                        if (!item.getBuyPrice().empty) {
-                            BuyProductMethod.startBuy(item,
-                                    player,
-                                    !b,
-                                    false,
-                                    nowingAmount);
-                        }
-                        break;
-                    case "sell" :
-                        if (!item.getSellPrice().empty) {
-                            SellProductMethod.startSell(item,
-                                    player,
-                                    !b,
-                                    false,
-                                    nowingAmount);
-                        }
-                        break;
-                    case "buy-or-sell" :
-                        if (item.getBuyPrice().empty && !item.getSellPrice().empty) {
-                            SellProductMethod.startSell(item, player, !b,
-                                    false,
-                                    nowingAmount);
-                        } else {
-                            BuyProductMethod.startBuy(item, player, !b,
-                                    false,
-                                    nowingAmount);
-                        }
-                        break;
-                    case "sell-all" :
-                        if (!item.getSellPrice().empty && item.isEnableSellAll()) {
-                            SellProductMethod.startSell(item,
-                                    player,
-                                    !b,
-                                    false,
-                                    true,
-                                    nowingAmount);
-                        }
-                        break;
-                }
-                if (!UltimateShop.freeVersion) {
-                    ObjectAction action = new ObjectAction(
-                            ConfigManager.configManager.getSection("menu.click-event-actions." + clickType),
-                            item);
-                    action.runAllActions(new ObjectThingRun(player, type));
-                    if (action.getLastTradeStatus() != null && action.getLastTradeStatus().getStatus() != ProductTradeStatus.Status.DONE) {
-                        item.getFailAction().runAllActions(new ObjectThingRun(player, type));
-                    }
+            boolean b = ConfigManager.configManager.getBoolean("placeholder.click.enabled");
+            String clickType = ConfigManager.configManager.getClickAction(type, button);
+            if (((ObjectMoreBuyButton)button).getClickType() != null) {
+                clickType = ((ObjectMoreBuyButton)button).getClickType().toLowerCase();
+            }
+            switch (clickType) {
+                case "buy" :
+                if (!item.getBuyPrice().empty) {
+                    BuyProductMethod.startBuy(item,
+                        player,
+                        !b,
+                        false,
+                        nowingAmount);
                 }
                 break;
+                case "sell" :
+                if (!item.getSellPrice().empty) {
+                    SellProductMethod.startSell(item,
+                        player,
+                        !b,
+                        false,
+                        nowingAmount);
+                }
+                break;
+                case "buy-or-sell" :
+                if (item.getBuyPrice().empty && !item.getSellPrice().empty) {
+                    SellProductMethod.startSell(item, player, !b,
+                        false,
+                        nowingAmount);
+                } else {
+                    BuyProductMethod.startBuy(item, player, !b,
+                        false,
+                        nowingAmount);
+                }
+                break;
+                case "sell-all" :
+                if (!item.getSellPrice().empty && item.isEnableSellAll()) {
+                    SellProductMethod.startSell(item,
+                        player,
+                        !b,
+                        false,
+                        true,
+                        nowingAmount);
+                }
+                break;
+            }
+            if (!UltimateShop.freeVersion) {
+                ObjectAction action = new ObjectAction(
+                    ConfigManager.configManager.getSection("menu.click-event-actions." + clickType),
+                    item);
+                action.runAllActions(new ObjectThingRun(player, type));
+                if (action.getLastTradeStatus() != null && action.getLastTradeStatus().getStatus() != ProductTradeStatus.Status.DONE) {
+                    item.getFailAction().runAllActions(new ObjectThingRun(player, type));
+                }
+            }
+            break;
             default:
-                menuButtons.get(slot).clickEvent(type, player);
-                break;
+            button.clickEvent(type, player);
+            break;
         }
         constructGUI();
         return true;

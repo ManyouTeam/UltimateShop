@@ -2,12 +2,12 @@ package cn.superiormc.ultimateshop.gui.inv;
 
 import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.gui.InvGUI;
+import cn.superiormc.ultimateshop.gui.arc.ArcMenuBridge;
 import cn.superiormc.ultimateshop.gui.dialog.DialogCommonGUI;
 import cn.superiormc.ultimateshop.gui.dialog.DialogOreGUI;
 import cn.superiormc.ultimateshop.gui.form.FormCommonGUI;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.LanguageManager;
-import cn.superiormc.ultimateshop.objects.ObjectThingRun;
 import cn.superiormc.ultimateshop.objects.menus.MenuSender;
 import cn.superiormc.ultimateshop.objects.menus.MenuType;
 import cn.superiormc.ultimateshop.objects.menus.ObjectFavouriteMenu;
@@ -15,6 +15,7 @@ import cn.superiormc.ultimateshop.objects.menus.ObjectItemSellMenu;
 import cn.superiormc.ultimateshop.objects.menus.ObjectMenu;
 import cn.superiormc.ultimateshop.objects.menus.ObjectSearchMenu;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
+
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.Inventory;
@@ -25,24 +26,21 @@ public class CommonGUI extends InvGUI {
 
     private ObjectMenu commonMenu = null;
 
-    private final boolean bypass;
-
     private CommonGUI(Player owner, ObjectMenu menu, boolean bypass) {
-        super(owner);
+        super(owner, bypass);
         this.commonMenu = menu;
-        this.bypass = bypass;
     }
 
     @Override
     public void constructGUI() {
-        if (!bypass && !commonMenu.getCondition().getAllBoolean(new ObjectThingRun(player))) {
+        if (!canDisplayMenu()) {
             LanguageManager.languageManager.sendStringText(player,
-                    "menu-condition-not-meet",
-                    "menu",
-                    commonMenu.getName());
+                "menu-condition-not-meet",
+                "menu",
+                commonMenu.getName());
             return;
         }
-        menuButtons = commonMenu.getMenu(MenuSender.of(player));
+        menuButtons = commonMenu.getMenu(MenuSender.of(player, getPresentation()));
         menuItems = getMenuItems(player);
         title = commonMenu.getString("title", "Shop");
         if (Objects.isNull(inv)) {
@@ -59,7 +57,7 @@ public class CommonGUI extends InvGUI {
             return true;
         }
         menuButtons.get(slot).clickEvent(type, player);
-        if (ConfigManager.configManager.getBooleanOrDefault("menu.shop.click-update", "menu.menu-update.click-update")) {
+        if (ConfigManager.configManager.getBoolean("menu.menu-update.click-update")) {
             constructGUI();
         } else {
             menuItems.put(slot, getMenuItem(player, slot));
@@ -77,9 +75,9 @@ public class CommonGUI extends InvGUI {
         ObjectMenu commonMenu = ObjectMenu.commonMenus.get(fileName);
         if (commonMenu == null || commonMenu.menuConfigs == null) {
             LanguageManager.languageManager.sendStringText(player,
-                    "error.menu-not-found",
-                    "menu",
-                    fileName);
+                "error.menu-not-found",
+                "menu",
+                fileName);
             return;
         }
 
@@ -108,8 +106,8 @@ public class CommonGUI extends InvGUI {
             return;
         }
 
-        if (commonMenu.isUseDialog()) {
-            if ("ore".equalsIgnoreCase(commonMenu.getString("dialog.layout", "multi-action"))) {
+        if (!ArcMenuBridge.arcMenuBridge.enabled(commonMenu, player) && commonMenu.isUseDialog()) {
+            if ("ore".equalsIgnoreCase(ConfigManager.configManager.getDialogLayout(commonMenu.getConfig()))) {
                 new DialogOreGUI(player, commonMenu, null, bypass).openGUI(reopen);
             } else {
                 new DialogCommonGUI(player, commonMenu, bypass).openGUI(reopen);
