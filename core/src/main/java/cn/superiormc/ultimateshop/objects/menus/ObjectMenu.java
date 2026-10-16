@@ -13,6 +13,7 @@ import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import cn.superiormc.ultimateshop.objects.items.ObjectAction;
 import cn.superiormc.ultimateshop.objects.items.ObjectCondition;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
+import cn.superiormc.ultimateshop.utils.ConfigurationUtil;
 import cn.superiormc.ultimateshop.utils.TextUtil;
 
 import org.bukkit.command.CommandSender;
@@ -155,22 +156,7 @@ public class ObjectMenu {
             menuConfigs = new YamlConfiguration();
         }
 
-        mergeSection(menuConfigs, overrideSection);
-    }
-
-    private void mergeSection(ConfigurationSection target, ConfigurationSection source) {
-        for (String key : source.getKeys(false)) {
-            Object value = source.get(key);
-            if (value instanceof ConfigurationSection sourceSection) {
-                ConfigurationSection targetSection = target.getConfigurationSection(key);
-                if (targetSection == null) {
-                    targetSection = target.createSection(key);
-                }
-                mergeSection(targetSection, sourceSection);
-            } else {
-                target.set(key, value);
-            }
-        }
+        ConfigurationUtil.merge(menuConfigs, overrideSection);
     }
 
     public void initMenu() {

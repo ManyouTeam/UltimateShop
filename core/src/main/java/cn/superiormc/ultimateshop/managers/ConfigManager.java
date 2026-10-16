@@ -17,6 +17,7 @@ import cn.superiormc.ultimateshop.objects.menus.ObjectMenu;
 import cn.superiormc.ultimateshop.objects.menus.ObjectSearchMenu;
 import cn.superiormc.ultimateshop.objects.sellchests.ObjectSellChest;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
+import cn.superiormc.ultimateshop.utils.ConfigurationUtil;
 import cn.superiormc.ultimateshop.utils.MathUtil;
 import cn.superiormc.ultimateshop.utils.TextUtil;
 
@@ -601,7 +602,11 @@ public class ConfigManager extends AbstractManager {
     }
 
     public void applyMenuUI(ConfigurationSection menu) {
-        copyMenuUIDefaults(config.getConfigurationSection("menu.ui"), getOrCreateMenuUISection(menu, "ui"));
+        ConfigurationSection ui = menu.getConfigurationSection("ui");
+        if (ui == null) {
+            ui = menu.createSection("ui");
+        }
+        ConfigurationUtil.mergeMissing(ui, config.getConfigurationSection("menu.ui"));
     }
 
     public Object getMenuRendererSetting(
@@ -668,21 +673,4 @@ public class ConfigManager extends AbstractManager {
         return menu == null ? global : menu.get("ui.products." + path, global);
     }
 
-    private ConfigurationSection getOrCreateMenuUISection(ConfigurationSection parent, String path) {
-        ConfigurationSection result = parent.getConfigurationSection(path);
-        return result == null ? parent.createSection(path) : result;
-    }
-
-    private void copyMenuUIDefaults(ConfigurationSection source, ConfigurationSection target) {
-        if (source == null) {
-            return;
-        }
-        for (String key : source.getKeys(false)) {
-            if (source.isConfigurationSection(key)) {
-                copyMenuUIDefaults(source.getConfigurationSection(key), getOrCreateMenuUISection(target, key));
-            } else if (!target.contains(key)) {
-                target.set(key, source.get(key));
-            }
-        }
-    }
 }

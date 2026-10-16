@@ -1,6 +1,7 @@
 package cn.superiormc.ultimateshop.gui;
 
 import cn.superiormc.ultimateshop.managers.ErrorManager;
+import cn.superiormc.ultimateshop.utils.ConfigurationUtil;
 
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.MemoryConfiguration;
@@ -309,10 +310,7 @@ public final class MenuUILayout {
         if (own == null || defaults == null) {
             return own == null ? defaults : own;
         }
-        MemoryConfiguration merged = new MemoryConfiguration();
-        defaults.getValues(true).forEach(merged::set);
-        own.getValues(true).forEach(merged::set);
-        return merged;
+        return ConfigurationUtil.merged(defaults, own);
     }
 
     private int order(Entry entry) {
