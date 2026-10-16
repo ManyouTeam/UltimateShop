@@ -65,7 +65,7 @@ public class ShopGUI extends InvGUI {
                 tempVal4.refreshTimes();
             }
         }
-        menuButtons = shopMenu.getMenu(MenuSender.of(player, getPresentation()));
+        menuButtons = shopMenu.getMenu(MenuSender.of(player, "inventory"));
         menuItems = getMenuItems(player);
 
         ObjectMenu menu = shop.getShopMenuObject();
@@ -162,7 +162,10 @@ public class ShopGUI extends InvGUI {
             formShopGUI.openGUI(reopen);
             return;
         }
-        if (!ArcMenuBridge.arcMenuBridge.enabled(shopMenu, player) && shopMenu.isUseDialog()) {
+        if (ArcMenuBridge.arcMenuBridge.open(player, shopMenu, shop, bypass, reopen)) {
+            return;
+        }
+        if (shopMenu.isUseDialog()) {
             if ("ore".equalsIgnoreCase(ConfigManager.configManager.getDialogLayout(shopMenu.getConfig()))) {
                 new DialogOreGUI(player, shopMenu, shop, bypass).openGUI(reopen);
             } else {

@@ -3,23 +3,36 @@ package cn.superiormc.ultimateshop.gui.arc;
 import cn.superiormc.ultimateshop.gui.ProductUIModel;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
+
 import com.fentai.arcmenu.api.ArcMenuPoint;
 import com.fentai.arcmenu.api.ArcMenuScrollEvent;
 
 import java.util.List;
 
 final class ArcInfoGUI {
+
     private final ArcCommonGUI gui;
+
     private ObjectItem selected;
+
     private int selectedSlot = -1;
+
     private int amount = 1;
+
     private boolean amountChanged;
+
     private int moreSlot = -1;
+
     private ObjectItem moreItem;
+
     private int morePage;
+
     private double moreX;
+
     private double moreY;
+
     private double moreW;
+
     private double moreH;
 
     ArcInfoGUI(ArcCommonGUI gui) {
@@ -221,7 +234,7 @@ final class ArcInfoGUI {
         }
         action.execute(item, gui.getPlayer(), buyAmount, sellAmount);
         if (gui.usable()) {
-            gui.source.constructGUI();
+            gui.constructGUI();
         }
     }
 

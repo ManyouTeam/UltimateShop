@@ -119,8 +119,9 @@ public class FormShopGUI extends FormGUI {
             }
         }));
         tempVal5.closedOrInvalidResultHandler((submittedForm, response) -> handleResponse(submittedForm, this::finishGUI));
-        if (getMenu().getString("content", null) != null) {
-            tempVal5.content(TextUtil.parse(player, getMenu().getString("content", "")));
+        String content = ConfigManager.configManager.getMenuContent(getMenu().getConfig(), "form");
+        if (!content.isEmpty()) {
+            tempVal5.content(TextUtil.parse(player, content));
         }
         form = tempVal5.build();
     }

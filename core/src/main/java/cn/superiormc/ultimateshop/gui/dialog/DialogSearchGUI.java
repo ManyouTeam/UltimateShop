@@ -49,12 +49,12 @@ public class DialogSearchGUI extends DialogGUI {
         }
         DialogView.Builder builder = DialogView.builder(CommonUtil.parseLang(player, menu.getString("title", "")));
         builder.keepOpenAfterAction(true);
-        String content = menu.getString("content", null);
+        String content = ConfigManager.configManager.getMenuContent(menu.getConfig(), "dialog");
         if (content != null && !content.isEmpty()) {
             builder.body(content);
         }
-        builder.buttonWidth(menu.getInt("ui.renderers.dialog.button-width", 150));
-        builder.columns(menu.getInt("ui.renderers.dialog.columns", 2));
+        builder.buttonWidth(menu.getInt("dialog.button-width", 150));
+        builder.columns(menu.getInt("dialog.columns", 2));
         String dialogLayout = ConfigManager.configManager.getDialogLayout(menu.getConfig());
         boolean itemActionLayout = DialogView.Layout.fromConfig(dialogLayout) == DialogView.Layout.ITEM_ACTION_LIST;
         builder.layout(dialogLayout);

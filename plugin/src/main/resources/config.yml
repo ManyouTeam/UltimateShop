@@ -175,10 +175,102 @@ give-item:
   check-full: true
 
 menu:
+  dialog:
+    enabled: false
+    # If enabled, keep the product information dialog open after a buy or sell action.
+    not-auto-close: true
+    auto-add-sprite:
+      enabled: true
+      # Hide label sprites when Ore/item-action-list already displays an item icon.
+      # Per-button dialog.show-sprite overrides this automatic rule.
+      auto-hide: true
+      format: "<sprite:\"{namespace}:{atlas}\":{path}>"
+    default-button: '{lang:menu.dialog.default-button}'
+    details: '{lang:menu.dialog.details}'
+    ore:
+      show-item-icon:
+        enabled: true
+        # Hide the overlaid quantity text when the display-item count is 1.
+        auto-hide-one: true
+      # Rebuilds pack/ on startup and /shop reload only on supported Paper servers,
+      # with menu.dialog.enabled enabled and an enabled Ore menu.
+      # 0 selects the built-in format for your Minecraft version; override for a different client.
+      pack-format: 0
+    search:
+      input: '{lang:menu.dialog.search.input}'
+      buttons:
+        search: '{lang:menu.dialog.search.buttons.search}'
+    buy-more:
+      display-item: true
+      title: '{lang:menu.dialog.buy-more.title}'
+      input: '{lang:menu.dialog.buy-more.input}'
+      buttons:
+        confirm: '{lang:menu.dialog.buy-more.buttons.confirm}'
+    info:
+      display-item: true
+      title: '{lang:menu.dialog.info.title}'
+      buttons:
+        buy: '{lang:menu.dialog.info.buttons.buy}'
+        sell: '{lang:menu.dialog.info.buttons.sell}'
+        buy-more: '{lang:menu.dialog.info.buttons.buy-more}'
+        sell-all: '{lang:menu.dialog.info.buttons.sell-all}'
+        back: '{lang:menu.dialog.info.buttons.back}'
+    favourite-edit:
+      title: '{lang:menu.dialog.favourite-edit.title}'
+      content: '{lang:menu.dialog.favourite-edit.content}'
+      buttons:
+        forward: '{lang:menu.dialog.favourite-edit.buttons.forward}'
+        backward: '{lang:menu.dialog.favourite-edit.buttons.backward}'
+        remove: '{lang:menu.dialog.favourite-edit.buttons.remove}'
+        back: '{lang:menu.dialog.favourite-edit.buttons.back}'
+  # Premium version only
+  bedrock:
+    search:
+      input: '{lang:menu.bedrock.search.input}'
+      buttons:
+        search: '{lang:menu.bedrock.search.buttons.search}'
+    favourite-edit:
+      title: '{lang:menu.bedrock.favourite-edit.title}'
+      content: '{lang:menu.bedrock.favourite-edit.content}'
+      buttons:
+        forward: '{lang:menu.bedrock.favourite-edit.buttons.forward}'
+        backward: '{lang:menu.bedrock.favourite-edit.buttons.backward}'
+        remove: '{lang:menu.bedrock.favourite-edit.buttons.remove}'
+        back: '{lang:menu.bedrock.favourite-edit.buttons.back}'
+    enabled: true
+    auto-add-icon:
+      enabled: true
+      format: "https://raw.githubusercontent.com/InventivetalentDev/minecraft-assets/refs/heads/{version}/assets/minecraft/textures/{path}.png"
+    # Support value: FLOODGATE, UUID
+    check-method: FLOODGATE
+    # Optional action when Bedrock players tap shop products, skipping product info.
+    # Only LEFT executes this action. Buy More confirmation controls are unchanged.
+    # click-event: select-amount
+    # If enabled, we will try to reopen shop menu after player successfully buy or sell products.
+    not-auto-close: true
+    # Make this option be empty to disable.
+    price-extra-line:
+      default: '{lang}'
+      only-buy: '{lang}'
+      only-sell: '{lang}'
+    buy-or-sell:
+      title: '{lang}'
+      buttons:
+        amount:
+          name: '{lang}'
+          tip: '{lang}'
+    info:
+      title: '{lang}'
+      buttons:
+        buy: '{lang}'
+        sell: '{lang}'
+        buy-more: '{lang}'
+        sell-all: '{lang}'
+        # Remove this option if you don't want this button.
+        back: '{lang}'
+  arcmenu:
+    enabled: false
   ui:
-    mode:
-      java: inventory
-      bedrock: form
     layout:
       canvas:
         width: 648
@@ -311,79 +403,7 @@ menu:
       cancel: '{lang:menu.arcmenu.cancel}'
       no-extra: '{lang:menu.arcmenu.no-extra}'
     renderers:
-      inventory: {}
-      form:
-        search:
-          input: '{lang:menu.bedrock.search.input}'
-          buttons:
-            search: '{lang:menu.bedrock.search.buttons.search}'
-        favourite-edit:
-          title: '{lang:menu.bedrock.favourite-edit.title}'
-          content: '{lang:menu.bedrock.favourite-edit.content}'
-          buttons:
-            forward: '{lang:menu.bedrock.favourite-edit.buttons.forward}'
-            backward: '{lang:menu.bedrock.favourite-edit.buttons.backward}'
-            remove: '{lang:menu.bedrock.favourite-edit.buttons.remove}'
-            back: '{lang:menu.bedrock.favourite-edit.buttons.back}'
-        auto-add-icon:
-          enabled: true
-          format: https://raw.githubusercontent.com/InventivetalentDev/minecraft-assets/refs/heads/{version}/assets/minecraft/textures/{path}.png
-        check-method: FLOODGATE
-        not-auto-close: true
-        buy-or-sell:
-          title: '{lang}'
-          buttons:
-            amount:
-              name: '{lang}'
-              tip: '{lang}'
-        info:
-          title: '{lang}'
-          buttons:
-            buy: '{lang}'
-            sell: '{lang}'
-            buy-more: '{lang}'
-            sell-all: '{lang}'
-            back: '{lang}'
-      dialog:
-        not-auto-close: true
-        auto-add-sprite:
-          enabled: true
-          auto-hide: true
-          format: <sprite:"{namespace}:{atlas}":{path}>
-        default-button: '{lang:menu.dialog.default-button}'
-        details: '{lang:menu.dialog.details}'
-        search:
-          input: '{lang:menu.dialog.search.input}'
-          buttons:
-            search: '{lang:menu.dialog.search.buttons.search}'
-        buy-more:
-          display-item: true
-          title: '{lang:menu.dialog.buy-more.title}'
-          input: '{lang:menu.dialog.buy-more.input}'
-          buttons:
-            confirm: '{lang:menu.dialog.buy-more.buttons.confirm}'
-        info:
-          display-item: true
-          title: '{lang:menu.dialog.info.title}'
-          buttons:
-            buy: '{lang:menu.dialog.info.buttons.buy}'
-            sell: '{lang:menu.dialog.info.buttons.sell}'
-            buy-more: '{lang:menu.dialog.info.buttons.buy-more}'
-            sell-all: '{lang:menu.dialog.info.buttons.sell-all}'
-            back: '{lang:menu.dialog.info.buttons.back}'
-        favourite-edit:
-          title: '{lang:menu.dialog.favourite-edit.title}'
-          content: '{lang:menu.dialog.favourite-edit.content}'
-          buttons:
-            forward: '{lang:menu.dialog.favourite-edit.buttons.forward}'
-            backward: '{lang:menu.dialog.favourite-edit.buttons.backward}'
-            remove: '{lang:menu.dialog.favourite-edit.buttons.remove}'
-            back: '{lang:menu.dialog.favourite-edit.buttons.back}'
       ore:
-        show-item-icon:
-          enabled: true
-          auto-hide-one: true
-        pack-format: 0
         templates:
           product: {}
           button: {}

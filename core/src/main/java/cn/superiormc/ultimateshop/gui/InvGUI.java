@@ -1,7 +1,6 @@
 package cn.superiormc.ultimateshop.gui;
 
 import cn.superiormc.ultimateshop.UltimateShop;
-import cn.superiormc.ultimateshop.gui.arc.ArcMenuBridge;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.MenuStatusManager;
 import cn.superiormc.ultimateshop.objects.ObjectThingRun;
@@ -23,17 +22,7 @@ import java.util.Map;
 
 public abstract class InvGUI extends AbstractGUI implements InventoryHolder {
 
-    private String presentation = "inventory";
-
     private final boolean bypass;
-
-    public void setPresentation(String presentation) {
-        this.presentation = presentation;
-    }
-
-    public String getPresentation() {
-        return presentation;
-    }
 
     public final boolean canDisplayMenu() {
         ObjectMenu menu = getMenu();
@@ -83,10 +72,6 @@ public abstract class InvGUI extends AbstractGUI implements InventoryHolder {
 
     @Override
     public void openGUI(boolean reopen) {
-        if (ArcMenuBridge.arcMenuBridge.open(this, reopen)) {
-            return;
-        }
-        setPresentation("inventory");
         GUIStatus previousStatus = MenuStatusManager.menuStatusManager.getGUIStatus(player);
         if (!MenuStatusManager.menuStatusManager.canOpenGUI(player, this, reopen)) {
             return;

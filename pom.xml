@@ -12,6 +12,12 @@
         <module>core</module>
         <module>paper</module>
         <module>spigot</module>
+        <module>paper/adapts/v1_21_5</module>
+        <module>paper/adapts/v1_21_6</module>
+        <module>paper/adapts/v1_21_11</module>
+        <module>paper/adapts/v26_1</module>
+        <module>paper/adapts/v26_2</module>
+        <module>paper/adapts/v26_3</module>
         <module>plugin</module>
     </modules>
 

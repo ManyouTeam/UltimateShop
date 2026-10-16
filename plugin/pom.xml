@@ -57,6 +57,43 @@
             <version>${project.version}</version>
         </dependency>
 
+        <!-- Paper component adapters -->
+        <dependency>
+            <groupId>cn.superiormc.ultimateshop</groupId>
+            <artifactId>paper-adapts-1-21-5</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>cn.superiormc.ultimateshop</groupId>
+            <artifactId>paper-adapts-1-21-6</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>cn.superiormc.ultimateshop</groupId>
+            <artifactId>paper-adapts-1-21-11</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>cn.superiormc.ultimateshop</groupId>
+            <artifactId>paper-adapts-26-1</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>cn.superiormc.ultimateshop</groupId>
+            <artifactId>paper-adapts-26-2</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>cn.superiormc.ultimateshop</groupId>
+            <artifactId>paper-adapts-26-3</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
         <!-- Paper API (provided at runtime by server) -->
         <dependency>
             <groupId>io.papermc.paper</groupId>

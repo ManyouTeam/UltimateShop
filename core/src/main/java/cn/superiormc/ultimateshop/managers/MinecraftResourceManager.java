@@ -191,7 +191,7 @@ public final class MinecraftResourceManager extends AbstractManager {
         String namespace = separator < 0 ? "minecraft" : texture.substring(0, separator);
         String path = separator < 0 ? texture : texture.substring(separator + 1);
         return ConfigManager.configManager.getString(
-            "menu.ui.renderers.dialog.auto-add-sprite.format",
+            "menu.dialog.auto-add-sprite.format",
             "<sprite:\"{namespace}:{atlas}\":{path}>",
             "namespace",
             namespace,

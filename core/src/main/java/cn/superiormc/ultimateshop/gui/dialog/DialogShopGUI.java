@@ -69,12 +69,12 @@ public class DialogShopGUI extends DialogGUI {
         String title = menu.getString("title", shop.getShopDisplayName())
                 .replace("{shop-name}", shop.getShopDisplayName()).replace("{shop-id}", shop.getShopName());
         DialogView.Builder builder = DialogView.builder(title);
-        String content = menu.getString("content", null);
+        String content = ConfigManager.configManager.getMenuContent(menu.getConfig(), "dialog");
         if (content != null && !content.isEmpty()) {
             builder.body(content);
         }
-        builder.buttonWidth(menu.getInt("ui.renderers.dialog.button-width", 150));
-        builder.columns(menu.getInt("ui.renderers.dialog.columns", 2));
+        builder.buttonWidth(menu.getInt("dialog.button-width", 150));
+        builder.columns(menu.getInt("dialog.columns", 2));
         String dialogLayout = ConfigManager.configManager.getDialogLayout(menu.getConfig());
         builder.layout(dialogLayout);
         ordered.forEach((slot, button) -> addButton(builder, slot, button, dialogLayout));

@@ -1,8 +1,10 @@
-# 🥉Display Item Add Lore
+# 🥉 Display Item Add Lore
 
 Generated lore adds product prices, stock, limits and operation instructions to the display item. It is shared by Inventory and product information/tooltips in other presentations. Compact Form/ArcMenu list price text is configured separately in `ui.products.price`.
 
-## Global and per-product configuration
+<a id="global-and-per-product-configuration"></a>
+
+## Quick start: global and per-product configuration
 
 In `config.yml`:
 
@@ -41,7 +43,7 @@ Set product `display-item.modify-lore: false` to suppress generated additions fo
 | `auto-set-first-product` | Use the first applicable product reward as the display when no explicit display item is supplied |
 | `calculate-amount` | Include the product reward amount in the displayed `{amount}` calculation |
 | `auto-translate-item-name` | Paper 1.17.1+ automatic vanilla display-name translation support |
-| `auto-use-sprite-item-name` | Paper 1.21.9+ Java sprite item-name support |
+| `auto-use-sprite-item-name` | Java sprite item-name support on compatible Paper runtimes |
 
 Explicit custom names take precedence. Material/name resources are handled through the shared resource manager; see [Localized Item Name](../features/localized-item-name-premium.md).
 
@@ -85,7 +87,7 @@ add-lore:
   - '(@a)&7This product cannot be purchased'
 ```
 
-The old conditional suffix format was removed in 4.0.0; use these symbols instead.
+Use the condition prefixes described above; suffix-style conditions are not supported.
 
 ## Presentation conditions
 
@@ -155,3 +157,7 @@ display-item:
 ```
 
 `;;` splits formatted price components into multiple lore lines. Keep buy/sell conditions on the corresponding price lines. Ordinary extra lines without a price placeholder do not gain an automatic condition from the preceding line.
+
+## Related documentation
+
+[Shop Menus](shop-menus.md) · [Bedrock Form](bedrock-menus-premium.md) · [Graphical Layout](ui-layout.md)

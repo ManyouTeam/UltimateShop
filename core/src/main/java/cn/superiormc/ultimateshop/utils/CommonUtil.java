@@ -252,7 +252,7 @@ public class CommonUtil {
         if (!UltimateShop.useGeyser) {
             return false;
         }
-        if (ConfigManager.configManager.getString("menu.ui.renderers.form.check-method", "FLOODGATE").equalsIgnoreCase("FLOODGATE")) {
+        if (ConfigManager.configManager.getString("menu.bedrock.check-method", "FLOODGATE").equalsIgnoreCase("FLOODGATE")) {
             return FloodgateApi.getInstance().getPlayer(player.getUniqueId()) != null;
         } else {
             return player.getUniqueId().toString().startsWith("00000000-0000-0000-000");

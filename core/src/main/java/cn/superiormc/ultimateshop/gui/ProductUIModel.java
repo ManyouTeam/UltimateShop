@@ -23,9 +23,20 @@ public final class ProductUIModel {
 
     private final Player player;
 
-    public ProductUIModel(ObjectMenu menu, Player player) {
+    private final String presentation;
+
+    public ProductUIModel(ObjectMenu menu, Player player, String presentation) {
         this.menu = Objects.requireNonNull(menu);
         this.player = Objects.requireNonNull(player);
+        this.presentation = presentation;
+    }
+
+    private Object getGraphicSetting(ObjectItem item, String path, Object fallback) {
+        if (!presentation.equals("ore") && !presentation.equals("arcmenu")) {
+            return fallback;
+        }
+        return ConfigManager.configManager.getProductUISetting(
+            menu.getConfig(), item.getButtonConfig(), path, fallback);
     }
 
     public record Action(String id, String label, ClickType click) {
@@ -73,18 +84,12 @@ public final class ProductUIModel {
             String label =
                 custom == null
             ? ConfigManager.configManager.getMenuRendererText(
-                menu.getConfig(), player, "form", "info.buttons." + key,
+                menu.getConfig(), player, presentation.equals("form") ? "form" : "dialog", "info.buttons." + key,
                 id,
                 "item-name",
                 item.getDisplayName(player))
             : custom.getString("display-name", id);
-            Object configuredLabel =
-                ConfigManager.configManager
-                .getProductUISetting(
-                menu.getConfig(),
-                item.getButtonConfig(),
-                "actions.labels." + id,
-                null);
+            Object configuredLabel = getGraphicSetting(item, "actions.labels." + id, null);
             if (configuredLabel instanceof String text) {
                 label =
                     CommonUtil.modifyString(
@@ -97,12 +102,7 @@ public final class ProductUIModel {
 
     public List<Action> getPrimaryActions(ObjectItem item) {
         Object setting =
-            ConfigManager.configManager
-            .getProductUISetting(
-            menu.getConfig(),
-            item.getButtonConfig(),
-            "actions.primary",
-            List.of("buy", "sell"));
+            getGraphicSetting(item, "actions.primary", List.of("buy", "sell"));
         List<?> ids = setting instanceof List<?> list ? list : List.of("buy", "sell");
         List<Action> available = getAvailableActions(item);
         List<Action> result = new ArrayList<>();
@@ -133,9 +133,7 @@ public final class ProductUIModel {
     public List<Action> getExtraActions(ObjectItem item) {
         List<Action> primary = getPrimaryActions(item);
         Object setting =
-            ConfigManager.configManager
-            .getProductUISetting(
-            menu.getConfig(), item.getButtonConfig(), "actions.extra", "auto");
+            getGraphicSetting(item, "actions.extra", "auto");
         List<Action> result = new ArrayList<>();
         for (Action action : getAvailableActions(item)) {
             if (primary.stream().anyMatch(a -> a.id().equals(action.id()))) {
@@ -164,9 +162,7 @@ public final class ProductUIModel {
 
     public String getPriceLine(ObjectItem item) {
         Object enabled =
-            ConfigManager.configManager
-            .getProductUISetting(
-            menu.getConfig(), item.getButtonConfig(), "price.enabled", true);
+            getGraphicSetting(item, "price.enabled", true);
         if (Boolean.FALSE.equals(enabled)) {
             return "";
         }
@@ -175,12 +171,7 @@ public final class ProductUIModel {
         ? "only-sell"
         : item.getRawSellPrice().empty ? "only-buy" : "both";
         Object format =
-            ConfigManager.configManager
-            .getProductUISetting(
-            menu.getConfig(),
-            item.getButtonConfig(),
-            "price.formats." + kind,
-            null);
+            getGraphicSetting(item, "price.formats." + kind, null);
         return item.getDisplayItemObject()
             .getDisplayItem(player)
             .getPriceExtraLine(format instanceof String text ? text : null)

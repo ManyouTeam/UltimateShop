@@ -99,7 +99,9 @@ final class ArcMenuLayout {
     }
 
     // Above even the 57-pixel detail model's nearest face (5 + 57/2).
+
     static final double TOOLTIP_DEPTH = 80;
+
     static final double ACTIONS_DEPTH = 60;
 
     static double cursorSafeDepth(double depth, double cursorDepth, double canvasScale) {
@@ -170,10 +172,12 @@ final class ArcMenuLayout {
     }
 
     static final class Box {
+
         final double x;
+
         final double y;
 
-        Box(double x, double y) {
+        private Box(double x, double y) {
             this.x = x;
             this.y = y;
         }

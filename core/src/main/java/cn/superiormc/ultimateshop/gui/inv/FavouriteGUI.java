@@ -76,7 +76,7 @@ public class FavouriteGUI extends InvGUI {
         resultButtons.clear();
         overlayButtons.clear();
 
-        menuButtons = menu.getMenu(MenuSender.of(player, getPresentation()));
+        menuButtons = menu.getMenu(MenuSender.of(player, "inventory"));
         menuItems = getMenuItems(player);
         for (Map.Entry<Integer, ItemStack> entry : menuItems.entrySet()) {
             if (entry.getKey() >= 0 && entry.getKey() < inv.getSize()) {
@@ -178,9 +178,6 @@ public class FavouriteGUI extends InvGUI {
     }
 
     private boolean handleEdit(ClickType type, int index, ObjectItem item) {
-        if ("arcmenu".equals(getPresentation()) && type == ClickType.MIDDLE) {
-            type = ClickType.DROP;
-        }
         ObjectCache cache = CacheManager.cacheManager.getObjectCache(player);
         if (cache == null) {
             return false;
@@ -223,6 +220,9 @@ public class FavouriteGUI extends InvGUI {
             new FormFavouriteGUI(player, menu, bypass).openGUI(reopen);
             return;
         }
+        if (ArcMenuBridge.arcMenuBridge.open(player, menu, null, bypass, reopen)) {
+            return;
+        }
         if (!ArcMenuBridge.arcMenuBridge.enabled(menu, player) && menu.isUseDialog()) {
             new DialogFavouriteGUI(player, menu, bypass).openGUI(reopen);
             return;
@@ -234,6 +234,9 @@ public class FavouriteGUI extends InvGUI {
     public static void openGUI(Player player, ObjectFavouriteMenu menu, boolean bypass, boolean reopen, boolean editing) {
         if (UltimateShop.useGeyser && menu.isUseGeyser() && CommonUtil.isBedrockPlayer(player)) {
             new FormFavouriteGUI(player, menu, bypass, editing).openGUI(reopen);
+            return;
+        }
+        if (ArcMenuBridge.arcMenuBridge.open(player, menu, null, bypass, reopen, editing)) {
             return;
         }
         if (!ArcMenuBridge.arcMenuBridge.enabled(menu, player) && menu.isUseDialog()) {

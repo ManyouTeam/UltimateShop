@@ -56,7 +56,7 @@ public class BuyMoreGUI extends InvGUI {
             return;
         }
         setAmount(nowingAmount);
-        menuButtons = menu.getMenu(MenuSender.of(player, getPresentation()));
+        menuButtons = menu.getMenu(MenuSender.of(player, "inventory"));
         menuItems = getMenuItems(player);
         title = menu.getString("title", "Buy More Menu");
         if (Objects.isNull(inv)) {
@@ -97,7 +97,7 @@ public class BuyMoreGUI extends InvGUI {
     public ItemStack getMenuItem(Player player, int slot) {
         AbstractButton button = menuButtons.get(slot);
         if (button == null) {
-            button = menu.getUiMenu(MenuSender.of(player, getPresentation())).get(slot);
+            button = menu.getUiMenu(MenuSender.of(player, "inventory")).get(slot);
         }
         if (button == null) {
             return super.getMenuItem(player, slot);

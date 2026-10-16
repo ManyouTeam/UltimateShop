@@ -40,7 +40,7 @@ public class CommonGUI extends InvGUI {
                 commonMenu.getName());
             return;
         }
-        menuButtons = commonMenu.getMenu(MenuSender.of(player, getPresentation()));
+        menuButtons = commonMenu.getMenu(MenuSender.of(player, "inventory"));
         menuItems = getMenuItems(player);
         title = commonMenu.getString("title", "Shop");
         if (Objects.isNull(inv)) {
@@ -106,7 +106,10 @@ public class CommonGUI extends InvGUI {
             return;
         }
 
-        if (!ArcMenuBridge.arcMenuBridge.enabled(commonMenu, player) && commonMenu.isUseDialog()) {
+        if (ArcMenuBridge.arcMenuBridge.open(player, commonMenu, null, bypass, reopen)) {
+            return;
+        }
+        if (commonMenu.isUseDialog()) {
             if ("ore".equalsIgnoreCase(ConfigManager.configManager.getDialogLayout(commonMenu.getConfig()))) {
                 new DialogOreGUI(player, commonMenu, null, bypass).openGUI(reopen);
             } else {

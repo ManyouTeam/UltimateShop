@@ -137,7 +137,7 @@ public class DialogOreGUI extends DialogGUI {
             1,
             elements.stream().mapToInt(MenuUILayout.Element::page).max().orElse(0) + 1);
         page = Math.min(page, pages - 1);
-        ProductUIModel controls = new ProductUIModel(menu, player);
+        ProductUIModel controls = new ProductUIModel(menu, player, "ore");
         for (MenuUILayout.Element element : elements) {
             if (element.page() >= 0 && element.page() != page) {
                 continue;
@@ -297,7 +297,7 @@ public class DialogOreGUI extends DialogGUI {
             String text =
                 settings.getString("text", "")
                 .replace("{title}", title)
-                .replace("{content}", menu.getString("content", ""));
+                .replace("{content}", ConfigManager.configManager.getMenuContent(menu.getConfig(), "dialog"));
             if (text.isBlank()) {
                 continue;
             }

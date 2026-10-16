@@ -1,6 +1,7 @@
 package cn.superiormc.ultimateshop.managers;
 
 import cn.superiormc.ultimateshop.UltimateShop;
+import cn.superiormc.ultimateshop.gui.arc.ArcMenuGUI;
 import cn.superiormc.ultimateshop.objects.ObjectSellStick;
 import cn.superiormc.ultimateshop.objects.ObjectSharedUseTimes;
 import cn.superiormc.ultimateshop.objects.ObjectShop;
@@ -17,6 +18,7 @@ import cn.superiormc.ultimateshop.objects.menus.ObjectMenu;
 import cn.superiormc.ultimateshop.objects.menus.ObjectSearchMenu;
 import cn.superiormc.ultimateshop.objects.sellchests.ObjectSellChest;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
+import cn.superiormc.ultimateshop.utils.ConfigurationUtil;
 import cn.superiormc.ultimateshop.utils.MathUtil;
 import cn.superiormc.ultimateshop.utils.TextUtil;
 
@@ -34,7 +36,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import static cn.superiormc.ultimateshop.managers.SellChestManager.SELL_CHEST_ID;
@@ -466,7 +467,7 @@ public class ConfigManager extends AbstractManager {
             return null;
         }
         var gui = MenuStatusManager.menuStatusManager.getOpeningGUI(player);
-        if (gui == null || !gui.getPresentation().equals("arcmenu") || gui.getMenu() == null) {
+        if (!(gui instanceof ArcMenuGUI) || gui.getMenu() == null) {
             return null;
         }
         return gui.getMenu().getString("ui.renderers.arcmenu.right-click-action",
@@ -601,12 +602,16 @@ public class ConfigManager extends AbstractManager {
     }
 
     public void applyMenuUI(ConfigurationSection menu) {
-        copyMenuUIDefaults(config.getConfigurationSection("menu.ui"), getOrCreateMenuUISection(menu, "ui"));
+        ConfigurationSection ui = menu.getConfigurationSection("ui");
+        if (ui == null) {
+            ui = menu.createSection("ui");
+        }
+        ConfigurationUtil.mergeMissing(ui, config.getConfigurationSection("menu.ui"));
     }
 
     public Object getMenuRendererSetting(
         ConfigurationSection menu, String renderer, String path, Object fallback) {
-        String key = "ui.renderers." + renderer + "." + path;
+        String key = (renderer.equals("form") ? "bedrock" : renderer) + "." + path;
         Object global = config.get("menu." + key, fallback);
         return menu == null ? global : menu.get(key, global);
     }
@@ -633,30 +638,33 @@ public class ConfigManager extends AbstractManager {
     }
 
     public String getDialogLayout(ConfigurationSection menu) {
-        if (getMenuUIMode(menu, "java").equals("ore")) {
-            return "ore";
-        }
         return String.valueOf(getMenuRendererSetting(menu, "dialog", "layout", "multi-action"));
     }
 
+    public String getMenuContent(ConfigurationSection menu, String renderer) {
+        if (menu == null) {
+            return "";
+        }
+        String key = renderer.equals("form") ? "bedrock.content"
+            : renderer.equals("arcmenu") ? "arcmenu.content" : "dialog.content";
+        return menu.getString(key, menu.getString("content", ""));
+    }
+
     public String getMenuUIMode(ConfigurationSection menu, String client) {
-        String mode = menu == null ? "inherit" : menu.getString("ui.mode." + client, "inherit");
-        if (mode.equalsIgnoreCase("inherit")) {
-            mode =
-                config.getString(
-                "menu.ui.mode." + client, client.equals("java") ? "inventory" : "form");
+        if (client.equals("bedrock")) {
+            return config.getBoolean("menu.bedrock.enabled", true)
+                && (menu == null || menu.getBoolean("bedrock.enabled", true))
+                ? "form" : "inventory";
         }
-        mode = mode.toLowerCase(Locale.ROOT);
-        List<String> allowed =
-            client.equals("java")
-        ? List.of("inventory", "dialog", "ore", "arcmenu")
-        : List.of("inventory", "form");
-        if (!allowed.contains(mode)) {
-            ErrorManager.errorManager.sendErrorMessage(
-                "§cInvalid UI mode for " + client + ": " + mode);
-            return "inventory";
+        if (config.getBoolean("menu.arcmenu.enabled", false)
+            && menu != null && menu.getBoolean("arcmenu.enabled", false)) {
+            return "arcmenu";
         }
-        return mode;
+        if (config.getBoolean("menu.dialog.enabled", false)
+            && (menu == null || menu.getBoolean("dialog.enabled", true))) {
+            return "ore".equalsIgnoreCase(getDialogLayout(menu)) ? "ore" : "dialog";
+        }
+        return "inventory";
     }
 
     public Object getProductUISetting(
@@ -668,21 +676,4 @@ public class ConfigManager extends AbstractManager {
         return menu == null ? global : menu.get("ui.products." + path, global);
     }
 
-    private ConfigurationSection getOrCreateMenuUISection(ConfigurationSection parent, String path) {
-        ConfigurationSection result = parent.getConfigurationSection(path);
-        return result == null ? parent.createSection(path) : result;
-    }
-
-    private void copyMenuUIDefaults(ConfigurationSection source, ConfigurationSection target) {
-        if (source == null) {
-            return;
-        }
-        for (String key : source.getKeys(false)) {
-            if (source.isConfigurationSection(key)) {
-                copyMenuUIDefaults(source.getConfigurationSection(key), getOrCreateMenuUISection(target, key));
-            } else if (!target.contains(key)) {
-                target.set(key, source.get(key));
-            }
-        }
-    }
 }

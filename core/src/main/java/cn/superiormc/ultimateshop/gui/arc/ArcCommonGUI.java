@@ -1,14 +1,16 @@
 package cn.superiormc.ultimateshop.gui.arc;
 
-import cn.superiormc.ultimateshop.gui.InvGUI;
 import cn.superiormc.ultimateshop.gui.MenuUILayout;
 import cn.superiormc.ultimateshop.gui.ProductUIModel;
 import cn.superiormc.ultimateshop.objects.buttons.AbstractButton;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectCopyItem;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import cn.superiormc.ultimateshop.objects.menus.MenuSender;
+import cn.superiormc.ultimateshop.objects.menus.ObjectMenu;
 import cn.superiormc.ultimateshop.utils.ItemUtil;
+
 import com.fentai.arcmenu.api.ArcMenuScrollEvent;
+import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
 
@@ -16,12 +18,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ArcCommonGUI extends ArcMenuGUI {
-    final ProductUIModel controls;
+
+    protected final ProductUIModel controls;
+
     private final ArcInfoGUI info;
 
-    ArcCommonGUI(InvGUI source, ArcMenuRuntime runtime) {
-        super(source, runtime);
-        controls = new ProductUIModel(source.getMenu(), source.getPlayer());
+    protected ArcCommonGUI(Player player, ObjectMenu menu, boolean bypass, ArcMenuRuntime runtime) {
+        super(player, menu, bypass, runtime);
+        controls = new ProductUIModel(menu, player, "arcmenu");
         info = new ArcInfoGUI(this);
     }
 
@@ -56,9 +60,9 @@ public class ArcCommonGUI extends ArcMenuGUI {
     }
 
     protected ItemStack cardItem(int slot) {
-        return slot < source.getInventory().getSize()
-            ? source.getInventory().getItem(slot)
-            : buttons.get(slot).getDisplayItem(player, 1).getItemStack();
+        ItemStack item = menuItems.get(slot);
+        return item == null && buttons.get(slot) != null
+            ? buttons.get(slot).getDisplayItem(player, 1).getItemStack() : item;
     }
 
     protected int cardAmount(int slot, ItemStack stack) {
@@ -95,19 +99,17 @@ public class ArcCommonGUI extends ArcMenuGUI {
     }
 
     protected void dispatchClick(int slot, ClickType type) {
-        if (slot < source.getInventory().getSize()) {
-            source.clickEventHandle(source.getInventory(), type, slot);
-        } else if (buttons.get(slot) != null) {
-            buttons.get(slot).clickEvent(type, player);
+        AbstractButton button = buttons.get(slot);
+        if (button != null) {
+            button.clickEvent(type, player);
         }
     }
 
     final boolean visible(ObjectItem item) {
-        return source.canDisplayMenu()
+        return canDisplayMenu()
             && item.isVisibleInMenu("arcmenu")
             && item.canDisplay(MenuSender.of(player, "arcmenu"))
-            && item.getShopObject().getProductNotHidden(MenuSender.of(player, "arcmenu"), item)
-        != null;
+            && item.getShopObject().getProductNotHidden(MenuSender.of(player, "arcmenu"), item) != null;
     }
 
     @Override
@@ -220,7 +222,7 @@ public class ArcCommonGUI extends ArcMenuGUI {
         }
         dispatchClick(slot, type);
         if (usable()) {
-            source.constructGUI();
+            constructGUI();
         }
     }
 }

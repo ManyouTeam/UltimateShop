@@ -78,7 +78,7 @@ public class FormInfoGUI extends FormGUI {
 
     private void constructUnifiedForm() {
         var sourceMenu = item.getShopObject().getShopMenuObject();
-        var model = new ProductUIModel(sourceMenu, player);
+        var model = new ProductUIModel(sourceMenu, player, "form");
         SimpleForm.Builder builder =
             SimpleForm.builder()
             .title(

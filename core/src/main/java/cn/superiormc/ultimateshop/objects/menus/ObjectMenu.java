@@ -13,6 +13,7 @@ import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import cn.superiormc.ultimateshop.objects.items.ObjectAction;
 import cn.superiormc.ultimateshop.objects.items.ObjectCondition;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
+import cn.superiormc.ultimateshop.utils.ConfigurationUtil;
 import cn.superiormc.ultimateshop.utils.TextUtil;
 
 import org.bukkit.command.CommandSender;
@@ -29,7 +30,6 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.function.BiConsumer;
@@ -155,22 +155,7 @@ public class ObjectMenu {
             menuConfigs = new YamlConfiguration();
         }
 
-        mergeSection(menuConfigs, overrideSection);
-    }
-
-    private void mergeSection(ConfigurationSection target, ConfigurationSection source) {
-        for (String key : source.getKeys(false)) {
-            Object value = source.get(key);
-            if (value instanceof ConfigurationSection sourceSection) {
-                ConfigurationSection targetSection = target.getConfigurationSection(key);
-                if (targetSection == null) {
-                    targetSection = target.createSection(key);
-                }
-                mergeSection(targetSection, sourceSection);
-            } else {
-                target.set(key, value);
-            }
-        }
+        ConfigurationUtil.merge(menuConfigs, overrideSection);
     }
 
     public void initMenu() {
@@ -219,8 +204,8 @@ public class ObjectMenu {
         this.useDialog = !UltimateShop.freeVersion
             && UltimateShop.methodUtil.methodID().equals("paper")
             && CommonUtil.getMinorVersion(21, 9)
-            && Set.of("dialog", "ore").contains(
-                ConfigManager.configManager.getMenuUIMode(menuConfigs, "java"));
+            && ConfigManager.configManager.getBoolean("menu.dialog.enabled")
+            && menuConfigs.getBoolean("dialog.enabled", true);
         this.dynamicLayout = menuConfigs.getBoolean("dynamic-layout", false) && !UltimateShop.freeVersion;
     }
 
@@ -516,11 +501,11 @@ public class ObjectMenu {
 
     private boolean hasMenuVisibilitySettings() {
         if (buttonItems.values().stream().anyMatch(button -> button.getButtonConfig() != null
-            && button.getButtonConfig().contains("ui.visible-in"))) {
+            && button.getButtonConfig().contains("menu-visibility"))) {
             return true;
         }
         return shop != null && shop.getShopConfig().getKeys(true).stream()
-            .anyMatch(key -> key.endsWith("ui.visible-in"));
+            .anyMatch(key -> key.endsWith("menu-visibility"));
     }
 
     public ObjectCondition getCondition() {

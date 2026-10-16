@@ -65,16 +65,18 @@ public class DialogPackManager extends AbstractManager {
 
     public static boolean usesOre(ConfigurationSection config) {
         return config != null
-            && ConfigManager.configManager.getMenuUIMode(config, "java").equals("ore");
+            && ConfigManager.configManager.getBoolean("menu.dialog.enabled")
+            && config.getBoolean("dialog.enabled", true)
+            && "ore".equalsIgnoreCase(ConfigManager.configManager.getDialogLayout(config));
     }
 
     public static boolean showsItemIcon() {
-        ConfigurationSection ore = ConfigManager.configManager.getSection("menu.ui.renderers.ore");
+        ConfigurationSection ore = ConfigManager.configManager.getSection("menu.dialog.ore");
         return ore == null || ore.getBoolean("show-item-icon.enabled", true);
     }
 
     public static boolean hidesOneIconAmount() {
-        ConfigurationSection ore = ConfigManager.configManager.getSection("menu.ui.renderers.ore");
+        ConfigurationSection ore = ConfigManager.configManager.getSection("menu.dialog.ore");
         return ore == null || ore.getBoolean("show-item-icon.auto-hide-one", true);
     }
 
@@ -150,7 +152,7 @@ public class DialogPackManager extends AbstractManager {
                     TextUtil.sendMessage(
                         sender instanceof Player player ? player : null,
                         TextUtil.pluginPrefix()
-                        + " §eNo loaded menu uses ui.mode.java: ore; pack generation"
+                        + " §eNo loaded menu uses dialog.layout: ore; pack generation"
                         + " skipped.");
                 }
                 return;
@@ -165,7 +167,7 @@ public class DialogPackManager extends AbstractManager {
             return;
         }
         Path data = UltimateShop.instance.getDataFolder().toPath();
-        int configured = ConfigManager.configManager.getInt("menu.ui.renderers.ore.pack-format", 0);
+        int configured = ConfigManager.configManager.getInt("menu.dialog.ore.pack-format", 0);
         int format = requestedFormat != null ? requestedFormat : configured;
         SchedulerUtil.runTaskAsynchronously(
             () -> {

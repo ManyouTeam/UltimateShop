@@ -1,5 +1,15 @@
 # Inventory slots use root layout; ArcMenu and Ore use ui.layout and each button ui.placement.
-content: ''
+dialog:
+  enabled: true
+  layout: multi-action
+  content: ''
+  button-width: 150
+  columns: 2
+bedrock:
+  enabled: true
+  content: ''
+arcmenu:
+  enabled: false
 title: '{shop-name}'
 size: 54
 open-actions:
@@ -117,9 +127,6 @@ buttons:
       font-size: 1.0
       text-align: left
 ui:
-  mode:
-    java: inherit
-    bedrock: inherit
   layout:
     canvas:
       width: 648
@@ -252,67 +259,7 @@ ui:
     cancel: '{lang:menu.arcmenu.cancel}'
     no-extra: '{lang:menu.arcmenu.no-extra}'
   renderers:
-    inventory: {}
-    form:
-      auto-add-icon:
-        enabled: true
-        format: https://raw.githubusercontent.com/InventivetalentDev/minecraft-assets/refs/heads/{version}/assets/minecraft/textures/{path}.png
-      check-method: FLOODGATE
-      not-auto-close: true
-      buy-or-sell:
-        title: '{lang}'
-        buttons:
-          amount:
-            name: '{lang}'
-            tip: '{lang}'
-      info:
-        title: '{lang}'
-        buttons:
-          buy: '{lang}'
-          sell: '{lang}'
-          buy-more: '{lang}'
-          sell-all: '{lang}'
-          back: '{lang}'
-    dialog:
-      not-auto-close: true
-      auto-add-sprite:
-        enabled: true
-        auto-hide: true
-        format: <sprite:"{namespace}:{atlas}":{path}>
-      default-button: '{lang:menu.dialog.default-button}'
-      details: '{lang:menu.dialog.details}'
-      search:
-        input: '{lang:menu.dialog.search.input}'
-        buttons:
-          search: '{lang:menu.dialog.search.buttons.search}'
-      buy-more:
-        display-item: true
-        title: '{lang:menu.dialog.buy-more.title}'
-        input: '{lang:menu.dialog.buy-more.input}'
-        buttons:
-          confirm: '{lang:menu.dialog.buy-more.buttons.confirm}'
-      info:
-        display-item: true
-        title: '{lang:menu.dialog.info.title}'
-        buttons:
-          buy: '{lang:menu.dialog.info.buttons.buy}'
-          sell: '{lang:menu.dialog.info.buttons.sell}'
-          buy-more: '{lang:menu.dialog.info.buttons.buy-more}'
-          sell-all: '{lang:menu.dialog.info.buttons.sell-all}'
-          back: '{lang:menu.dialog.info.buttons.back}'
-      favourite-edit:
-        title: '{lang:menu.dialog.favourite-edit.title}'
-        content: '{lang:menu.dialog.favourite-edit.content}'
-        buttons:
-          forward: '{lang:menu.dialog.favourite-edit.buttons.forward}'
-          backward: '{lang:menu.dialog.favourite-edit.buttons.backward}'
-          remove: '{lang:menu.dialog.favourite-edit.buttons.remove}'
-          back: '{lang:menu.dialog.favourite-edit.buttons.back}'
     ore:
-      show-item-icon:
-        enabled: true
-        auto-hide-one: true
-      pack-format: 0
       templates:
         product: {}
         button: {}
@@ -322,8 +269,6 @@ ui:
       animation:
         enabled: true
         duration: 8
-      details:
-        enabled: true
       more-menu:
         columns: 1
       tooltip:
