@@ -4,14 +4,13 @@ import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.gui.AbstractGUI;
 import cn.superiormc.ultimateshop.gui.GUIStatus;
 import cn.superiormc.ultimateshop.gui.MenuUILayout;
-import cn.superiormc.ultimateshop.objects.ObjectThingRun;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.ErrorManager;
 import cn.superiormc.ultimateshop.managers.MenuStatusManager;
 import cn.superiormc.ultimateshop.managers.MinecraftResourceManager;
+import cn.superiormc.ultimateshop.objects.ObjectThingRun;
 import cn.superiormc.ultimateshop.objects.buttons.AbstractButton;
 import cn.superiormc.ultimateshop.objects.menus.MenuSender;
-import cn.superiormc.ultimateshop.objects.menus.ObjectMenu;
 import cn.superiormc.ultimateshop.objects.menus.ObjectMenu;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
 import cn.superiormc.ultimateshop.utils.SchedulerUtil;
@@ -34,6 +33,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Display;
 import org.bukkit.entity.ItemDisplay;
+import org.bukkit.entity.Player;
 import org.bukkit.entity.TextDisplay;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
@@ -207,7 +207,7 @@ public abstract class ArcMenuGUI extends AbstractGUI {
 
     protected void prepareMenu() {
         title = menu.getString("title", "Shop");
-        menuButtons = menu.getMenu(MenuSender.of(player, "arcmenu"));
+        menuButtons = new LinkedHashMap<>(menu.getMenu(MenuSender.of(player, "arcmenu")));
         menuItems.clear();
         for (Map.Entry<Integer, AbstractButton> entry : menuButtons.entrySet()) {
             menuItems.put(entry.getKey(), entry.getValue().getDisplayItem(player, 1).getItemStack());
