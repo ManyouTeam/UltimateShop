@@ -1,4 +1,4 @@
-# Native Dialog UI — Premium
+# 💬 Native Dialog UI - Premium
 
 Native Dialog shares product/action data with Inventory and Form. It requires Premium and Paper 1.21.9+ with supported Dialog APIs. [Ore](ore-menus-premium.md) is the graphical Dialog-based renderer covered separately.
 
@@ -44,7 +44,7 @@ ui:
 | `java: dialog`, `dialog.layout: multi-action` | Native action buttons in columns | Not required for ordinary text/buttons |
 | `java: dialog`, `dialog.layout: item-action-list` | Native item icons and clickable labels | Not required for vanilla item icons |
 
-Here `dialog.layout` abbreviates `ui.renderers.dialog.layout`. Do not use root `dialog.enabled`, root `dialog.content` or removed sidebar/layout formats; the renderer reads unified settings directly and does not generate or read the removed root sections.
+Here `dialog.layout` abbreviates `ui.renderers.dialog.layout`. Native Dialog settings belong under `ui.renderers.dialog`, while shared body text belongs at root `content`. Root `dialog.enabled` and `dialog.content` are not Dialog renderer settings.
 
 ## Native menu behaviour
 
@@ -77,14 +77,14 @@ Global prefix: `menu.ui.renderers.dialog`. Menu overrides: `ui.renderers.dialog`
 | `buy-more.buttons.confirm` | Continue to information label |
 | `info.display-item` | Show item preview in product information |
 | `info.title` | Information title, `{item-name}` and `{amount}` |
-| `info.buttons.buy`, `sell`, `buy-more`, `sell-all` | Legacy/renderer text settings; current shared action labels use `ui.products.actions.labels` and Form fallback labels |
+| `info.buttons.buy`, `sell`, `buy-more`, `sell-all` | Renderer-specific fallback text; shared action labels are configured through `ui.products.actions.labels` |
 | `info.buttons.back` | Information Back label |
 | `favourite-edit.title`, `favourite-edit.content` | Editing action screen title/body, `{item-name}` |
 | `favourite-edit.buttons.forward`, `backward`, `remove`, `back` | Editing controls |
 
 `{lang:key}` references language text. Existing language keys remain `menu.dialog.*`; moving renderer configuration under unified UI does not rename language entries.
 
-An explicit display-item `sprite` overrides the material sprite where supported. Button/product `ui.show-sprite` controls the unified icon choice. Removed display-item `dialog.show-sprite` and button `dialog.layout` aliases are not read. Automatic material mappings/translations are prepared on demand under `minecraft-resources/<version>/`.
+An explicit display-item `sprite` overrides the material sprite where supported. Button/product `ui.show-sprite` controls the unified icon choice. Use button/product `ui.show-sprite` and button `ui.renderers.dialog.layout` instead of display-item `dialog.show-sprite` or button `dialog.layout`. Automatic material mappings/translations are prepared on demand under `minecraft-resources/<version>/`.
 
 ## Information, quantity, search and favourites
 
@@ -95,6 +95,10 @@ Product information includes original lore plus generated product information. I
 Native Search uses a keyword input and result information; blank keywords show no results. Back restores the search keyword. It uses root result-slot capacity and result lore, but has no physical item filtering. Ordinary buttons are included; Inventory special action/state/no-result controls are not automatically reproduced as native controls. Native Favourite supports normal and editing flows with saved ordering; empty result slots are omitted. See [Search](search-menus-premium.md) and [Favourite](favourite-menus-premium.md).
 
 <a id="ore-layout"></a>
+
+<a id="ore-layout-and-card-content"></a>
+<a id="ore-renderer-reference"></a>
+<a id="generate-and-load-the-resource-pack"></a>
 
 ## Ore layout
 

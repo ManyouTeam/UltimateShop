@@ -29,19 +29,38 @@
 * [⚖️Condition Format](format/condition-format.md)
 * [➗Math Calculate Format](format/math-calculate-format.md)
 
-## 🔌Menus
+## 🔌Menus — Getting Started
 
-* [🔲General Menus](menus/general-menus.md)
-* [🔽Buy More Menus](menus/buy-more-menus.md)
-* [🔍Search Menus - Premium](menus/search-menus-premium.md)
-* [💰Item Sell Menus](menus/item-sell-menus.md)
-* [❤️Favourite Menus - Premium](menus/favourite-menus-premium.md)
-* [🛒Sell All Menu](menus/sell-all-menu.md)
-* [🔀Conditional Display - Premium](menus/conditional-display-premium.md)
-* [🛏️Bedrock Form Menus - Premium](menus/bedrock-menus-premium.md)
-* [💬Dialog and Ore Menus - Premium](menus/dialog-menus-premium.md)
-* [✨Unified UI and ArcMenu - Premium](menus/arcmenu-menus-premium.md)
-* [🥉Display Item Add Lore](menus/display-item-add-lore.md)
+* [📚 Menu System](menus/README.md)
+* [⚙️ Menu Configuration & Inheritance](menus/menu-configuration.md)
+* [🧱 Layout & Buttons](menus/layout-and-buttons.md)
+
+## 🧭Menu Types
+
+* [🔲 Common Menus](menus/general-menus.md)
+* [🛍️ Shop Menus](menus/shop-menus.md)
+* [🔽 Buy More Menus](menus/buy-more-menus.md)
+* [🔍 Search Menus - Premium](menus/search-menus-premium.md)
+* [❤️ Favourite Menus - Premium](menus/favourite-menus-premium.md)
+* [💰 Item Sell Menus](menus/item-sell-menus.md)
+* [🛒 Sell All Menu](menus/sell-all-menu.md)
+
+## 🖥️Menu UI Modes
+
+* [🎨 UI Modes Overview](menus/ui-overview.md)
+* [📦 Inventory UI](menus/inventory-ui.md)
+* [🛏️ Bedrock Form UI - Premium](menus/bedrock-menus-premium.md)
+* [💬 Native Dialog UI - Premium](menus/dialog-menus-premium.md)
+* [🪨 Ore UI - Premium](menus/ore-menus-premium.md)
+* [✨ ArcMenu UI - Premium](menus/arcmenu-menus-premium.md)
+* [📐 Graphical UI Layout](menus/ui-layout.md)
+
+## 🧩Advanced Menus & Support
+
+* [🔀 Conditional Display - Premium](menus/conditional-display-premium.md)
+* [🥉 Display Item Add Lore](menus/display-item-add-lore.md)
+* [🔄 Menu Configuration Compatibility](menus/migration-guide.md)
+* [🛠️ Troubleshooting](menus/troubleshooting.md)
 
 ## 🛍️Shops
 

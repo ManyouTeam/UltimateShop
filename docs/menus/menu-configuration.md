@@ -1,6 +1,6 @@
-# Menu Configuration and Inheritance
+# ⚙️ Menu Configuration & Inheritance
 
-Use this page to locate menu options and understand how 5.2.x resolves settings. The complete bundled defaults are in [`config.yml`](https://github.com/ManyouTeam/UltimateShop/blob/master/plugin/src/main/resources/config.yml); the files **in your installed build** are authoritative when versions differ.
+Use this page to locate menu options and understand how configuration values are resolved. Default settings are available in the [repository's `config.yml`](https://github.com/ManyouTeam/UltimateShop/blob/master/plugin/src/main/resources/config.yml); use the examples and configuration supplied with your installation when checking its supported settings.
 
 ## Where a setting belongs
 
@@ -88,10 +88,10 @@ A binding can contain multiple Bukkit click names separated by `;;`; `NEVER` dis
 
 ## Performance and maintenance
 
-`menu.menu-update.circle-update` and `menu.menu-update.click-update` refresh Inventory item displays; leave periodic updates off unless your menus require them. Inventory title updates can visibly flash. ArcMenu has its own `ui.renderers.arcmenu.update-interval`. The old `menu.shop` refresh aliases are not used in this build.
+`menu.menu-update.circle-update` and `menu.menu-update.click-update` refresh Inventory item displays; leave periodic updates off unless your menus require them. Inventory title updates can visibly flash. ArcMenu has its own `ui.renderers.arcmenu.update-interval`. Configure menu refresh through `menu.menu-update`; `menu.shop` is not a menu refresh configuration path.
 
 After editing YAML, run `/shop reload`. After changing Ore assets or graphical layout, regenerate and distribute its resource pack as explained in [Ore](ore-menus-premium.md).
 
 ## Related pages
 
-[Layout and buttons](layout-and-buttons.md) · [UI modes](ui-overview.md) · [Migration guide](migration-guide.md) · [Troubleshooting](troubleshooting.md)
+[Layout and buttons](layout-and-buttons.md) · [UI modes](ui-overview.md) · [Configuration compatibility](migration-guide.md) · [Troubleshooting](troubleshooting.md)

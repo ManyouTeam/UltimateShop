@@ -1,10 +1,12 @@
-# ❤️Favourite Menus - Premium
+# ❤️ Favourite Menus - Premium
 
 Favourite menus store a player's chosen shop products and their order. Files live in `plugins/UltimateShop/menus/favourite_menus/`; the bundled example is `favourite.yml`. Open with `/shop menu favourite` or an `open_menu` action. Saved lists are associated with the favourite menu ID, so use that same ID when adding a product.
 
 Files in the dedicated folder are automatically Favourite menus. Common-folder files can use `menu-type: favourite` (alias `favorite`) or be listed under `menu.favourite-gui.menu` in `config.yml`. Dedicated files do not require that legacy list. Keep IDs unique.
 
-## Add products
+<a id="add-products"></a>
+
+## Quick start: add products
 
 The built-in default binds `add-favourite` to `SWAP_OFFHAND` (F). Its configured action in `menu.click-event-actions.add-favourite` uses the `add_favourite` action:
 
@@ -100,3 +102,7 @@ Form can display configured empty-slot buttons. Ore/ArcMenu require graphical `u
 Global Form editing text is under `menu.ui.renderers.form.favourite-edit`: `title`, `content`, and `buttons.forward`, `backward`, `remove`, `back`. Dialog has the same structure under `menu.ui.renderers.dialog.favourite-edit`. Titles/content accept `{item-name}`.
 
 ArcMenu card labels default to the Form favourite edit labels. Override them per menu with `ui.text.favourite-edit.forward`, `backward`, `remove`. Use presentation conditions in result lore when different clients need different instructions; see [Add Lore](display-item-add-lore.md).
+
+## Related documentation
+
+[UI Modes](ui-overview.md) · [Shop Menus](shop-menus.md) · [Troubleshooting](troubleshooting.md)

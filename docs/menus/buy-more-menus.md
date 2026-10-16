@@ -1,10 +1,12 @@
-# 🔽Buy More Menus
+# 🔽 Buy More Menus
 
 Buy More selects the number of trade units for an already selected product. One trade unit can contain several items according to the product's configured reward amount. It is not a standalone shop and cannot be opened meaningfully with `/shop menu`.
 
 Files live in `plugins/UltimateShop/menus/buy_more_menus/`. The bundled files are `buy-more.yml`, `buy-more-buy.yml` and `buy-more-sell.yml`.
 
-## Enable and select a quantity menu
+<a id="enable-and-select-a-quantity-menu"></a>
+
+## Quick start: enable and select a quantity menu
 
 Global settings in `config.yml`:
 
@@ -126,3 +128,7 @@ ArcMenu details require Buy More and a menu, and adjustment requires an availabl
 Without a manual quantity selection, product operations keep `default-buy-amount` and `default-sell-amount` independently. After selection, both directions use the chosen count. `{buy-amount}` and `{sell-amount}` in generated lore reflect that distinction. Explicit display-item stack amounts are separate from the number of trade units. See [Default Trade Amounts](../shops/products.md#default-trade-amounts).
 
 Form and Dialog labels are configured in their renderer sections; graphical product styling/actions are documented in [Unified UI and ArcMenu](arcmenu-menus-premium.md). Editing an Inventory confirmation label will not rename a Form information action.
+
+## Related documentation
+
+[Menu Configuration](menu-configuration.md) · [UI Modes](ui-overview.md) · [Shop Menus](shop-menus.md)

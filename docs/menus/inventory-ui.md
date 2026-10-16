@@ -1,4 +1,4 @@
-# Inventory UI
+# 📦 Inventory UI
 
 Inventory is UltimateShop's traditional chest-style interface. It uses the menu root `title`, `size`, `layout` and `buttons`, not graphical `ui.layout` coordinates. It is the Java default and can also be selected for Bedrock clients.
 

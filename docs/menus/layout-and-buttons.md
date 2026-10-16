@@ -1,4 +1,4 @@
-# Layout and Buttons
+# 🧱 Layout & Buttons
 
 A menu's root `layout` identifies entry slots. Its `buttons` section defines ordinary navigation/action buttons; shop menus can also place product IDs and shop-specific buttons. This page covers the shared Inventory-style layout, not the pixel/area coordinates used by Ore and ArcMenu.
 
@@ -54,7 +54,7 @@ Premium menus can evaluate placeholders in layout markers and use ordered altern
 dynamic-layout: true
 layout:
   - '000000000'
-  - '000`A||B`0000'
+  - '000`A||B`00000'
 ```
 
 The first available visible candidate wins. The `dynamic-layout` option is important for player-dependent display conditions. See [Conditional Display](conditional-display-premium.md).

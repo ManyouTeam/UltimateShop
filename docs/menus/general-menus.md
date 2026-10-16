@@ -1,4 +1,4 @@
-# Common Menus
+# 🔲 Common Menus
 
 Common Menus are standalone navigation/action menus. They do not automatically list shop products. To display a shop's products, use a [Shop Menu](shop-menus.md).
 
@@ -59,13 +59,22 @@ This belongs at the Common Menu root, not under `buttons` or `ui`.
 
 ## Special menu types in the common folder
 
-Files in `common_menus` can explicitly declare `menu-type: search`, `menu-type: favourite` (or `favorite`), or `menu-type: item-sell` (or `item_sell`). The legacy `menu.search-gui.menu` and `menu.favourite-gui.menu` lists can also classify Common-folder files. Prefer the dedicated folders for new configurations. Shop templates and Buy More menus remain separate because they require shop/product context.
+Files in `common_menus` can explicitly declare `menu-type: search`, `menu-type: favourite` (or `favorite`), or `menu-type: item-sell` (or `item_sell`). `menu.search-gui.menu` and `menu.favourite-gui.menu` lists can also classify Common-folder files. Prefer the dedicated folders for new configurations. Shop templates and Buy More menus remain separate because they require shop/product context.
 
 ## Presentation and limitations
 
 Common Menus use Inventory by default for Java unless changed globally or locally. Supported presentations and fallback rules are described in [UI Modes](ui-overview.md). Ore and ArcMenu require entry placements; they do not infer pixel positions from Inventory gaps. Refer to [Graphical Layout](ui-layout.md).
 
 For display visibility, custom actions, or menu conditions, see [Conditional Display](conditional-display-premium.md), [Action Format](../format/action-format.md) and [Condition Format](../format/condition-format.md).
+
+<a id="menu-types-and-files"></a>
+<a id="choose-the-presentation"></a>
+<a id="create-a-common-menu"></a>
+<a id="button-configuration"></a>
+<a id="shop-templates-and-inline-overrides"></a>
+<a id="button-visibility-by-menu-presentation"></a>
+<a id="global-menu-controls-in-config-yml"></a>
+<a id="editing-and-troubleshooting"></a>
 
 ## Troubleshooting
 
@@ -77,4 +86,4 @@ If nothing appears, confirm the file is in the correct folder, the menu ID match
 <a id="title-update-premium"></a>
 <a id="title-update-premium-require-paper"></a>
 
-Legacy anchors are retained for existing links. Configuration, layout, refresh and title-update details now live in [Configuration](menu-configuration.md) and [Layout and Buttons](layout-and-buttons.md).
+Configuration, layout, refresh and title-update details are documented in [Configuration](menu-configuration.md) and [Layout and Buttons](layout-and-buttons.md).

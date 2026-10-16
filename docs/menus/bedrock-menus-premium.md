@@ -1,4 +1,4 @@
-# Bedrock Form UI — Premium
+# 🛏️ Bedrock Form UI - Premium
 
 Form renders menus as Bedrock button lists and input screens. Products, prices, conditions and saved favourites come from the same configuration as other presentations. Form supports common, shop, search and favourite menus, plus product information and quantity input. Physical item deposit menus remain Inventory interfaces.
 
@@ -33,7 +33,7 @@ ui:
     bedrock: form
 ```
 
-Use `bedrock: inherit` for the global mode or `bedrock: inventory` for a chest interface. Shared text belongs at root `content`. Configure `ui.mode` and root `content` directly. Removed root menu `bedrock.enabled`/`bedrock.content` settings are neither generated nor read.
+Use `bedrock: inherit` for the global mode or `bedrock: inventory` for a chest interface. Shared text belongs at root `content`. Configure `ui.mode` and root `content` directly. Root menu `bedrock.enabled` and `bedrock.content` are not Form renderer settings.
 
 ## How a Form is built
 
@@ -100,7 +100,7 @@ ui:
   visible-in: [inventory, form, dialog, ore, arcmenu]
 ```
 
-Remove `form` to hide the entry from forms. `[]` hides it everywhere; omitting the key restores default visibility. Removed `menu-visibility` and `bedrock-icon` aliases are not read. Display conditions still apply, as do the display-item blank-name and `bedrock.hide` checks. `ui.placement.enabled` controls graphical placement, not Form visibility.
+Remove `form` to hide the entry from forms. `[]` hides it everywhere; omitting the key restores default visibility. Use `ui.visible-in` for presentation visibility and `display-item.bedrock.icon` for Form icons; `menu-visibility` and `bedrock-icon` are not recognized here. Display conditions still apply, as do the display-item blank-name and `bedrock.hide` checks. `ui.placement.enabled` controls graphical placement, not Form visibility.
 
 ## Product information, actions and price text
 
@@ -178,7 +178,7 @@ Favourite menus support normal and editing lists, using the same saved data as I
 
 ## Troubleshooting
 
-If a chest opens, check Premium, Bedrock detection, Floodgate availability, selected mode and menu type. If an image is missing, check the active display item, client texture path or URL, automatic resource preparation, and whether the button has a nonblank name. For information/quantity text or reopen behaviour, check the owning shop menu override. Root legacy renderer sections do not override unified settings.
+If a chest opens, check Premium, Bedrock detection, Floodgate availability, selected mode and menu type. If an image is missing, check the active display item, client texture path or URL, automatic resource preparation, and whether the button has a nonblank name. For information/quantity text or reopen behaviour, check the owning shop menu override. Renderer-specific settings belong under `ui.renderers.form` or global `menu.ui.renderers.form`.
 
 
 ## Related UI documentation

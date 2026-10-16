@@ -1,8 +1,10 @@
-# 🥉Display Item Add Lore
+# 🥉 Display Item Add Lore
 
 Generated lore adds product prices, stock, limits and operation instructions to the display item. It is shared by Inventory and product information/tooltips in other presentations. Compact Form/ArcMenu list price text is configured separately in `ui.products.price`.
 
-## Global and per-product configuration
+<a id="global-and-per-product-configuration"></a>
+
+## Quick start: global and per-product configuration
 
 In `config.yml`:
 
@@ -85,7 +87,7 @@ add-lore:
   - '(@a)&7This product cannot be purchased'
 ```
 
-The old conditional suffix format was removed in 4.0.0; use these symbols instead.
+Use the condition prefixes described above; suffix-style conditions are not supported.
 
 ## Presentation conditions
 
@@ -155,3 +157,7 @@ display-item:
 ```
 
 `;;` splits formatted price components into multiple lore lines. Keep buy/sell conditions on the corresponding price lines. Ordinary extra lines without a price placeholder do not gain an automatic condition from the preceding line.
+
+## Related documentation
+
+[Shop Menus](shop-menus.md) · [Bedrock Form](bedrock-menus-premium.md) · [Graphical Layout](ui-layout.md)

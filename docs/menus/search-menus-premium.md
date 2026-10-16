@@ -1,10 +1,12 @@
-# 🔍Search Menus - Premium
+# 🔍 Search Menus - Premium
 
 Search menus find products visible to the player by physical item and/or name. Store files in `plugins/UltimateShop/menus/search_menus/`; the bundled example is `search.yml`. Open with `/shop menu search` or an `open_menu` action.
 
 A file in this folder is automatically a Search menu. For a file in `menus/common_menus/`, use `menu-type: search` or list its ID under `menu.search-gui.menu` in `config.yml`. Dedicated-folder files do not need that list. Keep IDs unique.
 
-## Inventory example
+<a id="inventory-example"></a>
+
+## Quick start: Inventory example
 
 ```yaml
 menu-type: search
@@ -102,3 +104,7 @@ Form opens its home first. Search input prefills the previous keyword; cancel re
 Form text defaults are `menu.ui.renderers.form.search.input` and `search.buttons.search`. Dialog uses the corresponding `menu.ui.renderers.dialog.search` keys. Chat keyword controls still use the prompt keywords above. Configure modes in this search menu's `ui.mode`, or inherit global modes.
 
 For ArcMenu/Ore, configure `ui.layout`, `ui.products.placement`, and `ui.placement` on graphical controls. Layout pagination does not remove the result-slot capacity defined at root. See [Unified UI and ArcMenu](arcmenu-menus-premium.md) and [Dialog/Ore](dialog-menus-premium.md) for exact renderer differences.
+
+## Related documentation
+
+[UI Modes](ui-overview.md) · [Layout and Buttons](layout-and-buttons.md) · [Troubleshooting](troubleshooting.md)

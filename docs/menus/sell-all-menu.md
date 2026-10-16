@@ -1,8 +1,10 @@
-# 🛒Sell All Menu
+# 🛒 Sell All Menu
 
 Sell All is a single global Inventory interface: players deposit items, then close the window to sell them. It does not use a file in `menus/` and does not have a separate confirmation button. For explicit confirmation and price preview, use [Item Sell](item-sell-menus.md).
 
-## Open the menu
+<a id="open-the-menu"></a>
+
+## Quick start: open the menu
 
 `/shop sellall` requires `ultimateshop.sellall`. A menu button can use the `sell_all_menu` action:
 
@@ -39,3 +41,7 @@ Configure excluded product references under `sell.sell-all.ignore-items` in `con
 Closing scans shop products visible to the player, skips excluded references and runs the normal sell flow against the deposited inventory. Product conditions, prices, player/server limits and applicable sell multipliers still apply. Global `sell.max-amount` limits the sell engine (fallback 128); the removed `menu.sell-all.max-amount` alias is not read; it is not this inventory's slot count or an Item Sell `max-sell-amount`.
 
 The sale summary reports amount, reward and effective multiplier. Items that were not sold are returned to the player, or dropped if they cannot fit. Closing an empty menu does not create a reward. Products requiring item-aware price modifiers must use the configured Item Sell flow; Sell All does not replace that requirement.
+
+## Related documentation
+
+[Inventory UI](inventory-ui.md) · [Item Sell](item-sell-menus.md) · [Troubleshooting](troubleshooting.md)

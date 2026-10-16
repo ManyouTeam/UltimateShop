@@ -1,4 +1,4 @@
-# Menu UI Modes
+# 🎨 UI Modes Overview
 
 A **menu type** determines what a menu does; an **UI mode** determines its client presentation. Changing presentation does not change shops, products, prices or folder names. See [Menu System](README.md) for menu types.
 

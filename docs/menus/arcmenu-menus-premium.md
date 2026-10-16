@@ -1,4 +1,4 @@
-# ArcMenu UI — Premium
+# ✨ ArcMenu UI - Premium
 
 ArcMenu renders Common, Shop, Search and Favourite menus as graphical Java-client menus, using existing products, conditions and actions. Ore uses the same [graphical layout](ui-layout.md) with a different renderer.
 
@@ -18,6 +18,12 @@ menu:
 A menu can override `ui.mode.java: arcmenu` or use `inherit`. Use `ore` instead for the graphical Dialog presentation; Ore additionally needs supported Paper and a generated resource pack. Item Sell/Sell All are Inventory deposit interfaces. ArcMenu does not render the Inventory Buy More menu as a separate screen.
 
 <a id="shared-layout"></a>
+
+<a id="configuration-scopes"></a>
+<a id="canvas-headers-and-areas"></a>
+<a id="entry-placements"></a>
+<a id="shared-product-settings"></a>
+<a id="theme-and-interface-text"></a>
 
 ## Shared layout and product styling
 
@@ -41,7 +47,7 @@ Global prefix: `menu.ui.renderers.arcmenu`. Menu prefix: `ui.renderers.arcmenu`.
 | --- | --- |
 | `right-click-action` | `select-amount`; product right-click action |
 | `screen-scale` | Bundled default 1.35; overall menu scale |
-| `update-interval` | 20 ticks; periodic refresh interval, currently read globally with a minimum of 5 ticks |
+| `update-interval` | 20 ticks; periodic refresh interval, read globally with a minimum of 5 ticks |
 | `animation.enabled` | true; menu opening animation |
 | `animation.duration` | 8; animation steps, clamped to 1–40 |
 | `more-menu.columns` | 1; extra-action popup columns, clamped to 1–2 |
@@ -50,7 +56,7 @@ Global prefix: `menu.ui.renderers.arcmenu`. Menu prefix: `ui.renderers.arcmenu`.
 | `tooltip.font-size` | 0.9; clamped to 0.5–1.2 |
 | `tooltip.padding` | 8; clamped to 4–20 |
 
-Some old bundled menu copies contain `details.enabled`. The current renderer does not read it; it does not disable details. Do not rely on unused keys simply because they appear in an older file.
+`details.enabled` does not control the ArcMenu details panel. Use the documented renderer settings rather than relying on unrelated keys copied from example files.
 
 ArcMenu card numeric settings are clamped: icon size 12–38, padding 3–16, name scale 0.5–1.2, price scale 0.5–1.0, operation font 0.5–1.5, button height 18–36, horizontal inset 2–16, bottom inset 3–16, button gap 2–12. Enlarged fonts still need sufficient width; long text can be truncated.
 
@@ -62,7 +68,7 @@ Search supports name keywords through chat input, clear-search, action/state ite
 
 ## Names, tooltips and Ore resources
 
-Custom item names take precedence. The shared item-name path can return vanilla translation components. ArcMenu resolves available Minecraft translations for the player's locale through the resource manager; Ore retains native translatable components for the client. Ore's tooltip adds the item name once. The old separate item-name download flags are not part of this configuration.
+Custom item names take precedence. The shared item-name path can return vanilla translation components. ArcMenu resolves available Minecraft translations for the player's locale through the resource manager; Ore retains native translatable components for the client. Ore's tooltip adds the item name once. Separate item-name download flags are not ArcMenu configuration options.
 
 Ore uses special positive/negative-width characters to place text. Translatable components are atomic; their server-side width estimate is not the final translated width in every client language/font. Keep adequate text width when choosing a layout. Read [Ore UI](ore-menus-premium.md) for Ore-specific templates and resources.
 

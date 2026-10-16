@@ -1,4 +1,4 @@
-# Shop Menus
+# 🛍️ Shop Menus
 
 A Shop Menu shows products defined in a shop. The **shop file** owns product data, prices and trade restrictions; a **menu template** provides the layout, navigation buttons and presentation. Many shops can reuse the same template.
 

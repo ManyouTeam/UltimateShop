@@ -1,4 +1,4 @@
-# Ore UI — Premium
+# 🪨 Ore UI - Premium
 
 Ore is UltimateShop's graphical Dialog-based renderer. It requires Premium, supported Paper (1.21.9+), and a generated client resource pack. Select `ore` separately from native Dialog's `multi-action`/`item-action-list` layout. Bedrock players follow `ui.mode.bedrock`.
 
@@ -28,13 +28,13 @@ Find coordinates and all shared fields in [Graphical Layout](ui-layout.md). Ordi
 
 Use vertical coordinates/heights/gaps in multiples of 9. All card entries, including category cards, require height at least 99. Invalid bounds, overlapping widgets and invalid templates report errors. Category cards are clickable across the card; product cards provide primary operations and View Detail, with extra operations in information.
 
-Ore product bodies display original item lore and generated `add-lore`, limited by `ui.products.card.lore-lines` (bundled default 6). Ordinary category descriptions use `description-lines`. Complete information remains in tooltips. Use `@t[ore]`/`@t[ore-hover]` to distinguish body and tooltip content. ArcMenu cards use compact `ui.products.price` text instead; the current ArcMenu code does not read the bundled `price-lines` key.
+Ore product bodies display original item lore and generated `add-lore`, limited by `ui.products.card.lore-lines` (bundled default 6). Ordinary category descriptions use `description-lines`. Complete information remains in tooltips. Use `@t[ore]`/`@t[ore-hover]` to distinguish body and tooltip content. ArcMenu cards use compact `ui.products.price` text instead; ArcMenu does not use `price-lines` for its compact price display.
 
 Native translatable item names are retained for client translation. Ore uses width-offset characters for alignment; the server's width estimate for a translatable component is approximate and can differ by client language/font. Font-scale keys used by ArcMenu do not scale Ore's native font.
 
 ## Ore renderer reference
 
-Global prefix: `menu.ui.renderers.ore`. Per-menu template overrides: `ui.renderers.ore.templates`. Icon switches and pack format are currently read globally.
+Global prefix: `menu.ui.renderers.ore`. Per-menu template overrides: `ui.renderers.ore.templates`. Icon switches and pack format are read globally.
 
 | Relative key | Meaning |
 | --- | --- |
@@ -73,9 +73,9 @@ Supply those files under `plugins/UltimateShop/textures/shop/`. Paths must be re
 
 ## Generate and load the resource pack
 
-Run `/shop dialogpack` after changing Ore layout, theme, templates or relevant assets. An optional `/shop dialogpack <format>` overrides the format for that generation; the argument must be an integer from 69 to 10000. The command works in console and requires `ultimateshop.dialogpack`; the generated pack is written under `plugins/UltimateShop/pack/`. Resource preparation can run asynchronously. Distribute/load the resulting pack through your server resource-pack setup, and ensure the client uses the new version.
+Run `/shop dialogpack` after changing Ore layout, theme, templates or relevant assets. An optional `/shop dialogpack <format>` overrides the format for that generation; the argument must be an integer from 69 to 10000. The command works in console and requires `ultimateshop.dialogpack`; the generated pack is written under `plugins/UltimateShop/pack/`. Resource preparation can run asynchronously. Distribute/load the resulting pack through your server resource-pack setup, and ensure the client loads the regenerated pack.
 
-A reload alone does not guarantee that the client has updated assets. If the interface is misaligned or reports missing resources, check the ErrorManager output, layout validity, referenced PNGs, generated pack and client pack version. If Inventory opens, verify Premium, Paper/API support, mode overrides and whether the requested menu type supports Dialog.
+A reload alone does not guarantee that the client has updated assets. If the interface is misaligned or reports missing resources, check the ErrorManager output, layout validity, referenced PNGs, generated pack and active client resource pack. If Inventory opens, verify Premium, Paper/API support, mode overrides and whether the requested menu type supports Dialog.
 
 
 [UI Modes](ui-overview.md) · [Native Dialog](dialog-menus-premium.md) · [Graphical Layout](ui-layout.md) · [Troubleshooting](troubleshooting.md)

@@ -1,6 +1,6 @@
-# Menu System
+# 📚 Menu System
 
-UltimateShop menus control navigation, product selection and the presentation of trades. This section describes the menu configuration shipped with **5.2.x**. Start with the examples bundled in your installed plugin: older configuration files are not automatically converted to new UI settings.
+UltimateShop menus control navigation, product selection and the presentation of trades. This section explains menu types, interface modes and configuration rules. Start with the example files included with your installation, and review any existing custom configuration before changing its layout or UI settings.
 
 ## Two independent concepts
 
@@ -52,4 +52,4 @@ buttons:
 
 ## Choose the next chapter
 
-New users should read [Common Menus](general-menus.md) and [Shop Menus](shop-menus.md) first. For Java Dialog/Ore or ArcMenu, use [UI modes](ui-overview.md) before setting up an integration. Existing 5.1.0 users should start with the [5.2.x migration guide](migration-guide.md). For syntax shared with shops, use [Action Format](../format/action-format.md), [Condition Format](../format/condition-format.md) and [Display Item Format](../format/display-item-format.md).
+New users should read [Common Menus](general-menus.md) and [Shop Menus](shop-menus.md) first. For Java Dialog/Ore or ArcMenu, use [UI modes](ui-overview.md) before setting up an integration. If you are adapting existing YAML files, consult the [configuration compatibility guide](migration-guide.md). For syntax shared with shops, use [Action Format](../format/action-format.md), [Condition Format](../format/condition-format.md) and [Display Item Format](../format/display-item-format.md).

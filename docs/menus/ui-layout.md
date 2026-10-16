@@ -1,4 +1,4 @@
-# Graphical UI Layout
+# 📐 Graphical UI Layout
 
 Ore and ArcMenu share the `ui.layout` canvas/area model, `ui.products`, entry `ui.placement`, `ui.appearance` and `ui.theme`. Inventory uses the root slot `layout` instead, while Form and native Dialog use list rendering. Use [Ore](ore-menus-premium.md) or [ArcMenu](arcmenu-menus-premium.md) for renderer-specific behavior.
 
@@ -14,7 +14,7 @@ Ore and ArcMenu share the `ui.layout` canvas/area model, `ui.products`, entry `u
 
 Menu values inherit missing global values recursively. Product action/price lookup uses product > owning shop menu > global defaults. Card styling is menu-wide. A product shown in search/favourites keeps its product settings and trade rules. Bundled menus contain explicit UI values, so inspect the menu when a global edit appears ineffective.
 
-Root `title` and `content` provide shared text. Headers can reference `{title}` and `{content}`, language references and PlaceholderAPI. Start from the current bundled main/shop/search/favourite example; removed graphical configuration formats are not automatically migrated.
+Root `title` and `content` provide shared text. Headers can reference `{title}` and `{content}`, language references and PlaceholderAPI. Start from the included main/shop/search/favourite menu examples. Other graphical layout formats are not automatically converted.
 
 ## Shared layout
 
@@ -204,7 +204,7 @@ ui:
 | `card.name-size`, `price-size` | ArcMenu name and compact price font scales |
 | `card.button-font-size`, `button-height` | ArcMenu operation button font and height |
 | `card.buttons.inset-x`, `inset-bottom`, `gap` | ArcMenu operation button positioning |
-| `card.price-lines` | Present in bundled defaults; current ArcMenu card code renders the compact price directly and does not read this limit |
+| `card.price-lines` | Available in the example configuration; ArcMenu renders compact prices without applying this limit |
 | `card.lore-lines` | Maximum product lore lines in Ore card bodies |
 | `card.description-lines` | Maximum Ore category-card description lines; ArcMenu calculates fitting lines from card space |
 | `price.enabled` | Enable the compact product price line |
@@ -237,7 +237,7 @@ Price text reuses dynamic price calculation and sell multiplier display. Compact
 
 ## Differences between renderers
 
-ArcMenu uses compact product price text and adjustable font scales; Ore uses generated assets, native text rendering and card body lore. Shared keys do not imply identical visual behavior. ArcMenu currently does not apply the bundled `ui.products.card.price-lines` limit.
+ArcMenu uses compact product price text and adjustable font scales; Ore uses generated assets, native text rendering and card body lore. Shared keys do not imply identical visual behavior. ArcMenu does not apply `ui.products.card.price-lines` to its compact price text.
 
 For entry-specific overrides, product `ui.actions` and `ui.price` take precedence over the owning shop menu and global `menu.ui.products`. Ordinary navigation entries need their own placements; a sidebar/back button is not automatically created.
 

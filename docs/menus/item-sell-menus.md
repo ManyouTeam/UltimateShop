@@ -1,10 +1,12 @@
-# 💰Item Sell Menus
+# 💰 Item Sell Menus
 
 Item Sell lets players place real item stacks into input slots, preview their adjusted sell value, and explicitly confirm the sale. Closing without confirming returns the items. This differs from [Sell All](sell-all-menu.md), which sells on close.
 
 Files live in `plugins/UltimateShop/menus/item_sell_menus/`; the bundled example is `item-sell.yml`. Open with `/shop menu item-sell` or an `open_menu` action. The dedicated folder determines the type; files in `common_menus` can use `menu-type: item-sell` (alias `item_sell`).
 
-## Example
+<a id="example"></a>
+
+## Quick start: Inventory example
 
 ```yaml
 menu-type: item-sell
@@ -87,3 +89,7 @@ For those products, `sell` and `sell-all` route to the selected Item Sell menu. 
 This is an Inventory deposit interface, including for players whose ordinary shops use Form, Dialog, Ore or ArcMenu. Its bundled `ui` settings do not create Form input slots or ArcMenu drag/drop sale controls. Configure Inventory `size`, `layout`, input and confirmation markers for this screen.
 
 `max-sell-amount` belongs to this menu and caps the combined confirmation. The global sell engine still applies its own restrictions; raising this value does not bypass stock, limits or product conditions. See [Price Modifier](../shops/price-modifier.md) for calculation and [Sell Multiplier](../shops/sell-multiplier-premium.md) for reward multipliers.
+
+## Related documentation
+
+[Inventory UI](inventory-ui.md) · [Sell All](sell-all-menu.md) · [Troubleshooting](troubleshooting.md)
