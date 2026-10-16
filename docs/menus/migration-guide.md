@@ -1,84 +1,66 @@
 # 🔄 Menu Configuration Compatibility
 
-Use this guide when adapting an existing UltimateShop menu, copying examples from another installation or switching between menu presentations. **Keep supported configuration keys unchanged unless there is a functional reason to move them.** The menu system distinguishes between menu types, client UI modes and item display settings.
+Most menu options retain their long-standing names. The graphical `ui` section is reserved for Ore and ArcMenu canvas/layout, appearance and controls, not native GUI selection. Existing newer `ui.mode`, `ui.visible-in` and Dialog/Form renderer paths remain readable where implemented. A global `menu.ui.mode` selector is honored only when no explicit `menu.dialog.enabled`, `menu.bedrock.enabled` or `menu.arcmenu.enabled` switch is configured; new examples should use the original keys.
 
-## Review an existing configuration
+## Native configuration keys
 
-1. Back up `config.yml`, `shops/` and `menus/` before making changes.
-2. Compare your files with the default configuration and menu examples provided with your installation.
-3. Keep product IDs, menu IDs, Inventory `size`, root `layout` and `buttons` unless you intend to redesign them.
-4. When selecting a different UI mode, configure only the settings required by that renderer. Avoid a global search-and-replace of `bedrock`, `dialog` or `ui`.
-5. Test Common, Shop, Search, Favourite, Buy More, Item Sell and Sell All where applicable. Include Bedrock testing if you use Forms.
-6. Run `/shop reload` after editing YAML. Regenerate and distribute the Ore resource pack after graphical layout or asset changes.
-
-## Configuration locations
-
-| Purpose | Configuration path | Notes |
-| --- | --- | --- |
-| Global Java/Bedrock mode | `config.yml` → `menu.ui.mode.java` / `bedrock` | `inventory` is the Java default, `form` the Bedrock default |
-| Menu mode override | Menu root `ui.mode` | `inherit` selects the global mode |
-| Shop-specific override | Shop `settings.menu-settings.ui` | Merged into the menu before global UI defaults |
-| Native Dialog settings | `menu.ui.renderers.dialog` / menu `ui.renderers.dialog` | `multi-action` and `item-action-list` are native layouts |
-| Ore renderer settings | `menu.ui.renderers.ore` | Select Ore with `ui.mode.java: ore` |
-| ArcMenu settings | `menu.ui.renderers.arcmenu` | Requires the ArcMenu integration |
-| Bedrock Form settings | `menu.ui.renderers.form` | Menu-specific settings can override supported global fields |
-| Shared graphical layout | `ui.layout`, `ui.products`, `ui.theme`, `ui.text` | Used by Ore/ArcMenu, not Inventory slot positioning |
-| Form item icon and text | `display-item.bedrock.icon`, `extra-line`, `hide` | **These belong in the display item, not under `ui`** |
-| Direct Form product click | Product root `bedrock.click-event` | Separate from display-item `bedrock` icon settings |
-
-## Check configuration paths when reusing examples
-
-A copied configuration may contain options that are not read by the selected renderer. Check their placement and purpose before removing or renaming anything.
-
-| Option found in a copied configuration | Configuration to use |
+| Purpose | Config location |
 | --- | --- |
-| Menu root `bedrock.enabled` / `bedrock.content` | `ui.mode.bedrock` and root `content` |
-| Menu root `dialog.enabled` / `dialog.content` | `ui.mode.java`, `ui.renderers.dialog` and root `content` |
-| Button `dialog.layout` | Button `ui.renderers.dialog.layout` for native Dialog |
-| Display-item `dialog.show-sprite` | Button/product `ui.show-sprite` where supported |
-| `menu-visibility` | Button/product `ui.visible-in` |
-| Separate graphical sidebar/coordinate settings | `ui.layout` and entry `ui.placement` |
-| `menu.sell-all.ignore-items` | `sell.sell-all.ignore-items` |
-| `menu.shop` refresh controls | `menu.menu-update.circle-update` / `click-update` |
+| Enable native Dialog globally | `config.yml`: `menu.dialog.enabled` |
+| Enable Dialog for a menu | Menu root `dialog.enabled`, default true |
+| Native Dialog / Ore selection | Menu root `dialog.layout: multi-action`, `item-action-list` or `ore` |
+| Dialog text and width | Menu root `dialog.content`, `dialog.button-width`, `dialog.columns` |
+| Global Dialog labels and sprite options | `menu.dialog.*` |
+| Global Ore icon and pack format | `menu.dialog.ore.*` |
+| Enable Bedrock Form | `menu.bedrock.enabled` and menu `bedrock.enabled` |
+| Form content and labels | Menu root `bedrock.content` / `bedrock.*`; global `menu.bedrock.*` |
+| Product Form icon and text | `display-item.bedrock.icon`, `extra-line`, `hide` |
+| Product Form action shortcut | Product root `bedrock.click-event` |
+| Per-presentation visibility | Entry `menu-visibility.inventory/form/dialog/item-action-list/ore/arcmenu` |
+| Button sprite | Button `dialog.show-sprite` |
+| Button Dialog layout | Button `dialog.layout` |
+| ArcMenu opt-in | Global `menu.arcmenu.enabled`, menu `arcmenu.enabled` |
 
-**Do not infer that a key is unsupported merely because an example omits it.** Inventory root `layout`, display-item `bedrock` icon settings and product-root `bedrock.click-event` have distinct, valid purposes.
+## Graphical configuration keys
 
-## Menu type and file locations
+`menu.ui` and menu `ui` configure graphical canvas areas and pagination (`ui.layout`), UI cards and graphical buttons (`ui.products`, entry `ui.placement`, `ui.appearance`, `ui.font-size`, `ui.text-align`), theme, labels, and graphic-only `ui.renderers.ore` / `ui.renderers.arcmenu` settings.
 
-Search, Favourite and Item Sell files can use their dedicated folders. A file in `menus/common_menus/` can also specify `menu-type: search`, `favourite` (or `favorite`), or `item-sell` (or `item_sell`). The `menu.search-gui.menu` and `menu.favourite-gui.menu` lists are also used to classify entries from the common menu folder. Keep working configurations that use those options; the dedicated folders are a convenient alternative, not a reason to rename unrelated settings.
+`dialog.layout: ore` uses the **current** Ore renderer with the graphical layout model. Legacy Ore sidebar auto-import, manual template coordinates and other removed layout algorithms are not restored simply by accepting native `dialog` keys. Configure Ore positioning through `ui.layout` and `ui.placement`.
 
-## UI mode example
-
-Menu-level presentation settings are located under root `ui`, while title and content remain at the menu root:
-
-```yaml
-title: '&8Shop'
-content: '&7Select a product'
-ui:
-  mode:
-    java: dialog
-    bedrock: form
-  renderers:
-    dialog:
-      layout: multi-action
-      columns: 2
-```
-
-Bedrock Form icon settings belong inside the entry's `display-item`:
+## Presentation priority
 
 ```yaml
-buttons:
-  A:
-    display-item:
-      material: DIAMOND
-      name: '&bOffers'
-      bedrock:
-        icon: 'path;;textures/items/diamond.png'
-        extra-line: '&7Open offers'
+# config.yml
+menu:
+  dialog:
+    enabled: true
+  bedrock:
+    enabled: true
+  arcmenu:
+    enabled: true
 ```
 
-## Verify the result
+```yaml
+# menu file
+dialog:
+  enabled: true
+  layout: ore
+  content: '&7Products'
+bedrock:
+  enabled: true
+  content: '&7Products'
+arcmenu:
+  enabled: true
+```
 
-If global `menu.ui` changes do not take effect, inspect explicit settings in the selected template and shop `settings.menu-settings`. If graphical buttons are missing, check their `ui.placement` and visibility. For Ore resource changes, generate and load the resource pack. Item Sell and Sell All remain Inventory deposit interfaces.
+Java selection is **ArcMenu → Dialog/Ore → Inventory**. ArcMenu requires a compatible integration, and native Dialog/Ore requires supported Paper APIs. Bedrock follows Form configuration independently.
 
-[Menu Configuration](menu-configuration.md) · [UI Modes](ui-overview.md) · [Troubleshooting](troubleshooting.md)
+## Existing configurations
+
+- Keep `layout`, `buttons`, product IDs, conditions, actions and the special search/favourite/quantity/input nodes unchanged.
+- Keep `display-item.bedrock` and product `bedrock.click-event`.
+- Move newly written renderer controls out of `ui.renderers.form` and `ui.renderers.dialog` into `bedrock` and `dialog`. Graphical renderer options remain under `ui.renderers.ore` and `ui.renderers.arcmenu`.
+- Do not rewrite old Ore visual placement values expecting pixel-identical output: current Ore uses graphical canvas/areas.
+- Menu folder locations are documented separately; changing these configuration keys does not move files.
+
+After changing an Ore graphical layout or assets, regenerate its resource pack with `/shop dialogpack` and distribute the updated pack. See [Graphical Layout](ui-layout.md), [Dialog](dialog-menus-premium.md) and [Bedrock Form](bedrock-menus-premium.md).

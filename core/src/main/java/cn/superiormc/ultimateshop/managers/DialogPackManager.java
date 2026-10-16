@@ -69,12 +69,12 @@ public class DialogPackManager extends AbstractManager {
     }
 
     public static boolean showsItemIcon() {
-        ConfigurationSection ore = ConfigManager.configManager.getSection("menu.ui.renderers.ore");
+        ConfigurationSection ore = ConfigManager.configManager.getSection("menu.dialog.ore");
         return ore == null || ore.getBoolean("show-item-icon.enabled", true);
     }
 
     public static boolean hidesOneIconAmount() {
-        ConfigurationSection ore = ConfigManager.configManager.getSection("menu.ui.renderers.ore");
+        ConfigurationSection ore = ConfigManager.configManager.getSection("menu.dialog.ore");
         return ore == null || ore.getBoolean("show-item-icon.auto-hide-one", true);
     }
 
@@ -165,7 +165,7 @@ public class DialogPackManager extends AbstractManager {
             return;
         }
         Path data = UltimateShop.instance.getDataFolder().toPath();
-        int configured = ConfigManager.configManager.getInt("menu.ui.renderers.ore.pack-format", 0);
+        int configured = ConfigManager.configManager.getInt("menu.dialog.ore.pack-format", 0);
         int format = requestedFormat != null ? requestedFormat : configured;
         SchedulerUtil.runTaskAsynchronously(
             () -> {

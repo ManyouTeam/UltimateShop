@@ -109,7 +109,7 @@ public class CommonGUI extends InvGUI {
         if (ArcMenuBridge.arcMenuBridge.open(player, commonMenu, null, bypass, reopen)) {
             return;
         }
-        if (!ArcMenuBridge.arcMenuBridge.enabled(commonMenu, player) && commonMenu.isUseDialog()) {
+        if (commonMenu.isUseDialog()) {
             if ("ore".equalsIgnoreCase(ConfigManager.configManager.getDialogLayout(commonMenu.getConfig()))) {
                 new DialogOreGUI(player, commonMenu, null, bypass).openGUI(reopen);
             } else {

@@ -34,8 +34,13 @@ public abstract class AbstractButton {
 
     public Boolean getShowSprite() {
         ConfigurationSection settings = getButtonConfig();
-        return settings != null && settings.contains("ui.show-sprite")
-        ? settings.getBoolean("ui.show-sprite") : null;
+        if (settings == null) {
+            return null;
+        }
+        if (settings.contains("dialog.show-sprite")) {
+            return settings.getBoolean("dialog.show-sprite");
+        }
+        return settings.contains("ui.show-sprite") ? settings.getBoolean("ui.show-sprite") : null;
     }
 
     public ButtonType getType() {
@@ -54,6 +59,13 @@ public abstract class AbstractButton {
         ConfigurationSection settings = getButtonConfig();
         if (settings == null || presentation == null) {
             return true;
+        }
+        if (settings.isConfigurationSection("menu-visibility")) {
+            boolean fallback = true;
+            if ("ore".equals(presentation) || "item-action-list".equals(presentation)) {
+                fallback = settings.getBoolean("menu-visibility.dialog", true);
+            }
+            return settings.getBoolean("menu-visibility." + presentation, fallback);
         }
         if (settings.isList("ui.visible-in")) {
             String mode = "item-action-list".equals(presentation) ? "dialog" : presentation;
@@ -89,7 +101,8 @@ public abstract class AbstractButton {
     }
 
     public boolean usesItemActionDialogLayout(String menuLayout) {
-        String layout = config == null ? menuLayout : config.getString("ui.renderers.dialog.layout", menuLayout);
+        String layout = config == null ? menuLayout : config.getString("dialog.layout",
+            config.getString("ui.renderers.dialog.layout", menuLayout));
         return "item-action-list".equalsIgnoreCase(layout);
     }
 

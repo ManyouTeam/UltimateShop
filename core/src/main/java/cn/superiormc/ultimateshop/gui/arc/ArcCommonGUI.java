@@ -25,7 +25,7 @@ public class ArcCommonGUI extends ArcMenuGUI {
 
     protected ArcCommonGUI(Player player, ObjectMenu menu, boolean bypass, ArcMenuRuntime runtime) {
         super(player, menu, bypass, runtime);
-        controls = new ProductUIModel(menu, player);
+        controls = new ProductUIModel(menu, player, "arcmenu");
         info = new ArcInfoGUI(this);
     }
 

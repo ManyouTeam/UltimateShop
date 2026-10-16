@@ -101,7 +101,7 @@ menu:
 
 Form opens its home first. Search input prefills the previous keyword; cancel returns to that home and preserves it. Form/Dialog blank keywords show no products. Selecting a result opens information; Back restores the search and keyword. Editing/submitting/cancelling the built-in input flow does not repeatedly run menu open/close actions. Ordinary navigation buttons leave the search flow and run with LEFT click in Form/Dialog.
 
-Form text defaults are `menu.ui.renderers.form.search.input` and `search.buttons.search`. Dialog uses the corresponding `menu.ui.renderers.dialog.search` keys. Chat keyword controls still use the prompt keywords above. Configure modes in this search menu's `ui.mode`, or inherit global modes.
+Form text defaults are `menu.bedrock.search.input` and `menu.bedrock.search.buttons.search`; Dialog uses `menu.dialog.search.*`. Chat keyword controls still use the prompt keywords above. Choose presentations through the global/menu `dialog.enabled`, `bedrock.enabled` and `arcmenu.enabled` switches.
 
 For ArcMenu/Ore, configure `ui.layout`, `ui.products.placement`, and `ui.placement` on graphical controls. Layout pagination does not remove the result-slot capacity defined at root. See [Unified UI and ArcMenu](arcmenu-menus-premium.md) and [Dialog/Ore](dialog-menus-premium.md) for exact renderer differences.
 

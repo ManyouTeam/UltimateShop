@@ -32,12 +32,12 @@ public class DialogCommonGUI extends DialogGUI {
             return;
         }
         DialogView.Builder builder = DialogView.builder(menu.getString("title", ""));
-        String content = menu.getString("content", null);
+        String content = ConfigManager.configManager.getMenuContent(menu.getConfig(), "dialog");
         if (content != null && !content.isEmpty()) {
             builder.body(content);
         }
-        builder.buttonWidth(menu.getInt("ui.renderers.dialog.button-width", 150));
-        builder.columns(menu.getInt("ui.renderers.dialog.columns", 2));
+        builder.buttonWidth(menu.getInt("dialog.button-width", menu.getInt("ui.renderers.dialog.button-width", 150)));
+        builder.columns(menu.getInt("dialog.columns", menu.getInt("ui.renderers.dialog.columns", 2)));
         String dialogLayout = ConfigManager.configManager.getDialogLayout(menu.getConfig());
         builder.layout(dialogLayout);
         for (Map.Entry<Integer, AbstractButton> entry : menu.getMenu(MenuSender.of(player, MenuSender.dialogPresentation(ConfigManager.configManager.getDialogLayout(menu.getConfig())))).entrySet()) {

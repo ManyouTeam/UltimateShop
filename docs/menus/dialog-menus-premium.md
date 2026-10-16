@@ -7,60 +7,45 @@ Native Dialog shares product/action data with Inventory and Form. It requires Pr
 ```yaml
 # config.yml
 menu:
-  ui:
-    mode:
-      java: dialog
-      bedrock: form
-    renderers:
-      dialog:
-        layout: multi-action
-        button-width: 150
-        columns: 2
-        not-auto-close: true
-        auto-add-sprite:
-          enabled: true
-          auto-hide: true
-          format: '<sprite:"{namespace}:{atlas}":{path}>'
+  dialog:
+    enabled: true
+    not-auto-close: true
+    auto-add-sprite:
+      enabled: true
+      auto-hide: true
+      format: '<sprite:"{namespace}:{atlas}":{path}>'
 ```
-
-Menu overrides go under root `ui`; shared body text goes under root `content`:
 
 ```yaml
+# Menu file
 title: 'Farming'
-content: '<gray>Select a product.'
-ui:
-  mode:
-    java: dialog
-    bedrock: inherit
-  renderers:
-    dialog:
-      layout: item-action-list
-      button-width: 180
-      columns: 2
+dialog:
+  enabled: true
+  layout: multi-action
+  content: '<gray>Select a product.'
+  button-width: 150
+  columns: 2
 ```
 
-| Mode / setting | Presentation | Resource pack |
-| --- | --- | --- |
-| `java: dialog`, `dialog.layout: multi-action` | Native action buttons in columns | Not required for ordinary text/buttons |
-| `java: dialog`, `dialog.layout: item-action-list` | Native item icons and clickable labels | Not required for vanilla item icons |
+Choose `dialog.layout: multi-action` for native action buttons, `item-action-list` for clickable item rows, or `ore` for the graphical Ore renderer. Global `menu.dialog.enabled` and menu `dialog.enabled` must allow Dialog. ArcMenu takes precedence when both ArcMenu switches are enabled and its integration is available.
 
-Here `dialog.layout` abbreviates `ui.renderers.dialog.layout`. Native Dialog settings belong under `ui.renderers.dialog`, while shared body text belongs at root `content`. Root `dialog.enabled` and `dialog.content` are not Dialog renderer settings.
+Buttons can override a native layout using `buttons.<id>.dialog.layout: item-action-list`; use `dialog.show-sprite` for the button or product sprite preference. `dialog.content` supplies the Dialog body; root `content` is an optional fallback.
 
 ## Native menu behaviour
 
-Native common/shop menus use root `layout` to identify and order entries; chest gaps do not become graphical coordinates. Products open information with available operations. Ordinary buttons execute their actions with LEFT click. Display conditions and `ui.visible-in` remain active. Use `dialog` in the visibility list for both native layouts; use `ore` separately for graphical Dialogs.
+Native common/shop menus use root `layout` to identify and order entries; chest gaps do not become graphical coordinates. Products open information with available operations. Ordinary buttons execute their actions with LEFT click. Display conditions and `menu-visibility` remain active. Use `menu-visibility.dialog: true` for native Dialog; `menu-visibility.item-action-list` can override the inherited value and `menu-visibility.ore` controls Ore separately.
 
-A button-level `ui.renderers.dialog.layout: item-action-list` can request native item-action rendering for that entry. `ui.show-sprite` controls its label sprite choice; it is separate from the item icon supplied by item-action-list.
+A button-level `dialog.layout: item-action-list` can request native item-action rendering for that entry. `dialog.show-sprite` controls its label sprite choice; it is separate from the item icon supplied by item-action-list.
 
 Provide an ordinary button with a direct `type: close` action for reliable closing and menu close actions. Not every Escape dismissal is reported by the native client interface. A fallback exit action uses the menu's inherited `default-button` label when one is needed.
 
 ## Dialog renderer reference
 
-Global prefix: `menu.ui.renderers.dialog`. Menu overrides: `ui.renderers.dialog`. Native list `layout`, `button-width` and `columns` use the menu's inherited settings. Information and quantity helpers use the owning shop menu's renderer settings; favourite editing uses its favourite menu. Automatic sprite defaults remain global.
+Global prefix: `menu.dialog`. Menu overrides: `dialog`. Native list `layout`, `button-width` and `columns` use the menu's inherited settings. Information and quantity helpers use the owning shop menu's renderer settings; favourite editing uses its favourite menu. Automatic sprite defaults remain global.
 
 | Relative key | Meaning |
 | --- | --- |
-| `layout` | `multi-action` or `item-action-list`; Ore is selected with `ui.mode.java: ore` |
+| `layout` | `multi-action` or `item-action-list`; Ore is selected with `dialog.layout: ore` |
 | `button-width` | Native list action width, default 150 |
 | `columns` | Native multi-action columns, default 2 |
 | `not-auto-close` | Keep information Dialog open after an action where supported |
@@ -77,14 +62,14 @@ Global prefix: `menu.ui.renderers.dialog`. Menu overrides: `ui.renderers.dialog`
 | `buy-more.buttons.confirm` | Continue to information label |
 | `info.display-item` | Show item preview in product information |
 | `info.title` | Information title, `{item-name}` and `{amount}` |
-| `info.buttons.buy`, `sell`, `buy-more`, `sell-all` | Renderer-specific fallback text; shared action labels are configured through `ui.products.actions.labels` |
+| `info.buttons.buy`, `sell`, `buy-more`, `sell-all` | Renderer-specific fallback text for native Dialog; graphical labels can be configured separately through `ui.products.actions.labels` |
 | `info.buttons.back` | Information Back label |
 | `favourite-edit.title`, `favourite-edit.content` | Editing action screen title/body, `{item-name}` |
 | `favourite-edit.buttons.forward`, `backward`, `remove`, `back` | Editing controls |
 
-`{lang:key}` references language text. Existing language keys remain `menu.dialog.*`; moving renderer configuration under unified UI does not rename language entries.
+`{lang:key}` references language text. Existing language keys remain `menu.dialog.*`; restoring the native configuration path does not rename language entries.
 
-An explicit display-item `sprite` overrides the material sprite where supported. Button/product `ui.show-sprite` controls the unified icon choice. Use button/product `ui.show-sprite` and button `ui.renderers.dialog.layout` instead of display-item `dialog.show-sprite` or button `dialog.layout`. Automatic material mappings/translations are prepared on demand under `minecraft-resources/<version>/`.
+An explicit display-item `sprite` overrides the material sprite where supported. Button/product `dialog.show-sprite` controls the unified icon choice. Use button/product `dialog.show-sprite` and button `dialog.layout` instead of display-item `dialog.show-sprite` or button `dialog.layout`. Automatic material mappings/translations are prepared on demand under `minecraft-resources/<version>/`.
 
 ## Information, quantity, search and favourites
 

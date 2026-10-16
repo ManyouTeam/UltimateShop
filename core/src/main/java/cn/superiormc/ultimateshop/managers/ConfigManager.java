@@ -612,9 +612,11 @@ public class ConfigManager extends AbstractManager {
 
     public Object getMenuRendererSetting(
         ConfigurationSection menu, String renderer, String path, Object fallback) {
-        String key = "ui.renderers." + renderer + "." + path;
-        Object global = config.get("menu." + key, fallback);
-        return menu == null ? global : menu.get(key, global);
+        String oldRenderer = renderer.equals("form") ? "bedrock" : renderer;
+        String oldKey = oldRenderer + "." + path;
+        String newKey = "ui.renderers." + renderer + "." + path;
+        Object global = config.get("menu." + oldKey, config.get("menu." + newKey, fallback));
+        return menu == null ? global : menu.get(oldKey, menu.get(newKey, global));
     }
 
     public boolean getMenuRendererBoolean(
@@ -639,27 +641,57 @@ public class ConfigManager extends AbstractManager {
     }
 
     public String getDialogLayout(ConfigurationSection menu) {
-        if (getMenuUIMode(menu, "java").equals("ore")) {
+        if (menu != null && menu.contains("dialog.layout")) {
+            return menu.getString("dialog.layout", "multi-action");
+        }
+        if (menu != null && "ore".equalsIgnoreCase(menu.getString("ui.mode.java", ""))) {
             return "ore";
         }
         return String.valueOf(getMenuRendererSetting(menu, "dialog", "layout", "multi-action"));
     }
 
+    public String getMenuContent(ConfigurationSection menu, String renderer) {
+        if (menu == null) {
+            return "";
+        }
+        String key = renderer.equals("form") ? "bedrock.content"
+            : renderer.equals("arcmenu") ? "arcmenu.content" : "dialog.content";
+        return menu.getString(key, menu.getString("content", ""));
+    }
+
     public String getMenuUIMode(ConfigurationSection menu, String client) {
-        String mode = menu == null ? "inherit" : menu.getString("ui.mode." + client, "inherit");
-        if (mode.equalsIgnoreCase("inherit")) {
-            mode =
-                config.getString(
-                "menu.ui.mode." + client, client.equals("java") ? "inventory" : "form");
+        String mode = menu == null ? null : menu.getString("ui.mode." + client);
+        if (mode == null || mode.equalsIgnoreCase("inherit")) {
+            // Read the global selector from installations still using the earlier UI format,
+            // but never let a bundled default override explicitly configured native switches.
+            boolean hasLegacySwitches = config.contains("menu.dialog.enabled", true)
+                || config.contains("menu.bedrock.enabled", true)
+                || config.contains("menu.arcmenu.enabled", true);
+            if (!hasLegacySwitches && config.contains("menu.ui.mode." + client, true)) {
+                mode = config.getString("menu.ui.mode." + client);
+            }
+        }
+        if (mode == null || mode.equalsIgnoreCase("inherit")) {
+            if (client.equals("bedrock")) {
+                mode = config.getBoolean("menu.bedrock.enabled", true)
+                    && (menu == null || menu.getBoolean("bedrock.enabled", true))
+                    ? "form" : "inventory";
+            } else if (config.getBoolean("menu.arcmenu.enabled", false)
+                && menu != null && menu.getBoolean("arcmenu.enabled", false)) {
+                mode = "arcmenu";
+            } else if (config.getBoolean("menu.dialog.enabled", false)
+                && (menu == null || menu.getBoolean("dialog.enabled", true))) {
+                mode = "ore".equalsIgnoreCase(getDialogLayout(menu)) ? "ore" : "dialog";
+            } else {
+                mode = "inventory";
+            }
         }
         mode = mode.toLowerCase(Locale.ROOT);
-        List<String> allowed =
-            client.equals("java")
-        ? List.of("inventory", "dialog", "ore", "arcmenu")
-        : List.of("inventory", "form");
+        List<String> allowed = client.equals("java")
+            ? List.of("inventory", "dialog", "ore", "arcmenu")
+            : List.of("inventory", "form");
         if (!allowed.contains(mode)) {
-            ErrorManager.errorManager.sendErrorMessage(
-                "§cInvalid UI mode for " + client + ": " + mode);
+            ErrorManager.errorManager.sendErrorMessage("§cInvalid UI mode for " + client + ": " + mode);
             return "inventory";
         }
         return mode;

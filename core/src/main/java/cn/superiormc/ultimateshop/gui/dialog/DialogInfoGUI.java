@@ -99,7 +99,7 @@ public class DialogInfoGUI extends DialogGUI {
         if (!content.isEmpty()) {
             builder.body(String.join("\n", content));
         }
-        ProductUIModel model = new ProductUIModel(item.getShopObject().getShopMenuObject(), player);
+        ProductUIModel model = new ProductUIModel(item.getShopObject().getShopMenuObject(), player, "dialog");
         List<ProductUIModel.Action> actions = new ArrayList<>();
         if (extraActions == null) {
             actions.addAll(model.getPrimaryActions(item));

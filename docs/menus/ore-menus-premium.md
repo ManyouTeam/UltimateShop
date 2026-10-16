@@ -1,23 +1,30 @@
 # 🪨 Ore UI - Premium
 
-Ore is UltimateShop's graphical Dialog-based renderer. It requires Premium, supported Paper (1.21.9+), and a generated client resource pack. Select `ore` separately from native Dialog's `multi-action`/`item-action-list` layout. Bedrock players follow `ui.mode.bedrock`.
+Ore is UltimateShop's graphical Dialog-based renderer. It requires Premium, supported Paper (1.21.9+), and a generated client resource pack. Select `ore` separately from native Dialog's `multi-action`/`item-action-list` layout. Bedrock players follow `bedrock.enabled`.
 
 ## Quick start
 
 ```yaml
 # config.yml
 menu:
-  ui:
-    mode:
-      java: ore
-      bedrock: form
+  dialog:
+    enabled: true
+    ore:
+      show-item-icon:
+        enabled: true
+        auto-hide-one: true
+      pack-format: 0
+  bedrock:
+    enabled: true
 ```
+
+Set `dialog.enabled: true` and `dialog.layout: ore` in the menu itself. If both ArcMenu switches are enabled and its plugin is available, ArcMenu has priority; otherwise Ore is used when supported.
 
 Give ordinary navigation buttons graphical placements (see [Graphical Layout](ui-layout.md)); Inventory gaps do not automatically become Ore coordinates.
 
 ## Ore layout and card content
 
-Select `ui.mode.java: ore`. Ore shares these settings with ArcMenu:
+Select `dialog.layout: ore`. Ore shares these settings with ArcMenu:
 
 - `ui.layout.canvas`, named `header` entries, `areas` and `pagination`.
 - `ui.products.placement` and per-entry `ui.placement`.
@@ -34,13 +41,13 @@ Native translatable item names are retained for client translation. Ore uses wid
 
 ## Ore renderer reference
 
-Global prefix: `menu.ui.renderers.ore`. Per-menu template overrides: `ui.renderers.ore.templates`. Icon switches and pack format are read globally.
+Graphical templates remain under `menu.ui.renderers.ore.templates` and per-menu `ui.renderers.ore.templates`. Non-graphical icon and resource-pack settings use `menu.dialog.ore.show-item-icon` and `menu.dialog.ore.pack-format`.
 
 | Relative key | Meaning |
 | --- | --- |
-| `show-item-icon.enabled` | Generate/render Ore item icons |
-| `show-item-icon.auto-hide-one` | Hide count text for icon amount 1 |
-| `pack-format` | Resource pack format; 0 selects the runtime's automatic format |
+| `menu.dialog.ore.show-item-icon.enabled` | Generate/render Ore item icons (global only) |
+| `menu.dialog.ore.show-item-icon.auto-hide-one` | Hide count text for icon amount 1 (global only) |
+| `menu.dialog.ore.pack-format` | Resource pack format; 0 selects the runtime's automatic format |
 | `templates.product` | Additional generated card template settings |
 | `templates.button` | Additional generated ordinary-button template settings |
 
@@ -75,7 +82,7 @@ Supply those files under `plugins/UltimateShop/textures/shop/`. Paths must be re
 
 Run `/shop dialogpack` after changing Ore layout, theme, templates or relevant assets. An optional `/shop dialogpack <format>` overrides the format for that generation; the argument must be an integer from 69 to 10000. The command works in console and requires `ultimateshop.dialogpack`; the generated pack is written under `plugins/UltimateShop/pack/`. Resource preparation can run asynchronously. Distribute/load the resulting pack through your server resource-pack setup, and ensure the client loads the regenerated pack.
 
-A reload alone does not guarantee that the client has updated assets. If the interface is misaligned or reports missing resources, check the ErrorManager output, layout validity, referenced PNGs, generated pack and active client resource pack. If Inventory opens, verify Premium, Paper/API support, mode overrides and whether the requested menu type supports Dialog.
+A reload alone does not guarantee that the client has updated assets. If the interface is misaligned or reports missing resources, check the ErrorManager output, layout validity, referenced PNGs, generated pack and active client resource pack. If Inventory opens, verify Premium, global/menu `dialog.enabled`, `dialog.layout: ore`, Paper/API support and whether that menu type supports Dialog.
 
 
 [UI Modes](ui-overview.md) · [Native Dialog](dialog-menus-premium.md) · [Graphical Layout](ui-layout.md) · [Troubleshooting](troubleshooting.md)

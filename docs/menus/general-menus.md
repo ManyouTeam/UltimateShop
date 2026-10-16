@@ -33,7 +33,7 @@ Run `/shop reload` and `/shop menu main`. `0` creates a gap unless you define `b
 | Root key | Description |
 | --- | --- |
 | `title` | Inventory title; can contain language/placeholder text |
-| `content` | Descriptive content for Form, Dialog and graphical headers |
+| `dialog.content`, `bedrock.content`, `arcmenu.content` | Presentation-specific body/header text; root `content` remains a fallback |
 | `size` | Inventory capacity (multiple of 9, up to 54) |
 | `layout` | Ordered rows containing button markers |
 | `buttons` | Definitions of ordinary buttons |
@@ -41,7 +41,8 @@ Run `/shop reload` and `/shop menu main`. `0` creates a gap unless you define `b
 | `open-actions`, `close-actions` | Menu lifecycle actions |
 | `dynamic-layout` | Resolve per-player layout/conditional alternatives (Premium) |
 | `custom-command.name`, `custom-command.description` | Optional registered Common Menu command (Premium) |
-| `ui` | UI mode and renderer overrides |
+| `dialog`, `bedrock`, `arcmenu` | Native renderer options and presentation switches |
+| `ui` | Ore/ArcMenu graphical layout, appearance and product controls |
 
 For complete field types and scope, see [Configuration](menu-configuration.md) and [Layout and Buttons](layout-and-buttons.md).
 
@@ -78,7 +79,7 @@ For display visibility, custom actions, or menu conditions, see [Conditional Dis
 
 ## Troubleshooting
 
-If nothing appears, confirm the file is in the correct folder, the menu ID matches the command, the entry ID exists in `buttons` and the `layout` uses it. Check opening conditions, `ui.visible-in` and any Form or graphical placement restrictions. See [Troubleshooting](troubleshooting.md).
+If nothing appears, confirm the file is in the correct folder, the menu ID matches the command, the entry ID exists in `buttons` and the `layout` uses it. Check opening conditions, `menu-visibility` and any Form or graphical placement restrictions. See [Troubleshooting](troubleshooting.md).
 
 <a id="common-menu-configuration"></a>
 <a id="layout-option"></a>

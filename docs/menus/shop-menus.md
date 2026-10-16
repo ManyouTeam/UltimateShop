@@ -57,12 +57,12 @@ settings:
   menu-settings:
     title: '&aFarming'
     size: 27
-    ui:
-      mode:
-        java: dialog
+    dialog:
+      enabled: true
+      layout: multi-action
 ```
 
-The shop override is merged with the chosen template and then missing `ui` defaults are inherited from global `menu.ui`. Do **not** put `settings.menu-settings` in `config.yml` or in a button.
+The shop override is merged with the chosen template; its `dialog`, `bedrock` and `arcmenu` settings take effect there, and missing **graphical** `ui` defaults are then inherited from global `menu.ui`. Do **not** put `settings.menu-settings` in `config.yml` or in a button.
 
 ## Entries and buttons
 

@@ -67,11 +67,11 @@ The first available visible candidate wins. The `dynamic-layout` option is impor
 | `actions`, `fail-actions` | Numbered actions for accepted/failed clicks |
 | `conditions` | Requirements evaluated when clicked |
 | `display-conditions` | Requirements for appearing in the menu (Premium) |
-| `ui.visible-in` | Restrict entry to particular UI presentations |
+| `menu-visibility` | Restrict entry to particular UI presentations |
 | `ui.placement` | Ore/ArcMenu graphical placement |
 | `ui.appearance`, `ui.font-size`, `ui.text-align` | Graphical button/card styling |
-| `ui.show-sprite` | Native Dialog sprite preference |
-| `ui.renderers.dialog.layout` | Per-button Dialog presentation override |
+| `dialog.show-sprite` | Native Dialog sprite preference |
+| `dialog.layout` | Per-button Dialog presentation override |
 
 Menu-level `conditions` control opening the menu. `open-actions` and `close-actions` execute when entering and leaving it. These are not the same as the click conditions/actions of one button.
 
@@ -83,14 +83,20 @@ buttons:
     display-item:
       material: EMERALD
       name: '&aContinue'
+    menu-visibility:
+      inventory: true
+      form: true
+      dialog: true
+      item-action-list: true
+      ore: true
+      arcmenu: true
     ui:
-      visible-in: [inventory, form, dialog, ore, arcmenu]
       placement:
         area: sidebar
         order: 0
 ```
 
-`ui.visible-in` is evaluated independently of `dynamic-layout`; `ui.placement.enabled: false` removes the graphical placement but does not, by itself, hide an Inventory or Form entry. `display-item.bedrock.hide` is a Form-specific display rule. A button without a display name can be omitted in Form mode. See [Bedrock Form](bedrock-menus-premium.md).
+`menu-visibility` (boolean per presentation) is evaluated independently of `dynamic-layout`; `ui.placement.enabled: false` removes the graphical placement but does not, by itself, hide an Inventory or Form entry. `display-item.bedrock.hide` is a Form-specific display rule. A button without a display name can be omitted in Form mode. See [Bedrock Form](bedrock-menus-premium.md).
 
 Root `layout` still identifies source entries and special result/input areas for non-Inventory presentations, but graphical positions use `ui.layout` and `ui.placement`. Read [Graphical Layout](ui-layout.md).
 

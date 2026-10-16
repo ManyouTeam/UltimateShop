@@ -12,9 +12,9 @@ Ore and ArcMenu share the `ui.layout` canvas/area model, `ui.products`, entry `u
 | Product/button graphical position | Product/button root `ui.placement` |
 | Ordinary button appearance | Button root `ui.appearance`, `ui.font-size`, `ui.text-align` |
 
-Menu values inherit missing global values recursively. Product action/price lookup uses product > owning shop menu > global defaults. Card styling is menu-wide. A product shown in search/favourites keeps its product settings and trade rules. Bundled menus contain explicit UI values, so inspect the menu when a global edit appears ineffective.
+Menu values inherit missing global values recursively. Graphical product action/price lookup uses product > owning shop menu > global defaults. Form and native Dialog do not read these graphical presentation options. Card styling is menu-wide. A product shown in search/favourites keeps its product settings and trade rules. Bundled menus contain explicit UI values, so inspect the menu when a global edit appears ineffective.
 
-Root `title` and `content` provide shared text. Headers can reference `{title}` and `{content}`, language references and PlaceholderAPI. Start from the included main/shop/search/favourite menu examples. Other graphical layout formats are not automatically converted.
+Root `title` supplies the title. Ore uses `dialog.content` (then root `content`) for its header; ArcMenu uses `arcmenu.content` (then root `content`). Headers can reference `{title}` and `{content}`, language references and PlaceholderAPI. Start from the included main/shop/search/favourite menu examples. Other graphical layout formats are not automatically converted.
 
 ## Shared layout
 
@@ -157,7 +157,7 @@ buttons:
 | `ui.appearance` | `button` or `card`; products use cards by default |
 | `ui.font-size` | Ordinary ArcMenu button font scale |
 | `ui.text-align` | Ordinary graphical button alignment |
-| `ui.visible-in` | Presentation filter; use `ore` and/or `arcmenu` |
+| `menu-visibility.ore`, `menu-visibility.arcmenu` | Boolean presentation filters; omitted values default to true |
 
 Ordinary buttons without a graphical placement are not displayed. The renderer does not generate Back/Close or infer a sidebar from actions. Root `layout` identifies Inventory/list entries. Graphical menu collection can also include explicitly placed ordinary buttons/products that are absent from the root slot layout. Product placement defaults to `ui.products.placement`; a product's own `ui.placement` overrides it. `appearance: card` also supports category/navigation cards.
 

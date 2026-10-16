@@ -603,7 +603,7 @@ public abstract class ArcMenuGUI extends AbstractGUI {
             String value =
                 settings.getString("text", "")
                 .replace("{title}", title == null ? "" : title)
-                .replace("{content}", getMenu().getString("content", ""));
+                .replace("{content}", ConfigManager.configManager.getMenuContent(getMenu().getConfig(), "arcmenu"));
             value = headerText(value);
             double size = settings.getDouble("font-size", .8);
             double width = settings.getDouble("width", 100);

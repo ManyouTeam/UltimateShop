@@ -4,18 +4,22 @@ ArcMenu renders Common, Shop, Search and Favourite menus as graphical Java-clien
 
 ## Enable ArcMenu
 
-This integration targets ArcMenu. Install the compatible ArcMenu server plugin and its required client resources. Without the integration, the menu falls back to Inventory.
+Install the compatible ArcMenu plugin and required client resources. Enable ArcMenu globally and in each menu that should use it:
 
 ```yaml
 # config.yml
 menu:
-  ui:
-    mode:
-      java: arcmenu
-      bedrock: form
+  arcmenu:
+    enabled: true
 ```
 
-A menu can override `ui.mode.java: arcmenu` or use `inherit`. Use `ore` instead for the graphical Dialog presentation; Ore additionally needs supported Paper and a generated resource pack. Item Sell/Sell All are Inventory deposit interfaces. ArcMenu does not render the Inventory Buy More menu as a separate screen.
+```yaml
+# Menu file
+arcmenu:
+  enabled: true
+```
+
+When both ArcMenu and Dialog are enabled, Java players use **ArcMenu first**. If the ArcMenu integration cannot be used, an available native Dialog/Ore presentation is attempted before Inventory. Ore is selected with `dialog.layout: ore`. Bedrock follows its separate `bedrock.enabled` switches. Item Sell and Sell All use physical Inventory interfaces; ArcMenu does not render the Inventory Buy More screen as a separate menu.
 
 <a id="shared-layout"></a>
 
@@ -76,4 +80,4 @@ After changing Ore layout/theme/templates, run `/shop dialogpack` and load the n
 
 ## Troubleshooting
 
-If it falls back to Inventory, check Premium, a compatible ArcMenu integration/client setup, the selected `ui.mode.java` and supported menu type. Item Sell and Sell All are physical inventories; ArcMenu quantity selection uses its details panel, not the Inventory Buy More layout. See [Troubleshooting](troubleshooting.md).
+If it falls back to Inventory, check Premium, a compatible ArcMenu integration/client setup, the selected `arcmenu.enabled` and supported menu type. Item Sell and Sell All are physical inventories; ArcMenu quantity selection uses its details panel, not the Inventory Buy More layout. See [Troubleshooting](troubleshooting.md).

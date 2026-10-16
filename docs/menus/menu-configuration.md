@@ -7,43 +7,56 @@ Use this page to locate menu options and understand how configuration values are
 | Scope | YAML path | Purpose |
 | --- | --- | --- |
 | Global menu controls | `config.yml` → `menu.*` | Auto-open, click mappings, cooldown, refresh, quantity menus |
-| Global UI defaults | `config.yml` → `menu.ui.*` | UI mode, shared graphical layout, product presentation, renderer settings |
+| Global graphical defaults | `config.yml` → `menu.ui.*` | Ore / ArcMenu canvas, cards, theme, graphic renderers |
 | Individual menu | `menus/<folder>/<id>.yml` → root | `title`, `size`, `layout`, `buttons`, conditions/actions |
-| Individual menu UI | Menu root `ui.*` | Override global UI settings for that menu |
+| Individual graphical UI | Menu root `ui.*` | Override Ore / ArcMenu graphical settings |
 | Shop menu override | `shops/<shop>.yml` → `settings.menu-settings.*` | Override the chosen shop template's menu settings |
-| Product/button | Entry root `ui.*` or `display-item.*` | Item-specific appearance, visibility, actions and placement |
+| Product/button | Entry root `ui.*`, `menu-visibility`, `dialog.*`, `display-item.*` | Graphical styling/position, display visibility, Dialog options and item display |
 
-Use `ui.mode.java` / `ui.mode.bedrock` to choose a presentation. Do **not** move Inventory `size` or `layout` under `ui.renderers.inventory`; that section is currently reserved.
+Select Java Dialog/Ore with `menu.dialog.enabled`, menu `dialog.enabled` and `dialog.layout`. Select Bedrock Form with `menu.bedrock.enabled` and menu `bedrock.enabled`. Opt into ArcMenu using both global and menu `arcmenu.enabled`. Inventory `size` and root `layout` remain unchanged.
 
-## UI inheritance
-
-Global defaults are defined in `config.yml`:
+## Renderer selection and graphical inheritance
 
 ```yaml
+# config.yml
 menu:
+  dialog:
+    enabled: false
+  bedrock:
+    enabled: true
+  arcmenu:
+    enabled: false
   ui:
-    mode:
-      java: inventory
-      bedrock: form
+    layout:
+      canvas:
+        width: 648
+        height: 414
 ```
-
-A menu overrides only what it needs:
 
 ```yaml
-title: '&8VIP Shop'
+# An individual menu
+dialog:
+  enabled: true
+  layout: ore
+  content: '&7Browse this shop.'
+bedrock:
+  enabled: true
+  content: '&7Browse this shop.'
+arcmenu:
+  enabled: false
 ui:
-  mode:
-    java: arcmenu
-    bedrock: inherit
+  products:
+    card:
+      icon-size: 32
 ```
 
-`inherit` uses the global mode. Missing keys inside the menu's `ui` are filled recursively from `menu.ui` when the menu is initialized. **Explicit menu values win over global values**. This also means the shipped example files can override what appears to be a global default.
+If global and menu ArcMenu are both enabled and the integration is available, ArcMenu opens first. Otherwise, enabled/supported Dialog or Ore is tried before Inventory. Bedrock is handled separately. For Ore, `dialog.layout: ore` chooses the current graphical renderer; its actual canvas, placements and appearance still come from `ui`.
 
-For a Shop Menu, `settings.menu-settings` is merged into the selected template **before** the global UI defaults are applied. See [Shop Menus](shop-menus.md).
+Missing keys inside the menu's `ui` inherit from global `menu.ui` recursively. Explicit menu graphical settings take precedence. Shop `settings.menu-settings` overlays the menu before these graphical defaults are applied. Existing menu-level `ui.mode` remains readable for transition compatibility. Global `menu.ui.mode` is also accepted when no explicit native/ArcMenu global switches are present; new configurations should use `menu.dialog`, `menu.bedrock` and `menu.arcmenu` instead.
 
 ## Product-specific UI values
 
-Product settings such as `ui.actions` and `ui.price` are not read the same way as the entire menu-wide `ui` block. The relevant lookup is **product → owning shop menu → global `menu.ui.products`**. Product-level overrides must therefore be placed at the product root, not inside its `display-item`.
+Graphical product settings such as `ui.actions` and `ui.price` affect Ore and ArcMenu, not ordinary Form or native Dialog. The relevant lookup is **product → owning shop menu → global `menu.ui.products`**. Product-level overrides must therefore be placed at the product root, not inside its `display-item`.
 
 ```yaml
 items:
@@ -55,7 +68,7 @@ items:
 
 Custom actions still require valid click bindings; adding a label or listing an action in `ui.actions` does not create a click handler. Read [Custom Click Event](../features/custom-click-event-premium.md).
 
-## Global controls outside menu.ui
+## Global controls outside graphical `menu.ui`
 
 | Path under `menu` | Purpose |
 | --- | --- |
@@ -70,6 +83,7 @@ Custom actions still require valid click bindings; adding a label or listing an 
 | `buy-more-menu.*` | Quantity-menu defaults |
 | `search-gui.*`, `favourite-gui.*` | Search/Favourite lists and prompt settings |
 | `sell-all.*` | Global Sell All inventory |
+| `dialog.*`, `bedrock.*`, `arcmenu.enabled` | Presentation selection and native renderer settings |
 
 For example, the bundled product click mapping is:
 

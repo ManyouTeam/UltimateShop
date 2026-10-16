@@ -205,8 +205,9 @@ public class ObjectMenu {
         this.useDialog = !UltimateShop.freeVersion
             && UltimateShop.methodUtil.methodID().equals("paper")
             && CommonUtil.getMinorVersion(21, 9)
-            && Set.of("dialog", "ore").contains(
-                ConfigManager.configManager.getMenuUIMode(menuConfigs, "java"));
+            && (ConfigManager.configManager.getBoolean("menu.dialog.enabled")
+                && menuConfigs.getBoolean("dialog.enabled", true)
+                || Set.of("dialog", "ore").contains(menuConfigs.getString("ui.mode.java", "")));
         this.dynamicLayout = menuConfigs.getBoolean("dynamic-layout", false) && !UltimateShop.freeVersion;
     }
 
@@ -502,11 +503,12 @@ public class ObjectMenu {
 
     private boolean hasMenuVisibilitySettings() {
         if (buttonItems.values().stream().anyMatch(button -> button.getButtonConfig() != null
-            && button.getButtonConfig().contains("ui.visible-in"))) {
+            && (button.getButtonConfig().contains("menu-visibility")
+                || button.getButtonConfig().contains("ui.visible-in")))) {
             return true;
         }
         return shop != null && shop.getShopConfig().getKeys(true).stream()
-            .anyMatch(key -> key.endsWith("ui.visible-in"));
+            .anyMatch(key -> key.endsWith("menu-visibility") || key.endsWith("ui.visible-in"));
     }
 
     public ObjectCondition getCondition() {

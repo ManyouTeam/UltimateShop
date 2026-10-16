@@ -311,7 +311,7 @@ public class EditorPresetRegistry {
     private static List<EditorPresetField> buttonFields() {
         return List.of(
                 field("display-item", Material.ITEM_FRAME, EditorPresetFieldType.SECTION),
-                choice("ui.renderers.dialog.layout", Material.ITEM_FRAME, "multi-action", "item-action-list"),
+                choice("dialog.layout", Material.ITEM_FRAME, "multi-action", "item-action-list"),
                 field("ui", Material.PAINTING, EditorPresetFieldType.SECTION),
                 field("actions", Material.BLAZE_POWDER, EditorPresetFieldType.ACTIONS),
                 field("fail-actions", Material.BLAZE_POWDER, EditorPresetFieldType.ACTIONS),

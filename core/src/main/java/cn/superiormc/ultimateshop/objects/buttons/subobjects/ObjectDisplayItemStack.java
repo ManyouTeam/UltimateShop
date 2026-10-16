@@ -159,16 +159,13 @@ public class ObjectDisplayItemStack {
 
         if (item != null) {
             var menuConfig = item.getShopObject().getShopMenuObject().getConfig();
-            if (Boolean.FALSE.equals(ConfigManager.configManager.getProductUISetting(
-                menuConfig, item.getButtonConfig(), "price.enabled", true))) {
-                return "";
-            }
             String kind = item.getBuyPrice().empty
                 ? "only-sell" : item.getRawSellPrice().empty ? "only-buy" : "both";
             if (tempVal4 == null) {
-                Object format = ConfigManager.configManager.getProductUISetting(
-                    menuConfig, item.getButtonConfig(), "price.formats." + kind, "");
-                tempVal4 = format instanceof String text ? text : "";
+                String languageKind = kind.equals("both") ? "default" : kind;
+                tempVal4 = menuConfig.getString("bedrock.price-extra-line." + languageKind,
+                    ConfigManager.configManager.getString(
+                        "menu.bedrock.price-extra-line." + languageKind, ""));
             }
             if (tempVal4.equalsIgnoreCase("{lang}")) {
                 String languageKind = kind.equals("both") ? "default" : kind;
@@ -271,7 +268,7 @@ public class ObjectDisplayItemStack {
             && (Boolean.TRUE.equals(showSprite)
             || showSprite == null
             && ConfigManager.configManager.getBoolean(
-            "menu.ui.renderers.dialog.auto-add-sprite.enabled"))) {
+            "menu.dialog.auto-add-sprite.enabled"))) {
             String sprite = getSprite();
             if (sprite != null) {
                 label = sprite + " " + label;

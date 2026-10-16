@@ -88,7 +88,7 @@ Removing a favourite does not remove shop stock or player items. Toggle editing 
 
 ## Presentation-specific configuration
 
-Select the interface in this menu's `ui.mode`, or inherit global defaults.
+Select presentations with the global/menu `dialog.enabled`, `bedrock.enabled` and `arcmenu.enabled` switches. The `ui` section only configures Ore/ArcMenu graphical layout.
 
 | Presentation | Normal mode | Editing mode |
 | --- | --- | --- |
@@ -99,7 +99,7 @@ Select the interface in this menu's `ui.mode`, or inherit global defaults.
 
 Form can display configured empty-slot buttons. Ore/ArcMenu require graphical `ui.placement` for the toggle and ordinary controls, and `ui.products.placement` for result cards. The bundled example disables graphical placement on empty slots.
 
-Global Form editing text is under `menu.ui.renderers.form.favourite-edit`: `title`, `content`, and `buttons.forward`, `backward`, `remove`, `back`. Dialog has the same structure under `menu.ui.renderers.dialog.favourite-edit`. Titles/content accept `{item-name}`.
+Global Form editing text is under `menu.bedrock.favourite-edit`: `title`, `content`, and `buttons.forward`, `backward`, `remove`, `back`. Dialog has the same structure under `menu.dialog.favourite-edit`. Titles/content accept `{item-name}`.
 
 ArcMenu card labels default to the Form favourite edit labels. Override them per menu with `ui.text.favourite-edit.forward`, `backward`, `remove`. Use presentation conditions in result lore when different clients need different instructions; see [Add Lore](display-item-add-lore.md).
 

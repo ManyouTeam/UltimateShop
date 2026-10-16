@@ -24,7 +24,7 @@ buttons:
       name: '&7Regular offers'
 ```
 
-Enable `dynamic-layout: true` for layouts that must be evaluated per player. Without dynamic evaluation, a cached static layout cannot reliably choose player-dependent alternatives. `ui.visible-in` is checked separately and does not require dynamic layout.
+Enable `dynamic-layout: true` for layouts that must be evaluated per player. Without dynamic evaluation, a cached static layout cannot reliably choose player-dependent alternatives. `menu-visibility` is checked separately and does not require dynamic layout.
 
 ## Ordered alternatives
 
@@ -47,7 +47,7 @@ The same form works for shop product IDs and sub-buttons. IDs are case-sensitive
 | --- | --- |
 | `display-conditions` | Whether a whole button/product appears |
 | `dynamic-layout` | Resolve layout placeholders/conditions per player |
-| `ui.visible-in` | Restrict entries to Inventory/Form/Dialog/Ore/ArcMenu |
+| `menu-visibility` | Restrict entries to Inventory/Form/Dialog/Ore/ArcMenu |
 | `conditions`, `fail-actions` | Ordinary button click requirements and failure response |
 | Product buy/sell conditions | Authorize the actual trade |
 | Conditional display-item variants | Change a display item's appearance using the configured `conditions.display-item-key`; see [Display Item Format](../format/display-item-format.md) |

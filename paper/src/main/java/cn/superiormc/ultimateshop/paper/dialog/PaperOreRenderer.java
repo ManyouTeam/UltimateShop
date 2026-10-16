@@ -310,7 +310,7 @@ public class PaperOreRenderer {
             && !containsObject(name)
             && (Boolean.TRUE.equals(widget.getShowSprite())
             || ConfigManager.configManager
-            .getBoolean("menu.ui.renderers.dialog.auto-add-sprite.enabled"))) {
+            .getBoolean("menu.dialog.auto-add-sprite.enabled"))) {
             name =
                 PaperTextUtil.modernParse(widget.getIcon(), player)
                 .append(Component.space())

@@ -10,30 +10,29 @@ In `config.yml`:
 
 ```yaml
 menu:
-  ui:
-    mode:
-      bedrock: form
-    renderers:
-      form:
-        check-method: FLOODGATE
-        not-auto-close: true
-        auto-add-icon:
-          enabled: true
-          format: 'https://raw.githubusercontent.com/InventivetalentDev/minecraft-assets/refs/heads/{version}/assets/minecraft/textures/{path}.png'
+  bedrock:
+    enabled: true
+    check-method: FLOODGATE
+    not-auto-close: true
+    auto-add-icon:
+      enabled: true
+      format: 'https://raw.githubusercontent.com/InventivetalentDev/minecraft-assets/refs/heads/{version}/assets/minecraft/textures/{path}.png'
+    price-extra-line:
+      default: '{lang}'
+      only-buy: '{lang}'
+      only-sell: '{lang}'
 ```
 
-In a menu file:
+In a menu:
 
 ```yaml
 title: 'Farming'
-content: '&7Choose a product.'
-ui:
-  mode:
-    java: inherit
-    bedrock: form
+bedrock:
+  enabled: true
+  content: '&7Choose a product.'
 ```
 
-Use `bedrock: inherit` for the global mode or `bedrock: inventory` for a chest interface. Shared text belongs at root `content`. Configure `ui.mode` and root `content` directly. Root menu `bedrock.enabled` and `bedrock.content` are not Form renderer settings.
+Both global and menu `bedrock.enabled` must allow Form. Inventory is used when Form is unavailable. Bedrock button icons and per-item supplemental text remain under `display-item.bedrock`.
 
 ## How a Form is built
 
@@ -85,60 +84,44 @@ For a product with an explicit `display-item`, put `bedrock` inside that display
 
 ## Automatic icons
 
-With `menu.ui.renderers.form.auto-add-icon.enabled: true`, buttons without explicit icons try to use the display material's vanilla texture. Material resources are prepared on demand and cached under `minecraft-resources/<version>/`. While a texture mapping is unavailable, the button can appear without an image. A custom item using a vanilla material still resolves from that material, not its custom model.
+With `menu.bedrock.auto-add-icon.enabled: true`, buttons without explicit icons try to use the display material's vanilla texture. Material resources are prepared on demand and cached under `minecraft-resources/<version>/`. While a texture mapping is unavailable, the button can appear without an image. A custom item using a vanilla material still resolves from that material, not its custom model.
 
-The URL pattern supports `{version}` (Minecraft resource version) and `{path}` (resolved texture path). Set the pattern globally at `menu.ui.renderers.form.auto-add-icon.format`, or override it in a menu at `ui.renderers.form.auto-add-icon.format`. Explicit display-item icons take precedence.
+The URL pattern supports `{version}` (Minecraft resource version) and `{path}` (resolved texture path). Set the pattern globally at `menu.bedrock.auto-add-icon.format`, or override it in a menu at `bedrock.auto-add-icon.format`. Explicit display-item icons take precedence.
 
-Automatic-icon enabling also supports per-menu `ui.renderers.form.auto-add-icon.enabled`. Bedrock detection uses global `menu.ui.renderers.form.check-method`.
+Automatic-icon enabling also supports per-menu `bedrock.auto-add-icon.enabled`. Bedrock detection uses global `menu.bedrock.check-method`.
 
 ## Visibility
 
-At button/product level:
+At the button or product root:
 
 ```yaml
-ui:
-  visible-in: [inventory, form, dialog, ore, arcmenu]
+menu-visibility:
+  inventory: true
+  form: true
+  dialog: true
+  item-action-list: true
+  ore: true
+  arcmenu: true
 ```
 
-Remove `form` to hide the entry from forms. `[]` hides it everywhere; omitting the key restores default visibility. Use `ui.visible-in` for presentation visibility and `display-item.bedrock.icon` for Form icons; `menu-visibility` and `bedrock-icon` are not recognized here. Display conditions still apply, as do the display-item blank-name and `bedrock.hide` checks. `ui.placement.enabled` controls graphical placement, not Form visibility.
+Set `form: false` to hide an entry from Bedrock Form. Omitted values default to true. `display-item.bedrock.hide: true` also hides that specific Form button, while `ui.placement.enabled` affects only graphical Ore/ArcMenu placement.
 
 ## Product information, actions and price text
 
-Global defaults are under `menu.ui.products`, menu overrides under `ui.products`, and product overrides under the product's `ui`:
+The Form information screen uses the configured click bindings to offer available trade actions. Set its labels in `menu.bedrock.info.buttons` (or menu `bedrock.info.buttons`). The graphical `ui.products.actions` settings apply only to Ore and ArcMenu, not Form.
 
-```yaml
-ui:
-  products:
-    price:
-      enabled: true
-      formats:
-        both: '&6Buy: {buy-price} | Sell: {sell-price}'
-        only-buy: '&6Buy: {buy-price}'
-        only-sell: '&6Sell: {sell-price}'
-    actions:
-      primary: [buy, sell]
-      extra: auto
-      labels:
-        buy: 'Buy'
-        sell: 'Sell'
-        select-amount: 'Choose amount'
-```
+Default Form price text is configured by `menu.bedrock.price-extra-line.default`, `only-buy` and `only-sell`. The active `display-item.bedrock.extra-line` overrides the generated line; an empty string suppresses it. The display text supports `{buy-price}` and `{sell-price}`.
 
-Information forms show the available primary actions followed by extra actions and Back. Primary actions are capped at two. `extra: auto` includes remaining available actions; a list filters them and `[]` hides them. Actions must be available through product/global click bindings. Invalid buy/sell, quantity and favourite actions are filtered using product capabilities. Custom actions use `menu.click-event-actions`.
-
-`price.enabled: false` disables the product list's extra price line. An explicit display-item `bedrock.extra-line` takes precedence over the ordinary price format when prices are enabled; `''` suppresses that extra line. The compact line calculates a single trade unit, including dynamic prices and sell multipliers. Full information uses the applicable buy/sell quantities.
-
-To bypass information when clicking a shop product:
+To bypass the product information Form:
 
 ```yaml
 items:
   A:
     bedrock:
       click-event: buy
-    # Product and price configuration follows here.
 ```
 
-This `bedrock` section belongs to the product root; the icon section belongs to its display item. Use action IDs such as `buy`, `sell`, `sell-all`, `select-amount` or configured custom actions. Set the menu default under `ui.renderers.form.click-event`, or the global default under `menu.ui.renderers.form.click-event`. Search results and normal favourite entries open information rather than using this shop-list shortcut.
+This product-root setting is distinct from display-item-specific `bedrock.icon`, `extra-line` and `hide`. The menu default is `bedrock.click-event`, global default `menu.bedrock.click-event`. Search and favourite product information still uses its own flow.
 
 ## Quantity input
 
@@ -161,7 +144,7 @@ Configure global defaults under `menu.ui.renderers.form` and menu overrides unde
 | `buy-or-sell.buttons.amount.name` | Quantity input label |
 | `buy-or-sell.buttons.amount.tip` | Quantity input placeholder text |
 | `info.title` | Product information title; supports `{item-name}` and `{amount}` |
-| `info.buttons.buy`, `sell`, `buy-more`, `sell-all` | Fallback operation labels; shared `actions.labels` overrides them |
+| `info.buttons.buy`, `sell`, `buy-more`, `sell-all` | Fallback operation labels; labels used when no custom action text is configured |
 | `info.buttons.back` | Information Back button text |
 | `search.input` | Search keyword field label |
 | `search.buttons.search` | Search home button text |

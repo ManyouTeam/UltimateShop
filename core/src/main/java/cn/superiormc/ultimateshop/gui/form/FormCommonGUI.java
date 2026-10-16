@@ -1,6 +1,7 @@
 package cn.superiormc.ultimateshop.gui.form;
 
 import cn.superiormc.ultimateshop.gui.FormGUI;
+import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.LanguageManager;
 import cn.superiormc.ultimateshop.managers.MenuStatusManager;
 import cn.superiormc.ultimateshop.objects.ObjectThingRun;
@@ -53,8 +54,9 @@ public class FormCommonGUI extends FormGUI {
             MenuStatusManager.menuStatusManager.removeOpenGUIStatus(player, this);
         }));
         tempVal2.closedOrInvalidResultHandler((submittedForm, response) -> handleResponse(submittedForm, this::finishGUI));
-        if (commonMenu.getString("content", null) != null) {
-            tempVal2.content(TextUtil.parse(player, getMenu().getString("content", "")));
+        String content = ConfigManager.configManager.getMenuContent(getMenu().getConfig(), "form");
+        if (!content.isEmpty()) {
+            tempVal2.content(TextUtil.parse(player, content));
         }
         form = tempVal2.build();
     }
