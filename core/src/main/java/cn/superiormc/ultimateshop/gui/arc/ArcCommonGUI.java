@@ -8,6 +8,7 @@ import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import cn.superiormc.ultimateshop.objects.menus.MenuSender;
 import cn.superiormc.ultimateshop.objects.menus.ObjectMenu;
 import cn.superiormc.ultimateshop.utils.ItemUtil;
+
 import com.fentai.arcmenu.api.ArcMenuScrollEvent;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
@@ -17,10 +18,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ArcCommonGUI extends ArcMenuGUI {
-    final ProductUIModel controls;
+
+    protected final ProductUIModel controls;
+
     private final ArcInfoGUI info;
 
-    ArcCommonGUI(Player player, ObjectMenu menu, boolean bypass, ArcMenuRuntime runtime) {
+    protected ArcCommonGUI(Player player, ObjectMenu menu, boolean bypass, ArcMenuRuntime runtime) {
         super(player, menu, bypass, runtime);
         controls = new ProductUIModel(menu, player);
         info = new ArcInfoGUI(this);
@@ -106,8 +109,7 @@ public class ArcCommonGUI extends ArcMenuGUI {
         return canDisplayMenu()
             && item.isVisibleInMenu("arcmenu")
             && item.canDisplay(MenuSender.of(player, "arcmenu"))
-            && item.getShopObject().getProductNotHidden(MenuSender.of(player, "arcmenu"), item)
-        != null;
+            && item.getShopObject().getProductNotHidden(MenuSender.of(player, "arcmenu"), item) != null;
     }
 
     @Override

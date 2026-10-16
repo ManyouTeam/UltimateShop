@@ -12,6 +12,7 @@ import cn.superiormc.ultimateshop.objects.caches.FavouriteProductReference;
 import cn.superiormc.ultimateshop.objects.caches.ObjectCache;
 import cn.superiormc.ultimateshop.objects.menus.ObjectFavouriteMenu;
 import cn.superiormc.ultimateshop.utils.TextUtil;
+
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 
@@ -22,6 +23,7 @@ import java.util.Map;
 final class ArcFavouriteGUI extends ArcCommonGUI {
 
     private final ObjectFavouriteMenu favouriteMenu;
+
     private boolean editing;
 
     ArcFavouriteGUI(Player player, ObjectFavouriteMenu menu, boolean bypass, boolean editing, ArcMenuRuntime runtime) {

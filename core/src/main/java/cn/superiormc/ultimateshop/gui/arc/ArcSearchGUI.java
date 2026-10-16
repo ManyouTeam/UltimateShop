@@ -13,6 +13,7 @@ import cn.superiormc.ultimateshop.objects.buttons.ObjectSearchStateButton;
 import cn.superiormc.ultimateshop.objects.menus.ObjectSearchMenu;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
 import cn.superiormc.ultimateshop.utils.TextUtil;
+
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 
@@ -22,6 +23,7 @@ import java.util.Map;
 final class ArcSearchGUI extends ArcCommonGUI {
 
     private final ObjectSearchMenu searchMenu;
+
     private String searchKeyword = "";
 
     ArcSearchGUI(Player player, ObjectSearchMenu menu, boolean bypass, ArcMenuRuntime runtime) {
@@ -41,7 +43,8 @@ final class ArcSearchGUI extends ArcCommonGUI {
             }
         }
         String keyword = TextUtil.normalizeText(searchKeyword);
-        List<ObjectItem> matched = keyword.isEmpty() ? List.of() : ShopHelper.getTargetItems(keyword, player);
+        List<ObjectItem> matched = keyword.isEmpty()
+            ? List.of() : ShopHelper.getTargetItems(keyword, player);
         boolean hasFilter = !keyword.isEmpty();
         String displayKeyword = searchKeyword.trim().isEmpty()
             ? LanguageManager.languageManager.getStringText(player, "plugin.search-gui-name-empty")

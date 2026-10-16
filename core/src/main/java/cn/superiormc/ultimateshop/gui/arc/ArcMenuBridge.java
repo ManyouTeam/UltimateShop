@@ -1,17 +1,16 @@
 package cn.superiormc.ultimateshop.gui.arc;
 
 import cn.superiormc.ultimateshop.UltimateShop;
-import cn.superiormc.ultimateshop.managers.MenuStatusManager;
 import cn.superiormc.ultimateshop.managers.AbstractManager;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.ErrorManager;
-import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
+import cn.superiormc.ultimateshop.managers.MenuStatusManager;
 import cn.superiormc.ultimateshop.objects.ObjectShop;
+import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import cn.superiormc.ultimateshop.objects.menus.MenuType;
 import cn.superiormc.ultimateshop.objects.menus.ObjectMenu;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
 
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 public final class ArcMenuBridge extends AbstractManager {
@@ -32,9 +31,7 @@ public final class ArcMenuBridge extends AbstractManager {
             && menu.getConfig() != null
             && menu.getType() != MenuType.ItemSell
             && menu.getType() != MenuType.More
-            && ConfigManager.configManager
-            .getMenuUIMode(menu.getConfig(), "java")
-            .equals("arcmenu")
+            && ConfigManager.configManager.getMenuUIMode(menu.getConfig(), "java").equals("arcmenu")
             && !CommonUtil.isBedrockPlayer(player);
     }
 

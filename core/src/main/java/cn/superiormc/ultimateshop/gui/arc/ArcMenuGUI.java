@@ -55,34 +55,57 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public abstract class ArcMenuGUI extends AbstractGUI {
+
     private static final float ITEM_DEPTH_SCALE = .01f;
 
     private static final Pattern VANILLA_TRANSLATION =
         Pattern.compile("<(?:lang|translate|translatable):((?:item|block)\\.minecraft\\.[a-z0-9_.]+)>");
+
     protected final ObjectMenu menu;
+
     protected final boolean bypass;
+
     private final ArcMenuRuntime runtime;
+
     protected final MenuUILayout layout;
+
     protected Map<Integer, AbstractButton> menuButtons = new LinkedHashMap<>();
+
     protected final Map<Integer, ItemStack> menuItems = new LinkedHashMap<>();
+
     protected String title;
-    ArcMenuApplicationContext context;
+
+    protected ArcMenuApplicationContext context;
+
     private double cursorDepth;
+
     private ArcMenuSurface surface;
+
     private final Map<String, Node> nodes = new LinkedHashMap<>();
+
     private final Set<String> used = new HashSet<>();
+
     private final List<Hit> hits = new ArrayList<>();
+
     protected Map<Integer, AbstractButton> buttons = Map.of();
+
     private Hit hovered;
+
     private int page;
+
     private int pageCount = 1;
+
     private long nextClick;
+
     private int age;
+
     private int closing;
+
     private boolean finished;
+
     private boolean active;
 
-    ArcMenuGUI(Player player, ObjectMenu menu, boolean bypass, ArcMenuRuntime runtime) {
+    protected ArcMenuGUI(Player player, ObjectMenu menu, boolean bypass, ArcMenuRuntime runtime) {
         super(player);
         this.menu = menu;
         this.bypass = bypass;
@@ -166,11 +189,7 @@ public abstract class ArcMenuGUI extends AbstractGUI {
                     return;
                 }
                 if (!handleScroll(event, hit(event.getPoint()))) {
-                    page =
-                        Math.max(
-                        0,
-                        Math.min(
-                        pageCount - 1,
+                    page = Math.max(0, Math.min(pageCount - 1,
                         page + Integer.signum(event.getSteps())));
                     render();
                 }
@@ -286,13 +305,9 @@ public abstract class ArcMenuGUI extends AbstractGUI {
         if (animations() && (age <= animationDuration() + 10 || hasDetails() && age % 4 == 0)) {
             animate();
         }
-        if (age
-            % Math.max(
-            5,
-            ConfigManager.configManager.getInt(
-            "menu.ui.renderers.arcmenu.update-interval", 20))
-            == 0
-            && usable()) {
+        int updateInterval = Math.max(5,
+            ConfigManager.configManager.getInt("menu.ui.renderers.arcmenu.update-interval", 20));
+        if (age % updateInterval == 0 && usable()) {
             constructGUI();
         }
         // A command can open another presentation while ArcMenu still owns the camera.
@@ -337,23 +352,17 @@ public abstract class ArcMenuGUI extends AbstractGUI {
         if (hit == null) {
             return;
         }
-        nextClick =
-            System.nanoTime()
-            + Math.max(
-            0,
-            ConfigManager.configManager.getLong(
-            "menu.cooldown.click", 5L))
-         * 50_000_000L;
+        nextClick = System.nanoTime()
+            + Math.max(0, ConfigManager.configManager.getLong("menu.cooldown.click", 5L)) * 50_000_000L;
         if (!canDisplayMenu()) {
             closeGUI();
             return;
         }
-        ClickType type =
-            event.getButton() == ArcMenuPointerButton.RIGHT
-        ? (event.getSneaking() ? ClickType.SHIFT_RIGHT : ClickType.RIGHT)
-        : event.getButton() == ArcMenuPointerButton.MIDDLE
-        ? ClickType.MIDDLE
-        : (event.getSneaking() ? ClickType.SHIFT_LEFT : ClickType.LEFT);
+        ClickType type = event.getButton() == ArcMenuPointerButton.RIGHT
+            ? (event.getSneaking() ? ClickType.SHIFT_RIGHT : ClickType.RIGHT)
+            : event.getButton() == ArcMenuPointerButton.MIDDLE
+                ? ClickType.MIDDLE
+                : (event.getSneaking() ? ClickType.SHIFT_LEFT : ClickType.LEFT);
         hit.action.accept(type);
         if (usable()) {
             render();
@@ -500,11 +509,8 @@ public abstract class ArcMenuGUI extends AbstractGUI {
             }
             if (button.isVisibleInMenu("arcmenu")
                 && button.canDisplay(MenuSender.of(player, "arcmenu"))) {
-                entries.add(
-                    new MenuUILayout.Entry(
-                    entry.getKey(),
-                    button.getButtonConfig(),
-                    isProductCard(entry.getKey())));
+                entries.add(new MenuUILayout.Entry(
+                    entry.getKey(), button.getButtonConfig(), isProductCard(entry.getKey())));
             }
         }
         List<MenuUILayout.Element> elements = layout.arrange(entries);
@@ -512,9 +518,7 @@ public abstract class ArcMenuGUI extends AbstractGUI {
             closeGUI();
             return;
         }
-        pageCount =
-            Math.max(
-            1,
+        pageCount = Math.max(1,
             elements.stream().mapToInt(MenuUILayout.Element::page).max().orElse(0) + 1);
         page = Math.min(page, pageCount - 1);
         for (MenuUILayout.Element element : elements) {
@@ -666,13 +670,9 @@ public abstract class ArcMenuGUI extends AbstractGUI {
     }
 
     final double number(String path, double fallback, double minimum, double maximum) {
-        double value =
-            layout.getUi()
-            .getDouble(
-            path.startsWith("cards.")
-            ? "products.card." + path.substring(6)
-            : "renderers.arcmenu." + path,
-            fallback);
+        String key = path.startsWith("cards.")
+            ? "products.card." + path.substring(6) : "renderers.arcmenu." + path;
+        double value = layout.getUi().getDouble(key, fallback);
         if (!Double.isFinite(value)) {
             return fallback;
         }
@@ -680,8 +680,7 @@ public abstract class ArcMenuGUI extends AbstractGUI {
     }
 
     final int color(String path, int fallback) {
-        String themePath =
-            switch (path) {
+        String themePath = switch (path) {
             case "button" -> "button.background";
             case "button-hover" -> "button.hover";
             case "button-border" -> "button.border";
@@ -703,8 +702,8 @@ public abstract class ArcMenuGUI extends AbstractGUI {
     }
 
     final String parse(String text) {
-        String value =
-            TextUtil.withPAPI(CommonUtil.parseLang(player, text == null ? "" : text), player);
+        String value = TextUtil.withPAPI(
+            CommonUtil.parseLang(player, text == null ? "" : text), player);
         MinecraftResourceManager resources = MinecraftResourceManager.minecraftResourceManager;
         if (resources != null) {
             Matcher translations = VANILLA_TRANSLATION.matcher(value);
@@ -727,19 +726,11 @@ public abstract class ArcMenuGUI extends AbstractGUI {
             return;
         }
         String locale = player.getLocale();
-        resources
-            .requestLanguage(locale)
-            .thenRun(
-            () ->
-            SchedulerUtil.runSync(
-            player,
-            () -> {
-                if (player.isOnline()
-                    && usable()
-                    && locale.equals(player.getLocale())) {
-                    render();
-                }
-            }));
+        resources.requestLanguage(locale).thenRun(() -> SchedulerUtil.runSync(player, () -> {
+            if (player.isOnline() && usable() && locale.equals(player.getLocale())) {
+                render();
+            }
+        }));
     }
 
     final List<String> lore(ItemStack stack) {
@@ -751,10 +742,8 @@ public abstract class ArcMenuGUI extends AbstractGUI {
     }
 
     final int buttonColor(String id, boolean hovered) {
-        String type =
-            id.endsWith(":action:buy") || id.endsWith(":action:buy-or-sell")
-        ? "buy-button"
-        : id.endsWith(":action:sell") ? "sell-button" : "button";
+        String type = id.endsWith(":action:buy") || id.endsWith(":action:buy-or-sell")
+            ? "buy-button" : id.endsWith(":action:sell") ? "sell-button" : "button";
         int fallback =
             type.equals("buy-button")
         ? 0xFF21674D
@@ -885,20 +874,15 @@ public abstract class ArcMenuGUI extends AbstractGUI {
         if (context.pointerMode() == ArcMenuPointerMode.MOUSE) {
             depth = ArcMenuLayout.cursorSafeDepth(depth, cursorDepth, canvasScale());
         }
-        double perspectiveScale =
-            ArcMenuLayout.overlayScale(
+        double perspectiveScale = ArcMenuLayout.overlayScale(
             depth, pixelsPerBlock(), surface.getCanvas().getDesignDistance());
-        Location location =
-            surface.toWorld(
+        Location location = surface.toWorld(
             (x - layout.getWidth() / 2.0) * perspectiveScale * canvasScale(),
             (layout.getHeight() / 2.0 - y) * perspectiveScale * canvasScale(),
             depth * canvasScale());
         if (node == null) {
-            T display =
-                type.cast(context.spawnPrivate(
-                location,
-                type,
-                (Consumer<T>) entity -> {
+            T display = type.cast(context.spawnPrivate(
+                location, type, (Consumer<T>) entity -> {
                     entity.setPersistent(false);
                     entity.setBillboard(Display.Billboard.FIXED);
                     entity.setBrightness(new Display.Brightness(15, 15));
@@ -929,19 +913,10 @@ public abstract class ArcMenuGUI extends AbstractGUI {
         Vector right = surface.right();
         Vector up = surface.up();
         Vector normal = surface.normal();
-        node.rotation =
-            new Quaternionf()
-            .setFromNormalized(
-            new Matrix3f(
-            (float) right.getX(),
-            (float) right.getY(),
-            (float) right.getZ(),
-            (float) up.getX(),
-            (float) up.getY(),
-            (float) up.getZ(),
-            (float) normal.getX(),
-            (float) normal.getY(),
-            (float) normal.getZ()));
+        node.rotation = new Quaternionf().setFromNormalized(new Matrix3f(
+            (float) right.getX(), (float) right.getY(), (float) right.getZ(),
+            (float) up.getX(), (float) up.getY(), (float) up.getZ(),
+            (float) normal.getX(), (float) normal.getY(), (float) normal.getZ()));
         // The plane basis already supplies rotation; clear Bukkit's location rotation.
         node.display.setRotation(0, 0);
         node.overlayScale = (float) perspectiveScale;
@@ -950,27 +925,17 @@ public abstract class ArcMenuGUI extends AbstractGUI {
     }
 
     private void animate() {
-        float factor =
-            closing > 0
-        ? Math.max(.01f, 1 - (closing - 1) / (float) animationDuration())
-        : animations()
-        ? ArcMenuLayout.easeOut(
-            Math.min(1, age / (float) animationDuration()))
-        : 1;
+        float factor = closing > 0
+            ? Math.max(.01f, 1 - (closing - 1) / (float) animationDuration())
+            : animations()
+                ? ArcMenuLayout.easeOut(Math.min(1, age / (float) animationDuration())) : 1;
         for (Node node : nodes.values()) {
             if (!node.visible) {
                 continue;
             }
-            float stagger =
-                closing > 0 || !animations()
-            ? factor
-            : ArcMenuLayout.easeOut(
-                Math.max(
-                0,
-                Math.min(
-                1,
-                (age - node.delay)
-                / (float) animationDuration())));
+            float stagger = closing > 0 || !animations()
+                ? factor : ArcMenuLayout.easeOut(
+                    Math.max(0, Math.min(1, (age - node.delay) / (float) animationDuration())));
             transform(node, stagger);
         }
     }
@@ -1029,17 +994,14 @@ public abstract class ArcMenuGUI extends AbstractGUI {
     }
 
     final double canvasScale() {
-        double global =
-            ConfigManager.configManager.getDouble(
+        double global = ConfigManager.configManager.getDouble(
             "menu.ui.renderers.arcmenu.screen-scale", 1.5);
         double local = layout.getUi().getDouble("renderers.arcmenu.screen-scale", global);
-        double fit =
-            Math.min(
+        double fit = Math.min(
             surface.getCanvas().getWidth() / (double) layout.getWidth(),
             surface.getCanvas().getHeight() / (double) layout.getHeight());
-        return fit
-         * ArcMenuLayout.designPixelsPerBlock(global)
-        / ArcMenuLayout.designPixelsPerBlock(local);
+        return fit * ArcMenuLayout.designPixelsPerBlock(global)
+            / ArcMenuLayout.designPixelsPerBlock(local);
     }
 
     private double pixelsPerBlock() {
@@ -1047,33 +1009,59 @@ public abstract class ArcMenuGUI extends AbstractGUI {
     }
 
     private static final class Node {
-        final Display display;
-        Vector3f scale = new Vector3f(1);
-        Quaternionf rotation = new Quaternionf();
-        float hover = 1;
-        boolean leftAligned;
-        double textWidth;
-        double panelWidth, panelHeight;
-        int delay;
-        Vector location;
-        boolean visible = true;
-        Transformation lastTransform;
-        Matrix4f lastMatrix;
-        float overlayScale = 1;
-        boolean tooltip;
 
-        Node(Display display) {
+        private final Display display;
+
+        private Vector3f scale = new Vector3f(1);
+
+        private Quaternionf rotation = new Quaternionf();
+
+        private float hover = 1;
+
+        private boolean leftAligned;
+
+        private double textWidth;
+
+        private double panelWidth;
+
+        private double panelHeight;
+
+        private int delay;
+
+        private Vector location;
+
+        private boolean visible = true;
+
+        private Transformation lastTransform;
+
+        private Matrix4f lastMatrix;
+
+        private float overlayScale = 1;
+
+        private boolean tooltip;
+
+        private Node(Display display) {
             this.display = display;
         }
     }
 
     static final class Hit {
-        final String id;
-        final double x, y, w, h;
-        final List<String> tooltip;
-        final Consumer<ClickType> action;
 
-        Hit(
+        private final String id;
+
+        private final double x;
+
+        private final double y;
+
+        private final double w;
+
+        private final double h;
+
+        private final List<String> tooltip;
+
+        private final Consumer<ClickType> action;
+
+        private Hit(
             String id,
             double x,
             double y,

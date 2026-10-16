@@ -1,12 +1,11 @@
 package cn.superiormc.ultimateshop.gui.arc;
 
 import cn.superiormc.ultimateshop.UltimateShop;
+import cn.superiormc.ultimateshop.managers.ErrorManager;
 import cn.superiormc.ultimateshop.objects.ObjectShop;
 import cn.superiormc.ultimateshop.objects.menus.ObjectFavouriteMenu;
 import cn.superiormc.ultimateshop.objects.menus.ObjectMenu;
 import cn.superiormc.ultimateshop.objects.menus.ObjectSearchMenu;
-import org.bukkit.entity.Player;
-import cn.superiormc.ultimateshop.managers.ErrorManager;
 
 import com.fentai.arcmenu.api.ArcMenuApi;
 import com.fentai.arcmenu.api.ArcMenuApplicationHandle;
@@ -15,6 +14,7 @@ import com.fentai.arcmenu.api.ArcMenuApplicationSession;
 import com.fentai.arcmenu.api.ArcMenuCanvas;
 import com.fentai.arcmenu.api.ArcMenuCapability;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.List;
@@ -35,19 +35,14 @@ final class ArcMenuRuntime implements AutoCloseable {
 
     double cursorDepth() {
         var plugin = Bukkit.getPluginManager().getPlugin("ArcMenu");
-        double depth =
-            plugin instanceof JavaPlugin javaPlugin
-        ? javaPlugin.getConfig().getDouble("mouse.cursor.z", 5)
-        : 5;
+        double depth = plugin instanceof JavaPlugin javaPlugin
+            ? javaPlugin.getConfig().getDouble("mouse.cursor.z", 5) : 5;
         return Double.isFinite(depth) ? depth : 5;
     }
 
     static ArcMenuRuntime create() {
         ArcMenuApi api = Bukkit.getServicesManager().load(ArcMenuApi.class);
-        if (api == null
-            || !api.capabilities()
-            .containsAll(
-            Set.of(
+        if (api == null || !api.capabilities().containsAll(Set.of(
             ArcMenuCapability.APPLICATION_SESSIONS,
             ArcMenuCapability.SCREEN_SURFACE,
             ArcMenuCapability.POINTER_EVENTS))) {
@@ -58,31 +53,19 @@ final class ArcMenuRuntime implements AutoCloseable {
 
     private ArcMenuRuntime(ArcMenuApi api) {
         this.api = api;
-        handle =
-            api.registerApplication(
+        handle = api.registerApplication(
             UltimateShop.instance,
             APPLICATION,
             ArcMenuApplicationOptions.builder()
-            .captureMouseScroll(true)
-            .inheritCanvas(false)
-            .canvas(
-            new ArcMenuCanvas(
-            UltimateShop.instance
-            .getConfig()
-            .getInt("menu.ui.layout.canvas.width", 648),
-            UltimateShop.instance
-            .getConfig()
-            .getInt(
-            "menu.ui.layout.canvas.height",
-            396),
-            ArcMenuLayout.designPixelsPerBlock(
-            UltimateShop.instance
-            .getConfig()
-            .getDouble(
-            "menu.ui.renderers.arcmenu.screen-scale",
-            1.5)),
-            3))
-            .build(),
+                .captureMouseScroll(true)
+                .inheritCanvas(false)
+                .canvas(new ArcMenuCanvas(
+                    UltimateShop.instance.getConfig().getInt("menu.ui.layout.canvas.width", 648),
+                    UltimateShop.instance.getConfig().getInt("menu.ui.layout.canvas.height", 396),
+                    ArcMenuLayout.designPixelsPerBlock(UltimateShop.instance.getConfig()
+                        .getDouble("menu.ui.renderers.arcmenu.screen-scale", 1.5)),
+                    3))
+                .build(),
             context -> {
                 ArcMenuGUI gui = pending.remove(context.getPlayer().getUniqueId());
                 if (gui == null) {
