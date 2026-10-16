@@ -37,10 +37,8 @@ public abstract class AbstractButton {
         if (settings == null) {
             return null;
         }
-        if (settings.contains("dialog.show-sprite")) {
-            return settings.getBoolean("dialog.show-sprite");
-        }
-        return settings.contains("ui.show-sprite") ? settings.getBoolean("ui.show-sprite") : null;
+        return settings.contains("dialog.show-sprite")
+            ? settings.getBoolean("dialog.show-sprite") : null;
     }
 
     public ButtonType getType() {
@@ -60,18 +58,11 @@ public abstract class AbstractButton {
         if (settings == null || presentation == null) {
             return true;
         }
-        if (settings.isConfigurationSection("menu-visibility")) {
-            boolean fallback = true;
-            if ("ore".equals(presentation) || "item-action-list".equals(presentation)) {
-                fallback = settings.getBoolean("menu-visibility.dialog", true);
-            }
-            return settings.getBoolean("menu-visibility." + presentation, fallback);
+        boolean fallback = true;
+        if ("ore".equals(presentation) || "item-action-list".equals(presentation)) {
+            fallback = settings.getBoolean("menu-visibility.dialog", true);
         }
-        if (settings.isList("ui.visible-in")) {
-            String mode = "item-action-list".equals(presentation) ? "dialog" : presentation;
-            return settings.getStringList("ui.visible-in").contains(mode);
-        }
-        return true;
+        return settings.getBoolean("menu-visibility." + presentation, fallback);
     }
 
     public boolean hasShopMenuAction() {
@@ -101,8 +92,7 @@ public abstract class AbstractButton {
     }
 
     public boolean usesItemActionDialogLayout(String menuLayout) {
-        String layout = config == null ? menuLayout : config.getString("dialog.layout",
-            config.getString("ui.renderers.dialog.layout", menuLayout));
+        String layout = config == null ? menuLayout : config.getString("dialog.layout", menuLayout);
         return "item-action-list".equalsIgnoreCase(layout);
     }
 

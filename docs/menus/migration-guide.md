@@ -1,6 +1,6 @@
 # 🔄 Menu Configuration Compatibility
 
-Most menu options retain their long-standing names. The graphical `ui` section is reserved for Ore and ArcMenu canvas/layout, appearance and controls, not native GUI selection. Existing newer `ui.mode`, `ui.visible-in` and Dialog/Form renderer paths remain readable where implemented. A global `menu.ui.mode` selector is honored only when no explicit `menu.dialog.enabled`, `menu.bedrock.enabled` or `menu.arcmenu.enabled` switch is configured; new examples should use the original keys.
+Most menu options retain their long-standing names. The graphical `ui` section is reserved for Ore and ArcMenu canvas/layout, appearance and controls, not native GUI selection. `ui.mode`, `ui.visible-in`, `ui.show-sprite` and Form/Dialog renderer paths under `ui.renderers` are no longer supported; use the native keys shown below.
 
 ## Native configuration keys
 
@@ -59,7 +59,7 @@ Java selection is **ArcMenu → Dialog/Ore → Inventory**. ArcMenu requires a c
 
 - Keep `layout`, `buttons`, product IDs, conditions, actions and the special search/favourite/quantity/input nodes unchanged.
 - Keep `display-item.bedrock` and product `bedrock.click-event`.
-- Move newly written renderer controls out of `ui.renderers.form` and `ui.renderers.dialog` into `bedrock` and `dialog`. Graphical renderer options remain under `ui.renderers.ore` and `ui.renderers.arcmenu`.
+- Use `bedrock` and `dialog` for native renderer controls. Graphical renderer options remain under `ui.renderers.ore` and `ui.renderers.arcmenu`. The Editor exposes native switches, sprite options and a `menu-visibility` editor for each presentation.
 - Do not rewrite old Ore visual placement values expecting pixel-identical output: current Ore uses graphical canvas/areas.
 - Menu folder locations are documented separately; changing these configuration keys does not move files.
 

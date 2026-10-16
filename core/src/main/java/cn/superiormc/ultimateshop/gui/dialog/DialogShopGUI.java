@@ -73,8 +73,8 @@ public class DialogShopGUI extends DialogGUI {
         if (content != null && !content.isEmpty()) {
             builder.body(content);
         }
-        builder.buttonWidth(menu.getInt("dialog.button-width", menu.getInt("ui.renderers.dialog.button-width", 150)));
-        builder.columns(menu.getInt("dialog.columns", menu.getInt("ui.renderers.dialog.columns", 2)));
+        builder.buttonWidth(menu.getInt("dialog.button-width", 150));
+        builder.columns(menu.getInt("dialog.columns", 2));
         String dialogLayout = ConfigManager.configManager.getDialogLayout(menu.getConfig());
         builder.layout(dialogLayout);
         ordered.forEach((slot, button) -> addButton(builder, slot, button, dialogLayout));

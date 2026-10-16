@@ -32,7 +32,7 @@ arcmenu:
 
 A presentation needs its global setting and the menu setting enabled. An omitted menu `dialog.enabled` or `bedrock.enabled` defaults to true; ArcMenu is opt-in (`arcmenu.enabled: false` by default). Java presentation priority is **ArcMenu → Dialog/Ore → Inventory**. If ArcMenu is not available, enabled Dialog/Ore is attempted next. Bedrock Form is selected separately.
 
-Java native Dialog supports `dialog.layout: multi-action` and `item-action-list`; `dialog.layout: ore` selects the current Ore renderer, whose graphical layout is configured under `ui.layout`. Existing `ui.mode` values remain readable for transition compatibility; the documented keys above are preferred.
+Java native Dialog supports `dialog.layout: multi-action` and `item-action-list`; `dialog.layout: ore` selects the current Ore renderer, whose graphical layout is configured under `ui.layout`. The graphical `ui` section does not select presentation modes; `ui.mode` is not supported.
 
 ## UI comparison
 

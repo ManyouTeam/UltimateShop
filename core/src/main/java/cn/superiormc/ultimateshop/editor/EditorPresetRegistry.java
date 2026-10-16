@@ -46,6 +46,7 @@ public class EditorPresetRegistry {
             case ROOT_SHOP -> new EditorPreset(kind, rootShopFields());
             case ROOT_MENU -> new EditorPreset(kind, rootMenuFields(target));
             case UI_SECTION -> new EditorPreset(kind, uiFields(target, path));
+            case VISIBILITY_SECTION -> new EditorPreset(kind, visibilityFields());
             case SHOP_ITEM -> new EditorPreset(kind, shopItemFields());
             case BUTTON_ENTRY -> new EditorPreset(kind, buttonFields());
             case LIMITS_SECTION -> new EditorPreset(kind, limitFields(target, path));
@@ -62,6 +63,9 @@ public class EditorPresetRegistry {
 
         if (normalizedPath.isEmpty()) {
             return target.getScope() == EditorScope.SHOP ? EditorPresetKind.ROOT_SHOP : EditorPresetKind.ROOT_MENU;
+        }
+        if (normalizedPath.equals("menu-visibility") || normalizedPath.endsWith(".menu-visibility")) {
+            return EditorPresetKind.VISIBILITY_SECTION;
         }
         if (normalizedPath.equals("ui") || normalizedPath.endsWith(".ui")
                 || normalizedPath.equals("ui.products") || normalizedPath.endsWith(".ui.products")) {
@@ -122,6 +126,15 @@ public class EditorPresetRegistry {
         List<EditorPresetField> fields = new ArrayList<>(List.of(
                 field("title", Material.NAME_TAG, EditorPresetFieldType.STRING),
                 field("content", Material.PAPER, EditorPresetFieldType.STRING),
+                field("dialog.enabled", Material.LEVER, EditorPresetFieldType.BOOLEAN),
+                choice("dialog.layout", Material.BOOK, "multi-action", "item-action-list", "ore"),
+                field("dialog.content", Material.PAPER, EditorPresetFieldType.STRING),
+                field("dialog.button-width", Material.STONE_BUTTON, EditorPresetFieldType.INTEGER),
+                field("dialog.columns", Material.BOOKSHELF, EditorPresetFieldType.INTEGER),
+                field("bedrock.enabled", Material.LEVER, EditorPresetFieldType.BOOLEAN),
+                field("bedrock.content", Material.PAPER, EditorPresetFieldType.STRING),
+                field("arcmenu.enabled", Material.LEVER, EditorPresetFieldType.BOOLEAN),
+                field("arcmenu.content", Material.PAPER, EditorPresetFieldType.STRING),
                 field("ui", Material.PAINTING, EditorPresetFieldType.SECTION),
                 field("size", Material.CHEST, EditorPresetFieldType.INTEGER),
                 field("dynamic-layout", Material.REDSTONE, EditorPresetFieldType.BOOLEAN),
@@ -180,6 +193,17 @@ public class EditorPresetRegistry {
         return actions.toArray(new String[0]);
     }
 
+    private static List<EditorPresetField> visibilityFields() {
+        return List.of(
+                field("inventory", Material.CHEST, EditorPresetFieldType.BOOLEAN),
+                field("form", Material.MAP, EditorPresetFieldType.BOOLEAN),
+                field("dialog", Material.BOOK, EditorPresetFieldType.BOOLEAN),
+                field("item-action-list", Material.ITEM_FRAME, EditorPresetFieldType.BOOLEAN),
+                field("ore", Material.PAINTING, EditorPresetFieldType.BOOLEAN),
+                field("arcmenu", Material.SPYGLASS, EditorPresetFieldType.BOOLEAN)
+        );
+    }
+
     private static List<EditorPresetField> uiFields(EditorTarget target, String path) {
         if (path.endsWith("ui.products")) {
             return List.of(
@@ -195,8 +219,6 @@ public class EditorPresetRegistry {
                 || path.equals("ui") && target.getScope() != EditorScope.SHOP;
         if (!menu) {
             return List.of(
-                    field("visible-in", Material.ENDER_EYE, EditorPresetFieldType.STRING_LIST),
-                    field("show-sprite", Material.ITEM_FRAME, EditorPresetFieldType.BOOLEAN),
                     choice("appearance", Material.PAINTING, "card", "button"),
                     field("placement.enabled", Material.LEVER, EditorPresetFieldType.BOOLEAN),
                     field("placement.area", Material.NAME_TAG, EditorPresetFieldType.STRING),
@@ -216,8 +238,6 @@ public class EditorPresetRegistry {
             );
         }
         return List.of(
-                choice("mode.java", Material.CHEST, "inherit", "inventory", "dialog", "ore", "arcmenu"),
-                choice("mode.bedrock", Material.MAP, "inherit", "inventory", "form"),
                 field("layout.canvas.width", Material.PAPER, EditorPresetFieldType.INTEGER),
                 field("layout.canvas.height", Material.PAPER, EditorPresetFieldType.INTEGER),
                 field("layout.header", Material.NAME_TAG, EditorPresetFieldType.SECTION),
@@ -226,12 +246,6 @@ public class EditorPresetRegistry {
                 field("products", Material.CHEST, EditorPresetFieldType.SECTION),
                 field("theme", Material.PAINTING, EditorPresetFieldType.SECTION),
                 field("text", Material.WRITABLE_BOOK, EditorPresetFieldType.SECTION),
-                field("renderers.inventory", Material.CHEST, EditorPresetFieldType.SECTION),
-                field("renderers.form", Material.MAP, EditorPresetFieldType.SECTION),
-                choice("renderers.dialog.layout", Material.BOOK, "multi-action", "item-action-list"),
-                field("renderers.dialog.button-width", Material.STONE_BUTTON, EditorPresetFieldType.INTEGER),
-                field("renderers.dialog.columns", Material.BOOKSHELF, EditorPresetFieldType.INTEGER),
-                field("renderers.dialog", Material.BOOK, EditorPresetFieldType.SECTION),
                 field("renderers.ore", Material.PAINTING, EditorPresetFieldType.SECTION),
                 EditorPresetField.choice("renderers.arcmenu.right-click-action", "ArcMenu Right-click Action",
                         "Product right-click action. Default select-amount opens product details.",
@@ -251,6 +265,8 @@ public class EditorPresetRegistry {
     private static List<EditorPresetField> shopItemFields() {
         return List.of(
                 field("display-name", Material.NAME_TAG, EditorPresetFieldType.STRING),
+                field("menu-visibility", Material.ENDER_EYE, EditorPresetFieldType.SECTION),
+                field("dialog.show-sprite", Material.ITEM_FRAME, EditorPresetFieldType.BOOLEAN),
                 field("ui", Material.PAINTING, EditorPresetFieldType.SECTION),
                 field("display-item", Material.ITEM_FRAME, EditorPresetFieldType.SECTION),
                 field("add-lore", Material.WRITABLE_BOOK, EditorPresetFieldType.STRING_LIST),
@@ -312,6 +328,8 @@ public class EditorPresetRegistry {
         return List.of(
                 field("display-item", Material.ITEM_FRAME, EditorPresetFieldType.SECTION),
                 choice("dialog.layout", Material.ITEM_FRAME, "multi-action", "item-action-list"),
+                field("dialog.show-sprite", Material.ITEM_FRAME, EditorPresetFieldType.BOOLEAN),
+                field("menu-visibility", Material.ENDER_EYE, EditorPresetFieldType.SECTION),
                 field("ui", Material.PAINTING, EditorPresetFieldType.SECTION),
                 field("actions", Material.BLAZE_POWDER, EditorPresetFieldType.ACTIONS),
                 field("fail-actions", Material.BLAZE_POWDER, EditorPresetFieldType.ACTIONS),

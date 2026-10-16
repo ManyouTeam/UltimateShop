@@ -52,7 +52,17 @@ ui:
 
 If global and menu ArcMenu are both enabled and the integration is available, ArcMenu opens first. Otherwise, enabled/supported Dialog or Ore is tried before Inventory. Bedrock is handled separately. For Ore, `dialog.layout: ore` chooses the current graphical renderer; its actual canvas, placements and appearance still come from `ui`.
 
-Missing keys inside the menu's `ui` inherit from global `menu.ui` recursively. Explicit menu graphical settings take precedence. Shop `settings.menu-settings` overlays the menu before these graphical defaults are applied. Existing menu-level `ui.mode` remains readable for transition compatibility. Global `menu.ui.mode` is also accepted when no explicit native/ArcMenu global switches are present; new configurations should use `menu.dialog`, `menu.bedrock` and `menu.arcmenu` instead.
+Missing keys inside the menu's `ui` inherit from global `menu.ui` recursively. Explicit menu graphical settings take precedence. Shop `settings.menu-settings` overlays the menu before these graphical defaults are applied. Only `menu.dialog`, `menu.bedrock` and `menu.arcmenu` select presentations. `ui.mode`, `ui.visible-in`, `ui.show-sprite` and Form/Dialog settings under `ui.renderers` are not supported.
+
+## 🛠️ In-game Editor
+
+The menu Editor uses the same public configuration paths as YAML:
+
+- Menu or shop-template settings: `dialog.enabled`, `dialog.layout`, `dialog.content`, `dialog.button-width`, `dialog.columns`, `bedrock.enabled`, `bedrock.content`, `arcmenu.enabled` and `arcmenu.content`.
+- Ordinary buttons and shop products: `dialog.show-sprite` and `menu-visibility`. Open `menu-visibility` to edit the individual `inventory`, `form`, `dialog`, `item-action-list`, `ore` and `arcmenu` boolean options.
+- The `ui` Editor section is exclusively for graphical Ore/ArcMenu placement, cards, themes and drawing options.
+
+The Editor does not offer `ui.mode`, `ui.visible-in`, `ui.show-sprite` or Form/native Dialog renderer settings under `ui`.
 
 ## Product-specific UI values
 

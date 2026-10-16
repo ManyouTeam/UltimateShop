@@ -75,6 +75,8 @@ The first available visible candidate wins. The `dynamic-layout` option is impor
 
 Menu-level `conditions` control opening the menu. `open-actions` and `close-actions` execute when entering and leaving it. These are not the same as the click conditions/actions of one button.
 
+Use the in-game Editor's `menu-visibility` section for presentation-specific switches, or configure its boolean keys directly in YAML. The Editor keeps `dialog.show-sprite` and button `dialog.layout` outside the graphical `ui` section.
+
 ## Visibility is separate from position
 
 ```yaml

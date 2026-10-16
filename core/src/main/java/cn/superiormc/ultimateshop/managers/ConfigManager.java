@@ -36,7 +36,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import static cn.superiormc.ultimateshop.managers.SellChestManager.SELL_CHEST_ID;
@@ -612,11 +611,9 @@ public class ConfigManager extends AbstractManager {
 
     public Object getMenuRendererSetting(
         ConfigurationSection menu, String renderer, String path, Object fallback) {
-        String oldRenderer = renderer.equals("form") ? "bedrock" : renderer;
-        String oldKey = oldRenderer + "." + path;
-        String newKey = "ui.renderers." + renderer + "." + path;
-        Object global = config.get("menu." + oldKey, config.get("menu." + newKey, fallback));
-        return menu == null ? global : menu.get(oldKey, menu.get(newKey, global));
+        String key = (renderer.equals("form") ? "bedrock" : renderer) + "." + path;
+        Object global = config.get("menu." + key, fallback);
+        return menu == null ? global : menu.get(key, global);
     }
 
     public boolean getMenuRendererBoolean(
@@ -641,12 +638,6 @@ public class ConfigManager extends AbstractManager {
     }
 
     public String getDialogLayout(ConfigurationSection menu) {
-        if (menu != null && menu.contains("dialog.layout")) {
-            return menu.getString("dialog.layout", "multi-action");
-        }
-        if (menu != null && "ore".equalsIgnoreCase(menu.getString("ui.mode.java", ""))) {
-            return "ore";
-        }
         return String.valueOf(getMenuRendererSetting(menu, "dialog", "layout", "multi-action"));
     }
 
@@ -660,41 +651,20 @@ public class ConfigManager extends AbstractManager {
     }
 
     public String getMenuUIMode(ConfigurationSection menu, String client) {
-        String mode = menu == null ? null : menu.getString("ui.mode." + client);
-        if (mode == null || mode.equalsIgnoreCase("inherit")) {
-            // Read the global selector from installations still using the earlier UI format,
-            // but never let a bundled default override explicitly configured native switches.
-            boolean hasLegacySwitches = config.contains("menu.dialog.enabled", true)
-                || config.contains("menu.bedrock.enabled", true)
-                || config.contains("menu.arcmenu.enabled", true);
-            if (!hasLegacySwitches && config.contains("menu.ui.mode." + client, true)) {
-                mode = config.getString("menu.ui.mode." + client);
-            }
+        if (client.equals("bedrock")) {
+            return config.getBoolean("menu.bedrock.enabled", true)
+                && (menu == null || menu.getBoolean("bedrock.enabled", true))
+                ? "form" : "inventory";
         }
-        if (mode == null || mode.equalsIgnoreCase("inherit")) {
-            if (client.equals("bedrock")) {
-                mode = config.getBoolean("menu.bedrock.enabled", true)
-                    && (menu == null || menu.getBoolean("bedrock.enabled", true))
-                    ? "form" : "inventory";
-            } else if (config.getBoolean("menu.arcmenu.enabled", false)
-                && menu != null && menu.getBoolean("arcmenu.enabled", false)) {
-                mode = "arcmenu";
-            } else if (config.getBoolean("menu.dialog.enabled", false)
-                && (menu == null || menu.getBoolean("dialog.enabled", true))) {
-                mode = "ore".equalsIgnoreCase(getDialogLayout(menu)) ? "ore" : "dialog";
-            } else {
-                mode = "inventory";
-            }
+        if (config.getBoolean("menu.arcmenu.enabled", false)
+            && menu != null && menu.getBoolean("arcmenu.enabled", false)) {
+            return "arcmenu";
         }
-        mode = mode.toLowerCase(Locale.ROOT);
-        List<String> allowed = client.equals("java")
-            ? List.of("inventory", "dialog", "ore", "arcmenu")
-            : List.of("inventory", "form");
-        if (!allowed.contains(mode)) {
-            ErrorManager.errorManager.sendErrorMessage("§cInvalid UI mode for " + client + ": " + mode);
-            return "inventory";
+        if (config.getBoolean("menu.dialog.enabled", false)
+            && (menu == null || menu.getBoolean("dialog.enabled", true))) {
+            return "ore".equalsIgnoreCase(getDialogLayout(menu)) ? "ore" : "dialog";
         }
-        return mode;
+        return "inventory";
     }
 
     public Object getProductUISetting(
