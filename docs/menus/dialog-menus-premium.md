@@ -1,11 +1,12 @@
-# 💬 Native Dialog UI - Premium
+# 💬 Native Dialog menus — Premium
 
-Native Dialog shares product/action data with Inventory and Form. It requires Premium and Paper 1.21.9+ with supported Dialog APIs. [Ore](ore-menus-premium.md) is the graphical Dialog-based renderer covered separately.
+Native Dialog uses the supported Paper Dialog API to display menus as actions or item lists. It is different from [🪨 Ore](ore-menus-premium.md), which is a graphical renderer built on Dialog.
 
-## Select a layout
+## ✅ Enable native Dialog
+
+Enable the capability in `config.yml`:
 
 ```yaml
-# config.yml
 menu:
   dialog:
     enabled: true
@@ -16,77 +17,93 @@ menu:
       format: '<sprite:"{namespace}:{atlas}":{path}>'
 ```
 
+In your **menu**:
+
 ```yaml
-# Menu file
-title: 'Farming'
+title: '&8Categories'
+size: 9
+layout:
+  - '0000A0000'
 dialog:
   enabled: true
   layout: multi-action
-  content: '<gray>Select a product.'
+  content: '&7Choose a category'
   button-width: 150
   columns: 2
+buttons:
+  A:
+    display-item:
+      material: WHEAT
+      name: '&aFarming'
+    actions:
+      1:
+        type: shop_menu
+        shop: farming
 ```
 
-Choose `dialog.layout: multi-action` for native action buttons, `item-action-list` for clickable item rows, or `ore` for the graphical Ore renderer. Global `menu.dialog.enabled` and menu `dialog.enabled` must allow Dialog. ArcMenu takes precedence when both ArcMenu switches are enabled and its integration is available.
+Both global `menu.dialog.enabled` and menu `dialog.enabled` must be enabled. The server needs a supported Paper Dialog API and the Premium functionality. Java ArcMenu takes precedence if enabled and available; otherwise Dialog is attempted before Inventory.
 
-Buttons can override a native layout using `buttons.<id>.dialog.layout: item-action-list`; use `dialog.show-sprite` for the button or product sprite preference. `dialog.content` supplies the Dialog body; root `content` is an optional fallback.
+## 🧱 Choose a Dialog layout
 
-## Native menu behaviour
-
-Native common/shop menus use root `layout` to identify and order entries; chest gaps do not become graphical coordinates. Products open information with available operations. Ordinary buttons execute their actions with LEFT click. Display conditions and `menu-visibility` remain active. Use `menu-visibility.dialog: true` for native Dialog; `menu-visibility.item-action-list` can override the inherited value and `menu-visibility.ore` controls Ore separately.
-
-A button-level `dialog.layout: item-action-list` can request native item-action rendering for that entry. `dialog.show-sprite` controls its label sprite choice; it is separate from the item icon supplied by item-action-list.
-
-Provide an ordinary button with a direct `type: close` action for reliable closing and menu close actions. Not every Escape dismissal is reported by the native client interface. A fallback exit action uses the menu's inherited `default-button` label when one is needed.
-
-## Dialog renderer reference
-
-Global prefix: `menu.dialog`. Menu overrides: `dialog`. Native list `layout`, `button-width` and `columns` use the menu's inherited settings. Information and quantity helpers use the owning shop menu's renderer settings; favourite editing uses its favourite menu. Automatic sprite defaults remain global.
-
-| Relative key | Meaning |
+| Menu `dialog.layout` | Result |
 | --- | --- |
-| `layout` | `multi-action` or `item-action-list`; Ore is selected with `dialog.layout: ore` |
-| `button-width` | Native list action width, default 150 |
-| `columns` | Native multi-action columns, default 2 |
-| `not-auto-close` | Keep information Dialog open after an action where supported |
-| `auto-add-sprite.enabled` | Automatically prefix labels with material sprites |
-| `auto-add-sprite.auto-hide` | Hide sprite tags in text paths where sprite rendering is not suitable |
-| `auto-add-sprite.format` | Sprite template using `{namespace}`, `{atlas}`, `{path}` |
-| `default-button` | Fallback exit action label |
-| `details` | Ore product View Detail action label |
-| `search.input` | Keyword input label |
-| `search.buttons.search` | Search submit label |
-| `buy-more.display-item` | Show selected item in quantity Dialog |
-| `buy-more.title` | Quantity Dialog title, `{item-name}` |
-| `buy-more.input` | Quantity input label |
-| `buy-more.buttons.confirm` | Continue to information label |
-| `info.display-item` | Show item preview in product information |
-| `info.title` | Information title, `{item-name}` and `{amount}` |
-| `info.buttons.buy`, `sell`, `buy-more`, `sell-all` | Renderer-specific fallback text for native Dialog; graphical labels can be configured separately through `ui.products.actions.labels` |
-| `info.buttons.back` | Information Back label |
-| `favourite-edit.title`, `favourite-edit.content` | Editing action screen title/body, `{item-name}` |
-| `favourite-edit.buttons.forward`, `backward`, `remove`, `back` | Editing controls |
+| `multi-action` | Native Dialog action buttons |
+| `item-action-list` | Native item-based action list |
+| `ore` | Switch to the *graphical Ore renderer*, configured separately through `ui` |
 
-`{lang:key}` references language text. Existing language keys remain `menu.dialog.*`; restoring the native configuration path does not rename language entries.
+The root `layout` identifies source entries; empty Inventory slots do not become empty Dialog rows. One entry can override its native action/list behavior with `buttons.<id>.dialog.layout`. Hide an item in one presentation with `menu-visibility`.
 
-An explicit display-item `sprite` overrides the material sprite where supported. Button/product `dialog.show-sprite` controls the unified icon choice. Use button/product `dialog.show-sprite` and button `dialog.layout` instead of display-item `dialog.show-sprite` or button `dialog.layout`. Automatic material mappings/translations are prepared on demand under `minecraft-resources/<version>/`.
+To suppress a material sprite on a particular button:
 
-## Information, quantity, search and favourites
+```yaml
+buttons:
+  A:
+    dialog:
+      show-sprite: false
+    display-item:
+      material: WHEAT
+      name: '&aFarming'
+    actions:
+      1:
+        type: shop_menu
+        shop: farming
+```
 
-Product information includes original lore plus generated product information. Its actions use shared `ui.products.actions.primary`, `extra` and `labels`, with product overrides under product `ui`. At most two primary actions are selected; extra actions are appended. Actions must be available in click bindings and pass capability filtering. Prices/limits/default amounts retain normal product behaviour.
+This is **button `dialog.show-sprite`**, not `ui.show-sprite` or `display-item.dialog.show-sprite`.
 
-`select-amount` opens a native number input from 1 through the product's configured maximum, then information. It does not use Inventory Buy More amount buttons. Before quantity selection, buying and selling keep their separate defaults. ArcMenu has a different flow, opening details directly.
+## ⚙️ Native Dialog configuration
 
-Native Search uses a keyword input and result information; blank keywords show no results. Back restores the search keyword. It uses root result-slot capacity and result lore, but has no physical item filtering. Ordinary buttons are included; Inventory special action/state/no-result controls are not automatically reproduced as native controls. Native Favourite supports normal and editing flows with saved ordering; empty result slots are omitted. See [Search](search-menus-premium.md) and [Favourite](favourite-menus-premium.md).
+Global defaults are under `menu.dialog`, with supported menu overrides under `dialog`:
 
-<a id="ore-layout"></a>
+| Key relative to `dialog` | Effect |
+| --- | --- |
+| `enabled` | Allow Dialog on this menu |
+| `layout` | `multi-action`, `item-action-list` or `ore` |
+| `content` | Dialog body, falling back to root `content` |
+| `button-width` | Native action width |
+| `columns` | Native multi-action column count |
+| `not-auto-close` | Supported information actions can keep the Dialog open |
+| `auto-add-sprite.enabled/auto-hide/format` | Global material sprite behavior |
+| `default-button` | Fallback exit-action label |
+| `details` | Ore product details label |
+| `info.display-item`, `info.title` | Product information display |
+| `info.buttons.buy/sell/buy-more/sell-all/back` | Product information action labels |
+| `buy-more.display-item/title/input/buttons.confirm` | Native quantity input flow |
+| `search.input`, `search.buttons.search` | Search text input and submit |
+| `favourite-edit.title/content/buttons.*` | Favourite editing controls |
 
-<a id="ore-layout-and-card-content"></a>
-<a id="ore-renderer-reference"></a>
-<a id="generate-and-load-the-resource-pack"></a>
+Some sprite/resource settings are read globally; changing them on one menu may not affect resource generation. Labels can use language placeholders.
 
-## Ore layout
+## 💰 Product actions and quantity
 
-Ore's graphical layout, templates and resource-pack setup are now documented in [Ore UI](ore-menus-premium.md). This anchor remains for older links.
+A product's native Dialog information controls come from its available click bindings and trade eligibility. **`ui.products.actions` only configures graphical Ore/ArcMenu controls**; it does not determine native Dialog buttons.
 
-[UI Modes](ui-overview.md) · [Ore](ore-menus-premium.md) · [Troubleshooting](troubleshooting.md)
+Quantity selection uses a native numeric input when `select-amount` is available and the product supports Buy More. Inventory Buy More slot controls are not displayed inside Dialog. A product retains its default buy/sell amount until a different quantity is selected.
+
+Native Search provides keyword input and results; Favourite supports normal and editing screens. Neither reproduces Inventory item-input slots as native widget slots.
+
+## 🪨 Switching to Ore
+
+Set **menu `dialog.layout: ore`** and configure its canvas and entry placements under `ui`. The graphical Ore renderer also needs its resource pack. Do not place native Dialog `layout` or `button-width` under `ui.renderers.dialog`.
+
+[🪨 Ore](ore-menus-premium.md) · [🎨 Presentation selection](ui-overview.md) · [🔍 Search](search-menus-premium.md) · [❤️ Favourite](favourite-menus-premium.md).

@@ -6,7 +6,7 @@ Files in the dedicated folder are automatically Favourite menus. Common-folder f
 
 <a id="add-products"></a>
 
-## Quick start: add products
+## ⭐ Add products to favourites
 
 The built-in default binds `add-favourite` to `SWAP_OFFHAND` (F). Its configured action in `menu.click-event-actions.add-favourite` uses the `add_favourite` action:
 
@@ -19,10 +19,9 @@ item: '{item}'
 
 Use it within an action list with the relevant shop/product context. Products must allow favourites. Shared Form/Dialog/graphical extra actions can expose the same operation; adding an action label alone does not create its click binding. See [Custom Click Event](../features/custom-click-event-premium.md).
 
-## Menu example
+## ✅ Create a Favourite menu
 
 ```yaml
-menu-type: favourite
 title: 'Favourites'
 content: 'Your saved products.'
 size: 27
@@ -52,9 +51,9 @@ editing-result-lore:
   - '&cDrop: remove'
 ```
 
-## Configuration reference
+## ⚙️ Favourite-only keys
 
-All [common menu settings](general-menus.md#common-menu-configuration) remain available. Ordinary navigation controls belong under `buttons`.
+All [Common menu settings](general-menus.md) remain available. Ordinary navigation controls belong under `buttons`.
 
 | Additional key | Meaning |
 | --- | --- |
@@ -64,9 +63,11 @@ All [common menu settings](general-menus.md#common-menu-configuration) remain av
 | `edit-mode-item.<id>.editing-display-item` | Display when editing is on |
 | `edit-mode-item.<id>.display-item` | Fallback display if the current normal/editing variant is missing |
 | `edit-mode-item.<id>.slot` | Optional zero-based fallback slot when the ID is not found in `layout` |
-| `edit-mode-item.<id>.ui` | Visibility/placement metadata for the edit toggle |
+| `edit-mode-item.<id>.menu-visibility` | Show/hide the editing toggle per presentation |
+| `edit-mode-item.<id>.ui` | Ore/ArcMenu graphical placement and appearance of the toggle |
 | `empty-item.display-item` | Placeholder shown in unoccupied result slots |
-| `empty-item.ui` | Visibility/graphical placement of empty-slot placeholders |
+| `empty-item.menu-visibility` | Presentation visibility for empty-slot placeholders |
+| `empty-item.ui` | Graphical placement of empty-slot placeholders |
 | `result-lore` | Extra lore in normal mode; supports `{shop}` and `{product}` |
 | `editing-result-lore` | Extra lore in edit mode; keep instructions appropriate to the presentation |
 
@@ -74,7 +75,7 @@ Edit-toggle displays support `{editing}` and `{edit-mode}` (true/false), plus `{
 
 Result slots are filled in saved order, limited by the number of configured result slots. Increasing graphical pagination capacity does not by itself increase that source limit. Use one edit toggle: the runtime keeps one resolved edit-mode button/slot rather than a collection of independent toggles.
 
-## Normal and editing modes
+## ✏️ Normal and editing modes
 
 In Inventory normal mode, product clicks use the product's configured click operations. Selecting the edit toggle switches to editing; it does not buy or sell. In Inventory editing:
 
@@ -86,7 +87,7 @@ In Inventory normal mode, product clicks use the product's configured click oper
 
 Removing a favourite does not remove shop stock or player items. Toggle editing off to return to product operations. Saved product references and order are shared across presentations.
 
-## Presentation-specific configuration
+## 🎨 Presentation-specific behavior
 
 Select presentations with the global/menu `dialog.enabled`, `bedrock.enabled` and `arcmenu.enabled` switches. The `ui` section only configures Ore/ArcMenu graphical layout.
 

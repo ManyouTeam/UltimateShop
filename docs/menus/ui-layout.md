@@ -2,7 +2,47 @@
 
 Ore and ArcMenu share the `ui.layout` canvas/area model, `ui.products`, entry `ui.placement`, `ui.appearance` and `ui.theme`. Inventory uses the root slot `layout` instead, while Form and native Dialog use list rendering. Use [Ore](ore-menus-premium.md) or [ArcMenu](arcmenu-menus-premium.md) for renderer-specific behavior.
 
-## Configuration scopes
+## 🚀 First graphical menu
+
+Global graphical defaults live under `config.yml` → `menu.ui`, including the named areas `sidebar` and `content`. The following menu uses those default areas and works as the starting point for **either** Ore or ArcMenu after enabling the chosen renderer:
+
+```yaml
+title: '&8Categories'
+size: 9
+layout:
+  - '0000A0000'
+dialog:
+  enabled: true
+  layout: ore
+arcmenu:
+  enabled: false
+buttons:
+  A:
+    display-item:
+      material: WHEAT
+      name: '&aFarming'
+    actions:
+      1:
+        type: shop_menu
+        shop: farming
+    ui:
+      placement:
+        area: sidebar
+        order: 0
+```
+
+To select Ore, enable global `menu.dialog.enabled` and generate its resource pack. To select ArcMenu, enable both global and menu `arcmenu.enabled` with a compatible integration. The `farming` shop must exist. See [UI modes](ui-overview.md). For a shop's product cards, use:
+
+```yaml
+ui:
+  products:
+    placement:
+      area: content
+```
+
+This inherits the rest of the graphical canvas/grid/card defaults rather than duplicating them. Override the full canvas only when you need custom sizes or areas.
+
+## 🧭 Configuration scopes
 
 | Scope | Location |
 | --- | --- |
@@ -16,7 +56,7 @@ Menu values inherit missing global values recursively. Graphical product action/
 
 Root `title` supplies the title. Ore uses `dialog.content` (then root `content`) for its header; ArcMenu uses `arcmenu.content` (then root `content`). Headers can reference `{title}` and `{content}`, language references and PlaceholderAPI. Start from the included main/shop/search/favourite menu examples. Other graphical layout formats are not automatically converted.
 
-## Shared layout
+## 📐 Canvas, areas and pagination
 
 ```yaml
 ui:
@@ -161,7 +201,7 @@ buttons:
 
 Ordinary buttons without a graphical placement are not displayed. The renderer does not generate Back/Close or infer a sidebar from actions. Root `layout` identifies Inventory/list entries. Graphical menu collection can also include explicitly placed ordinary buttons/products that are absent from the root slot layout. Product placement defaults to `ui.products.placement`; a product's own `ui.placement` overrides it. `appearance: card` also supports category/navigation cards.
 
-## Shared product settings
+## 🛒 Graphical product cards and actions
 
 ```yaml
 ui:
@@ -217,7 +257,7 @@ Actions come from `menu.click-event` or product click overrides, with custom def
 
 Price text reuses dynamic price calculation and sell multiplier display. Compact prices represent one trade unit; information/detail content uses the applicable quantities. Original item lore and generated `add-lore` are retained in product information/tooltips. Presentation conditions can target `arcmenu`, `arcmenu-hover`, `ore` and `ore-hover`; see [Add Lore](display-item-add-lore.md). If there is no lore, tooltip content can fall back to the compact price line.
 
-## Theme and interface text
+## 🎨 Colors and graphical text
 
 `ui.theme` accepts `#RRGGBB` or ArcMenu `#AARRGGBB` strings; quote values in YAML. Ore's generated templates use RGB and drop the alpha channel.
 
@@ -235,7 +275,7 @@ Price text reuses dynamic price calculation and sell multiplier display. Compact
 
 `ui.text.cancel` and `ui.text.no-extra` label the extra-action popup. `ui.text.favourite-edit.forward`, `backward`, `remove` override favourite card editing labels. `ui.text.select-product` is the renderer's unselected-product hint. Use language references for translated labels.
 
-## Differences between renderers
+## 🪨 Ore vs ✨ ArcMenu
 
 ArcMenu uses compact product price text and adjustable font scales; Ore uses generated assets, native text rendering and card body lore. Shared keys do not imply identical visual behavior. ArcMenu does not apply `ui.products.card.price-lines` to its compact price text.
 

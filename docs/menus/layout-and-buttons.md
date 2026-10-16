@@ -2,7 +2,7 @@
 
 A menu's root `layout` identifies entry slots. Its `buttons` section defines ordinary navigation/action buttons; shop menus can also place product IDs and shop-specific buttons. This page covers the shared Inventory-style layout, not the pixel/area coordinates used by Ore and ArcMenu.
 
-## Minimum configuration
+## ✅ Example: two buttons and an Inventory layout
 
 ```yaml
 title: '&8Categories'
@@ -30,7 +30,7 @@ buttons:
 
 Save as `menus/common_menus/categories.yml`, reload and open with `/shop menu categories`. Each row has nine slots. Supported Inventory sizes are 9, 18, 27, 36, 45 and 54.
 
-## Layout markers
+## 🧩 Slot IDs and layout markers
 
 - One ordinary character is one slot, read left to right and then top to bottom.
 - `A` and `X` above refer to `buttons.A` and `buttons.X`. An undefined ID leaves a gap.
@@ -59,7 +59,7 @@ layout:
 
 The first available visible candidate wins. The `dynamic-layout` option is important for player-dependent display conditions. See [Conditional Display](conditional-display-premium.md).
 
-## Button reference
+## ⚙️ Button fields
 
 | Key within `buttons.<id>` | Use |
 | --- | --- |
@@ -77,7 +77,7 @@ Menu-level `conditions` control opening the menu. `open-actions` and `close-acti
 
 Use the in-game Editor's `menu-visibility` section for presentation-specific switches, or configure its boolean keys directly in YAML. The Editor keeps `dialog.show-sprite` and button `dialog.layout` outside the graphical `ui` section.
 
-## Visibility is separate from position
+## 👁️ Visibility is not graphical placement
 
 ```yaml
 buttons:

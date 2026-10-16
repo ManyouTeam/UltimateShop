@@ -1,29 +1,30 @@
-# ⚙️ Menu Configuration & Inheritance
+# ⚙️ Configuration scopes and inheritance
 
-Use this page to locate menu options and understand how configuration values are resolved. Default settings are available in the [repository's `config.yml`](https://github.com/ManyouTeam/UltimateShop/blob/master/plugin/src/main/resources/config.yml); use the examples and configuration supplied with your installation when checking its supported settings.
+**Rule:** Ordinary behavior lives in native menu keys; the `ui` section contains **only Ore/ArcMenu graphics**. Do not move `dialog` or `bedrock` settings into `ui`.
 
-## Where a setting belongs
+## 🧭 Where to put a key
 
-| Scope | YAML path | Purpose |
+| Scope | File / path | Controls |
 | --- | --- | --- |
-| Global menu controls | `config.yml` → `menu.*` | Auto-open, click mappings, cooldown, refresh, quantity menus |
-| Global graphical defaults | `config.yml` → `menu.ui.*` | Ore / ArcMenu canvas, cards, theme, graphic renderers |
-| Individual menu | `menus/<folder>/<id>.yml` → root | `title`, `size`, `layout`, `buttons`, conditions/actions |
-| Individual graphical UI | Menu root `ui.*` | Override Ore / ArcMenu graphical settings |
-| Shop menu override | `shops/<shop>.yml` → `settings.menu-settings.*` | Override the chosen shop template's menu settings |
-| Product/button | Entry root `ui.*`, `menu-visibility`, `dialog.*`, `display-item.*` | Graphical styling/position, display visibility, Dialog options and item display |
+| Global defaults | `config.yml` → `menu.dialog`, `menu.bedrock`, `menu.arcmenu` | Availability, native form/dialog behavior and text |
+| Global graphics | `config.yml` → `menu.ui` | Ore/ArcMenu canvas, cards, colors and renderer graphics |
+| One menu | `menus/<folder>/<id>.yml` | Title, inventory rows, buttons, native presentations |
+| One menu's graphics | Menu root `ui` | Graphical layout/appearance overrides |
+| One shop's screen overrides | `shops/<shop>.yml` → `settings.menu-settings` | Overrides for its menu template |
+| One button or product | `buttons.<id>` / `items.<id>` | Actions, display-item, `menu-visibility`, per-entry graphical placement |
 
-Select Java Dialog/Ore with `menu.dialog.enabled`, menu `dialog.enabled` and `dialog.layout`. Select Bedrock Form with `menu.bedrock.enabled` and menu `bedrock.enabled`. Opt into ArcMenu using both global and menu `arcmenu.enabled`. Inventory `size` and root `layout` remain unchanged.
+## ✅ Example: global defaults
 
-## Renderer selection and graphical inheritance
+In `config.yml`:
 
 ```yaml
-# config.yml
 menu:
   dialog:
-    enabled: false
+    enabled: true
+    not-auto-close: true
   bedrock:
     enabled: true
+    check-method: FLOODGATE
   arcmenu:
     enabled: false
   ui:
@@ -31,17 +32,29 @@ menu:
       canvas:
         width: 648
         height: 414
+    products:
+      placement:
+        area: content
+    theme:
+      background: '#EF0C1223'
 ```
 
+## ✅ Example: one shop's menu
+
+In `menus/shop_menu_templates/farming.yml`:
+
 ```yaml
-# An individual menu
+title: '{shop-name}'
+size: 9
+layout:
+  - '0000A0000'
 dialog:
   enabled: true
   layout: ore
-  content: '&7Browse this shop.'
+  content: '&7Pick an item'
 bedrock:
   enabled: true
-  content: '&7Browse this shop.'
+  content: '&7Choose an item'
 arcmenu:
   enabled: false
 ui:
@@ -50,72 +63,46 @@ ui:
       icon-size: 32
 ```
 
-If global and menu ArcMenu are both enabled and the integration is available, ArcMenu opens first. Otherwise, enabled/supported Dialog or Ore is tried before Inventory. Bedrock is handled separately. For Ore, `dialog.layout: ore` chooses the current graphical renderer; its actual canvas, placements and appearance still come from `ui`.
+This example demonstrates the **locations** of settings. A usable Ore layout also needs appropriate graphical areas and product placements; see [📐 Graphical layout](ui-layout.md).
 
-Missing keys inside the menu's `ui` inherit from global `menu.ui` recursively. Explicit menu graphical settings take precedence. Shop `settings.menu-settings` overlays the menu before these graphical defaults are applied. Only `menu.dialog`, `menu.bedrock` and `menu.arcmenu` select presentations. `ui.mode`, `ui.visible-in`, `ui.show-sprite` and Form/Dialog settings under `ui.renderers` are not supported.
+## 🔀 Precedence: native settings vs graphical settings
+
+**Native Dialog/Form text and behavior:** menu `dialog.*` / `bedrock.*` → global `menu.dialog.*` / `menu.bedrock.*` → method fallback. Different text screens use the relevant menu (for example, search text belongs to the search menu).
+
+**Graphical menu defaults:** the shop template is loaded, `settings.menu-settings` overlays it, then missing `ui` values are filled recursively from global `menu.ui`.
+
+**Graphical product settings:** product `ui.actions` / `ui.price` → owning shop menu `ui.products.actions` / `ui.products.price` → global `menu.ui.products`. These graphical action/price options do *not* configure native Form or Dialog.
+
+| Never confuse | With |
+| --- | --- |
+| Root `layout` (Inventory slots) | `ui.layout` (Ore/ArcMenu canvas) |
+| `dialog.layout: ore` (renderer selection) | `ui.layout.areas` (graphical arrangement) |
+| `display-item.bedrock.icon` (Form button icon) | `ui.products.card.icon-size` (graphical item size) |
+| `menu-visibility.*` (presentation filter) | `ui.placement.enabled` (graphical placement only) |
 
 ## 🛠️ In-game Editor
 
-The menu Editor uses the same public configuration paths as YAML:
+The Editor uses the same YAML keys. Menu presets expose `dialog.enabled/layout/content/button-width/columns`, `bedrock.enabled/content` and `arcmenu.enabled/content`. Button and product presets expose `dialog.show-sprite` and the `menu-visibility` section with one boolean value for each supported presentation.
 
-- Menu or shop-template settings: `dialog.enabled`, `dialog.layout`, `dialog.content`, `dialog.button-width`, `dialog.columns`, `bedrock.enabled`, `bedrock.content`, `arcmenu.enabled` and `arcmenu.content`.
-- Ordinary buttons and shop products: `dialog.show-sprite` and `menu-visibility`. Open `menu-visibility` to edit the individual `inventory`, `form`, `dialog`, `item-action-list`, `ore` and `arcmenu` boolean options.
-- The `ui` Editor section is exclusively for graphical Ore/ArcMenu placement, cards, themes and drawing options.
+The Editor's `ui` page edits **only graphical** coordinates, cards, themes and drawing settings. It does not offer `ui.mode` or native Form/Dialog renderers under `ui`. Edit advanced/unsupported fields through the Editor's raw section editor if necessary.
 
-The Editor does not offer `ui.mode`, `ui.visible-in`, `ui.show-sprite` or Form/native Dialog renderer settings under `ui`.
+## 🔧 Other global menu settings
 
-## Product-specific UI values
+The rest of `config.yml` → `menu` controls features beyond renderer selection:
 
-Graphical product settings such as `ui.actions` and `ui.price` affect Ore and ArcMenu, not ordinary Form or native Dialog. The relevant lookup is **product → owning shop menu → global `menu.ui.products`**. Product-level overrides must therefore be placed at the product root, not inside its `display-item`.
-
-```yaml
-items:
-  A:
-    ui:
-      actions:
-        primary: [buy, sell]
-```
-
-Custom actions still require valid click bindings; adding a label or listing an action in `ui.actions` does not create a click handler. Read [Custom Click Event](../features/custom-click-event-premium.md).
-
-## Global controls outside graphical `menu.ui`
-
-| Path under `menu` | Purpose |
+| Key | What it affects |
 | --- | --- |
-| `auto-open.enabled`, `auto-open.menu` | Default destination for `/shop` |
-| `cooldown.click`, `cooldown.reopen` | Click/reopen throttling; `-1` disables |
-| `prompt.cancel-keyword` | Chat prompt cancellation |
-| `ignore-click-outside`, `anti-dupe-checker` | Inventory interaction checks |
-| `title-update.*` | Inventory title refresh (Premium; PacketEvents support required) |
-| `menu-update.*` | Inventory item refresh |
-| `click-event.*` | Product action to Bukkit click-type mapping |
-| `click-event-actions.*` | Custom product actions (Premium) |
-| `buy-more-menu.*` | Quantity-menu defaults |
-| `search-gui.*`, `favourite-gui.*` | Search/Favourite lists and prompt settings |
-| `sell-all.*` | Global Sell All inventory |
-| `dialog.*`, `bedrock.*`, `arcmenu.enabled` | Presentation selection and native renderer settings |
+| `click-event`, `click-event-actions` | Product click-to-action mapping |
+| `cooldown` | Click and reopening throttling |
+| `menu-update`, `title-update` | Inventory refresh and optional title updates |
+| `buy-more-menu` | Quantity selection defaults |
+| `sell-all` | Sell All Inventory |
+| `search-gui`, `favourite-gui` | Search and Favourite behavior |
+| `auto-open` | Automatic menu opening |
+| `anti-dupe-checker` | Inventory anti-dupe behavior |
 
-For example, the bundled product click mapping is:
+Use the `config.yml` shipped with your plugin for every key and default; this article explains **where** keys belong, not a replacement for the complete configuration file.
 
-```yaml
-menu:
-  click-event:
-    buy: SHIFT_LEFT
-    sell: RIGHT
-    buy-or-sell: LEFT
-    select-amount: SHIFT_RIGHT
-    add-favourite: SWAP_OFFHAND
-    sell-all: DROP
-```
+## 🔗 Continue
 
-A binding can contain multiple Bukkit click names separated by `;;`; `NEVER` disables a binding. These actions and [UI product action buttons](ui-layout.md) are related but not interchangeable.
-
-## Performance and maintenance
-
-`menu.menu-update.circle-update` and `menu.menu-update.click-update` refresh Inventory item displays; leave periodic updates off unless your menus require them. Inventory title updates can visibly flash. ArcMenu has its own `ui.renderers.arcmenu.update-interval`. Configure menu refresh through `menu.menu-update`; `menu.shop` is not a menu refresh configuration path.
-
-After editing YAML, run `/shop reload`. After changing Ore assets or graphical layout, regenerate and distribute its resource pack as explained in [Ore](ore-menus-premium.md).
-
-## Related pages
-
-[Layout and buttons](layout-and-buttons.md) · [UI modes](ui-overview.md) · [Configuration compatibility](migration-guide.md) · [Troubleshooting](troubleshooting.md)
+[UI selection](ui-overview.md) · [Common](general-menus.md) · [Shop](shop-menus.md) · [Graphical layout](ui-layout.md) · [Troubleshooting](troubleshooting.md).

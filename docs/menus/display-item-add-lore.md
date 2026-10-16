@@ -43,7 +43,7 @@ Set product `display-item.modify-lore: false` to suppress generated additions fo
 | `auto-set-first-product` | Use the first applicable product reward as the display when no explicit display item is supplied |
 | `calculate-amount` | Include the product reward amount in the displayed `{amount}` calculation |
 | `auto-translate-item-name` | Paper 1.17.1+ automatic vanilla display-name translation support |
-| `auto-use-sprite-item-name` | Paper 1.21.9+ Java sprite item-name support |
+| `auto-use-sprite-item-name` | Java sprite item-name support on compatible Paper runtimes |
 
 Explicit custom names take precedence. Material/name resources are handled through the shared resource manager; see [Localized Item Name](../features/localized-item-name-premium.md).
 

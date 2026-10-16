@@ -1,48 +1,75 @@
-# 📦 Inventory UI
+# 📦 Inventory interface
 
-Inventory is UltimateShop's traditional chest-style interface. It uses the menu root `title`, `size`, `layout` and `buttons`, not graphical `ui.layout` coordinates. It is the Java default and can also be selected for Bedrock clients.
+Inventory is the normal chest-style menu. Its rows come from the **root** `layout` and `size`; `ui.layout` does not affect it.
 
-## Select Inventory
+## 🚀 Open Inventory instead of Dialog / ArcMenu / Form
+
+For a Java menu, disable its Dialog and ArcMenu choices (or disable those presentations globally):
 
 ```yaml
-# config.yml
-menu:
-  ui:
-    mode:
-      java: inventory
-      bedrock: form
+dialog:
+  enabled: false
+arcmenu:
+  enabled: false
 ```
 
-For one menu, set `ui.mode.java: inventory`.
+If Bedrock players must also receive Inventory instead of Form, disable their Form choice:
 
-## Minimal example
+```yaml
+bedrock:
+  enabled: false
+```
+
+These blocks belong at the **menu root**. Global equivalents are `menu.dialog.enabled`, `menu.arcmenu.enabled` and `menu.bedrock.enabled` in `config.yml`. There is **no** `ui.mode.java: inventory` setting.
+
+## ✅ Working Inventory example
+
+Save as `menus/common_menus/categories.yml`:
 
 ```yaml
 title: '&8Categories'
-size: 9
+size: 18
 layout:
-  - '0000A0000'
+  - '000000000'
+  - '000A0X000'
 buttons:
   A:
     display-item:
-      material: COMPASS
-      name: '&aMain menu'
+      material: WHEAT
+      name: '&aFarming'
     actions:
       1:
-        type: open_menu
-        menu: main
+        type: shop_menu
+        shop: farming
+  X:
+    display-item:
+      material: BARRIER
+      name: '&cClose'
+    actions:
+      1:
+        type: close
 ```
 
-A slot containing `0` remains empty unless `buttons.0` exists. Root layout markers and special input/result slots are covered in [Layout and Buttons](layout-and-buttons.md).
+Create the `farming` shop before opening this example. Reload with `/shop reload` and open with `/shop menu categories`. Each row has nine slots; `0` is empty until you define `buttons.0`.
 
-## Clicks, refresh and titles
+## 🧱 How Inventory handles items
 
-Product actions are mapped to Bukkit click types by `menu.click-event` and can be overridden in product configuration. Buttons use their `actions` and `conditions`. `menu.menu-update.circle-update` / `click-update` control Inventory item refresh; `menu.title-update.*` is available for supported Premium/Paper/PacketEvents setups. Frequent refresh can cost CPU and cause title flashing.
+- `buttons.<id>` describes a navigation/action button. Shop menus additionally resolve product IDs from the shop.
+- `layout` controls order and slots. `ui.placement` does **not** move Inventory items.
+- `menu-visibility.inventory: false` hides a button or product here without hiding it in Form/Ore/ArcMenu.
+- `display-conditions` control whether an entry is available to a player.
+- `menu.click-event` and product-specific click bindings govern product actions. Ordinary buttons use `actions`.
 
-## Physical item deposit
+See [Layout and buttons](layout-and-buttons.md) for markers and [Conditional display](conditional-display-premium.md) for dynamic entries.
 
-[Item Sell](item-sell-menus.md) uses input slots, confirmation and price preview. [Sell All](sell-all-menu.md) sells on closing. These remain Inventory interfaces even if the initiating screen uses Form, Dialog, Ore or ArcMenu. Inventory [Buy More](buy-more-menus.md) has its own amount-selection buttons.
+## 🔄 Refresh, titles and deposit screens
 
-## Troubleshooting
+`menu.menu-update.circle-update` and `click-update` control item refresh. `menu.title-update.*` contains optional title update behavior. Avoid frequent refresh if the contents rarely change.
 
-For an empty entry, inspect its `layout` marker, available button/product, display conditions and `ui.visible-in`. If you requested a different UI but Inventory opened, see [UI Modes](ui-overview.md) and [Troubleshooting](troubleshooting.md).
+[Item Sell](item-sell-menus.md) and [Sell All](sell-all-menu.md) are physical Inventory screens. [Buy More](buy-more-menus.md) has a dedicated Inventory quantity selection layout.
+
+## 🩺 If Inventory opens unexpectedly
+
+Check the global *and* menu-level switches, runtime integration availability and whether the requested menu type supports the chosen presentation. An empty Inventory slot usually means a missing layout marker, a missing entry, a failed display condition or `menu-visibility.inventory: false`.
+
+[Presentation guide](ui-overview.md) · [Menu troubleshooting](troubleshooting.md).

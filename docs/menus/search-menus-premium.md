@@ -6,10 +6,9 @@ A file in this folder is automatically a Search menu. For a file in `menus/commo
 
 <a id="inventory-example"></a>
 
-## Quick start: Inventory example
+## ✅ Create an Inventory Search menu
 
 ```yaml
-menu-type: search
 title: 'Search'
 content: 'Find a product.'
 size: 27
@@ -50,9 +49,9 @@ result-lore:
   - '&7Product: {product}'
 ```
 
-## Configuration reference
+## ⚙️ Search-only keys
 
-The [common menu settings](general-menus.md#common-menu-configuration) remain available. Use ordinary `buttons` for Back/Close/navigation.
+The [Common menu settings](general-menus.md) remain available. Use ordinary `buttons` for Back/Close/navigation.
 
 | Additional key | Meaning |
 | --- | --- |
@@ -67,13 +66,14 @@ The [common menu settings](general-menus.md#common-menu-configuration) remain av
 | `no-result-item.slot` | Fixed Inventory slot, zero-based; `-1` means no valid slot |
 | `no-result-item.display-item` | Display when a search has no matches |
 | `result-lore` | Extra lore on result entries; `{shop}` and `{product}` identify the source |
-| Special button `ui` | Visibility, appearance and placement for supported graphical renderers |
+| Special button `menu-visibility` | Boolean presentation visibility for a special button |
+| Special button `ui.placement` / `ui.appearance` | Ore/ArcMenu position and appearance |
 
-Layout markers use the [normal token rules](general-menus.md#layout-option), including backtick-delimited longer IDs. Do not fill input/result markers with ordinary buttons. Place each special action/state ID in root `layout`; use a valid `no-result-item.slot`. Result capacity remains relevant to non-Inventory views.
+Layout markers use the [normal token rules](layout-and-buttons.md), including backtick-delimited longer IDs. Do not fill input/result markers with ordinary buttons. Place each special action/state ID in root `layout`; use a valid `no-result-item.slot`. Result capacity remains relevant to non-Inventory views.
 
 Status display placeholders are `{result-amount}` (all matches), `{showing-amount}` (shown matches), `{input-amount}` (physical input count) and `{name-keyword}` (keyword). These are search status values, not global placeholders available in arbitrary menus.
 
-## Matching and input lifecycle
+## 🔎 Search and input lifecycle
 
 Inventory input slots accept physical item stacks. Search finds shop products linked to those items; a keyword filters by product/item names. Text-only search works without item stacks. Name matching uses the shared item-name/localization system; see [Localized Item Name](../features/localized-item-name-premium.md).
 
@@ -90,7 +90,7 @@ menu:
 
 `{lang}` uses the configured language value. Cancel leaves the prior keyword; clear removes it. Clear-search also returns physical input items in Inventory. Closing/navigating away returns remaining input rather than consuming display/result icons. Result icons are GUI items, not player-owned stock.
 
-## Behaviour by presentation
+## 🎨 How search differs by presentation
 
 | Presentation | Search input and controls |
 | --- | --- |
@@ -103,7 +103,7 @@ Form opens its home first. Search input prefills the previous keyword; cancel re
 
 Form text defaults are `menu.bedrock.search.input` and `menu.bedrock.search.buttons.search`; Dialog uses `menu.dialog.search.*`. Chat keyword controls still use the prompt keywords above. Choose presentations through the global/menu `dialog.enabled`, `bedrock.enabled` and `arcmenu.enabled` switches.
 
-For ArcMenu/Ore, configure `ui.layout`, `ui.products.placement`, and `ui.placement` on graphical controls. Layout pagination does not remove the result-slot capacity defined at root. See [Unified UI and ArcMenu](arcmenu-menus-premium.md) and [Dialog/Ore](dialog-menus-premium.md) for exact renderer differences.
+For ArcMenu/Ore, configure `ui.layout`, `ui.products.placement`, and `ui.placement` on graphical controls. Layout pagination does not remove the result-slot capacity defined at root. See [ArcMenu](arcmenu-menus-premium.md) and [Dialog](dialog-menus-premium.md) and [Ore](ore-menus-premium.md) for exact renderer differences.
 
 ## Related documentation
 

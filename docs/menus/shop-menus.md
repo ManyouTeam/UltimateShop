@@ -1,42 +1,17 @@
-# 🛍️ Shop Menus
+# 🛍️ Shop menus
 
-A Shop Menu shows products defined in a shop. The **shop file** owns product data, prices and trade restrictions; a **menu template** provides the layout, navigation buttons and presentation. Many shops can reuse the same template.
+A shop file defines **products, prices and trading**. A shop-menu template defines **which entries appear and where**, plus navigation buttons. One template may be reused by many shops.
 
-## Requirements and file locations
+## 📁 Two files, two responsibilities
 
-- Shop: `plugins/UltimateShop/shops/<shop>.yml`.
-- Optional reusable template: `plugins/UltimateShop/menus/shop_menu_templates/<template>.yml`.
-- The shop's `settings.menu` chooses a template.
-- Use `/shop menu <shop>` or the `shop_menu` action to open a shop.
+- Shop file: `plugins/UltimateShop/shops/<shop-id>.yml`.
+- Template: `plugins/UltimateShop/menus/shop_menu_templates/<template-id>.yml`.
+- `settings.menu` inside the shop selects a template.
+- Open with `/shop menu <shop-id>` or a `shop_menu` action.
 
-## Quick start: select a template
+## ✅ Example 1: menu template
 
-In `shops/farming.yml` (illustrative fragment):
-
-```yaml
-settings:
-  shop-name: '&aFarming'
-  menu: example-shop-menu
-  menu-settings:
-    title: '{shop-name}'
-    content: 'Fresh supplies'
-items:
-  A:
-    display-item:
-      material: WHEAT
-      name: '&eWheat'
-    buy-prices:
-      1:
-        economy-plugin: Vault
-        amount: 5
-    products:
-      1:
-        material: WHEAT
-```
-
-The template's root `layout` must contain the product ID `A` for an Inventory slot. Product and price syntax is covered in [Products](../shops/products.md); adapt the example to your actual economy and item format.
-
-A minimal template at `menus/shop_menu_templates/farming.yml`:
+Create `menus/shop_menu_templates/farming.yml`:
 
 ```yaml
 title: '{shop-name}'
@@ -45,30 +20,54 @@ layout:
   - '0000A0000'
 ```
 
-Set `settings.menu: farming` to use this template. The plugin includes reusable sample templates such as `example-shop-menu.yml` and `daily-shop-menu.yml`.
+`A` identifies a product supplied by the **shop**, not a button defined in the template.
 
-## Inline menu settings and overrides
+## ✅ Example 2: shop file
 
-A shop can define its own menu settings without requiring a unique template. Overrides live under `settings.menu-settings`:
+Create `shops/farming.yml`:
 
 ```yaml
 settings:
-  menu: example-shop-menu
+  shop-name: '&aFarming'
+  menu: farming
+items:
+  A:
+    display-item:
+      material: WHEAT
+      name: '&eWheat'
+    products:
+      1:
+        material: WHEAT
+    buy-prices:
+      1:
+        economy-plugin: Vault
+        amount: 5
+```
+
+This example needs your Vault-compatible economy. Reload and open `/shop menu farming`. For supported product/pricing variants, follow [Product configuration](../shops/products.md).
+
+## 🔀 Override a template for one shop
+
+Use `settings.menu-settings` in the **shop** file:
+
+```yaml
+settings:
+  menu: farming
   menu-settings:
-    title: '&aFarming'
-    size: 27
+    title: '&aFarming Specials'
     dialog:
       enabled: true
       layout: multi-action
+    bedrock:
+      enabled: true
+      content: '&7Browse farming products'
 ```
 
-The shop override is merged with the chosen template; its `dialog`, `bedrock` and `arcmenu` settings take effect there, and missing **graphical** `ui` defaults are then inherited from global `menu.ui`. Do **not** put `settings.menu-settings` in `config.yml` or in a button.
+Overrides are applied to the template *before* global graphical `menu.ui` defaults fill any missing graphical fields. `settings.menu-settings` does **not** belong in `config.yml` or a menu template.
 
-## Entries and buttons
+## 🧱 Adding navigation buttons
 
-The layout IDs resolve from the shop's own buttons, products and (Premium) copy products, together with template buttons. A product's click conditions and trade configuration remain in the shop file, not the reusable template.
-
-For example, to add an ordinary navigation button to a template:
+A template can define its own buttons:
 
 ```yaml
 buttons:
@@ -79,17 +78,18 @@ buttons:
     actions:
       1:
         type: back
-        menu: main
 ```
 
-Add `X` to a template layout slot. For available action and condition formats, see [Action Format](../format/action-format.md), [Condition Format](../format/condition-format.md) and [Custom Click Event](../features/custom-click-event-premium.md).
+Add `X` to an available `layout` slot. Product IDs and ordinary buttons must not collide in the visible layout. Products can also define `menu-visibility`, `display-conditions` and graphical `ui.placement`.
 
-## UI presentation
+## 🎨 Inventory / Dialog / Ore / ArcMenu / Form
 
-Java `inventory`, `dialog`, `ore` and `arcmenu` and Bedrock `form` are alternative presentations of supported shop entries. They reuse the shop's underlying products; they do not require separate shop files. For graphical Ore/ArcMenu, position products through `ui.products.placement` and buttons through `ui.placement`. Native Dialog/Form list products by their renderer rules rather than using Inventory gaps.
+The **same shop items** can appear in different presentations. Inventory uses the template's root `layout`. Native Dialog and Form collect items as lists; Ore and ArcMenu use `ui.layout`, `ui.products.placement` and individual button `ui.placement`. A blank graphical area does not automatically create shop-category buttons.
 
-See [UI Modes](ui-overview.md), [Graphical Layout](ui-layout.md), [Quantity Selection](buy-more-menus.md) and [Display Item Add Lore](display-item-add-lore.md).
+Use [UI selection](ui-overview.md) and [Graphical layout](ui-layout.md) for the prerequisites and full configuration.
 
-## Troubleshooting
+## 🩺 If a product is missing
 
-If a product is missing, check the product ID in the template's `layout`, product display conditions, click/trade availability, shop-level overrides, and the chosen renderer's visibility rules. If a global UI edit appears ineffective, inspect `settings.menu-settings.ui` and explicit `ui` settings in the template.
+Check that `settings.menu` names a real template, `items.A` exists, `layout` references `A` for Inventory, the product is permitted for the player, and the product's `menu-visibility` and display conditions are satisfied. If graphical settings seem unchanged, check menu/template `ui` and the shop's `settings.menu-settings.ui`; explicit overrides take priority.
+
+[Quantity selection](buy-more-menus.md) · [Search](search-menus-premium.md) · [Troubleshooting](troubleshooting.md).

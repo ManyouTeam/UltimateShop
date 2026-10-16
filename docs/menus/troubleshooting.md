@@ -1,58 +1,60 @@
-# 🛠️ Troubleshooting
+# 🩺 Menu troubleshooting
 
-Work through the symptom below before changing unrelated configuration. All paths are relative to `plugins/UltimateShop/` unless noted.
+Work from the symptom, not by changing unrelated keys. File paths below are relative to `plugins/UltimateShop/`.
 
-## Menu cannot be opened
+## ❌ Menu cannot open
 
-Confirm that the menu file exists in the expected folder and its ID matches `/shop menu <id>`. A Shop Menu normally uses the **shop ID**, not the template filename; Buy More requires an already selected product. Check `conditions` and command permissions. Reload using `/shop reload` after editing files.
+1. Verify the ID and file location: `menus/common_menus/<id>.yml` for Common, `shops/<shop>.yml` for a Shop menu.
+2. Use `/shop reload` after editing YAML, then `/shop menu <id>` to try again.
+3. Check root `conditions` and command permissions. A shop opens by its **shop ID**, not necessarily the template filename.
+4. Check console errors for missing shop products or invalid menu files.
 
-## Java Dialog, Ore or ArcMenu opens Inventory instead
+## 📦 Java opens Inventory instead of Dialog, Ore or ArcMenu
 
-1. Check `menu.ui.mode.java` in `config.yml` and any menu-level `ui.mode.java` override.
-2. Check whether the installed build is Premium, and whether the server/client fulfills the selected renderer's requirements.
-3. Native Dialog/Ore require supported Paper Dialog APIs (Paper 1.21.9+); Ore also needs a generated/loaded resource pack.
-4. ArcMenu requires its compatible plugin and client resources.
-5. Item Sell/Sell All are physical Inventory interfaces; Buy More has renderer-specific input behavior.
-6. Inspect console errors for missing integrations or invalid graphical layout.
-
-See [UI Modes](ui-overview.md).
-
-## A button or product does not appear
-
-| Presentation | What to check |
+| Intended presentation | Check first |
 | --- | --- |
-| Any | Root `layout` marker, corresponding button/product ID, `display-conditions`, `ui.visible-in` |
-| Inventory | `size` matches the row count; marker occupies the intended slot |
-| Form | Nonblank name, `display-item.bedrock.hide`, list/action availability; Inventory fillers are often omitted |
-| Native Dialog | Source entry order, `ui.visible-in` including `dialog`, required actions |
-| Ore / ArcMenu | `ui.placement` / `ui.products.placement`, area bounds, pagination, overlap and visibility |
+| Native Dialog | Both global `menu.dialog.enabled` and menu `dialog.enabled`; supported Paper Dialog API and Premium |
+| Ore | Dialog switches above **plus** menu `dialog.layout: ore`; graphical layout and loaded Ore pack |
+| ArcMenu | Global `menu.arcmenu.enabled` and menu `arcmenu.enabled`; compatible integration and client setup |
 
-`ui.placement.enabled: false` disables a graphical entry, not the corresponding Inventory slot. `display-item.bedrock` is separate from the product root `bedrock.click-event`.
+Java priority is ArcMenu → Dialog/Ore → Inventory. If ArcMenu cannot open, Dialog/Ore must still be enabled to serve as the next option. Item Sell/Sell All remain physical Inventory interfaces.
 
-## Global changes have no visible effect
+**Do not use `ui.mode.java`:** it is not a recognized selection key.
 
-A menu can override global `menu.ui` options under root `ui`; a shop can also override the selected template under `settings.menu-settings`. The bundled menu examples contain explicit values. Compare the actual loaded menu file to the global setting before diagnosing a missing configuration key.
+## 🛏️ Bedrock opens Inventory, or Form image is missing
 
-## Graphical positions overlap, clip or disappear
+- Check global `menu.bedrock.enabled` and menu `bedrock.enabled`.
+- Verify Floodgate detection and the ability to deliver forms from your backend.
+- Explicit Form icons use `display-item.bedrock.icon: 'path;;…'` or `url;;…`. `path;;` is a **client** texture path.
+- Automatic Form icons depend on the material texture mapping; Java custom model data does not automatically supply a Bedrock image.
+- A blank display-item name or `display-item.bedrock.hide: true` can intentionally omit a Form button.
 
-Use [Graphical Layout](ui-layout.md). Check named areas, canvas bounds, grid capacity, placements and all visible entries. Ore requires valid pack templates and multiples-of-nine vertical positioning. An enlarged canvas does not automatically redesign ArcMenu's fixed product detail panel.
+## 👁️ A button/product is missing
 
-## Ore looks wrong after reload
+| Interface | Check |
+| --- | --- |
+| Any | Source entry ID, display conditions, `menu-visibility` and whether the menu type exposes it |
+| Inventory | Root `layout` marker, `size` and slot count |
+| Form | Button name, `display-item.bedrock.hide`, source slot order |
+| Native Dialog | Source `layout` and applicable `menu-visibility.dialog` / `item-action-list` |
+| Ore/ArcMenu | Named `ui.layout.areas`, button `ui.placement`, product `ui.products.placement`, bounds and pagination |
 
-Run `/shop dialogpack` after changing graphical layout, themes or templates; install/distribute the new pack and ensure clients actually use it. Check `plugins/UltimateShop/textures/` for referenced PNGs and `plugins/UltimateShop/pack/` for the generated output. A normal YAML reload alone does not refresh client-side assets.
+`menu-visibility` filters one presentation. `ui.placement.enabled: false` disables graphical placement **only**; it does not hide an Inventory slot. Root `layout` and graphical `ui.layout` are different concepts.
 
-## Bedrock Form icons are missing
+## 📐 Graphical elements overlap or disappear
 
-Check that the player is recognized by Floodgate, that Form mode is selected, and that the selected `display-item.bedrock.icon` is a valid `path;;...` or `url;;...` value. Automatic icons use vanilla material mapping, not Java custom model data. The Form may still display a text button when its image cannot be resolved.
+Check the global/menu `ui.layout` canvas and named areas, placement indices, grid capacity, card size and free-coordinate bounds. Explicit menu `ui` values and shop `settings.menu-settings.ui` can override global `menu.ui` defaults. Review [Graphical layout](ui-layout.md) before adjusting renderer-specific options.
 
-## Search, Favourite and quantity behavior differs across UIs
+## 🪨 Ore layout did not update after reload
 
-Form, Dialog and ArcMenu use different input/detail screens rather than reproducing Inventory's special slots verbatim. Search results may depend on entered keywords and result capacity; Favourite edit actions depend on editing mode. Quantity input requires the product's Buy More support and an available `select-amount` action. See [Search](search-menus-premium.md), [Favourite](favourite-menus-premium.md) and [Buy More](buy-more-menus.md).
+Server-side YAML reload does not distribute new client assets. Regenerate with `/shop dialogpack`, serve the contents of `pack/` and confirm the client accepted the updated pack. Check optional PNG references under `textures/` and log messages about template validation.
 
-## Refresh, title flashing or high menu overhead
+## 🔍 Search, Favourite or quantity controls behave differently
 
-`menu.menu-update.circle-update` repeatedly rebuilds Inventory button display; enable it only if needed. `menu.title-update` may cause client flashing; `ui.renderers.arcmenu.update-interval` is a separate renderer-specific refresh. Avoid enabling every periodic update without a corresponding dynamic display requirement.
+These menus use native input/detail views in Form/Dialog and a graphical flow in ArcMenu. They do not necessarily reproduce Inventory input slots and status markers one-for-one. Result-slot capacity, configured actions and product permissions still apply. See [Search](search-menus-premium.md), [Favourite](favourite-menus-premium.md) and [Buy More](buy-more-menus.md).
 
-## Related pages
+## 🔄 Frequent refresh or title flashing
 
-[Menu Configuration](menu-configuration.md) · [Layout and Buttons](layout-and-buttons.md) · [Migration](migration-guide.md)
+Check `menu.menu-update.circle-update`, `click-update` and `menu.title-update`. Enable periodic Inventory updates only when item displays actually need them. ArcMenu has its own `ui.renderers.arcmenu.update-interval`.
+
+[⚙️ Configuration](menu-configuration.md) · [🧱 Layout and buttons](layout-and-buttons.md).

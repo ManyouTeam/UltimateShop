@@ -1,90 +1,75 @@
-# 🔲 Common Menus
+# 🔲 Common menus
 
-Common Menus are standalone navigation/action menus. They do not automatically list shop products. To display a shop's products, use a [Shop Menu](shop-menus.md).
+A Common menu is a navigation/action screen. It displays **buttons you define**; it does not automatically load a shop's products.
 
-## Requirements and location
+## ✅ Create one
 
-Save the file under `plugins/UltimateShop/menus/common_menus/<id>.yml`. The filename (without `.yml`) is its ID. Open it using `/shop menu <id>` or an `open_menu` action. `/shop menu` requires `ultimateshop.menu`. Console can specify a target player; Premium administrators can use the command's `-b` option to bypass menu opening conditions.
-
-## Quick start
-
-Save as `menus/common_menus/main.yml`:
+Save as `plugins/UltimateShop/menus/common_menus/main.yml`:
 
 ```yaml
 title: '&8Main Menu'
 size: 9
 layout:
-  - '0000A0000'
+  - '000A0X000'
 buttons:
   A:
     display-item:
-      material: BOOK
-      name: '&aOpen Farming'
+      material: WHEAT
+      name: '&aFarming'
     actions:
       1:
         type: shop_menu
         shop: farming
+  X:
+    display-item:
+      material: BARRIER
+      name: '&cClose'
+    actions:
+      1:
+        type: close
 ```
 
-Run `/shop reload` and `/shop menu main`. `0` creates a gap unless you define `buttons.0`. The `shop_menu` action opens a shop; `open_menu` opens a standalone menu ID.
+`A` is placed at the fourth slot and `X` at the sixth. The `farming` shop must exist; alternatively use `type: open_menu` and `menu: <menu-id>` to open another Common menu. Reload with `/shop reload`, then use `/shop menu main`.
 
-## Configuration reference
+## 🧱 Common menu keys
 
-| Root key | Description |
+| Key | Purpose |
 | --- | --- |
-| `title` | Inventory title; can contain language/placeholder text |
-| `dialog.content`, `bedrock.content`, `arcmenu.content` | Presentation-specific body/header text; root `content` remains a fallback |
-| `size` | Inventory capacity (multiple of 9, up to 54) |
-| `layout` | Ordered rows containing button markers |
-| `buttons` | Definitions of ordinary buttons |
-| `conditions` | Requirements to open |
+| `title` | Screen title |
+| `size`, `layout` | Inventory capacity and slot markers |
+| `buttons` | Actions and display item for each marker |
+| `conditions` | Conditions required to open the whole menu |
 | `open-actions`, `close-actions` | Menu lifecycle actions |
-| `dynamic-layout` | Resolve per-player layout/conditional alternatives (Premium) |
-| `custom-command.name`, `custom-command.description` | Optional registered Common Menu command (Premium) |
-| `dialog`, `bedrock`, `arcmenu` | Native renderer options and presentation switches |
-| `ui` | Ore/ArcMenu graphical layout, appearance and product controls |
+| `dynamic-layout` | Conditional/ordered layout alternatives where supported |
+| `custom-command.name/description` | Optional registered menu command (Premium) |
+| `dialog`, `bedrock`, `arcmenu` | Client-specific presentation switches and content |
+| `ui` | Ore/ArcMenu graphical drawing and entry positioning |
 
-For complete field types and scope, see [Configuration](menu-configuration.md) and [Layout and Buttons](layout-and-buttons.md).
+Keep `conditions` for menu entry separate from `buttons.A.conditions` for individual click actions.
 
-## Custom command
+## 🎨 Use another presentation
 
-Premium Common Menus can register a command using:
+For a native Dialog, add to the **menu root**:
 
 ```yaml
-custom-command:
-  name: categories
-  description: 'Open the category menu'
+dialog:
+  enabled: true
+  layout: multi-action
+  content: '&7Choose a category'
+  button-width: 150
+  columns: 2
 ```
 
-This belongs at the Common Menu root, not under `buttons` or `ui`.
+Also enable `menu.dialog.enabled` in `config.yml`. To use graphical Ore, set `dialog.layout: ore` **and** configure `ui.layout` and `buttons.<id>.ui.placement`. To use ArcMenu, enable global and menu `arcmenu.enabled`, install its integration and set graphical placements. For Bedrock Form, use menu `bedrock.enabled/content` and global `menu.bedrock.enabled`.
 
-## Special menu types in the common folder
+Learn presentation priority in [🎨 UI modes](ui-overview.md) and graphical coordinates in [📐 Layout](ui-layout.md).
 
-Files in `common_menus` can explicitly declare `menu-type: search`, `menu-type: favourite` (or `favorite`), or `menu-type: item-sell` (or `item_sell`). `menu.search-gui.menu` and `menu.favourite-gui.menu` lists can also classify Common-folder files. Prefer the dedicated folders for new configurations. Shop templates and Buy More menus remain separate because they require shop/product context.
+## 🗂️ Alternative Common-folder menu types
 
-## Presentation and limitations
+The dedicated `search_menus`, `favourite_menus` and `item_sell_menus` folders choose those menu types automatically. Files placed in `common_menus` can also opt in with root `menu-type: search`, `favourite` / `favorite`, or `item-sell` / `item_sell`. Search/Favourite classification may also follow the global menu lists. Prefer the dedicated folder for a new menu, and do not reuse an ID across types.
 
-Common Menus use Inventory by default for Java unless changed globally or locally. Supported presentations and fallback rules are described in [UI Modes](ui-overview.md). Ore and ArcMenu require entry placements; they do not infer pixel positions from Inventory gaps. Refer to [Graphical Layout](ui-layout.md).
+## 🩺 Troubleshooting
 
-For display visibility, custom actions, or menu conditions, see [Conditional Display](conditional-display-premium.md), [Action Format](../format/action-format.md) and [Condition Format](../format/condition-format.md).
+If a button is missing, verify `layout` contains its ID, that `buttons.<id>` exists, that conditions pass and that `menu-visibility` allows the active presentation. For Ore/ArcMenu, ensure the button has a graphical `ui.placement`; inventory coordinates do not create graphical positions.
 
-<a id="menu-types-and-files"></a>
-<a id="choose-the-presentation"></a>
-<a id="create-a-common-menu"></a>
-<a id="button-configuration"></a>
-<a id="shop-templates-and-inline-overrides"></a>
-<a id="button-visibility-by-menu-presentation"></a>
-<a id="global-menu-controls-in-config-yml"></a>
-<a id="editing-and-troubleshooting"></a>
-
-## Troubleshooting
-
-If nothing appears, confirm the file is in the correct folder, the menu ID matches the command, the entry ID exists in `buttons` and the `layout` uses it. Check opening conditions, `menu-visibility` and any Form or graphical placement restrictions. See [Troubleshooting](troubleshooting.md).
-
-<a id="common-menu-configuration"></a>
-<a id="layout-option"></a>
-<a id="all-buttons-update"></a>
-<a id="title-update-premium"></a>
-<a id="title-update-premium-require-paper"></a>
-
-Configuration, layout, refresh and title-update details are documented in [Configuration](menu-configuration.md) and [Layout and Buttons](layout-and-buttons.md).
+[🧱 Buttons and slot markers](layout-and-buttons.md) · [🛍️ Shop menus](shop-menus.md) · [🩺 Troubleshooting](troubleshooting.md).

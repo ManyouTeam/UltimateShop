@@ -1,34 +1,41 @@
-# 📚 Menu System
+# 📚 Menu documentation
 
-UltimateShop menus control navigation, product selection and the presentation of trades. This section explains menu types, interface modes and configuration rules. Start with the example files included with your installation, and review any existing custom configuration before changing its layout or UI settings.
+Menus are the screens players open. **Menu type** controls which data a screen shows; **presentation** controls how it looks. You can change the presentation without rewriting products or trade rules.
 
-## Two independent concepts
+## 🚀 Start here
 
-**Menu type** determines *what* a menu does: Common, Shop, Buy More, Search, Favourite, Item Sell or Sell All. **UI mode** determines *how* a supported menu is displayed: Inventory, Bedrock Form, native Dialog, Ore or ArcMenu. Changing the UI mode does not change the menu's type or trade rules.
+1. For a simple navigation screen, follow [Common menus](general-menus.md).
+2. To display a shop's products, follow [Shop menus](shop-menus.md).
+3. To change the client interface, choose a [presentation](ui-overview.md).
+4. If you are editing an existing menu, check [configuration scopes and inheritance](menu-configuration.md) before adding keys.
 
-- [Menu types](#menu-types): choose the feature you want.
-- [UI modes](ui-overview.md): choose how Java and Bedrock players see it.
-- [Configuration and inheritance](menu-configuration.md): understand where settings belong.
-- [Layout and buttons](layout-and-buttons.md): create a clickable Inventory menu.
+### Menu types: which file belongs where?
 
-## Menu types
+All paths below are relative to `plugins/UltimateShop/`.
 
-| Type | Location under `plugins/UltimateShop/` | Documentation |
+| Feature | File or configuration | Guide |
 | --- | --- | --- |
-| Common | `menus/common_menus/` | [Common](general-menus.md) |
-| Shop | `menus/shop_menu_templates/`, or shop `settings.menu-settings` | [Shop](shop-menus.md) |
-| Buy More | `menus/buy_more_menus/` | [Buy More](buy-more-menus.md) |
-| Search (Premium) | `menus/search_menus/` | [Search](search-menus-premium.md) |
-| Favourite (Premium) | `menus/favourite_menus/` | [Favourite](favourite-menus-premium.md) |
-| Item Sell | `menus/item_sell_menus/` | [Item Sell](item-sell-menus.md) |
-| Sell All | `config.yml`: `menu.sell-all` (no menu file) | [Sell All](sell-all-menu.md) |
+| Navigation and custom buttons | `menus/common_menus/<id>.yml` | [🔲 Common](general-menus.md) |
+| Shop product list | `shops/<shop>.yml` + `menus/shop_menu_templates/<id>.yml` | [🛍️ Shop](shop-menus.md) |
+| Quantity selection | `menus/buy_more_menus/<id>.yml` | [🔽 Buy More](buy-more-menus.md) |
+| Search | `menus/search_menus/<id>.yml` | [🔍 Search](search-menus-premium.md) |
+| Favourite products | `menus/favourite_menus/<id>.yml` | [❤️ Favourite](favourite-menus-premium.md) |
+| Deposit items to sell | `menus/item_sell_menus/<id>.yml` | [💰 Item Sell](item-sell-menus.md) |
+| Sell all inventory items | `config.yml` → `menu.sell-all` | [🛒 Sell All](sell-all-menu.md) |
 
-Dedicated Search, Favourite and Item Sell folders determine the menu type. The Common folder also accepts `menu-type: search`, `favourite` (or `favorite`) and `item-sell` (or `item_sell`). Keep menu IDs distinct. Shop templates require a shop; Buy More menus require a selected product.
+Search and Favourite require Premium. Shop-menu *templates* contain screen layout and ordinary buttons; shop files contain product prices and trading rules. Keep a menu ID unique among menus.
 
-## Create a menu in three steps
+### Presentations: how will it open?
 
-1. Create `plugins/UltimateShop/menus/common_menus/hello.yml`.
-2. Paste this configuration:
+| Java client | Bedrock client |
+| --- | --- |
+| [📦 Inventory](inventory-ui.md), [💬 Dialog](dialog-menus-premium.md), [🪨 Ore](ore-menus-premium.md), [✨ ArcMenu](arcmenu-menus-premium.md) | [🛏️ Form](bedrock-menus-premium.md) or Inventory |
+
+Use `dialog.enabled` / `dialog.layout` for native Dialog or Ore, `arcmenu.enabled` for ArcMenu and `bedrock.enabled` for Form. **`ui` is for Ore/ArcMenu graphics only**, not selecting the presentation. See [presentation priority](ui-overview.md).
+
+## ✅ First working example
+
+Create `plugins/UltimateShop/menus/common_menus/hello.yml`:
 
 ```yaml
 title: '&8Hello'
@@ -39,17 +46,24 @@ buttons:
   A:
     display-item:
       material: EMERALD
-      name: '&aOpen the main menu'
+      name: '&aOpen main menu'
     actions:
       1:
         type: open_menu
         menu: main
 ```
 
-3. Run `/shop reload`, then `/shop menu hello`. The command requires `ultimateshop.menu`.
+Run `/shop reload`, then `/shop menu hello`. The target `main` menu must exist. `0` is an empty slot **unless** you define `buttons.0`.
 
-`0` represents an unassigned slot in this example, not an automatically generated glass pane. For a decorative filler, define a button with ID `0`. [Layout and buttons](layout-and-buttons.md) explains button IDs, conditions and multi-character markers.
+## 📖 Reference by task
 
-## Choose the next chapter
+- [🧱 Slot layout, buttons, visibility and actions](layout-and-buttons.md)
+- [⚙️ Global vs menu vs product settings](menu-configuration.md)
+- [📐 Graphical canvas, placement, themes and product cards](ui-layout.md)
+- [🔀 Conditional display and dynamic layout](conditional-display-premium.md)
+- [🥉 Item lore and product text](display-item-add-lore.md)
+- [🛠️ Configuration editor](menu-configuration.md)
+- [🔄 Configuration key changes](migration-guide.md)
+- [🩺 Troubleshooting](troubleshooting.md)
 
-New users should read [Common Menus](general-menus.md) and [Shop Menus](shop-menus.md) first. For Java Dialog/Ore or ArcMenu, use [UI modes](ui-overview.md) before setting up an integration. If you are adapting existing YAML files, consult the [configuration compatibility guide](migration-guide.md). For syntax shared with shops, use [Action Format](../format/action-format.md), [Condition Format](../format/condition-format.md) and [Display Item Format](../format/display-item-format.md).
+For formats shared with other plugin features, read [Action format](../format/action-format.md), [Condition format](../format/condition-format.md) and [Display item format](../format/display-item-format.md).

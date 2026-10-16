@@ -1,55 +1,70 @@
-# 🎨 UI Modes Overview
+# 🎨 Menu presentations
 
-A **menu type** decides what a menu does; its **presentation** determines what players see. All presentations share product, action and permission rules. See [Menu System](README.md).
+A **presentation** is the client interface used to show an existing Common, Shop, Search or Favourite menu. It does not change product prices, click bindings, conditions or data storage.
 
-## Select presentations
+## ✅ Choose with native switches, not `ui.mode`
 
-In `config.yml`:
+In `config.yml`, enable the presentations that the server should support:
 
 ```yaml
 menu:
   dialog:
-    enabled: false
+    enabled: true
   bedrock:
     enabled: true
   arcmenu:
     enabled: false
 ```
 
-In an individual menu:
+In an individual menu, choose the layout and enable its intended presentations:
 
 ```yaml
+title: '&8Farming'
+size: 9
+layout:
+  - '0000A0000'
 dialog:
   enabled: true
   layout: ore
-  content: '&7Choose a product.'
+  content: '&7Browse our products'
 bedrock:
   enabled: true
-  content: '&7Choose a product.'
+  content: '&7Browse our products'
 arcmenu:
   enabled: false
 ```
 
-A presentation needs its global setting and the menu setting enabled. An omitted menu `dialog.enabled` or `bedrock.enabled` defaults to true; ArcMenu is opt-in (`arcmenu.enabled: false` by default). Java presentation priority is **ArcMenu → Dialog/Ore → Inventory**. If ArcMenu is not available, enabled Dialog/Ore is attempted next. Bedrock Form is selected separately.
-
-Java native Dialog supports `dialog.layout: multi-action` and `item-action-list`; `dialog.layout: ore` selects the current Ore renderer, whose graphical layout is configured under `ui.layout`. The graphical `ui` section does not select presentation modes; `ui.mode` is not supported.
-
-## UI comparison
-
-| Mode | Client | Requirements and behavior |
+| Interface | Required selection | Additional requirement |
 | --- | --- | --- |
-| [Inventory](inventory-ui.md) | Java / Bedrock | Traditional slot-based inventory |
-| [Bedrock Form](bedrock-menus-premium.md) | Bedrock | Premium and Floodgate integration; button list and input forms |
-| [Native Dialog](dialog-menus-premium.md) | Java | Premium, supported Paper Dialog APIs; `multi-action` or `item-action-list` |
-| [Ore](ore-menus-premium.md) | Java | Premium, supported Paper and generated resource pack; graphical Dialog |
-| [ArcMenu](arcmenu-menus-premium.md) | Java | Premium, compatible ArcMenu integration and client resources |
+| [📦 Inventory](inventory-ui.md) | Fallback when another presentation is disabled/unavailable | None beyond the menu itself |
+| [🛏️ Bedrock Form](bedrock-menus-premium.md) | Global `menu.bedrock.enabled` **and** menu `bedrock.enabled` | Premium, supported Bedrock/Floodgate integration |
+| [💬 Native Dialog](dialog-menus-premium.md) | Global `menu.dialog.enabled`, menu `dialog.enabled`, `dialog.layout: multi-action` or `item-action-list` | Premium, supported Paper Dialog API |
+| [🪨 Ore](ore-menus-premium.md) | Global/menu Dialog enabled; `dialog.layout: ore` | Premium, supported Paper and generated client resource pack |
+| [✨ ArcMenu](arcmenu-menus-premium.md) | Global `menu.arcmenu.enabled` **and** menu `arcmenu.enabled` | Premium and ArcMenu integration |
 
-Buy More uses Inventory quantity controls in Inventory mode, a quantity input in Form/native Dialog, and ArcMenu's product-details controls where applicable. Item Sell and Sell All require a physical Inventory deposit interface.
+When a menu omits `dialog.enabled` or `bedrock.enabled`, it defaults to `true`. ArcMenu is **opt-in**: its menu switch defaults to `false`.
 
-## Visibility, placement and scope
+### Java priority
 
-Use entry-level `menu-visibility` boolean keys (`inventory`, `form`, `dialog`, `item-action-list`, `ore`, `arcmenu`) to filter a button per presentation. The omitted setting defaults to visible. Ore and item-action-list inherit the `dialog` value when not specified separately.
+**ArcMenu → Dialog / Ore → Inventory.** If ArcMenu fails to open, the normal menu-opening flow can try Dialog/Ore when enabled and supported. If neither graphical/native route applies, Inventory is used. Bedrock Form is selected separately for Bedrock players.
 
-Only **graphical** options belong inside `menu.ui` and menu `ui`: the canvas (`layout`), graphical product/card/action styling (`products`), themes, graphics-only labels, Ore templates and ArcMenu renderer drawing options. Entry-level `ui.placement`, `ui.appearance`, `ui.font-size` and `ui.text-align` are also graphical. Traditional root Inventory `layout`, native Dialog options under `dialog`, and Form options under `bedrock` remain separate.
+`dialog.layout` is a *menu-level selector*: `multi-action`, `item-action-list` or `ore`. It does not configure pixel coordinates.
 
-[Menu Configuration](menu-configuration.md) · [Graphical Layout](ui-layout.md) · [Migration](migration-guide.md)
+## 🧭 Where does each configuration belong?
+
+| What you want to change | Correct key |
+| --- | --- |
+| Inventory rows and buttons | Root `size`, `layout`, `buttons` |
+| Native Dialog mode, text and controls | Menu `dialog.*`, global `menu.dialog.*` |
+| Bedrock Form enablement, button text and icons | Menu `bedrock.*`, global `menu.bedrock.*`, `display-item.bedrock.*` |
+| ArcMenu enablement | `menu.arcmenu.enabled` and menu `arcmenu.enabled` |
+| Ore/ArcMenu coordinates and card appearance | `menu.ui.*` and menu `ui.*` |
+| Show or hide a product in one presentation | Entry `menu-visibility.<presentation>` |
+
+`ui.mode`, `ui.visible-in`, `ui.show-sprite` and native Form/Dialog `ui.renderers` fields are **not supported**. The `ui` section is reserved for graphical drawing and placement.
+
+## ⚠️ Menus that need a physical inventory
+
+Item Sell and Sell All use a real Inventory container, even when opened from another type of screen. Inventory Buy More buttons are not automatically converted into Form or Dialog widgets; see [Buy More](buy-more-menus.md).
+
+Related: [Configuration scopes](menu-configuration.md) · [Graphical layout](ui-layout.md) · [Troubleshooting](troubleshooting.md).

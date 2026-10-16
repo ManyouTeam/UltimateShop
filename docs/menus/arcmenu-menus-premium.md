@@ -1,83 +1,97 @@
-# ✨ ArcMenu UI - Premium
+# ✨ ArcMenu graphical menus — Premium
 
-ArcMenu renders Common, Shop, Search and Favourite menus as graphical Java-client menus, using existing products, conditions and actions. Ore uses the same [graphical layout](ui-layout.md) with a different renderer.
+ArcMenu presents Common, Shop, Search and Favourite menus as interactive graphical screens. It shares `ui.layout`, `ui.products`, `ui.placement` and `ui.theme` with Ore, but uses its own client integration and interaction model.
 
-## Enable ArcMenu
+## 🚀 Enable ArcMenu
 
-Install the compatible ArcMenu plugin and required client resources. Enable ArcMenu globally and in each menu that should use it:
+In `config.yml`:
 
 ```yaml
-# config.yml
 menu:
   arcmenu:
     enabled: true
 ```
 
+In your menu:
+
 ```yaml
-# Menu file
+title: '&8Categories'
+size: 9
+layout:
+  - '0000A0000'
 arcmenu:
   enabled: true
+  content: '&7Choose a category'
+buttons:
+  A:
+    display-item:
+      material: WHEAT
+      name: '&aFarming'
+    actions:
+      1:
+        type: shop_menu
+        shop: farming
+    ui:
+      appearance: button
+      placement:
+        area: sidebar
+        order: 0
 ```
 
-When both ArcMenu and Dialog are enabled, Java players use **ArcMenu first**. If the ArcMenu integration cannot be used, an available native Dialog/Ore presentation is attempted before Inventory. Ore is selected with `dialog.layout: ore`. Bedrock follows its separate `bedrock.enabled` switches. Item Sell and Sell All use physical Inventory interfaces; ArcMenu does not render the Inventory Buy More screen as a separate menu.
+This uses the default global `menu.ui.layout.areas.sidebar` graphical area. Install a compatible ArcMenu integration and required client resources. If both ArcMenu and Dialog are enabled, Java players use **ArcMenu first** when available. If ArcMenu cannot open, the menu-opening flow can attempt Dialog/Ore, then Inventory. Bedrock players use their separate `bedrock.enabled` selection.
 
-<a id="shared-layout"></a>
+## 🎛️ Product interaction
 
-<a id="configuration-scopes"></a>
-<a id="canvas-headers-and-areas"></a>
-<a id="entry-placements"></a>
-<a id="shared-product-settings"></a>
-<a id="theme-and-interface-text"></a>
+- Graphical product cards use `ui.products.actions.primary` for up to two primary operation buttons and `ui.products.actions.extra` for an extra-action menu.
+- Listing an action does not create a trade binding. Available actions still come from `menu.click-event` and product overrides.
+- `select-amount` normally opens ArcMenu product details; quantity adjustment requires Buy More to be enabled for the product and a suitable quantity binding.
+- Product right-click defaults to `select-amount`. Change it with `ui.renderers.arcmenu.right-click-action`.
+- A shop's default buy/sell quantities apply until the player selects another quantity.
 
-## Shared layout and product styling
+ArcMenu product details are **not** the Inventory Buy More menu. The latter's `amount-items` and `layout` do not control ArcMenu's detail panel.
 
-The complete `ui.layout`, `ui.placement`, `ui.products` and `ui.theme` reference has moved to [Graphical UI Layout](ui-layout.md). It covers canvas, headers, areas, pagination, buttons, cards, prices and actions without duplicating the same settings here.
+## ⚙️ ArcMenu graphical settings
 
-## ArcMenu clicks, details and extra actions
+Defaults live at `menu.ui.renderers.arcmenu`; most renderer settings support per-menu overrides at `ui.renderers.arcmenu`. **`update-interval` is currently read only from the global `menu.ui.renderers.arcmenu.update-interval` path.**
 
-Product card operation buttons execute their selected action. Clicking `…` opens an extra-action popup with pagination when needed; Cancel closes it. While the popup is open, background clicks and scrolling do not perform menu actions.
+```yaml
+ui:
+  renderers:
+    arcmenu:
+      right-click-action: select-amount
+      screen-scale: 1.35
+      update-interval: 20
+      animation:
+        enabled: true
+        duration: 8
+      more-menu:
+        columns: 1
+      tooltip:
+        enabled: true
+        width: 260
+        font-size: 0.9
+        padding: 8
+```
 
-Right-click on a shop product uses `ui.renderers.arcmenu.right-click-action`, default `select-amount`. It may be `buy`, `sell`, `sell-all`, `none` or a configured custom action. Other card clicks use the normal click bindings, while favourite editing retains its edit controls.
-
-`select-amount` opens ArcMenu product details directly. Opening details requires the product's Buy More feature and a corresponding menu. Quantity adjustment additionally requires an available `select-amount` binding. Plus/minus and scrolling adjust the amount within 1 through `buy-more-menu.max-amount`. Until it is adjusted, buy and sell retain their separate default amounts. Card buttons outside the details panel use product defaults.
-
-ArcMenu does not read Buy More `layout`, `amount-items`, `add-amount`, `set-amount` or confirmation-button positions for this panel. Ore and native Dialog use their quantity input/information flow instead.
-
-## ArcMenu renderer reference
-
-Global prefix: `menu.ui.renderers.arcmenu`. Menu prefix: `ui.renderers.arcmenu`.
-
-| Relative key | Default / effect |
+| Key relative to `ui.renderers.arcmenu` | Effect |
 | --- | --- |
-| `right-click-action` | `select-amount`; product right-click action |
-| `screen-scale` | Bundled default 1.35; overall menu scale |
-| `update-interval` | 20 ticks; periodic refresh interval, read globally with a minimum of 5 ticks |
-| `animation.enabled` | true; menu opening animation |
-| `animation.duration` | 8; animation steps, clamped to 1–40 |
-| `more-menu.columns` | 1; extra-action popup columns, clamped to 1–2 |
-| `tooltip.enabled` | true; hover tooltip |
-| `tooltip.width` | 260; clamped to 100–450 |
-| `tooltip.font-size` | 0.9; clamped to 0.5–1.2 |
-| `tooltip.padding` | 8; clamped to 4–20 |
+| `right-click-action` | Direct action triggered by product right-click |
+| `screen-scale` | Overall graphical scale |
+| `update-interval` | **Global only:** graphical refresh interval, in ticks (minimum 5) |
+| `animation.enabled/duration` | Opening animation |
+| `more-menu.columns` | Extra-action popup layout |
+| `tooltip.enabled/width/font-size/padding` | Hover-tooltip visibility and appearance |
 
-`details.enabled` does not control the ArcMenu details panel. Use the documented renderer settings rather than relying on unrelated keys copied from example files.
+The renderer constrains numeric settings to supported ranges. Very large fonts can truncate text; use sensible area and card sizes rather than relying on scale alone.
 
-ArcMenu card numeric settings are clamped: icon size 12–38, padding 3–16, name scale 0.5–1.2, price scale 0.5–1.0, operation font 0.5–1.5, button height 18–36, horizontal inset 2–16, bottom inset 3–16, button gap 2–12. Enlarged fonts still need sufficient width; long text can be truncated.
+## 📐 Layout and theme are shared with Ore
 
-## Search and favourite menus
+Define a canvas, named `areas` and optional `pagination` under menu `ui.layout` or global `menu.ui.layout`. Ordinary buttons require `ui.placement`; products use `ui.products.placement` unless overridden. In Search/Favourite screens the root result-slot count still limits source results, regardless of how many cards a graphical area could hold.
 
-ArcMenu uses the corresponding file's title, content, conditions, ordinary buttons, result lore and result capacity. Configure `ui.layout`, `ui.products.placement` and special-button placements in that file. Graphical pagination lays out the entries selected for the view; root result slots still limit its result list.
+See [📐 Graphical layout](ui-layout.md) for the complete schema and correct scopes. ArcMenu does not require Ore's generated pack merely to display its own controls; follow the ArcMenu integration's client setup. The `/shop dialogpack` command concerns **Ore assets**.
 
-Search supports name keywords through chat input, clear-search, action/state items and a no-result item. It preserves the keyword when returning from a result. Physical Inventory input slots are not an ArcMenu item filter. Favourite normal mode uses product actions/details. Edit mode offers forward/backward/remove buttons per card, and retains left/right/middle edit clicks. Data and ordering are shared with other presentations.
+## 🩺 Troubleshooting
 
-## Names, tooltips and Ore resources
+If Inventory opens, check the two ArcMenu switches, plugin integration, resource setup and supported menu type. Item Sell and Sell All require physical inventories; Buy More uses ArcMenu product details instead of a separate Inventory-style ArcMenu screen. Use [Menu troubleshooting](troubleshooting.md) for symptoms.
 
-Custom item names take precedence. The shared item-name path can return vanilla translation components. ArcMenu resolves available Minecraft translations for the player's locale through the resource manager; Ore retains native translatable components for the client. Ore's tooltip adds the item name once. Separate item-name download flags are not ArcMenu configuration options.
-
-Ore uses special positive/negative-width characters to place text. Translatable components are atomic; their server-side width estimate is not the final translated width in every client language/font. Keep adequate text width when choosing a layout. Read [Ore UI](ore-menus-premium.md) for Ore-specific templates and resources.
-
-After changing Ore layout/theme/templates, run `/shop dialogpack` and load the new pack. ArcMenu mouse mode reads ArcMenu's `mouse.cursor.z` to keep menu layers and tooltips behind its cursor without changing that cursor setting.
-
-## Troubleshooting
-
-If it falls back to Inventory, check Premium, a compatible ArcMenu integration/client setup, the selected `arcmenu.enabled` and supported menu type. Item Sell and Sell All are physical inventories; ArcMenu quantity selection uses its details panel, not the Inventory Buy More layout. See [Troubleshooting](troubleshooting.md).
+[🎨 Presentation selection](ui-overview.md) · [📐 Layout](ui-layout.md) · [🪨 Ore](ore-menus-premium.md).

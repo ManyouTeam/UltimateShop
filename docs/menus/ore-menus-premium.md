@@ -1,11 +1,12 @@
-# 🪨 Ore UI - Premium
+# 🪨 Ore graphical menus — Premium
 
-Ore is UltimateShop's graphical Dialog-based renderer. It requires Premium, supported Paper (1.21.9+), and a generated client resource pack. Select `ore` separately from native Dialog's `multi-action`/`item-action-list` layout. Bedrock players follow `bedrock.enabled`.
+Ore draws graphical cards and controls using the supported Paper Dialog API and a generated client resource pack. It shares graphical canvas/area settings with ArcMenu, but it is **selected through `dialog.layout: ore`**, not `ui.mode`.
 
-## Quick start
+## 🚀 Quick start
+
+In `config.yml`:
 
 ```yaml
-# config.yml
 menu:
   dialog:
     enabled: true
@@ -14,55 +15,58 @@ menu:
         enabled: true
         auto-hide-one: true
       pack-format: 0
-  bedrock:
-    enabled: true
 ```
 
-Set `dialog.enabled: true` and `dialog.layout: ore` in the menu itself. If both ArcMenu switches are enabled and its plugin is available, ArcMenu has priority; otherwise Ore is used when supported.
+In `menus/common_menus/categories.yml` (the global `menu.ui` defaults provide the canvas and named `sidebar` area):
 
-Give ordinary navigation buttons graphical placements (see [Graphical Layout](ui-layout.md)); Inventory gaps do not automatically become Ore coordinates.
+```yaml
+title: '&8Categories'
+size: 9
+layout:
+  - '0000A0000'
+dialog:
+  enabled: true
+  layout: ore
+  content: '&7Browse categories'
+buttons:
+  A:
+    display-item:
+      material: WHEAT
+      name: '&aFarming'
+    actions:
+      1:
+        type: shop_menu
+        shop: farming
+    ui:
+      appearance: button
+      placement:
+        area: sidebar
+        order: 0
+```
 
-## Ore layout and card content
+The `farming` shop must exist. Reload, run `/shop dialogpack` and make sure clients **load the newly generated pack**. For a graphical **shop** menu, configure `ui.products.placement` as well; see [📐 Graphical layout](ui-layout.md).
 
-Select `dialog.layout: ore`. Ore shares these settings with ArcMenu:
+## 🧩 What Ore reads
 
-- `ui.layout.canvas`, named `header` entries, `areas` and `pagination`.
-- `ui.products.placement` and per-entry `ui.placement`.
-- `ui.appearance`, `ui.text-align`, presentation visibility and display conditions.
-- Product price/action settings, card icon/padding/lore settings and `ui.theme`.
-
-Find coordinates and all shared fields in [Graphical Layout](ui-layout.md). Ordinary navigation buttons need explicit placements. Root `layout` continues to identify entries and result/input markers. The renderer does not import a sidebar from `main.yml` or generate arbitrary navigation buttons.
-
-Use vertical coordinates/heights/gaps in multiples of 9. All card entries, including category cards, require height at least 99. Invalid bounds, overlapping widgets and invalid templates report errors. Category cards are clickable across the card; product cards provide primary operations and View Detail, with extra operations in information.
-
-Ore product bodies display original item lore and generated `add-lore`, limited by `ui.products.card.lore-lines` (bundled default 6). Ordinary category descriptions use `description-lines`. Complete information remains in tooltips. Use `@t[ore]`/`@t[ore-hover]` to distinguish body and tooltip content. ArcMenu cards use compact `ui.products.price` text instead; ArcMenu does not use `price-lines` for its compact price display.
-
-Native translatable item names are retained for client translation. Ore uses width-offset characters for alignment; the server's width estimate for a translatable component is approximate and can differ by client language/font. Font-scale keys used by ArcMenu do not scale Ore's native font.
-
-## Ore renderer reference
-
-Graphical templates remain under `menu.ui.renderers.ore.templates` and per-menu `ui.renderers.ore.templates`. Non-graphical icon and resource-pack settings use `menu.dialog.ore.show-item-icon` and `menu.dialog.ore.pack-format`.
-
-| Relative key | Meaning |
+| Key | Purpose |
 | --- | --- |
-| `menu.dialog.ore.show-item-icon.enabled` | Generate/render Ore item icons (global only) |
-| `menu.dialog.ore.show-item-icon.auto-hide-one` | Hide count text for icon amount 1 (global only) |
-| `menu.dialog.ore.pack-format` | Resource pack format; 0 selects the runtime's automatic format |
-| `templates.product` | Additional generated card template settings |
-| `templates.button` | Additional generated ordinary-button template settings |
+| `dialog.enabled` / global `menu.dialog.enabled` | Allow the Dialog renderer |
+| `dialog.layout: ore` | Choose Ore |
+| `dialog.content` | Header content (root `content` fallback) |
+| `ui.layout.canvas/header/areas/pagination` | Logical graphical screen and areas |
+| `ui.products.placement/card/price/actions` | Graphical product cards and controls |
+| Entry `ui.placement` | Where ordinary buttons or specific products appear |
+| Entry `ui.appearance` | Graphical button/card style |
+| `ui.theme` | Shared graphic colors |
+| `ui.renderers.ore.templates` | Generated background/selected-state assets |
+| Global `menu.dialog.ore.show-item-icon.*` | Icon generation and quantity label behavior |
+| Global `menu.dialog.ore.pack-format` | Resource-pack format selection |
 
-Templates are based on graphical elements, so `product` also applies to ordinary entries with `appearance: card`. Shared layout/card/theme values override these template fields: `type`, `width`, `height`, `padding`, `icon-size`, `name-y`, `name-lines`, `lore-y`, `lore-lines`, `details-y`, `background`, `border`, `accent`, `footer`. Set the corresponding shared layout/card/theme option rather than expecting those template values to win.
+The root Inventory `layout` remains useful to identify entries and special result markers, but its chest coordinates do **not** translate to pixels. Navigation buttons must have graphical placements. Product cards use `ui.products.placement` unless a specific product supplies its own `ui.placement`.
 
-The remaining template options are:
+## 🖼️ Customize a graphical card texture
 
-| Template key | Meaning |
-| --- | --- |
-| `texture` | Optional normal-state background PNG relative to the plugin `textures/` directory |
-| `selected-texture` | Optional selected-state PNG in the same directory |
-| `selected-background` | Selected-state background, `#RRGGBB` |
-| `selected-border` | Selected-state border, `#RRGGBB` |
-
-Example:
+Put PNGs under `plugins/UltimateShop/textures/shop/`, then add:
 
 ```yaml
 ui:
@@ -76,13 +80,27 @@ ui:
           selected-border: '#65D98B'
 ```
 
-Supply those files under `plugins/UltimateShop/textures/shop/`. Paths must be relative PNG paths using letters, numbers, `_`, `-` and `/`; absolute paths and `..` are rejected. Template RGB colours must be quoted `#RRGGBB`. Shared theme alpha is stripped for Ore templates.
+This is **graphical** `ui.renderers.ore.templates`. Source PNG paths must be relative; do not use absolute filesystem paths or `..`. Colors should be quoted RGB strings. Shared layout/card/theme keys may take precedence over template geometry and base styling.
 
-## Generate and load the resource pack
+## ⚠️ Layout and text constraints
 
-Run `/shop dialogpack` after changing Ore layout, theme, templates or relevant assets. An optional `/shop dialogpack <format>` overrides the format for that generation; the argument must be an integer from 69 to 10000. The command works in console and requires `ultimateshop.dialogpack`; the generated pack is written under `plugins/UltimateShop/pack/`. Resource preparation can run asynchronously. Distribute/load the resulting pack through your server resource-pack setup, and ensure the client loads the regenerated pack.
+- Prefer vertical coordinates/heights divisible by 9; put cards in an area tall enough for them.
+- Cards need enough height for icon, name, descriptions and operation buttons; undersized or overlapping entries can fail validation.
+- `ui.products.card.lore-lines` limits lore shown in Ore card bodies; longer information can remain in tooltips.
+- Material names may be client-translated; the server cannot measure every translated string's final width precisely.
+- ArcMenu-specific font scaling does not imply the same rendered size in Ore.
 
-A reload alone does not guarantee that the client has updated assets. If the interface is misaligned or reports missing resources, check the ErrorManager output, layout validity, referenced PNGs, generated pack and active client resource pack. If Inventory opens, verify Premium, global/menu `dialog.enabled`, `dialog.layout: ore`, Paper/API support and whether that menu type supports Dialog.
+Check [Graphical layout](ui-layout.md) for bounds, grids, stacks, free placement and pagination.
 
+## 📦 Generate and distribute the pack
 
-[UI Modes](ui-overview.md) · [Native Dialog](dialog-menus-premium.md) · [Graphical Layout](ui-layout.md) · [Troubleshooting](troubleshooting.md)
+1. Run `/shop dialogpack` after changing Ore layout, theme, templates or related icons.
+2. Find the generated output under `plugins/UltimateShop/pack/`.
+3. Serve the resulting resource pack to players and verify that the client accepted it.
+4. Reopen the menu to verify the actual layout.
+
+`/shop dialogpack <format>` can override the pack format when needed. A regular `/shop reload` updates server-side YAML but **does not ensure that the client downloaded new assets**.
+
+If you see Inventory instead, check both Dialog switches, the supported API/runtime, the menu's `dialog.layout` and console layout/pack errors. If cards overlap, validate graphical areas before regenerating again.
+
+[📐 Graphical layout](ui-layout.md) · [💬 Native Dialog](dialog-menus-premium.md) · [🩺 Troubleshooting](troubleshooting.md).
