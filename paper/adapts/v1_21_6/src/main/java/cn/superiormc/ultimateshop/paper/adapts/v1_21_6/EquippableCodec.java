@@ -106,7 +106,9 @@ public class EquippableCodec implements ComponentCodec {
                 equippableSection.set("damage-on-hurt", eq.damageOnHurt());
                 equippableSection.set("equip-on-interact", eq.equipOnInteract());
                 equippableSection.set("can-be-sheared", eq.canBeSheared());
-                equippableSection.set("shear-sound", eq.shearSound().asString());
+                if (eq.shearSound() != null) {
+                    equippableSection.set("shear-sound", eq.shearSound().asString());
+                }
             }
         }
     }

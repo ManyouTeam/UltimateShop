@@ -2,7 +2,7 @@ package cn.superiormc.ultimateshop.paper.adapts.v26_2;
 
 import cn.superiormc.ultimateshop.methods.Items.DebuildItem;
 import cn.superiormc.ultimateshop.paper.adapts.ComponentCodec;
-import cn.superiormc.ultimateshop.paper.methods.BuildItemPaper;
+import cn.superiormc.ultimateshop.methods.Items.BuildItem;
 import io.papermc.paper.datacomponent.DataComponentTypes;
 import io.papermc.paper.datacomponent.item.*;
 import java.util.*;
@@ -23,7 +23,7 @@ public class SulfurCubeContentCodec implements ComponentCodec {
     public void apply(ItemStack item, Player player, ConfigurationSection section, String... args) {
         ConfigurationSection content = section.getConfigurationSection("sulfur-cube-content");
         if (content != null) {
-            ItemStack absorbed = BuildItemPaper.buildItemStack(player, content, 1, args);
+            ItemStack absorbed = BuildItem.buildItemStack(player, content, 1, args);
             item.setData(DataComponentTypes.SULFUR_CUBE_CONTENT, SulfurCubeContent.sulfurCubeContent(absorbed));
         }
     }

@@ -61,7 +61,6 @@ public class AttributesCodec implements ComponentCodec {
                 String attribOperation = subSection.getString("operation");
 
                 String attribSlot = subSection.getString("slot");
-                String attribDisplayMode = subSection.getString("display-mode");
 
                 EquipmentSlotGroup slot = EquipmentSlotGroup.ANY;
 
@@ -105,8 +104,6 @@ public class AttributesCodec implements ComponentCodec {
                     attributeData.put("operation", modifier.getOperation().name());
                     attributeData.put("slot", slot.toString());
 
-                    // Paper 1.21+ display mode
-                    
                     attributeList.add(attributeData);
                 }
                 section.set("attributes", attributeList);

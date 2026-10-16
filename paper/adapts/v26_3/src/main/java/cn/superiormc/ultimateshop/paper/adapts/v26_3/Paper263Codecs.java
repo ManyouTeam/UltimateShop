@@ -13,6 +13,9 @@ public class Paper263Codecs implements VersionCodecs {
         registry.register(new WaxedCodec());
         registry.register(new CushionColorCodec());
         registry.register(new VillagerFoodCodec());
+        registry.register(new ProvidesPotteryPatternCodec());
+        registry.register(new MobVisibilityCodec());
+        registry.register(new SignTextFrontCodec());
+        registry.register(new SignTextBackCodec());
     }
-
 }
