@@ -139,11 +139,7 @@ public final class UltimateShop extends JavaPlugin {
     public void onDisable() {
         AbstractManager.disableManagers();
         DatabaseExecutor.quiesce();
-        TextUtil.sendMessage(
-            null,
-            TextUtil.pluginPrefix()
-            + " §fWaiting for all pending database task finished, this may freeze your"
-            + " server if your database is lost connection.");
+        TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fWaiting for all pending database task finished, this may freeze your server if your database is lost connection.");
         DatabaseExecutor.await();
         if (CacheManager.cacheManager.serverCache != null) {
             CacheManager.cacheManager.serverCache.shutCacheOnDisable(true);
