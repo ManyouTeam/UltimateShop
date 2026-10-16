@@ -1,6 +1,6 @@
-# ✨Unified UI and ArcMenu - Premium
+# ArcMenu UI — Premium
 
-ArcMenu and Ore share a graphical layout model. Common, shop, search and favourite menus keep their existing buttons, products, conditions and actions; `ui.layout` and placements determine their graphical positions. Inventory slots and Bedrock Form lists keep their own presentation rules.
+ArcMenu renders Common, Shop, Search and Favourite menus as graphical Java-client menus, using existing products, conditions and actions. Ore uses the same [graphical layout](ui-layout.md) with a different renderer.
 
 ## Enable ArcMenu
 
@@ -17,220 +17,11 @@ menu:
 
 A menu can override `ui.mode.java: arcmenu` or use `inherit`. Use `ore` instead for the graphical Dialog presentation; Ore additionally needs supported Paper and a generated resource pack. Item Sell/Sell All are Inventory deposit interfaces. ArcMenu does not render the Inventory Buy More menu as a separate screen.
 
-## Configuration scopes
+<a id="shared-layout"></a>
 
-| Scope | Location |
-| --- | --- |
-| Global UI defaults | `config.yml`: `menu.ui` |
-| Menu overrides | Menu root `ui`, including shop `settings.menu-settings.ui` |
-| Product action/price overrides | Product root `ui.actions`, `ui.price` |
-| Product/button graphical position | Product/button root `ui.placement` |
-| Ordinary button appearance | Button root `ui.appearance`, `ui.font-size`, `ui.text-align` |
+## Shared layout and product styling
 
-Menu values inherit missing global values recursively. Product action/price lookup uses product > owning shop menu > global defaults. Card styling is menu-wide. A product shown in search/favourites keeps its product settings and trade rules. Bundled menus contain explicit UI values, so inspect the menu when a global edit appears ineffective.
-
-Root `title` and `content` provide shared text. Headers can reference `{title}` and `{content}`, language references and PlaceholderAPI. Start from the current bundled main/shop/search/favourite example; removed graphical configuration formats are not automatically migrated.
-
-## Shared layout
-
-```yaml
-ui:
-  layout:
-    canvas:
-      width: 648
-      height: 414
-    header:
-      title:
-        enabled: true
-        text: '{title}'
-        x: 18
-        y: 9
-        width: 570
-        align: left
-        font-size: 1.3
-      content:
-        enabled: true
-        text: '{content}'
-        x: 18
-        y: 36
-        width: 570
-        align: left
-        font-size: 0.8
-    areas:
-      sidebar:
-        type: stack
-        x: 18
-        y: 90
-        width: 108
-        height: 270
-        item-height: 36
-        gap: 9
-      content:
-        type: grid
-        x: 144
-        y: 90
-        width: 486
-        height: 270
-        columns: 3
-        rows: 2
-        cell-height: 126
-        gap-x: 9
-        gap-y: 9
-      footer:
-        type: free
-        x: 18
-        y: 369
-        width: 612
-        height: 27
-    pagination:
-      enabled: true
-      previous:
-        x: 297
-        y: 369
-        width: 36
-        height: 27
-      indicator:
-        x: 342
-        y: 369
-        width: 90
-        height: 27
-      next:
-        x: 441
-        y: 369
-        width: 36
-        height: 27
-```
-
-### Canvas, headers and areas
-
-| Path relative to `ui.layout` | Meaning |
-| --- | --- |
-| `canvas.width`, `canvas.height` | Logical canvas dimensions; width 144–900, height 144–540; height is a multiple of 9 |
-| `header.<id>` | Named text header; any descriptive ID may be used |
-| `header.<id>.enabled` | Whether to render this header |
-| `header.<id>.text` | Text, with `{title}`/`{content}` replacement |
-| `header.<id>.x`, `y`, `width` | Canvas position and text width; header layout occupies a 27-high area |
-| `header.<id>.align` | `left`, `center`, `right` |
-| `header.<id>.font-size` | ArcMenu text scale; Ore uses native font rendering |
-| `areas.<id>.type` | `grid`, `stack` or `free` |
-| `areas.<id>.x`, `y`, `width`, `height` | Named area's bounds within the canvas |
-| `areas.<id>.columns`, `rows` | Grid dimensions; columns 1–36, rows 1–60 |
-| `areas.<id>.cell-height` | Grid cell height; width is calculated from area width, columns and gaps |
-| `areas.<id>.item-height` | Stack entry height; default 36 |
-| `areas.<id>.gap` | Fallback for both horizontal and vertical gaps |
-| `areas.<id>.gap-x`, `gap-y` | Override the respective gap |
-| `pagination.enabled` | Enable graphical pagination controls |
-| `pagination.previous`, `indicator`, `next` | Each supports `enabled`, `x`, `y`, `width`, `height` |
-
-Grid entries fill cells and paginate by area capacity. Explicit row/column cells are reserved before automatic placement. Stack entries sort by `placement.order` and stack vertically; free entries use coordinates within the area. Row/column indices start at 0.
-
-Use multiples of 9 for vertical coordinates, heights and vertical gaps. Non-free cells must be at least 24 wide and 27 high; all entries with `appearance: card` must be at least 99 high, including category cards. Keep headers, pagination and actual entries within bounds and free of overlap. Errors are reported through ErrorManager. Increasing canvas size does not automatically redesign ArcMenu's product details panel, whose internal coordinates are fixed by the renderer.
-
-### Entry placements
-
-```yaml
-buttons:
-  search:
-    display-item:
-      material: HOPPER
-      name: 'Search'
-    actions:
-      1:
-        type: open_menu
-        menu: search
-    ui:
-      appearance: button
-      placement:
-        area: sidebar
-        order: 0
-      font-size: 1.0
-      text-align: left
-  close:
-    display-item:
-      material: BARRIER
-      name: 'Close'
-    actions:
-      1:
-        type: close
-    ui:
-      placement:
-        area: footer
-        x: 504
-        y: 0
-        width: 108
-        height: 27
-```
-
-| Entry key | Meaning |
-| --- | --- |
-| `ui.placement.enabled` | Default true when placement exists; false disables this graphical entry |
-| `ui.placement.area` | Named area from `ui.layout.areas` |
-| `ui.placement.order` | Sort order for stack/automatic placement; defaults to source slot |
-| `ui.placement.row`, `column` | Optional explicit grid cell; zero-based |
-| `ui.placement.x`, `y` | Offset relative to a free area's origin |
-| `ui.placement.width`, `height` | Override entry dimensions; free entries otherwise default to 108 × 27 |
-| `ui.appearance` | `button` or `card`; products use cards by default |
-| `ui.font-size` | Ordinary ArcMenu button font scale |
-| `ui.text-align` | Ordinary graphical button alignment |
-| `ui.visible-in` | Presentation filter; use `ore` and/or `arcmenu` |
-
-Ordinary buttons without a graphical placement are not displayed. The renderer does not generate Back/Close or infer a sidebar from actions. Root `layout` identifies Inventory/list entries. Graphical menu collection can also include explicitly placed ordinary buttons/products that are absent from the root slot layout. Product placement defaults to `ui.products.placement`; a product's own `ui.placement` overrides it. `appearance: card` also supports category/navigation cards.
-
-## Shared product settings
-
-```yaml
-ui:
-  products:
-    placement:
-      area: content
-    card:
-      icon-size: 32
-      padding: 9
-      name-size: 1.0
-      price-size: 0.85
-      button-font-size: 1.0
-      button-height: 27
-      buttons:
-        inset-x: 6
-        inset-bottom: 6
-        gap: 3
-      price-lines: 1
-      lore-lines: 6
-      description-lines: 2
-    price:
-      enabled: true
-      formats:
-        both: '&6Buy: {buy-price} | Sell: {sell-price}'
-        only-buy: '&6Buy: {buy-price}'
-        only-sell: '&6Sell: {sell-price}'
-    actions:
-      primary: [buy, sell]
-      extra: auto
-      labels:
-        buy: 'Buy'
-        sell: 'Sell'
-```
-
-| Path relative to `ui.products` | Meaning |
-| --- | --- |
-| `placement` | Default product area/placement, using the entry keys above |
-| `card.icon-size` | Material/item icon size |
-| `card.padding` | Card content padding |
-| `card.name-size`, `price-size` | ArcMenu name and compact price font scales |
-| `card.button-font-size`, `button-height` | ArcMenu operation button font and height |
-| `card.buttons.inset-x`, `inset-bottom`, `gap` | ArcMenu operation button positioning |
-| `card.price-lines` | Present in bundled defaults; current ArcMenu card code renders the compact price directly and does not read this limit |
-| `card.lore-lines` | Maximum product lore lines in Ore card bodies |
-| `card.description-lines` | Maximum Ore category-card description lines; ArcMenu calculates fitting lines from card space |
-| `price.enabled` | Enable the compact product price line |
-| `price.formats.both`, `only-buy`, `only-sell` | Price format by available trade direction; `{buy-price}` and `{sell-price}` |
-| `actions.primary` | Ordered action IDs, at most two available primary actions |
-| `actions.extra` | `auto` for remaining actions, explicit list to filter, or `[]` for none |
-| `actions.labels.<action-id>` | Label override; supports `{item-name}` and normal text placeholders |
-
-Actions come from `menu.click-event` or product click overrides, with custom definitions in `menu.click-event-actions`. Listing an ID in `actions.primary` does not create an action without a binding. Buy/sell, quantity, sell-all and favourite availability is filtered by the product. Custom `buy-only`/`sell-only` restrictions also apply.
-
-Price text reuses dynamic price calculation and sell multiplier display. Compact prices represent one trade unit; information/detail content uses the applicable quantities. Original item lore and generated `add-lore` are retained in product information/tooltips. Presentation conditions can target `arcmenu`, `arcmenu-hover`, `ore` and `ore-hover`; see [Add Lore](display-item-add-lore.md). If there is no lore, tooltip content can fall back to the compact price line.
+The complete `ui.layout`, `ui.placement`, `ui.products` and `ui.theme` reference has moved to [Graphical UI Layout](ui-layout.md). It covers canvas, headers, areas, pagination, buttons, cards, prices and actions without duplicating the same settings here.
 
 ## ArcMenu clicks, details and extra actions
 
@@ -263,24 +54,6 @@ Some old bundled menu copies contain `details.enabled`. The current renderer doe
 
 ArcMenu card numeric settings are clamped: icon size 12–38, padding 3–16, name scale 0.5–1.2, price scale 0.5–1.0, operation font 0.5–1.5, button height 18–36, horizontal inset 2–16, bottom inset 3–16, button gap 2–12. Enlarged fonts still need sufficient width; long text can be truncated.
 
-## Theme and interface text
-
-`ui.theme` accepts `#RRGGBB` or ArcMenu `#AARRGGBB` strings; quote values in YAML. Ore's generated templates use RGB and drop the alpha channel.
-
-| Theme key | Element |
-| --- | --- |
-| `background` | Overall ArcMenu background |
-| `sidebar` | Sidebar background |
-| `card` | Card background |
-| `border` | Card border |
-| `accent` | Selection/highlight accent |
-| `text` | ArcMenu base text colour |
-| `button.background`, `button.hover`, `button.border` | Ordinary controls |
-| `buy.background`, `buy.hover` | Buy controls |
-| `sell.background`, `sell.hover` | Sell controls |
-
-`ui.text.cancel` and `ui.text.no-extra` label the extra-action popup. `ui.text.favourite-edit.forward`, `backward`, `remove` override favourite card editing labels. `ui.text.select-product` is the renderer's unselected-product hint. Use language references for translated labels.
-
 ## Search and favourite menus
 
 ArcMenu uses the corresponding file's title, content, conditions, ordinary buttons, result lore and result capacity. Configure `ui.layout`, `ui.products.placement` and special-button placements in that file. Graphical pagination lays out the entries selected for the view; root result slots still limit its result list.
@@ -291,6 +64,10 @@ Search supports name keywords through chat input, clear-search, action/state ite
 
 Custom item names take precedence. The shared item-name path can return vanilla translation components. ArcMenu resolves available Minecraft translations for the player's locale through the resource manager; Ore retains native translatable components for the client. Ore's tooltip adds the item name once. The old separate item-name download flags are not part of this configuration.
 
-Ore uses special positive/negative-width characters to place text. Translatable components are atomic; their server-side width estimate is not the final translated width in every client language/font. Keep adequate text width when choosing a layout. The full Ore renderer and template configuration is on [Dialog and Ore](dialog-menus-premium.md).
+Ore uses special positive/negative-width characters to place text. Translatable components are atomic; their server-side width estimate is not the final translated width in every client language/font. Keep adequate text width when choosing a layout. Read [Ore UI](ore-menus-premium.md) for Ore-specific templates and resources.
 
 After changing Ore layout/theme/templates, run `/shop dialogpack` and load the new pack. ArcMenu mouse mode reads ArcMenu's `mouse.cursor.z` to keep menu layers and tooltips behind its cursor without changing that cursor setting.
+
+## Troubleshooting
+
+If it falls back to Inventory, check Premium, a compatible ArcMenu integration/client setup, the selected `ui.mode.java` and supported menu type. Item Sell and Sell All are physical inventories; ArcMenu quantity selection uses its details panel, not the Inventory Buy More layout. See [Troubleshooting](troubleshooting.md).

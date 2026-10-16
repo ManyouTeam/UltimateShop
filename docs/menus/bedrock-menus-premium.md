@@ -1,8 +1,8 @@
-# 🛏️Bedrock Form Menus - Premium
+# Bedrock Form UI — Premium
 
 Form renders menus as Bedrock button lists and input screens. Products, prices, conditions and saved favourites come from the same configuration as other presentations. Form supports common, shop, search and favourite menus, plus product information and quantity input. Physical item deposit menus remain Inventory interfaces.
 
-## Requirements and selection
+## Requirements and quick start
 
 Set up Geyser and Floodgate for your server/proxy arrangement, using Floodgate authentication. UltimateShop must detect Bedrock players and send forms from the backend through Floodgate.
 
@@ -179,3 +179,8 @@ Favourite menus support normal and editing lists, using the same saved data as I
 ## Troubleshooting
 
 If a chest opens, check Premium, Bedrock detection, Floodgate availability, selected mode and menu type. If an image is missing, check the active display item, client texture path or URL, automatic resource preparation, and whether the button has a nonblank name. For information/quantity text or reopen behaviour, check the owning shop menu override. Root legacy renderer sections do not override unified settings.
+
+
+## Related UI documentation
+
+[UI Modes](ui-overview.md) · [Menu Configuration](menu-configuration.md) · [Troubleshooting](troubleshooting.md)
