@@ -1,31 +1,30 @@
 # Inventory slots use root layout; ArcMenu and Ore use ui.layout and each button ui.placement.
+
+title: '{lang:buy-more-title}'
+size: 54
+
 dialog:
   enabled: false
   layout: multi-action
   content: ''
   button-width: 150
   columns: 2
-bedrock:
-  enabled: true
-  content: ''
-arcmenu:
-  enabled: false
-title: '{lang:buy-more-title}'
-size: 54
+
 layout:
-- '000000000'
-- 0abcdefg0
-- '000000000'
-- '065401230'
-- 0000F0000
-- A0000000C
+  - '000000000'
+  - '0abcdefg0'
+  - '000000000'
+  - '065401230'
+  - '0000F0000'
+  - 'A0000000C'
+
 amount-items:
   1:
     display-item:
       material: GREEN_WOOL
       name: '&a+1'
       lore:
-      - '{lang:buy-more-add-1}'
+        - '{lang:buy-more-add-1}'
     add-amount: 1
     ui:
       appearance: button
@@ -39,7 +38,7 @@ amount-items:
       amount: 10
       name: '&a+10'
       lore:
-      - '{lang:buy-more-add-10}'
+        - '{lang:buy-more-add-10}'
     add-amount: 10
     ui:
       appearance: button
@@ -53,7 +52,7 @@ amount-items:
       amount: 32
       name: '&a+32'
       lore:
-      - '{lang:buy-more-add-32}'
+        - '{lang:buy-more-add-32}'
     add-amount: 32
     ui:
       appearance: button
@@ -66,7 +65,7 @@ amount-items:
       material: RED_WOOL
       name: '&c-1'
       lore:
-      - '{lang:buy-more-reduce-1}'
+        - '{lang:buy-more-reduce-1}'
     add-amount: -1
     ui:
       appearance: button
@@ -80,7 +79,7 @@ amount-items:
       amount: 10
       name: '&c-10'
       lore:
-      - '{lang:buy-more-reduce-10}'
+        - '{lang:buy-more-reduce-10}'
     add-amount: -10
     ui:
       appearance: button
@@ -94,7 +93,7 @@ amount-items:
       amount: 32
       name: '&c-32'
       lore:
-      - '{lang:buy-more-reduce-32}'
+        - '{lang:buy-more-reduce-32}'
     add-amount: -32
     ui:
       appearance: button
@@ -102,28 +101,31 @@ amount-items:
         area: amounts
         row: 1
         column: 2
+
 display-items:
-- a
-- b
-- c
-- d
-- e
-- f
-- g
+  - a
+  - b
+  - c
+  - d
+  - e
+  - f
+  - g
+
 confirm-items:
   F:
     display-item:
       material: PAPER
       name: '{lang:buy-more-sell-button} x{amount}'
       lore:
-      - '{lang:buy-more-sell-button-lore-1}'
-      - '{lang:buy-more-sell-button-lore-2}'
+        - '{lang:buy-more-sell-button-lore-1}'
+        - '{lang:buy-more-sell-button-lore-2}'
     click-action: sell
     ui:
       appearance: button
       placement:
         area: confirmation
         order: 0
+
 buttons:
   0:
     display-item:
@@ -165,6 +167,14 @@ buttons:
         height: 27
       font-size: 1.0
       text-align: left
+
+bedrock:
+  enabled: true
+  content: ''
+
+arcmenu:
+  enabled: true
+
 ui:
   layout:
     canvas:
@@ -288,8 +298,8 @@ ui:
         only-sell: '{lang:menu.bedrock.price-extra-line.only-sell}'
     actions:
       primary:
-      - buy
-      - sell
+        - buy
+        - sell
       extra: auto
       labels:
         buy: '{lang:menu.arcmenu.buy}'
@@ -332,6 +342,7 @@ ui:
         width: 260
         font-size: 0.9
         padding: 8
+
 display-items-ui:
   ui:
     placement:

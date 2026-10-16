@@ -6,6 +6,11 @@
 
 debug: false
 
+editor:
+  # Premium version only. Back up the plugin configuration before EVERY use of the editor.
+  # Reload the plugin after changing this option.
+  enabled: false
+
 config-files:
   language: en_US
   # Premium version only.
@@ -225,6 +230,7 @@ menu:
         back: '{lang:menu.dialog.favourite-edit.buttons.back}'
   # Premium version only
   bedrock:
+    enabled: true
     search:
       input: '{lang:menu.bedrock.search.input}'
       buttons:
@@ -237,7 +243,6 @@ menu:
         backward: '{lang:menu.bedrock.favourite-edit.buttons.backward}'
         remove: '{lang:menu.bedrock.favourite-edit.buttons.remove}'
         back: '{lang:menu.bedrock.favourite-edit.buttons.back}'
-    enabled: true
     auto-add-icon:
       enabled: true
       format: "https://raw.githubusercontent.com/InventivetalentDev/minecraft-assets/refs/heads/{version}/assets/minecraft/textures/{path}.png"

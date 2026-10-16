@@ -1,7 +1,7 @@
 package cn.superiormc.ultimateshop.paper.methods;
 
+import cn.superiormc.ultimateshop.methods.Items.BuildItem;
 import cn.superiormc.ultimateshop.paper.adapts.PaperComponentAdapter;
-import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -12,8 +12,7 @@ public class BuildItemPaper {
                                            ConfigurationSection section,
                                            int amount,
                                            String... args) {
-        ItemStack item = new ItemStack(Material.STONE);
-        return editItemStack(item, player, section, amount, args);
+        return BuildItem.buildItemStack(player, section, amount > 0 ? amount : section.getInt("amount", 1), args);
     }
 
     public static ItemStack editItemStack(ItemStack item,

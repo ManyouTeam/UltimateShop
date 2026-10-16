@@ -13,6 +13,7 @@ import cn.superiormc.ultimateshop.objects.dialog.ObjectDialogTemplate;
 import cn.superiormc.ultimateshop.objects.dialog.ObjectDialogWidget;
 import cn.superiormc.ultimateshop.paper.utils.PaperTextUtil;
 import cn.superiormc.ultimateshop.utils.SchedulerUtil;
+import cn.superiormc.ultimateshop.utils.TextUtil;
 
 import io.papermc.paper.dialog.Dialog;
 import io.papermc.paper.registry.data.dialog.ActionButton;
@@ -395,7 +396,20 @@ public class PaperOreRenderer {
         double used = 0;
         for (int i = 0; i < glyphs.size(); i++) {
             Glyph glyph = glyphs.get(i);
-            if (glyph.newline() || (!line.isEmpty() && used + glyph.width() > width)) {
+            int end = i + 1;
+            double tokenWidth = glyph.width();
+            if (isEnglishWordGlyph(glyph)) {
+                while (end < glyphs.size() && isEnglishWordGlyph(glyphs.get(end))) {
+                    tokenWidth += glyphs.get(end).width();
+                    end++;
+                }
+            }
+            if (glyph.newline() || (!line.isEmpty() && used + tokenWidth > width)) {
+                while (!line.isEmpty()
+                    && line.get(line.size() - 1).component() instanceof TextComponent text
+                    && text.content().isBlank()) {
+                    line.remove(line.size() - 1);
+                }
                 result.add(line);
                 if (result.size() == maximum) {
                     return result;
@@ -405,17 +419,30 @@ public class PaperOreRenderer {
                 if (glyph.newline()) {
                     continue;
                 }
+                if (glyph.component() instanceof TextComponent text && text.content().isBlank()) {
+                    continue;
+                }
             }
-            // Keep client-resolved components intact, even when their estimate exceeds the line.
-            Glyph fitted =
-                glyph.width() > width ? new Glyph(glyph.component(), width, false) : glyph;
-            line.add(fitted);
-            used += fitted.width();
+            for (int index = i; index < end; index++) {
+                Glyph part = glyphs.get(index);
+                // Keep client-resolved components intact, even when their estimate exceeds the line.
+                Glyph fitted =
+                    part.width() > width ? new Glyph(part.component(), width, false) : part;
+                line.add(fitted);
+                used += fitted.width();
+            }
+            i = end - 1;
         }
         if (!line.isEmpty() || result.isEmpty()) {
             result.add(line);
         }
         return result;
+    }
+
+    private static boolean isEnglishWordGlyph(Glyph glyph) {
+        return glyph.component() instanceof TextComponent text
+            && text.content().length() == 1
+            && TextUtil.isEnglishWordCharacter(text.content().charAt(0));
     }
 
     private static void flatten(Component component, Style inherited, List<Glyph> result) {

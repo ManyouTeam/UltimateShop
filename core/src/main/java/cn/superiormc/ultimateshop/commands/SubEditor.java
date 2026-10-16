@@ -7,7 +7,6 @@ import cn.superiormc.ultimateshop.editor.EditorTarget;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import org.bukkit.entity.Player;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,14 +22,11 @@ public class SubEditor extends AbstractCommand {
 
     @Override
     public void executeCommandInGame(String[] args, Player player) {
-        if (!ConfigManager.configManager.isEditorConfirmedEnabled()) {
-            File confirmFile = ConfigManager.configManager.getEditorEnableConfirmFile();
-            EditorLang.send(player, "editor.message.enable-confirm-required",
-                    "&cEditor is still experimental. Read and confirm every item in &f{file}&c before using it.",
-                    "file", confirmFile.getAbsolutePath());
-            EditorLang.send(player, "editor.message.enable-confirm-details",
-                    "&7Back up data, read the wiki, accept possible errors, then set every confirmation in &f{file} &7to true.",
-                    "file", confirmFile.getAbsolutePath());
+        if (!ConfigManager.configManager.getBoolean("editor.enabled")) {
+            EditorLang.send(player, "editor.message.disabled",
+                    "&cSet &feditor.enabled &cto true in &fconfig.yml &cand reload the plugin to enable the editor.");
+            EditorLang.send(player, "editor.message.backup-required",
+                    "&7Back up the plugin configuration before every use of the editor.");
             return;
         }
         if (args.length == 1) {

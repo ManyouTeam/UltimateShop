@@ -5,10 +5,14 @@ import cn.superiormc.ultimateshop.paper.utils.PaperTextUtil;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
 import com.google.common.base.Enums;
 import io.papermc.paper.datacomponent.DataComponentTypes;
-import io.papermc.paper.datacomponent.item.*;
+import io.papermc.paper.datacomponent.item.ItemAttributeModifiers;
 import io.papermc.paper.datacomponent.item.attribute.AttributeModifierDisplay;
-import java.util.*;
-import org.bukkit.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import org.bukkit.Registry;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.configuration.ConfigurationSection;
@@ -53,7 +57,7 @@ public class AttributesCodec implements ComponentCodec {
                 if (attributeInst == null) {
                     continue;
                 }
-                ConfigurationSection subSection = new org.bukkit.configuration.MemoryConfiguration();
+                ConfigurationSection subSection = new MemoryConfiguration();
                 for (Map.Entry<?, ?> attributeEntry : attributeData.entrySet()) {
                     subSection.set(attributeEntry.getKey().toString(), attributeEntry.getValue());
                 }
@@ -130,7 +134,7 @@ public class AttributesCodec implements ComponentCodec {
                             attributeData.put("display-mode", "RESET");
                         } else if (display instanceof AttributeModifierDisplay.OverrideText displayText) {
                             attributeData.put("display-mode", "OVERRIDE");
-                            attributeData.put("display-text", displayText.text());
+                            attributeData.put("display-text", PaperTextUtil.changeToString(displayText.text()));
                         } else {
                             attributeData.put("display-mode", "DEFAULT");
                         }

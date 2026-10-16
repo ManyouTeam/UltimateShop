@@ -2,13 +2,25 @@ package cn.superiormc.ultimateshop.objects.items.products;
 
 import cn.superiormc.ultimateshop.managers.ErrorManager;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
-import cn.superiormc.ultimateshop.objects.items.*;
+import cn.superiormc.ultimateshop.objects.items.AbstractSingleThing;
+import cn.superiormc.ultimateshop.objects.items.AbstractThings;
+import cn.superiormc.ultimateshop.objects.items.GiveResult;
+import cn.superiormc.ultimateshop.objects.items.ItemStorage;
+import cn.superiormc.ultimateshop.objects.items.MaxSellResult;
+import cn.superiormc.ultimateshop.objects.items.TakeResult;
+import cn.superiormc.ultimateshop.objects.items.ThingMode;
 import cn.superiormc.ultimateshop.utils.RandomUtil;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+import java.util.TreeSet;
 
 public class ObjectProducts extends AbstractThings {
 
@@ -168,7 +180,7 @@ public class ObjectProducts extends AbstractThings {
         return productMaps;
     }
 
-    public MaxSellResult getMaxAbleSellAmount(org.bukkit.inventory.Inventory inventory, Player player, int times, int maxLimit) {
+    public MaxSellResult getMaxAbleSellAmount(Inventory inventory, Player player, int times, int maxLimit) {
         return getMaxAbleSellAmount(ItemStorage.of(inventory), player, times, maxLimit);
     }
 
@@ -187,7 +199,7 @@ public class ObjectProducts extends AbstractThings {
                         continue;
                     }
                     if (!tempVal1.isStatic()) {
-                        ErrorManager.errorManager.sendErrorMessage("§6Warning: It seems that one of your product is using dynamic amounts, which results in an error in calculating the maximum sellable quantity for that product in the sell all, as the results of each sale are different and the plugin cannot predict the price for the next sale.");
+                        ErrorManager.errorManager.sendErrorMessage("§cError: It seems that one of your product is using dynamic amounts, which results in an error in calculating the maximum sellable quantity for that product in the sell all, as the results of each sale are different and the plugin cannot predict the price for the next sale.");
                     }
                     BigDecimal cost = getAmount(player, times, 1, false).get(tempVal1);
                     int tempVal2 = (int) (tempVal1.playerHasAmount(storage, player) / cost.doubleValue());
@@ -226,7 +238,7 @@ public class ObjectProducts extends AbstractThings {
                         continue;
                     }
                     if (!tempVal1.isStatic()) {
-                        ErrorManager.errorManager.sendErrorMessage("§6Warning: It seems that one of your product is using dynamic amounts, which results in an error in calculating the maximum sellable quantity for that product in the sell all, as the results of each sale are different and the plugin cannot predict the price for the next sale.");
+                        ErrorManager.errorManager.sendErrorMessage("§cError: It seems that one of your product is using dynamic amounts, which results in an error in calculating the maximum sellable quantity for that product in the sell all, as the results of each sale are different and the plugin cannot predict the price for the next sale.");
                     }
                     BigDecimal cost = getAmount(player, times, 1, false).get(tempVal1);
                     int tempVal2 = (int) (tempVal1.playerHasAmount(storage, player) / cost.doubleValue());

@@ -35,7 +35,7 @@ For options in `item-format` section:
   For example: The shop has a diamond sword with sharpness enchantment, if player's sword don't has this enchantment, and you didn't set `enchants` at this option, then he can not sell the sword to shop, if you set `enchants` here, then we will ignore player's sword don't has this enchantment, and contine check other keys.
 
 {% hint style="info" %}
-You can parse the ItemFormat of a handheld item by using the command `/shop generateeitemformat`, and the key can also be indented. For example, if you only want to ignore the sharpness enchantment and do not want to ignore other enchantments, you can fill in `enchants.sharpness` in ignore-keys option instead of `enchants`.
+You can parse the ItemFormat of a handheld item by using the command `/shop generateitemformat`, and the key can also be indented. For example, if you only want to ignore the sharpness enchantment and do not want to ignore other enchantments, you can fill in `enchants.sharpness` in ignore-keys option instead of `enchants`.
 {% endhint %}
 
 ### Third-plugin Item

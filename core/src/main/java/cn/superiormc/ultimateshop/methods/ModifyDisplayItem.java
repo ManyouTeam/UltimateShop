@@ -174,7 +174,7 @@ public class ModifyDisplayItem {
         for (String rawLine : item.getAddLore(player)) {
 
             if (rawLine.endsWith("-i") || rawLine.endsWith("-m") || rawLine.endsWith("-b")) {
-                ErrorManager.errorManager.sendErrorMessage("§cYour display item add lore config is not updated, please reconfigure your " +
+                ErrorManager.errorManager.sendErrorMessage("§cError: Your display item add lore config is not updated, please reconfigure your " +
                     "display item add lore configs at config.yml file! You can get latest config at plugin Wiki: https://ultimateshop.superiormc.cn/info/configuration-files .");
             }
 

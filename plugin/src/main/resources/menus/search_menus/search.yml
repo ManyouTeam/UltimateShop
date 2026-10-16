@@ -1,27 +1,26 @@
-# Inventory slots use root layout; ArcMenu and Ore use ui.layout and each button ui.placement.
+menu-type: search
+
+title: '{lang:menu.search-gui.title}'
+size: 54
+
 dialog:
   enabled: true
   layout: multi-action
   content: ''
   button-width: 150
   columns: 1
-bedrock:
-  enabled: true
-  content: ''
-arcmenu:
-  enabled: false
-menu-type: search
-title: '{lang:menu.search-gui.title}'
-size: 54
+
 layout:
-- 00H0N0C00
-- '001111100'
-- '000000000'
-- '066666660'
-- '066666660'
-- 00B000X00
+  - '00H0N0C00'
+  - '001111100'
+  - '000000000'
+  - '066666660'
+  - '066666660'
+  - '00B000X00'
+
 input-item: '1'
 result-item: '6'
+
 buttons:
   0:
     display-item:
@@ -63,6 +62,7 @@ buttons:
         height: 27
       font-size: 1.0
       text-align: left
+
 action-items:
   H:
     action-type: input-name
@@ -70,10 +70,10 @@ action-items:
       material: HOPPER
       name: '{lang:search-gui-guide-name}'
       lore:
-      - '{lang:search-gui-guide-line-1}'
-      - '{lang:search-gui-guide-line-2}'
-      - '{lang:search-gui-guide-line-3}'
-      - '{lang:search-gui-guide-line-4}'
+        - '{lang:search-gui-guide-line-1}'
+        - '{lang:search-gui-guide-line-2}'
+        - '{lang:search-gui-guide-line-3}'
+        - '{lang:search-gui-guide-line-4}'
     ui:
       placement:
         area: sidebar
@@ -84,11 +84,12 @@ action-items:
       material: BARRIER
       name: '{lang:search-gui-clear-name}'
       lore:
-      - '{lang:search-gui-clear-line-1}'
+        - '{lang:search-gui-clear-line-1}'
     ui:
       placement:
         area: sidebar
         order: 10
+
 state-items:
   N:
     empty-input:
@@ -96,39 +97,49 @@ state-items:
         material: PAPER
         name: '{lang:search-gui-empty-name}'
         lore:
-        - '{lang:search-gui-empty-line-1}'
-        - '{lang:search-gui-empty-line-2}'
+          - '{lang:search-gui-empty-line-1}'
+          - '{lang:search-gui-empty-line-2}'
     has-input:
       display-item:
         material: COMPASS
         name: '{lang:search-gui-state-name}'
         lore:
-        - '{lang:search-gui-state-line-1}'
-        - '{lang:search-gui-state-line-2}'
-        - '{lang:search-gui-state-line-3}'
+          - '{lang:search-gui-state-line-1}'
+          - '{lang:search-gui-state-line-2}'
+          - '{lang:search-gui-state-line-3}'
     ui:
       placement:
         area: sidebar
         order: 20
+
 no-result-item:
   slot: 31
   display-item:
     material: BARRIER
     name: '{lang:search-gui-no-result-name}'
     lore:
-    - '{lang:search-gui-no-result-line-1}'
-    - '{lang:search-gui-no-result-line-2}'
+      - '{lang:search-gui-no-result-line-1}'
+      - '{lang:search-gui-no-result-line-2}'
   ui:
     placement:
       area: content
       row: 0
       column: 0
     appearance: card
+
 result-lore:
-- ' '
-- '{lang:search-gui-result-shop}'
-- '{lang:search-gui-result-product}'
-- '{lang:search-gui-result-click}'
+  - ' '
+  - '{lang:search-gui-result-shop}'
+  - '{lang:search-gui-result-product}'
+  - '{lang:search-gui-result-click}'
+
+bedrock:
+  enabled: true
+  content: ''
+
+arcmenu:
+  enabled: true
+
 ui:
   layout:
     canvas:
@@ -235,8 +246,8 @@ ui:
         only-sell: '{lang:menu.bedrock.price-extra-line.only-sell}'
     actions:
       primary:
-      - buy
-      - sell
+        - buy
+        - sell
       extra: auto
       labels:
         buy: '{lang:menu.arcmenu.buy}'

@@ -2,6 +2,7 @@ package cn.superiormc.ultimateshop.gui.arc;
 
 import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.managers.ErrorManager;
+import cn.superiormc.ultimateshop.managers.MenuStatusManager;
 import cn.superiormc.ultimateshop.objects.ObjectShop;
 import cn.superiormc.ultimateshop.objects.menus.ObjectFavouriteMenu;
 import cn.superiormc.ultimateshop.objects.menus.ObjectMenu;
@@ -70,7 +71,7 @@ final class ArcMenuRuntime implements AutoCloseable {
                 ArcMenuGUI gui = pending.remove(context.getPlayer().getUniqueId());
                 if (gui == null) {
                     ErrorManager.errorManager.sendErrorMessage(
-                        "§cOpen this application through UltimateShop");
+                        "§cError: Open this application through UltimateShop");
                     context.close();
                     return new ArcMenuApplicationSession() {
 
@@ -81,8 +82,7 @@ final class ArcMenuRuntime implements AutoCloseable {
     }
 
     boolean open(Player player, ObjectMenu menu, ObjectShop shop, boolean bypass, boolean reopen, boolean editing) {
-        // ArcMenu defers airborne opens; this synchronous adapter must retain its exact factory.
-        if (!player.isOnGround()) {
+        if (!canOpen(player)) {
             return false;
         }
         try {
@@ -99,9 +99,19 @@ final class ArcMenuRuntime implements AutoCloseable {
             return gui.tryOpen(reopen);
         } catch (IllegalArgumentException exception) {
             ErrorManager.errorManager.sendErrorMessage(
-                "§cInvalid UI layout in " + menu.getName() + ": " + exception.getMessage());
+                "§cError: Invalid UI layout in " + menu.getName() + ": " + exception.getMessage());
             return false;
         }
+    }
+
+    private boolean canOpen(Player player) {
+        // Existing applications already have a surface; navigation does not need a grounded open.
+        if (MenuStatusManager.menuStatusManager.getOpeningGUI(player) instanceof ArcMenuGUI gui
+            && gui.isActive()) {
+            return true;
+        }
+        // First opens can be deferred by ArcMenu while the player is airborne.
+        return player.isOnGround();
     }
 
     boolean open(ArcMenuGUI gui) {

@@ -17,7 +17,7 @@ public class EconomyUltraEconomyHook extends AbstractEconomyHook {
     @Override
     public double getEconomy(Player player, String currencyID) {
         if (!UltraEconomy.getAPI().getCurrencies().name(currencyID).isPresent()) {
-            ErrorManager.errorManager.sendErrorMessage("§cCan not find currency " + currencyID + " in UltraEconomy plugin!");
+            ErrorManager.errorManager.sendErrorMessage("§cError: Can not find currency " + currencyID + " in UltraEconomy plugin!");
             return 0;
         }
         if (UltraEconomy.getAPI().getAccounts().uuid(player.getUniqueId()).isPresent()) {
@@ -29,7 +29,7 @@ public class EconomyUltraEconomyHook extends AbstractEconomyHook {
     @Override
     public void takeEconomy(Player player, double value, String currencyID) {
         if (!UltraEconomy.getAPI().getCurrencies().name(currencyID).isPresent()) {
-            ErrorManager.errorManager.sendErrorMessage("§cCan not find currency " + currencyID + " in UltraEconomy plugin!");
+            ErrorManager.errorManager.sendErrorMessage("§cError: Can not find currency " + currencyID + " in UltraEconomy plugin!");
             return;
         }
         if (UltraEconomy.getAPI().getAccounts().uuid(player.getUniqueId()).isPresent()) {
@@ -40,7 +40,7 @@ public class EconomyUltraEconomyHook extends AbstractEconomyHook {
     @Override
     public void giveEconomy(Player player, double value, String currencyID) {
         if (!UltraEconomy.getAPI().getCurrencies().name(currencyID).isPresent()) {
-            ErrorManager.errorManager.sendErrorMessage("§cCan not find currency " + currencyID + " in UltraEconomy plugin!");
+            ErrorManager.errorManager.sendErrorMessage("§cError: Can not find currency " + currencyID + " in UltraEconomy plugin!");
             return;
         }
         if (UltraEconomy.getAPI().getAccounts().uuid(player.getUniqueId()).isPresent()) {
@@ -51,7 +51,7 @@ public class EconomyUltraEconomyHook extends AbstractEconomyHook {
     @Override
     public boolean isEnabled() {
         if (ueAPI == null) {
-            ErrorManager.errorManager.sendErrorMessage("§cCan not hook into UltraEconomy plugin!");
+            ErrorManager.errorManager.sendErrorMessage("§cError: Can not hook into UltraEconomy plugin!");
             return false;
         }
         return true;

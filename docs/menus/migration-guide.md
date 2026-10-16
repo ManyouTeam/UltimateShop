@@ -2,7 +2,7 @@
 
 This page documents the **current** configuration structure. It is not a promise to accept superseded configuration formats.
 
-## ✅ Native keys
+## Native keys
 
 | Purpose | Use this key |
 | --- | --- |
@@ -18,7 +18,7 @@ This page documents the **current** configuration structure. It is not a promise
 | ArcMenu enablement | Global `menu.arcmenu.enabled`, menu `arcmenu.enabled` |
 | Visibility for individual entry | `menu-visibility.inventory/form/dialog/item-action-list/ore/arcmenu` |
 
-## 🎨 Graphical-only keys
+## Graphical-only keys <mark style="color:red;">- Premium</mark>
 
 | Purpose | Use this key |
 | --- | --- |
@@ -33,11 +33,11 @@ This page documents the **current** configuration structure. It is not a promise
 
 The menu-wide `ui` section inherits missing values from `config.yml` → `menu.ui`. Menu `settings.menu-settings` can override a shop template.
 
-## ❌ Keys that are no longer read
+## Keys that are no longer read
 
 Do not configure `ui.mode`, `ui.visible-in`, `ui.show-sprite`, `ui.renderers.form` or `ui.renderers.dialog`. They will not select presentations or configure native controls.
 
-## 🔍 Choose the correct layout
+## Choose the correct layout
 
 ```yaml
 # A menu, not config.yml
@@ -56,4 +56,4 @@ ui:
 
 `dialog.layout` chooses the renderer; `ui.layout` configures graphics. The Ore renderer does not import old sidebars or infer pixel coordinates from Inventory `layout`. Give visible graphical entries a placement.
 
-[Menu configuration](menu-configuration.md) · [Presentations](ui-overview.md) · [Graphical layout](ui-layout.md).
+[Menu configuration](menu-configuration.md) · [Presentations](ui-overview.md) · [Graphical layout - Premium](ui-layout.md).

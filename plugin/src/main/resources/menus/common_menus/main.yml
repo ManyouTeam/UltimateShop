@@ -1,29 +1,34 @@
-# Inventory slots use root layout; ArcMenu and Ore use ui.layout and each button ui.placement.
+title: '{lang:shop-title}'
+size: 54
+
 dialog:
   enabled: true
   layout: multi-action
   content: ''
   button-width: 150
   columns: 2
+
 bedrock:
   enabled: true
   content: ''
+
 arcmenu:
-  enabled: false
-title: '{lang:shop-title}'
-size: 54
+  enabled: true
+
 open-actions:
   1:
     type: sound
     sound: block.note_block.pling
     open-once: true
+
 layout:
-- 00Y0S0X00
-- '000000000'
-- 0ABCDEFG0
-- 0HIJKLMN0
-- '000000000'
-- 0000Z0000
+  - '00Y0S0X00'
+  - '000000000'
+  - '0ABCDEFG0'
+  - '0HIJKLMN0'
+  - '000000000'
+  - '0000Z0000'
+
 buttons:
   0:
     display-item:
@@ -37,8 +42,8 @@ buttons:
       material: HOPPER
       name: '{lang:search-menu-button-name} &c(PREMIUM)'
       lore:
-      - '{lang:search-menu-button-line-1}'
-      - '{lang:search-menu-button-line-2}'
+        - '{lang:search-menu-button-line-1}'
+        - '{lang:search-menu-button-line-2}'
     actions:
       1:
         type: open_menu
@@ -54,8 +59,8 @@ buttons:
       material: NAME_TAG
       name: '{lang:favourite-menu-button-name} &c(PREMIUM)'
       lore:
-      - '{lang:favourite-menu-button-line-1}'
-      - '{lang:favourite-menu-button-line-2}'
+        - '{lang:favourite-menu-button-line-1}'
+        - '{lang:favourite-menu-button-line-2}'
     actions:
       1:
         type: open_menu
@@ -71,8 +76,8 @@ buttons:
       material: CHEST
       name: '{lang:sell-all-menu-button-name}'
       lore:
-      - '{lang:sell-all-menu-button-line-1}'
-      - '{lang:sell-all-menu-button-line-2}'
+        - '{lang:sell-all-menu-button-line-1}'
+        - '{lang:sell-all-menu-button-line-2}'
     actions:
       1:
         type: sell_all_menu
@@ -87,8 +92,8 @@ buttons:
       material: WHEAT
       name: '{lang:farming-name}'
       lore:
-      - '{lang:farming-lore-1}'
-      - '{lang:farming-lore-2}'
+        - '{lang:farming-lore-1}'
+        - '{lang:farming-lore-2}'
     actions:
       1:
         type: shop_menu
@@ -106,8 +111,8 @@ buttons:
       material: BONE
       name: '{lang:drops-name}'
       lore:
-      - '{lang:drops-lore-1}'
-      - '{lang:drops-lore-2}'
+        - '{lang:drops-lore-1}'
+        - '{lang:drops-lore-2}'
     actions:
       1:
         type: shop_menu
@@ -125,8 +130,8 @@ buttons:
       material: WHITE_CONCRETE
       name: '{lang:concretes-name}'
       lore:
-      - '{lang:concretes-lore-1}'
-      - '{lang:concretes-lore-2}'
+        - '{lang:concretes-lore-1}'
+        - '{lang:concretes-lore-2}'
     actions:
       1:
         type: shop_menu
@@ -144,8 +149,8 @@ buttons:
       material: SUNFLOWER
       name: '{lang:flowers-name}'
       lore:
-      - '{lang:flowers-lore-1}'
-      - '{lang:flowers-lore-2}'
+        - '{lang:flowers-lore-1}'
+        - '{lang:flowers-lore-2}'
     actions:
       1:
         type: shop_menu
@@ -163,8 +168,8 @@ buttons:
       material: OAK_LOG
       name: '{lang:logs-name}'
       lore:
-      - '{lang:logs-lore-1}'
-      - '{lang:logs-lore-2}'
+        - '{lang:logs-lore-1}'
+        - '{lang:logs-lore-2}'
     actions:
       1:
         type: shop_menu
@@ -182,8 +187,8 @@ buttons:
       material: DIAMOND
       name: '{lang:minerals-name}'
       lore:
-      - '{lang:minerals-lore-1}'
-      - '{lang:minerals-lore-2}'
+        - '{lang:minerals-lore-1}'
+        - '{lang:minerals-lore-2}'
     actions:
       1:
         type: shop_menu
@@ -201,8 +206,8 @@ buttons:
       material: BRICKS
       name: '{lang:blocks-name}'
       lore:
-      - '{lang:blocks-lore-1}'
-      - '{lang:blocks-lore-2}'
+        - '{lang:blocks-lore-1}'
+        - '{lang:blocks-lore-2}'
     actions:
       1:
         type: shop_menu
@@ -220,8 +225,8 @@ buttons:
       material: TERRACOTTA
       name: '{lang:terracotta-name}'
       lore:
-      - '{lang:terracotta-lore-1}'
-      - '{lang:terracotta-lore-2}'
+        - '{lang:terracotta-lore-1}'
+        - '{lang:terracotta-lore-2}'
     actions:
       1:
         type: shop_menu
@@ -239,8 +244,8 @@ buttons:
       material: GLASS
       name: '{lang:glass-name}'
       lore:
-      - '{lang:glass-lore-1}'
-      - '{lang:glass-lore-2}'
+        - '{lang:glass-lore-1}'
+        - '{lang:glass-lore-2}'
     actions:
       1:
         type: shop_menu
@@ -258,8 +263,8 @@ buttons:
       material: WHITE_WOOL
       name: '{lang:wool-name}'
       lore:
-      - '{lang:wool-lore-1}'
-      - '{lang:wool-lore-2}'
+        - '{lang:wool-lore-1}'
+        - '{lang:wool-lore-2}'
     actions:
       1:
         type: shop_menu
@@ -277,8 +282,8 @@ buttons:
       material: EXPERIENCE_BOTTLE
       name: '{lang:special-items-name}'
       lore:
-      - '{lang:special-items-lore-1}'
-      - '{lang:special-items-lore-2}'
+        - '{lang:special-items-lore-1}'
+        - '{lang:special-items-lore-2}'
     actions:
       1:
         type: shop_menu
@@ -296,8 +301,8 @@ buttons:
       material: COMPARATOR
       name: '{lang:redstone-name}'
       lore:
-      - '{lang:redstone-lore-1}'
-      - '{lang:redstone-lore-2}'
+        - '{lang:redstone-lore-1}'
+        - '{lang:redstone-lore-2}'
     actions:
       1:
         type: shop_menu
@@ -315,8 +320,8 @@ buttons:
       material: COD
       name: '{lang:fish-name}'
       lore:
-      - '{lang:fish-lore-1}'
-      - '{lang:fish-lore-2}'
+        - '{lang:fish-lore-1}'
+        - '{lang:fish-lore-2}'
     actions:
       1:
         type: shop_menu
@@ -334,8 +339,8 @@ buttons:
       material: MINECART
       name: '{lang:transports-name}'
       lore:
-      - '{lang:transports-lore-1}'
-      - '{lang:transports-lore-2}'
+        - '{lang:transports-lore-1}'
+        - '{lang:transports-lore-2}'
     actions:
       1:
         type: shop_menu
@@ -364,6 +369,7 @@ buttons:
         height: 27
       font-size: 1.0
       text-align: left
+
 ui:
   layout:
     canvas:
@@ -470,8 +476,8 @@ ui:
         only-sell: '{lang:menu.bedrock.price-extra-line.only-sell}'
     actions:
       primary:
-      - buy
-      - sell
+        - buy
+        - sell
       extra: auto
       labels:
         buy: '{lang:menu.arcmenu.buy}'

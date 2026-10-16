@@ -15,7 +15,7 @@ public class EconomyVotingPluginHook extends AbstractEconomyHook {
     public double getEconomy(Player player, String currencyID) {
         VotingPluginUser user = VotingPluginMain.getPlugin().getVotingPluginUserManager().getVotingPluginUser(player);
         if (user == null) {
-            ErrorManager.errorManager.sendErrorMessage("§cCan not find find user data " +
+            ErrorManager.errorManager.sendErrorMessage("§cError: Can not find find user data " +
                     player.getName() + " in VotingPlugin plugin!");
             return 0;
         }
@@ -26,7 +26,7 @@ public class EconomyVotingPluginHook extends AbstractEconomyHook {
     public void takeEconomy(Player player, double value, String currencyID) {
         VotingPluginUser user = VotingPluginMain.getPlugin().getVotingPluginUserManager().getVotingPluginUser(player);
         if (user == null) {
-            ErrorManager.errorManager.sendErrorMessage("§cCan not find find user data " +
+            ErrorManager.errorManager.sendErrorMessage("§cError: Can not find find user data " +
                     player.getName() + " in VotingPlugin plugin!");
             return;
         }
@@ -37,7 +37,7 @@ public class EconomyVotingPluginHook extends AbstractEconomyHook {
     public void giveEconomy(Player player, double value, String currencyID) {
         VotingPluginUser user = VotingPluginMain.getPlugin().getVotingPluginUserManager().getVotingPluginUser(player);
         if (user == null) {
-            ErrorManager.errorManager.sendErrorMessage("§cCan not find find user data " +
+            ErrorManager.errorManager.sendErrorMessage("§cError: Can not find find user data " +
                     player.getName() + " in VotingPlugin plugin!");
             return;
         }

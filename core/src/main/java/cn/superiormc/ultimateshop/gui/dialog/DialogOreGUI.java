@@ -71,7 +71,7 @@ public class DialogOreGUI extends DialogGUI {
             }
         } catch (IllegalArgumentException exception) {
             ErrorManager.errorManager.sendErrorMessage(
-                "§cInvalid Ore Dialog in " + menu.getName() + ": " + exception.getMessage());
+                "§cError: Invalid Ore Dialog in " + menu.getName() + ": " + exception.getMessage());
             dialog =
                 DialogView.builder(menu.getString("title", ""))
                 .body("Invalid Dialog layout: " + menu.getName())

@@ -57,4 +57,4 @@ Form and native Dialog reuse selected entries from the root layout. Ore/ArcMenu 
 
 ## Related documentation
 
-[Layout and Buttons](layout-and-buttons.md) · [Graphical Layout](ui-layout.md) · [Condition Format](../format/condition-format.md)
+[Layout and Buttons](layout-and-buttons.md) · [Graphical Layout - Premium](ui-layout.md) · [Condition Format](../format/condition-format.md)

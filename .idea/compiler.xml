@@ -6,10 +6,16 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="spigot" />
+        <module name="paper-adapts-26-1" />
         <module name="core" />
         <module name="paper" />
         <module name="plugin" />
+        <module name="paper-adapts-26-3" />
+        <module name="paper-adapts-26-2" />
+        <module name="spigot" />
+        <module name="paper-adapts-1-21-11" />
+        <module name="paper-adapts-1-21-6" />
+        <module name="paper-adapts-1-21-5" />
       </profile>
     </annotationProcessing>
   </component>

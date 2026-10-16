@@ -4,7 +4,7 @@ Sell All is a single global Inventory interface: players deposit items, then clo
 
 <a id="open-the-menu"></a>
 
-## ✅ Open Sell All
+## Open Sell All
 
 `/shop sellall` requires `ultimateshop.sellall`. A menu button can use the `sell_all_menu` action:
 
@@ -16,7 +16,7 @@ actions:
 
 This remains an Inventory interface even when the source shop/menu uses Form, Dialog, Ore or ArcMenu.
 
-## ⚙️ Global configuration
+## Global configuration
 
 In `config.yml`:
 
@@ -36,7 +36,7 @@ menu:
 
 Configure excluded product references under `sell.sell-all.ignore-items` in `config.yml`, using `shop-id;;product-id`. This menu does not support common-menu layout/buttons, `ui.layout`, per-file modes or multiple independent menu IDs.
 
-## 💰 Sale behavior
+## Sale behavior
 
 Closing scans shop products visible to the player, skips excluded references and runs the normal sell flow against the deposited inventory. Product conditions, prices, player/server limits and applicable sell multipliers still apply. Global `sell.max-amount` limits the sell engine (fallback 128); it is not this inventory's slot count or an Item Sell `max-sell-amount`.
 

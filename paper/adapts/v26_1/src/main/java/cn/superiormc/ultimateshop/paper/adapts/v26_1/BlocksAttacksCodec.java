@@ -3,7 +3,7 @@ package cn.superiormc.ultimateshop.paper.adapts.v26_1;
 import cn.superiormc.ultimateshop.paper.adapts.ComponentCodec;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
 import io.papermc.paper.datacomponent.DataComponentTypes;
-import io.papermc.paper.datacomponent.item.*;
+import io.papermc.paper.datacomponent.item.BlocksAttacks;
 import io.papermc.paper.registry.RegistryAccess;
 import io.papermc.paper.registry.RegistryKey;
 import io.papermc.paper.registry.TypedKey;
@@ -11,8 +11,7 @@ import io.papermc.paper.registry.set.RegistryKeySet;
 import io.papermc.paper.registry.set.RegistrySet;
 import io.papermc.paper.registry.tag.Tag;
 import io.papermc.paper.registry.tag.TagKey;
-import java.util.*;
-import org.bukkit.*;
+import java.util.List;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.damage.DamageType;
 import org.bukkit.entity.Player;
@@ -40,7 +39,8 @@ public class BlocksAttacksCodec implements ComponentCodec {
                 builder.blockSound(CommonUtil.parseNamespacedKey(blocksAttacksKey.getString("block-sound", "")));
             }
             if (blocksAttacksKey.contains("bypassed-by") && CommonUtil.getYearVersion(26, 0, 0)) {
-                String bypassedBy = blocksAttacksKey.getString("bypassed-by");
+                String bypassedBy = blocksAttacksKey.isString("bypassed-by")
+                        ? blocksAttacksKey.getString("bypassed-by") : null;
                 if (bypassedBy != null) {
                     TagKey<DamageType> damageTypeTag = TagKey.create(RegistryKey.DAMAGE_TYPE, bypassedBy);
                     builder.bypassedBy(RegistryAccess.registryAccess()
@@ -63,9 +63,7 @@ public class BlocksAttacksCodec implements ComponentCodec {
             BlocksAttacks blocks = item.getData(DataComponentTypes.BLOCKS_ATTACKS);
             if (blocks != null) {
                 ConfigurationSection blocksSection = section.createSection("blocks-attacks");
-                if (blocks.blockSound() != null) {
-                    blocksSection.set("block-delay-seconds", blocks.blockSound().asString());
-                }
+                blocksSection.set("block-delay-seconds", blocks.blockDelaySeconds());
                 blocksSection.set("disable-cooldown-scale", blocks.disableCooldownScale());
                 if (blocks.blockSound() != null) {
                     blocksSection.set("block-sound", blocks.blockSound().asString());

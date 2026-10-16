@@ -104,9 +104,15 @@ Save your hold items. For more info, please view [Save Item](../features/saved-i
 
 Require `ultimateshop.saveitem` permission.
 
+## /shop givesaveitem <itemID> [player] [amount]
+
+Give a saved item from `plugins/UltimateShop/items/`. The ID is the file name without `.yml`. In game, `/shop givesaveitem component-test` gives the item to yourself; `/shop givesaveitem component-test PlayerName 1` targets an online player. The console must specify a player.
+
+Require `ultimateshop.givesaveitem` permission. See [Saved Item](../features/saved-item-item-manager.md) for creating and reloading ItemFormat files.
+
 ## /shop generateitemformat
 
-Generate hold item into Item Format at `plugins/UltimateShop` folder.
+Generate the item held in your main hand into `plugins/UltimateShop/generated-item-format.yml`. Each use overwrites this file. `debuild-item-method: COMPONENT` saves supported properties inside `component` on Paper 1.21.5+ with UltimateShop Premium. See [Testing Paper Components](../format/itemformat-tm/component-testing.md) for a save/rebuild walkthrough.
 
 Require `ultimateshop.generateitemformat` permission.
 
@@ -176,7 +182,7 @@ Require `ultimateshop.updateguititle` permission.
 
 ## /shop editor <mark style="color:red;">**(Premium version only)**</mark>
 
-Open the built-in in-game editor. It uses `editor-enable-confirm.yml` and requires all confirmations to be enabled. No separate editor addon is needed.
+Open the built-in in-game editor. Set `editor.enabled: true` in `config.yml` and reload the plugin to enable it. Back up the plugin configuration before every use. No separate editor addon is needed.
 
 Use `/shop editor <scope> <id>` to open a file directly. Scopes are `shop`, `menu`, `shop_menu_template`, `buy_more_menu`, `favourite_menu`, `search_menu` and `item_sell_menu`. IDs omit `.yml`; specialized menu scopes use their matching folders under `menus/`. See [In-game Editor](../features/in-game-editor-premium.md) for UI presets and saving changes.
 

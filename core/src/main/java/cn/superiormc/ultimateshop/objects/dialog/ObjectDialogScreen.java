@@ -22,7 +22,7 @@ public class ObjectDialogScreen {
     public ObjectDialogScreen(int width, int height) {
         if (width < 144 || width > 900 || height < 54 || height > 8190 || height % 9 != 0) {
             valid = false;
-            ErrorManager.errorManager.sendErrorMessage("§cInvalid Ore Dialog dimensions");
+            ErrorManager.errorManager.sendErrorMessage("§cError: Invalid Ore Dialog dimensions");
         }
         this.width = width;
         this.height = height;
@@ -43,7 +43,7 @@ public class ObjectDialogScreen {
         if (!fits(widget)) {
             valid = false;
             ErrorManager.errorManager.sendErrorMessage(
-                "§cOre widget overlaps or is outside the screen: " + widget.getActionId());
+                "§cError: Ore widget overlaps or is outside the screen: " + widget.getActionId());
             return;
         }
         widgets.add(widget);
@@ -53,7 +53,7 @@ public class ObjectDialogScreen {
         int required = ((minimum + 8) / 9) * 9;
         if (required > 8190) {
             valid = false;
-            ErrorManager.errorManager.sendErrorMessage("§cOre content exceeds 8190 pixels");
+            ErrorManager.errorManager.sendErrorMessage("§cError: Ore content exceeds 8190 pixels");
             return;
         }
         height = Math.max(height, required);

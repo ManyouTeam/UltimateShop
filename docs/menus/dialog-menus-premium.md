@@ -1,8 +1,8 @@
-# 💬 Native Dialog menus — Premium
+# 💬 Native Dialog menus - Premium
 
-Native Dialog uses the supported Paper Dialog API to display menus as actions or item lists. It is different from [🪨 Ore](ore-menus-premium.md), which is a graphical renderer built on Dialog.
+Native Dialog uses the supported Paper Dialog API to display menus as actions or item lists. It is different from [🪨 Ore - Premium](ore-menus-premium.md), which is a graphical renderer built on Dialog.
 
-## ✅ Enable native Dialog
+## Enable native Dialog
 
 Enable the capability in `config.yml`:
 
@@ -43,7 +43,7 @@ buttons:
 
 Both global `menu.dialog.enabled` and menu `dialog.enabled` must be enabled. The server needs a supported Paper Dialog API and the Premium functionality. Java ArcMenu takes precedence if enabled and available; otherwise Dialog is attempted before Inventory.
 
-## 🧱 Choose a Dialog layout
+## Choose a Dialog layout
 
 | Menu `dialog.layout` | Result |
 | --- | --- |
@@ -71,7 +71,7 @@ buttons:
 
 This is **button `dialog.show-sprite`**, not `ui.show-sprite` or `display-item.dialog.show-sprite`.
 
-## ⚙️ Native Dialog configuration
+## Native Dialog configuration
 
 Global defaults are under `menu.dialog`, with supported menu overrides under `dialog`:
 
@@ -94,7 +94,7 @@ Global defaults are under `menu.dialog`, with supported menu overrides under `di
 
 Some sprite/resource settings are read globally; changing them on one menu may not affect resource generation. Labels can use language placeholders.
 
-## 💰 Product actions and quantity
+## Product actions and quantity
 
 A product's native Dialog information controls come from its available click bindings and trade eligibility. **`ui.products.actions` only configures graphical Ore/ArcMenu controls**; it does not determine native Dialog buttons.
 
@@ -102,8 +102,8 @@ Quantity selection uses a native numeric input when `select-amount` is available
 
 Native Search provides keyword input and results; Favourite supports normal and editing screens. Neither reproduces Inventory item-input slots as native widget slots.
 
-## 🪨 Switching to Ore
+## Switching to Ore
 
 Set **menu `dialog.layout: ore`** and configure its canvas and entry placements under `ui`. The graphical Ore renderer also needs its resource pack. Do not place native Dialog `layout` or `button-width` under `ui.renderers.dialog`.
 
-[🪨 Ore](ore-menus-premium.md) · [🎨 Presentation selection](ui-overview.md) · [🔍 Search](search-menus-premium.md) · [❤️ Favourite](favourite-menus-premium.md).
+[🪨 Ore - Premium](ore-menus-premium.md) · [🎨 Presentation selection](ui-overview.md) · [🔍 Search - Premium](search-menus-premium.md) · [❤️ Favourite - Premium](favourite-menus-premium.md).

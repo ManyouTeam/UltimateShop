@@ -106,7 +106,7 @@ public class FormShopGUI extends FormGUI {
             menuItems.put(tempVal6, slot);
         }
 
-        tempVal5.title(TextUtil.parse(player, shop.getShopMenuObject().getString("title", shop.getShopDisplayName())
+        tempVal5.title(TextUtil.parseLocalizedText(player, shop.getShopMenuObject().getString("title", shop.getShopDisplayName())
                 .replace("{shop-name}", shop.getShopDisplayName())));
         tempVal5.validResultHandler((submittedForm, response) -> handleResponse(submittedForm, () -> {
             MenuStatusManager.menuStatusManager.removeOpenGUIStatus(player, this);
@@ -121,7 +121,7 @@ public class FormShopGUI extends FormGUI {
         tempVal5.closedOrInvalidResultHandler((submittedForm, response) -> handleResponse(submittedForm, this::finishGUI));
         String content = ConfigManager.configManager.getMenuContent(getMenu().getConfig(), "form");
         if (!content.isEmpty()) {
-            tempVal5.content(TextUtil.parse(player, content));
+            tempVal5.content(TextUtil.parseLocalizedText(player, content));
         }
         form = tempVal5.build();
     }

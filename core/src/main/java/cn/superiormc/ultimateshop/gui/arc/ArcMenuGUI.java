@@ -51,15 +51,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public abstract class ArcMenuGUI extends AbstractGUI {
 
     private static final float ITEM_DEPTH_SCALE = .01f;
-
-    private static final Pattern VANILLA_TRANSLATION =
-        Pattern.compile("<(?:lang|translate|translatable):((?:item|block)\\.minecraft\\.[a-z0-9_.]+)>");
 
     protected final ObjectMenu menu;
 
@@ -133,12 +128,12 @@ public abstract class ArcMenuGUI extends AbstractGUI {
                 return true;
             }
             ErrorManager.errorManager.sendErrorMessage(
-                "§cArcMenu did not attach menu "
+                "§cError: ArcMenu did not attach menu "
                 + getMenu().getName()
                 + "; falling back to Inventory");
         } catch (RuntimeException | LinkageError exception) {
             ErrorManager.errorManager.sendErrorMessage(
-                "§cCannot open ArcMenu menu "
+                "§cError: Cannot open ArcMenu menu "
                 + getMenu().getName()
                 + ": "
                 + exception.getMessage());
@@ -704,20 +699,7 @@ public abstract class ArcMenuGUI extends AbstractGUI {
     final String parse(String text) {
         String value = TextUtil.withPAPI(
             CommonUtil.parseLang(player, text == null ? "" : text), player);
-        MinecraftResourceManager resources = MinecraftResourceManager.minecraftResourceManager;
-        if (resources != null) {
-            Matcher translations = VANILLA_TRANSLATION.matcher(value);
-            StringBuilder localized = new StringBuilder();
-            while (translations.find()) {
-                String name = resources.getLocalizedName(translations.group(1), player.getLocale());
-                translations.appendReplacement(
-                    localized,
-                    Matcher.quoteReplacement(name == null ? translations.group() : name));
-            }
-            translations.appendTail(localized);
-            value = localized.toString();
-        }
-        return TextUtil.parse(value);
+        return TextUtil.parse(TextUtil.localizeVanillaNames(value, player));
     }
 
     private void prepareLanguage() {

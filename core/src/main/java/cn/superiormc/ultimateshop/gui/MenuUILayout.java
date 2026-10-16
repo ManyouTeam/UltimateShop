@@ -338,7 +338,7 @@ public final class MenuUILayout {
 
     private void invalidate(String message) {
         valid = false;
-        ErrorManager.errorManager.sendErrorMessage("§cInvalid menu UI layout: " + message);
+        ErrorManager.errorManager.sendErrorMessage("§cError: Invalid menu UI layout: " + message);
     }
 
     public record Entry(int slot, ConfigurationSection config, boolean product) {

@@ -19,7 +19,7 @@ public class DialogFontUtil {
             || verticalTile >= 8
             || tile < 0
             || tile >= 8) {
-            ErrorManager.errorManager.sendErrorMessage("§cInvalid Ore background position");
+            ErrorManager.errorManager.sendErrorMessage("§cError: Invalid Ore background position");
             return "";
         }
         return Character.toString(0x100000 + y / 9 * 64 + verticalTile * 8 + tile);
@@ -71,7 +71,7 @@ public class DialogFontUtil {
 
     public static String getSpace(int pixels) {
         if (Math.abs(pixels) > 1999) {
-            ErrorManager.errorManager.sendErrorMessage("§cOre Dialog spacing exceeds 1999 pixels");
+            ErrorManager.errorManager.sendErrorMessage("§cError: Ore Dialog spacing exceeds 1999 pixels");
             return "";
         }
         StringBuilder result = new StringBuilder();
@@ -88,7 +88,7 @@ public class DialogFontUtil {
 
     public static String getSpace(double pixels) {
         if (!Double.isFinite(pixels) || Math.abs(pixels) > 1999) {
-            ErrorManager.errorManager.sendErrorMessage("§cOre Dialog spacing exceeds 1999 pixels");
+            ErrorManager.errorManager.sendErrorMessage("§cError: Ore Dialog spacing exceeds 1999 pixels");
             return "";
         }
         int quarters = (int) Math.round(pixels * 4);

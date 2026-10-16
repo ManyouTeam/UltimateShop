@@ -3,7 +3,7 @@ package cn.superiormc.ultimateshop.paper.adapts.v26_1;
 import cn.superiormc.ultimateshop.paper.adapts.ComponentCodec;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
 import io.papermc.paper.datacomponent.DataComponentTypes;
-import io.papermc.paper.datacomponent.item.*;
+import io.papermc.paper.datacomponent.item.DamageResistant;
 import io.papermc.paper.registry.RegistryAccess;
 import io.papermc.paper.registry.RegistryKey;
 import io.papermc.paper.registry.TypedKey;
@@ -11,8 +11,7 @@ import io.papermc.paper.registry.set.RegistryKeySet;
 import io.papermc.paper.registry.set.RegistrySet;
 import io.papermc.paper.registry.tag.Tag;
 import io.papermc.paper.registry.tag.TagKey;
-import java.util.*;
-import org.bukkit.*;
+import java.util.List;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.damage.DamageType;
 import org.bukkit.entity.Player;
@@ -27,7 +26,8 @@ public class DamageResistantCodec implements ComponentCodec {
 
     @Override
     public void apply(ItemStack item, Player player, ConfigurationSection section, String... args) {
-        String damageResistant = section.getString("damage-resistant");
+        String damageResistant = section.isString("damage-resistant")
+                ? section.getString("damage-resistant") : null;
         if (damageResistant != null && CommonUtil.getYearVersion(26, 0, 0)) {
             TagKey<DamageType> damageTypeTag = TagKey.create(RegistryKey.DAMAGE_TYPE, damageResistant);
             RegistryKeySet<DamageType> damageTypes = RegistryAccess.registryAccess()

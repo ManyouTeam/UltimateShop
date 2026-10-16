@@ -41,7 +41,7 @@ public class EconomyPEconomyHook extends AbstractEconomyHook {
     @Override
     public boolean isEnabled() {
         if (peAPI == null) {
-            ErrorManager.errorManager.sendErrorMessage("§cCan not hook into PEconomy plugin!");
+            ErrorManager.errorManager.sendErrorMessage("§cError: Can not hook into PEconomy plugin!");
             return false;
         }
         return true;

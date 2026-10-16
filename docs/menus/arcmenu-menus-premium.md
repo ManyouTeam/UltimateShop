@@ -1,8 +1,8 @@
-# ✨ ArcMenu graphical menus — Premium
+# ✨ ArcMenu graphical menus - Premium
 
 ArcMenu presents Common, Shop, Search and Favourite menus as interactive graphical screens. It shares `ui.layout`, `ui.products`, `ui.placement` and `ui.theme` with Ore, but uses its own client integration and interaction model.
 
-## 🚀 Enable ArcMenu
+## Enable ArcMenu
 
 In `config.yml`:
 
@@ -40,7 +40,7 @@ buttons:
 
 This uses the default global `menu.ui.layout.areas.sidebar` graphical area. Install a compatible ArcMenu integration and required client resources. If both ArcMenu and Dialog are enabled, Java players use **ArcMenu first** when available. If ArcMenu cannot open, the menu-opening flow can attempt Dialog/Ore, then Inventory. Bedrock players use their separate `bedrock.enabled` selection.
 
-## 🎛️ Product interaction
+## Product interaction
 
 - Graphical product cards use `ui.products.actions.primary` for up to two primary operation buttons and `ui.products.actions.extra` for an extra-action menu.
 - Listing an action does not create a trade binding. Available actions still come from `menu.click-event` and product overrides.
@@ -50,7 +50,7 @@ This uses the default global `menu.ui.layout.areas.sidebar` graphical area. Inst
 
 ArcMenu product details are **not** the Inventory Buy More menu. The latter's `amount-items` and `layout` do not control ArcMenu's detail panel.
 
-## ⚙️ ArcMenu graphical settings
+## ArcMenu graphical settings
 
 Defaults live at `menu.ui.renderers.arcmenu`; most renderer settings support per-menu overrides at `ui.renderers.arcmenu`. **`update-interval` is currently read only from the global `menu.ui.renderers.arcmenu.update-interval` path.**
 
@@ -84,14 +84,14 @@ ui:
 
 The renderer constrains numeric settings to supported ranges. Very large fonts can truncate text; use sensible area and card sizes rather than relying on scale alone.
 
-## 📐 Layout and theme are shared with Ore
+## Layout and theme are shared with Ore
 
 Define a canvas, named `areas` and optional `pagination` under menu `ui.layout` or global `menu.ui.layout`. Ordinary buttons require `ui.placement`; products use `ui.products.placement` unless overridden. In Search/Favourite screens the root result-slot count still limits source results, regardless of how many cards a graphical area could hold.
 
-See [📐 Graphical layout](ui-layout.md) for the complete schema and correct scopes. ArcMenu does not require Ore's generated pack merely to display its own controls; follow the ArcMenu integration's client setup. The `/shop dialogpack` command concerns **Ore assets**.
+See [📐 Graphical layout - Premium](ui-layout.md) for the complete schema and correct scopes. ArcMenu does not require Ore's generated pack merely to display its own controls; follow the ArcMenu integration's client setup. The `/shop dialogpack` command concerns **Ore assets**.
 
-## 🩺 Troubleshooting
+## Troubleshooting
 
 If Inventory opens, check the two ArcMenu switches, plugin integration, resource setup and supported menu type. Item Sell and Sell All require physical inventories; Buy More uses ArcMenu product details instead of a separate Inventory-style ArcMenu screen. Use [Menu troubleshooting](troubleshooting.md) for symptoms.
 
-[🎨 Presentation selection](ui-overview.md) · [📐 Layout](ui-layout.md) · [🪨 Ore](ore-menus-premium.md).
+[🎨 Presentation selection](ui-overview.md) · [📐 Layout - Premium](ui-layout.md) · [🪨 Ore - Premium](ore-menus-premium.md).

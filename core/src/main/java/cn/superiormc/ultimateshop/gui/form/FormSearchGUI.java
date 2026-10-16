@@ -91,14 +91,14 @@ public class FormSearchGUI extends FormGUI {
     }
 
     private String text(String path, String fallback) {
-        return TextUtil.parse(player, CommonUtil.parseLang(player,
+        return TextUtil.parseLocalizedText(player, CommonUtil.parseLang(player,
                 ConfigManager.configManager.getMenuRendererText(
                     getMenu() == null ? null : getMenu().getConfig(),
                     player, "form", "search." + path, fallback)));
     }
 
     private String title() {
-        return TextUtil.parse(player, CommonUtil.parseLang(player, menu.getString("title", "Search")));
+        return TextUtil.parseLocalizedText(player, CommonUtil.parseLang(player, menu.getString("title", "Search")));
     }
 
     private void constructInput() {
@@ -115,7 +115,7 @@ public class FormSearchGUI extends FormGUI {
 
     private void constructResults() {
         SimpleForm.Builder builder = SimpleForm.builder().title(title());
-        builder.content(TextUtil.parse(player, CommonUtil.parseLang(player, menu.getString("content", ""))));
+        builder.content(TextUtil.parseLocalizedText(player, CommonUtil.parseLang(player, menu.getString("content", ""))));
         List<Runnable> actions = new ArrayList<>();
         builder.button(ButtonComponent.of(text("buttons.search", "Search")));
         actions.add(() -> {

@@ -1,27 +1,26 @@
-# Inventory slots use root layout; ArcMenu and Ore use ui.layout and each button ui.placement.
+title: '{shop-name}'
+size: 36
+
 dialog:
   enabled: true
   layout: multi-action
   content: ''
   button-width: 150
   columns: 2
-bedrock:
-  enabled: true
-  content: ''
-arcmenu:
-  enabled: false
-title: '{shop-name}'
-size: 36
+
 open-actions:
   1:
     type: sound
     sound: item.book.page_turn
+
 dynamic-layout: true
+
 layout:
-- '000000000'
-- 000`{random_daily;;1}``{random_daily;;2}``{random_daily;;3}`000
-- '000000000'
-- 00003000c
+  - '000000000'
+  - '000`{random_daily;;1}``{random_daily;;2}``{random_daily;;3}`000'
+  - '000000000'
+  - '00003000c'
+
 buttons:
   0:
     display-item:
@@ -63,6 +62,14 @@ buttons:
         height: 27
       font-size: 1.0
       text-align: left
+
+bedrock:
+  enabled: true
+  content: ''
+
+arcmenu:
+  enabled: true
+
 ui:
   layout:
     canvas:
@@ -169,8 +176,8 @@ ui:
         only-sell: '{lang:menu.bedrock.price-extra-line.only-sell}'
     actions:
       primary:
-      - buy
-      - sell
+        - buy
+        - sell
       extra: auto
       labels:
         buy: '{lang:menu.arcmenu.buy}'

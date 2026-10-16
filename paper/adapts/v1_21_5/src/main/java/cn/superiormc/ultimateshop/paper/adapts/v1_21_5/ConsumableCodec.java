@@ -4,11 +4,12 @@ import cn.superiormc.ultimateshop.paper.adapts.ComponentCodec;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
 import com.google.common.base.Enums;
 import io.papermc.paper.datacomponent.DataComponentTypes;
-import io.papermc.paper.datacomponent.item.*;
+import io.papermc.paper.datacomponent.item.Consumable;
 import io.papermc.paper.datacomponent.item.consumable.ConsumeEffect;
 import io.papermc.paper.datacomponent.item.consumable.ItemUseAnimation;
-import java.util.*;
-import org.bukkit.*;
+import java.util.ArrayList;
+import java.util.List;
+import org.bukkit.Registry;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -36,46 +37,61 @@ public class ConsumableCodec implements ComponentCodec {
             if (consumableKey.contains("sound")) {
                 builder.sound(CommonUtil.parseNamespacedKey(consumableKey.getString("sound", "")));
             }
-            if (consumableKey.contains("effects")) {
-                for (String consumeEffects : consumableKey.getKeys(false)) {
-                    switch (consumeEffects) {
-                        case "apply-effect":
-                            ConfigurationSection effectSection = consumableKey.getConfigurationSection(consumeEffects);
-                            if (effectSection == null) {
-                                continue;
-                            }
-                            List<PotionEffect> potionEffectList = new ArrayList<>();
-                            for (String effects : effectSection.getStringList("effects")) {
-                                String[] effectParseResult = effects.replace(" ", "").split(",");
-                                if (effectParseResult.length < 4) {
-                                    continue;
-                                }
-                                PotionEffectType potionEffectType = Registry.EFFECT.get(CommonUtil.parseNamespacedKey(effectParseResult[0]));
-                                if (potionEffectType != null) {
-                                    PotionEffect potionEffect = new PotionEffect(potionEffectType,
-                                            Integer.parseInt(effectParseResult[1]),
-                                            Integer.parseInt(effectParseResult[2]),
-                                            effectParseResult.length < 5 || Boolean.parseBoolean(effectParseResult[3]),
-                                            effectParseResult.length < 6 || Boolean.parseBoolean(effectParseResult[4]),
-                                            effectParseResult.length < 7 || Boolean.parseBoolean(effectParseResult[5]));
-                                    potionEffectList.add(potionEffect);
-                                }
-                            }
-                            builder.addEffect(ConsumeEffect.applyStatusEffects(potionEffectList, (float) effectSection.getDouble("probability")));
-
-                        case "play-sound":
-                            builder.addEffect(ConsumeEffect.playSoundConsumeEffect(CommonUtil.parseNamespacedKey(consumableKey.getString("play-sound", ""))));
-
-                        case "random-teleport":
-                            builder.addEffect(ConsumeEffect.teleportRandomlyEffect((float) consumableKey.getDouble("random-teleport")));
-
-                        case "clear-effect":
-                            builder.addEffect(ConsumeEffect.clearAllStatusEffects());
+            ConfigurationSection effectsSection = consumableKey.getConfigurationSection("effects");
+            if (effectsSection != null) {
+                for (String key : effectsSection.getKeys(false)) {
+                    ConfigurationSection effectSection = effectsSection.getConfigurationSection(key);
+                    if (effectSection != null) {
+                        addEffect(builder, effectSection.getString("type", key), effectSection);
                     }
-
+                }
+            }
+            for (String key : consumableKey.getKeys(false)) {
+                if (key.equals("apply-effect")) {
+                    ConfigurationSection effectSection = consumableKey.getConfigurationSection(key);
+                    if (effectSection != null) {
+                        addEffect(builder, key, effectSection);
+                    }
+                } else if (key.equals("play-sound") || key.equals("random-teleport") || key.equals("clear-effect")) {
+                    addEffect(builder, key, consumableKey);
                 }
             }
             item.setData(DataComponentTypes.CONSUMABLE, builder.build());
+        }
+    }
+
+    private void addEffect(Consumable.Builder builder, String type, ConfigurationSection section) {
+        switch (type) {
+            case "apply-effect":
+                List<PotionEffect> potionEffects = new ArrayList<>();
+                for (String value : section.getStringList("effects")) {
+                    String[] parts = value.replace(" ", "").split(",");
+                    if (parts.length < 3) {
+                        continue;
+                    }
+                    PotionEffectType effectType = Registry.EFFECT.get(CommonUtil.parseNamespacedKey(parts[0]));
+                    if (effectType != null) {
+                        potionEffects.add(new PotionEffect(effectType,
+                                Integer.parseInt(parts[1]), Integer.parseInt(parts[2]),
+                                parts.length < 4 || Boolean.parseBoolean(parts[3]),
+                                parts.length < 5 || Boolean.parseBoolean(parts[4]),
+                                parts.length < 6 || Boolean.parseBoolean(parts[5])));
+                    }
+                }
+                builder.addEffect(ConsumeEffect.applyStatusEffects(potionEffects,
+                        (float) section.getDouble("probability", 1.0)));
+                break;
+            case "play-sound":
+                builder.addEffect(ConsumeEffect.playSoundConsumeEffect(CommonUtil.parseNamespacedKey(
+                        section.getString("sound", section.getString("play-sound", "minecraft:entity.generic.eat")))));
+                break;
+            case "random-teleport":
+                builder.addEffect(ConsumeEffect.teleportRandomlyEffect((float) section.getDouble("diameter",
+                        section.getDouble("chance", section.getDouble("random-teleport", 16)))));
+                break;
+            case "clear-effect":
+                builder.addEffect(ConsumeEffect.clearAllStatusEffects());
+                break;
         }
     }
 
@@ -110,8 +126,8 @@ public class ConsumableCodec implements ComponentCodec {
                         effectSub.set("sound", playSoundEffect.sound().asString());
                     } else if (effect instanceof ConsumeEffect.TeleportRandomly rtEffect) {
                         effectSub.set("type", "random-teleport");
-                        effectSub.set("chance", rtEffect.diameter());
-                    } else if (effect instanceof ConsumeEffect.RemoveStatusEffects) {
+                        effectSub.set("diameter", rtEffect.diameter());
+                    } else if (effect instanceof ConsumeEffect.ClearAllStatusEffects) {
                         effectSub.set("type", "clear-effect");
                     }
                 }

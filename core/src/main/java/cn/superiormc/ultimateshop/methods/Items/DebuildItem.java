@@ -1,12 +1,23 @@
 package cn.superiormc.ultimateshop.methods.Items;
 
-import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.UltimateShop;
+import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.HookManager;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
 import cn.superiormc.ultimateshop.utils.NBTUtil;
 import com.google.common.collect.Multimap;
-import org.bukkit.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import org.bukkit.Color;
+import org.bukkit.FireworkEffect;
+import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
+import org.bukkit.Sound;
+import org.bukkit.Tag;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.block.BlockState;
@@ -20,15 +31,34 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.*;
-import org.bukkit.inventory.meta.components.*;
+import org.bukkit.inventory.meta.ArmorMeta;
+import org.bukkit.inventory.meta.AxolotlBucketMeta;
+import org.bukkit.inventory.meta.BannerMeta;
+import org.bukkit.inventory.meta.BlockStateMeta;
+import org.bukkit.inventory.meta.BundleMeta;
+import org.bukkit.inventory.meta.Damageable;
+import org.bukkit.inventory.meta.EnchantmentStorageMeta;
+import org.bukkit.inventory.meta.FireworkEffectMeta;
+import org.bukkit.inventory.meta.FireworkMeta;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.LeatherArmorMeta;
+import org.bukkit.inventory.meta.MusicInstrumentMeta;
+import org.bukkit.inventory.meta.OminousBottleMeta;
+import org.bukkit.inventory.meta.PotionMeta;
+import org.bukkit.inventory.meta.Repairable;
+import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.inventory.meta.SuspiciousStewMeta;
+import org.bukkit.inventory.meta.TropicalFishBucketMeta;
+import org.bukkit.inventory.meta.components.EquippableComponent;
+import org.bukkit.inventory.meta.components.FoodComponent;
+import org.bukkit.inventory.meta.components.JukeboxPlayableComponent;
+import org.bukkit.inventory.meta.components.ToolComponent;
+import org.bukkit.inventory.meta.components.UseCooldownComponent;
 import org.bukkit.inventory.meta.trim.ArmorTrim;
 import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionType;
-import org.bukkit.Sound;
 
-import java.util.*;
 
 public class DebuildItem {
 
@@ -47,7 +77,7 @@ public class DebuildItem {
         section.set("amount", itemStack.getAmount());
 
         if (UltimateShop.methodUtil.methodID().equals("paper") &&
-                CommonUtil.getMinorVersion(21, 6) &&
+                CommonUtil.getMinorVersion(21, 5) &&
                 ConfigManager.configManager.getString("debuild-item-method", "LEGACY").equalsIgnoreCase("COMPONENT")) {
             section.set("component", UltimateShop.methodUtil.serializeItemStack(itemStack));
         } else {
@@ -530,13 +560,6 @@ public class DebuildItem {
                 // Tooltip Style
                 if (meta.hasTooltipStyle()) {
                     section.set("tooltip-style", meta.getTooltipStyle().toString());
-                }
-
-                // Item Cooldown
-                if (meta.hasUseCooldown()) {
-                    UseCooldownComponent useCooldownComponent = meta.getUseCooldown();
-                    section.set("use-cooldown.cooldown-group", useCooldownComponent.getCooldownGroup());
-                    section.set("use-cooldown.cooldown-seconds", useCooldownComponent.getCooldownSeconds());
                 }
 
                 // Use Cooldown

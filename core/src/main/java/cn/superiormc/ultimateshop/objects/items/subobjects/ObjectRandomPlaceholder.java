@@ -14,7 +14,12 @@ import org.bukkit.entity.Player;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Random;
+import java.util.Set;
 
 public class ObjectRandomPlaceholder {
 
@@ -179,7 +184,7 @@ public class ObjectRandomPlaceholder {
         ObjectCache cache;
         if (tempVal1.perPlayer) {
             if (player == null) {
-                ErrorManager.errorManager.sendErrorMessage("§cThe random placeholder is per player and can not sync data with server cache.");
+                ErrorManager.errorManager.sendErrorMessage("§cError: The random placeholder is per player and can not sync data with server cache.");
                 return "Error: Sync Error";
             }
             cache = CacheManager.cacheManager.getObjectCache(player);
@@ -211,7 +216,7 @@ public class ObjectRandomPlaceholder {
         ObjectCache cache;
         if (tempVal1.perPlayer) {
             if (player == null) {
-                ErrorManager.errorManager.sendErrorMessage("§cThe random placeholder is per player and can not sync data with server cache.");
+                ErrorManager.errorManager.sendErrorMessage("§cError: The random placeholder is per player and can not sync data with server cache.");
                 return CommonUtil.getNowTime().withYear(2999);
             }
             cache = CacheManager.cacheManager.getObjectCache(player);
@@ -243,7 +248,7 @@ public class ObjectRandomPlaceholder {
         ObjectCache cache;
         if (placeholder.perPlayer) {
             if (player == null) {
-                ErrorManager.errorManager.sendErrorMessage("§cThe random placeholder is per player and can not sync data with server cache.");
+                ErrorManager.errorManager.sendErrorMessage("§cError: The random placeholder is per player and can not sync data with server cache.");
                 return null;
             }
             cache = CacheManager.cacheManager.getObjectCache(player);

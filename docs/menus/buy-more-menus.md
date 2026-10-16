@@ -6,7 +6,7 @@ Files live in `plugins/UltimateShop/menus/buy_more_menus/`. The bundled files ar
 
 <a id="enable-and-select-a-quantity-menu"></a>
 
-## ⚙️ Enable and select the quantity menu
+## Enable and select the quantity menu
 
 Global settings in `config.yml`:
 
@@ -46,9 +46,13 @@ items:
     # Product, prices and display follow here.
 ```
 
-Bind the `select-amount` product operation under `menu.click-event` (default `SHIFT_RIGHT`) or use the [buy_more_menu action](../format/action-format.md) with the required shop/product context. `NEVER` disables the corresponding click binding. The `buy_more_menu` action supports `shop`, `item` and an optional `buy-more-menu` section with `menu` and `max-amount` for that opening. Custom click actions can select separate buy-only and sell-only menus; see [Custom Click Event](../features/custom-click-event-premium.md#example-only-buy-more-menu).
+Bind the `select-amount` product operation under `menu.click-event` (default `SHIFT_RIGHT`) or use the [buy_more_menu action](../format/action-format.md) with the required shop/product context. `NEVER` disables the corresponding click binding. The `buy_more_menu` action supports `shop` and `item`.
 
-## ✅ Inventory amount-selection example
+### Custom Buy More action settings <mark style="color:red;">- Premium</mark>
+
+The `buy_more_menu` action also accepts a `buy-more-menu` section with `menu` and `max-amount` for that opening. Custom click actions can select separate buy-only and sell-only menus; see [Custom Click Event - Premium](../features/custom-click-event-premium.md#example-only-buy-more-menu).
+
+## Inventory amount-selection example
 
 ```yaml
 title: 'Choose amount'
@@ -94,7 +98,7 @@ confirm-items:
 
 `0` is empty unless defined under ordinary `buttons`. Confirmation and amount IDs must occur in `layout`. Do not reuse an ID for unrelated control types.
 
-## 🧩 Amount/preview/confirmation keys
+## Amount/preview/confirmation keys
 
 All [Common menu settings](general-menus.md) also apply, including title, layout, ordinary buttons, conditions/actions and UI selection.
 
@@ -115,7 +119,7 @@ All [Common menu settings](general-menus.md) also apply, including title, layout
 
 Preview stacks split the selected count across preview slots in list order, using the effective stack maximum (99 when enabled, otherwise the material maximum). Extra preview space shows the padding item or air. Preview capacity is visual; it does not replace `max-amount`. Quantity controls clamp the count to the permitted range. Supply at least one valid confirmation button for the trade direction you intend to support.
 
-## 🎨 Quantity controls by presentation
+## Quantity controls by presentation
 
 | Presentation | Quantity UI |
 | --- | --- |
@@ -128,7 +132,7 @@ ArcMenu details require Buy More and a menu, and adjustment requires an availabl
 
 Without a manual quantity selection, product operations keep `default-buy-amount` and `default-sell-amount` independently. After selection, both directions use the chosen count. `{buy-amount}` and `{sell-amount}` in generated lore reflect that distinction. Explicit display-item stack amounts are separate from the number of trade units. See [Default Trade Amounts](../shops/products.md#default-trade-amounts).
 
-Form and Dialog labels are configured in their native `bedrock` and `dialog` sections; graphical product styling/actions are documented in [Graphical UI Layout](ui-layout.md). Editing an Inventory confirmation label will not rename a Form information action.
+Form and Dialog labels are configured in their native `bedrock` and `dialog` sections; graphical product styling/actions are documented in [Graphical UI Layout - Premium](ui-layout.md). Editing an Inventory confirmation label will not rename a Form information action.
 
 ## Related documentation
 

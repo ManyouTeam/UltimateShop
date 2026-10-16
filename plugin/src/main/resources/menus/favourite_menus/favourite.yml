@@ -1,65 +1,70 @@
 # Inventory slots use root layout; ArcMenu and Ore use ui.layout and each button ui.placement.
+
+menu-type: favourite
+
+title: '{lang:menu.favourite.title}'
+size: 54
+
 dialog:
   enabled: true
   layout: multi-action
   content: ''
   button-width: 150
   columns: 2
-bedrock:
-  enabled: true
-  content: ''
-arcmenu:
-  enabled: false
-menu-type: favourite
-title: '{lang:menu.favourite.title}'
-size: 54
+
 layout:
-- '000000000'
-- '011111110'
-- '011111110'
-- '011111110'
-- '011111110'
-- 00B0D0C00
+  - '000000000'
+  - '011111110'
+  - '011111110'
+  - '011111110'
+  - '011111110'
+  - '00B0D0C00'
+
 result-item: 1
+
 edit-mode-item:
   D:
     normal-display-item:
       material: NAME_TAG
       name: '{lang:edit-mode-enable-name}'
       lore:
-      - '{lang:edit-mode-enable-line-1}'
+        - '{lang:edit-mode-enable-line-1}'
     editing-display-item:
       material: WRITABLE_BOOK
       name: '{lang:edit-mode-disable-name}'
       lore:
-      - '{lang:edit-mode-disable-line-1}'
+        - '{lang:edit-mode-disable-line-1}'
     ui:
       placement:
         area: sidebar
         order: 0
+
 empty-item:
   display-item:
     material: GRAY_STAINED_GLASS_PANE
     name: '{lang:favourite-empty-name}'
     lore:
-    - '{lang:favourite-empty-line-1}'
-    - '{lang:favourite-empty-line-2}'
+      - '{lang:favourite-empty-line-1}'
+      - '{lang:favourite-empty-line-2}'
   ui:
     placement:
       enabled: false
+
 result-lore:
-- ' '
-- '{lang:favourite-result-shop}'
-- '{lang:favourite-result-product}'
-- '{lang:favourite-result-click}'
-- '{lang:favourite-result-enter-edit}'
+  - ' '
+  - '{lang:favourite-result-shop}'
+  - '{lang:favourite-result-product}'
+  - '{lang:favourite-result-click}'
+  - '{lang:favourite-result-enter-edit}'
+
 editing-result-lore:
-- ' '
-- '{lang:favourite-result-shop}'
-- '{lang:favourite-result-product}'
-- '{lang:favourite-result-edit-forward}'
-- '{lang:favourite-result-edit-backward}'
-- '{lang:favourite-result-edit-remove}'
+  - ' '
+  - '{lang:favourite-result-shop}'
+  - '{lang:favourite-result-product}'
+  - '{lang:favourite-result-edit-forward}'
+  - '{lang:favourite-result-edit-backward}'
+  - '{lang:favourite-result-edit-remove}'
+
 buttons:
   0:
     display-item:
@@ -101,6 +106,14 @@ buttons:
         height: 27
       font-size: 1.0
       text-align: left
+
+bedrock:
+  enabled: true
+  content: ''
+
+arcmenu:
+  enabled: true
+
 ui:
   layout:
     canvas:
@@ -207,8 +220,8 @@ ui:
         only-sell: '{lang:menu.bedrock.price-extra-line.only-sell}'
     actions:
       primary:
-      - buy
-      - sell
+        - buy
+        - sell
       extra: auto
       labels:
         buy: '{lang:menu.arcmenu.buy}'

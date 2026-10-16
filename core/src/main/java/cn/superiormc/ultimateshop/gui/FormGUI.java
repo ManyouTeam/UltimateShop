@@ -1,6 +1,7 @@
 package cn.superiormc.ultimateshop.gui;
 
 import cn.superiormc.ultimateshop.managers.MenuStatusManager;
+import cn.superiormc.ultimateshop.managers.MinecraftResourceManager;
 import cn.superiormc.ultimateshop.objects.buttons.AbstractButton;
 import cn.superiormc.ultimateshop.utils.SchedulerUtil;
 import org.bukkit.entity.Player;
@@ -24,6 +25,22 @@ public abstract class FormGUI extends AbstractGUI {
 
     public FormGUI(Player owner) {
         super(owner);
+        MinecraftResourceManager resources = MinecraftResourceManager.minecraftResourceManager;
+        if (resources != null) {
+            String locale = player.getLocale();
+            var loading = resources.requestLanguage(locale);
+            if (!loading.isDone()) {
+                loading.thenRun(() -> SchedulerUtil.runSync(player, () -> {
+                    if (player.isOnline()
+                        && locale.equals(player.getLocale())
+                        && MenuStatusManager.menuStatusManager != null
+                        && MenuStatusManager.menuStatusManager.getOpeningGUI(player) == this
+                        && form != null && form != consumedForm) {
+                        updateGUI();
+                    }
+                }));
+            }
+        }
     }
 
     @Override

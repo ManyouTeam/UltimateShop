@@ -252,12 +252,12 @@ public class ObjectCache {
     private boolean checkPlaceholderScope(ObjectRandomPlaceholder placeholder) {
         if (server && placeholder.isPerPlayer()) {
             ErrorManager.errorManager.sendErrorMessage(
-                    "§cThe random placeholder is per player and can not sync data with server cache.");
+                    "§cError: The random placeholder is per player and can not sync data with server cache.");
             return false;
         }
         if (!server && !placeholder.isPerPlayer()) {
             ErrorManager.errorManager.sendErrorMessage(
-                    "§cThe random placeholder is globally and can not sync data with player cache.");
+                    "§cError: The random placeholder is globally and can not sync data with player cache.");
             return false;
         }
         return true;
@@ -295,12 +295,12 @@ public class ObjectCache {
     private boolean checkCustomPlaceholderScope(ObjectCustomPlaceholder placeholder) {
         if (server && placeholder.isPerPlayer()) {
             ErrorManager.errorManager.sendErrorMessage(
-                    "§cThe custom placeholder is per player and can not sync data with server cache.");
+                    "§cError: The custom placeholder is per player and can not sync data with server cache.");
             return false;
         }
         if (!server && !placeholder.isPerPlayer()) {
             ErrorManager.errorManager.sendErrorMessage(
-                    "§cThe custom placeholder is globally and can not sync data with player cache.");
+                    "§cError: The custom placeholder is globally and can not sync data with player cache.");
             return false;
         }
         return true;

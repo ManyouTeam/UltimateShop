@@ -3,11 +3,10 @@ package cn.superiormc.ultimateshop.paper.adapts.v1_21_5;
 import cn.superiormc.ultimateshop.paper.adapts.ComponentCodec;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
 import io.papermc.paper.datacomponent.DataComponentTypes;
-import io.papermc.paper.datacomponent.item.*;
+import io.papermc.paper.datacomponent.item.ItemArmorTrim;
 import io.papermc.paper.registry.RegistryAccess;
 import io.papermc.paper.registry.RegistryKey;
-import java.util.*;
-import org.bukkit.*;
+import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -48,10 +47,16 @@ public class TrimCodec implements ComponentCodec {
             ItemArmorTrim armorTrim = item.getData(DataComponentTypes.TRIM);
             ConfigurationSection trimSection = section.createSection("trim");
             if (armorTrim != null) {
-                trimSection.set("material", RegistryAccess.registryAccess().getRegistry(RegistryKey.TRIM_MATERIAL)
-                        .getKey(armorTrim.armorTrim().getMaterial()));
-                trimSection.set("pattern", RegistryAccess.registryAccess().getRegistry(RegistryKey.TRIM_PATTERN)
-                        .getKey(armorTrim.armorTrim().getPattern()));
+                NamespacedKey materialKey = RegistryAccess.registryAccess().getRegistry(RegistryKey.TRIM_MATERIAL)
+                        .getKey(armorTrim.armorTrim().getMaterial());
+                NamespacedKey patternKey = RegistryAccess.registryAccess().getRegistry(RegistryKey.TRIM_PATTERN)
+                        .getKey(armorTrim.armorTrim().getPattern());
+                if (materialKey != null) {
+                    trimSection.set("material", materialKey.asString());
+                }
+                if (patternKey != null) {
+                    trimSection.set("pattern", patternKey.asString());
+                }
             }
         }
     }

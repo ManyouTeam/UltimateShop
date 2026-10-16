@@ -8,6 +8,10 @@ Version before **3.8.4** has a bug: you need **reload** the plugin to load the s
 
 You can create your own item at `items` folder of plugin, just create a **yml** file and then follow [ItemFormat](../format/itemformat-tm/) in this file. The file name is the item ID.
 
+After creating or editing an ItemFormat file, run `/shop reload`, then use `/shop givesaveitem <itemID>` in game. From the console, use `shop givesaveitem <itemID> <player> [amount]`. The permission is `ultimateshop.givesaveitem`.
+
+On Paper 1.21.5+ with UltimateShop Premium, nested Paper `component` sections can be used in these files. See [Component Format](../format/itemformat-tm/component-format.md) and the [component testing guide](../format/itemformat-tm/component-testing.md) for complete version-specific examples.
+
 ## Save your item
 
 You can use command `/shop saveitem <saveItemID> <saveItemMethod>` command to save your hold item. There are 2 methods to save item.
@@ -15,7 +19,7 @@ You can use command `/shop saveitem <saveItemID> <saveItemMethod>` command to sa
 * Bukkit
   * If you are using Spigot version of UltimateShop: Use BukkitAPI's method to save item. The method only support saving vanilla data and persistent data stored through BukkitAPI, and other custom NBT data from other plugins will not be saved.
   * If you are using Paper version of UltimateShop: Use PaperAPI's method to save item, this new method can 100% save item data, no data will lose. **(Paper and 1.17.1+ server only)**
-* ItemFormat: will parse item into [Item Format](../format/itemformat-tm/).
+* ItemFormat: parses the item into [ItemFormat](../format/itemformat-tm/). It follows `debuild-item-method` in `config.yml`. Set this to `COMPONENT` to save supported properties inside `component` on Paper 1.21.5+ with UltimateShop Premium; `LEGACY` uses the legacy writer.
 
 An example for item config file that use Bukkit save item method with Paper version of UltimateShop:
 
@@ -31,7 +35,7 @@ material: DIAMOND
 amount: 6
 name: <blue>A good sword
 lore:
-- <gray>This is really nice!
+  - <gray>This is really nice!
 custom-model-data: 1
 max-stack: 6
 food:
@@ -41,7 +45,7 @@ tool:
   damage-per-block: 5
   mining-speed: 1.3
   rules:
-  - STONE, 1.4, true
+    - STONE, 1.4, true
 song: minecraft:otherside
 glow: true
 enchants:

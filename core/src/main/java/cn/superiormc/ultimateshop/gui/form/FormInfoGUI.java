@@ -82,13 +82,14 @@ public class FormInfoGUI extends FormGUI {
         SimpleForm.Builder builder =
             SimpleForm.builder()
             .title(
-            TextUtil.parse(
+            TextUtil.parseLocalizedText(
             player,
             ConfigManager.configManager.getMenuRendererText(
                 sourceMenu == null ? null : sourceMenu.getConfig(),
                 player, "form", "info.title", "Shop", "item-name", item.getDisplayName(player), "amount", String.valueOf(getAmount()))))
             .content(
-            TextUtil.parse(
+            TextUtil.parseLocalizedText(
+            player,
             bedrockTransfer(
             ShopHelper.getProductInfoContent(
             player,
@@ -99,11 +100,11 @@ public class FormInfoGUI extends FormGUI {
         List<ProductUIModel.Action> controls = new ArrayList<>(model.getPrimaryActions(item));
         controls.addAll(model.getExtraActions(item));
         for (var action : controls) {
-            builder.button(ButtonComponent.of(TextUtil.parse(player, action.label())));
+            builder.button(ButtonComponent.of(TextUtil.parseLocalizedText(player, action.label())));
         }
         builder.button(
             ButtonComponent.of(
-            TextUtil.parse(
+            TextUtil.parseLocalizedText(
             player,
             ConfigManager.configManager.getMenuRendererText(
                 sourceMenu == null ? null : sourceMenu.getConfig(),

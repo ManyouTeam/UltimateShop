@@ -4,7 +4,7 @@ The editor is built into UltimateShop Premium. Open it with `/shop editor` using
 
 ## Enable the editor
 
-Read `plugins/UltimateShop/editor-enable-confirm.yml`, back up the data folder, and set all five confirmations to `true` after completing them. Reload the plugin to apply the confirmation file. The editor writes changes directly to YAML files; use its Reload Plugin button or `/shop reload` to rebuild live menus after editing.
+Set `editor.enabled: true` in `plugins/UltimateShop/config.yml`, then reload the plugin to enable the editor. Back up the plugin configuration before every use. The editor writes changes directly to YAML files; use its Reload Plugin button or `/shop reload` to rebuild live menus after editing.
 
 ## Open a file
 

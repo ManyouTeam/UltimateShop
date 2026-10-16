@@ -2,7 +2,7 @@
 
 **Rule:** Ordinary behavior lives in native menu keys; the `ui` section contains **only Ore/ArcMenu graphics**. Do not move `dialog` or `bedrock` settings into `ui`.
 
-## 🧭 Where to put a key
+## Where to put a key
 
 | Scope | File / path | Controls |
 | --- | --- | --- |
@@ -13,7 +13,7 @@
 | One shop's screen overrides | `shops/<shop>.yml` → `settings.menu-settings` | Overrides for its menu template |
 | One button or product | `buttons.<id>` / `items.<id>` | Actions, display-item, `menu-visibility`, per-entry graphical placement |
 
-## ✅ Example: global defaults
+## Example: global presentation defaults <mark style="color:red;">- Premium</mark>
 
 In `config.yml`:
 
@@ -39,7 +39,7 @@ menu:
       background: '#EF0C1223'
 ```
 
-## ✅ Example: one shop's menu
+## Example: one shop's graphical menu <mark style="color:red;">- Premium</mark>
 
 In `menus/shop_menu_templates/farming.yml`:
 
@@ -63,9 +63,9 @@ ui:
       icon-size: 32
 ```
 
-This example demonstrates the **locations** of settings. A usable Ore layout also needs appropriate graphical areas and product placements; see [📐 Graphical layout](ui-layout.md).
+This example demonstrates the **locations** of settings. A usable Ore layout also needs appropriate graphical areas and product placements; see [📐 Graphical layout - Premium](ui-layout.md).
 
-## 🔀 Precedence: native settings vs graphical settings
+## Precedence: native settings vs graphical settings <mark style="color:red;">- Premium</mark>
 
 **Native Dialog/Form text and behavior:** menu `dialog.*` / `bedrock.*` → global `menu.dialog.*` / `menu.bedrock.*` → method fallback. Different text screens use the relevant menu (for example, search text belongs to the search menu).
 
@@ -80,13 +80,13 @@ This example demonstrates the **locations** of settings. A usable Ore layout als
 | `display-item.bedrock.icon` (Form button icon) | `ui.products.card.icon-size` (graphical item size) |
 | `menu-visibility.*` (presentation filter) | `ui.placement.enabled` (graphical placement only) |
 
-## 🛠️ In-game Editor
+## In-game Editor <mark style="color:red;">- Premium</mark>
 
 The Editor uses the same YAML keys. Menu presets expose `dialog.enabled/layout/content/button-width/columns`, `bedrock.enabled/content` and `arcmenu.enabled/content`. Button and product presets expose `dialog.show-sprite` and the `menu-visibility` section with one boolean value for each supported presentation.
 
 The Editor's `ui` page edits **only graphical** coordinates, cards, themes and drawing settings. It does not offer `ui.mode` or native Form/Dialog renderers under `ui`. Edit advanced/unsupported fields through the Editor's raw section editor if necessary.
 
-## 🔧 Other global menu settings
+## Other global menu settings
 
 The rest of `config.yml` → `menu` controls features beyond renderer selection:
 
@@ -103,6 +103,6 @@ The rest of `config.yml` → `menu` controls features beyond renderer selection:
 
 Use the `config.yml` shipped with your plugin for every key and default; this article explains **where** keys belong, not a replacement for the complete configuration file.
 
-## 🔗 Continue
+## Continue
 
-[UI selection](ui-overview.md) · [Common](general-menus.md) · [Shop](shop-menus.md) · [Graphical layout](ui-layout.md) · [Troubleshooting](troubleshooting.md).
+[UI selection](ui-overview.md) · [Common](general-menus.md) · [Shop](shop-menus.md) · [Graphical layout - Premium](ui-layout.md) · [Troubleshooting](troubleshooting.md).

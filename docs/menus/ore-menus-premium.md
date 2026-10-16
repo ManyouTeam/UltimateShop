@@ -1,8 +1,8 @@
-# 🪨 Ore graphical menus — Premium
+# 🪨 Ore graphical menus - Premium
 
 Ore draws graphical cards and controls using the supported Paper Dialog API and a generated client resource pack. It shares graphical canvas/area settings with ArcMenu, but it is **selected through `dialog.layout: ore`**, not `ui.mode`.
 
-## 🚀 Quick start
+## Quick start
 
 In `config.yml`:
 
@@ -44,9 +44,9 @@ buttons:
         order: 0
 ```
 
-The `farming` shop must exist. Reload, run `/shop dialogpack` and make sure clients **load the newly generated pack**. For a graphical **shop** menu, configure `ui.products.placement` as well; see [📐 Graphical layout](ui-layout.md).
+The `farming` shop must exist. Reload, run `/shop dialogpack` and make sure clients **load the newly generated pack**. For a graphical **shop** menu, configure `ui.products.placement` as well; see [📐 Graphical layout - Premium](ui-layout.md).
 
-## 🧩 What Ore reads
+## What Ore reads
 
 | Key | Purpose |
 | --- | --- |
@@ -64,7 +64,7 @@ The `farming` shop must exist. Reload, run `/shop dialogpack` and make sure clie
 
 The root Inventory `layout` remains useful to identify entries and special result markers, but its chest coordinates do **not** translate to pixels. Navigation buttons must have graphical placements. Product cards use `ui.products.placement` unless a specific product supplies its own `ui.placement`.
 
-## 🖼️ Customize a graphical card texture
+## Customize a graphical card texture
 
 Put PNGs under `plugins/UltimateShop/textures/shop/`, then add:
 
@@ -82,7 +82,7 @@ ui:
 
 This is **graphical** `ui.renderers.ore.templates`. Source PNG paths must be relative; do not use absolute filesystem paths or `..`. Colors should be quoted RGB strings. Shared layout/card/theme keys may take precedence over template geometry and base styling.
 
-## ⚠️ Layout and text constraints
+## Layout and text constraints
 
 - Prefer vertical coordinates/heights divisible by 9; put cards in an area tall enough for them.
 - Cards need enough height for icon, name, descriptions and operation buttons; undersized or overlapping entries can fail validation.
@@ -90,9 +90,9 @@ This is **graphical** `ui.renderers.ore.templates`. Source PNG paths must be rel
 - Material names may be client-translated; the server cannot measure every translated string's final width precisely.
 - ArcMenu-specific font scaling does not imply the same rendered size in Ore.
 
-Check [Graphical layout](ui-layout.md) for bounds, grids, stacks, free placement and pagination.
+Check [Graphical layout - Premium](ui-layout.md) for bounds, grids, stacks, free placement and pagination.
 
-## 📦 Generate and distribute the pack
+## Generate and distribute the pack
 
 1. Run `/shop dialogpack` after changing Ore layout, theme, templates or related icons.
 2. Find the generated output under `plugins/UltimateShop/pack/`.
@@ -103,4 +103,4 @@ Check [Graphical layout](ui-layout.md) for bounds, grids, stacks, free placement
 
 If you see Inventory instead, check both Dialog switches, the supported API/runtime, the menu's `dialog.layout` and console layout/pack errors. If cards overlap, validate graphical areas before regenerating again.
 
-[📐 Graphical layout](ui-layout.md) · [💬 Native Dialog](dialog-menus-premium.md) · [🩺 Troubleshooting](troubleshooting.md).
+[📐 Graphical layout - Premium](ui-layout.md) · [💬 Native Dialog - Premium](dialog-menus-premium.md) · [🩺 Troubleshooting](troubleshooting.md).

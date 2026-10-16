@@ -77,47 +77,33 @@ min-amount: 1
 max-amount: 15
 ```
 
-## Component (1.21.6+, Requrie Paper) <mark style="color:red;">- Premium</mark>
+## Component (1.21.5+, Requires Paper) <mark style="color:red;">- Premium</mark>
 
-Use Paper's DataComponent API instead of Spigot's ItemMeta API to modify item easily, also all 1.21.5+ item attribute will only be available in `component` option, like **Weapon**. For more info, please view [this page](component-format.md).
+The `component` section uses Paper's DataComponent API to set item properties. It requires Paper 1.21.5+ and UltimateShop Premium. Newer components require newer server versions; see [Component Format](component-format.md) for the version table and supported keys.
 
-You can found a option called `debuild-item-method` at `config.yml` file. You can set this option to **LEGACY** or **COMPONENT**. **COMPONENT** method only supports 1.21.6+ Paper servers, after set method set COMPONENT, we will parse item into this `component` option.
-
-Start from 4.2.1 version, this feature require 1.21.6+ Paper servers.
+Keep `material` and `amount` at the ItemFormat root. Component values are applied after the root ItemFormat options:
 
 ```yaml
+material: DIAMOND_SWORD
+amount: 1
+
 component:
-  name: '<blue>A good sword'
+  name: '<aqua>Component sword'
   lore:
-    - '<gray>This is really nice!'
+    - '<gray>Built with Paper components'
   custom-model-data:
-    float: # Custom Model Data Type
-      - '1'
-  max-stack: 6
-  food:
-    can-always-eat: true
-    nutrition: 5
-    saturation: 5
-  tool:
-    damage-per-block: 5
-    mining-speed: 1.3
-    destroy-blocks-in-creative: true
-    rules:
-      # blocks, speed, correctForDrops
-      - 'stone, 1.4, true'
-  song: otherside
-  hide-tooltip:
-    - 'lore'
-  enchants:
-    mending: 1
+    float:
+      - 101.0
+    flag:
+      - true
   glow: true
-  attributes:
-    - type: MAX_HEALTH
-      name: 'generic.max_health'
-      amount: 5
-      operation: ADD_NUMBER
-      slot: MAINHAND
+  damage: 25
+  max-damage: 2048
 ```
+
+`debuild-item-method` in `config.yml` accepts `LEGACY` or `COMPONENT`. It controls how `/shop generateitemformat` and `/shop saveitem <ID> itemformat` save an item. In `COMPONENT` mode, supported properties are saved inside `component` on Paper 1.21.5+. The setting is not required to build an item that already contains this section.
+
+For complete version-specific examples and save/rebuild checks, see [Testing Paper Components](component-testing.md).
 
 ## Custom Name/Display Name
 
@@ -451,7 +437,7 @@ For `type` possible value: `BALL, BALL_LARGE, STAR, BURST, CREEPER`.
 firework:
   1: 
     flicker: true
-    trial: true
+    trail: true
     colors:
       base:
         - 5
@@ -469,7 +455,7 @@ For `type` possible value: `BALL, BALL_LARGE, STAR, BURST, CREEPER`.
 ```yaml
 firework:
   flicker: true
-  trial: true
+  trail: true
   colors:
     base:
       - 5
@@ -571,7 +557,7 @@ item-model: 'mycustom:itemmodel'
 ## Tooltip Style (1.21.2+)
 
 ```yaml
-tootip-style: 'mycustom:tooltip'
+tooltip-style: 'mycustom:tooltip'
 ```
 
 ## Use Cooldowns (1.21.2+)

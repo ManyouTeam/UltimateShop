@@ -34,11 +34,11 @@ public class FormBuyMoreGUI extends FormGUI {
         }
         CustomForm.Builder tempVal2 = CustomForm.builder();
 
-        tempVal2.title(TextUtil.parse(player, ConfigManager.configManager.getMenuRendererText(
+        tempVal2.title(TextUtil.parseLocalizedText(player, ConfigManager.configManager.getMenuRendererText(
             sourceMenu == null ? null : sourceMenu.getConfig(),
             player, "form", "buy-or-sell.title", "Buy More Menu", "item-name", item.getDisplayName(player))));
 
-        tempVal2.input(TextUtil.parse(player, ConfigManager.configManager.getMenuRendererText(
+        tempVal2.input(TextUtil.parseLocalizedText(player, ConfigManager.configManager.getMenuRendererText(
             sourceMenu == null ? null : sourceMenu.getConfig(),
             player, "form", "buy-or-sell.buttons.amount.name", "Amount")), getButtonTab());
         tempVal2.validResultHandler((submittedForm, response) -> handleResponse(submittedForm, () -> {
@@ -51,7 +51,7 @@ public class FormBuyMoreGUI extends FormGUI {
 
     private String getButtonTab() {
         ObjectMenu sourceMenu = item.getShopObject().getShopMenuObject();
-        return TextUtil.parse(player, ConfigManager.configManager.getMenuRendererText(
+        return TextUtil.parseLocalizedText(player, ConfigManager.configManager.getMenuRendererText(
             sourceMenu == null ? null : sourceMenu.getConfig(),
             player, "form", "buy-or-sell.buttons.amount.tip", "1"));
     }

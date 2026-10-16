@@ -3,10 +3,10 @@ package cn.superiormc.ultimateshop.paper.adapts.v1_21_5;
 import cn.superiormc.ultimateshop.paper.adapts.ComponentCodec;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
 import io.papermc.paper.datacomponent.DataComponentTypes;
-import io.papermc.paper.datacomponent.item.*;
+import io.papermc.paper.datacomponent.item.SuspiciousStewEffects;
 import io.papermc.paper.potion.SuspiciousEffectEntry;
-import java.util.*;
-import org.bukkit.*;
+import java.util.List;
+import org.bukkit.Registry;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -26,7 +26,7 @@ public class SuspiciousStewCodec implements ComponentCodec {
             SuspiciousStewEffects.Builder builder = SuspiciousStewEffects.suspiciousStewEffects();
             for (String effects : suspiciousStewEffects) {
                 String[] effectParseResult = effects.replace(" ", "").split(",");
-                if (effectParseResult.length < 3) {
+                if (effectParseResult.length < 2) {
                     continue;
                 }
                 PotionEffectType potionEffectType = Registry.EFFECT.get(CommonUtil.parseNamespacedKey(effectParseResult[0]));

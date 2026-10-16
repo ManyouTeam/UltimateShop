@@ -67,7 +67,7 @@ public final class DialogView {
         for (DialogInput input : inputs) {
             if (!keys.add(input.getKey())) {
                 valid = false;
-                ErrorManager.errorManager.sendErrorMessage("§cDuplicate dialog input key: " + input.getKey());
+                ErrorManager.errorManager.sendErrorMessage("§cError: Duplicate dialog input key: " + input.getKey());
                 return;
             }
         }
@@ -75,7 +75,7 @@ public final class DialogView {
         for (DialogAction action : actions) {
             if (!keys.add(action.getId())) {
                 valid = false;
-                ErrorManager.errorManager.sendErrorMessage("§cDuplicate dialog action id: " + action.getId());
+                ErrorManager.errorManager.sendErrorMessage("§cError: Duplicate dialog action id: " + action.getId());
                 return;
             }
         }

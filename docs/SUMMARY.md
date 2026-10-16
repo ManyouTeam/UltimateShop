@@ -22,6 +22,7 @@
 * [🛒Info of ItemFormat™](format/info-of-itemformat-tm.md)
 * [📝ItemFormat™](format/itemformat-tm/README.md)
   * [Component Format](format/itemformat-tm/component-format.md)
+  * [Testing Paper Components](format/itemformat-tm/component-testing.md)
 * [🌉ItemBridge](format/itembridge.md)
 * [💹EconomyFormat™](format/economyformat-tm.md)
 * [🖼️Display Item Format](format/display-item-format.md)
@@ -53,7 +54,7 @@
 * [💬 Native Dialog UI - Premium](menus/dialog-menus-premium.md)
 * [🪨 Ore UI - Premium](menus/ore-menus-premium.md)
 * [✨ ArcMenu UI - Premium](menus/arcmenu-menus-premium.md)
-* [📐 Graphical UI Layout](menus/ui-layout.md)
+* [📐 Graphical UI Layout - Premium](menus/ui-layout.md)
 
 ## 🧩Advanced Menus & Support
 

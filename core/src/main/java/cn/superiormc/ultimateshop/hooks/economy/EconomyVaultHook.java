@@ -44,7 +44,7 @@ public class EconomyVaultHook extends AbstractEconomyHook {
         if (rsp == null) {
             rsp = UltimateShop.instance.getServer().getServicesManager().getRegistration(Economy.class);
             if (rsp == null) {
-                ErrorManager.errorManager.sendErrorMessage("§cCan not hook into Vault plugin, " +
+                ErrorManager.errorManager.sendErrorMessage("§cError: Can not hook into Vault plugin, " +
                         "Vault is a API plugin, maybe you didn't install a Vault-based economy plugin in your server!");
                 return false;
             }

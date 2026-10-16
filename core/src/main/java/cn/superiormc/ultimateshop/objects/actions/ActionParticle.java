@@ -32,7 +32,7 @@ public class ActionParticle extends AbstractRunAction {
             Particle particle = Particle.valueOf(particleName.toUpperCase());
             SchedulerUtil.runSync(loc, () -> loc.getWorld().spawnParticle(particle, loc, count, offsetX, offsetY, offsetZ, speed));
         } catch (IllegalArgumentException e) {
-            ErrorManager.errorManager.sendErrorMessage("§cInvalid particle name: " + particleName);
+            ErrorManager.errorManager.sendErrorMessage("§cError: Invalid particle name: " + particleName);
         }
     }
 }

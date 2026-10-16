@@ -45,7 +45,7 @@ Set product `display-item.modify-lore: false` to suppress generated additions fo
 | `auto-translate-item-name` | Paper 1.17.1+ automatic vanilla display-name translation support |
 | `auto-use-sprite-item-name` | Java sprite item-name support on compatible Paper runtimes |
 
-Explicit custom names take precedence. Material/name resources are handled through the shared resource manager; see [Localized Item Name](../features/localized-item-name-premium.md).
+Explicit custom names take precedence. Material/name resources are handled through the shared resource manager; see [Localized Item Name - Premium](../features/localized-item-name-premium.md).
 
 ## Conditional symbols
 
@@ -160,4 +160,4 @@ display-item:
 
 ## Related documentation
 
-[Shop Menus](shop-menus.md) · [Bedrock Form](bedrock-menus-premium.md) · [Graphical Layout](ui-layout.md)
+[Shop Menus](shop-menus.md) · [Bedrock Form - Premium](bedrock-menus-premium.md) · [Graphical Layout - Premium](ui-layout.md)

@@ -48,7 +48,7 @@ public class FormCommonGUI extends FormGUI {
             }
             menuItems.put(tempVal1, slot);
         }
-        tempVal2.title(TextUtil.parse(player, commonMenu.getString("title", "Shop")));
+        tempVal2.title(TextUtil.parseLocalizedText(player, commonMenu.getString("title", "Shop")));
         tempVal2.validResultHandler((submittedForm, response) -> handleResponse(submittedForm, () -> {
             menuButtons.get(menuItems.get(response.clickedButton())).clickEvent(ClickType.LEFT, player);
             MenuStatusManager.menuStatusManager.removeOpenGUIStatus(player, this);
@@ -56,7 +56,7 @@ public class FormCommonGUI extends FormGUI {
         tempVal2.closedOrInvalidResultHandler((submittedForm, response) -> handleResponse(submittedForm, this::finishGUI));
         String content = ConfigManager.configManager.getMenuContent(getMenu().getConfig(), "form");
         if (!content.isEmpty()) {
-            tempVal2.content(TextUtil.parse(player, content));
+            tempVal2.content(TextUtil.parseLocalizedText(player, content));
         }
         form = tempVal2.build();
     }

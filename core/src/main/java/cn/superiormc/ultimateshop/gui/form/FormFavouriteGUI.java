@@ -76,7 +76,7 @@ public class FormFavouriteGUI extends FormGUI {
         editModeComponent = null;
 
         SimpleForm.Builder builder = SimpleForm.builder();
-        builder.title(TextUtil.parse(player, CommonUtil.parseLang(player, menu.getString("title", "Favourite"))));
+        builder.title(TextUtil.parseLocalizedText(player, CommonUtil.parseLang(player, menu.getString("title", "Favourite"))));
 
         int displayed = 0;
         for (Map.Entry<FavouriteProductReference, ObjectItem> entry : favouriteProducts.entrySet()) {
@@ -114,7 +114,7 @@ public class FormFavouriteGUI extends FormGUI {
         }
 
         if (menu.getString("content", null) != null) {
-            builder.content(TextUtil.parse(player, CommonUtil.parseLang(player, menu.getString("content", ""))));
+            builder.content(TextUtil.parseLocalizedText(player, CommonUtil.parseLang(player, menu.getString("content", ""))));
         }
 
         builder.validResultHandler((submittedForm, response) -> handleResponse(submittedForm, () -> {
@@ -159,28 +159,28 @@ public class FormFavouriteGUI extends FormGUI {
 
     private void openEditActionForm(ObjectFavouriteResultButton resultButton) {
         SimpleForm.Builder builder = SimpleForm.builder();
-        builder.title(TextUtil.parse(player, CommonUtil.parseLang(player,
+        builder.title(TextUtil.parseLocalizedText(player, CommonUtil.parseLang(player,
                 ConfigManager.configManager.getMenuRendererText(
                     getMenu() == null ? null : getMenu().getConfig(),
                     player, "form", "favourite-edit.title", "Edit Favourite: {item-name}", "item-name", resultButton.getItem().getDisplayName(player)))));
-        builder.content(TextUtil.parse(player, CommonUtil.parseLang(player,
+        builder.content(TextUtil.parseLocalizedText(player, CommonUtil.parseLang(player,
                 ConfigManager.configManager.getMenuRendererText(
                     getMenu() == null ? null : getMenu().getConfig(),
                     player, "form", "favourite-edit.content", "Choose how to edit this favourite entry.", "item-name", resultButton.getItem().getDisplayName(player), "index", String.valueOf(resultButton.getIndex() + 1)))));
 
-        ButtonComponent moveForward = ButtonComponent.of(TextUtil.parse(player,
+        ButtonComponent moveForward = ButtonComponent.of(TextUtil.parseLocalizedText(player,
                 ConfigManager.configManager.getMenuRendererText(
                     getMenu() == null ? null : getMenu().getConfig(),
                     player, "form", "favourite-edit.buttons.forward", "Move Forward")));
-        ButtonComponent moveBackward = ButtonComponent.of(TextUtil.parse(player,
+        ButtonComponent moveBackward = ButtonComponent.of(TextUtil.parseLocalizedText(player,
                 ConfigManager.configManager.getMenuRendererText(
                     getMenu() == null ? null : getMenu().getConfig(),
                     player, "form", "favourite-edit.buttons.backward", "Move Backward")));
-        ButtonComponent remove = ButtonComponent.of(TextUtil.parse(player,
+        ButtonComponent remove = ButtonComponent.of(TextUtil.parseLocalizedText(player,
                 ConfigManager.configManager.getMenuRendererText(
                     getMenu() == null ? null : getMenu().getConfig(),
                     player, "form", "favourite-edit.buttons.remove", "Remove")));
-        ButtonComponent back = ButtonComponent.of(TextUtil.parse(player,
+        ButtonComponent back = ButtonComponent.of(TextUtil.parseLocalizedText(player,
                 ConfigManager.configManager.getMenuRendererText(
                     getMenu() == null ? null : getMenu().getConfig(),
                     player, "form", "favourite-edit.buttons.back", "Back")));

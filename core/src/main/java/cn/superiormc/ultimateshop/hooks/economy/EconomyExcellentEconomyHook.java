@@ -36,7 +36,7 @@ public class EconomyExcellentEconomyHook extends AbstractEconomyHook {
     @Override
     public boolean isEnabled() {
         if (eeAPI == null) {
-            ErrorManager.errorManager.sendErrorMessage("§cCan not hook into ExcellentEconomy plugin!");
+            ErrorManager.errorManager.sendErrorMessage("§cError: Can not hook into ExcellentEconomy plugin!");
             return false;
         }
         return true;

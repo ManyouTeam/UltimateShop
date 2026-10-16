@@ -6,7 +6,7 @@ Files live in `plugins/UltimateShop/menus/item_sell_menus/`; the bundled example
 
 <a id="example"></a>
 
-## ✅ Inventory deposit example
+## Inventory deposit example
 
 ```yaml
 title: 'Sell Items'
@@ -43,7 +43,7 @@ buttons:
 
 Undefined `0` slots are empty but are not input slots; define filler button `0` if desired. The example intentionally includes only a confirm control and a Close button.
 
-## ⚙️ Item Sell-specific keys
+## Item Sell-specific keys
 
 Common title, size, layout, buttons, open conditions and open/close actions are described in [Common menus](general-menus.md).
 
@@ -69,7 +69,7 @@ The preview placeholders are:
 
 Preview is recalculated from input. Confirmation still runs normal product sell validation, including conditions, player/server limits, actions, events and logging. Unsupported or unsold items remain in the menu and return on close. Display/confirmation icons are not part of the player's sale stock.
 
-## 💵 Item-aware price modifiers
+## Item-aware price modifiers
 
 Products with `price-modifier: true` must be sold through Item Sell so the calculation can inspect the supplied item. The menu has no independent modifier formula; configure modifiers on the product. Select the routing target globally:
 
@@ -83,11 +83,11 @@ sell:
 
 For those products, `sell` and `sell-all` route to the selected Item Sell menu. Buy, quantity selection and custom operations keep their normal behaviour. Form/Dialog shop listings first open product information so buying and selling remain separate choices; choosing the routed sell operation opens the physical Inventory menu.
 
-## 🎨 Presentation and related settings
+## Presentation and related settings
 
 This is an Inventory deposit interface, including for players whose ordinary shops use Form, Dialog, Ore or ArcMenu. Its bundled `ui` settings do not create Form input slots or ArcMenu drag/drop sale controls. Configure Inventory `size`, `layout`, input and confirmation markers for this screen.
 
-`max-sell-amount` belongs to this menu and caps the combined confirmation. The global sell engine still applies its own restrictions; raising this value does not bypass stock, limits or product conditions. See [Price Modifier](../shops/price-modifier.md) for calculation and [Sell Multiplier](../shops/sell-multiplier-premium.md) for reward multipliers.
+`max-sell-amount` belongs to this menu and caps the combined confirmation. The global sell engine still applies its own restrictions; raising this value does not bypass stock, limits or product conditions. See [Price Modifier](../shops/price-modifier.md) for calculation and [Sell Multiplier - Premium](../shops/sell-multiplier-premium.md) for reward multipliers.
 
 ## Related documentation
 

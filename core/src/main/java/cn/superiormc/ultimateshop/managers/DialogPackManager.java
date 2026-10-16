@@ -320,7 +320,7 @@ public class DialogPackManager extends AbstractManager {
     }
 
     private void reportPreparationFailure(CommandSender sender, Throwable exception) {
-        String message = "§cUnable to prepare Ore resources: " + exception.getMessage();
+        String message = "§cError: Unable to prepare Ore resources: " + exception.getMessage();
         ErrorManager.errorManager.sendErrorMessage(message);
         if (sender instanceof Player player) {
             TextUtil.sendMessage(player, TextUtil.pluginPrefix() + " " + message);

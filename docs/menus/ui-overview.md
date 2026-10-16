@@ -2,7 +2,7 @@
 
 A **presentation** is the client interface used to show an existing Common, Shop, Search or Favourite menu. It does not change product prices, click bindings, conditions or data storage.
 
-## ✅ Choose with native switches, not `ui.mode`
+## Choose with native switches, not `ui.mode`
 
 In `config.yml`, enable the presentations that the server should support:
 
@@ -34,13 +34,25 @@ arcmenu:
   enabled: false
 ```
 
-| Interface | Required selection | Additional requirement |
-| --- | --- | --- |
-| [📦 Inventory](inventory-ui.md) | Fallback when another presentation is disabled/unavailable | None beyond the menu itself |
-| [🛏️ Bedrock Form](bedrock-menus-premium.md) | Global `menu.bedrock.enabled` **and** menu `bedrock.enabled` | Premium, supported Bedrock/Floodgate integration |
-| [💬 Native Dialog](dialog-menus-premium.md) | Global `menu.dialog.enabled`, menu `dialog.enabled`, `dialog.layout: multi-action` or `item-action-list` | Premium, supported Paper Dialog API |
-| [🪨 Ore](ore-menus-premium.md) | Global/menu Dialog enabled; `dialog.layout: ore` | Premium, supported Paper and generated client resource pack |
-| [✨ ArcMenu](arcmenu-menus-premium.md) | Global `menu.arcmenu.enabled` **and** menu `arcmenu.enabled` | Premium and ArcMenu integration |
+### Inventory
+
+[Inventory](inventory-ui.md) is the fallback when another presentation is disabled or unavailable. It has no additional edition requirement beyond the menu itself.
+
+### Bedrock Form <mark style="color:red;">- Premium</mark>
+
+[Bedrock Form - Premium](bedrock-menus-premium.md) requires global `menu.bedrock.enabled` and menu `bedrock.enabled`, with a supported Bedrock/Floodgate integration.
+
+### Native Dialog <mark style="color:red;">- Premium</mark>
+
+[Native Dialog - Premium](dialog-menus-premium.md) requires global `menu.dialog.enabled`, menu `dialog.enabled` and a supported Paper Dialog API. Set `dialog.layout` to `multi-action` or `item-action-list`.
+
+### Ore <mark style="color:red;">- Premium</mark>
+
+[Ore - Premium](ore-menus-premium.md) requires global/menu Dialog enabled, `dialog.layout: ore`, supported Paper and a generated client resource pack.
+
+### ArcMenu <mark style="color:red;">- Premium</mark>
+
+[ArcMenu - Premium](arcmenu-menus-premium.md) requires global `menu.arcmenu.enabled`, menu `arcmenu.enabled` and a compatible ArcMenu integration.
 
 When a menu omits `dialog.enabled` or `bedrock.enabled`, it defaults to `true`. ArcMenu is **opt-in**: its menu switch defaults to `false`.
 
@@ -50,7 +62,7 @@ When a menu omits `dialog.enabled` or `bedrock.enabled`, it defaults to `true`. 
 
 `dialog.layout` is a *menu-level selector*: `multi-action`, `item-action-list` or `ore`. It does not configure pixel coordinates.
 
-## 🧭 Where does each configuration belong?
+## Where does each configuration belong?
 
 | What you want to change | Correct key |
 | --- | --- |
@@ -63,8 +75,8 @@ When a menu omits `dialog.enabled` or `bedrock.enabled`, it defaults to `true`. 
 
 `ui.mode`, `ui.visible-in`, `ui.show-sprite` and native Form/Dialog `ui.renderers` fields are **not supported**. The `ui` section is reserved for graphical drawing and placement.
 
-## ⚠️ Menus that need a physical inventory
+## Menus that need a physical inventory
 
 Item Sell and Sell All use a real Inventory container, even when opened from another type of screen. Inventory Buy More buttons are not automatically converted into Form or Dialog widgets; see [Buy More](buy-more-menus.md).
 
-Related: [Configuration scopes](menu-configuration.md) · [Graphical layout](ui-layout.md) · [Troubleshooting](troubleshooting.md).
+Related: [Configuration scopes](menu-configuration.md) · [Graphical layout - Premium](ui-layout.md) · [Troubleshooting](troubleshooting.md).

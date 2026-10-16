@@ -80,7 +80,7 @@ final class ArcMenuLayout {
     static double worldUnits(double pixels, double pixelsPerBlock) {
         if (!Double.isFinite(pixelsPerBlock) || pixelsPerBlock <= 0) {
             ErrorManager.errorManager.sendErrorMessage(
-                "§cArcMenu surface pixels-per-block must be finite and positive");
+                "§cError: ArcMenu surface pixels-per-block must be finite and positive");
             return pixels / 180;
         }
         return pixels / pixelsPerBlock;
@@ -152,14 +152,32 @@ final class ArcMenuLayout {
                         line.append(c).append(text.charAt(++i));
                         continue;
                     }
-                    int next = ArcMenuLayout.textWidth(String.valueOf(c));
+                    int end = i + Character.charCount(text.codePointAt(i));
+                    if (TextUtil.isEnglishWordCharacter(c)) {
+                        while (end < text.length()) {
+                            if (text.charAt(end) == '\u00a7' && end + 1 < text.length()) {
+                                end += 2;
+                            } else if (TextUtil.isEnglishWordCharacter(text.codePointAt(end))) {
+                                end += Character.charCount(text.codePointAt(end));
+                            } else {
+                                break;
+                            }
+                        }
+                    }
+                    String token = text.substring(i, end);
+                    int next = ArcMenuLayout.textWidth(token);
                     if (width + next > maximum && width > 0) {
-                        result.add(line.toString());
+                        result.add(line.toString().stripTrailing());
                         line.setLength(0);
                         width = 0;
+                        if (Character.isWhitespace(c)) {
+                            i = end - 1;
+                            continue;
+                        }
                     }
-                    line.append(c);
+                    line.append(token);
                     width += next;
+                    i = end - 1;
                 }
                 result.add(line.toString());
             }

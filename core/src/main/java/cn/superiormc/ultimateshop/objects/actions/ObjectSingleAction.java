@@ -11,6 +11,8 @@ import cn.superiormc.ultimateshop.objects.items.ObjectAction;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
 import org.bukkit.configuration.ConfigurationSection;
 
+import java.math.BigDecimal;
+
 public class ObjectSingleAction extends AbstractSingleRun {
 
     private final ObjectAction action;
@@ -76,14 +78,14 @@ public class ObjectSingleAction extends AbstractSingleRun {
             } else {
                 resolved = replacePlaceholder(configured, thingRun.getPlayer(), thingRun.getActionTradeAmount(buy));
             }
-            int amount = new java.math.BigDecimal(resolved).intValueExact();
+            int amount = new BigDecimal(resolved).intValueExact();
             if (amount > 0 && amount < 10000) {
                 return amount;
             }
         } catch (IllegalArgumentException | ArithmeticException ignored) {
             // Invalid action quantities must not reach the transaction methods.
         }
-        ErrorManager.errorManager.sendErrorMessage("§6Invalid action trade amount at " + section.getCurrentPath() +
+        ErrorManager.errorManager.sendErrorMessage("§cError: Invalid action trade amount at " + section.getCurrentPath() +
                 ".amount: " + configured + ". Expected an integer from 1 to 9999; using 1.");
         return 1;
     }

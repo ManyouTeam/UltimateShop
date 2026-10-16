@@ -522,7 +522,7 @@ public final class MinecraftResourceManager extends AbstractManager {
         if (!stopped && UltimateShop.instance != null) {
             String color = message.startsWith("Downloaded ") ? "§a" : "§f";
             TextUtil.sendMessage(null,
-                TextUtil.pluginPrefix() + " " + color + "Minecraft " + minecraftVersion + ": " + message);
+                TextUtil.pluginPrefix() + " " + color + message);
         }
     }
 

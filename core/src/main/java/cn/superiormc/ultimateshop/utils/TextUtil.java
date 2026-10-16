@@ -2,6 +2,7 @@ package cn.superiormc.ultimateshop.utils;
 
 import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
+import cn.superiormc.ultimateshop.managers.MinecraftResourceManager;
 import cn.superiormc.ultimateshop.methods.StaticPlaceholder;
 import cn.superiormc.ultimateshop.objects.items.subobjects.ObjectConditionalPlaceholder;
 import cn.superiormc.ultimateshop.objects.items.subobjects.ObjectCustomPlaceholder;
@@ -33,6 +34,9 @@ public class TextUtil {
     public static final Pattern GRADIENT_PATTERN = Pattern.compile("&<#([A-Fa-f0-9]{6})>(.*?)&<#([A-Fa-f0-9]{6})>");
     public static final Pattern LEGACY_COLOR_PATTERN = Pattern.compile("[&§]([0-9a-frlomn])", Pattern.CASE_INSENSITIVE);
 
+    private static final Pattern VANILLA_TRANSLATION = Pattern.compile(
+        "<(?:lang|translate|translatable):['\"]?((?:item|block)\\.minecraft\\.[a-z0-9_.]+)['\"]?>");
+
     public static int getGlyphWidth(int code) {
         if (code == '\n') {
             return 0;
@@ -56,6 +60,16 @@ public class TextUtil {
             return 7;
         }
         return code < 256 ? 6 : 9;
+    }
+
+    public static boolean isEnglishWordCharacter(int value) {
+        return value >= 'A' && value <= 'Z'
+            || value >= 'a' && value <= 'z'
+            || value >= '0' && value <= '9'
+            || value == '\''
+            || value == '\u2019'
+            || value == '-'
+            || value == '_';
     }
 
     public static int getTextWidth(String value) {
@@ -266,6 +280,27 @@ public class TextUtil {
 
     public static String parse(Player player, String text) {
         return parse(withPAPI(text, player));
+    }
+
+    public static String parseLocalizedText(Player player, String text) {
+        return parse(localizeVanillaNames(withPAPI(text, player), player));
+    }
+
+    public static String localizeVanillaNames(String text, Player player) {
+        MinecraftResourceManager resources = MinecraftResourceManager.minecraftResourceManager;
+        if (text == null || player == null || resources == null) {
+            return text;
+        }
+        Matcher translations = VANILLA_TRANSLATION.matcher(text);
+        StringBuilder localized = new StringBuilder();
+        while (translations.find()) {
+            String name = resources.getLocalizedName(translations.group(1), player.getLocale());
+            translations.appendReplacement(
+                localized,
+                Matcher.quoteReplacement(name == null ? translations.group() : name));
+        }
+        translations.appendTail(localized);
+        return localized.toString();
     }
 
     public static String withPAPI(String text, Player player) {

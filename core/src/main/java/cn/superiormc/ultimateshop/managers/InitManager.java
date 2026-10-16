@@ -38,7 +38,6 @@ public class InitManager extends AbstractManager {
         resourceOutput("languages/de_DE.yml", true);
         resourceOutput("languages/pt_BR.yml", true);
         resourceOutput("languages/tr_TR.yml", true);
-        resourceOutput("editor-enable-confirm.yml", true);
         resourceOutput("shops/concretes.yml", false);
         resourceOutput("shops/blocks.yml", false);
         resourceOutput("shops/blocks2.yml", false);
@@ -117,14 +116,14 @@ public class InitManager extends AbstractManager {
                     Files.delete(source.toPath());
                 }
             } else if (target.exists()) {
-                ErrorManager.errorManager.sendErrorMessage("§cCannot migrate " + source + ": " + target
+                ErrorManager.errorManager.sendErrorMessage("§cError: Cannot migrate " + source + ": " + target
                     + " already exists. The old file was preserved; merge it manually into the new location.");
             } else {
                 Files.createDirectories(target.toPath().getParent());
                 Files.move(source.toPath(), target.toPath());
             }
         } catch (IOException exception) {
-            ErrorManager.errorManager.sendErrorMessage("§cCannot migrate " + source + " to " + target + ": " + exception.getMessage());
+            ErrorManager.errorManager.sendErrorMessage("§cError: Cannot migrate " + source + " to " + target + ": " + exception.getMessage());
         }
     }
 

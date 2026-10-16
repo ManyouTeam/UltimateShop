@@ -65,9 +65,10 @@ public class ObjectDisplayItemStack {
         this.meta = this.javaItem.getItemMeta();
         this.player = player;
         this.item = item;
+        ObjectDisplayItemStack source = item == null ? null : item.getDisplayItemObject().getDisplayItem(player);
+        this.section = source == null ? null : source.getSection();
         if (!UltimateShop.freeVersion) {
-            this.sprite =
-                item == null ? null : item.getDisplayItemObject().getDisplayItem(player).sprite;
+            this.sprite = source == null ? null : source.sprite;
         }
     }
 
@@ -174,7 +175,7 @@ public class ObjectDisplayItemStack {
             }
             if (tempVal4 != null && !tempVal4.isEmpty()) {
                 ObjectUseTimesCache tempVal9 = ShopHelper.getPlayerUseTimesCache(item, player);
-                return TextUtil.parse(
+                return TextUtil.parseLocalizedText(
                     player,
                     CommonUtil.modifyString(
                     player,
@@ -205,7 +206,7 @@ public class ObjectDisplayItemStack {
             }
         }
         if (tempVal4 != null && !tempVal4.isEmpty() && !tempVal4.equalsIgnoreCase("{lang}")) {
-            return TextUtil.parse(player, CommonUtil.parseLang(player, tempVal4));
+            return TextUtil.parseLocalizedText(player, CommonUtil.parseLang(player, tempVal4));
         }
         return "";
     }
@@ -215,15 +216,12 @@ public class ObjectDisplayItemStack {
     }
 
     public ButtonComponent parseToBedrockButton(ObjectMenu menu) {
-        if (section == null) {
-            return null;
-        }
-        String icon = section.getString("bedrock.icon");
+        String icon = section == null ? null : section.getString("bedrock.icon", section.getString("bedrock-icon"));
         if (ItemUtil.getItemNameWithoutVanilla(javaItem).trim().isEmpty()
-            || section.getBoolean("bedrock.hide", false)) {
+            || section != null && section.getBoolean("bedrock.hide", false)) {
             return null;
         }
-        String tempVal3 = TextUtil.parse(ItemUtil.getItemName(javaItem), player);
+        String tempVal3 = TextUtil.parseLocalizedText(player, ItemUtil.getItemName(javaItem));
         String extra = getPriceExtraLine(null);
         if (!extra.isEmpty()) {
             tempVal3 += "\n" + extra;

@@ -1,28 +1,26 @@
-# Inventory slots use root layout; ArcMenu and Ore use ui.layout and each button ui.placement.
+title: '{shop-name}'
+size: 54
+
 dialog:
   enabled: true
   layout: multi-action
   content: ''
   button-width: 150
   columns: 2
-bedrock:
-  enabled: true
-  content: ''
-arcmenu:
-  enabled: false
-title: '{shop-name}'
-size: 54
+
 open-actions:
   1:
     type: sound
     sound: item.book.page_turn
+
 layout:
-- '0f00s00x0'
-- '000000000'
-- '1ABCDEFG2'
-- '1HIJKLMN2'
-- '1OPQRSTU2'
-- 'a0003000b'
+  - '0f00s00x0'
+  - '000000000'
+  - '1ABCDEFG2'
+  - '1HIJKLMN2'
+  - '1OPQRSTU2'
+  - 'a0003000b'
+
 buttons:
   0:
     display-item:
@@ -81,8 +79,8 @@ buttons:
       material: NAME_TAG
       name: '{lang:favourite-menu-button-name} &c(PREMIUM)'
       lore:
-      - '{lang:favourite-menu-button-line-1}'
-      - '{lang:favourite-menu-button-line-2}'
+        - '{lang:favourite-menu-button-line-1}'
+        - '{lang:favourite-menu-button-line-2}'
     actions:
       1:
         type: open_menu
@@ -98,8 +96,8 @@ buttons:
       material: HOPPER
       name: '{lang:search-menu-button-name} &c(PREMIUM)'
       lore:
-      - '{lang:search-menu-button-line-1}'
-      - '{lang:search-menu-button-line-2}'
+        - '{lang:search-menu-button-line-1}'
+        - '{lang:search-menu-button-line-2}'
     actions:
       1:
         type: open_menu
@@ -126,6 +124,14 @@ buttons:
         height: 27
       font-size: 1.0
       text-align: left
+
+bedrock:
+  enabled: true
+  content: ''
+
+arcmenu:
+  enabled: true
+
 ui:
   layout:
     canvas:
@@ -232,8 +238,8 @@ ui:
         only-sell: '{lang:menu.bedrock.price-extra-line.only-sell}'
     actions:
       primary:
-      - buy
-      - sell
+        - buy
+        - sell
       extra: auto
       labels:
         buy: '{lang:menu.arcmenu.buy}'

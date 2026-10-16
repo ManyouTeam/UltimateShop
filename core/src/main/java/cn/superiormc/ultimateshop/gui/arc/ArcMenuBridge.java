@@ -62,7 +62,7 @@ public final class ArcMenuBridge extends AbstractManager {
             runtime = ArcMenuRuntime.create();
         } catch (LinkageError | RuntimeException exception) {
             ErrorManager.errorManager.sendErrorMessage(
-                "§cArcMenu integration unavailable: " + exception.getMessage());
+                "§cError: ArcMenu integration unavailable: " + exception.getMessage());
         }
     }
 

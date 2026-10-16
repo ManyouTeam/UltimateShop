@@ -1,8 +1,8 @@
-# 🛏️ Bedrock Form menus — Premium
+# 🛏️ Bedrock Form menus - Premium
 
 Bedrock Form displays ordinary menu buttons as a **list**, with dedicated product information and quantity input forms. The same products, prices and click rules are shared with Java interfaces; Form does **not** use Ore/ArcMenu graphical coordinates.
 
-## ✅ Enable Form
+## Enable Form
 
 In `config.yml`:
 
@@ -44,7 +44,7 @@ buttons:
 
 Both the global and menu `bedrock.enabled` switches must allow Form. The server needs a supported Bedrock/Floodgate integration and the Premium functionality. If Form cannot be used, the usual Inventory interface is available.
 
-## 🖼️ Set a custom button icon or second line
+## Set a custom button icon or second line
 
 These keys belong **inside the active `display-item`**, not the root `ui` or the product's `bedrock.click-event`:
 
@@ -74,7 +74,7 @@ A `path;;` texture must exist **in the Bedrock client's resources**, not on the 
 
 Without an explicit icon, `menu.bedrock.auto-add-icon.enabled: true` attempts to resolve the vanilla material texture using its URL format. This does not resolve Java custom model data automatically. A button with an empty name, or `bedrock.hide: true`, can be omitted from the Form list.
 
-## 💰 Product prices and click behavior
+## Product prices and click behavior
 
 The price/extra line for products reads the active `display-item.bedrock.extra-line` first. Otherwise it uses the menu's `bedrock.price-extra-line` and then global `menu.bedrock.price-extra-line`:
 
@@ -99,7 +99,7 @@ items:
 
 This is separate from `display-item.bedrock.*`. The menu-level default is `bedrock.click-event`, and the global default is `menu.bedrock.click-event`. Trade availability, product conditions and click bindings still apply.
 
-## ⚙️ Form configuration reference
+## Form configuration reference
 
 Native Form defaults live under global `menu.bedrock`; override supported values with menu `bedrock`, except options read globally such as player detection.
 
@@ -122,7 +122,7 @@ Native Form defaults live under global `menu.bedrock`; override supported values
 
 The generated product action buttons come from available click bindings, **not** from graphical `ui.products.actions`. Form quantity input does not reuse the Inventory Buy More button grid.
 
-## 🔍 Visibility and related menus
+## Visibility and related menus
 
 ```yaml
 menu-visibility:
@@ -133,4 +133,4 @@ Put this at the button or product root to hide only that entry in Form. Unspecif
 
 Search and Favourite have dedicated Form flows and reuse their data from the corresponding menu files. Physical Item Sell and Sell All remain Inventory screens.
 
-[🎨 Presentation selection](ui-overview.md) · [🔍 Search](search-menus-premium.md) · [❤️ Favourite](favourite-menus-premium.md) · [🩺 Troubleshooting](troubleshooting.md).
+[🎨 Presentation selection](ui-overview.md) · [🔍 Search - Premium](search-menus-premium.md) · [❤️ Favourite - Premium](favourite-menus-premium.md) · [🩺 Troubleshooting](troubleshooting.md).

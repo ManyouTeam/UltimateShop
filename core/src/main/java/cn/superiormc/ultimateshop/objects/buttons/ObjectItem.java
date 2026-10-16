@@ -484,7 +484,7 @@ public class ObjectItem extends AbstractButton {
         } catch (NumberFormatException ignored) {
             // Out-of-range values use the same fallback as other invalid values.
         }
-        ErrorManager.errorManager.sendErrorMessage("§6Invalid default trade amount at " + path +
+        ErrorManager.errorManager.sendErrorMessage("§cError: Invalid default trade amount at " + path +
             ": " + value + ". Expected an integer from 1 to 9999; using 1.");
         return 1;
     }

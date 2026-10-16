@@ -97,7 +97,7 @@ public class ObjectDialogTemplate {
 
     private void invalidate(String message) {
         valid = false;
-        ErrorManager.errorManager.sendErrorMessage("§c" + message);
+        ErrorManager.errorManager.sendErrorMessage("§cError: " + message);
     }
 
     private final int width;

@@ -1,28 +1,24 @@
 # Inventory slots use root layout; ArcMenu and Ore use ui.layout and each button ui.placement.
-dialog:
-  enabled: false
-  layout: multi-action
-  content: ''
-  button-width: 150
-  columns: 2
-bedrock:
-  enabled: false
-  content: ''
-arcmenu:
-  enabled: false
+
 menu-type: item-sell
+
 title: '{lang:item-sell-title}'
 size: 54
+
 max-sell-amount: -1
+
 layout:
-- '000000000'
-- 0IIIIIII0
-- 0IIIIIII0
-- 0IIIIIII0
-- '000000000'
-- 00B0C0X00
+  - '000000000'
+  - '0IIIIIII0'
+  - '0IIIIIII0'
+  - '0IIIIIII0'
+  - '000000000'
+  - '00B0C0X00'
+
 input-item: I
+
 confirm-item: C
+
 buttons:
   0:
     display-item:
@@ -64,17 +60,33 @@ buttons:
         height: 27
       font-size: 1.0
       text-align: left
+
 confirm-button:
   display-item:
     material: EMERALD
     name: '{lang:item-sell-confirm-name}'
     lore:
-    - '{lang:item-sell-confirm-price}'
-    - '{lang:item-sell-confirm-original-price}'
-    - '{lang:item-sell-confirm-multiplier}'
-    - '{lang:item-sell-confirm-amount}'
-    - '{lang:item-sell-confirm-unsellable}'
-    - '{lang:item-sell-confirm-click}'
+      - '{lang:item-sell-confirm-price}'
+      - '{lang:item-sell-confirm-original-price}'
+      - '{lang:item-sell-confirm-multiplier}'
+      - '{lang:item-sell-confirm-amount}'
+      - '{lang:item-sell-confirm-unsellable}'
+      - '{lang:item-sell-confirm-click}'
+
+dialog:
+  enabled: false
+  layout: multi-action
+  content: ''
+  button-width: 150
+  columns: 2
+
+bedrock:
+  enabled: false
+  content: ''
+
+arcmenu:
+  enabled: true
+
 ui:
   layout:
     canvas:
@@ -181,8 +193,8 @@ ui:
         only-sell: '{lang:menu.bedrock.price-extra-line.only-sell}'
     actions:
       primary:
-      - buy
-      - sell
+        - buy
+        - sell
       extra: auto
       labels:
         buy: '{lang:menu.arcmenu.buy}'

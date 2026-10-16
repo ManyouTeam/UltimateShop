@@ -3,6 +3,18 @@
   <component name="Encoding">
     <file url="file://$PROJECT_DIR$/core/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/core/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/paper/adapts/v1_21_11/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/paper/adapts/v1_21_11/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/paper/adapts/v1_21_5/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/paper/adapts/v1_21_5/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/paper/adapts/v1_21_6/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/paper/adapts/v1_21_6/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/paper/adapts/v26_1/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/paper/adapts/v26_1/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/paper/adapts/v26_2/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/paper/adapts/v26_2/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/paper/adapts/v26_3/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/paper/adapts/v26_3/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/paper/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/paper/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/plugin/src/main/java" charset="UTF-8" />

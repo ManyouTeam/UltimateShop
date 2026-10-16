@@ -75,7 +75,7 @@ public class MenuSender {
             }
             return dialogPresentation(gui.getMenu() == null ? null : ConfigManager.configManager.getDialogLayout(gui.getMenu().getConfig()));
         }
-        return gui.getPresentation();
+        return "inventory";
     }
 
     @Override

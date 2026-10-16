@@ -32,7 +32,12 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 public class PaperMethodUtil implements SpecialMethodUtil {
 
@@ -92,7 +97,7 @@ public class PaperMethodUtil implements SpecialMethodUtil {
     @Override
     public ItemStack getItemObject(Object object) {
         if (object instanceof ItemStack) {
-            ErrorManager.errorManager.sendErrorMessage("§6Warning: The item you try obtained is using legacy format!");
+            ErrorManager.errorManager.sendErrorMessage("§cError: The item you try obtained is using legacy format!");
             return (ItemStack) object;
         }
         if (CommonUtil.getMajorVersion(15)) {
@@ -293,7 +298,7 @@ public class PaperMethodUtil implements SpecialMethodUtil {
 
     @Override
     public ItemStack editItemStack(ItemStack item, Player player, ConfigurationSection section, int amount, String... args) {
-        if (!CommonUtil.getMinorVersion(21, 6) || UltimateShop.freeVersion) {
+        if (!CommonUtil.getMinorVersion(21, 5) || UltimateShop.freeVersion) {
             return item;
         }
         return BuildItemPaper.editItemStack(item, player, section, amount, args);

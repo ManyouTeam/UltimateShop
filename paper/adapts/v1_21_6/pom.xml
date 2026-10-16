@@ -14,6 +14,12 @@
 
     <dependencies>
         <dependency>
+            <groupId>io.papermc.paper</groupId>
+            <artifactId>paper-api</artifactId>
+            <version>1.21.6-R0.1-20250630.094942-50</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
             <groupId>cn.superiormc.ultimateshop</groupId>
             <artifactId>core</artifactId>
             <version>${revision}</version>
@@ -22,12 +28,6 @@
             <groupId>cn.superiormc.ultimateshop</groupId>
             <artifactId>paper</artifactId>
             <version>${revision}</version>
-        </dependency>
-        <dependency>
-            <groupId>io.papermc.paper</groupId>
-            <artifactId>paper-api</artifactId>
-            <version>1.21.6-R0.1-20250630.094942-50</version>
-            <scope>provided</scope>
         </dependency>
     </dependencies>
 

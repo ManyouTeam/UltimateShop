@@ -6,7 +6,7 @@ A file in this folder is automatically a Search menu. For a file in `menus/commo
 
 <a id="inventory-example"></a>
 
-## ✅ Create an Inventory Search menu
+## Create an Inventory Search menu
 
 ```yaml
 title: 'Search'
@@ -49,7 +49,7 @@ result-lore:
   - '&7Product: {product}'
 ```
 
-## ⚙️ Search-only keys
+## Search-only keys
 
 The [Common menu settings](general-menus.md) remain available. Use ordinary `buttons` for Back/Close/navigation.
 
@@ -73,9 +73,9 @@ Layout markers use the [normal token rules](layout-and-buttons.md), including ba
 
 Status display placeholders are `{result-amount}` (all matches), `{showing-amount}` (shown matches), `{input-amount}` (physical input count) and `{name-keyword}` (keyword). These are search status values, not global placeholders available in arbitrary menus.
 
-## 🔎 Search and input lifecycle
+## Search and input lifecycle
 
-Inventory input slots accept physical item stacks. Search finds shop products linked to those items; a keyword filters by product/item names. Text-only search works without item stacks. Name matching uses the shared item-name/localization system; see [Localized Item Name](../features/localized-item-name-premium.md).
+Inventory input slots accept physical item stacks. Search finds shop products linked to those items; a keyword filters by product/item names. Text-only search works without item stacks. Name matching uses the shared item-name/localization system; see [Localized Item Name - Premium](../features/localized-item-name-premium.md).
 
 In Inventory, `input-name` opens a chat prompt. The shared cancellation and clearing settings in `config.yml` are:
 
@@ -90,7 +90,7 @@ menu:
 
 `{lang}` uses the configured language value. Cancel leaves the prior keyword; clear removes it. Clear-search also returns physical input items in Inventory. Closing/navigating away returns remaining input rather than consuming display/result icons. Result icons are GUI items, not player-owned stock.
 
-## 🎨 How search differs by presentation
+## How search differs by presentation
 
 | Presentation | Search input and controls |
 | --- | --- |
@@ -103,7 +103,7 @@ Form opens its home first. Search input prefills the previous keyword; cancel re
 
 Form text defaults are `menu.bedrock.search.input` and `menu.bedrock.search.buttons.search`; Dialog uses `menu.dialog.search.*`. Chat keyword controls still use the prompt keywords above. Choose presentations through the global/menu `dialog.enabled`, `bedrock.enabled` and `arcmenu.enabled` switches.
 
-For ArcMenu/Ore, configure `ui.layout`, `ui.products.placement`, and `ui.placement` on graphical controls. Layout pagination does not remove the result-slot capacity defined at root. See [ArcMenu](arcmenu-menus-premium.md) and [Dialog](dialog-menus-premium.md) and [Ore](ore-menus-premium.md) for exact renderer differences.
+For ArcMenu/Ore, configure `ui.layout`, `ui.products.placement`, and `ui.placement` on graphical controls. Layout pagination does not remove the result-slot capacity defined at root. See [ArcMenu - Premium](arcmenu-menus-premium.md) and [Dialog - Premium](dialog-menus-premium.md) and [Ore - Premium](ore-menus-premium.md) for exact renderer differences.
 
 ## Related documentation
 
