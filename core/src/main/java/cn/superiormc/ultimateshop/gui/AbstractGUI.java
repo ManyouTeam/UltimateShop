@@ -40,14 +40,6 @@ public abstract class AbstractGUI {
         return player;
     }
 
-    public String getPresentation() {
-        return "inventory";
-    }
-
-    public boolean isActivePresentation() {
-        return true;
-    }
-
     public ConfigurationSection getSection() {
         return null;
     }

@@ -467,7 +467,7 @@ public class ConfigManager extends AbstractManager {
             return null;
         }
         var gui = MenuStatusManager.menuStatusManager.getOpeningGUI(player);
-        if (gui == null || !gui.getPresentation().equals("arcmenu") || gui.getMenu() == null) {
+        if (!(gui instanceof cn.superiormc.ultimateshop.gui.arc.ArcMenuGUI) || gui.getMenu() == null) {
             return null;
         }
         return gui.getMenu().getString("ui.renderers.arcmenu.right-click-action",

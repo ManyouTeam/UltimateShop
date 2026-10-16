@@ -74,7 +74,7 @@ public class SearchGUI extends InvGUI {
         inv.clear();
         resultButtons.clear();
 
-        menuButtons = menu.getMenu(MenuSender.of(player, getPresentation()));
+        menuButtons = menu.getMenu(MenuSender.of(player, "inventory"));
         menuItems = getMenuItems(player);
         for (Map.Entry<Integer, ItemStack> entry : menuItems.entrySet()) {
             if (entry.getKey() >= 0 && entry.getKey() < inv.getSize()) {
@@ -239,10 +239,6 @@ public class SearchGUI extends InvGUI {
     }
 
     private void returnInputItems() {
-        if ("arcmenu".equals(getPresentation())) {
-            inputButtons.clear();
-            return;
-        }
         List<ItemStack> items = new ArrayList<>();
         for (int slot : menu.getInputSlots()) {
             ItemStack item = inv == null ? null : inv.getItem(slot);
@@ -259,9 +255,6 @@ public class SearchGUI extends InvGUI {
 
     private void initInputItemMap() {
         inputButtons.clear();
-        if ("arcmenu".equals(getPresentation())) {
-            return;
-        }
         for (int slot : menu.getInputSlots()) {
             ItemStack itemStack = inv.getItem(slot);
             if (itemStack != null && !itemStack.getType().isAir()) {
@@ -336,6 +329,9 @@ public class SearchGUI extends InvGUI {
     public static void openGUI(Player player, ObjectSearchMenu menu, boolean bypass, boolean reopen) {
         if (UltimateShop.useGeyser && menu.isUseGeyser() && CommonUtil.isBedrockPlayer(player)) {
             new FormSearchGUI(player, menu, bypass).openGUI(reopen);
+            return;
+        }
+        if (ArcMenuBridge.arcMenuBridge.open(player, menu, null, bypass, reopen)) {
             return;
         }
         if (!ArcMenuBridge.arcMenuBridge.enabled(menu, player) && menu.isUseDialog()) {

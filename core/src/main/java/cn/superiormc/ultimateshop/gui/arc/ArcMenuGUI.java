@@ -3,14 +3,15 @@ package cn.superiormc.ultimateshop.gui.arc;
 import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.gui.AbstractGUI;
 import cn.superiormc.ultimateshop.gui.GUIStatus;
-import cn.superiormc.ultimateshop.gui.InvGUI;
 import cn.superiormc.ultimateshop.gui.MenuUILayout;
+import cn.superiormc.ultimateshop.objects.ObjectThingRun;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.ErrorManager;
 import cn.superiormc.ultimateshop.managers.MenuStatusManager;
 import cn.superiormc.ultimateshop.managers.MinecraftResourceManager;
 import cn.superiormc.ultimateshop.objects.buttons.AbstractButton;
 import cn.superiormc.ultimateshop.objects.menus.MenuSender;
+import cn.superiormc.ultimateshop.objects.menus.ObjectMenu;
 import cn.superiormc.ultimateshop.objects.menus.ObjectMenu;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
 import cn.superiormc.ultimateshop.utils.SchedulerUtil;
@@ -58,9 +59,13 @@ public abstract class ArcMenuGUI extends AbstractGUI {
 
     private static final Pattern VANILLA_TRANSLATION =
         Pattern.compile("<(?:lang|translate|translatable):((?:item|block)\\.minecraft\\.[a-z0-9_.]+)>");
-    protected final InvGUI source;
+    protected final ObjectMenu menu;
+    protected final boolean bypass;
     private final ArcMenuRuntime runtime;
     protected final MenuUILayout layout;
+    protected Map<Integer, AbstractButton> menuButtons = new LinkedHashMap<>();
+    protected final Map<Integer, ItemStack> menuItems = new LinkedHashMap<>();
+    protected String title;
     ArcMenuApplicationContext context;
     private double cursorDepth;
     private ArcMenuSurface surface;
@@ -77,11 +82,12 @@ public abstract class ArcMenuGUI extends AbstractGUI {
     private boolean finished;
     private boolean active;
 
-    ArcMenuGUI(InvGUI source, ArcMenuRuntime runtime) {
-        super(source.getPlayer());
-        this.source = source;
+    ArcMenuGUI(Player player, ObjectMenu menu, boolean bypass, ArcMenuRuntime runtime) {
+        super(player);
+        this.menu = menu;
+        this.bypass = bypass;
         this.runtime = runtime;
-        this.layout = new MenuUILayout(source.getMenu().getConfig());
+        this.layout = new MenuUILayout(menu.getConfig());
     }
 
     boolean tryOpen(boolean reopen) {
@@ -92,16 +98,14 @@ public abstract class ArcMenuGUI extends AbstractGUI {
         if (!MenuStatusManager.menuStatusManager.canOpenGUI(player, this, reopen)) {
             return true;
         }
-        source.setPresentation("arcmenu");
         try {
-            source.constructGUI();
-            if (source.getInventory() == null || !source.canDisplayMenu()) {
+            if (!canDisplayMenu()) {
                 restore(previous);
-                source.setPresentation("inventory");
                 return true;
             }
+            constructGUI();
             player.closeInventory();
-            if (runtime.open(this) && isActivePresentation()) {
+            if (runtime.open(this) && isActive()) {
                 getMenu().doOpenAction(player, reopen);
                 return true;
             }
@@ -117,7 +121,6 @@ public abstract class ArcMenuGUI extends AbstractGUI {
                 + exception.getMessage());
         }
         restore(previous);
-        source.setPresentation("inventory");
         return false;
     }
 
@@ -191,27 +194,35 @@ public abstract class ArcMenuGUI extends AbstractGUI {
 
     @Override
     public ObjectMenu getMenu() {
-        return source.getMenu();
+        return menu;
     }
 
-    @Override
-    public String getPresentation() {
-        return "arcmenu";
-    }
-
-    @Override
-    public boolean isActivePresentation() {
+    public boolean isActive() {
         return active && context != null && context.isActive();
+    }
+
+    protected boolean canDisplayMenu() {
+        return bypass || menu.getCondition().getAllBoolean(new ObjectThingRun(player));
+    }
+
+    protected void prepareMenu() {
+        title = menu.getString("title", "Shop");
+        menuButtons = menu.getMenu(MenuSender.of(player, "arcmenu"));
+        menuItems.clear();
+        for (Map.Entry<Integer, AbstractButton> entry : menuButtons.entrySet()) {
+            menuItems.put(entry.getKey(), entry.getValue().getDisplayItem(player, 1).getItemStack());
+        }
     }
 
     @Override
     public void constructGUI() {
-        if (!source.canDisplayMenu()) {
-            closeGUI();
+        if (!canDisplayMenu()) {
+            if (active) {
+                closeGUI();
+            }
             return;
         }
-        source.getInventory().clear();
-        source.constructGUI();
+        prepareMenu();
         if (active) {
             render();
         }
@@ -244,7 +255,6 @@ public abstract class ArcMenuGUI extends AbstractGUI {
             return;
         }
         finished = true;
-        source.closeEventHandle(source.getInventory());
         super.finishGUI();
         if (ConfigManager.configManager.getLong("menu.cooldown.reopen", 3L) <= 0
             && MenuStatusManager.menuStatusManager.getOpeningGUI(player) == this) {
@@ -334,7 +344,7 @@ public abstract class ArcMenuGUI extends AbstractGUI {
             ConfigManager.configManager.getLong(
             "menu.cooldown.click", 5L))
          * 50_000_000L;
-        if (!source.canDisplayMenu()) {
+        if (!canDisplayMenu()) {
             closeGUI();
             return;
         }
@@ -479,8 +489,8 @@ public abstract class ArcMenuGUI extends AbstractGUI {
         int accent = color("accent", 0xFF65E8EF);
         renderHeader(accent);
 
-        buttons = getMenu().getUiMenu(MenuSender.of(player, getPresentation()));
-        buttons.putAll(source.menuButtons);
+        buttons = new LinkedHashMap<>(getMenu().getUiMenu(MenuSender.of(player, "arcmenu")));
+        buttons.putAll(menuButtons);
         prepareRender();
         List<MenuUILayout.Entry> entries = new ArrayList<>();
         for (var entry : buttons.entrySet()) {
@@ -588,7 +598,7 @@ public abstract class ArcMenuGUI extends AbstractGUI {
             }
             String value =
                 settings.getString("text", "")
-                .replace("{title}", source.title)
+                .replace("{title}", title == null ? "" : title)
                 .replace("{content}", getMenu().getString("content", ""));
             value = headerText(value);
             double size = settings.getDouble("font-size", .8);

@@ -1,21 +1,76 @@
 package cn.superiormc.ultimateshop.gui.arc;
 
-import cn.superiormc.ultimateshop.gui.inv.FavouriteGUI;
+import cn.superiormc.ultimateshop.managers.CacheManager;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
+import cn.superiormc.ultimateshop.managers.LanguageManager;
+import cn.superiormc.ultimateshop.objects.buttons.AbstractButton;
+import cn.superiormc.ultimateshop.objects.buttons.ObjectFavouriteEditModeButton;
+import cn.superiormc.ultimateshop.objects.buttons.ObjectFavouriteEmptyButton;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectFavouriteResultButton;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
+import cn.superiormc.ultimateshop.objects.caches.FavouriteProductReference;
+import cn.superiormc.ultimateshop.objects.caches.ObjectCache;
+import cn.superiormc.ultimateshop.objects.menus.ObjectFavouriteMenu;
+import cn.superiormc.ultimateshop.utils.CommonUtil;
+import cn.superiormc.ultimateshop.utils.TextUtil;
+import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 final class ArcFavouriteGUI extends ArcCommonGUI {
-    ArcFavouriteGUI(FavouriteGUI source, ArcMenuRuntime runtime) {
-        super(source, runtime);
+
+    private final ObjectFavouriteMenu favouriteMenu;
+    private boolean editing;
+
+    ArcFavouriteGUI(Player player, ObjectFavouriteMenu menu, boolean bypass, boolean editing, ArcMenuRuntime runtime) {
+        super(player, menu, bypass, runtime);
+        this.favouriteMenu = menu;
+        this.editing = editing;
+    }
+
+    @Override
+    protected void prepareMenu() {
+        super.prepareMenu();
+        title = TextUtil.withPAPI(CommonUtil.parseLang(player, favouriteMenu.getString("title", "Favourite")), player);
+        ObjectCache cache = CacheManager.cacheManager.getObjectCache(player);
+        Map<FavouriteProductReference, ObjectItem> products = cache == null
+            ? Collections.emptyMap() : cache.getResolvedFavouriteProducts(favouriteMenu.getName());
+        int amount = products.size();
+        int displayed = 0;
+        int size = favouriteMenu.getInt("size", 54);
+        for (Map.Entry<FavouriteProductReference, ObjectItem> entry : products.entrySet()) {
+            if (displayed >= favouriteMenu.getResultSlots().size()) {
+                break;
+            }
+            int slot = favouriteMenu.getResultSlots().get(displayed);
+            ObjectFavouriteResultButton button = new ObjectFavouriteResultButton(entry.getValue(), displayed,
+                editing ? favouriteMenu.getEditingResultLore() : favouriteMenu.getResultLore(), editing);
+            menuButtons.put(slot, button);
+            menuItems.put(slot, button.getDisplayItem(player, 1).getItemStack());
+            displayed++;
+        }
+        ObjectFavouriteEmptyButton emptyButton = favouriteMenu.getEmptyButton();
+        if (emptyButton != null) {
+            for (int i = displayed; i < favouriteMenu.getResultSlots().size(); i++) {
+                int slot = favouriteMenu.getResultSlots().get(i);
+                menuButtons.put(slot, emptyButton);
+                menuItems.put(slot, emptyButton.buildDisplayItem(player, amount, i + 1));
+            }
+        }
+        ObjectFavouriteEditModeButton editButton = favouriteMenu.getEditModeButton();
+        int editSlot = favouriteMenu.getEditModeSlot();
+        if (editButton != null && editSlot >= 0 && editSlot < size) {
+            menuButtons.put(editSlot, editButton);
+            menuItems.put(editSlot, editButton.getDisplayItem(player, editing, amount).getItemStack());
+        }
     }
 
     @Override
     protected ObjectItem product(int slot) {
-        if (((FavouriteGUI) source).isEditing()) {
+        if (editing) {
             return null;
         }
         return buttons.get(slot) instanceof ObjectFavouriteResultButton result ? result.getItem() : super.product(slot);
@@ -24,6 +79,44 @@ final class ArcFavouriteGUI extends ArcCommonGUI {
     @Override
     protected boolean isProductCard(int slot) {
         return super.isProductCard(slot) || buttons.get(slot) instanceof ObjectFavouriteResultButton;
+    }
+
+    @Override
+    protected void dispatchClick(int slot, ClickType type) {
+        if (slot == favouriteMenu.getEditModeSlot() && favouriteMenu.getEditModeButton() != null) {
+            editing = !editing;
+            return;
+        }
+        AbstractButton button = buttons.get(slot);
+        if (button instanceof ObjectFavouriteResultButton result) {
+            if (editing) {
+                handleEdit(type, result.getIndex(), result.getItem());
+            } else {
+                result.getItem().clickEvent(type, player);
+            }
+            return;
+        }
+        if (button instanceof ObjectFavouriteEmptyButton || button instanceof ObjectFavouriteEditModeButton) {
+            return;
+        }
+        super.dispatchClick(slot, type);
+    }
+
+    private void handleEdit(ClickType type, int index, ObjectItem item) {
+        ObjectCache cache = CacheManager.cacheManager.getObjectCache(player);
+        if (cache == null) {
+            return;
+        }
+        if (type == ClickType.LEFT) {
+            cache.moveFavouriteProduct(favouriteMenu.getName(), index, index - 1);
+        } else if (type == ClickType.RIGHT) {
+            cache.moveFavouriteProduct(favouriteMenu.getName(), index, index + 1);
+        } else if (type == ClickType.DROP || type == ClickType.CONTROL_DROP || type == ClickType.MIDDLE) {
+            if (cache.removeFavouriteProduct(favouriteMenu.getName(), item)) {
+                LanguageManager.languageManager.sendStringText(player, "favourite-removed",
+                    "item", item.getDisplayName(player), "menu", favouriteMenu.getName());
+            }
+        }
     }
 
     private boolean isEditing(int slot) {

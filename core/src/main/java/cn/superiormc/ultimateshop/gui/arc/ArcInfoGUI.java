@@ -221,7 +221,7 @@ final class ArcInfoGUI {
         }
         action.execute(item, gui.getPlayer(), buyAmount, sellAmount);
         if (gui.usable()) {
-            gui.source.constructGUI();
+            gui.constructGUI();
         }
     }
 
