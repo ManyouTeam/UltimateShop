@@ -1,4 +1,4 @@
-# 🔲 Common menus
+# 🔲 Common Menus
 
 A Common menu is a navigation/action screen. It displays **buttons you define**; it does not automatically load a shop's products.
 
@@ -33,16 +33,16 @@ buttons:
 
 ## Common menu keys
 
-| Key | Purpose |
-| --- | --- |
-| `title` | Screen title |
-| `size`, `layout` | Inventory capacity and slot markers |
-| `buttons` | Actions and display item for each marker |
-| `conditions` | Conditions required to open the whole menu |
-| `open-actions`, `close-actions` | Menu lifecycle actions |
-| `dynamic-layout` | Conditional/ordered layout alternatives where supported |
-| `dialog`, `bedrock`, `arcmenu` | Client-specific presentation switches and content |
-| `ui` | Ore/ArcMenu graphical drawing and entry positioning |
+| Key                             | Purpose                                                 |
+| ------------------------------- | ------------------------------------------------------- |
+| `title`                         | Screen title                                            |
+| `size`, `layout`                | Inventory capacity and slot markers                     |
+| `buttons`                       | Actions and display item for each marker                |
+| `conditions`                    | Conditions required to open the whole menu              |
+| `open-actions`, `close-actions` | Menu lifecycle actions                                  |
+| `dynamic-layout`                | Conditional/ordered layout alternatives where supported |
+| `dialog`, `bedrock`, `arcmenu`  | Client-specific presentation switches and content       |
+| `ui`                            | Ore/ArcMenu graphical drawing and entry positioning     |
 
 Keep `conditions` for menu entry separate from `buttons.A.conditions` for individual click actions.
 
@@ -69,7 +69,7 @@ dialog:
 
 Also enable `menu.dialog.enabled` in `config.yml`. To use graphical Ore, set `dialog.layout: ore` **and** configure `ui.layout` and `buttons.<id>.ui.placement`. To use ArcMenu, enable global and menu `arcmenu.enabled`, install its integration and set graphical placements. For Bedrock Form, use menu `bedrock.enabled/content` and global `menu.bedrock.enabled`.
 
-Learn presentation priority in [🎨 UI modes](ui-overview.md) and graphical coordinates in [📐 Layout - Premium](ui-layout.md).
+Learn presentation priority in [🎨 UI modes](ui-overview.md) and graphical coordinates in [📐 Layout - Premium](../menus-getting-started/ui-layout.md).
 
 ## Alternative Common-folder menu types
 

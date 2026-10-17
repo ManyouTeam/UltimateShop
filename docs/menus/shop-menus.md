@@ -1,13 +1,13 @@
-# 🛍️ Shop menus
+# 🛍️ Shop Menus
 
 A shop file defines **products, prices and trading**. A shop-menu template defines **which entries appear and where**, plus navigation buttons. One template may be reused by many shops.
 
 ## Two files, two responsibilities
 
-- Shop file: `plugins/UltimateShop/shops/<shop-id>.yml`.
-- Template: `plugins/UltimateShop/menus/shop_menu_templates/<template-id>.yml`.
-- `settings.menu` inside the shop selects a template.
-- Open with `/shop menu <shop-id>` or a `shop_menu` action.
+* Shop file: `plugins/UltimateShop/shops/<shop-id>.yml`.
+* Template: `plugins/UltimateShop/menus/shop_menu_templates/<template-id>.yml`.
+* `settings.menu` inside the shop selects a template.
+* Open with `/shop menu <shop-id>` or a `shop_menu` action.
 
 ## Example 1: menu template
 
@@ -63,7 +63,7 @@ settings:
       content: '&7Browse farming products'
 ```
 
-Overrides are applied to the template *before* global graphical `menu.ui` defaults fill any missing graphical fields. `settings.menu-settings` does **not** belong in `config.yml` or a menu template.
+Overrides are applied to the template _before_ global graphical `menu.ui` defaults fill any missing graphical fields. `settings.menu-settings` does **not** belong in `config.yml` or a menu template.
 
 ## Adding navigation buttons
 
@@ -86,7 +86,7 @@ Add `X` to an available `layout` slot. Product IDs and ordinary buttons must not
 
 The **same shop items** can appear in different presentations. Inventory uses the template's root `layout`. Native Dialog and Form collect items as lists; Ore and ArcMenu use `ui.layout`, `ui.products.placement` and individual button `ui.placement`. A blank graphical area does not automatically create shop-category buttons.
 
-Use [UI selection](ui-overview.md) and [Graphical layout - Premium](ui-layout.md) for the prerequisites and full configuration.
+Use [UI selection](ui-overview.md) and [Graphical layout - Premium](../menus-getting-started/ui-layout.md) for the prerequisites and full configuration.
 
 ## If a product is missing
 

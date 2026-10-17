@@ -1,4 +1,4 @@
-# 🎨 Menu presentations
+# 🎨 UI Modes Overview
 
 A **presentation** is the client interface used to show an existing Common, Shop, Search or Favourite menu. It does not change product prices, click bindings, conditions or data storage.
 
@@ -60,18 +60,18 @@ When a menu omits `dialog.enabled` or `bedrock.enabled`, it defaults to `true`. 
 
 **ArcMenu → Dialog / Ore → Inventory.** If ArcMenu fails to open, the normal menu-opening flow can try Dialog/Ore when enabled and supported. If neither graphical/native route applies, Inventory is used. Bedrock Form is selected separately for Bedrock players.
 
-`dialog.layout` is a *menu-level selector*: `multi-action`, `item-action-list` or `ore`. It does not configure pixel coordinates.
+`dialog.layout` is a _menu-level selector_: `multi-action`, `item-action-list` or `ore`. It does not configure pixel coordinates.
 
 ## Where does each configuration belong?
 
-| What you want to change | Correct key |
-| --- | --- |
-| Inventory rows and buttons | Root `size`, `layout`, `buttons` |
-| Native Dialog mode, text and controls | Menu `dialog.*`, global `menu.dialog.*` |
+| What you want to change                        | Correct key                                                         |
+| ---------------------------------------------- | ------------------------------------------------------------------- |
+| Inventory rows and buttons                     | Root `size`, `layout`, `buttons`                                    |
+| Native Dialog mode, text and controls          | Menu `dialog.*`, global `menu.dialog.*`                             |
 | Bedrock Form enablement, button text and icons | Menu `bedrock.*`, global `menu.bedrock.*`, `display-item.bedrock.*` |
-| ArcMenu enablement | `menu.arcmenu.enabled` and menu `arcmenu.enabled` |
-| Ore/ArcMenu coordinates and card appearance | `menu.ui.*` and menu `ui.*` |
-| Show or hide a product in one presentation | Entry `menu-visibility.<presentation>` |
+| ArcMenu enablement                             | `menu.arcmenu.enabled` and menu `arcmenu.enabled`                   |
+| Ore/ArcMenu coordinates and card appearance    | `menu.ui.*` and menu `ui.*`                                         |
+| Show or hide a product in one presentation     | Entry `menu-visibility.<presentation>`                              |
 
 `ui.mode`, `ui.visible-in`, `ui.show-sprite` and native Form/Dialog `ui.renderers` fields are **not supported**. The `ui` section is reserved for graphical drawing and placement.
 
@@ -79,4 +79,4 @@ When a menu omits `dialog.enabled` or `bedrock.enabled`, it defaults to `true`. 
 
 Item Sell and Sell All use a real Inventory container, even when opened from another type of screen. Inventory Buy More buttons are not automatically converted into Form or Dialog widgets; see [Buy More](buy-more-menus.md).
 
-Related: [Configuration scopes](menu-configuration.md) · [Graphical layout - Premium](ui-layout.md) · [Troubleshooting](troubleshooting.md).
+Related: [Configuration scopes](menu-configuration.md) · [Graphical layout - Premium](../menus-getting-started/ui-layout.md) · [Troubleshooting](troubleshooting.md).
