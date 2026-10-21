@@ -31,8 +31,13 @@ import java.util.regex.Pattern;
 public class TextUtil {
 
     public static final Pattern SINGLE_HEX_PATTERN = Pattern.compile("&#([A-Fa-f0-9]{6})");
+
     public static final Pattern GRADIENT_PATTERN = Pattern.compile("&<#([A-Fa-f0-9]{6})>(.*?)&<#([A-Fa-f0-9]{6})>");
+
     public static final Pattern LEGACY_COLOR_PATTERN = Pattern.compile("[&§]([0-9a-frlomn])", Pattern.CASE_INSENSITIVE);
+
+    private static final Pattern WRAP_COLOR_TOKEN = Pattern.compile(
+        "§[xX](?:§[0-9A-Fa-f]){6}|[&§]#[0-9A-Fa-f]{6}|[&§][0-9A-Fa-fK-Ok-oRr]");
 
     private static final Pattern VANILLA_TRANSLATION = Pattern.compile(
         "<(?:lang|translate|translatable):['\"]?((?:item|block)\\.minecraft\\.[a-z0-9_.]+)['\"]?>");
@@ -76,25 +81,148 @@ public class TextUtil {
         int width = 0;
         int maximum = 0;
         boolean bold = false;
-        for (int i = 0; i < value.length(); i++) {
-            char c = value.charAt(i);
-            if (c == '§' && i + 1 < value.length()) {
-                char format = Character.toLowerCase(value.charAt(++i));
-                if (format == 'l') {
-                    bold = true;
-                } else if ("0123456789abcdefrx".indexOf(format) >= 0) {
-                    bold = false;
-                }
+        Matcher matcher = WRAP_COLOR_TOKEN.matcher(value);
+        for (int i = 0; i < value.length();) {
+            if (matcher.region(i, value.length()).lookingAt()) {
+                String token = matcher.group();
+                bold = isWrapFormatToken(token)
+                    && (bold || Character.toLowerCase(token.charAt(1)) == 'l');
+                i = matcher.end();
                 continue;
             }
-            if (c == '\n') {
+            int code = value.codePointAt(i);
+            i += Character.charCount(code);
+            if (code == '\n') {
                 maximum = Math.max(maximum, width);
                 width = 0;
             } else {
-                width += getGlyphWidth(c) + (bold && c != ' ' ? 1 : 0);
+                width += getGlyphWidth(code) + (bold && code != ' ' ? 1 : 0);
             }
         }
         return Math.max(maximum, width);
+    }
+
+    // Wrap legacy text by visible code points; nonpositive limits leave the input unchanged.
+    public static List<String> wrapKeepColor(String text, int maxLength) {
+        return wrapText(text, maxLength, false);
+    }
+
+    // Wrap legacy text by estimated default-font pixels, including the active bold style.
+    public static List<String> wrapByWidth(String text, int maxWidth) {
+        return wrapText(text, maxWidth, true);
+    }
+
+    private static List<String> wrapText(String text, int maximum, boolean pixels) {
+        List<String> result = new ArrayList<>();
+        if (text == null || text.isEmpty() || maximum <= 0) {
+            result.add(text == null ? "" : text);
+            return result;
+        }
+        if (GRADIENT_PATTERN.matcher(text).find()) {
+            text = applyGradients(text, CommonUtil.getMajorVersion(16));
+        }
+        text = text.replace("\r\n", "\n").replace('\r', '\n');
+
+        // Keep raw offsets and the style before each code point so trimmed spaces cannot lose formatting.
+        int[] offsets = new int[text.length() + 1];
+        int[] values = new int[text.length()];
+        int[] widths = new int[text.length()];
+        String[] prefixes = new String[text.length()];
+        String style = "";
+        String styleBeforeRaw = "";
+        boolean bold = false;
+        int rawStart = 0;
+        int count = 0;
+        Matcher matcher = WRAP_COLOR_TOKEN.matcher(text);
+        for (int index = 0; index < text.length();) {
+            if (matcher.region(index, text.length()).lookingAt()) {
+                String token = matcher.group();
+                if (isWrapFormatToken(token)) {
+                    if (!style.toLowerCase(Locale.ROOT).contains(token.toLowerCase(Locale.ROOT))) {
+                        style += token;
+                    }
+                    bold = bold || Character.toLowerCase(token.charAt(1)) == 'l';
+                } else {
+                    style = token;
+                    bold = false;
+                }
+                index = matcher.end();
+                continue;
+            }
+            int code = text.codePointAt(index);
+            offsets[count] = rawStart;
+            values[count] = code;
+            widths[count] = pixels ? getGlyphWidth(code) + (bold && code != ' ' ? 1 : 0) : 1;
+            prefixes[count] = styleBeforeRaw;
+            count++;
+            index += Character.charCount(code);
+            rawStart = index;
+            styleBeforeRaw = style;
+        }
+        offsets[count] = text.length();
+        if (count == 0) {
+            result.add(text);
+            return result;
+        }
+
+        int paragraphStart = 0;
+        for (int end = 0; end <= count; end++) {
+            if (end < count && values[end] != '\n') {
+                continue;
+            }
+            if (paragraphStart == end) {
+                result.add("");
+            }
+            int start = paragraphStart;
+            while (start < end) {
+                int lineEnd = findWrapEnd(values, widths, start, end, maximum);
+                int visibleEnd = lineEnd;
+                if (lineEnd < end) {
+                    while (visibleEnd > start && Character.isWhitespace(values[visibleEnd - 1])) {
+                        visibleEnd--;
+                    }
+                }
+                String prefix = start == 0 ? "" : prefixes[start];
+                result.add(prefix + text.substring(offsets[start], offsets[visibleEnd]));
+                start = lineEnd;
+                if (lineEnd < end) {
+                    while (start < end && Character.isWhitespace(values[start])) {
+                        start++;
+                    }
+                }
+            }
+            paragraphStart = end + 1;
+        }
+        return result;
+    }
+
+    private static int findWrapEnd(int[] values, int[] widths, int start, int end, int maximum) {
+        long used = 0;
+        int index = start;
+        while (index < end) {
+            int tokenEnd = index + 1;
+            long tokenWidth = widths[index];
+            if (isEnglishWordCharacter(values[index])) {
+                while (tokenEnd < end && isEnglishWordCharacter(values[tokenEnd])) {
+                    tokenWidth += widths[tokenEnd];
+                    tokenEnd++;
+                }
+            }
+            if (index > start && used + tokenWidth > maximum) {
+                return index;
+            }
+            used += tokenWidth;
+            index = tokenEnd;
+        }
+        return end;
+    }
+
+    private static boolean isWrapFormatToken(String token) {
+        if (token.length() != 2) {
+            return false;
+        }
+        char code = Character.toLowerCase(token.charAt(1));
+        return code >= 'k' && code <= 'o';
     }
 
     public static String clear(String text) {
@@ -191,7 +319,7 @@ public class TextUtil {
             ? applyGradient(startColor, endColor, text)
             : applyLegacyGradient(startColor, endColor, text);
 
-            matcher.appendReplacement(buffer, gradientText);
+            matcher.appendReplacement(buffer, Matcher.quoteReplacement(gradientText));
         }
 
         matcher.appendTail(buffer);
@@ -202,17 +330,18 @@ public class TextUtil {
         Color start = Color.decode("#" + startHex);
         Color end = Color.decode("#" + endHex);
 
-        int length = text.length();
+        int[] characters = text.codePoints().toArray();
+        int length = characters.length;
         StringBuilder builder = new StringBuilder();
 
         for (int i = 0; i < length; i++) {
-            float ratio = (float) i / (length - 1);
+            float ratio = length == 1 ? 0 : (float) i / (length - 1);
             int red = (int) (start.getRed() + ratio * (end.getRed() - start.getRed()));
             int green = (int) (start.getGreen() + ratio * (end.getGreen() - start.getGreen()));
             int blue = (int) (start.getBlue() + ratio * (end.getBlue() - start.getBlue()));
 
             String hex = String.format("%02x%02x%02x", red, green, blue);
-            builder.append("§x").append(toMinecraftHex(hex)).append(text.charAt(i));
+            builder.append("§x").append(toMinecraftHex(hex)).appendCodePoint(characters[i]);
         }
 
         return builder.toString();
@@ -222,18 +351,19 @@ public class TextUtil {
         Color start = Color.decode("#" + startHex);
         Color end = Color.decode("#" + endHex);
 
-        int length = text.length();
+        int[] characters = text.codePoints().toArray();
+        int length = characters.length;
         StringBuilder builder = new StringBuilder();
 
         for (int i = 0; i < length; i++) {
-            float ratio = (float) i / (length - 1);
+            float ratio = length == 1 ? 0 : (float) i / (length - 1);
             int red = (int) (start.getRed() + ratio * (end.getRed() - start.getRed()));
             int green = (int) (start.getGreen() + ratio * (end.getGreen() - start.getGreen()));
             int blue = (int) (start.getBlue() + ratio * (end.getBlue() - start.getBlue()));
 
             String hex = String.format("%02x%02x%02x", red, green, blue);
             char legacyColor = getClosestLegacyColor(hex);
-            builder.append("§").append(legacyColor).append(text.charAt(i));
+            builder.append("§").append(legacyColor).appendCodePoint(characters[i]);
         }
 
         return builder.toString();

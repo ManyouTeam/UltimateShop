@@ -24,12 +24,6 @@ public abstract class InvGUI extends AbstractGUI implements InventoryHolder {
 
     private final boolean bypass;
 
-    public final boolean canDisplayMenu() {
-        ObjectMenu menu = getMenu();
-        return menu != null && (bypass || menu.getCondition().getAllBoolean(
-            new ObjectThingRun(player)));
-    }
-
     protected Inventory inv;
 
     public Map<Integer, AbstractButton> menuButtons = new HashMap<>();
@@ -121,6 +115,12 @@ public abstract class InvGUI extends AbstractGUI implements InventoryHolder {
             return new ItemStack(Material.AIR);
         }
         return button.getDisplayItem(player, 1).getItemStack();
+    }
+
+    public final boolean canDisplayMenu() {
+        ObjectMenu menu = getMenu();
+        return menu != null && (bypass || menu.getCondition().getAllBoolean(
+                new ObjectThingRun(player)));
     }
 
     @Override

@@ -143,44 +143,7 @@ final class ArcMenuLayout {
     static List<String> wrap(List<String> input, int maximum) {
         List<String> result = new ArrayList<>();
         for (String entry : input) {
-            for (String text : entry.split("\n", -1)) {
-                StringBuilder line = new StringBuilder();
-                int width = 0;
-                for (int i = 0; i < text.length(); i++) {
-                    char c = text.charAt(i);
-                    if (c == '\u00a7' && i + 1 < text.length()) {
-                        line.append(c).append(text.charAt(++i));
-                        continue;
-                    }
-                    int end = i + Character.charCount(text.codePointAt(i));
-                    if (TextUtil.isEnglishWordCharacter(c)) {
-                        while (end < text.length()) {
-                            if (text.charAt(end) == '\u00a7' && end + 1 < text.length()) {
-                                end += 2;
-                            } else if (TextUtil.isEnglishWordCharacter(text.codePointAt(end))) {
-                                end += Character.charCount(text.codePointAt(end));
-                            } else {
-                                break;
-                            }
-                        }
-                    }
-                    String token = text.substring(i, end);
-                    int next = ArcMenuLayout.textWidth(token);
-                    if (width + next > maximum && width > 0) {
-                        result.add(line.toString().stripTrailing());
-                        line.setLength(0);
-                        width = 0;
-                        if (Character.isWhitespace(c)) {
-                            i = end - 1;
-                            continue;
-                        }
-                    }
-                    line.append(token);
-                    width += next;
-                    i = end - 1;
-                }
-                result.add(line.toString());
-            }
+            result.addAll(TextUtil.wrapByWidth(entry, maximum));
         }
         if (result.size() > 38) {
             result = new ArrayList<>(result.subList(0, 37));

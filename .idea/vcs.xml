@@ -3,5 +3,6 @@
   <component name="VcsDirectoryMappings">
     <mapping directory="" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/UltimateShopEditor" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/outputs/arcmenu-premium-inspect" vcs="Git" />
   </component>
 </project>

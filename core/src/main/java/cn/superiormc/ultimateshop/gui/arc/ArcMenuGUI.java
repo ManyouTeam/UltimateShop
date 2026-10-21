@@ -157,6 +157,7 @@ public abstract class ArcMenuGUI extends AbstractGUI {
         age = 0;
         closing = 0;
         prepareLanguage();
+        debug("attached");
         return new ArcMenuApplicationSession() {
             @Override
             public void onSurfaceChanged(ArcMenuSurfaceEvent event) {
@@ -165,6 +166,7 @@ public abstract class ArcMenuGUI extends AbstractGUI {
                     nodes.clear();
                 }
                 surface = event.getSurface();
+                debug("surface changed, initial=" + event.getInitial());
                 render();
             }
 
@@ -197,6 +199,7 @@ public abstract class ArcMenuGUI extends AbstractGUI {
 
             @Override
             public void onClose(ArcMenuApplicationCloseEvent event) {
+                debug("closed, reason=" + event.getReason());
                 active = false;
                 nodes.clear();
                 hits.clear();
@@ -284,11 +287,26 @@ public abstract class ArcMenuGUI extends AbstractGUI {
             && MenuStatusManager.menuStatusManager.getOpeningGUI(player) == this;
     }
 
+    private void debug(String message) {
+        if (ConfigManager.configManager.getBoolean("debug")) {
+            TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §7[ArcMenu Debug] player=" + player.getName()
+                + ", menu=" + menu.getName() + ", " + message
+                + ", active=" + active + ", contextActive=" + (context != null && context.isActive())
+                + ", ownsGUI=" + (MenuStatusManager.menuStatusManager.getOpeningGUI(player) == this)
+                + ", closing=" + closing + ", grounded=" + player.isOnGround()
+                + ", mode=" + (context == null ? "none" : context.pointerMode())
+                + ", velocity=" + player.getVelocity());
+        }
+    }
+
     private void tick() {
         if (!active || !context.isActive()) {
             return;
         }
         age++;
+        if (age % 100 == 0) {
+            debug("tick, pointer=" + context.pointer() + ", hitCount=" + hits.size());
+        }
         if (closing > 0) {
             if (++closing >= animationDuration() + 1) {
                 context.close();
@@ -340,16 +358,25 @@ public abstract class ArcMenuGUI extends AbstractGUI {
     }
 
     private void activate(ArcMenuActivateEvent event) {
-        if (!usable() || System.nanoTime() < nextClick) {
+        if (!usable()) {
+            debug("click ignored: unusable, button=" + event.getButton() + ", point=" + event.getPoint());
+            return;
+        }
+        if (System.nanoTime() < nextClick) {
+            debug("click ignored: cooldown, button=" + event.getButton() + ", point=" + event.getPoint());
             return;
         }
         Hit hit = hit(event.getPoint());
         if (hit == null) {
+            debug("click ignored: no hit, button=" + event.getButton() + ", point=" + event.getPoint()
+                + ", hitCount=" + hits.size());
             return;
         }
+        debug("click accepted, button=" + event.getButton() + ", hit=" + hit.id + ", point=" + event.getPoint());
         nextClick = System.nanoTime()
             + Math.max(0, ConfigManager.configManager.getLong("menu.cooldown.click", 5L)) * 50_000_000L;
         if (!canDisplayMenu()) {
+            debug("click ignored: menu condition failed");
             closeGUI();
             return;
         }
@@ -359,6 +386,7 @@ public abstract class ArcMenuGUI extends AbstractGUI {
                 ? ClickType.MIDDLE
                 : (event.getSneaking() ? ClickType.SHIFT_LEFT : ClickType.LEFT);
         hit.action.accept(type);
+        debug("click action completed, type=" + type + ", hit=" + hit.id);
         if (usable()) {
             render();
         }

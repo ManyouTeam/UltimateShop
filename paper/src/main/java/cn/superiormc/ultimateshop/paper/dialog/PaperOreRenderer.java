@@ -257,7 +257,7 @@ public class PaperOreRenderer {
             && !iconText.isEmpty()
             && row == iconTextRow
             && !("1".equals(iconText) && DialogPackManager.hidesOneIconAmount())) {
-            int textWidth = iconText.codePoints().map(PaperOreRenderer::glyphWidth).sum();
+            int textWidth = iconText.codePoints().map(TextUtil::getGlyphWidth).sum();
             int right = template.getPadding() + template.getIconSize() + 1;
             result =
                 result.append(spacing(right - textWidth - width))
@@ -462,7 +462,7 @@ public class PaperOreRenderer {
                 String value = Character.toString(code);
                 double boldOffset = code > 255 ? .5 : 1;
                 double advance =
-                    glyphWidth(code)
+                    TextUtil.getGlyphWidth(code)
                     + (style.decoration(TextDecoration.BOLD)
                     == TextDecoration.State.TRUE
                     ? boldOffset
@@ -479,7 +479,7 @@ public class PaperOreRenderer {
         } else {
             Component value = component.children(List.of()).style(style);
             String plain = PlainTextComponentSerializer.plainText().serialize(value);
-            int advance = plain.codePoints().map(PaperOreRenderer::glyphWidth).sum();
+            int advance = plain.codePoints().map(TextUtil::getGlyphWidth).sum();
             result.add(new Glyph(value, Math.min(120, Math.max(9, advance)), false));
         }
         for (Component child : component.children()) {
@@ -554,31 +554,6 @@ public class PaperOreRenderer {
                         }
                     });
             });
-    }
-
-    private static int glyphWidth(int codePoint) {
-        if (codePoint == '\n') {
-            return 0;
-        }
-        if (codePoint == ' ') {
-            return 4;
-        }
-        if (codePoint < 128 && "!.,:;i|".indexOf(codePoint) != -1 || codePoint == '\'') {
-            return 2;
-        }
-        if (codePoint == '`' || codePoint == 'l') {
-            return 3;
-        }
-        if (codePoint < 128 && "\"()*I[]t{}".indexOf(codePoint) != -1) {
-            return 4;
-        }
-        if (codePoint < 128 && "<>fk".indexOf(codePoint) != -1) {
-            return 5;
-        }
-        if (codePoint == '@' || codePoint == '~') {
-            return 7;
-        }
-        return codePoint < 256 ? 6 : 9;
     }
 
     private static Component label(List<Glyph> glyphs) {
