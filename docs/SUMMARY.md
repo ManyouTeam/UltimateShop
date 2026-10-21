@@ -22,7 +22,7 @@
 * [🛒Info of ItemFormat™](format/info-of-itemformat-tm.md)
 * [📝ItemFormat™](format/itemformat-tm/README.md)
   * [Component Format](format/itemformat-tm/component-format.md)
-  * [Testing Paper Components](format/itemformat-tm/component-testing.md)
+  * [Testing Paper Components](format/itemformat-tm/testing-paper-components.md)
 * [🌉ItemBridge](format/itembridge.md)
 * [💹EconomyFormat™](format/economyformat-tm.md)
 * [🖼️Display Item Format](format/display-item-format.md)
@@ -35,6 +35,7 @@
 * [📚 Menu System](menus/README.md)
 * [⚙️ Menu Configuration & Inheritance](menus/menu-configuration.md)
 * [🧱 Layout & Buttons](menus/layout-and-buttons.md)
+* [📐 Graphical UI Layout - Premium](menus-getting-started/ui-layout.md)
 
 ## 🧭Menu Types
 
@@ -54,14 +55,13 @@
 * [💬 Native Dialog UI - Premium](menus/dialog-menus-premium.md)
 * [🪨 Ore UI - Premium](menus/ore-menus-premium.md)
 * [✨ ArcMenu UI - Premium](menus/arcmenu-menus-premium.md)
-* [📐 Graphical UI Layout - Premium](menus/ui-layout.md)
 
 ## 🧩Advanced Menus & Support
 
 * [🔀 Conditional Display - Premium](menus/conditional-display-premium.md)
 * [🥉 Display Item Add Lore](menus/display-item-add-lore.md)
 * [🔄 Menu Configuration Compatibility](menus/migration-guide.md)
-* [🛠️ Troubleshooting](menus/troubleshooting.md)
+* [🩺 Troubleshooting](menus/troubleshooting.md)
 
 ## 🛍️Shops
 
