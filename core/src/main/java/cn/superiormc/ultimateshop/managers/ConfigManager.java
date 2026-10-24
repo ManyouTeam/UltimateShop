@@ -91,11 +91,12 @@ public class ConfigManager extends AbstractManager {
     }
 
     private void initShopConfigs() {
-        File dir = new File(UltimateShop.instance.getDataFolder(), "shops");
-        if (!dir.exists()) {
-            dir.mkdirs();
+        File directory = new File(UltimateShop.instance.getDataFolder(), "shops");
+        if (!directory.exists() && !directory.mkdirs()) {
+            ErrorManager.errorManager.sendErrorMessage("§cError: Could not create directory: " + directory);
+            return;
         }
-        for (File file : CommonUtil.getYamlFiles(dir)) {
+        for (File file : CommonUtil.getYamlFiles(directory)) {
             String fileName = file.getName();
             if (fileName.endsWith(".yml")) {
                 String substring = fileName.substring(0, fileName.length() - 4);
@@ -107,11 +108,12 @@ public class ConfigManager extends AbstractManager {
     }
 
     private void initSharedUseTimesConfigs() {
-        File dir = new File(UltimateShop.instance.getDataFolder(), "shared_use_times");
-        if (!dir.exists()) {
-            dir.mkdirs();
+        File directory = new File(UltimateShop.instance.getDataFolder(), "shared_use_times");
+        if (!directory.exists() && !directory.mkdirs()) {
+            ErrorManager.errorManager.sendErrorMessage("§cError: Could not create directory: " + directory);
+            return;
         }
-        for (File file : CommonUtil.getYamlFiles(dir)) {
+        for (File file : CommonUtil.getYamlFiles(directory)) {
             String fileName = file.getName();
             if (fileName.endsWith(".yml")) {
                 String substring = fileName.substring(0, fileName.length() - 4);
@@ -133,11 +135,12 @@ public class ConfigManager extends AbstractManager {
         initTypedMenuConfigs(FAVOURITE_MENU_FOLDER, MenuType.Favourite);
         initTypedMenuConfigs(ITEM_SELL_MENU_FOLDER, MenuType.ItemSell);
 
-        File dir = new File(UltimateShop.instance.getDataFolder(), COMMON_MENU_FOLDER);
-        if (!dir.exists()) {
-            dir.mkdirs();
+        File directory = new File(UltimateShop.instance.getDataFolder(), COMMON_MENU_FOLDER);
+        if (!directory.exists() && !directory.mkdirs()) {
+            ErrorManager.errorManager.sendErrorMessage("§cError: Could not create directory: " + directory);
+            return;
         }
-        for (File file : CommonUtil.getYamlFiles(dir)) {
+        for (File file : CommonUtil.getYamlFiles(directory)) {
             String fileName = file.getName();
             if (fileName.endsWith(".yml")) {
                 String substring = fileName.substring(0, fileName.length() - 4);
@@ -169,14 +172,15 @@ public class ConfigManager extends AbstractManager {
     }
 
     private void initTypedMenuConfigs(String folderName, MenuType menuType) {
-        File dir = new File(UltimateShop.instance.getDataFolder(), folderName);
-        if (!dir.exists()) {
-            dir.mkdirs();
+        File directory = new File(UltimateShop.instance.getDataFolder(), folderName);
+        if (!directory.exists() && !directory.mkdirs()) {
+            ErrorManager.errorManager.sendErrorMessage("§cError: Could not create directory: " + directory);
+            return;
         }
         if (UltimateShop.freeVersion && menuType != MenuType.ItemSell) {
             return;
         }
-        for (File file : CommonUtil.getYamlFiles(dir)) {
+        for (File file : CommonUtil.getYamlFiles(directory)) {
             String fileName = file.getName();
             if (!fileName.endsWith(".yml")) {
                 continue;
@@ -196,11 +200,12 @@ public class ConfigManager extends AbstractManager {
     }
 
     private void initSellStickConfigs() {
-        File dir = new File(UltimateShop.instance.getDataFolder(), "sell_sticks");
-        if (!dir.exists()) {
-            dir.mkdirs();
+        File directory = new File(UltimateShop.instance.getDataFolder(), "sell_sticks");
+        if (!directory.exists() && !directory.mkdirs()) {
+            ErrorManager.errorManager.sendErrorMessage("§cError: Could not create directory: " + directory);
+            return;
         }
-        for (File file : CommonUtil.getYamlFiles(dir)) {
+        for (File file : CommonUtil.getYamlFiles(directory)) {
             String fileName = file.getName();
             if (fileName.endsWith(".yml")) {
                 String substring = fileName.substring(0, fileName.length() - 4);
@@ -210,11 +215,12 @@ public class ConfigManager extends AbstractManager {
     }
 
     private void initSellChestConfigs() {
-        File dir = new File(UltimateShop.instance.getDataFolder(), "sell_chests");
-        if (!dir.exists()) {
-            dir.mkdirs();
+        File directory = new File(UltimateShop.instance.getDataFolder(), "sell_chests");
+        if (!directory.exists() && !directory.mkdirs()) {
+            ErrorManager.errorManager.sendErrorMessage("§cError: Could not create directory: " + directory);
+            return;
         }
-        for (File file : CommonUtil.getYamlFiles(dir)) {
+        for (File file : CommonUtil.getYamlFiles(directory)) {
             String fileName = file.getName();
             if (fileName.endsWith(".yml")) {
                 String substring = fileName.substring(0, fileName.length() - 4);
@@ -224,38 +230,27 @@ public class ConfigManager extends AbstractManager {
     }
 
     private void initRandomPlaceholder() {
-        File dir = new File(UltimateShop.instance.getDataFolder(), "placeholders/random_placeholders");
-        if (!dir.exists()) {
-            dir.mkdirs();
+        File directory = new File(UltimateShop.instance.getDataFolder(), "placeholders/random_placeholders");
+        if (!directory.exists() && !directory.mkdirs()) {
+            ErrorManager.errorManager.sendErrorMessage("§cError: Could not create directory: " + directory);
+            return;
         }
-        for (File file : CommonUtil.getYamlFiles(dir)) {
+        for (File file : CommonUtil.getYamlFiles(directory)) {
             String fileName = file.getName();
             if (fileName.endsWith(".yml")) {
                 String substring = fileName.substring(0, fileName.length() - 4);
                 randomPlaceholders.put(substring, new ObjectRandomPlaceholder(substring, YamlConfiguration.loadConfiguration(file)));
             }
         }
-
-        // Legacy Support
-        if (randomPlaceholders.isEmpty()) {
-            ConfigurationSection tempVal1 = config.getConfigurationSection("placeholder.random");
-            if (tempVal1 == null) {
-                return;
-            }
-            for (String key : tempVal1.getKeys(false)) {
-                if (!randomPlaceholders.containsKey(key)) {
-                    randomPlaceholders.put(key, new ObjectRandomPlaceholder(key, tempVal1.getConfigurationSection(key)));
-                }
-            }
-        }
     }
 
     private void initConditionalPlaceholder() {
-        File dir = new File(UltimateShop.instance.getDataFolder(), "placeholders/conditional_placeholders");
-        if (!dir.exists()) {
-            dir.mkdirs();
+        File directory = new File(UltimateShop.instance.getDataFolder(), "placeholders/conditional_placeholders");
+        if (!directory.exists() && !directory.mkdirs()) {
+            ErrorManager.errorManager.sendErrorMessage("§cError: Could not create directory: " + directory);
+            return;
         }
-        for (File file : CommonUtil.getYamlFiles(dir)) {
+        for (File file : CommonUtil.getYamlFiles(directory)) {
             String fileName = file.getName();
             if (fileName.endsWith(".yml")) {
                 String substring = fileName.substring(0, fileName.length() - 4);
@@ -265,11 +260,12 @@ public class ConfigManager extends AbstractManager {
     }
 
     private void initCustomPlaceholder() {
-        File dir = new File(UltimateShop.instance.getDataFolder(), "placeholders/custom_placeholders");
-        if (!dir.exists()) {
-            dir.mkdirs();
+        File directory = new File(UltimateShop.instance.getDataFolder(), "placeholders/custom_placeholders");
+        if (!directory.exists() && !directory.mkdirs()) {
+            ErrorManager.errorManager.sendErrorMessage("§cError: Could not create directory: " + directory);
+            return;
         }
-        for (File file : CommonUtil.getYamlFiles(dir)) {
+        for (File file : CommonUtil.getYamlFiles(directory)) {
             String fileName = file.getName();
             if (fileName.endsWith(".yml")) {
                 String substring = fileName.substring(0, fileName.length() - 4);
@@ -573,11 +569,24 @@ public class ConfigManager extends AbstractManager {
     }
 
     public void applyMenuUI(ConfigurationSection menu) {
+        applyMenuUI(menu, true);
+    }
+
+    public void applyMenuUI(ConfigurationSection menu, boolean supportsOre) {
         ConfigurationSection ui = menu.getConfigurationSection("ui");
         if (ui == null) {
             ui = menu.createSection("ui");
         }
-        ConfigurationUtil.mergeMissing(ui, config.getConfigurationSection("menu.ui"));
+        ConfigurationSection defaults = config.getConfigurationSection("menu.ui");
+        if (!supportsOre && defaults != null) {
+            YamlConfiguration graphicalDefaults = new YamlConfiguration();
+            ConfigurationUtil.merge(graphicalDefaults, defaults);
+            graphicalDefaults.set("renderers.ore", null);
+            graphicalDefaults.set("products.card.lore-lines", null);
+            graphicalDefaults.set("products.card.description-lines", null);
+            defaults = graphicalDefaults;
+        }
+        ConfigurationUtil.mergeMissing(ui, defaults);
     }
 
     public Object getMenuRendererSetting(

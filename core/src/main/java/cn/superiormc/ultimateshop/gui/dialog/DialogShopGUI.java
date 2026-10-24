@@ -55,7 +55,7 @@ public class DialogShopGUI extends DialogGUI {
                 cache.refreshTimes();
             }
         }
-        Map<Integer, AbstractButton> source = menu.getMenu(MenuSender.of(player, MenuSender.dialogPresentation(ConfigManager.configManager.getDialogLayout(menu.getConfig()))));
+        Map<Integer, AbstractButton> source = menu.getMenu(MenuSender.of(player, MenuSender.dialogPresentation(menu.getDialogLayout())));
         Map<Integer, AbstractButton> ordered = new LinkedHashMap<>();
         source.forEach((slot, button) -> {
             if (button instanceof ObjectItem) {
@@ -75,7 +75,7 @@ public class DialogShopGUI extends DialogGUI {
         }
         builder.buttonWidth(menu.getInt("dialog.button-width", 150));
         builder.columns(menu.getInt("dialog.columns", 2));
-        String dialogLayout = ConfigManager.configManager.getDialogLayout(menu.getConfig());
+        String dialogLayout = menu.getDialogLayout();
         builder.layout(dialogLayout);
         ordered.forEach((slot, button) -> addButton(builder, slot, button, dialogLayout));
         dialog = builder.build();

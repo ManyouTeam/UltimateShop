@@ -7,7 +7,6 @@ import cn.superiormc.ultimateshop.managers.ErrorManager;
 import cn.superiormc.ultimateshop.managers.MenuStatusManager;
 import cn.superiormc.ultimateshop.objects.ObjectShop;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
-import cn.superiormc.ultimateshop.objects.menus.MenuType;
 import cn.superiormc.ultimateshop.objects.menus.ObjectMenu;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
 
@@ -29,8 +28,7 @@ public final class ArcMenuBridge extends AbstractManager {
             && !UltimateShop.freeVersion
             && menu != null
             && menu.getConfig() != null
-            && menu.getType() != MenuType.ItemSell
-            && menu.getType() != MenuType.More
+            && menu.supportsGraphicalRenderer("arcmenu")
             && ConfigManager.configManager.getMenuUIMode(menu.getConfig(), "java").equals("arcmenu")
             && !CommonUtil.isBedrockPlayer(player);
     }

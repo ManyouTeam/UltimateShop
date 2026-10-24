@@ -62,6 +62,20 @@ When a menu omits `dialog.enabled` or `bedrock.enabled`, it defaults to `true`. 
 
 `dialog.layout` is a _menu-level selector_: `multi-action`, `item-action-list` or `ore`. It does not configure pixel coordinates.
 
+## Supported menu types
+
+| Menu type | Inventory | Bedrock Form | Native Dialog | Ore graphics | ArcMenu graphics |
+| --- | --- | --- | --- | --- | --- |
+| Common / Shop | Yes | Yes | Yes | Yes | Yes |
+| Search / Favourite | Yes | Yes | Yes | No; uses native multi-action Dialog | Yes |
+| Buy More file | Slot controls | Uses the source shop's quantity Form | Quantity input when this file enables Dialog | No | No |
+| Item Sell / Sell All | Yes | No | No | No | No |
+| In-game editor | Yes | No | No | No | No |
+
+Search and Favourite keep their ArcMenu `ui` layout but do not inherit Ore renderer templates. Setting `dialog.layout: ore` on either type uses a native `multi-action` Dialog; these menus do not produce Ore pack assets. Buy More does not inherit graphical defaults. ArcMenu's `select-amount` operation adjusts quantity in the source screen's product details, rather than rendering a Buy More file.
+
+The in-game editor limits its preset fields to these capabilities, including typed menus in `common_menus`. Existing unsupported fields remain available through raw section editing for cleanup.
+
 ## Where does each configuration belong?
 
 | What you want to change                        | Correct key                                                         |

@@ -164,7 +164,6 @@ ui:
         inset-x: 6
         inset-bottom: 6
         gap: 3
-      price-lines: 1
       lore-lines: 6
       description-lines: 2
       button-font-size: 1.0

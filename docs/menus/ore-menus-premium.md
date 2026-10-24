@@ -2,6 +2,8 @@
 
 Ore draws graphical cards and controls using the supported Paper Dialog API and a generated client resource pack. It shares graphical canvas/area settings with ArcMenu, but it is **selected through `dialog.layout: ore`**, not `ui.mode`.
 
+Ore graphical rendering supports Common and Shop menus. Search and Favourite use native Dialog even when `dialog.layout: ore` is configured. Buy More uses native quantity input or Inventory; Item Sell, Sell All and the editor remain Inventory-only. See the [supported menu table](ui-overview.md#supported-menu-types).
+
 ## Quick start
 
 In `config.yml`:

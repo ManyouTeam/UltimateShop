@@ -85,7 +85,7 @@ For those products, `sell` and `sell-all` route to the selected Item Sell menu. 
 
 ## Presentation and related settings
 
-This is an Inventory deposit interface, including for players whose ordinary shops use Form, Dialog, Ore or ArcMenu. Its bundled `ui` settings do not create Form input slots or ArcMenu drag/drop sale controls. Configure Inventory `size`, `layout`, input and confirmation markers for this screen.
+This is an Inventory-only deposit interface, including for players whose ordinary shops use Form, Dialog, Ore or ArcMenu. It does not support `dialog`, `bedrock`, `arcmenu`, `ui` or button `ui.placement` settings, and does not inherit global `menu.ui` defaults. Configure Inventory `size`, `layout`, input and confirmation markers for this screen.
 
 `max-sell-amount` belongs to this menu and caps the combined confirmation. The global sell engine still applies its own restrictions; raising this value does not bypass stock, limits or product conditions. See [Price Modifier](../shops/price-modifier.md) for calculation and [Sell Multiplier - Premium](../shops/sell-multiplier-premium.md) for reward multipliers.
 

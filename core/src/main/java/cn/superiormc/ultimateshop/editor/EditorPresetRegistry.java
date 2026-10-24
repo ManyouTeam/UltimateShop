@@ -46,9 +46,9 @@ public class EditorPresetRegistry {
             case ROOT_SHOP -> new EditorPreset(kind, rootShopFields());
             case ROOT_MENU -> new EditorPreset(kind, rootMenuFields(target));
             case UI_SECTION -> new EditorPreset(kind, uiFields(target, path));
-            case VISIBILITY_SECTION -> new EditorPreset(kind, visibilityFields());
+            case VISIBILITY_SECTION -> new EditorPreset(kind, visibilityFields(target));
             case SHOP_ITEM -> new EditorPreset(kind, shopItemFields());
-            case BUTTON_ENTRY -> new EditorPreset(kind, buttonFields());
+            case BUTTON_ENTRY -> new EditorPreset(kind, buttonFields(target));
             case LIMITS_SECTION -> new EditorPreset(kind, limitFields(target, path));
             case CLICK_EVENT_SECTION -> new EditorPreset(kind, clickEventFields());
             case SINGLE_THING -> new EditorPreset(kind, singleThingFields(path));
@@ -69,6 +69,10 @@ public class EditorPresetRegistry {
         }
         if (normalizedPath.equals("ui") || normalizedPath.endsWith(".ui")
                 || normalizedPath.equals("ui.products") || normalizedPath.endsWith(".ui.products")) {
+            EditorScope scope = menuScope(target);
+            if (scope == EditorScope.BUY_MORE_MENU || scope == EditorScope.ITEM_SELL_MENU) {
+                return null;
+            }
             return EditorPresetKind.UI_SECTION;
         }
         if (target.getScope() == EditorScope.SHOP && normalizedPath.equals("settings.menu-settings")) {
@@ -122,12 +126,36 @@ public class EditorPresetRegistry {
         );
     }
 
+    private static EditorScope menuScope(EditorTarget target) {
+        if (target.getScope() != EditorScope.MENU) {
+            return target.getScope();
+        }
+        String type = target.getConfig().getString("menu-type", "");
+        ConfigManager config = ConfigManager.configManager;
+        if (type.equalsIgnoreCase("search")
+                || config != null && config.getStringList("menu.search-gui.menu").contains(target.getId())) {
+            return EditorScope.SEARCH_MENU;
+        }
+        if (type.equalsIgnoreCase("favourite") || type.equalsIgnoreCase("favorite")
+                || config != null && config.getStringList("menu.favourite-gui.menu").contains(target.getId())) {
+            return EditorScope.FAVOURITE_MENU;
+        }
+        if (type.equalsIgnoreCase("item-sell") || type.equalsIgnoreCase("item_sell")) {
+            return EditorScope.ITEM_SELL_MENU;
+        }
+        return target.getScope();
+    }
+
     private static List<EditorPresetField> rootMenuFields(EditorTarget target) {
+        EditorScope scope = menuScope(target);
         List<EditorPresetField> fields = new ArrayList<>(List.of(
                 field("title", Material.NAME_TAG, EditorPresetFieldType.STRING),
                 field("content", Material.PAPER, EditorPresetFieldType.STRING),
                 field("dialog.enabled", Material.LEVER, EditorPresetFieldType.BOOLEAN),
-                choice("dialog.layout", Material.BOOK, "multi-action", "item-action-list", "ore"),
+                choice("dialog.layout", Material.BOOK,
+                        scope == EditorScope.SEARCH_MENU || scope == EditorScope.FAVOURITE_MENU
+                                ? new String[] {"multi-action", "item-action-list"}
+                                : new String[] {"multi-action", "item-action-list", "ore"}),
                 field("dialog.content", Material.PAPER, EditorPresetFieldType.STRING),
                 field("dialog.button-width", Material.STONE_BUTTON, EditorPresetFieldType.INTEGER),
                 field("dialog.columns", Material.BOOKSHELF, EditorPresetFieldType.INTEGER),
@@ -146,7 +174,17 @@ public class EditorPresetRegistry {
                 field("custom-command.name", Material.COMMAND_BLOCK, EditorPresetFieldType.STRING),
                 field("custom-command.description", Material.WRITABLE_BOOK, EditorPresetFieldType.STRING)
         ));
-        switch (target.getScope()) {
+        if (scope == EditorScope.BUY_MORE_MENU || scope == EditorScope.ITEM_SELL_MENU) {
+            fields.removeIf(field -> field.getKey().equals("ui") || field.getKey().equals("content")
+                    || field.getKey().startsWith("bedrock.") || field.getKey().startsWith("arcmenu.")
+                    || field.getKey().startsWith("dialog.")
+                    && !(scope == EditorScope.BUY_MORE_MENU && field.getKey().equals("dialog.enabled")));
+        }
+        if (scope == EditorScope.BUY_MORE_MENU) {
+            fields.removeIf(field -> field.getKey().equals("dynamic-layout") || field.getKey().equals("conditions")
+                    || field.getKey().startsWith("custom-command."));
+        }
+        switch (scope) {
             case SEARCH_MENU -> {
                 fields.add(field("input-item", Material.HOPPER, EditorPresetFieldType.STRING));
                 fields.add(field("result-item", Material.CHEST, EditorPresetFieldType.STRING));
@@ -165,7 +203,6 @@ public class EditorPresetRegistry {
             case BUY_MORE_MENU -> {
                 fields.add(field("amount-items", Material.SLIME_BALL, EditorPresetFieldType.SECTION));
                 fields.add(field("display-items", Material.WRITABLE_BOOK, EditorPresetFieldType.STRING_LIST));
-                fields.add(field("display-items-ui", Material.PAINTING, EditorPresetFieldType.SECTION));
                 fields.add(field("confirm-items", Material.STONE_BUTTON, EditorPresetFieldType.SECTION));
             }
             case ITEM_SELL_MENU -> {
@@ -193,15 +230,23 @@ public class EditorPresetRegistry {
         return actions.toArray(new String[0]);
     }
 
-    private static List<EditorPresetField> visibilityFields() {
-        return List.of(
+    private static List<EditorPresetField> visibilityFields(EditorTarget target) {
+        EditorScope scope = menuScope(target);
+        if (scope == EditorScope.BUY_MORE_MENU || scope == EditorScope.ITEM_SELL_MENU) {
+            return List.of(field("inventory", Material.CHEST, EditorPresetFieldType.BOOLEAN));
+        }
+        List<EditorPresetField> fields = new ArrayList<>(List.of(
                 field("inventory", Material.CHEST, EditorPresetFieldType.BOOLEAN),
                 field("form", Material.MAP, EditorPresetFieldType.BOOLEAN),
                 field("dialog", Material.BOOK, EditorPresetFieldType.BOOLEAN),
                 field("item-action-list", Material.ITEM_FRAME, EditorPresetFieldType.BOOLEAN),
                 field("ore", Material.PAINTING, EditorPresetFieldType.BOOLEAN),
                 field("arcmenu", Material.SPYGLASS, EditorPresetFieldType.BOOLEAN)
-        );
+        ));
+        if (scope == EditorScope.SEARCH_MENU || scope == EditorScope.FAVOURITE_MENU) {
+            fields.removeIf(field -> field.getKey().equals("ore"));
+        }
+        return fields;
     }
 
     private static List<EditorPresetField> uiFields(EditorTarget target, String path) {
@@ -237,7 +282,7 @@ public class EditorPresetRegistry {
                     field("actions", Material.STONE_BUTTON, EditorPresetFieldType.SECTION)
             );
         }
-        return List.of(
+        List<EditorPresetField> fields = new ArrayList<>(List.of(
                 field("layout.canvas.width", Material.PAPER, EditorPresetFieldType.INTEGER),
                 field("layout.canvas.height", Material.PAPER, EditorPresetFieldType.INTEGER),
                 field("layout.header", Material.NAME_TAG, EditorPresetFieldType.SECTION),
@@ -259,7 +304,12 @@ public class EditorPresetRegistry {
                 field("renderers.arcmenu.tooltip.width", Material.PAPER, EditorPresetFieldType.INTEGER),
                 field("renderers.arcmenu.tooltip.font-size", Material.PAPER, EditorPresetFieldType.DOUBLE),
                 field("renderers.arcmenu.tooltip.padding", Material.PAPER, EditorPresetFieldType.DOUBLE)
-        );
+        ));
+        EditorScope scope = menuScope(target);
+        if (scope == EditorScope.SEARCH_MENU || scope == EditorScope.FAVOURITE_MENU) {
+            fields.removeIf(field -> field.getKey().equals("renderers.ore"));
+        }
+        return fields;
     }
 
     private static List<EditorPresetField> shopItemFields() {
@@ -324,8 +374,8 @@ public class EditorPresetRegistry {
         );
     }
 
-    private static List<EditorPresetField> buttonFields() {
-        return List.of(
+    private static List<EditorPresetField> buttonFields(EditorTarget target) {
+        List<EditorPresetField> fields = new ArrayList<>(List.of(
                 field("display-item", Material.ITEM_FRAME, EditorPresetFieldType.SECTION),
                 choice("dialog.layout", Material.ITEM_FRAME, "multi-action", "item-action-list"),
                 field("dialog.show-sprite", Material.ITEM_FRAME, EditorPresetFieldType.BOOLEAN),
@@ -335,7 +385,12 @@ public class EditorPresetRegistry {
                 field("fail-actions", Material.BLAZE_POWDER, EditorPresetFieldType.ACTIONS),
                 field("conditions", Material.COMPARATOR, EditorPresetFieldType.CONDITIONS),
                 field("display-conditions", Material.COMPARATOR, EditorPresetFieldType.CONDITIONS)
-        );
+        ));
+        EditorScope scope = menuScope(target);
+        if (scope == EditorScope.BUY_MORE_MENU || scope == EditorScope.ITEM_SELL_MENU) {
+            fields.removeIf(field -> field.getKey().equals("ui") || field.getKey().startsWith("dialog."));
+        }
+        return fields;
     }
 
     private static List<EditorPresetField> limitFields(EditorTarget target, String path) {

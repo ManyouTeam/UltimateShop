@@ -153,6 +153,8 @@ config.yml → menu.ui
 
 Only graphical `ui` settings use the recursive default-filling mechanism shown above. Dialog, Bedrock, and other global settings are resolved through their respective configuration lookup methods.
 
+Item Sell is Inventory-only and does not inherit `menu.ui` or support Dialog, Ore, ArcMenu or Bedrock Form settings. Sell All is also Inventory-only and uses its own global `menu.sell-all` settings. Buy More does not inherit graphical defaults; only its `dialog.enabled` selector can choose native quantity input. Search and Favourite inherit ArcMenu layout defaults, excluding Ore templates. See [supported menu types](ui-overview.md#supported-menu-types).
+
 ## Configuration Inheritance & Priority
 
 UltimateShop uses different inheritance rules depending on the configuration type.

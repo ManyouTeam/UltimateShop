@@ -334,7 +334,7 @@ public class SearchGUI extends InvGUI {
         if (ArcMenuBridge.arcMenuBridge.open(player, menu, null, bypass, reopen)) {
             return;
         }
-        if (!ArcMenuBridge.arcMenuBridge.enabled(menu, player) && menu.isUseDialog()) {
+        if (menu.isUseDialog()) {
             new DialogSearchGUI(player, menu, bypass).openGUI(reopen);
             return;
         }

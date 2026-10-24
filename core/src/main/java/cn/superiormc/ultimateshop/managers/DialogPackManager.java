@@ -70,6 +70,10 @@ public class DialogPackManager extends AbstractManager {
             && "ore".equalsIgnoreCase(ConfigManager.configManager.getDialogLayout(config));
     }
 
+    public static boolean usesOre(ObjectMenu menu) {
+        return menu != null && menu.supportsGraphicalRenderer("ore") && usesOre(menu.getConfig());
+    }
+
     public static boolean showsItemIcon() {
         ConfigurationSection ore = ConfigManager.configManager.getSection("menu.dialog.ore");
         return ore == null || ore.getBoolean("show-item-icon.enabled", true);
@@ -97,14 +101,13 @@ public class DialogPackManager extends AbstractManager {
         // Resolve mappings before collecting sprites, otherwise the first generated pack
         // would omit vanilla icons while the lazy mapping download is still running.
         boolean oreUsed =
-            ObjectMenu.commonMenus.values().stream().anyMatch(menu -> usesOre(menu.menuConfigs))
+            ObjectMenu.commonMenus.values().stream().anyMatch(menu -> usesOre(menu))
             || ConfigManager.configManager.getShops().stream()
             .anyMatch(
             shop ->
             shop.getShopMenuObject() != null
             && usesOre(
-            shop.getShopMenuObject()
-            .menuConfigs));
+            shop.getShopMenuObject()));
         if (oreUsed && showsItemIcon()) {
             CompletableFuture<Map<String, String>> mapping =
                 MinecraftResourceManager.minecraftResourceManager.requestMaterialMapping();
@@ -137,13 +140,13 @@ public class DialogPackManager extends AbstractManager {
         ObjectDialogPackUsage usage = new ObjectDialogPackUsage();
         try {
             for (ObjectMenu menu : new ArrayList<>(ObjectMenu.commonMenus.values())) {
-                if (usesOre(menu.menuConfigs)) {
+                if (usesOre(menu)) {
                     collectMenu(menu, usage, false);
                 }
             }
             for (ObjectShop shop : ConfigManager.configManager.getShops()) {
                 ObjectMenu menu = shop.getShopMenuObject();
-                if (menu != null && usesOre(menu.menuConfigs)) {
+                if (menu != null && usesOre(menu)) {
                     collectMenu(menu, usage, true);
                 }
             }

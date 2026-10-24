@@ -64,7 +64,7 @@ All [Common menu settings](general-menus.md) remain available. Ordinary navigati
 | `edit-mode-item.<id>.display-item` | Fallback display if the current normal/editing variant is missing |
 | `edit-mode-item.<id>.slot` | Optional zero-based fallback slot when the ID is not found in `layout` |
 | `edit-mode-item.<id>.menu-visibility` | Show/hide the editing toggle per presentation |
-| `edit-mode-item.<id>.ui` | Ore/ArcMenu graphical placement and appearance of the toggle |
+| `edit-mode-item.<id>.ui` | ArcMenu graphical placement and appearance of the toggle |
 | `empty-item.display-item` | Placeholder shown in unoccupied result slots |
 | `empty-item.menu-visibility` | Presentation visibility for empty-slot placeholders |
 | `empty-item.ui` | Graphical placement of empty-slot placeholders |
@@ -89,16 +89,16 @@ Removing a favourite does not remove shop stock or player items. Toggle editing 
 
 ## Presentation-specific behavior
 
-Select presentations with the global/menu `dialog.enabled`, `bedrock.enabled` and `arcmenu.enabled` switches. The `ui` section only configures Ore/ArcMenu graphical layout.
+Select presentations with the global/menu `dialog.enabled`, `bedrock.enabled` and `arcmenu.enabled` switches. The `ui` section configures ArcMenu graphical layout for this menu. Ore graphics are not implemented for Favourite; `dialog.layout: ore` uses native `multi-action` Dialog and does not generate Ore assets for this menu.
 
 | Presentation | Normal mode | Editing mode |
 | --- | --- | --- |
 | Inventory | Product click bindings | Left/right/drop controls above |
 | Form | Product information Form | Selecting a product opens Forward/Backward/Remove/Back; closing returns to the editing list |
-| Native Dialog / Ore | Product information/actions | Dedicated editing controls; native Dialog omits empty result slots |
+| Native Dialog | Product information/actions | Dedicated editing controls; native Dialog omits empty result slots |
 | ArcMenu | Product cards and shared actions/details | Forward/Backward/Remove buttons on each card; also left/right/middle edit clicks (middle removes) |
 
-Form can display configured empty-slot buttons. Ore/ArcMenu require graphical `ui.placement` for the toggle and ordinary controls, and `ui.products.placement` for result cards. The bundled example disables graphical placement on empty slots.
+Form can display configured empty-slot buttons. ArcMenu requires graphical `ui.placement` for the toggle and ordinary controls, and `ui.products.placement` for result cards. The bundled example disables graphical placement on empty slots.
 
 Global Form editing text is under `menu.bedrock.favourite-edit`: `title`, `content`, and `buttons.forward`, `backward`, `remove`, `back`. Dialog has the same structure under `menu.dialog.favourite-edit`. Titles/content accept `{item-name}`.
 

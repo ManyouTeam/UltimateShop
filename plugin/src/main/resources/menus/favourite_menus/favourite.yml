@@ -1,4 +1,4 @@
-# Inventory slots use root layout; ArcMenu and Ore use ui.layout and each button ui.placement.
+# Inventory uses root layout; ArcMenu uses ui.layout. Dialog and Form use native lists.
 
 menu-type: favourite
 
@@ -208,9 +208,6 @@ ui:
         inset-x: 6
         inset-bottom: 6
         gap: 3
-      price-lines: 1
-      lore-lines: 6
-      description-lines: 2
       button-font-size: 1.0
     price:
       enabled: true
@@ -247,10 +244,6 @@ ui:
     cancel: '{lang:menu.arcmenu.cancel}'
     no-extra: '{lang:menu.arcmenu.no-extra}'
   renderers:
-    ore:
-      templates:
-        product: {}
-        button: {}
     arcmenu:
       screen-scale: 1.35
       update-interval: 20

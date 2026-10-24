@@ -54,11 +54,21 @@ public class DialogInfoGUI extends DialogGUI {
         String amount,
         Runnable backAction,
         List<ProductUIModel.Action> extraActions) {
+        this(player, item, amount, backAction, extraActions, item.getBuyMoreMenu());
+    }
+
+    public DialogInfoGUI(
+        Player player,
+        ObjectItem item,
+        String amount,
+        Runnable backAction,
+        List<ProductUIModel.Action> extraActions,
+        ObjectMoreMenu menu) {
         super(player);
         this.extraActions = extraActions == null ? null : List.copyOf(extraActions);
         this.backAction = backAction;
         this.item = item;
-        this.menu = item.getBuyMoreMenu();
+        this.menu = menu;
         this.enableBuyMore =
             item.getBuyMore()
             && menu != null

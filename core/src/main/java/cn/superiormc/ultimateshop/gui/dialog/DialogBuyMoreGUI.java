@@ -6,15 +6,23 @@ import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.LanguageManager;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import cn.superiormc.ultimateshop.objects.menus.ObjectMenu;
+import cn.superiormc.ultimateshop.objects.menus.ObjectMoreMenu;
 import org.bukkit.entity.Player;
 
 public class DialogBuyMoreGUI extends DialogGUI {
 
     private final ObjectItem item;
 
+    private final ObjectMoreMenu menu;
+
     public DialogBuyMoreGUI(Player player, ObjectItem item) {
+        this(player, item, item.getBuyMoreMenu());
+    }
+
+    public DialogBuyMoreGUI(Player player, ObjectItem item, ObjectMoreMenu menu) {
         super(player);
         this.item = item;
+        this.menu = menu;
     }
 
     @Override
@@ -24,7 +32,7 @@ public class DialogBuyMoreGUI extends DialogGUI {
             LanguageManager.languageManager.sendStringText(player, "error.player-not-found", "player", player.getName());
             return;
         }
-        int max = item.getBuyMoreMenu().getSection().getInt("max-amount", 64);
+        int max = Math.max(1, menu.getSection().getInt("max-amount", 64));
         String title = ConfigManager.configManager.getMenuRendererText(
             sourceMenu == null ? null : sourceMenu.getConfig(),
             player, "dialog", "buy-more.title", "", "item-name", item.getDisplayName(player));
@@ -44,13 +52,14 @@ public class DialogBuyMoreGUI extends DialogGUI {
                 .action(DialogAction.of("confirm", confirm, response -> {
                     Float amount = response.getFloat("amount");
                     new DialogInfoGUI(player, item,
-                            String.valueOf(amount == null ? 1 : Math.max(1, amount.intValue()))).openGUI(true);
+                            String.valueOf(amount == null ? 1 : Math.max(1, Math.min(max, amount.intValue()))),
+                            null, null, menu).openGUI(true);
                 }))
                 .build();
     }
 
     @Override
     public ObjectMenu getMenu() {
-        return item.getBuyMoreMenu();
+        return menu;
     }
 }

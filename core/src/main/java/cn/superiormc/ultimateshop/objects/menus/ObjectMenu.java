@@ -4,6 +4,7 @@ import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.gui.inv.CommonGUI;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.DynamicCommandManager;
+import cn.superiormc.ultimateshop.managers.ErrorManager;
 import cn.superiormc.ultimateshop.managers.LanguageManager;
 import cn.superiormc.ultimateshop.objects.ObjectShop;
 import cn.superiormc.ultimateshop.objects.ObjectThingRun;
@@ -143,7 +144,7 @@ public class ObjectMenu {
     }
 
     private void applyShopMenuOverrides() {
-        if (shop == null) {
+        if (shop == null || type != MenuType.Shop) {
             return;
         }
 
@@ -160,6 +161,7 @@ public class ObjectMenu {
     }
 
     public void initMenu() {
+        boolean inventoryOnly = this instanceof ObjectItemSellMenu;
         if (type == MenuType.Common) {
             commonMenus.put(fileName, this);
         } else if (fileName != null && !fileName.isEmpty()) {
@@ -169,7 +171,7 @@ public class ObjectMenu {
         if (hasMenuFile) {
             File file = findMenuFile(menuFolder);
             if (!file.exists()) {
-                TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §cError: We can not found your menu file: " +
+                ErrorManager.errorManager.sendErrorMessage("§cError: We can not found your menu file: " +
                     menuFolder + "/" + fileName + ".yml!");
             } else {
                 if (type == MenuType.Common) {
@@ -179,14 +181,14 @@ public class ObjectMenu {
             }
         }
         applyShopMenuOverrides();
-        if (menuConfigs != null) {
-            ConfigManager.configManager.applyMenuUI(menuConfigs);
+        if (menuConfigs != null && supportsGraphicalRenderer("arcmenu")) {
+            ConfigManager.configManager.applyMenuUI(menuConfigs, supportsGraphicalRenderer("ore"));
         }
         if (menuConfigs == null) {
             this.condition = new ObjectCondition();
             this.openAction = new ObjectAction();
             this.closeAction = new ObjectAction();
-            this.useGeyser = true;
+            this.useGeyser = !inventoryOnly && type != MenuType.More;
             this.useDialog = false;
             return;
         } else if (shop != null) {
@@ -200,9 +202,9 @@ public class ObjectMenu {
             this.closeAction = new ObjectAction(menuConfigs.getConfigurationSection("close-actions"));
             this.useGeyser = true;
         }
-        this.useGeyser = !UltimateShop.freeVersion
+        this.useGeyser = !inventoryOnly && type != MenuType.More && !UltimateShop.freeVersion
             && ConfigManager.configManager.getMenuUIMode(menuConfigs, "bedrock").equals("form");
-        this.useDialog = !UltimateShop.freeVersion
+        this.useDialog = !inventoryOnly && !UltimateShop.freeVersion
             && UltimateShop.methodUtil.methodID().equals("paper")
             && CommonUtil.getMinorVersion(21, 9)
             && ConfigManager.configManager.getBoolean("menu.dialog.enabled")
@@ -539,6 +541,29 @@ public class ObjectMenu {
 
     public boolean isUseDialog() {
         return useDialog;
+    }
+
+    public boolean supportsGraphicalRenderer(String renderer) {
+        if (this instanceof ObjectItemSellMenu || type == MenuType.More) {
+            return false;
+        }
+        if ("arcmenu".equals(renderer)) {
+            return true;
+        }
+        return "ore".equals(renderer)
+            && !(this instanceof ObjectSearchMenu)
+            && !(this instanceof ObjectFavouriteMenu);
+    }
+
+    public String getDialogLayout() {
+        if (type == MenuType.More) {
+            return "multi-action";
+        }
+        String layout = ConfigManager.configManager.getDialogLayout(menuConfigs);
+        if ("ore".equalsIgnoreCase(layout) && !supportsGraphicalRenderer("ore")) {
+            return "multi-action";
+        }
+        return layout;
     }
 
     public boolean isDynamicLayout() {

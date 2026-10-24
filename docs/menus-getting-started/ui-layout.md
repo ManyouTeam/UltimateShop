@@ -219,7 +219,6 @@ ui:
         inset-x: 6
         inset-bottom: 6
         gap: 3
-      price-lines: 1
       lore-lines: 6
       description-lines: 2
     price:
@@ -244,7 +243,6 @@ ui:
 | `card.name-size`, `price-size`                | ArcMenu name and compact price font scales                                                         |
 | `card.button-font-size`, `button-height`      | ArcMenu operation button font and height                                                           |
 | `card.buttons.inset-x`, `inset-bottom`, `gap` | ArcMenu operation button positioning                                                               |
-| `card.price-lines`                            | Available in the example configuration; ArcMenu renders compact prices without applying this limit |
 | `card.lore-lines`                             | Maximum product lore lines in Ore card bodies                                                      |
 | `card.description-lines`                      | Maximum Ore category-card description lines; ArcMenu calculates fitting lines from card space      |
 | `price.enabled`                               | Enable the compact product price line                                                              |
@@ -277,7 +275,7 @@ Price text reuses dynamic price calculation and sell multiplier display. Compact
 
 ## Ore vs ArcMenu
 
-ArcMenu uses compact product price text and adjustable font scales; Ore uses generated assets, native text rendering and card body lore. Shared keys do not imply identical visual behavior. ArcMenu does not apply `ui.products.card.price-lines` to its compact price text.
+ArcMenu uses compact product price text and adjustable font scales; Ore uses generated assets, native text rendering and card body lore. Shared keys do not imply identical visual behavior. `ui.products.card.price-lines` is not supported; compact price text does not use a configurable line limit.
 
 For entry-specific overrides, product `ui.actions` and `ui.price` take precedence over the owning shop menu and global `menu.ui.products`. Ordinary navigation entries need their own placements; a sidebar/back button is not automatically created.
 

@@ -98,7 +98,7 @@ confirm-items:
 
 ## Amount/preview/confirmation keys
 
-All [Common menu settings](general-menus.md) also apply, including title, layout, ordinary buttons, conditions/actions and UI selection.
+Inventory title, size, layout, ordinary buttons and lifecycle actions use the [Common menu settings](general-menus.md). The only presentation selector read from this file is `dialog.enabled`: it chooses native quantity input when global Dialog support is enabled. `bedrock`, `arcmenu`, `ui`, per-control graphical placements and `display-items-ui` are not supported here, and this menu does not inherit global `menu.ui` or the parent shop's `settings.menu-settings`. The parent shop is retained only as the trade context.
 
 | Additional key                                                            | Meaning                                                                                                                  |
 | ------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
@@ -108,12 +108,10 @@ All [Common menu settings](general-menus.md) also apply, including title, layout
 | `display-items`                                                           | Ordered list of preview layout IDs; takes precedence over singular `display-item`                                        |
 | `display-item`                                                            | A single preview marker alternative to `display-items`                                                                   |
 | `display-items-padding-item`                                              | Display Item Format for unused preview slots after the first                                                             |
-| `display-items-ui.ui`                                                     | Optional graphical placement/style of a preview; this does not turn Buy More into an ArcMenu screen                      |
 | `confirm-items.<id>.display-item`                                         | Confirmation button appearance; `{amount}` is the selected quantity                                                      |
 | `confirm-items.<id>.click-action`                                         | Optional fixed operation such as `buy`, `sell`, `buy-or-sell`, `sell-all`; omitted means use the current click operation |
 | `confirm-items.<id>.modify-lore`                                          | Default true; generate the product price/stock/action lore using the selected amount                                     |
 | `amount-items.<id>.menu-visibility`, `confirm-items.<id>.menu-visibility` | Filter a control by presentation                                                                                         |
-| `amount-items.<id>.ui`, `confirm-items.<id>.ui`                           | Graphical placement/style metadata; does not make ArcMenu render an Inventory Buy More menu                              |
 
 Preview stacks split the selected count across preview slots in list order, using the effective stack maximum (99 when enabled, otherwise the material maximum). Extra preview space shows the padding item or air. Preview capacity is visual; it does not replace `max-amount`. Quantity controls clamp the count to the permitted range. Supply at least one valid confirmation button for the trade direction you intend to support.
 
@@ -123,14 +121,14 @@ Preview stacks split the selected count across preview slots in list order, usin
 | ------------------- | ------------------------------------------------------------------------------------------ |
 | Inventory           | Uses `amount-items`, preview markers and `confirm-items` from this file                    |
 | Bedrock Form        | Text input, then product information; no Inventory amount buttons                          |
-| Native Dialog / Ore | Native amount input, then product information; no Inventory slot layout                    |
+| Native Dialog | Native amount input when this file enables Dialog, then product information; otherwise Inventory |
 | ArcMenu             | `select-amount` opens product details directly; plus/minus and scrolling adjust the amount |
 
 ArcMenu details require Buy More and a menu, and adjustment requires an available `select-amount` binding. The same product maximum limits it, but it does not read this file's amount/confirmation layout. Right-click defaults to `select-amount` and can be changed in `ui.renderers.arcmenu.right-click-action`.
 
 Without a manual quantity selection, product operations keep `default-buy-amount` and `default-sell-amount` independently. After selection, both directions use the chosen count. `{buy-amount}` and `{sell-amount}` in generated lore reflect that distinction. Explicit display-item stack amounts are separate from the number of trade units. See [Default Trade Amounts](../shops/products.md#default-trade-amounts).
 
-Form and Dialog labels are configured in their native `bedrock` and `dialog` sections; graphical product styling/actions are documented in [Graphical UI Layout - Premium](../menus-getting-started/ui-layout.md). Editing an Inventory confirmation label will not rename a Form information action.
+Form quantity labels are read from the source shop menu's `bedrock.buy-or-sell` (global `menu.bedrock.buy-or-sell` fallback). Dialog quantity labels come from that shop menu's `dialog.buy-more` (global `menu.dialog.buy-more` fallback), not this Buy More file. A custom `buy_more_menu` action retains its selected menu and `max-amount` throughout Dialog quantity entry and confirmation. Graphical product styling/actions are documented in [Graphical UI Layout - Premium](../menus-getting-started/ui-layout.md). Editing an Inventory confirmation label will not rename a Form information action.
 
 ## Related documentation
 

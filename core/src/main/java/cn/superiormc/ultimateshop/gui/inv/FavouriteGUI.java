@@ -223,7 +223,7 @@ public class FavouriteGUI extends InvGUI {
         if (ArcMenuBridge.arcMenuBridge.open(player, menu, null, bypass, reopen)) {
             return;
         }
-        if (!ArcMenuBridge.arcMenuBridge.enabled(menu, player) && menu.isUseDialog()) {
+        if (menu.isUseDialog()) {
             new DialogFavouriteGUI(player, menu, bypass).openGUI(reopen);
             return;
         }
@@ -239,7 +239,7 @@ public class FavouriteGUI extends InvGUI {
         if (ArcMenuBridge.arcMenuBridge.open(player, menu, null, bypass, reopen, editing)) {
             return;
         }
-        if (!ArcMenuBridge.arcMenuBridge.enabled(menu, player) && menu.isUseDialog()) {
+        if (menu.isUseDialog()) {
             new DialogFavouriteGUI(player, menu, bypass, editing).openGUI(reopen);
             return;
         }

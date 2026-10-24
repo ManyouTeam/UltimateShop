@@ -7,7 +7,6 @@ import cn.superiormc.ultimateshop.objects.buttons.ObjectMoreBuyButton;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectMoreDisplayButton;
 
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.MemoryConfiguration;
 
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
@@ -49,7 +48,7 @@ public class ObjectMoreMenu extends ObjectMenu {
                 }
                 displayItemSlots.add(slot);
                 getButtons().put(slot, new ObjectMoreDisplayButton(
-                    displayUi(index),
+                    null,
                     paddingItemSection,
                     item,
                     index
@@ -67,25 +66,13 @@ public class ObjectMoreMenu extends ObjectMenu {
             if (displayItem.equals(id)) {
                 displayItemSlots.add(slot);
                 getButtons().put(slot, new ObjectMoreDisplayButton(
-                    displayUi(displayItemSlots.size() - 1),
+                    null,
                     paddingItemSection,
                     item,
                     displayItemSlots.size() - 1
                     ));
             }
         });
-    }
-
-    private ConfigurationSection displayUi(int index) {
-        MemoryConfiguration result = new MemoryConfiguration();
-        ConfigurationSection configured = menuConfigs.getConfigurationSection("display-items-ui");
-        if (configured != null) {
-            configured.getValues(true).forEach(result::set);
-        }
-        if (index > 0) {
-            result.set("ui.placement.enabled", false);
-        }
-        return result;
     }
 
     private List<String> getConfiguredDisplayItems() {

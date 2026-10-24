@@ -15,19 +15,13 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 import org.bukkit.inventory.ItemStack;
 import org.geysermc.floodgate.api.FloodgateApi;
-import org.json.JSONObject;
 
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -326,33 +320,6 @@ public class CommonUtil {
             for (int id : result.keySet()) {
                 player.getWorld().dropItem(player.getLocation(), result.get(id));
             }
-        }
-    }
-
-    public static JSONObject fetchJson(String urlString) throws Exception {
-        URL url = new URL(urlString);
-        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-        connection.setRequestMethod("GET");
-        connection.setConnectTimeout(10000);
-        connection.setReadTimeout(15000);
-        connection.setRequestProperty("Accept", "application/json");
-        connection.setRequestProperty("Accept-Charset", StandardCharsets.UTF_8.name());
-        connection.setRequestProperty("User-Agent", "UltimateShop");
-        int responseCode = connection.getResponseCode();
-        if (responseCode < 200 || responseCode >= 300) {
-            connection.disconnect();
-            throw new IOException("HTTP " + responseCode);
-        }
-
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8))) {
-            StringBuilder response = new StringBuilder();
-            String line;
-            while ((line = reader.readLine()) != null) {
-                response.append(line);
-            }
-            return new JSONObject(response.toString());
-        } finally {
-            connection.disconnect();
         }
     }
 

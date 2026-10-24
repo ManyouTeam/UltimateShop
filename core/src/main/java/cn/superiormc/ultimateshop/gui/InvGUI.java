@@ -1,6 +1,7 @@
 package cn.superiormc.ultimateshop.gui;
 
 import cn.superiormc.ultimateshop.UltimateShop;
+import cn.superiormc.ultimateshop.gui.arc.ArcMenuGUI;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.MenuStatusManager;
 import cn.superiormc.ultimateshop.objects.ObjectThingRun;
@@ -72,7 +73,12 @@ public abstract class InvGUI extends AbstractGUI implements InventoryHolder {
         }
         constructGUI();
         if (inv != null) {
-            SchedulerUtil.runSync(player, () -> player.openInventory(inv));
+            SchedulerUtil.runSync(player, () -> {
+                if (previousStatus != null && previousStatus.getGUI() instanceof ArcMenuGUI arcMenu) {
+                    arcMenu.closeGUI();
+                }
+                player.openInventory(inv);
+            });
             if (getMenu() != null) {
                 getMenu().doOpenAction(player, reopen);
             }

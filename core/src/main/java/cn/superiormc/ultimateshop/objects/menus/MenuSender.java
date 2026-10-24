@@ -2,8 +2,8 @@ package cn.superiormc.ultimateshop.objects.menus;
 
 import cn.superiormc.ultimateshop.gui.DialogGUI;
 import cn.superiormc.ultimateshop.gui.FormGUI;
+import cn.superiormc.ultimateshop.gui.arc.ArcMenuGUI;
 import cn.superiormc.ultimateshop.gui.dialog.DialogView;
-import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.MenuStatusManager;
 import org.bukkit.entity.Player;
 
@@ -63,6 +63,9 @@ public class MenuSender {
         if (gui == null) {
             return null;
         }
+        if (gui instanceof ArcMenuGUI) {
+            return "arcmenu";
+        }
         if (gui instanceof FormGUI) {
             return "form";
         }
@@ -73,7 +76,7 @@ public class MenuSender {
                 : view.getLayout() == DialogView.Layout.ITEM_ACTION_LIST
                 ? "item-action-list" : "dialog";
             }
-            return dialogPresentation(gui.getMenu() == null ? null : ConfigManager.configManager.getDialogLayout(gui.getMenu().getConfig()));
+            return dialogPresentation(gui.getMenu() == null ? null : gui.getMenu().getDialogLayout());
         }
         return "inventory";
     }

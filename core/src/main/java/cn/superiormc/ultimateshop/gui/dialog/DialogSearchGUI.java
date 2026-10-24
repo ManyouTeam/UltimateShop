@@ -55,7 +55,7 @@ public class DialogSearchGUI extends DialogGUI {
         }
         builder.buttonWidth(menu.getInt("dialog.button-width", 150));
         builder.columns(menu.getInt("dialog.columns", 2));
-        String dialogLayout = ConfigManager.configManager.getDialogLayout(menu.getConfig());
+        String dialogLayout = menu.getDialogLayout();
         boolean itemActionLayout = DialogView.Layout.fromConfig(dialogLayout) == DialogView.Layout.ITEM_ACTION_LIST;
         builder.layout(dialogLayout);
         builder.input(DialogInput.text("keyword", ConfigManager.configManager.getMenuRendererText(
@@ -70,7 +70,7 @@ public class DialogSearchGUI extends DialogGUI {
         if (!searchKeywords.trim().isEmpty()) {
             addResults(builder, itemActionLayout);
         }
-        for (Map.Entry<Integer, AbstractButton> entry : menu.getMenu(MenuSender.of(player, MenuSender.dialogPresentation(ConfigManager.configManager.getDialogLayout(menu.getConfig())))).entrySet()) {
+        for (Map.Entry<Integer, AbstractButton> entry : menu.getMenu(MenuSender.of(player, MenuSender.dialogPresentation(menu.getDialogLayout()))).entrySet()) {
             AbstractButton button = entry.getValue();
             ObjectDisplayItemStack display = button.getDisplayItem(player, 1);
             DialogAction action = display.parseToDialogButton("slot_" + entry.getKey(), button.getShowSprite(),

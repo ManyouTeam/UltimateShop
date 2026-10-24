@@ -67,7 +67,7 @@ The [Common menu settings](general-menus.md) remain available. Use ordinary `but
 | `no-result-item.display-item` | Display when a search has no matches |
 | `result-lore` | Extra lore on result entries; `{shop}` and `{product}` identify the source |
 | Special button `menu-visibility` | Boolean presentation visibility for a special button |
-| Special button `ui.placement` / `ui.appearance` | Ore/ArcMenu position and appearance |
+| Special button `ui.placement` / `ui.appearance` | ArcMenu position and appearance |
 
 Layout markers use the [normal token rules](layout-and-buttons.md), including backtick-delimited longer IDs. Do not fill input/result markers with ordinary buttons. Place each special action/state ID in root `layout`; use a valid `no-result-item.slot`. Result capacity remains relevant to non-Inventory views.
 
@@ -96,14 +96,14 @@ menu:
 | --- | --- |
 | Inventory | Physical item slots, chat keyword entry, action/state/no-result items |
 | Form | Dedicated Search button opens a Custom Form; ordinary buttons are included; no physical input or Inventory special status controls |
-| Native Dialog / Ore | Keyword input and result information; no physical item deposit filter |
+| Native Dialog | Keyword input and result information; no physical item deposit filter |
 | ArcMenu | Chat keyword entry, clear-search, action/state/no-result controls, graphical result cards |
 
 Form opens its home first. Search input prefills the previous keyword; cancel returns to that home and preserves it. Form/Dialog blank keywords show no products. Selecting a result opens information; Back restores the search and keyword. Editing/submitting/cancelling the built-in input flow does not repeatedly run menu open/close actions. Ordinary navigation buttons leave the search flow and run with LEFT click in Form/Dialog.
 
 Form text defaults are `menu.bedrock.search.input` and `menu.bedrock.search.buttons.search`; Dialog uses `menu.dialog.search.*`. Chat keyword controls still use the prompt keywords above. Choose presentations through the global/menu `dialog.enabled`, `bedrock.enabled` and `arcmenu.enabled` switches.
 
-For ArcMenu/Ore, configure `ui.layout`, `ui.products.placement`, and `ui.placement` on graphical controls. Layout pagination does not remove the result-slot capacity defined at root. See [ArcMenu - Premium](arcmenu-menus-premium.md) and [Dialog - Premium](dialog-menus-premium.md) and [Ore - Premium](ore-menus-premium.md) for exact renderer differences.
+Ore graphics are not implemented for Search. `dialog.layout: ore` uses native `multi-action` Dialog and does not generate Ore assets for this menu. For ArcMenu, configure `ui.layout`, `ui.products.placement`, and `ui.placement` on graphical controls. Layout pagination does not remove the result-slot capacity defined at root. See [ArcMenu - Premium](arcmenu-menus-premium.md) and [Dialog - Premium](dialog-menus-premium.md) and [Ore - Premium](ore-menus-premium.md) for exact renderer differences.
 
 ## Related documentation
 

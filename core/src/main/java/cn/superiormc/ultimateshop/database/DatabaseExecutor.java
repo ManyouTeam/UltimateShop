@@ -1,19 +1,21 @@
 package cn.superiormc.ultimateshop.database;
 
-import cn.superiormc.ultimateshop.UltimateShop;
+import cn.superiormc.ultimateshop.managers.ErrorManager;
 import cn.superiormc.ultimateshop.objects.caches.ObjectCache;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayDeque;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
+import java.util.Objects;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -25,9 +27,9 @@ public class DatabaseExecutor {
 
     private static final long WARNING_INTERVAL_MILLIS = 30_000L;
 
-    private static final Map<String, Runnable> pendingSaves = new ConcurrentHashMap<>();
+    private static final Map<String, AtomicReference<Runnable>> pendingSaves = new HashMap<>();
 
-    private static final Set<String> scheduledSaves = ConcurrentHashMap.newKeySet();
+    private static final Map<String, ArrayDeque<Runnable>> playerTasks = new HashMap<>();
 
     private static final AtomicLong lastQueueWarning = new AtomicLong();
 
@@ -75,15 +77,81 @@ public class DatabaseExecutor {
             return;
         }
         ensureAccepting();
-        pendingSaves.put(storageId, saveTask);
-        if (!scheduledSaves.add(storageId)) {
+        AtomicReference<Runnable> pending = pendingSaves.get(storageId);
+        if (pending != null) {
+            pending.set(saveTask);
             return;
         }
+        AtomicReference<Runnable> request = new AtomicReference<>(saveTask);
+        pendingSaves.put(storageId, request);
+        CompletableFuture<Void> future = new CompletableFuture<>();
+        future.exceptionally(throwable -> {
+            ErrorManager.errorManager.sendErrorMessage(
+                    "§cError: Could not save data for " + storageId + ": " + throwable.getMessage());
+            return null;
+        });
         try {
-            playerDataExecutor.execute(() -> drainPlayerSave(storageId));
+            enqueuePlayerTask(storageId, databaseTask(() -> {
+                Runnable current;
+                synchronized (DatabaseExecutor.class) {
+                    pendingSaves.remove(storageId, request);
+                    current = request.get();
+                }
+                current.run();
+                return null;
+            }, future));
         } catch (RejectedExecutionException exception) {
-            scheduledSaves.remove(storageId);
-            pendingSaves.remove(storageId, saveTask);
+            pendingSaves.remove(storageId, request);
+            throw exception;
+        }
+    }
+
+    public static CompletableFuture<Void> executePlayerTask(String storageId, Runnable task) {
+        return supplyPlayerTask(storageId, () -> {
+            task.run();
+            return null;
+        });
+    }
+
+    public static <T> CompletableFuture<T> supplyPlayerTask(String storageId, Supplier<T> task) {
+        Objects.requireNonNull(storageId, "storageId");
+        Objects.requireNonNull(task, "task");
+        CompletableFuture<T> future = new CompletableFuture<>();
+        synchronized (DatabaseExecutor.class) {
+            try {
+                ensureAccepting();
+                pendingSaves.remove(storageId);
+                enqueuePlayerTask(storageId, databaseTask(task, future));
+            } catch (RejectedExecutionException exception) {
+                future.completeExceptionally(exception);
+            }
+        }
+        return future;
+    }
+
+    private static <T> Runnable databaseTask(Supplier<T> task, CompletableFuture<T> future) {
+        return () -> {
+            try {
+                future.complete(task.get());
+            } catch (Throwable throwable) {
+                future.completeExceptionally(throwable);
+            }
+        };
+    }
+
+    private static void enqueuePlayerTask(String storageId, Runnable task) {
+        ArrayDeque<Runnable> queue = playerTasks.get(storageId);
+        if (queue != null) {
+            queue.addLast(task);
+            return;
+        }
+        ArrayDeque<Runnable> newQueue = new ArrayDeque<>();
+        newQueue.addLast(task);
+        playerTasks.put(storageId, newQueue);
+        try {
+            playerDataExecutor.execute(() -> drainPlayerTasks(storageId, newQueue));
+        } catch (RejectedExecutionException exception) {
+            playerTasks.remove(storageId, newQueue);
             throw exception;
         }
     }
@@ -116,8 +184,9 @@ public class DatabaseExecutor {
         if (cache == null || loadTask == null) {
             return;
         }
+        String storageId = cache.isServer() ? "Global-Server" : cache.getPlayer().getUniqueId().toString();
         WeakReference<ObjectCache> cacheReference = new WeakReference<>(cache);
-        executeDatabaseTask(() -> {
+        executePlayerTask(storageId, () -> {
             ObjectCache currentCache = cacheReference.get();
             if (currentCache != null) {
                 loadTask.accept(currentCache);
@@ -133,20 +202,17 @@ public class DatabaseExecutor {
         transactionLogExecutor.execute(transactionTask);
     }
 
-    private static void drainPlayerSave(String storageId) {
-        try {
-            Runnable saveRequest;
-            while ((saveRequest = pendingSaves.remove(storageId)) != null) {
-                saveRequest.run();
-            }
-        } finally {
-            scheduledSaves.remove(storageId);
+    private static void drainPlayerTasks(String storageId, ArrayDeque<Runnable> queue) {
+        while (true) {
+            Runnable task;
             synchronized (DatabaseExecutor.class) {
-                if (pendingSaves.containsKey(storageId) && scheduledSaves.add(storageId)
-                        && playerDataExecutor != null && !playerDataExecutor.isShutdown()) {
-                    playerDataExecutor.execute(() -> drainPlayerSave(storageId));
+                task = queue.pollFirst();
+                if (task == null) {
+                    playerTasks.remove(storageId, queue);
+                    return;
                 }
             }
+            task.run();
         }
     }
 
@@ -188,7 +254,8 @@ public class DatabaseExecutor {
             transactionLogExecutor = null;
         }
         pendingSaves.clear();
-        scheduledSaves.clear();
+        playerTasks.values().forEach(ArrayDeque::clear);
+        playerTasks.clear();
     }
 
     private static int databaseThreadCount() {
@@ -273,12 +340,7 @@ public class DatabaseExecutor {
         if (now - previous < WARNING_INTERVAL_MILLIS || !lastQueueWarning.compareAndSet(previous, now)) {
             return;
         }
-        String message = executorName + " queue is full; applying caller backpressure to prevent data loss.";
-        if (UltimateShop.instance != null) {
-            UltimateShop.instance.getLogger().warning(message);
-        } else {
-            System.err.println("[UltimateShop] " + message);
-        }
+        ErrorManager.errorManager.sendErrorMessage("§cError: " + executorName + " queue is full; applying caller backpressure to prevent data loss.");
     }
 
 }

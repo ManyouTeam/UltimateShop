@@ -36,13 +36,6 @@ public class BuyMoreGUI extends InvGUI {
 
     private int nowingAmount;
 
-    private BuyMoreGUI(Player owner, ObjectItem item) {
-        super(owner);
-        this.item = item;
-        this.menu = item.getBuyMoreMenu();
-        this.nowingAmount = 1;
-    }
-
     private BuyMoreGUI(Player owner, ObjectItem item, ObjectMoreMenu menu) {
         super(owner);
         this.item = item;
@@ -215,23 +208,18 @@ public class BuyMoreGUI extends InvGUI {
     }
 
     public static void openGUI(Player player, ObjectItem item) {
-        if (ConfigManager.configManager.getBoolean("menu.buy-more-menu.not-open-when-invalid") && item.getBuyMoreMenu().isInvalid()) {
-            return;
-        }
-        if (item.getBuyMoreMenu().isUseDialog()) {
-            new DialogBuyMoreGUI(player, item).openGUI(true);
-            return;
-        }
-        BuyMoreGUI gui = new BuyMoreGUI(player, item);
-        gui.openGUI(true);
+        openGUI(player, item, item.getBuyMoreMenu());
     }
 
     public static void openGUI(Player player, ObjectItem item, ObjectMoreMenu menu) {
+        if (menu == null || menu.getConfig() == null) {
+            return;
+        }
         if (ConfigManager.configManager.getBoolean("menu.buy-more-menu.not-open-when-invalid") && menu.isInvalid()) {
             return;
         }
         if (menu.isUseDialog()) {
-            new DialogBuyMoreGUI(player, item).openGUI(true);
+            new DialogBuyMoreGUI(player, item, menu).openGUI(true);
             return;
         }
         BuyMoreGUI gui = new BuyMoreGUI(player, item, menu);
