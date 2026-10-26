@@ -1,6 +1,7 @@
 package cn.superiormc.ultimateshop.gui.arc;
 
 import cn.superiormc.ultimateshop.UltimateShop;
+import cn.superiormc.ultimateshop.api.ArcMenuRenderer;
 import cn.superiormc.ultimateshop.managers.AbstractManager;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.ErrorManager;
@@ -11,6 +12,7 @@ import cn.superiormc.ultimateshop.objects.menus.ObjectMenu;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
 
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 
 public final class ArcMenuBridge extends AbstractManager {
 
@@ -18,12 +20,33 @@ public final class ArcMenuBridge extends AbstractManager {
 
     private ArcMenuRuntime runtime;
 
+    private Plugin rendererOwner;
+
+    private ArcMenuRenderer renderer;
+
     public ArcMenuBridge() {
         arcMenuBridge = this;
     }
 
+    /** Lets an addon present ArcMenu menus; menus it does not handle keep the built-in renderer. */
+    public void registerRenderer(Plugin owner, ArcMenuRenderer renderer) {
+        this.rendererOwner = owner;
+        this.renderer = renderer;
+    }
+
+    public void unregisterRenderer(Plugin owner) {
+        if (rendererOwner == owner) {
+            rendererOwner = null;
+            renderer = null;
+        }
+    }
+
+    private ArcMenuRenderer renderer() {
+        return renderer != null && rendererOwner != null && rendererOwner.isEnabled() ? renderer : null;
+    }
+
     public boolean enabled(ObjectMenu menu, Player player) {
-        return runtime != null
+        return (runtime != null || renderer() != null)
             && CommonUtil.checkPluginLoad("ArcMenu")
             && !UltimateShop.freeVersion
             && menu != null
@@ -39,10 +62,21 @@ public final class ArcMenuBridge extends AbstractManager {
 
     public boolean open(Player player, ObjectMenu menu, ObjectShop shop, boolean bypass, boolean reopen,
         boolean editing) {
-        return enabled(menu, player) && runtime.open(player, menu, shop, bypass, reopen, editing);
+        if (!enabled(menu, player)) {
+            return false;
+        }
+        ArcMenuRenderer addon = renderer();
+        if (addon != null && addon.handles(menu, player)) {
+            return addon.open(player, menu, shop, bypass, reopen, editing);
+        }
+        return runtime != null && runtime.open(player, menu, shop, bypass, reopen, editing);
     }
 
     public boolean openInfo(Player player, ObjectItem item) {
+        ArcMenuRenderer addon = renderer();
+        if (addon != null && addon.openInfo(player, item)) {
+            return true;
+        }
         if (MenuStatusManager.menuStatusManager.getOpeningGUI(player) instanceof ArcCommonGUI gui
             && gui.isActive()) {
             gui.openInfo(item);
