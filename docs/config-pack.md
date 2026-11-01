@@ -15,3 +15,7 @@ Display your work here do not charge creator anything but the creator must provi
 ## Redstone Labs - Shop Configuration
 
 [Click here to view](https://mcmodels.net/products/15194/shop-configuration-ultimateshop).
+
+## UltimateShop - Economy Shop Config
+
+[Click here to view](https://builtbybit.com/resources/ultimateshop-economy-shop-config.121682).
