@@ -274,6 +274,8 @@ override-lang:
       content: '&7Save the products you trade most often and keep them one click away.'
     arcmenu:
       cancel: Cancel
+      amount-input: Enter amount
+      amount-input-done: Type a quantity, then press Esc to finish.
       navigation: QUICK ACTIONS
       no-extra: No extra actions
       favourite: 'Toggle favourite'

@@ -1,15 +1,24 @@
 package cn.superiormc.ultimateshop.gui.arc;
 
+import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.gui.ProductUIModel;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
+import cn.superiormc.ultimateshop.managers.LanguageManager;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 
 import com.fentai.arcmenu.api.ArcMenuPoint;
 import com.fentai.arcmenu.api.ArcMenuScrollEvent;
+import com.fentai.arcmenu.api.ArcMenuTextInput;
+import com.fentai.arcmenu.api.ArcMenuTextInputEndReason;
+import com.fentai.arcmenu.api.ArcMenuTextInputHandle;
+import com.fentai.arcmenu.api.ArcMenuTextInputListener;
+import com.fentai.arcmenu.api.ArcMenuTextInputOptions;
+import com.fentai.arcmenu.api.ArcMenuTextInputResult;
+import org.bukkit.Bukkit;
 
 import java.util.List;
 
-final class ArcInfoGUI {
+final class ArcInfoGUI implements ArcMenuTextInputListener {
 
     private final ArcCommonGUI gui;
 
@@ -20,6 +29,14 @@ final class ArcInfoGUI {
     private int amount = 1;
 
     private boolean amountChanged;
+
+    private ArcMenuTextInputHandle amountInput;
+
+    private ObjectItem inputItem;
+
+    private String inputValue = "";
+
+    private boolean inputEditing;
 
     private int moreSlot = -1;
 
@@ -42,6 +59,7 @@ final class ArcInfoGUI {
     void prepareRender() {
         if (selected != null && (!gui.visible(selected)
             || selectedSlot >= 0 && gui.product(selectedSlot) != selected)) {
+            cancelInput();
             selected = null;
             selectedSlot = -1;
         }
@@ -56,11 +74,14 @@ final class ArcInfoGUI {
     }
 
     boolean acceptsHit(String id) {
+        if (amountInput != null) {
+            return id.startsWith("details:input:") || id.equals("details:close");
+        }
         return moreSlot < 0 || id.startsWith("extra:");
     }
 
     boolean handleScroll(ArcMenuScrollEvent event) {
-        if (moreSlot >= 0) {
+        if (moreSlot >= 0 || amountInput != null) {
             return true;
         }
         ArcMenuPoint point = event.getPoint();
@@ -86,6 +107,7 @@ final class ArcInfoGUI {
             return;
         }
         if (selected != product) {
+            cancelInput();
             selected = product;
             amount = product.getBuyPrice().empty ? product.getDefaultSellAmount() : product.getDefaultBuyAmount();
             amount = ArcMenuLayout.clampAmount(amount, maxAmount());
@@ -151,7 +173,12 @@ final class ArcInfoGUI {
         gui.addHit("details:shield", 453, 58, 177, 291, List.of(), type -> {
 
         });
-        gui.panel("details", 453, 58, 177, 291, 0xFF162035, 2);
+        if (gui.bevelsEnabled()) {
+            gui.beveledPanel("details", 453, 58, 177, 291,
+                gui.color("details.background", 0xFF162035), gui.color("border", 0xFF25334D), 2);
+        } else {
+            gui.panel("details", 453, 58, 177, 291, gui.color("details.background", 0xFF162035), 2);
+        }
         gui.panel("details:accent", 463, 70, 25, 2, 0xFF000000 | accent, 3);
         if (selected == null) {
             gui.label("details:hint", 469, 169, gui.text("select-product", "Select a product"), .85, 145);
@@ -182,6 +209,7 @@ final class ArcInfoGUI {
             "X",
             List.of(),
             type -> {
+                cancelInput();
                 selected = null;
                 selectedSlot = -1;
             });
@@ -189,7 +217,13 @@ final class ArcInfoGUI {
             gui.button("minus", 467, 263, 26, 25, "-", List.of(), type -> changeAmount(-1));
             gui.button("plus", 590, 263, 26, 25, "+", List.of(), type -> changeAmount(1));
         }
-        gui.label("amount", 504, 277, "× " + amount, .85, 68);
+        if (canSelectAmount() && Bukkit.getServicesManager().load(ArcMenuTextInput.class) != null) {
+            gui.button("details:input:open", 500, 263, 84, 25,
+                inputEditing ? inputValue + "_" : "× " + amount,
+                List.of(gui.text("amount-input", "Enter amount")), type -> openInput());
+        } else {
+            gui.label("amount", 504, 277, "× " + amount, .85, 68);
+        }
         List<ProductUIModel.Action> actions = gui.controls.getPrimaryActions(selected);
         for (int i = 0; i < actions.size(); i++) {
             ProductUIModel.Action action = actions.get(i);
@@ -203,6 +237,27 @@ final class ArcInfoGUI {
                 List.of(),
                 type -> execute(selected, action, buyAmount(), sellAmount()));
         }
+        if (inputEditing) {
+            renderInputEditor();
+        }
+    }
+
+    private void renderInputEditor() {
+        double x = (gui.layout.getWidth() - 300) / 2.0;
+        double y = (gui.layout.getHeight() - 117) / 2.0;
+        double depth = ArcMenuLayout.ACTIONS_DEPTH;
+        gui.panel("details:input:screen", x, y, 300, 117,
+            gui.color("input.background", gui.color("sidebar", 0xFF303132)), depth);
+        gui.label("details:input:title", x + 16, y + 25,
+            gui.text("amount-input", "Enter amount"), 1.1, 268, depth + 1);
+        gui.panel("details:input:field-border", x + 15, y + 38, 270, 34,
+            gui.color("input.border", gui.color("accent", 0xFF588F3C)), depth + 1);
+        gui.panel("details:input:field", x + 17, y + 40, 266, 30,
+            gui.color("input.field", 0xFF1E1E1F), depth + 2);
+        gui.label("details:input:value", x + 26, y + 60, inputValue + "_", 1.2, 248, depth + 3);
+        gui.label("details:input:hint", x + 16, y + 97,
+            LanguageManager.languageManager.getStringText(gui.getPlayer(), "menu.arcmenu.amount-input-done",
+                "Type a quantity, then press Esc to finish."), .75, 268, depth + 3);
     }
 
     private int maxAmount() {
@@ -220,6 +275,109 @@ final class ArcInfoGUI {
         }
         amount = ArcMenuLayout.clampAmount((long) amount + change, maxAmount());
         amountChanged = true;
+        gui.render();
+    }
+
+    private void openInput() {
+        if (!canSelectAmount() || !gui.usable() || !gui.visible(selected)) {
+            return;
+        }
+        if (amountInput != null) {
+            amountInput.edit();
+            return;
+        }
+        ArcMenuTextInput service = Bukkit.getServicesManager().load(ArcMenuTextInput.class);
+        if (service == null) {
+            return;
+        }
+        inputItem = selected;
+        inputValue = String.valueOf(amount);
+        inputEditing = true;
+        amountInput = service.request(UltimateShop.instance, gui.getPlayer(),
+            ArcMenuTextInputOptions.builder()
+                .title(gui.parse(gui.text("amount-input", "Enter amount")))
+                .initialValue(String.valueOf(amount))
+                .maxLength(10)
+                .build(), this);
+        if (amountInput == null) {
+            inputItem = null;
+            inputEditing = false;
+        }
+        if (gui.usable()) {
+            gui.render();
+        }
+    }
+
+    private static Long parseInputAmount(String value) {
+        String number = value.trim();
+        if (!number.matches("-?[0-9]{1,10}")) {
+            return null;
+        }
+        return Long.parseLong(number);
+    }
+
+    private void cancelInput() {
+        ArcMenuTextInputHandle input = amountInput;
+        amountInput = null;
+        inputItem = null;
+        inputEditing = false;
+        if (input != null) {
+            input.cancel();
+        }
+    }
+
+    @Override
+    public void onChanged(String value) {
+        inputValue = value;
+        if (gui.usable()) {
+            gui.render();
+        }
+    }
+
+    @Override
+    public void onEditing(boolean editing) {
+        inputEditing = editing;
+        ArcMenuTextInputHandle input = amountInput;
+        if (editing) {
+            if (gui.usable()) {
+                gui.render();
+            }
+            return;
+        }
+        if (input == null) {
+            return;
+        }
+        if (parseInputAmount(input.value()) != null && gui.usable() && selected == inputItem
+            && canSelectAmount() && gui.visible(selected)) {
+            input.submit();
+        } else {
+            cancelInput();
+            if (gui.usable()) {
+                gui.render();
+            }
+        }
+    }
+
+    @Override
+    public void onComplete(ArcMenuTextInputResult result) {
+        if (amountInput == null || !amountInput.getToken().equals(result.getToken())) {
+            return;
+        }
+        ObjectItem item = inputItem;
+        amountInput = null;
+        inputItem = null;
+        inputEditing = false;
+        if (!gui.usable()) {
+            return;
+        }
+        if (result.getReason() == ArcMenuTextInputEndReason.SUBMITTED && selected == item
+            && canSelectAmount() && gui.visible(item)) {
+            Long value = parseInputAmount(result.getValue());
+            if (value != null) {
+                amount = ArcMenuLayout.clampAmount(value, maxAmount());
+                amountChanged = true;
+            }
+        }
         gui.render();
     }
 
@@ -274,22 +432,28 @@ final class ArcInfoGUI {
         moreH = 10 + Math.max(1, (count + columns - 1) / columns) * 27 + 30 + (pages > 1 ? 26 : 0);
         moreX = Math.max(6, Math.min(gui.layout.getWidth() - 6 - moreW, moreX));
         moreY = Math.max(54, Math.min(gui.layout.getHeight() - 6 - moreH, moreY));
-        gui.panel(
-            "extra:edge",
-            moreX - 1,
-            moreY - 1,
-            moreW + 2,
-            moreH + 2,
-            gui.color("button-border", 0xFF6B829F),
-            ArcMenuLayout.ACTIONS_DEPTH);
-        gui.panel(
-            "extra:panel",
-            moreX,
-            moreY,
-            moreW,
-            moreH,
-            0xFF182238,
-            ArcMenuLayout.ACTIONS_DEPTH + 2);
+        if (gui.bevelsEnabled()) {
+            gui.beveledPanel("extra", moreX, moreY, moreW, moreH,
+                gui.color("more-menu.background", 0xFF182238), gui.color("border", 0xFF25334D),
+                ArcMenuLayout.ACTIONS_DEPTH);
+        } else {
+            gui.panel(
+                "extra:edge",
+                moreX - 1,
+                moreY - 1,
+                moreW + 2,
+                moreH + 2,
+                gui.color("button-border", 0xFF6B829F),
+                ArcMenuLayout.ACTIONS_DEPTH);
+            gui.panel(
+                "extra:panel",
+                moreX,
+                moreY,
+                moreW,
+                moreH,
+                gui.color("more-menu.background", 0xFF182238),
+                ArcMenuLayout.ACTIONS_DEPTH + 2);
+        }
         gui.addHit("extra:shield", moreX, moreY, moreW, moreH, List.of(), type -> {
 
         });
@@ -320,7 +484,7 @@ final class ArcInfoGUI {
                 id + ":text",
                 x + 8,
                 ArcMenuLayout.textCenterY(y + 5, 25, 1),
-                action.label(),
+                gui.buttonText(id, action.label()),
                 1,
                 144,
                 ArcMenuLayout.ACTIONS_DEPTH + 4);
@@ -395,7 +559,7 @@ final class ArcInfoGUI {
             "extra:cancel:text",
             moreX + 8,
             ArcMenuLayout.textCenterY(moreY + moreH - 29, 25, 1),
-            gui.text("cancel", "Cancel"),
+            gui.buttonText("extra:cancel", gui.text("cancel", "Cancel")),
             1,
             moreW - 16,
             ArcMenuLayout.ACTIONS_DEPTH + 4);

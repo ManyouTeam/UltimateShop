@@ -67,6 +67,11 @@ public final class MenuUILayout {
             int rows = definition.getInt("rows", 1);
             int gapX = definition.getInt("gap-x", definition.getInt("gap", 0));
             int gapY = definition.getInt("gap-y", definition.getInt("gap", 0));
+            String direction = definition.getString("direction", "vertical");
+            if (type.equals("stack") && !List.of("vertical", "horizontal").contains(direction)) {
+                invalidate("Unknown stack direction in area " + name);
+                return;
+            }
             if (columns < 1
                 || columns > 36
                 || rows < 1
@@ -77,7 +82,9 @@ public final class MenuUILayout {
                 invalidate("Invalid grid or gap in area " + name);
                 return;
             }
-            int cellWidth = (bounds.width - (columns - 1) * gapX) / columns;
+            int cellWidth = type.equals("stack") && direction.equals("horizontal")
+                ? definition.getInt("item-width", 108)
+                : (bounds.width - (columns - 1) * gapX) / columns;
             int cellHeight =
                 definition.getInt(
                 type.equals("stack") ? "item-height" : "cell-height",
@@ -241,10 +248,17 @@ public final class MenuUILayout {
                 h = area.cellHeight;
             } else if (area.type.equals("stack")) {
                 int index = stackIndices.merge(area.name, 1, Integer::sum) - 1;
-                x = area.bounds.x;
-                y = area.bounds.y + index * (area.cellHeight + area.gapY);
-                w = area.bounds.width;
-                h = area.cellHeight;
+                if (ui.getString("layout.areas." + area.name + ".direction", "vertical").equals("horizontal")) {
+                    x = area.bounds.x + index * (area.cellWidth + area.gapX);
+                    y = area.bounds.y;
+                    w = area.cellWidth;
+                    h = area.cellHeight;
+                } else {
+                    x = area.bounds.x;
+                    y = area.bounds.y + index * (area.cellHeight + area.gapY);
+                    w = area.bounds.width;
+                    h = area.cellHeight;
+                }
             } else {
                 if (!placement.contains("x") || !placement.contains("y")) {
                     invalidate("Free placement requires x and y: slot " + entry.slot);

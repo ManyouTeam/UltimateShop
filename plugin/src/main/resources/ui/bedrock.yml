@@ -1,0 +1,229 @@
+# Shared graphical UI style. Select with ui.style: bedrock.
+layout:
+  canvas:
+    width: 648
+    height: 450
+  header:
+    title:
+      enabled: true
+      text: '{title}'
+      x: 18
+      y: 72
+      width: 612
+      align: left
+      font-size: 1.3
+      height: 27
+      bold: true
+    content:
+      enabled: true
+      text: '{content}'
+      x: 18
+      y: 108
+      width: 612
+      align: left
+      font-size: 0.8
+      height: 18
+    sidebar-title:
+      enabled: false
+      text: '{lang:menu.arcmenu.navigation}'
+      x: 18
+      y: 63
+      width: 108
+      align: left
+      font-size: 0.9
+    content-title:
+      enabled: false
+      text: '{lang:menu.arcmenu.products}'
+      x: 144
+      y: 63
+      width: 486
+      align: left
+      font-size: 0.9
+  areas:
+    sidebar:
+      type: stack
+      direction: horizontal
+      x: 18
+      y: 18
+      width: 612
+      height: 36
+      item-width: 115
+      item-height: 36
+      gap-x: 9
+      gap-y: 0
+      background-enabled: false
+    content:
+      type: grid
+      x: 18
+      y: 144
+      width: 612
+      height: 261
+      columns: 3
+      rows: 2
+      cell-height: 126
+      gap-x: 9
+      gap-y: 9
+      background-enabled: true
+      background-padding: 6
+    footer:
+      type: free
+      x: 18
+      y: 414
+      width: 612
+      height: 27
+  pagination:
+    enabled: true
+    previous:
+      x: 225
+      y: 414
+      width: 36
+      height: 27
+    indicator:
+      x: 270
+      y: 414
+      width: 90
+      height: 27
+    next:
+      x: 369
+      y: 414
+      width: 36
+      height: 27
+products:
+  placement:
+    area: content
+  card:
+    icon-size: 32
+    padding: 9
+    name-size: 1.0
+    price-size: 0.85
+    button-height: 27
+    buttons:
+      inset-x: 6
+      inset-bottom: 6
+      gap: 3
+    lore-lines: 6
+    description-lines: 2
+    button-font-size: 1.0
+  price:
+    enabled: true
+    formats:
+      both: '&f{lang:menu.arcmenu.buy}: &a{buy-price} &7| &f{lang:menu.arcmenu.sell}: &a{sell-price}'
+      only-buy: '&f{lang:menu.arcmenu.buy}: &a{buy-price}'
+      only-sell: '&f{lang:menu.arcmenu.sell}: &a{sell-price}'
+  actions:
+    primary:
+    - buy
+    - sell
+    extra: auto
+    labels:
+      buy: '{lang:menu.arcmenu.buy}'
+      sell: '{lang:menu.arcmenu.sell}'
+theme:
+  background-enabled: true
+  background: '#FA1D1D1D'
+  sidebar: '#303132'
+  card: '#48494A'
+  border: '#737475'
+  accent: '#588F3C'
+  text: '#FFFFFF'
+  title:
+    background-enabled: false
+    background: '#EF0C1223'
+    decoration-enabled: false
+  decorations:
+    enabled: false
+    style: none
+    color: '#65E8EF'
+    corner-color: '#65E8EF'
+    thickness: 2
+    corner-thickness: 2
+    corner-length: 20
+    inset: 10
+    dividers-enabled: true
+  button:
+    background: '#48494A'
+    hover: '#3B8025'
+    border: '#1E1E1F'
+    text-align: center
+  buy:
+    background: '#3C8527'
+    hover: '#4C9729'
+    bevel:
+      top: '#6CC349'
+      left: '#6CC349'
+      right: '#1D4116'
+      bottom: '#1D4D13'
+  sell:
+    background: '#D0D1D4'
+    hover: '#E3E3E5'
+    text: '#000000'
+    bevel:
+      top: '#F4F4F5'
+      left: '#E6E8EB'
+      right: '#AAABAD'
+      bottom: '#58585A'
+  card-hover: '#505152'
+  bevel:
+    enabled: true
+    shadow: '#1E1E1F'
+    top: '#998E8F91'
+    left: '#338E8F91'
+    bottom: '#66000000'
+    right: '#33000000'
+  quantity:
+    background: '#D0D1D4'
+    hover: '#E3E3E5'
+    text: '#000000'
+    bevel:
+      top: '#F4F4F5'
+      left: '#E6E8EB'
+      right: '#AAABAD'
+      bottom: '#58585A'
+  pagination:
+    background: '#D0D1D4'
+    hover: '#E3E3E5'
+    text: '#000000'
+    bevel:
+      top: '#F4F4F5'
+      left: '#E6E8EB'
+      right: '#AAABAD'
+      bottom: '#58585A'
+  cancel:
+    background: '#D0D1D4'
+    hover: '#E3E3E5'
+    text: '#000000'
+    bevel:
+      top: '#F4F4F5'
+      left: '#E6E8EB'
+      right: '#AAABAD'
+      bottom: '#58585A'
+  tooltip:
+    border: '#737475'
+    background: '#303132'
+  details:
+    background: '#303132'
+  more-menu:
+    background: '#303132'
+text:
+  cancel: '{lang:menu.arcmenu.cancel}'
+  no-extra: '{lang:menu.arcmenu.no-extra}'
+  amount-input: '{lang:menu.arcmenu.amount-input}'
+renderers:
+  ore:
+    templates:
+      product: {}
+      button: {}
+  arcmenu:
+    right-click-action: select-amount
+    screen-scale: 1.35
+    update-interval: 20
+    animation:
+      enabled: true
+      duration: 8
+    more-menu:
+      columns: 1
+    tooltip:
+      enabled: true
+      width: 260
+      font-size: 0.9
+      padding: 8

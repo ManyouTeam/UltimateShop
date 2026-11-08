@@ -47,6 +47,7 @@ This uses the default global `menu.ui.layout.areas.sidebar` graphical area. Inst
 * `select-amount` normally opens ArcMenu product details; quantity adjustment requires Buy More to be enabled for the product and a suitable quantity binding.
 * Product right-click defaults to `select-amount`. Change it with `ui.renderers.arcmenu.right-click-action`.
 * A shop's default buy/sell quantities apply until the player selects another quantity.
+* With ArcMenu 3.4.3 or newer, click the quantity between `-` and `+` to open its native input editor. UltimateShop draws a focused input box with the live draft even when ArcMenu conceals the native anvil GUI. Finish editing (Esc in mouse mode) to apply a valid whole number immediately, clamped to `1` through the Buy More menu's `max-amount`. Invalid input keeps the previous quantity. The player then clicks Buy or Sell to trade; finishing input does not execute a transaction.
 
 Item icons show the displayed stack quantity in white with a dark shadow at the icon's bottom-right when the quantity is greater than one. Product cards no longer display a separate cyan `×10` quantity label. This icon count describes the displayed item stack; the product's buy/sell quantity and the detail panel's quantity selector still follow their own settings.
 
@@ -55,6 +56,48 @@ ArcMenu product details are **not** the Inventory Buy More menu. The latter's `a
 ## ArcMenu graphical settings
 
 Defaults live at `menu.ui.renderers.arcmenu`; most renderer settings support per-menu overrides at `ui.renderers.arcmenu`. **`update-interval` is currently read only from the global `menu.ui.renderers.arcmenu.update-interval` path.**
+
+### Bedrock style
+
+Styles are stored in `plugins/UltimateShop/ui/`. Both `classic.yml` (the original appearance) and `bedrock.yml` are created at startup if missing. Set `menu.ui.style: bedrock` in `config.yml` globally, or select it for one menu:
+
+```yaml
+ui:
+  style: bedrock
+```
+
+The Bedrock preset uses charcoal square panels, beveled buttons, green hover and buy buttons, pale sell buttons, a navigation bar across the top with room for five buttons, and a three-column product grid. Navigation stays visible across product pages. Product details, quantity input and tooltips use the same palette. It uses Minecraft's existing font and item icons and does not require extra image assets. `classic` keeps the original appearance.
+
+Bevel highlight and shadow colors are composited against the current panel color before rendering, so opaque cards and buttons retain opaque edges even when the configured bevel color has alpha. The backdrop uses a low-transparency neutral gray to reduce world color bleed. Price labels are white with green values. Existing style files are preserved on upgrade; replace `ui/bedrock.yml` with the bundled revision to apply these updated palette defaults, then reload UltimateShop.
+
+Mouse layout fitting uses the active ArcMenu surface, cursor sensitivity, per-player sensitivity preference and cursor margin. It also respects Minecraft's vertical pitch limit, keeping footer buttons within the physically reachable cursor area. Touch and Vision use the surface bounds directly.
+
+Each style file contains the UI fields directly (`layout`, `products`, `theme`, `text` and `renderers`), without a wrapping `ui` section. To add a custom style, copy either file to `ui/my-style.yml` and select `ui.style: my-style`. Subfolders are supported, for example `ui.style: custom/dark` loads `ui/custom/dark.yml`. Reload UltimateShop after editing styles.
+
+Menu-local UI settings take precedence over the selected style. Selecting a different style overrides the global UI defaults, and missing fields fall back to those defaults. Existing `menu.ui` settings remain supported as overrides of the global style. Styles provide the shared graphical layout used by ArcMenu and Ore. ArcMenu reads rendering parameters such as `theme.bevel.enabled`, button colors and text alignment, area backgrounds and header `bold` directly from the selected file; Java does not branch on style file names.
+
+To force one presentation and style across menus, use the existing `force-ui` section in `config.yml`:
+
+```yaml
+menu:
+  force-ui:
+    enabled: true
+    type: arcmenu
+    style: bedrock
+```
+
+An enabled `force-ui.style` overrides menu style selections and local UI settings for fields provided by that style. Empty `style` forces only the presentation. When `force-ui.enabled` is false, the forced style is ignored.
+
+Menus with explicit grid cells, custom areas or free coordinates should adapt their placements to the chosen style (the Bedrock preset uses the existing `sidebar` area for up to five navigation buttons and `content` for products). For example, a menu can select the Bedrock style and override its accent:
+
+```yaml
+ui:
+  style: bedrock
+  theme:
+    accent: '#6CC349'
+```
+
+### Other settings
 
 ```yaml
 ui:

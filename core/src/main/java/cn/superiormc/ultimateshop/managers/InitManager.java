@@ -30,6 +30,8 @@ public class InitManager extends AbstractManager {
 
     public void init() {
         migrateLegacyFolders();
+        resourceOutput("ui/classic.yml", true);
+        resourceOutput("ui/bedrock.yml", true);
         resourceOutput("languages/en_US.yml", true);
         resourceOutput("languages/zh_CN.yml", true);
         resourceOutput("languages/cs_CZ.yml", true);

@@ -16,7 +16,7 @@
         <dependency>
             <groupId>com.fentai</groupId>
             <artifactId>arcmenu-api</artifactId>
-            <version>3.0.1</version>
+            <version>3.4.3</version>
             <scope>provided</scope>
         </dependency>
         <dependency>

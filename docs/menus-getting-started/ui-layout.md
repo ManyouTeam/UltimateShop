@@ -4,7 +4,7 @@ Ore and ArcMenu share the `ui.layout` canvas/area model, `ui.products`, entry `u
 
 ## First graphical menu
 
-Global graphical defaults live under `config.yml` → `menu.ui`, including the named areas `sidebar` and `content`. The following menu uses those default areas and works as the starting point for **either** Ore or ArcMenu after enabling the chosen renderer:
+Graphical styles live in `ui/classic.yml` and `ui/bedrock.yml` under the plugin folder. Select the global default with `config.yml` → `menu.ui.style`, or select a style per menu with `ui.style`. Existing `menu.ui` settings remain available as global overrides. The following menu uses the default areas `sidebar` and `content` and works as the starting point for **either** Ore or ArcMenu after enabling the chosen renderer:
 
 ```yaml
 title: '&8Categories'

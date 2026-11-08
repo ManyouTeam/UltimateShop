@@ -41,12 +41,27 @@ final class ArcMenuRuntime implements AutoCloseable {
         return Double.isFinite(depth) ? depth : 5;
     }
 
+    double cursorExtent(Player player, boolean vertical) {
+        var plugin = Bukkit.getPluginManager().getPlugin("ArcMenu");
+        double sensitivity = plugin instanceof JavaPlugin javaPlugin
+            ? javaPlugin.getConfig().getDouble(vertical ? "mouse.cursor.sensitivity-y" : "mouse.cursor.sensitivity-x", 2) : 2;
+        double margin = plugin instanceof JavaPlugin javaPlugin
+            ? javaPlugin.getConfig().getDouble("mouse.cursor.clamp-margin", 3) : 3;
+        double multiplier = api.preferences().get(player).getSensitivityMultiplier();
+        return Math.max(1, (vertical ? 180 : 360) * sensitivity * multiplier - 2 * Math.max(0, margin));
+    }
+
     static ArcMenuRuntime create() {
         ArcMenuApi api = Bukkit.getServicesManager().load(ArcMenuApi.class);
         if (api == null || !api.capabilities().containsAll(Set.of(
             ArcMenuCapability.APPLICATION_SESSIONS,
             ArcMenuCapability.SCREEN_SURFACE,
             ArcMenuCapability.POINTER_EVENTS))) {
+            return null;
+        }
+        if (api.capabilities().stream().noneMatch(capability -> capability.name().equals("INLINE_TEXT_INPUT"))) {
+            ErrorManager.errorManager.sendErrorMessage(
+                "§cError: The built-in ArcMenu renderer requires native text input support; update ArcMenu");
             return null;
         }
         return new ArcMenuRuntime(api);

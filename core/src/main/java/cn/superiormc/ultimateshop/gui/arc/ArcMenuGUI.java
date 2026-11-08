@@ -74,6 +74,10 @@ public abstract class ArcMenuGUI extends AbstractGUI {
 
     private double cursorDepth;
 
+    private double cursorWidth = Double.POSITIVE_INFINITY;
+
+    private double cursorHeight = Double.POSITIVE_INFINITY;
+
     private ArcMenuSurface surface;
 
     private final Map<String, Node> nodes = new LinkedHashMap<>();
@@ -198,6 +202,8 @@ public abstract class ArcMenuGUI extends AbstractGUI {
     ArcMenuApplicationSession attach(ArcMenuApplicationContext context) {
         this.context = context;
         cursorDepth = runtime.cursorDepth();
+        cursorWidth = runtime.cursorExtent(player, false);
+        cursorHeight = runtime.cursorExtent(player, true);
         surface = context.surface();
         active = true;
         finished = false;
@@ -351,6 +357,10 @@ public abstract class ArcMenuGUI extends AbstractGUI {
             return;
         }
         age++;
+        if (age % 20 == 0 && context.pointerMode() == ArcMenuPointerMode.MOUSE) {
+            cursorWidth = runtime.cursorExtent(player, false);
+            cursorHeight = runtime.cursorExtent(player, true);
+        }
         if (age % 100 == 0) {
             debug("tick, pointer=" + context.pointer() + ", hitCount=" + hits.size());
         }
@@ -483,7 +493,14 @@ public abstract class ArcMenuGUI extends AbstractGUI {
     private void highlight(Hit hit, boolean on) {
         Node node = nodes.get(hit.id + ":panel");
         if (node != null) {
-            setBackground(node, on ? buttonColor(hit.id, true) : buttonColor(hit.id, false));
+            int background;
+            if (nodes.containsKey(hit.id + ":icon")) {
+                background = on ? color("card-hover", buttonColor(hit.id, true)) : color("card", 0xDC141E30);
+            } else {
+                background = buttonColor(hit.id, on);
+            }
+            setBackground(node, background);
+            updateBevel(hit.id, background);
         }
     }
 
@@ -520,7 +537,7 @@ public abstract class ArcMenuGUI extends AbstractGUI {
             box.y - 1,
             width + 2,
             height + 2,
-            0xFF607B9E,
+            color("tooltip.border", 0xFF607B9E),
             ArcMenuLayout.TOOLTIP_DEPTH);
         panel(
             "tooltip:panel",
@@ -528,7 +545,7 @@ public abstract class ArcMenuGUI extends AbstractGUI {
             box.y,
             width,
             height,
-            0xFF0D1424,
+            color("tooltip.background", 0xFF0D1424),
             ArcMenuLayout.TOOLTIP_DEPTH + 2);
         label(
             "tooltip:text",
@@ -643,15 +660,18 @@ public abstract class ArcMenuGUI extends AbstractGUI {
         }
         for (MenuUILayout.Area area : layout.getAreas().values()) {
             MenuUILayout.Box box = area.bounds();
-            if (area.type().equals("stack")) {
-                panel(
-                    "area:" + area.name(),
-                    box.x(),
-                    box.y(),
-                    box.width(),
-                    box.height(),
-                    color("sidebar", 0xDE111B30),
-                    1);
+            String areaPath = "layout.areas." + area.name();
+            if (layout.getUi().getBoolean(areaPath + ".background-enabled", area.type().equals("stack"))) {
+                double padding = Math.max(0, layout.getUi().getDouble(areaPath + ".background-padding", 0));
+                if (bevelsEnabled()) {
+                    beveledPanel("area:" + area.name(), box.x() - padding, box.y() - padding,
+                        box.width() + 2 * padding, box.height() + 2 * padding,
+                        color("sidebar", 0xDE111B30), color("border", 0xFF25334D), 1);
+                } else {
+                    panel("area:" + area.name(), box.x() - padding, box.y() - padding,
+                        box.width() + 2 * padding, box.height() + 2 * padding,
+                        color("sidebar", 0xDE111B30), 1);
+                }
             }
         }
         var header = layout.getUi().getConfigurationSection("layout.header");
@@ -668,6 +688,9 @@ public abstract class ArcMenuGUI extends AbstractGUI {
                 .replace("{title}", title == null ? "" : title)
                 .replace("{content}", ConfigManager.configManager.getMenuContent(getMenu().getConfig(), "arcmenu"));
             value = headerText(value);
+            if (settings.getBoolean("bold", false)) {
+                value = "&l" + value;
+            }
             double size = settings.getDouble("font-size", .8);
             double width = settings.getDouble("width", 100);
             double x = settings.getDouble("x");
@@ -749,6 +772,10 @@ public abstract class ArcMenuGUI extends AbstractGUI {
         return layout.getUi().getString("text." + key, fallback);
     }
 
+    final boolean bevelsEnabled() {
+        return layout.getUi().getBoolean("theme.bevel.enabled", false);
+    }
+
     final double number(String path, double fallback, double minimum, double maximum) {
         String key = path.startsWith("theme.") ? path : path.startsWith("cards.")
             ? "products.card." + path.substring(6) : "renderers.arcmenu." + path;
@@ -809,13 +836,36 @@ public abstract class ArcMenuGUI extends AbstractGUI {
     }
 
     final int buttonColor(String id, boolean hovered) {
-        String type = id.endsWith(":action:buy") || id.endsWith(":action:buy-or-sell")
-            ? "buy-button" : id.endsWith(":action:sell") ? "sell-button" : "button";
-        int fallback =
-            type.equals("buy-button")
-        ? 0xFF21674D
-        : type.equals("sell-button") ? 0xFF285A89 : 0xFF354861;
-        return color(type + (hovered ? "-hover" : ""), hovered ? 0xFF4D789C : fallback);
+        String type = buttonTheme(id);
+        int fallback = hovered ? color("button-hover", 0xFF4D789C)
+            : type.equals("buy") ? 0xFF21674D : type.equals("sell") ? 0xFF285A89
+            : color("button", 0xFF354861);
+        return color(type + (hovered ? ".hover" : ".background"), fallback);
+    }
+
+    private String buttonTheme(String id) {
+        if (id.endsWith(":action:buy") || id.endsWith(":action:buy-or-sell")) {
+            return "buy";
+        }
+        if (id.endsWith(":action:sell")) {
+            return "sell";
+        }
+        if (id.equals("minus") || id.equals("plus")) {
+            return "quantity";
+        }
+        if (id.startsWith("pagination:")) {
+            return "pagination";
+        }
+        if (id.equals("extra:cancel")) {
+            return "cancel";
+        }
+        return "button";
+    }
+
+    final String buttonText(String id, String title) {
+        String textPath = buttonTheme(id) + ".text";
+        return layout.getUi().contains("theme." + textPath)
+            ? String.format("&#%06X", color(textPath, 0xFFFFFFFF) & 0xFFFFFF) + title : title;
     }
 
     final void button(
@@ -827,8 +877,12 @@ public abstract class ArcMenuGUI extends AbstractGUI {
         String title,
         List<String> tooltip,
         Consumer<ClickType> action) {
-        panel(id + ":edge", x - 1, y - 1, w + 2, h + 2, color("button-border", 0xFF6B829F), 8);
-        panel(id + ":panel", x, y, w, h, buttonColor(id, false), 9);
+        if (bevelsEnabled()) {
+            beveledPanel(id, x, y, w, h, buttonColor(id, false), color("button-border", 0xFF6B829F), 8);
+        } else {
+            panel(id + ":edge", x - 1, y - 1, w + 2, h + 2, color("button-border", 0xFF6B829F), 8);
+            panel(id + ":panel", x, y, w, h, buttonColor(id, false), 9);
+        }
         double padding = Math.min(number("cards.padding", 9, 3, 16), w / 4);
         double fontSize = number("cards.button-font-size", 1, .5, 1.5);
         String align =
@@ -838,8 +892,10 @@ public abstract class ArcMenuGUI extends AbstractGUI {
             || id.equals("details:close")
             || id.equals("minus")
             || id.equals("plus")
+            || id.startsWith("details:input:")
         ? "center"
         : "left";
+        align = layout.getUi().getString("theme.button.text-align", align);
         if (id.matches("slot:[0-9]+")) {
             AbstractButton sourceButton = buttons.get(Integer.parseInt(id.substring(5)));
             if (sourceButton != null && sourceButton.getButtonConfig() != null) {
@@ -865,11 +921,42 @@ public abstract class ArcMenuGUI extends AbstractGUI {
             id + ":text",
             labelX,
             ArcMenuLayout.textCenterY(y, h, fontSize),
-            title,
+            buttonText(id, title),
             fontSize,
             w - 2 * padding,
             10);
         hits.add(new Hit(id, x, y, w, h, tooltip, action));
+    }
+
+    final void beveledPanel(String id, double x, double y, double width, double height,
+                            int background, int border, double depth) {
+        panel(id + ":shadow", x - 1, y + 2, width + 2, height + 1, color("bevel.shadow", 0xFF191A1B), depth);
+        panel(id + ":edge", x - 1, y - 1, width + 2, height + 2, border, depth + .1);
+        panel(id + ":panel", x, y, width, height, background, depth + .2);
+        panel(id + ":bevel-top", x + 1, y, width - 2, 1,
+            bevelColor(id, "top", 0x558E8F91, background), depth + .3);
+        panel(id + ":bevel-left", x, y + 1, 1, height - 3,
+            bevelColor(id, "left", 0x338E8F91, background), depth + .3);
+        panel(id + ":bevel-right", x + width - 1, y + 1, 1, height - 3,
+            bevelColor(id, "right", 0x33000000, background), depth + .3);
+        panel(id + ":bevel-bottom", x, y + height - 2, width, 2,
+            bevelColor(id, "bottom", 0x66000000, background), depth + .3);
+    }
+
+    private int bevelColor(String id, String side, int fallback, int background) {
+        return ArcMenuLayout.compositeColor(
+            color(buttonTheme(id) + ".bevel." + side, color("bevel." + side, fallback)), background);
+    }
+
+    private void updateBevel(String id, int background) {
+        String[] sides = {"top", "left", "right", "bottom"};
+        int[] defaults = {0x558E8F91, 0x338E8F91, 0x33000000, 0x66000000};
+        for (int i = 0; i < sides.length; i++) {
+            Node node = nodes.get(id + ":bevel-" + sides[i]);
+            if (node != null) {
+                setBackground(node, bevelColor(id, sides[i], defaults[i], background));
+            }
+        }
     }
 
     protected final void decorate(String id, double x, double y, double width, double height,
@@ -1125,11 +1212,11 @@ public abstract class ArcMenuGUI extends AbstractGUI {
         double global = ConfigManager.configManager.getDouble(
             "menu.ui.renderers.arcmenu.screen-scale", 1.5);
         double local = layout.getUi().getDouble("renderers.arcmenu.screen-scale", global);
-        double fit = Math.min(
-            surface.getCanvas().getWidth() / (double) layout.getWidth(),
-            surface.getCanvas().getHeight() / (double) layout.getHeight());
-        return fit * ArcMenuLayout.designPixelsPerBlock(global)
-            / ArcMenuLayout.designPixelsPerBlock(local);
+        boolean mouse = context != null && context.pointerMode() == ArcMenuPointerMode.MOUSE;
+        double width = mouse ? Math.min(surface.getCanvas().getWidth(), cursorWidth) : surface.getCanvas().getWidth();
+        double height = mouse ? Math.min(surface.getCanvas().getHeight(), cursorHeight) : surface.getCanvas().getHeight();
+        return ArcMenuLayout.canvasScale(width, height,
+            layout.getWidth(), layout.getHeight(), surface.getCanvas().getPixelsPerBlock(), local);
     }
 
     private double pixelsPerBlock() {

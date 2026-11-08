@@ -23,6 +23,7 @@ import cn.superiormc.ultimateshop.utils.MathUtil;
 import cn.superiormc.ultimateshop.utils.TextUtil;
 
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -32,6 +33,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -66,6 +68,8 @@ public class ConfigManager extends AbstractManager {
 
     public Map<String, ObjectSellChest> sellChestMap = new HashMap<>();
 
+    private final Map<String, ConfigurationSection> uiStyles = new HashMap<>();
+
     public ConfigManager() {
         configManager = this;
         UltimateShop.instance.saveDefaultConfig();
@@ -73,9 +77,7 @@ public class ConfigManager extends AbstractManager {
         if (config.getBoolean("menu.force-ui.enabled", false) && getForcedMenuUIMode().isEmpty()) {
             ErrorManager.errorManager.sendErrorMessage("§cError: menu.force-ui.type must be inventory, arcmenu, dialog, ore, item-action-list or form");
         }
-        if (!config.isConfigurationSection("menu.ui")) {
-            ErrorManager.errorManager.sendErrorMessage("§cError: config.yml requires menu.ui");
-        }
+        initUIStyles();
         if (!UltimateShop.freeVersion) {
             initSharedUseTimesConfigs();
         }
@@ -92,6 +94,51 @@ public class ConfigManager extends AbstractManager {
             }
         }
         MathUtil.init();
+    }
+
+    private void initUIStyles() {
+        uiStyles.clear();
+        File directory = new File(UltimateShop.instance.getDataFolder(), "ui");
+        if (!directory.isDirectory()) {
+            ErrorManager.errorManager.sendErrorMessage("§cError: UI style directory does not exist: " + directory);
+            return;
+        }
+        for (File file : CommonUtil.getYamlFiles(directory)) {
+            String name = directory.toPath().relativize(file.toPath()).toString().replace('\\', '/');
+            name = name.substring(0, name.length() - 4);
+            YamlConfiguration style = new YamlConfiguration();
+            try {
+                style.load(file);
+                uiStyles.put(name, style);
+                TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fLoaded UI style: " + name + "!");
+            } catch (IOException | InvalidConfigurationException exception) {
+                ErrorManager.errorManager.sendErrorMessage("§cError: Cannot load UI style " + name
+                    + ": " + exception.getMessage());
+            }
+        }
+        ConfigurationSection ui = config.getConfigurationSection("menu.ui");
+        if (ui == null) {
+            ErrorManager.errorManager.sendErrorMessage("§cError: config.yml requires menu.ui");
+            ui = config.createSection("menu.ui");
+        }
+        String forcedStyle = getForcedMenuUIStyle();
+        ConfigurationSection style = getUIStyle(forcedStyle.isEmpty() ? ui.getString("style", "classic") : forcedStyle);
+        if (style == null) {
+            style = uiStyles.get("classic");
+        }
+        ConfigurationUtil.mergeMissing(ui, style);
+        if (!forcedStyle.isEmpty()) {
+            ConfigurationUtil.merge(ui, style);
+        }
+    }
+
+    private ConfigurationSection getUIStyle(String name) {
+        ConfigurationSection style = uiStyles.get(name);
+        if (style == null) {
+            ErrorManager.errorManager.sendErrorMessage("§cError: Unknown UI style: " + name
+                + "; add its YAML file under plugins/UltimateShop/ui");
+        }
+        return style;
     }
 
     private void initShopConfigs() {
@@ -582,6 +629,18 @@ public class ConfigManager extends AbstractManager {
             ui = menu.createSection("ui");
         }
         ConfigurationSection defaults = config.getConfigurationSection("menu.ui");
+        String globalStyle = config.getString("menu.ui.style", "classic");
+        String forcedStyle = getForcedMenuUIStyle();
+        String styleName = forcedStyle.isEmpty() ? ui.getString("style", globalStyle) : forcedStyle;
+        if (!styleName.equals(globalStyle)) {
+            ConfigurationSection style = getUIStyle(styleName);
+            if (style != null) {
+                YamlConfiguration styledDefaults = new YamlConfiguration();
+                ConfigurationUtil.merge(styledDefaults, defaults);
+                ConfigurationUtil.merge(styledDefaults, style);
+                defaults = styledDefaults;
+            }
+        }
         if (!supportsOre && defaults != null) {
             YamlConfiguration graphicalDefaults = new YamlConfiguration();
             ConfigurationUtil.merge(graphicalDefaults, defaults);
@@ -591,6 +650,17 @@ public class ConfigManager extends AbstractManager {
             defaults = graphicalDefaults;
         }
         ConfigurationUtil.mergeMissing(ui, defaults);
+        if (!forcedStyle.isEmpty() && uiStyles.containsKey(forcedStyle)) {
+            ConfigurationUtil.merge(ui, defaults);
+            ui.set("style", forcedStyle);
+        }
+    }
+
+    private String getForcedMenuUIStyle() {
+        if (getForcedMenuUIMode().isEmpty()) {
+            return "";
+        }
+        return config.getString("menu.force-ui.style", "").trim();
     }
 
     public Object getMenuRendererSetting(

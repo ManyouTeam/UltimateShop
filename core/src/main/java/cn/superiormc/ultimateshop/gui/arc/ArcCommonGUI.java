@@ -142,15 +142,20 @@ public class ArcCommonGUI extends ArcMenuGUI {
             return;
         }
         boolean isSelected = info.isSelected(slot);
-        panel(
-            id + ":edge",
-            x - 1,
-            y - 1,
-            cw + 2,
-            ch + 2,
-            isSelected ? accent : color("border", 0xFF25334D),
-            2);
-        panel(id + ":panel", x, y, cw, ch, color("card", 0xDC141E30), 3);
+        if (bevelsEnabled()) {
+            beveledPanel(id, x, y, cw, ch, color("card", 0xDC141E30),
+                isSelected ? accent : color("border", 0xFF25334D), 2);
+        } else {
+            panel(
+                id + ":edge",
+                x - 1,
+                y - 1,
+                cw + 2,
+                ch + 2,
+                isSelected ? accent : color("border", 0xFF25334D),
+                2);
+            panel(id + ":panel", x, y, cw, ch, color("card", 0xDC141E30), 3);
+        }
         int displayAmount = cardAmount(slot, stack);
         item(
             id + ":icon",

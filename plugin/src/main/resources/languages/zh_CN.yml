@@ -269,6 +269,8 @@ override-lang:
       content: '&7把常交易的商品保存下来，之后随时快速打开。'
     arcmenu:
       cancel: 取消
+      amount-input: 输入数量
+      amount-input-done: 输入数量后按 Esc 完成。
       navigation: 快捷操作
       no-extra: 没有额外操作
       favourite: '收藏 / 取消收藏'

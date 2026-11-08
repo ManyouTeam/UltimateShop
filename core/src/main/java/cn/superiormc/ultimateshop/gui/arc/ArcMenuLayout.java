@@ -46,6 +46,29 @@ final class ArcMenuLayout {
         return result;
     }
 
+    static int compositeColor(int foreground, int background) {
+        int foregroundAlpha = foreground >>> 24;
+        int backgroundAlpha = background >>> 24;
+        int remaining = 255 - foregroundAlpha;
+        int alpha = foregroundAlpha * 255 + backgroundAlpha * remaining;
+        if (alpha == 0) {
+            return 0;
+        }
+        int result = ((alpha + 127) / 255) << 24;
+        for (int shift = 0; shift <= 16; shift += 8) {
+            int channel = ((foreground >> shift & 255) * foregroundAlpha * 255
+                + (background >> shift & 255) * backgroundAlpha * remaining + alpha / 2) / alpha;
+            result |= channel << shift;
+        }
+        return result;
+    }
+
+    static double canvasScale(double canvasWidth, double canvasHeight, double width, double height,
+                              double pixelsPerBlock, double screenScale) {
+        double fit = Math.min(canvasWidth / width, canvasHeight / height);
+        return fit * Math.min(1, pixelsPerBlock / designPixelsPerBlock(screenScale));
+    }
+
     static String ellipsize(String value, int maximum) {
         if (textWidth(value) <= maximum) {
             return value;
