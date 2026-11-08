@@ -218,7 +218,7 @@ public class BuyMoreGUI extends InvGUI {
         if (ConfigManager.configManager.getBoolean("menu.buy-more-menu.not-open-when-invalid") && menu.isInvalid()) {
             return;
         }
-        if (menu.isUseDialog()) {
+        if (menu.isUseDialog(player)) {
             new DialogBuyMoreGUI(player, item, menu).openGUI(true);
             return;
         }

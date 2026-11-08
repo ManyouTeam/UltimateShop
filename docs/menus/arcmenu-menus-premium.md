@@ -48,6 +48,8 @@ This uses the default global `menu.ui.layout.areas.sidebar` graphical area. Inst
 * Product right-click defaults to `select-amount`. Change it with `ui.renderers.arcmenu.right-click-action`.
 * A shop's default buy/sell quantities apply until the player selects another quantity.
 
+Item icons show the displayed stack quantity in white with a dark shadow at the icon's bottom-right when the quantity is greater than one. Product cards no longer display a separate cyan `×10` quantity label. This icon count describes the displayed item stack; the product's buy/sell quantity and the detail panel's quantity selector still follow their own settings.
+
 ArcMenu product details are **not** the Inventory Buy More menu. The latter's `amount-items` and `layout` do not control ArcMenu's detail panel.
 
 ## ArcMenu graphical settings
@@ -95,3 +97,49 @@ See [📐 Graphical layout - Premium](../menus-getting-started/ui-layout.md) for
 If Inventory opens, check the two ArcMenu switches, plugin integration, resource setup and supported menu type. Item Sell and Sell All require physical inventories; Buy More uses ArcMenu product details instead of a separate Inventory-style ArcMenu screen. Use [Menu troubleshooting](troubleshooting.md) for symptoms.
 
 [🎨 Presentation selection](ui-overview.md) · [📐 Layout - Premium](../menus-getting-started/ui-layout.md) · [🪨 Ore - Premium](ore-menus-premium.md).
+
+## Independent title backgrounds and decorations
+
+ArcMenu reads these settings from menu `ui.theme` or global `menu.ui.theme`. They use the same names as SpinToWin's Wheel theme:
+
+```yaml
+ui:
+  theme:
+    background-enabled: true
+    title:
+      background-enabled: false
+      background: '#EF0C1223'
+      decoration-enabled: false
+    decorations:
+      enabled: true
+      style: none
+      color: '#65E8EF'
+      corner-color: '#65E8EF'
+      thickness: 2
+      corner-thickness: 2
+      corner-length: 20
+      inset: 10
+      dividers-enabled: true
+```
+
+The title background can be enabled while the window background is disabled. `title.decoration-enabled` adds a frame/corners around the configured title header bounds. `decorations.style` accepts `frame`, `corners`, `both` or `none`; `none` preserves the default header accent without adding a window frame. `enabled: false` disables all theme decoration. `dividers-enabled` controls the header accent. Thickness ranges are `0.5–6` and `0.5–8`, corner length `0–80`, inset `0–30`. Colors accept `#RRGGBB` or `#AARRGGBB`.
+
+Header entries under `ui.layout.header` accept `height` (default `27`). Text is vertically centered within that region, and title backgrounds/decorations follow the same bounds.
+
+Tooltip text is pre-wrapped with formatting preserved, displayed as a single left-aligned block and never ellipsized a second time. Oversized tooltips shrink to fit rather than silently dropping Lore. The renderer also skips the opening animation when reopening the same active menu; ordinary content updates already reuse the current session. First opens retain the configured animation.
+
+
+## Force one presentation globally
+
+```yaml
+menu:
+  force-ui:
+    enabled: false
+    type: inventory
+```
+
+Enable `menu.force-ui.enabled` in `config.yml` to override individual menu and global presentation enable switches. Supported types are `inventory`, `arcmenu`, `dialog`, `ore`, `item-action-list` and `form`. Disabling the switch restores normal presentation selection. Invalid types report a configuration error and use normal selection.
+
+`inventory` applies to both Java and Bedrock. `arcmenu`, `dialog`, `ore` and `item-action-list` target Java; incompatible Bedrock clients use Inventory. `form` targets Bedrock, with Inventory for Java. Existing platform, edition and integration requirements still apply. Unsupported menu types retain their supported fallback: Item Sell and Sell All use physical inventories; Buy More supports Inventory/Dialog and ArcMenu product details; Search/Favourite use native Dialog when Ore is unavailable for that type. Missing ArcMenu falls back to Inventory. Forcing native `dialog` also replaces an Ore layout with `multi-action`.
+
+Reload the plugin after changing the setting so loaded menu definitions are rebuilt.

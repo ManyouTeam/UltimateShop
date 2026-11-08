@@ -180,6 +180,11 @@ give-item:
   check-full: true
 
 menu:
+  force-ui:
+    enabled: false
+    # inventory, arcmenu, dialog, ore, item-action-list or form.
+    # Overrides menu-specific enable switches; unavailable presentations use Inventory.
+    type: inventory
   dialog:
     enabled: false
     # If enabled, keep the product information dialog open after a buy or sell action.
@@ -387,12 +392,28 @@ menu:
           buy: '{lang:menu.arcmenu.buy}'
           sell: '{lang:menu.arcmenu.sell}'
     theme:
+      background-enabled: true
       background: '#EF0C1223'
       sidebar: '#DE111B30'
       card: '#141E30'
       border: '#425776'
       accent: '#65E8EF'
       text: '#FFFFFF'
+      title:
+        background-enabled: false
+        background: '#EF0C1223'
+        decoration-enabled: false
+      decorations:
+        enabled: true
+        # frame, corners, both or none; none preserves the existing header accent.
+        style: none
+        color: '#65E8EF'
+        corner-color: '#65E8EF'
+        thickness: 2
+        corner-thickness: 2
+        corner-length: 20
+        inset: 10
+        dividers-enabled: true
       button:
         background: '#354861'
         hover: '#4D789C'

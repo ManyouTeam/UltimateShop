@@ -94,3 +94,18 @@ The in-game editor limits its preset fields to these capabilities, including typ
 Item Sell and Sell All use a real Inventory container, even when opened from another type of screen. Inventory Buy More buttons are not automatically converted into Form or Dialog widgets; see [Buy More](buy-more-menus.md).
 
 Related: [Configuration scopes](menu-configuration.md) · [Graphical layout - Premium](../menus-getting-started/ui-layout.md) · [Troubleshooting](troubleshooting.md).
+
+## Force one presentation globally
+
+```yaml
+menu:
+  force-ui:
+    enabled: false
+    type: inventory
+```
+
+Enable `menu.force-ui.enabled` in `config.yml` to override individual menu and global presentation enable switches. Supported types are `inventory`, `arcmenu`, `dialog`, `ore`, `item-action-list` and `form`. Disabling the switch restores normal presentation selection. Invalid types report a configuration error and use normal selection.
+
+`inventory` applies to both Java and Bedrock. `arcmenu`, `dialog`, `ore` and `item-action-list` target Java; incompatible Bedrock clients use Inventory. `form` targets Bedrock, with Inventory for Java. Existing platform, edition and integration requirements still apply. Unsupported menu types retain their supported fallback: Item Sell and Sell All use physical inventories; Buy More supports Inventory/Dialog and ArcMenu product details; Search/Favourite use native Dialog when Ore is unavailable for that type. Missing ArcMenu falls back to Inventory. Forcing native `dialog` also replaces an Ore layout with `multi-action`.
+
+Reload the plugin after changing the setting so loaded menu definitions are rebuilt.

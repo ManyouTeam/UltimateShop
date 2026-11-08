@@ -165,7 +165,7 @@ public class ShopGUI extends InvGUI {
         if (ArcMenuBridge.arcMenuBridge.open(player, shopMenu, shop, bypass, reopen)) {
             return;
         }
-        if (shopMenu.isUseDialog()) {
+        if (shopMenu.isUseDialog(player)) {
             if ("ore".equalsIgnoreCase(shopMenu.getDialogLayout())) {
                 new DialogOreGUI(player, shopMenu, shop, bypass).openGUI(reopen);
             } else {

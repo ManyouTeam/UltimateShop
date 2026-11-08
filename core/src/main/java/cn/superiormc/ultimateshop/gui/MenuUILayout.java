@@ -132,7 +132,7 @@ public final class MenuUILayout {
                 settings.getInt("x"),
                 settings.getInt("y"),
                 settings.getInt("width", 108),
-                27);
+                settings.getInt("height", 27));
             if (!validate(bounds, new Box(0, 0, width, height), "header " + key)) {
                 return List.of();
             }

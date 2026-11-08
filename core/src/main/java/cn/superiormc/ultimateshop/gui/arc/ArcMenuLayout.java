@@ -51,19 +51,19 @@ final class ArcMenuLayout {
             return value;
         }
         StringBuilder result = new StringBuilder();
-        int width = 0;
-        for (int i = 0; i < value.length(); i++) {
-            char c = value.charAt(i);
-            if (c == '\u00a7' && i + 1 < value.length()) {
-                result.append(c).append(value.charAt(++i));
+        for (int i = 0; i < value.length();) {
+            if (value.charAt(i) == '§' && i + 1 < value.length()) {
+                result.append(value, i, i + 2);
+                i += 2;
                 continue;
             }
-            int next = textWidth(String.valueOf(c));
-            if (width + next + 9 > maximum) {
+            int code = value.codePointAt(i);
+            String next = new String(Character.toChars(code));
+            if (textWidth(result.toString() + next + "…") > maximum) {
                 break;
             }
-            result.append(c);
-            width += next;
+            result.append(next);
+            i += Character.charCount(code);
         }
         return result.append('…').toString();
     }
@@ -144,10 +144,6 @@ final class ArcMenuLayout {
         List<String> result = new ArrayList<>();
         for (String entry : input) {
             result.addAll(TextUtil.wrapByWidth(entry, maximum));
-        }
-        if (result.size() > 38) {
-            result = new ArrayList<>(result.subList(0, 37));
-            result.add("…");
         }
         return result;
     }

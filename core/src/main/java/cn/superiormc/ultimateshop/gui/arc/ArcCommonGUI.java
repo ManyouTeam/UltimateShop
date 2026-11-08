@@ -151,18 +151,16 @@ public class ArcCommonGUI extends ArcMenuGUI {
             isSelected ? accent : color("border", 0xFF25334D),
             2);
         panel(id + ":panel", x, y, cw, ch, color("card", 0xDC141E30), 3);
+        int displayAmount = cardAmount(slot, stack);
         item(
             id + ":icon",
             x + cw / 2,
             y + (showcase ? ch * .22 : 16),
             showcase ? Math.min(number("cards.icon-size", 28, 12, 38), ch * .30) : 21,
             stack,
-            5);
+            5,
+            showAmount(slot, displayAmount) ? displayAmount : 1);
         if (showcase) {
-            int displayAmount = cardAmount(slot, stack);
-            if (showAmount(slot, displayAmount)) {
-                label(id + ":count", x + cw / 2, y + 14, "&b×" + displayAmount, .65, cw / 2 - 5);
-            }
             label(
                 id + ":name",
                 x + 5,

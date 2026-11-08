@@ -100,12 +100,56 @@ public abstract class ArcMenuGUI extends AbstractGUI {
 
     private boolean active;
 
+    private boolean skipOpeningAnimation;
+
+    private final boolean titleBackgroundEnabled;
+
+    private final int titleBackgroundColor;
+
+    private final boolean titleDecorationEnabled;
+
+    private final boolean decorationsEnabled;
+
+    private final String decorationStyle;
+
+    private final int decorationColor;
+
+    private final int decorationCornerColor;
+
+    private final double decorationThickness;
+
+    private final double decorationCornerThickness;
+
+    private final double decorationCornerLength;
+
+    private final double decorationInset;
+
+    private final boolean decorationDividersEnabled;
+
     protected ArcMenuGUI(Player player, ObjectMenu menu, boolean bypass, ArcMenuRuntime runtime) {
         super(player);
         this.menu = menu;
         this.bypass = bypass;
         this.runtime = runtime;
         this.layout = new MenuUILayout(menu.getConfig());
+        titleBackgroundEnabled = layout.getUi().getBoolean("theme.title.background-enabled", false);
+        titleBackgroundColor = color("title.background", color("background", 0xEF0C1223));
+        titleDecorationEnabled = layout.getUi().getBoolean("theme.title.decoration-enabled", false);
+        decorationsEnabled = layout.getUi().getBoolean("theme.decorations.enabled", true);
+        String style = layout.getUi().getString("theme.decorations.style", "none");
+        if (!List.of("frame", "corners", "both", "none").contains(style)) {
+            ErrorManager.errorManager.sendErrorMessage("§cError: " + menu.getName()
+                + ": ui.theme.decorations.style must be frame, corners, both or none");
+            style = "none";
+        }
+        decorationStyle = style;
+        decorationColor = color("decorations.color", color("accent", 0xFF65E8EF));
+        decorationCornerColor = color("decorations.corner-color", color("accent", 0xFF65E8EF));
+        decorationThickness = number("theme.decorations.thickness", 2, .5, 6);
+        decorationCornerThickness = number("theme.decorations.corner-thickness", 2, .5, 8);
+        decorationCornerLength = number("theme.decorations.corner-length", 20, 0, 80);
+        decorationInset = number("theme.decorations.inset", 10, 0, 30);
+        decorationDividersEnabled = layout.getUi().getBoolean("theme.decorations.dividers-enabled", true);
     }
 
     boolean tryOpen(boolean reopen) {
@@ -113,6 +157,9 @@ public abstract class ArcMenuGUI extends AbstractGUI {
             return false;
         }
         GUIStatus previous = MenuStatusManager.menuStatusManager.getGUIStatus(player);
+        skipOpeningAnimation = reopen && previous != null
+            && previous.getGUI() instanceof ArcMenuGUI previousGUI
+            && previousGUI.isActive() && previousGUI.getMenu().getName().equals(menu.getName());
         if (!MenuStatusManager.menuStatusManager.canOpenGUI(player, this, reopen)) {
             return true;
         }
@@ -154,7 +201,7 @@ public abstract class ArcMenuGUI extends AbstractGUI {
         surface = context.surface();
         active = true;
         finished = false;
-        age = 0;
+        age = skipOpeningAnimation ? animationDuration() + 10 : 0;
         closing = 0;
         prepareLanguage();
         debug("attached");
@@ -436,10 +483,7 @@ public abstract class ArcMenuGUI extends AbstractGUI {
     private void highlight(Hit hit, boolean on) {
         Node node = nodes.get(hit.id + ":panel");
         if (node != null) {
-            ((TextDisplay) node.display)
-                .setBackgroundColor(
-                Color.fromARGB(
-                on ? buttonColor(hit.id, true) : buttonColor(hit.id, false)));
+            setBackground(node, on ? buttonColor(hit.id, true) : buttonColor(hit.id, false));
         }
     }
 
@@ -453,17 +497,13 @@ public abstract class ArcMenuGUI extends AbstractGUI {
         List<String> lines =
             ArcMenuLayout.wrap(
             content.stream().map(this::parse).toList(),
-            (int) (number("tooltip.width", 260, 100, 450) / size));
-        lines =
-            lines.subList(
-            0,
-            Math.min(
-            lines.size(),
-            (int) ((layout.getHeight() - 24 - 2 * padding) / (10 * size))));
+            Math.max(1, (int) (Math.min(number("tooltip.width", 260, 100, 450),
+                layout.getWidth() - 24 - 2 * padding) / size)));
+        size = Math.min(size, (layout.getHeight() - 24 - 2 * padding) / (10 * Math.max(1, lines.size())));
         double width =
             Math.max(
             70,
-            lines.stream().mapToInt(ArcMenuLayout::textWidth).max().orElse(0) * size
+            Math.ceil(lines.stream().mapToInt(ArcMenuLayout::textWidth).max().orElse(0) * size)
             + 2 * padding);
         double height = lines.size() * 10 * size + 2 * padding;
         ArcMenuLayout.Box box =
@@ -494,17 +534,18 @@ public abstract class ArcMenuGUI extends AbstractGUI {
             "tooltip:text",
             box.x + padding,
             ArcMenuLayout.textAnchorY(box.y, height, size, padding),
-            String.join("\n", lines),
+            String.join("\n§r", lines),
             size,
             width - 2 * padding,
-            ArcMenuLayout.TOOLTIP_DEPTH + 4);
+            ArcMenuLayout.TOOLTIP_DEPTH + 4,
+            false);
     }
 
     final void clearTooltip() {
         for (String id : List.of("tooltip:edge", "tooltip:panel", "tooltip:text")) {
             Node node = nodes.get(id);
             if (node != null && node.visible) {
-                clearDisplay(node.display);
+                clearDisplay(node);
                 node.visible = false;
                 node.lastTransform = null;
             }
@@ -519,7 +560,7 @@ public abstract class ArcMenuGUI extends AbstractGUI {
         hits.clear();
         hovered = null;
         int accent = color("accent", 0xFF65E8EF);
-        renderHeader(accent);
+        renderHeader();
 
         buttons = new LinkedHashMap<>(getMenu().getUiMenu(MenuSender.of(player, "arcmenu")));
         buttons.putAll(menuButtons);
@@ -557,7 +598,7 @@ public abstract class ArcMenuGUI extends AbstractGUI {
             if (!used.contains(entry.getKey()) && entry.getValue().visible) {
                 // ArcMenu owns the visibility grant. Hiding through UltimateShop does
                 // not revoke that grant, so clear unused pooled displays themselves.
-                clearDisplay(entry.getValue().display);
+                clearDisplay(entry.getValue());
                 entry.getValue().visible = false;
             }
         }
@@ -592,15 +633,14 @@ public abstract class ArcMenuGUI extends AbstractGUI {
         hits.add(new Hit(id, x, y, w, h, tooltip, action));
     }
 
-    private void renderHeader(int accent) {
-        panel(
-            "window",
-            0,
-            0,
-            layout.getWidth(),
-            layout.getHeight(),
-            color("background", 0xEF0C1223),
-            0);
+    private void renderHeader() {
+        if (layout.getUi().getBoolean("theme.background-enabled", true)) {
+            panel("window", 0, 0, layout.getWidth(), layout.getHeight(), color("background", 0xEF0C1223), 0);
+        }
+        if (decorationsEnabled) {
+            renderDecorations("window-decoration", decorationInset, decorationInset,
+                layout.getWidth() - decorationInset * 2, layout.getHeight() - decorationInset * 2);
+        }
         for (MenuUILayout.Area area : layout.getAreas().values()) {
             MenuUILayout.Box box = area.bounds();
             if (area.type().equals("stack")) {
@@ -631,6 +671,16 @@ public abstract class ArcMenuGUI extends AbstractGUI {
             double size = settings.getDouble("font-size", .8);
             double width = settings.getDouble("width", 100);
             double x = settings.getDouble("x");
+            double y = settings.getDouble("y");
+            double height = settings.getDouble("height", 27);
+            if (id.equals("title")) {
+                if (titleBackgroundEnabled) {
+                    panel("header:title-background", x, y, width, height, titleBackgroundColor, 1);
+                }
+                if (titleDecorationEnabled && decorationsEnabled) {
+                    renderDecorations("header:title-decoration", x, y, width, height);
+                }
+            }
             String align = settings.getString("align", "left");
             int measured = ArcMenuLayout.textWidth(parse(value));
             if (align.equals("center")) {
@@ -641,12 +691,19 @@ public abstract class ArcMenuGUI extends AbstractGUI {
             label(
                 "header:" + id,
                 x,
-                ArcMenuLayout.textCenterY(settings.getDouble("y"), 27, size),
+                ArcMenuLayout.textCenterY(y, height, size),
                 value,
                 size,
                 width);
         }
-        panel("header:accent", 0, 0, layout.getWidth(), 2, accent, 2);
+        if (decorationsEnabled && decorationDividersEnabled) {
+            panel("header:accent", 0, 0, layout.getWidth(), decorationThickness, decorationColor, 2);
+        }
+    }
+
+    private void renderDecorations(String id, double x, double y, double width, double height) {
+        decorate(id, x, y, width, height, decorationStyle, decorationColor, decorationCornerColor,
+            decorationThickness, decorationCornerThickness, decorationCornerLength);
     }
 
     private void renderPagination() {
@@ -693,7 +750,7 @@ public abstract class ArcMenuGUI extends AbstractGUI {
     }
 
     final double number(String path, double fallback, double minimum, double maximum) {
-        String key = path.startsWith("cards.")
+        String key = path.startsWith("theme.") ? path : path.startsWith("cards.")
             ? "products.card." + path.substring(6) : "renderers.arcmenu." + path;
         double value = layout.getUi().getDouble(key, fallback);
         if (!Double.isFinite(value)) {
@@ -815,11 +872,36 @@ public abstract class ArcMenuGUI extends AbstractGUI {
         hits.add(new Hit(id, x, y, w, h, tooltip, action));
     }
 
+    protected final void decorate(String id, double x, double y, double width, double height,
+                                  String style, int color, int cornerColor, double thickness,
+                                  double cornerThickness, double cornerLength) {
+        if (style.equals("frame") || style.equals("both")) {
+            panel(id + ":top", x, y, width, thickness, color, 1);
+            panel(id + ":bottom", x, y + height - thickness, width, thickness, color, 1);
+            panel(id + ":left", x, y, thickness, height, color, 1);
+            panel(id + ":right", x + width - thickness, y, thickness, height, color, 1);
+        }
+        if (style.equals("corners") || style.equals("both")) {
+            double length = Math.min(cornerLength, Math.min(width, height) / 2);
+            double cornerWidth = Math.min(cornerThickness, length);
+            if (length <= 0) {
+                return;
+            }
+            for (int corner = 0; corner < 4; corner++) {
+                double cornerX = x + (corner % 2 == 0 ? 0 : width - length);
+                double cornerY = y + (corner / 2 == 0 ? 0 : height - cornerWidth);
+                panel(id + ":corner:" + corner + ":horizontal", cornerX, cornerY, length, cornerWidth, cornerColor, 2);
+                cornerX = x + (corner % 2 == 0 ? 0 : width - cornerWidth);
+                cornerY = y + (corner / 2 == 0 ? 0 : height - length);
+                panel(id + ":corner:" + corner + ":vertical", cornerX, cornerY, cornerWidth, length, cornerColor, 2);
+            }
+        }
+    }
+
     final void panel(String id, double x, double y, double w, double h, int color, double depth) {
         Node node = node(id, TextDisplay.class, x + w / 2, y + h / 2, depth);
-        TextDisplay display = (TextDisplay) node.display;
-        display.setText(" ");
-        display.setBackgroundColor(Color.fromARGB(color));
+        setText(node, " ");
+        setBackground(node, color);
         // Calibrate native TextDisplay world units to the ArcMenu logical canvas.
         node.scale =
             new Vector3f(
@@ -837,35 +919,71 @@ public abstract class ArcMenuGUI extends AbstractGUI {
 
     final void label(
         String id, double x, double y, String value, double size, double width, double depth) {
+        label(id, x, y, value, size, width, depth, true);
+    }
+
+    private void label(
+        String id, double x, double y, String value, double size, double width, double depth, boolean truncate) {
         Node node = node(id, TextDisplay.class, x, y, depth);
         TextDisplay display = (TextDisplay) node.display;
-        int lineWidth = Math.max(1, (int) (width / size));
+        int lineWidth = Math.max(1, (int) Math.ceil(width / size));
         String[] lines = ("§x" + themeTextColor() + parse(value)).split("\n", -1);
         for (int i = 0; i < lines.length; i++) {
-            lines[i] = ArcMenuLayout.ellipsize(lines[i], lineWidth);
+            if (truncate) {
+                lines[i] = ArcMenuLayout.ellipsize(lines[i], lineWidth);
+            }
         }
-        display.setText(String.join("\n", lines));
-        display.setAlignment(TextDisplay.TextAlignment.LEFT);
-        display.setBackgroundColor(Color.fromARGB(0));
-        display.setLineWidth(lineWidth);
+        String text = String.join("\n", lines);
+        setText(node, text);
+        if (node.alignment != TextDisplay.TextAlignment.LEFT) {
+            display.setAlignment(TextDisplay.TextAlignment.LEFT);
+            node.alignment = TextDisplay.TextAlignment.LEFT;
+        }
+        setBackground(node, 0);
+        if (node.lineWidth != Integer.MAX_VALUE) {
+            display.setLineWidth(Integer.MAX_VALUE);
+            node.lineWidth = Integer.MAX_VALUE;
+        }
         // Minecraft's native font pixel is 0.025 world units before display scaling.
         node.scale = new Vector3f(ArcMenuLayout.textScale(size, pixelsPerBlock()));
         node.leftAligned = true;
-        node.textWidth =
-            Math.min(display.getLineWidth(), ArcMenuLayout.textWidth(display.getText()));
+        node.textWidth = ArcMenuLayout.textWidth(text);
+        node.panelWidth = 0;
         transform(node, 1);
     }
 
     final void item(String id, double x, double y, double size, ItemStack stack, double depth) {
+        item(id, x, y, size, stack, depth, stack.getAmount());
+    }
+
+    final void item(String id, double x, double y, double size, ItemStack stack, double depth, int amount) {
         Node node = node(id, ItemDisplay.class, x, y, depth);
         ItemDisplay display = (ItemDisplay) node.display;
         ItemStack icon = stack.clone();
         icon.setAmount(1);
-        display.setItemStack(icon);
-        display.setItemDisplayTransform(ItemDisplay.ItemDisplayTransform.GUI);
+        if (node.item == null || !node.item.equals(icon)) {
+            display.setItemStack(icon);
+            node.item = icon;
+        }
+        if (!node.guiItem) {
+            display.setItemDisplayTransform(ItemDisplay.ItemDisplayTransform.GUI);
+            node.guiItem = true;
+        }
         float iconScale = (float) ArcMenuLayout.worldUnits(size, pixelsPerBlock());
         node.scale = new Vector3f(iconScale, iconScale, iconScale * ITEM_DEPTH_SCALE);
         transform(node, 1);
+        if (amount > 1) {
+            String count = String.valueOf(amount);
+            double fontSize = size / 32;
+            double width = ArcMenuLayout.textWidth(count) * fontSize;
+            double right = x + size / 2;
+            double baseline = ArcMenuLayout.textAnchorY(y - size / 2, size, fontSize, 0);
+            double amountDepth = depth + size / 2 + 2;
+            label(id + ":amount-shadow", right - width + fontSize, baseline + fontSize,
+                "&0" + count, fontSize, width + fontSize, amountDepth);
+            label(id + ":amount", right - width, baseline,
+                "&f" + count, fontSize, width + fontSize, amountDepth + .1);
+        }
     }
 
     private <T extends Display> Node node(
@@ -919,6 +1037,8 @@ public abstract class ArcMenuGUI extends AbstractGUI {
         if (!location.toVector().equals(node.location)) {
             node.display.teleport(location);
             node.location = location.toVector();
+            // The plane basis already supplies rotation; clear Bukkit's location rotation.
+            node.display.setRotation(0, 0);
         }
         Vector right = surface.right();
         Vector up = surface.up();
@@ -927,8 +1047,6 @@ public abstract class ArcMenuGUI extends AbstractGUI {
             (float) right.getX(), (float) right.getY(), (float) right.getZ(),
             (float) up.getX(), (float) up.getY(), (float) up.getZ(),
             (float) normal.getX(), (float) normal.getY(), (float) normal.getZ()));
-        // The plane basis already supplies rotation; clear Bukkit's location rotation.
-        node.display.setRotation(0, 0);
         node.overlayScale = (float) perspectiveScale;
         node.tooltip = tooltip;
         return node;
@@ -998,8 +1116,8 @@ public abstract class ArcMenuGUI extends AbstractGUI {
             node.display.setTransformation(transformation);
             node.lastTransform = transformation;
         }
-        if (node.display instanceof TextDisplay text) {
-            text.setTextOpacity((byte) Math.max(4, (int) (255 * factor)));
+        if (node.display instanceof TextDisplay) {
+            setOpacity(node, Math.max(4, (int) (255 * factor)));
         }
     }
 
@@ -1050,6 +1168,20 @@ public abstract class ArcMenuGUI extends AbstractGUI {
 
         private boolean tooltip;
 
+        private String text;
+
+        private Integer backgroundColor;
+
+        private int lineWidth = -1;
+
+        private TextDisplay.TextAlignment alignment;
+
+        private int opacity = -1;
+
+        private ItemStack item;
+
+        private boolean guiItem;
+
         private Node(Display display) {
             this.display = display;
         }
@@ -1089,13 +1221,35 @@ public abstract class ArcMenuGUI extends AbstractGUI {
         }
     }
 
-    private static void clearDisplay(Display display) {
-        if (display instanceof TextDisplay text) {
-            text.setText("");
-            text.setBackgroundColor(Color.fromARGB(0));
-            text.setTextOpacity((byte) 0);
-        } else if (display instanceof ItemDisplay item) {
+    private static void setText(Node node, String value) {
+        if (!value.equals(node.text)) {
+            ((TextDisplay) node.display).setText(value);
+            node.text = value;
+        }
+    }
+
+    private static void setBackground(Node node, int color) {
+        if (node.backgroundColor == null || node.backgroundColor != color) {
+            ((TextDisplay) node.display).setBackgroundColor(Color.fromARGB(color));
+            node.backgroundColor = color;
+        }
+    }
+
+    private static void setOpacity(Node node, int opacity) {
+        if (node.opacity != opacity) {
+            ((TextDisplay) node.display).setTextOpacity((byte) opacity);
+            node.opacity = opacity;
+        }
+    }
+
+    private static void clearDisplay(Node node) {
+        if (node.display instanceof TextDisplay) {
+            setText(node, "");
+            setBackground(node, 0);
+            setOpacity(node, 0);
+        } else if (node.display instanceof ItemDisplay item && node.item != null) {
             item.setItemStack(new ItemStack(Material.AIR));
+            node.item = null;
         }
     }
 }

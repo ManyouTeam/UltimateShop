@@ -207,8 +207,7 @@ public class ObjectMenu {
         this.useDialog = !inventoryOnly && !UltimateShop.freeVersion
             && UltimateShop.methodUtil.methodID().equals("paper")
             && CommonUtil.getMinorVersion(21, 9)
-            && ConfigManager.configManager.getBoolean("menu.dialog.enabled")
-            && menuConfigs.getBoolean("dialog.enabled", true);
+            && ConfigManager.configManager.isMenuDialogEnabled(menuConfigs);
         this.dynamicLayout = menuConfigs.getBoolean("dynamic-layout", false) && !UltimateShop.freeVersion;
     }
 
@@ -541,6 +540,11 @@ public class ObjectMenu {
 
     public boolean isUseDialog() {
         return useDialog;
+    }
+
+    public boolean isUseDialog(Player player) {
+        return useDialog && (ConfigManager.configManager.getForcedMenuUIMode().isEmpty()
+            || !CommonUtil.isBedrockPlayer(player));
     }
 
     public boolean supportsGraphicalRenderer(String renderer) {

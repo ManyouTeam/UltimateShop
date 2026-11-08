@@ -36,6 +36,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import static cn.superiormc.ultimateshop.managers.SellChestManager.SELL_CHEST_ID;
@@ -69,6 +70,9 @@ public class ConfigManager extends AbstractManager {
         configManager = this;
         UltimateShop.instance.saveDefaultConfig();
         this.config = UltimateShop.instance.getConfig();
+        if (config.getBoolean("menu.force-ui.enabled", false) && getForcedMenuUIMode().isEmpty()) {
+            ErrorManager.errorManager.sendErrorMessage("§cError: menu.force-ui.type must be inventory, arcmenu, dialog, ore, item-action-list or form");
+        }
         if (!config.isConfigurationSection("menu.ui")) {
             ErrorManager.errorManager.sendErrorMessage("§cError: config.yml requires menu.ui");
         }
@@ -591,6 +595,11 @@ public class ConfigManager extends AbstractManager {
 
     public Object getMenuRendererSetting(
         ConfigurationSection menu, String renderer, String path, Object fallback) {
+        String forced = getForcedMenuUIMode();
+        if (path.equals("enabled") && !forced.isEmpty()) {
+            return renderer.equals("dialog")
+                ? List.of("dialog", "ore", "item-action-list").contains(forced) : renderer.equals(forced);
+        }
         String key = (renderer.equals("form") ? "bedrock" : renderer) + "." + path;
         Object global = config.get("menu." + key, fallback);
         return menu == null ? global : menu.get(key, global);
@@ -618,7 +627,29 @@ public class ConfigManager extends AbstractManager {
     }
 
     public String getDialogLayout(ConfigurationSection menu) {
-        return String.valueOf(getMenuRendererSetting(menu, "dialog", "layout", "multi-action"));
+        String forced = getForcedMenuUIMode();
+        if (forced.equals("ore") || forced.equals("item-action-list")) {
+            return forced;
+        }
+        String layout = String.valueOf(getMenuRendererSetting(menu, "dialog", "layout", "multi-action"));
+        return forced.equals("dialog") && layout.equalsIgnoreCase("ore") ? "multi-action" : layout;
+    }
+
+    public boolean isMenuDialogEnabled(ConfigurationSection menu) {
+        String forced = getForcedMenuUIMode();
+        if (!forced.isEmpty()) {
+            return List.of("dialog", "ore", "item-action-list").contains(forced);
+        }
+        return config.getBoolean("menu.dialog.enabled", false)
+            && (menu == null || menu.getBoolean("dialog.enabled", true));
+    }
+
+    public String getForcedMenuUIMode() {
+        if (!config.getBoolean("menu.force-ui.enabled", false)) {
+            return "";
+        }
+        String mode = config.getString("menu.force-ui.type", "inventory").trim().toLowerCase(Locale.ROOT);
+        return List.of("inventory", "arcmenu", "dialog", "ore", "item-action-list", "form").contains(mode) ? mode : "";
     }
 
     public String getMenuContent(ConfigurationSection menu, String renderer) {
@@ -631,6 +662,13 @@ public class ConfigManager extends AbstractManager {
     }
 
     public String getMenuUIMode(ConfigurationSection menu, String client) {
+        String forced = getForcedMenuUIMode();
+        if (!forced.isEmpty()) {
+            if (client.equals("bedrock")) {
+                return forced.equals("form") ? "form" : "inventory";
+            }
+            return forced.equals("form") ? "inventory" : forced.equals("item-action-list") ? "dialog" : forced;
+        }
         if (client.equals("bedrock")) {
             return config.getBoolean("menu.bedrock.enabled", true)
                 && (menu == null || menu.getBoolean("bedrock.enabled", true))

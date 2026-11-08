@@ -65,8 +65,7 @@ public class DialogPackManager extends AbstractManager {
 
     public static boolean usesOre(ConfigurationSection config) {
         return config != null
-            && ConfigManager.configManager.getBoolean("menu.dialog.enabled")
-            && config.getBoolean("dialog.enabled", true)
+            && ConfigManager.configManager.isMenuDialogEnabled(config)
             && "ore".equalsIgnoreCase(ConfigManager.configManager.getDialogLayout(config));
     }
 
