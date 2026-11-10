@@ -9,6 +9,8 @@ import cn.superiormc.ultimateshop.managers.MenuStatusManager;
 import cn.superiormc.ultimateshop.objects.ObjectShop;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import cn.superiormc.ultimateshop.objects.menus.ObjectMenu;
+import cn.superiormc.ultimateshop.objects.menus.ObjectFavouriteMenu;
+import cn.superiormc.ultimateshop.objects.menus.ObjectSearchMenu;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
 
 import org.bukkit.entity.Player;
@@ -69,7 +71,29 @@ public final class ArcMenuBridge extends AbstractManager {
         if (addon != null && addon.handles(menu, player)) {
             return addon.open(player, menu, shop, bypass, reopen, editing);
         }
-        return runtime != null && runtime.open(player, menu, shop, bypass, reopen, editing);
+        return runtime != null && openBuiltin(player, menu, shop, bypass, reopen, editing);
+    }
+
+    private boolean openBuiltin(Player player, ObjectMenu menu, ObjectShop shop, boolean bypass, boolean reopen, boolean editing) {
+        if (!runtime.canOpen(player)) {
+            return false;
+        }
+        try {
+            ArcMenuGUI gui;
+            if (menu instanceof ObjectSearchMenu search) {
+                gui = new ArcSearchGUI(player, search, bypass, runtime);
+            } else if (menu instanceof ObjectFavouriteMenu favourite) {
+                gui = new ArcFavouriteGUI(player, favourite, bypass, editing, runtime);
+            } else if (shop != null) {
+                gui = new ArcShopGUI(player, menu, shop, bypass, runtime);
+            } else {
+                gui = new ArcCommonGUI(player, menu, bypass, runtime);
+            }
+            return gui.tryOpen(reopen);
+        } catch (IllegalArgumentException exception) {
+            ErrorManager.errorManager.sendErrorMessage("§cError: Invalid UI layout in " + menu.getName() + ": " + exception.getMessage());
+            return false;
+        }
     }
 
     public boolean openInfo(Player player, ObjectItem item) {

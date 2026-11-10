@@ -29,7 +29,6 @@ import com.fentai.arcmenu.api.ArcMenuSurface;
 import com.fentai.arcmenu.api.ArcMenuSurfaceEvent;
 import com.fentai.arcmenu.api.ArcMenuTickEvent;
 import org.bukkit.Color;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Display;
 import org.bukkit.entity.ItemDisplay;
@@ -78,7 +77,9 @@ public abstract class ArcMenuGUI extends AbstractGUI {
 
     private double cursorHeight = Double.POSITIVE_INFINITY;
 
-    private ArcMenuSurface surface;
+    protected ArcMenuSurface surface;
+
+    protected ArcMenuPoint pointerPoint;
 
     private final Map<String, Node> nodes = new LinkedHashMap<>();
 
@@ -103,6 +104,12 @@ public abstract class ArcMenuGUI extends AbstractGUI {
     private boolean finished;
 
     private boolean active;
+
+    private boolean stopped;
+
+    private ArcMenuGUI sessionOwner = this;
+
+    private ArcMenuGUI sessionView = this;
 
     private boolean skipOpeningAnimation;
 
@@ -199,76 +206,9 @@ public abstract class ArcMenuGUI extends AbstractGUI {
         }
     }
 
-    ArcMenuApplicationSession attach(ArcMenuApplicationContext context) {
-        this.context = context;
-        cursorDepth = runtime.cursorDepth();
-        cursorWidth = runtime.cursorExtent(player, false);
-        cursorHeight = runtime.cursorExtent(player, true);
-        surface = context.surface();
-        active = true;
-        finished = false;
-        age = skipOpeningAnimation ? animationDuration() + 10 : 0;
-        closing = 0;
-        prepareLanguage();
-        debug("attached");
-        return new ArcMenuApplicationSession() {
-            @Override
-            public void onSurfaceChanged(ArcMenuSurfaceEvent event) {
-                // ArcMenu destroys the old tracked displays when reanchoring its surface.
-                if (!event.getInitial()) {
-                    nodes.clear();
-                }
-                surface = event.getSurface();
-                debug("surface changed, initial=" + event.getInitial());
-                render();
-            }
-
-            @Override
-            public void onPointerMove(ArcMenuPointerMoveEvent event) {
-                pointer(event.getPoint());
-            }
-
-            @Override
-            public void onActivate(ArcMenuActivateEvent event) {
-                activate(event);
-            }
-
-            @Override
-            public void onScroll(ArcMenuScrollEvent event) {
-                if (!usable() || event.getSteps() == 0) {
-                    return;
-                }
-                if (!handleScroll(event, hit(event.getPoint()))) {
-                    page = Math.max(0, Math.min(pageCount - 1,
-                        page + Integer.signum(event.getSteps())));
-                    render();
-                }
-            }
-
-            @Override
-            public void onTick(ArcMenuTickEvent event) {
-                tick();
-            }
-
-            @Override
-            public void onClose(ArcMenuApplicationCloseEvent event) {
-                debug("closed, reason=" + event.getReason());
-                active = false;
-                nodes.clear();
-                hits.clear();
-                hovered = null;
-                finishGUI();
-            }
-        };
-    }
-
     @Override
     public ObjectMenu getMenu() {
         return menu;
-    }
-
-    public boolean isActive() {
-        return active && context != null && context.isActive();
     }
 
     protected boolean canDisplayMenu() {
@@ -355,11 +295,6 @@ public abstract class ArcMenuGUI extends AbstractGUI {
     private void tick() {
         if (!active || !context.isActive()) {
             return;
-        }
-        age++;
-        if (age % 20 == 0 && context.pointerMode() == ArcMenuPointerMode.MOUSE) {
-            cursorWidth = runtime.cursorExtent(player, false);
-            cursorHeight = runtime.cursorExtent(player, true);
         }
         if (age % 100 == 0) {
             debug("tick, pointer=" + context.pointer() + ", hitCount=" + hits.size());
@@ -449,47 +384,6 @@ public abstract class ArcMenuGUI extends AbstractGUI {
         }
     }
 
-    private Hit hit(ArcMenuPoint point) {
-        if (point == null) {
-            return null;
-        }
-        double x = point.getX() / canvasScale() + layout.getWidth() / 2.0;
-        double y = layout.getHeight() / 2.0 - point.getY() / canvasScale();
-        for (int i = hits.size() - 1; i >= 0; i--) {
-            Hit hit = hits.get(i);
-            if (!acceptsHit(hit.id)) {
-                continue;
-            }
-            if (ArcMenuLayout.contains(x, y, hit.x, hit.y, hit.w, hit.h)) {
-                return hit;
-            }
-        }
-        return null;
-    }
-
-    private void pointer(ArcMenuPoint point) {
-        if (!usable()) {
-            return;
-        }
-        Hit next = hit(point);
-        if (hovered != next) {
-            if (hovered != null) {
-                highlight(hovered, false);
-            }
-            hovered = next;
-            if (next != null) {
-                highlight(next, true);
-            }
-        }
-        context.setCursorInteractive(next != null);
-        context.hideTooltip();
-        if (next != null && !next.tooltip.isEmpty()) {
-            showTooltip(point, next.tooltip);
-        } else {
-            clearTooltip();
-        }
-    }
-
     private void highlight(Hit hit, boolean on) {
         Node node = nodes.get(hit.id + ":panel");
         if (node != null) {
@@ -501,71 +395,6 @@ public abstract class ArcMenuGUI extends AbstractGUI {
             }
             setBackground(node, background);
             updateBevel(hit.id, background);
-        }
-    }
-
-    private void showTooltip(ArcMenuPoint point, List<String> content) {
-        if (!getMenu().getConfig().getBoolean("ui.renderers.arcmenu.tooltip.enabled", true)) {
-            clearTooltip();
-            return;
-        }
-        double size = number("tooltip.font-size", .9, .5, 1.2);
-        double padding = number("tooltip.padding", 8, 4, 20);
-        List<String> lines =
-            ArcMenuLayout.wrap(
-            content.stream().map(this::parse).toList(),
-            Math.max(1, (int) (Math.min(number("tooltip.width", 260, 100, 450),
-                layout.getWidth() - 24 - 2 * padding) / size)));
-        size = Math.min(size, (layout.getHeight() - 24 - 2 * padding) / (10 * Math.max(1, lines.size())));
-        double width =
-            Math.max(
-            70,
-            Math.ceil(lines.stream().mapToInt(ArcMenuLayout::textWidth).max().orElse(0) * size)
-            + 2 * padding);
-        double height = lines.size() * 10 * size + 2 * padding;
-        ArcMenuLayout.Box box =
-            ArcMenuLayout.place(
-            point.getX() / canvasScale() + layout.getWidth() / 2.0,
-            layout.getHeight() / 2.0 - point.getY() / canvasScale(),
-            width,
-            height,
-            layout.getWidth(),
-            layout.getHeight());
-        panel(
-            "tooltip:edge",
-            box.x - 1,
-            box.y - 1,
-            width + 2,
-            height + 2,
-            color("tooltip.border", 0xFF607B9E),
-            ArcMenuLayout.TOOLTIP_DEPTH);
-        panel(
-            "tooltip:panel",
-            box.x,
-            box.y,
-            width,
-            height,
-            color("tooltip.background", 0xFF0D1424),
-            ArcMenuLayout.TOOLTIP_DEPTH + 2);
-        label(
-            "tooltip:text",
-            box.x + padding,
-            ArcMenuLayout.textAnchorY(box.y, height, size, padding),
-            String.join("\n§r", lines),
-            size,
-            width - 2 * padding,
-            ArcMenuLayout.TOOLTIP_DEPTH + 4,
-            false);
-    }
-
-    final void clearTooltip() {
-        for (String id : List.of("tooltip:edge", "tooltip:panel", "tooltip:text")) {
-            Node node = nodes.get(id);
-            if (node != null && node.visible) {
-                clearDisplay(node);
-                node.visible = false;
-                node.lastTransform = null;
-            }
         }
     }
 
@@ -776,38 +605,6 @@ public abstract class ArcMenuGUI extends AbstractGUI {
         return layout.getUi().getBoolean("theme.bevel.enabled", false);
     }
 
-    final double number(String path, double fallback, double minimum, double maximum) {
-        String key = path.startsWith("theme.") ? path : path.startsWith("cards.")
-            ? "products.card." + path.substring(6) : "renderers.arcmenu." + path;
-        double value = layout.getUi().getDouble(key, fallback);
-        if (!Double.isFinite(value)) {
-            return fallback;
-        }
-        return Math.max(minimum, Math.min(maximum, value));
-    }
-
-    final int color(String path, int fallback) {
-        String themePath = switch (path) {
-            case "button" -> "button.background";
-            case "button-hover" -> "button.hover";
-            case "button-border" -> "button.border";
-            case "buy-button" -> "buy.background";
-            case "buy-button-hover" -> "buy.hover";
-            case "sell-button" -> "sell.background";
-            case "sell-button-hover" -> "sell.hover";
-            default -> path;
-        };
-        Object value = layout.getUi().get("theme." + themePath);
-        if (value instanceof Number number) {
-            return number.intValue();
-        }
-        if (value instanceof String text && text.matches("#[a-fA-F0-9]{6}([a-fA-F0-9]{2})?")) {
-            long parsed = Long.parseLong(text.substring(1), 16);
-            return text.length() == 7 ? (int) parsed | 0xFF000000 : (int) parsed;
-        }
-        return fallback;
-    }
-
     final String parse(String text) {
         String value = TextUtil.withPAPI(
             CommonUtil.parseLang(player, text == null ? "" : text), player);
@@ -985,160 +782,6 @@ public abstract class ArcMenuGUI extends AbstractGUI {
         }
     }
 
-    final void panel(String id, double x, double y, double w, double h, int color, double depth) {
-        Node node = node(id, TextDisplay.class, x + w / 2, y + h / 2, depth);
-        setText(node, " ");
-        setBackground(node, color);
-        // Calibrate native TextDisplay world units to the ArcMenu logical canvas.
-        node.scale =
-            new Vector3f(
-            ArcMenuLayout.panelScaleX(w, pixelsPerBlock()),
-            ArcMenuLayout.panelScaleY(h, pixelsPerBlock()),
-            1);
-        node.panelWidth = w;
-        node.panelHeight = h;
-        transform(node, 1);
-    }
-
-    final void label(String id, double x, double y, String value, double size, double width) {
-        label(id, x, y, value, size, width, 7);
-    }
-
-    final void label(
-        String id, double x, double y, String value, double size, double width, double depth) {
-        label(id, x, y, value, size, width, depth, true);
-    }
-
-    private void label(
-        String id, double x, double y, String value, double size, double width, double depth, boolean truncate) {
-        Node node = node(id, TextDisplay.class, x, y, depth);
-        TextDisplay display = (TextDisplay) node.display;
-        int lineWidth = Math.max(1, (int) Math.ceil(width / size));
-        String[] lines = ("§x" + themeTextColor() + parse(value)).split("\n", -1);
-        for (int i = 0; i < lines.length; i++) {
-            if (truncate) {
-                lines[i] = ArcMenuLayout.ellipsize(lines[i], lineWidth);
-            }
-        }
-        String text = String.join("\n", lines);
-        setText(node, text);
-        if (node.alignment != TextDisplay.TextAlignment.LEFT) {
-            display.setAlignment(TextDisplay.TextAlignment.LEFT);
-            node.alignment = TextDisplay.TextAlignment.LEFT;
-        }
-        setBackground(node, 0);
-        if (node.lineWidth != Integer.MAX_VALUE) {
-            display.setLineWidth(Integer.MAX_VALUE);
-            node.lineWidth = Integer.MAX_VALUE;
-        }
-        // Minecraft's native font pixel is 0.025 world units before display scaling.
-        node.scale = new Vector3f(ArcMenuLayout.textScale(size, pixelsPerBlock()));
-        node.leftAligned = true;
-        node.textWidth = ArcMenuLayout.textWidth(text);
-        node.panelWidth = 0;
-        transform(node, 1);
-    }
-
-    final void item(String id, double x, double y, double size, ItemStack stack, double depth) {
-        item(id, x, y, size, stack, depth, stack.getAmount());
-    }
-
-    final void item(String id, double x, double y, double size, ItemStack stack, double depth, int amount) {
-        Node node = node(id, ItemDisplay.class, x, y, depth);
-        ItemDisplay display = (ItemDisplay) node.display;
-        ItemStack icon = stack.clone();
-        icon.setAmount(1);
-        if (node.item == null || !node.item.equals(icon)) {
-            display.setItemStack(icon);
-            node.item = icon;
-        }
-        if (!node.guiItem) {
-            display.setItemDisplayTransform(ItemDisplay.ItemDisplayTransform.GUI);
-            node.guiItem = true;
-        }
-        float iconScale = (float) ArcMenuLayout.worldUnits(size, pixelsPerBlock());
-        node.scale = new Vector3f(iconScale, iconScale, iconScale * ITEM_DEPTH_SCALE);
-        transform(node, 1);
-        if (amount > 1) {
-            String count = String.valueOf(amount);
-            double fontSize = size / 32;
-            double width = ArcMenuLayout.textWidth(count) * fontSize;
-            double right = x + size / 2;
-            double baseline = ArcMenuLayout.textAnchorY(y - size / 2, size, fontSize, 0);
-            double amountDepth = depth + size / 2 + 2;
-            label(id + ":amount-shadow", right - width + fontSize, baseline + fontSize,
-                "&0" + count, fontSize, width + fontSize, amountDepth);
-            label(id + ":amount", right - width, baseline,
-                "&f" + count, fontSize, width + fontSize, amountDepth + .1);
-        }
-    }
-
-    private <T extends Display> Node node(
-        String id, Class<T> type, double x, double y, double depth) {
-        used.add(id);
-        if (id.startsWith("details")
-            || id.startsWith("buy:")
-            || id.startsWith("sell:")
-            || id.startsWith("plus:")
-            || id.startsWith("minus:")
-            || id.equals("amount")) {
-            depth += 20;
-        }
-        Node node = nodes.get(id);
-        boolean tooltip = id.startsWith("tooltip:");
-        if (context.pointerMode() == ArcMenuPointerMode.MOUSE) {
-            depth = ArcMenuLayout.cursorSafeDepth(depth, cursorDepth, canvasScale());
-        }
-        double perspectiveScale = ArcMenuLayout.overlayScale(
-            depth, pixelsPerBlock(), surface.getCanvas().getDesignDistance());
-        Location location = surface.toWorld(
-            (x - layout.getWidth() / 2.0) * perspectiveScale * canvasScale(),
-            (layout.getHeight() / 2.0 - y) * perspectiveScale * canvasScale(),
-            depth * canvasScale());
-        if (node == null) {
-            T display = type.cast(context.spawnPrivate(
-                location, type, (Consumer<T>) entity -> {
-                    entity.setPersistent(false);
-                    entity.setBillboard(Display.Billboard.FIXED);
-                    entity.setBrightness(new Display.Brightness(15, 15));
-                    // ArcMenu encodes mouse displays into shader space after each
-                    // callback.
-                    // Interpolating between encoded and ordinary matrices tears the
-                    // layers.
-                    entity.setInterpolationDuration(0);
-                    if (entity instanceof TextDisplay text) {
-                        text.setShadowed(false);
-                        text.setDefaultBackground(false);
-                        text.setSeeThrough(false);
-                    }
-                }));
-            node = new Node(display);
-            nodes.put(id, node);
-        }
-        if (!node.visible) {
-            node.visible = true;
-            node.hover = 1;
-            node.lastTransform = null;
-            node.lastMatrix = null;
-        }
-        if (!location.toVector().equals(node.location)) {
-            node.display.teleport(location);
-            node.location = location.toVector();
-            // The plane basis already supplies rotation; clear Bukkit's location rotation.
-            node.display.setRotation(0, 0);
-        }
-        Vector right = surface.right();
-        Vector up = surface.up();
-        Vector normal = surface.normal();
-        node.rotation = new Quaternionf().setFromNormalized(new Matrix3f(
-            (float) right.getX(), (float) right.getY(), (float) right.getZ(),
-            (float) up.getX(), (float) up.getY(), (float) up.getZ(),
-            (float) normal.getX(), (float) normal.getY(), (float) normal.getZ()));
-        node.overlayScale = (float) perspectiveScale;
-        node.tooltip = tooltip;
-        return node;
-    }
-
     private void animate() {
         float factor = closing > 0
             ? Math.max(.01f, 1 - (closing - 1) / (float) animationDuration())
@@ -1155,157 +798,523 @@ public abstract class ArcMenuGUI extends AbstractGUI {
         }
     }
 
+
+
+
+
+
+    // Plugin adapters: configuration, assets and business lifecycle.
+
+    private Object setting(String path, Object fallback) {
+        String key = path.startsWith("theme.") ? path : path.startsWith("cards.")
+                ? "products.card." + path.substring(6) : "renderers.arcmenu." + path;
+        return layout.getUi().get(key, fallback);
+    }
+
+    private double getCanvasWidth() {
+        return layout.getWidth();
+    }
+
+    private double getCanvasHeight() {
+        return layout.getHeight();
+    }
+
+    private double getScreenScale() {
+        return layout.getUi().getDouble("renderers.arcmenu.screen-scale",
+                ConfigManager.configManager.getDouble("menu.ui.renderers.arcmenu.screen-scale", 1.5));
+    }
+
+    private String labelText(String value) {
+        return "§x" + themeTextColor() + parse(value);
+    }
+
+    private ItemDisplay.ItemDisplayTransform itemTransform(ItemStack stack) {
+        return ItemDisplay.ItemDisplayTransform.GUI;
+    }
+
+    private double nodeDepth(String id, double depth) {
+        return id.startsWith("details") || id.startsWith("buy:") || id.startsWith("sell:")
+                || id.startsWith("plus:") || id.startsWith("minus:") || id.equals("amount") ? depth + 20 : depth;
+    }
+
+    private double animationOffset(float factor) {
+        return animations() ? (1 - factor) * 8.1 : 0;
+    }
+
+    private void initializeSession() {
+        finished = false;
+        age = skipOpeningAnimation ? animationDuration() + 10 : 0;
+        closing = 0;
+        prepareLanguage();
+        debug("attached");
+    }
+
+    private void tickView() {
+        tick();
+    }
+
+    private void sessionClosed() {
+        finishGUI();
+    }
+
+    private void beforeReplace(ArcMenuGUI next) {
+        finishGUI();
+    }
+
+    private void beforeShutdown() {
+        finishGUI();
+    }
+
+    boolean canLeaveView() {
+        return true;
+    }
+
+    boolean canReuseView(ArcMenuGUI next) {
+        return true;
+    }
+
+    private void onHover(Hit previous, Hit next) {
+        if (previous != null) {
+            highlight(previous, false);
+        }
+        if (next != null) {
+            highlight(next, true);
+        }
+    }
+
+    private void scroll(ArcMenuScrollEvent event) {
+        if (!usable() || event.getSteps() == 0) {
+            return;
+        }
+        if (!handleScroll(event, hit(event.getPoint()))) {
+            page = Math.max(0, Math.min(pageCount - 1, page + Integer.signum(event.getSteps())));
+            render();
+        }
+    }
+
+    // BEGIN ARCMENU SHARED configuration
+    protected final double number(String path, double fallback, double minimum, double maximum) {
+        Object configured = setting(path, fallback);
+        double value = configured instanceof Number number ? number.doubleValue() : fallback;
+        if (!Double.isFinite(value)) {
+            return fallback;
+        }
+        return Math.max(minimum, Math.min(maximum, value));
+    }
+
+    protected final int color(String path, int fallback) {
+        String key = switch (path) {
+            case "button" -> "button.background";
+            case "button-hover" -> "button.hover";
+            case "button-border" -> "button.border";
+            case "buy-button" -> "buy.background";
+            case "buy-button-hover" -> "buy.hover";
+            case "sell-button" -> "sell.background";
+            case "sell-button-hover" -> "sell.hover";
+            default -> path;
+        };
+        return parseColor(setting("theme." + key, null), fallback);
+    }
+
+    protected final int parseColor(Object value, int fallback) {
+        if (value instanceof Number number) {
+            return number.intValue();
+        }
+        if (value instanceof String text && text.matches("#[a-fA-F0-9]{6}([a-fA-F0-9]{2})?")) {
+            long parsed = Long.parseLong(text.substring(1), 16);
+            return text.length() == 7 ? (int) parsed | 0xFF000000 : (int) parsed;
+        }
+        return fallback;
+    }
+    // END ARCMENU SHARED configuration
+
+    // BEGIN ARCMENU SHARED sessions
+    ArcMenuApplicationSession attach(ArcMenuApplicationContext context) {
+        this.context = context;
+        sessionOwner = this;
+        sessionView = this;
+        surface = context.surface();
+        cursorDepth = runtime.cursorDepth();
+        cursorWidth = runtime.cursorExtent(player, false);
+        cursorHeight = runtime.cursorExtent(player, true);
+        active = true;
+        stopped = false;
+        age = 0;
+        initializeSession();
+        return new ArcMenuApplicationSession() {
+            @Override
+            public void onSurfaceChanged(ArcMenuSurfaceEvent event) {
+                ArcMenuGUI gui = sessionView;
+                if (!event.getInitial()) {
+                    gui.nodes.clear();
+                }
+                gui.surface = event.getSurface();
+                gui.render();
+            }
+
+            @Override
+            public void onPointerMove(ArcMenuPointerMoveEvent event) {
+                sessionView.pointer(event.getPoint());
+            }
+
+            @Override
+            public void onActivate(ArcMenuActivateEvent event) {
+                sessionView.activate(event);
+            }
+
+            @Override
+            public void onScroll(ArcMenuScrollEvent event) {
+                sessionView.scroll(event);
+            }
+
+            @Override
+            public void onTick(ArcMenuTickEvent event) {
+                ArcMenuGUI gui = sessionView;
+                if (!gui.isActive()) {
+                    return;
+                }
+                gui.age++;
+                if (gui.age % 20 == 0 && context.pointerMode() == ArcMenuPointerMode.MOUSE) {
+                    gui.cursorWidth = runtime.cursorExtent(player, false);
+                    gui.cursorHeight = runtime.cursorExtent(player, true);
+                }
+                gui.tickView();
+            }
+
+            @Override
+            public void onClose(ArcMenuApplicationCloseEvent event) {
+                ArcMenuGUI gui = sessionView;
+                gui.active = false;
+                runtime.detached(gui);
+                gui.nodes.clear();
+                gui.hits.clear();
+                gui.hovered = null;
+                gui.sessionClosed();
+            }
+        };
+    }
+
+    public final boolean isActive() {
+        return active && context != null && context.isActive();
+    }
+
+    final void replaceView(ArcMenuGUI next) {
+        beforeReplace(next);
+        next.context = context;
+        next.surface = surface;
+        next.cursorDepth = cursorDepth;
+        next.cursorWidth = cursorWidth;
+        next.cursorHeight = cursorHeight;
+        next.pointerPoint = pointerPoint;
+        next.age = age;
+        next.sessionOwner = sessionOwner;
+        next.nodes.putAll(nodes);
+        nodes.clear();
+        hits.clear();
+        hovered = null;
+        active = false;
+        stopped = true;
+        next.active = true;
+        next.stopped = false;
+        next.initializeSession();
+        sessionOwner.sessionView = next;
+        next.render();
+    }
+
+    void shutdown() {
+        stopped = true;
+        if (context == null || !context.execute(() -> {
+            beforeShutdown();
+            context.close();
+        })) {
+            beforeShutdown();
+            sessionClosed();
+        }
+    }
+    // END ARCMENU SHARED sessions
+
+    // BEGIN ARCMENU SHARED pointer
+    protected Hit hit(ArcMenuPoint point) {
+        if (point == null) {
+            return null;
+        }
+        double x = point.getX() / canvasScale() + getCanvasWidth() / 2;
+        double y = getCanvasHeight() / 2 - point.getY() / canvasScale();
+        for (int i = hits.size() - 1; i >= 0; i--) {
+            Hit hit = hits.get(i);
+            if (acceptsHit(hit.id) && ArcMenuLayout.contains(x, y, hit.x, hit.y, hit.w, hit.h)) {
+                return hit;
+            }
+        }
+        return null;
+    }
+
+    private void pointer(ArcMenuPoint point) {
+        pointerPoint = point;
+        if (!isActive()) {
+            return;
+        }
+        Hit next = hit(point);
+        if (hovered == null ? next != null : next == null || !hovered.id.equals(next.id)) {
+            onHover(hovered, next);
+        }
+        hovered = next;
+        context.setCursorInteractive(next != null);
+        context.hideTooltip();
+        renderTooltip();
+    }
+
+    private void renderTooltip() {
+        if (hovered == null || hovered.tooltip.isEmpty() || pointerPoint == null
+                || Boolean.FALSE.equals(setting("tooltip.enabled", true))) {
+            clearTooltip();
+            return;
+        }
+        double size = number("tooltip.font-size", 1.1, .5, 2);
+        double padding = number("tooltip.padding", 8, 4, 20);
+        double limit = Math.min(number("tooltip.width", 260, 100, 450), getCanvasWidth() - 24 - 2 * padding);
+        List<String> content = new ArrayList<>();
+        for (String line : hovered.tooltip) {
+            content.add(parse(line));
+        }
+        List<String> lines = ArcMenuLayout.wrap(content, Math.max(1, (int) (limit / size)));
+        size = Math.min(size, (getCanvasHeight() - 24 - 2 * padding) / (10 * Math.max(1, lines.size())));
+        String text = String.join("\n§r", lines);
+        double width = Math.max(40, Math.ceil(ArcMenuLayout.textWidth(text) * size) + 2 * padding);
+        double height = lines.size() * 10 * size + 2 * padding;
+        double[] position = ArcMenuLayout.place(pointerPoint.getX() / canvasScale() + getCanvasWidth() / 2,
+                getCanvasHeight() / 2 - pointerPoint.getY() / canvasScale(), width, height,
+                getCanvasWidth(), getCanvasHeight());
+        panel("tooltip:edge", position[0] - 1, position[1] - 1, width + 2, height + 2,
+                color("tooltip.border", 0xFF607B9E), ArcMenuLayout.TOOLTIP_DEPTH);
+        panel("tooltip:panel", position[0], position[1], width, height,
+                color("tooltip.background", 0xF0100010), ArcMenuLayout.TOOLTIP_DEPTH + 2);
+        label("tooltip:text", position[0] + padding,
+                ArcMenuLayout.textAnchorY(position[1], height, size, padding), text, size,
+                width - 2 * padding, ArcMenuLayout.TOOLTIP_DEPTH + 4, false);
+    }
+
+    final void clearTooltip() {
+        for (String id : List.of("tooltip:edge", "tooltip:panel", "tooltip:text")) {
+            Node node = nodes.get(id);
+            if (node != null && node.visible) {
+                clearDisplay(node);
+                node.visible = false;
+                node.lastMatrix = null;
+            }
+        }
+    }
+    // END ARCMENU SHARED pointer
+
+    // BEGIN ARCMENU SHARED display
+    protected final void panel(String id, double x, double y, double w, double h, int color, double depth) {
+        panel(id, x + w / 2, y + h / 2, w, h, color, depth, 0);
+    }
+
+    protected final void panel(String id, double x, double y, double w, double h, int color, double depth, double angle) {
+        Node node = node(id, TextDisplay.class, x, y, depth);
+        setText(node, " ");
+        setBackground(node, color);
+        node.scale = new Vector3f(ArcMenuLayout.panelScaleX(w, pixelsPerBlock()), ArcMenuLayout.panelScaleY(h, pixelsPerBlock()), 1);
+        node.angle = angle;
+        node.panelWidth = w;
+        node.panelHeight = h;
+        node.leftAligned = false;
+        node.bitmap = false;
+        transform(node, 1);
+    }
+
+    protected final void glyph(String id, double x, double y, double w, double h, char glyph,
+                               int color, double depth, double angle) {
+        if (w <= 0 || h <= 0 || (color >>> 24) == 0) {
+            return;
+        }
+        Node node = node(id, TextDisplay.class, x, y, depth);
+        TextDisplay display = (TextDisplay) node.display;
+        setText(node, TextUtil.colorize("&#" + String.format("%06X", color & 0xFFFFFF)) + glyph + '\uEE65');
+        display.setAlignment(TextDisplay.TextAlignment.CENTER);
+        setBackground(node, 0);
+        display.setLineWidth(32767);
+        node.scale = new Vector3f((float) (w / (.2 * pixelsPerBlock())), (float) (h / (.2 * pixelsPerBlock())), 1);
+        node.angle = angle;
+        node.bitmap = true;
+        node.panelWidth = 0;
+        transform(node, 1);
+        setOpacity(node, color >>> 24);
+    }
+
+    protected final void label(String id, double x, double y, String value, double size, double width) {
+        label(id, x, y, value, size, width, 7);
+    }
+
+    protected final void label(String id, double x, double y, String value, double size, double width, double depth) {
+        label(id, x, y, value, size, width, depth, true);
+    }
+
+    private void label(String id, double x, double y, String value, double size, double width, double depth, boolean truncate) {
+        Node node = node(id, TextDisplay.class, x, y, depth);
+        TextDisplay display = (TextDisplay) node.display;
+        String[] lines = labelText(value).split("\n", -1);
+        if (truncate) {
+            for (int i = 0; i < lines.length; i++) {
+                lines[i] = ArcMenuLayout.ellipsize(lines[i], Math.max(1, (int) Math.ceil(width / size)));
+            }
+        }
+        String text = String.join("\n", lines);
+        setText(node, text);
+        if (node.alignment != TextDisplay.TextAlignment.LEFT) {
+            display.setAlignment(TextDisplay.TextAlignment.LEFT);
+            node.alignment = TextDisplay.TextAlignment.LEFT;
+        }
+        setBackground(node, 0);
+        if (node.lineWidth != Integer.MAX_VALUE) {
+            display.setLineWidth(Integer.MAX_VALUE);
+            node.lineWidth = Integer.MAX_VALUE;
+        }
+        node.scale = new Vector3f(ArcMenuLayout.textScale(size, pixelsPerBlock()));
+        node.leftAligned = true;
+        node.panelWidth = 0;
+        node.textWidth = ArcMenuLayout.textWidth(text);
+        node.angle = 0;
+        node.bitmap = false;
+        transform(node, 1);
+    }
+
+    protected final void item(String id, double x, double y, double size, ItemStack stack, double depth) {
+        if (stack != null) {
+            item(id, x, y, size, stack, depth, stack.getAmount());
+        }
+    }
+
+    protected final void item(String id, double x, double y, double size, ItemStack stack, double depth, int amount) {
+        if (stack == null || stack.getType().isAir()) {
+            return;
+        }
+        Node node = node(id, ItemDisplay.class, x, y, depth);
+        ItemDisplay display = (ItemDisplay) node.display;
+        ItemStack icon = stack.clone();
+        icon.setAmount(1);
+        if (node.item == null || !node.item.equals(icon)) {
+            display.setItemStack(icon);
+            node.item = icon;
+        }
+        ItemDisplay.ItemDisplayTransform mode = itemTransform(stack);
+        display.setItemDisplayTransform(mode);
+        node.guiItem = mode == ItemDisplay.ItemDisplayTransform.GUI;
+        float scale = (float) ArcMenuLayout.worldUnits(size, pixelsPerBlock());
+        node.scale = new Vector3f(scale, scale, scale * ITEM_DEPTH_SCALE);
+        node.angle = 0;
+        transform(node, 1);
+        if (amount > 1) {
+            String count = String.valueOf(amount);
+            double fontSize = size / 32;
+            double width = ArcMenuLayout.textWidth(count) * fontSize;
+            double right = x + size / 2;
+            double baseline = ArcMenuLayout.textAnchorY(y - size / 2, size, fontSize, 0);
+            double amountDepth = depth + size / 2 + 2;
+            label(id + ":amount-shadow", right - width + fontSize, baseline + fontSize,
+                    "§0" + count, fontSize, width + fontSize, amountDepth);
+            label(id + ":amount", right - width, baseline,
+                    "§f" + count, fontSize, width + fontSize, amountDepth + .1);
+        }
+    }
+
+    private <T extends Display> Node node(String id, Class<T> type, double x, double y, double depth) {
+        used.add(id);
+        Node node = nodes.get(id);
+        if (node == null) {
+            T display = type.cast(context.spawnPrivate(surface.origin(), type, (Consumer<T>) entity -> {
+                entity.setPersistent(false);
+                entity.setBillboard(Display.Billboard.FIXED);
+                entity.setBrightness(new Display.Brightness(15, 15));
+                entity.setShadowRadius(0);
+                entity.setShadowStrength(0);
+                entity.setInterpolationDuration(0);
+                entity.setRotation(0, 0);
+                if (entity instanceof TextDisplay text) {
+                    text.setShadowed(false);
+                    text.setDefaultBackground(false);
+                    text.setSeeThrough(false);
+                }
+            }));
+            node = new Node(display);
+            nodes.put(id, node);
+        } else if (!node.visible) {
+            node.visible = true;
+            node.hover = 1;
+            node.lastMatrix = null;
+        }
+        double adjustedDepth = nodeDepth(id, depth);
+        double safeDepth = context.pointerMode() == ArcMenuPointerMode.MOUSE
+                ? ArcMenuLayout.cursorSafeDepth(adjustedDepth, cursorDepth, canvasScale()) : adjustedDepth;
+        double perspective = ArcMenuLayout.overlayScale(safeDepth, pixelsPerBlock(), surface.getCanvas().getDesignDistance());
+        node.position = surface.toWorld((x - getCanvasWidth() / 2) * perspective * canvasScale(),
+                (getCanvasHeight() / 2 - y) * perspective * canvasScale(), safeDepth * canvasScale())
+                .toVector().subtract(surface.origin().toVector());
+        Vector right = surface.right();
+        Vector up = surface.up();
+        Vector normal = surface.normal();
+        node.rotation = new Quaternionf().setFromNormalized(new Matrix3f(
+                (float) right.getX(), (float) right.getY(), (float) right.getZ(),
+                (float) up.getX(), (float) up.getY(), (float) up.getZ(),
+                (float) normal.getX(), (float) normal.getY(), (float) normal.getZ()));
+        node.overlayScale = (float) perspective;
+        node.tooltip = id.startsWith("tooltip:");
+        return node;
+    }
+
     private void transform(Node node, float factor) {
         if (node.tooltip) {
             factor = 1;
         }
-        float scale = Math.max(.01f, factor) * node.hover * node.overlayScale;
-        Vector3f translation = new Vector3f();
-        if (node.display instanceof TextDisplay text) {
+        float multiplier = Math.max(.01f, factor) * node.hover * node.overlayScale;
+        Vector3f offset = new Vector3f();
+        if (node.display instanceof TextDisplay && !node.bitmap) {
             if (node.panelWidth > 0) {
-                translation.x = -.0125f * node.scale.x * scale;
-                translation.y = -.125f * node.scale.y * scale;
+                offset.x = -.0125f * node.scale.x * multiplier;
+                offset.y = -.125f * node.scale.y * multiplier;
             } else {
                 if (node.leftAligned) {
-                    translation.x =
-                        (float) ((node.textWidth / 2 - 1) * .025 * node.scale.x * scale);
+                    offset.x = (float) ((node.textWidth / 2 - 1) * .025 * node.scale.x * multiplier);
                 }
-                translation.y = -.10f * node.scale.y * node.overlayScale;
+                offset.y = -.10f * node.scale.y * node.overlayScale;
             }
         }
-        if (animations() && !node.tooltip) {
-            translation.y += (float) ArcMenuLayout.worldUnits((1 - factor) * 8.1, pixelsPerBlock());
+        if (!node.tooltip) {
+            offset.y += (float) ArcMenuLayout.worldUnits(animationOffset(factor), pixelsPerBlock());
         }
-        Quaternionf rotation = new Quaternionf(node.rotation);
-        node.rotation.transform(translation);
-        if (node.display instanceof ItemDisplay) {
-            Matrix4f matrix =
-                new Matrix4f()
-                .translation(translation)
-                .rotate(rotation)
-                .scale(new Vector3f(node.scale).mul(scale))
-                .rotateY((float) Math.PI);
-            if (!matrix.equals(node.lastMatrix)) {
-                node.display.setInterpolationDelay(0);
-                node.display.setTransformationMatrix(matrix);
-                node.lastMatrix = matrix;
-            }
-            return;
+        Quaternionf rotation = new Quaternionf(node.rotation).rotateZ((float) -node.angle);
+        Vector3f translation = new Vector3f((float) node.position.getX(), (float) node.position.getY(), (float) node.position.getZ())
+                .add(rotation.transform(offset));
+        Vector3f scale = new Vector3f(node.scale).mul(multiplier);
+        Matrix4f matrix = new Matrix4f().translation(translation).rotate(rotation).scale(scale);
+        if (node.display instanceof ItemDisplay && node.guiItem) {
+            matrix.rotateY((float) Math.PI);
         }
-        Transformation transformation =
-            new Transformation(
-            translation,
-            rotation,
-            new Vector3f(node.scale).mul(scale),
-            new Quaternionf());
-        if (!transformation.equals(node.lastTransform)) {
+        if (!matrix.equals(node.lastMatrix)) {
             node.display.setInterpolationDelay(0);
-            node.display.setTransformation(transformation);
-            node.lastTransform = transformation;
+            if (node.display instanceof ItemDisplay) {
+                node.display.setTransformationMatrix(matrix);
+            } else {
+                node.display.setTransformation(new Transformation(translation, rotation, scale, new Quaternionf()));
+            }
+            node.lastMatrix = matrix;
         }
         if (node.display instanceof TextDisplay) {
             setOpacity(node, Math.max(4, (int) (255 * factor)));
         }
     }
 
-    final double canvasScale() {
-        double global = ConfigManager.configManager.getDouble(
-            "menu.ui.renderers.arcmenu.screen-scale", 1.5);
-        double local = layout.getUi().getDouble("renderers.arcmenu.screen-scale", global);
+    protected final double canvasScale() {
         boolean mouse = context != null && context.pointerMode() == ArcMenuPointerMode.MOUSE;
         double width = mouse ? Math.min(surface.getCanvas().getWidth(), cursorWidth) : surface.getCanvas().getWidth();
         double height = mouse ? Math.min(surface.getCanvas().getHeight(), cursorHeight) : surface.getCanvas().getHeight();
         return ArcMenuLayout.canvasScale(width, height,
-            layout.getWidth(), layout.getHeight(), surface.getCanvas().getPixelsPerBlock(), local);
+                getCanvasWidth(), getCanvasHeight(), surface.getCanvas().getPixelsPerBlock(), getScreenScale());
     }
 
     private double pixelsPerBlock() {
         return surface.getCanvas().getPixelsPerBlock() / canvasScale();
-    }
-
-    private static final class Node {
-
-        private final Display display;
-
-        private Vector3f scale = new Vector3f(1);
-
-        private Quaternionf rotation = new Quaternionf();
-
-        private float hover = 1;
-
-        private boolean leftAligned;
-
-        private double textWidth;
-
-        private double panelWidth;
-
-        private double panelHeight;
-
-        private int delay;
-
-        private Vector location;
-
-        private boolean visible = true;
-
-        private Transformation lastTransform;
-
-        private Matrix4f lastMatrix;
-
-        private float overlayScale = 1;
-
-        private boolean tooltip;
-
-        private String text;
-
-        private Integer backgroundColor;
-
-        private int lineWidth = -1;
-
-        private TextDisplay.TextAlignment alignment;
-
-        private int opacity = -1;
-
-        private ItemStack item;
-
-        private boolean guiItem;
-
-        private Node(Display display) {
-            this.display = display;
-        }
-    }
-
-    static final class Hit {
-
-        private final String id;
-
-        private final double x;
-
-        private final double y;
-
-        private final double w;
-
-        private final double h;
-
-        private final List<String> tooltip;
-
-        private final Consumer<ClickType> action;
-
-        private Hit(
-            String id,
-            double x,
-            double y,
-            double w,
-            double h,
-            List<String> tooltip,
-            Consumer<ClickType> action) {
-            this.id = id;
-            this.x = x;
-            this.y = y;
-            this.w = w;
-            this.h = h;
-            this.tooltip = tooltip;
-            this.action = action;
-        }
     }
 
     private static void setText(Node node, String value) {
@@ -1334,9 +1343,65 @@ public abstract class ArcMenuGUI extends AbstractGUI {
             setText(node, "");
             setBackground(node, 0);
             setOpacity(node, 0);
-        } else if (node.display instanceof ItemDisplay item && node.item != null) {
+        } else if (node.display instanceof ItemDisplay item) {
             item.setItemStack(new ItemStack(Material.AIR));
             node.item = null;
         }
     }
+    // END ARCMENU SHARED display
+
+    // BEGIN ARCMENU SHARED types
+    protected static final class Node {
+
+        private final Display display;
+        private Vector position = new Vector();
+        private Vector3f scale = new Vector3f(1);
+        private Quaternionf rotation = new Quaternionf();
+        private Matrix4f lastMatrix;
+        private String text;
+        private ItemStack item;
+        private boolean guiItem;
+        private boolean visible = true;
+        private Integer backgroundColor;
+        private int lineWidth = -1;
+        private TextDisplay.TextAlignment alignment;
+        private int opacity = -1;
+        private double panelWidth;
+        private double panelHeight;
+        private double textWidth;
+        private boolean leftAligned;
+        private boolean bitmap;
+        private double angle;
+        private float overlayScale = 1;
+        private float hover = 1;
+        private int delay;
+        private boolean tooltip;
+
+        private Node(Display display) {
+            this.display = display;
+        }
+    }
+
+    protected static final class Hit {
+
+        final String id;
+        private final double x;
+        private final double y;
+        private final double w;
+        private final double h;
+        private final List<String> tooltip;
+        private final Consumer<ClickType> action;
+
+        Hit(String id, double x, double y, double w, double h, List<String> tooltip, Consumer<ClickType> action) {
+            this.id = id;
+            this.x = x;
+            this.y = y;
+            this.w = w;
+            this.h = h;
+            this.tooltip = tooltip;
+            this.action = action;
+        }
+    }
+    // END ARCMENU SHARED types
+
 }
