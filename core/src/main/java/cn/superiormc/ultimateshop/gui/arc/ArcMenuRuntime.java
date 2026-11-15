@@ -155,8 +155,8 @@ final class ArcMenuRuntime implements AutoCloseable {
                 .captureMouseScroll(true)
                 .inheritCanvas(false)
                 .canvas(new ArcMenuCanvas(
-                        plugin().getConfig().getInt("menu.ui.layout.canvas.width", 648),
-                        plugin().getConfig().getInt("menu.ui.layout.canvas.height", 396),
+                        640,
+                        400,
                         ArcMenuLayout.designPixelsPerBlock(plugin().getConfig().getDouble("menu.ui.renderers.arcmenu.screen-scale", 1.5)), 3))
                 .build();
     }

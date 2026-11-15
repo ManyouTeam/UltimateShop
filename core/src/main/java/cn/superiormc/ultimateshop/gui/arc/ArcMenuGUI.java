@@ -144,7 +144,7 @@ public abstract class ArcMenuGUI extends AbstractGUI {
         this.runtime = runtime;
         this.layout = new MenuUILayout(menu.getConfig());
         titleBackgroundEnabled = layout.getUi().getBoolean("theme.title.background-enabled", false);
-        titleBackgroundColor = color("title.background", color("background", 0xEF0C1223));
+        titleBackgroundColor = color("title.background", color("background", 0xCC000000));
         titleDecorationEnabled = layout.getUi().getBoolean("theme.title.decoration-enabled", false);
         decorationsEnabled = layout.getUi().getBoolean("theme.decorations.enabled", true);
         String style = layout.getUi().getString("theme.decorations.style", "none");
@@ -389,7 +389,7 @@ public abstract class ArcMenuGUI extends AbstractGUI {
         if (node != null) {
             int background;
             if (nodes.containsKey(hit.id + ":icon")) {
-                background = on ? color("card-hover", buttonColor(hit.id, true)) : color("card", 0xDC141E30);
+                background = on ? color("card-hover", buttonColor(hit.id, true)) : color("card", 0x0D141E30);
             } else {
                 background = buttonColor(hit.id, on);
             }
@@ -481,7 +481,7 @@ public abstract class ArcMenuGUI extends AbstractGUI {
 
     private void renderHeader() {
         if (layout.getUi().getBoolean("theme.background-enabled", true)) {
-            panel("window", 0, 0, layout.getWidth(), layout.getHeight(), color("background", 0xEF0C1223), 0);
+            panel("window", 0, 0, layout.getWidth(), layout.getHeight(), color("background", 0xCC000000), 0);
         }
         if (decorationsEnabled) {
             renderDecorations("window-decoration", decorationInset, decorationInset,

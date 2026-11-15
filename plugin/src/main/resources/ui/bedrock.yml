@@ -2,7 +2,7 @@
 layout:
   canvas:
     width: 648
-    height: 450
+    height: 405
   header:
     title:
       enabled: true
@@ -55,12 +55,12 @@ layout:
     content:
       type: grid
       x: 18
-      y: 144
+      y: 126
       width: 612
-      height: 261
+      height: 234
       columns: 3
       rows: 2
-      cell-height: 126
+      cell-height: 108
       gap-x: 9
       gap-y: 9
       background-enabled: true
@@ -68,24 +68,24 @@ layout:
     footer:
       type: free
       x: 18
-      y: 414
+      y: 369
       width: 612
       height: 27
   pagination:
     enabled: true
     previous:
       x: 225
-      y: 414
+      y: 369
       width: 36
       height: 27
     indicator:
       x: 270
-      y: 414
+      y: 369
       width: 90
       height: 27
     next:
       x: 369
-      y: 414
+      y: 369
       width: 36
       height: 27
 products:
@@ -120,7 +120,7 @@ products:
       sell: '{lang:menu.arcmenu.sell}'
 theme:
   background-enabled: true
-  background: '#FA1D1D1D'
+  background: '#CC000000'
   sidebar: '#303132'
   card: '#48494A'
   border: '#737475'
@@ -215,7 +215,7 @@ renderers:
       button: {}
   arcmenu:
     right-click-action: select-amount
-    screen-scale: 1.35
+    screen-scale: 1.5
     update-interval: 20
     animation:
       enabled: true
@@ -225,5 +225,5 @@ renderers:
     tooltip:
       enabled: true
       width: 260
-      font-size: 0.9
+      font-size: 1.1
       padding: 8

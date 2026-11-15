@@ -104,7 +104,7 @@ ui:
   renderers:
     arcmenu:
       right-click-action: select-amount
-      screen-scale: 1.35
+      screen-scale: 1.5
       update-interval: 20
       animation:
         enabled: true
@@ -114,7 +114,7 @@ ui:
       tooltip:
         enabled: true
         width: 260
-        font-size: 0.9
+        font-size: 1.1
         padding: 8
 ```
 

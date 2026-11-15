@@ -136,7 +136,7 @@ ui:
   layout:
     canvas:
       width: 648
-      height: 414
+      height: 405
     header:
       title:
         enabled: true
@@ -244,7 +244,7 @@ ui:
         buy: '{lang:menu.arcmenu.buy}'
         sell: '{lang:menu.arcmenu.sell}'
   theme:
-    background: '#EF0C1223'
+    background: '#CC000000'
     sidebar: '#DE111B30'
     card: '#141E30'
     border: '#425776'
@@ -269,7 +269,7 @@ ui:
         product: {}
         button: {}
     arcmenu:
-      screen-scale: 1.35
+      screen-scale: 1.5
       update-interval: 20
       animation:
         enabled: true
@@ -279,5 +279,5 @@ ui:
       tooltip:
         enabled: true
         width: 260
-        font-size: 0.9
+        font-size: 1.1
         padding: 8

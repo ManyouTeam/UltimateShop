@@ -50,7 +50,7 @@ final class ArcSearchGUI extends ArcCommonGUI {
             ? LanguageManager.languageManager.getStringText(player, "plugin.search-gui-name-empty")
             : searchKeyword.trim();
         for (Map.Entry<Integer, ObjectSearchStateButton> entry : searchMenu.getStateButtons().entrySet()) {
-            if (entry.getKey() >= 0 && entry.getKey() < size) {
+            if (entry.getKey() >= 0 && entry.getKey() < size && entry.getValue().isVisibleInMenu("arcmenu")) {
                 menuButtons.put(entry.getKey(), entry.getValue());
                 menuItems.put(entry.getKey(), entry.getValue().buildDisplayItem(player,
                     hasFilter, matched.size(), Math.min(matched.size(), searchMenu.getResultSlots().size()),
