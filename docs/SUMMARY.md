@@ -49,19 +49,18 @@
 
 ## 🖥️Menu UI Modes
 
-* [🎨 UI Modes Overview](menus/ui-overview.md)
+* [🎨 UI Modes](menus/ui-overview.md)
 * [📦 Inventory UI](menus/inventory-ui.md)
 * [🛏️ Bedrock Form UI - Premium](menus/bedrock-menus-premium.md)
 * [💬 Native Dialog UI - Premium](menus/dialog-menus-premium.md)
 * [🪨 Ore UI - Premium](menus/ore-menus-premium.md)
 * [✨ ArcMenu UI - Premium](menus/arcmenu-menus-premium.md)
 
-## 🧩Advanced Menus & Support
+## 🧩Advanced Menu Configuration
 
 * [🔀 Conditional Display - Premium](menus/conditional-display-premium.md)
 * [🥉 Display Item Add Lore](menus/display-item-add-lore.md)
 * [🔄 Menu Configuration Compatibility](menus/migration-guide.md)
-* [🩺 Troubleshooting](menus/troubleshooting.md)
 
 ## 🛍️Shops
 

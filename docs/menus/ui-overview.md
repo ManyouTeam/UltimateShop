@@ -1,10 +1,22 @@
-# 🎨 UI Modes Overview
+# 🎨 UI Modes
 
-A **presentation** is the client interface used to show an existing Common, Shop, Search or Favourite menu. It does not change product prices, click bindings, conditions or data storage.
+A presentation displays a menu using Inventory slots, native controls or graphical cards. Menu type determines which presentations are supported. Changing the presentation retains product prices, conditions and saved data.
 
-## Choose with native switches, not `ui.mode`
+## Available presentations
 
-In `config.yml`, enable the presentations that the server should support:
+| Presentation | Client and requirements | Layout settings |
+| --- | --- | --- |
+| [Inventory](inventory-ui.md) | Java or Bedrock; standard menu interface | Root `size`, `layout` and `buttons` |
+| [Bedrock Form — Premium](bedrock-menus-premium.md) | Bedrock with a supported Geyser/Floodgate setup | `bedrock.*`; entries become a list |
+| [Native Dialog — Premium](dialog-menus-premium.md) | Java on supported Paper 1.21.9+ | `dialog.layout: multi-action` or `item-action-list` |
+| [Ore — Premium](ore-menus-premium.md) | Supported Paper Dialog runtime and generated client pack | `dialog.layout: ore`, plus graphical `ui` |
+| [ArcMenu — Premium](arcmenu-menus-premium.md) | Java with a compatible ArcMenu installation and client setup | `arcmenu.enabled`, plus graphical `ui` |
+
+The native `multi-action` and `item-action-list` layouts do not require Ore's generated resource pack. ArcMenu follows its own integration's client requirements.
+
+## Normal presentation selection
+
+Global switches in `config.yml` enable the available routes:
 
 ```yaml
 menu:
@@ -16,96 +28,73 @@ menu:
     enabled: false
 ```
 
-In an individual menu, choose the layout and enable its intended presentations:
+Individual menu files can narrow those choices:
 
 ```yaml
-title: '&8Farming'
-size: 9
-layout:
-  - '0000A0000'
 dialog:
   enabled: true
-  layout: ore
-  content: '&7Browse our products'
+  layout: multi-action
 bedrock:
   enabled: true
-  content: '&7Browse our products'
 arcmenu:
   enabled: false
 ```
 
-### Inventory
+For Java players, the opening order is **ArcMenu → Dialog/Ore → Inventory**. When ArcMenu cannot open, an enabled and supported Dialog route may still be used. The menu's `dialog.layout` selects the native layout or Ore.
 
-[Inventory](inventory-ui.md) is the fallback when another presentation is disabled or unavailable. It has no additional edition requirement beyond the menu itself.
-
-### Bedrock Form <mark style="color:red;">- Premium</mark>
-
-[Bedrock Form - Premium](bedrock-menus-premium.md) requires global `menu.bedrock.enabled` and menu `bedrock.enabled`, with a supported Bedrock/Floodgate integration.
-
-### Native Dialog <mark style="color:red;">- Premium</mark>
-
-[Native Dialog - Premium](dialog-menus-premium.md) requires global `menu.dialog.enabled`, menu `dialog.enabled` and a supported Paper Dialog API. Set `dialog.layout` to `multi-action` or `item-action-list`.
-
-### Ore <mark style="color:red;">- Premium</mark>
-
-[Ore - Premium](ore-menus-premium.md) requires global/menu Dialog enabled, `dialog.layout: ore`, supported Paper and a generated client resource pack.
-
-### ArcMenu <mark style="color:red;">- Premium</mark>
-
-[ArcMenu - Premium](arcmenu-menus-premium.md) requires global `menu.arcmenu.enabled`, menu `arcmenu.enabled` and a compatible ArcMenu integration.
-
-When a menu omits `dialog.enabled` or `bedrock.enabled`, it defaults to `true`. ArcMenu is **opt-in**: its menu switch defaults to `false`.
-
-### Java priority
-
-**ArcMenu → Dialog / Ore → Inventory.** If ArcMenu fails to open, the normal menu-opening flow can try Dialog/Ore when enabled and supported. If neither graphical/native route applies, Inventory is used. Bedrock Form is selected separately for Bedrock players.
-
-`dialog.layout` is a _menu-level selector_: `multi-action`, `item-action-list` or `ore`. It does not configure pixel coordinates.
+Bedrock Form is checked separately for detected Bedrock players. To guarantee Inventory for both clients, use the forced Inventory setting below. Menu `dialog.enabled` and `bedrock.enabled` default to `true`; `arcmenu.enabled` defaults to `false`. Global enablement alone does not guarantee a compatible runtime or menu type.
 
 ## Supported menu types
 
-| Menu type | Inventory | Bedrock Form | Native Dialog | Ore graphics | ArcMenu graphics |
+| Menu type | Inventory | Bedrock Form | Native Dialog | Ore | ArcMenu |
 | --- | --- | --- | --- | --- | --- |
 | Common / Shop | Yes | Yes | Yes | Yes | Yes |
-| Search / Favourite | Yes | Yes | Yes | No; uses native multi-action Dialog | Yes |
-| Buy More file | Slot controls | Uses the source shop's quantity Form | Quantity input when this file enables Dialog | No | No |
+| Search / Favourite | Yes | Yes | Yes | Native multi-action fallback | Yes |
+| Buy More | Dedicated slot controls | Source shop's quantity Form | Native quantity input | No separate graphical screen | Source screen's product details |
 | Item Sell / Sell All | Yes | No | No | No | No |
 | In-game editor | Yes | No | No | No | No |
 
-Search and Favourite keep their ArcMenu `ui` layout but do not inherit Ore renderer templates. Setting `dialog.layout: ore` on either type uses a native `multi-action` Dialog; these menus do not produce Ore pack assets. Buy More does not inherit graphical defaults. ArcMenu's `select-amount` operation adjusts quantity in the source screen's product details, rather than rendering a Buy More file.
+Search/Favourite with `dialog.layout: ore` use native `multi-action` and do not generate Ore assets. Buy More's Inventory layout is not rendered as a Form or graphical canvas. Item Sell/Sell All always provide physical Inventory slots, including when launched from another presentation.
 
-The in-game editor limits its preset fields to these capabilities, including typed menus in `common_menus`. Existing unsupported fields remain available through raw section editing for cleanup.
+## Force one presentation
 
-## Where does each configuration belong?
-
-| What you want to change                        | Correct key                                                         |
-| ---------------------------------------------- | ------------------------------------------------------------------- |
-| Inventory rows and buttons                     | Root `size`, `layout`, `buttons`                                    |
-| Native Dialog mode, text and controls          | Menu `dialog.*`, global `menu.dialog.*`                             |
-| Bedrock Form enablement, button text and icons | Menu `bedrock.*`, global `menu.bedrock.*`, `display-item.bedrock.*` |
-| ArcMenu enablement                             | `menu.arcmenu.enabled` and menu `arcmenu.enabled`                   |
-| Ore/ArcMenu coordinates and card appearance    | `menu.ui.*` and menu `ui.*`                                         |
-| Show or hide a product in one presentation     | Entry `menu-visibility.<presentation>`                              |
-
-`ui.mode`, `ui.visible-in`, `ui.show-sprite` and native Form/Dialog `ui.renderers` fields are **not supported**. The `ui` section is reserved for graphical drawing and placement.
-
-## Menus that need a physical inventory
-
-Item Sell and Sell All use a real Inventory container, even when opened from another type of screen. Inventory Buy More buttons are not automatically converted into Form or Dialog widgets; see [Buy More](buy-more-menus.md).
-
-Related: [Configuration scopes](menu-configuration.md) · [Graphical layout - Premium](../menus-getting-started/ui-layout.md) · [Troubleshooting](troubleshooting.md).
-
-## Force one presentation globally
+Use `config.yml` to choose a presentation across menus:
 
 ```yaml
 menu:
   force-ui:
-    enabled: false
+    enabled: true
     type: inventory
+    style: ''
 ```
 
-Enable `menu.force-ui.enabled` in `config.yml` to override individual menu and global presentation enable switches. Supported types are `inventory`, `arcmenu`, `dialog`, `ore`, `item-action-list` and `form`. Disabling the switch restores normal presentation selection. Invalid types report a configuration error and use normal selection.
+This overrides global and menu-local presentation enable switches. It preserves platform, edition, integration and menu-type requirements.
 
-`inventory` applies to both Java and Bedrock. `arcmenu`, `dialog`, `ore` and `item-action-list` target Java; incompatible Bedrock clients use Inventory. `form` targets Bedrock, with Inventory for Java. Existing platform, edition and integration requirements still apply. Unsupported menu types retain their supported fallback: Item Sell and Sell All use physical inventories; Buy More supports Inventory/Dialog and ArcMenu product details; Search/Favourite use native Dialog when Ore is unavailable for that type. Missing ArcMenu falls back to Inventory. Forcing native `dialog` also replaces an Ore layout with `multi-action`.
+| Forced `type` | Java | Bedrock |
+| --- | --- | --- |
+| `inventory` | Inventory | Inventory |
+| `arcmenu` | ArcMenu when available; otherwise Inventory | Inventory |
+| `dialog` | Native Dialog when available | Inventory |
+| `item-action-list` | Native item-action-list when supported | Inventory |
+| `ore` | Ore for Common/Shop; native multi-action for Search/Favourite | Inventory |
+| `form` | Inventory | Form when available |
 
-Reload the plugin after changing the setting so loaded menu definitions are rebuilt.
+Unsupported routes retain their supported fallback. Item Sell/Sell All remain Inventory. Buy More may use native quantity input for a forced Dialog route; ArcMenu quantity controls remain part of product details. Forcing `dialog` replaces an Ore layout with `multi-action`; an existing native item-action-list selection remains native.
+
+Set `style` to a style ID such as `bedrock` to force graphical defaults too, or leave it empty to retain normal style selection. See [Configuration & Inheritance](menu-configuration.md#force-a-presentation-and-style). An invalid `type` reports a configuration error and restores normal selection. Reload after changing the setting.
+
+## Configure layout, content and visibility
+
+| Change | Key |
+| --- | --- |
+| Inventory positions | Root `size`, `layout` |
+| Native Dialog controls | `dialog.*` |
+| Bedrock Form text and behavior | `bedrock.*` |
+| Graphical style | Global `menu.ui.style` or menu `ui.style` |
+| Ore/ArcMenu coordinates | `ui.layout`, entry `ui.placement` |
+| Product card defaults | `ui.products.*` |
+| Hide one entry in a presentation | Entry `menu-visibility.<presentation>` |
+
+Root `content` is the shared description fallback; `dialog.content`, `bedrock.content` and `arcmenu.content` override it for their route. The graphical `ui` section controls drawing and placement. It does not select a presentation with `ui.mode`.
+
+[Menu System](README.md) · [Layout & Buttons](layout-and-buttons.md) · [Graphical UI Layout](../menus-getting-started/ui-layout.md)

@@ -1,12 +1,12 @@
 # 💰 Item Sell Menus
 
-Item Sell lets players place real item stacks into input slots, preview their adjusted sell value, and explicitly confirm the sale. Closing without confirming returns the items. This differs from [Sell All](sell-all-menu.md), which sells on close.
+Item Sell accepts real item stacks, previews their sell value and waits for an explicit confirmation. Closing without confirming returns the items. Use [Sell All](sell-all-menu.md) when deposits should instead be sold on close.
 
-Files live in `plugins/UltimateShop/menus/item_sell_menus/`; the bundled example is `item-sell.yml`. Open with `/shop menu item-sell` or an `open_menu` action. The dedicated folder determines the type; files in `common_menus` can use `menu-type: item-sell` (alias `item_sell`).
+Save files in `menus/item_sell_menus/`. Open the bundled menu with `/shop menu item-sell` or an `open_menu` action. The folder assigns the menu type automatically; a file in `common_menus` can use root `menu-type: item-sell` (alias `item_sell`).
 
 <a id="example"></a>
 
-## Inventory deposit example
+## Create a deposit menu
 
 ```yaml
 title: 'Sell Items'
@@ -28,7 +28,7 @@ confirm-button:
     lore:
       - '&7Price: &f{price}'
       - '&7Original price: &f{original-price}'
-      - '&7Final multiplier: &fx{multiplier}'
+      - '&7Multiplier: &fx{multiplier}'
       - '&7Sellable items: &f{item-amount}'
       - '&7Unsellable items: &f{unsellable-amount}'
 buttons:
@@ -41,37 +41,37 @@ buttons:
         type: close
 ```
 
-Undefined `0` slots are empty but are not input slots; define filler button `0` if desired. The example intentionally includes only a confirm control and a Close button.
+Save as `menus/item_sell_menus/my-sell.yml`, reload, then open `/shop menu my-sell`. `I` marks deposit slots; `C` marks confirmation. Undefined `0` slots are empty but do not accept sale deposits.
 
-## Item Sell-specific keys
+## Configuration reference
 
-Common title, size, layout, buttons, open conditions and open/close actions are described in [Common menus](general-menus.md).
-
-| Additional key | Meaning |
+| Key | Purpose |
 | --- | --- |
-| `input-item` | Input layout marker, default `I` |
+| `input-item` | Primary input marker; default `I` |
 | `input-items` | Additional input markers, combined with `input-item` |
-| `confirm-item` | Confirmation layout marker, default `C`; may occur in multiple slots |
-| `confirm-button.display-item` | Display Item Format for the confirmation control |
-| `max-sell-amount` | Maximum product trade units sold across all input slots per confirmation; `-1` means unlimited |
+| `confirm-item` | Confirmation marker; default `C`, can appear in multiple slots |
+| `confirm-button.display-item` | Confirmation icon, name and lore |
+| `max-sell-amount` | Maximum trade units sold across all inputs per confirmation; `-1` is unlimited |
 
-Only input slots accept the items to be sold. Use the layout token rules for longer IDs. The confirmation appearance is configured in `confirm-button`, not as a Buy More `confirm-items` entry. This menu's confirmation has a built-in sale handler; its name/lore does not define the sale formula.
+Common title, layout, ordinary buttons, opening conditions and lifecycle actions are supported. Longer markers use the [normal layout token rules](layout-and-buttons.md). The built-in confirmation control uses `confirm-button`, separate from Buy More's `confirm-items`.
 
-The preview placeholders are:
+## Price preview and confirmation
 
-| Placeholder | Value |
+| Confirmation placeholder | Value |
 | --- | --- |
-| `{price}` | Final reward after global sell multiplier and applicable item-aware modifiers |
+| `{price}` | Final reward with applicable sell multipliers and item-aware modifiers |
 | `{original-price}` | Reward before those multipliers |
-| `{multiplier}` | Combined effective sell multiplier |
-| `{item-amount}` | Amount currently eligible to sell |
-| `{unsellable-amount}` | Amount currently not eligible to sell |
+| `{multiplier}` | Combined effective multiplier |
+| `{item-amount}` | Amount eligible to sell |
+| `{unsellable-amount}` | Amount currently ineligible |
 
-Preview is recalculated from input. Confirmation still runs normal product sell validation, including conditions, player/server limits, actions, events and logging. Unsupported or unsold items remain in the menu and return on close. Display/confirmation icons are not part of the player's sale stock.
+The preview updates from deposited items. Confirming runs the normal product sell flow, including conditions, limits, events, actions and transaction logging. Unsold items remain available and are returned on close. Menu icons are not player sale stock.
 
-## Item-aware price modifiers
+`max-sell-amount` caps this menu's combined confirmation. It does not override product stock, conditions or other sell restrictions.
 
-Products with `price-modifier: true` must be sold through Item Sell so the calculation can inspect the supplied item. The menu has no independent modifier formula; configure modifiers on the product. Select the routing target globally:
+## Route item-aware products here
+
+Products using `price-modifier: true` need Item Sell so pricing can inspect the actual supplied stacks. Configure the target in `config.yml`:
 
 ```yaml
 sell:
@@ -81,14 +81,10 @@ sell:
       menu: item-sell
 ```
 
-For those products, `sell` and `sell-all` route to the selected Item Sell menu. Buy, quantity selection and custom operations keep their normal behaviour. Form/Dialog shop listings first open product information so buying and selling remain separate choices; choosing the routed sell operation opens the physical Inventory menu.
+For these products, the `sell` and `sell-all` operations route to that menu. The target ID must exist. Form/Dialog listings first expose product information so players can choose buying or selling; routed selling opens the physical Inventory. The product defines its modifiers, while the menu supplies input and confirmation.
 
-## Presentation and related settings
+## Presentation support
 
-This is an Inventory-only deposit interface, including for players whose ordinary shops use Form, Dialog, Ore or ArcMenu. It does not support `dialog`, `bedrock`, `arcmenu`, `ui` or button `ui.placement` settings, and does not inherit global `menu.ui` defaults. Configure Inventory `size`, `layout`, input and confirmation markers for this screen.
+Item Sell is Inventory-only for all clients. Its settings do not include Form, Dialog, Ore or ArcMenu layout, and it does not inherit graphical `menu.ui`. Global forced UI preserves this physical deposit interface.
 
-`max-sell-amount` belongs to this menu and caps the combined confirmation. The global sell engine still applies its own restrictions; raising this value does not bypass stock, limits or product conditions. See [Price Modifier](../shops/price-modifier.md) for calculation and [Sell Multiplier - Premium](../shops/sell-multiplier-premium.md) for reward multipliers.
-
-## Related documentation
-
-[Inventory UI](inventory-ui.md) · [Sell All](sell-all-menu.md) · [Troubleshooting](troubleshooting.md)
+[Price Modifier](../shops/price-modifier.md) · [Sell Multiplier](../shops/sell-multiplier-premium.md) · [Inventory UI](inventory-ui.md)

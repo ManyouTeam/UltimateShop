@@ -1,46 +1,43 @@
-# 📦 Inventory interface
+# 📦 Inventory UI
 
-Inventory is the normal chest-style menu. Its rows come from the **root** `layout` and `size`; `ui.layout` does not affect it.
+Inventory displays chest-style slots on Java and Bedrock. It reads the menu's root `size`, `layout` and buttons. Graphical `ui.layout` and `ui.placement` do not change Inventory positions.
 
-## Open Inventory instead of Dialog / ArcMenu / Form
+## Select Inventory
 
-For a Java menu, disable its Dialog and ArcMenu choices (or disable those presentations globally):
+For a single menu, disable alternative presentations at menu root:
 
 ```yaml
 dialog:
+  enabled: false
+bedrock:
   enabled: false
 arcmenu:
   enabled: false
 ```
 
-If Bedrock players must also receive Inventory instead of Form, disable their Form choice:
+For all menus, use `config.yml`:
 
 ```yaml
-bedrock:
-  enabled: false
+menu:
+  force-ui:
+    enabled: true
+    type: inventory
+    style: ''
 ```
 
-These blocks belong at the **menu root**. Global equivalents are `menu.dialog.enabled`, `menu.arcmenu.enabled` and `menu.bedrock.enabled` in `config.yml`. There is **no** `ui.mode.java: inventory` setting.
+The global force setting takes priority over local switches. Disable it to restore normal selection. Inventory is also the standard fallback when a requested presentation cannot be used.
 
-## Working Inventory example
+## Configure rows and entries
 
-Save as `menus/common_menus/categories.yml`:
+Save as `menus/common_menus/example.yml`:
 
 ```yaml
-title: '&8Categories'
+title: '&8Example'
 size: 18
 layout:
   - '000000000'
-  - '000A0X000'
+  - '0000X0000'
 buttons:
-  A:
-    display-item:
-      material: WHEAT
-      name: '&aFarming'
-    actions:
-      1:
-        type: shop_menu
-        shop: farming
   X:
     display-item:
       material: BARRIER
@@ -50,26 +47,30 @@ buttons:
         type: close
 ```
 
-Create the `farming` shop before opening this example. Reload with `/shop reload` and open with `/shop menu categories`. Each row has nine slots; `0` is empty until you define `buttons.0`.
+With Inventory selected, reload and open `/shop menu example`. Each row resolves to nine slots. Supported sizes are `9`, `18`, `27`, `36`, `45` and `54`. Undefined IDs leave empty slots; `0` can be defined as a filler. Multi-character IDs use backticks. See [Layout & Buttons](layout-and-buttons.md).
 
-## How Inventory handles items
+## Clicks, visibility and refresh
 
-- `buttons.<id>` describes a navigation/action button. Shop menus additionally resolve product IDs from the shop.
-- `layout` controls order and slots. `ui.placement` does **not** move Inventory items.
-- `menu-visibility.inventory: false` hides a button or product here without hiding it in Form/Ore/ArcMenu.
-- `display-conditions` control whether an entry is available to a player.
-- `menu.click-event` and product-specific click bindings govern product actions. Ordinary buttons use `actions`.
+Ordinary buttons run `actions` after their click conditions pass. Shop products use configured product click operations. `menu-visibility.inventory: false` hides an entry only from Inventory; Premium display conditions can additionally select entries per player with dynamic layout.
 
-See [Layout and buttons](layout-and-buttons.md) for markers and [Conditional display - Premium](conditional-display-premium.md) for dynamic entries.
+Global refresh options in `config.yml`:
 
-## Refresh, titles and deposit screens
+```yaml
+menu:
+  menu-update:
+    circle-update: false
+    click-update: false
+  title-update:
+    enabled: false
+    circle-update: false
+    click-update: true
+    resend-items-pack: false
+```
 
-`menu.menu-update.circle-update` and `click-update` control item refresh. `menu.title-update.*` contains optional title update behavior. Avoid frequent refresh if the contents rarely change.
+`circle-update` refreshes every second; `click-update` refreshes after a click. Enable periodic refresh when changing placeholders need it. Title updating is Premium and requires PacketEvents. Inventory click/reopen cooldowns are configured with `menu.cooldown.click` and `menu.cooldown.reopen`, in ticks; bundled values are `-1`.
 
-[Item Sell](item-sell-menus.md) and [Sell All](sell-all-menu.md) are physical Inventory screens. [Buy More](buy-more-menus.md) has a dedicated Inventory quantity selection layout.
+## Physical inventory screens
 
-## If Inventory opens unexpectedly
+[Item Sell](item-sell-menus.md) accepts real items and requires sale confirmation. [Sell All](sell-all-menu.md) sells deposits on close. Both remain Inventory interfaces regardless of global presentation selection. [Buy More](buy-more-menus.md) has its own amount controls and product previews.
 
-Check the global *and* menu-level switches, runtime integration availability and whether the requested menu type supports the chosen presentation. An empty Inventory slot usually means a missing layout marker, a missing entry, a failed display condition or `menu-visibility.inventory: false`.
-
-[Presentation guide](ui-overview.md) · [Menu troubleshooting](troubleshooting.md).
+[UI Modes](ui-overview.md) · [Display Item Add Lore](display-item-add-lore.md)

@@ -1,535 +1,176 @@
 # ⚙️ Menu Configuration & Inheritance
 
-UltimateShop allows each menu to have its own configuration while also supporting shared menu templates across multiple shops.
+Configure shared behavior in `config.yml`, reusable graphical styles in `ui/`, and individual screens in `menus/`. Shop files select a template and can override it for that shop.
 
-Global settings provide common defaults, while individual menus and shops can override specific options without duplicating the entire configuration.
+## File locations
 
-This guide explains how menu configurations are organized, inherited, and prioritized.
-
-## Configuration Structure
-
-Menu configurations are primarily stored in three locations:
-
-```
+```text
 plugins/UltimateShop/
-│
 ├── config.yml
-│   └── menu                 # Global menu settings
-│
+├── ui/
+│   ├── classic.yml
+│   └── bedrock.yml
 ├── menus/
-│   ├── common_menus/        # Common menus
-│   ├── shop_menu_templates/ # Shop menu templates
-│   ├── buy_more_menus/      # Amount selection menus
-│   ├── search_menus/        # Search menus
-│   ├── favourite_menus/     # Favourite menus
-│   └── item_sell_menus/     # Item sell menus
-│
+│   ├── common_menus/
+│   ├── shop_menu_templates/
+│   ├── buy_more_menus/
+│   ├── search_menus/
+│   ├── favourite_menus/
+│   └── item_sell_menus/
 └── shops/
-    ├── farming.yml         # Shop configuration
-    └── mining.yml
 ```
 
-### Global Configuration (`config.yml`)
+Menu and shop IDs are file names without `.yml`; custom subfolders do not change those IDs. Style IDs include their relative subfolder: `ui/custom/dark.yml` is selected as `custom/dark`.
 
-The `menu` section in `config.yml` controls global menu features and default settings.
+## Global settings and menu settings
 
-For example:
+This example belongs in `config.yml`:
 
 ```yaml
 menu:
+  force-ui:
+    enabled: false
+    type: inventory
+    style: ''
   dialog:
-    enabled: true
-
+    enabled: false
   bedrock:
     enabled: true
-
   arcmenu:
     enabled: false
-
   ui:
-    theme:
-      accent: '#65E8EF'
+    style: classic
 ```
 
-| Section        | Description                                                                       |
-| -------------- | --------------------------------------------------------------------------------- |
-| `menu.dialog`  | Global settings for Dialog and Ore                                                |
-| `menu.bedrock` | Global settings for Bedrock Form                                                  |
-| `menu.arcmenu` | Global settings for ArcMenu                                                       |
-| `menu.ui`      | Default graphical layout and appearance for Ore and ArcMenu                       |
-| Other `menu.*` | Global features such as menu updates, click actions, search, and amount selection |
-
-### Menu Configuration (`menus/`)
-
-Each YAML file in the `menus` directory defines a menu, including its title, layout, buttons, and presentation settings.
-
-For example, `menus/common_menus/main.yml`:
+The corresponding settings in a menu file have no `menu` wrapper:
 
 ```yaml
-title: '&8Main Menu'
-size: 27
-
-layout:
-  - '000000000'
-  - '0000A0000'
-  - '000000000'
-
+title: '&8Categories'
 dialog:
   enabled: true
   layout: multi-action
-
-buttons:
-  A:
-    display-item:
-      material: EMERALD
-      name: '&aOpen Shop'
-
-    actions:
-      1:
-        type: shop_menu
-        shop: farming
-```
-
-Common menus use their own configuration files directly.
-
-Shop menus can reference a shared template through `settings.menu`, allowing multiple shops to reuse the same menu structure.
-
-### Shop Configuration (`shops/`)
-
-Shop files define products and trading rules. They can also select a menu template or override its configuration.
-
-For example, `shops/farming.yml`:
-
-```yaml
-settings:
-  menu: default
-
-  menu-settings:
-    title: '&aFarming Shop'
-
-    dialog:
-      layout: ore
-```
-
-* `settings.menu`: Specifies the menu template to use.
-* `settings.menu-settings`: Overrides menu settings for this particular shop.
-
-Multiple shops can share the same template while using different titles, layouts, or presentation settings through `menu-settings`.
-
-### How Configurations Work Together
-
-**Common Menu:**
-
-```
-config.yml
-  └── Global presentation settings
-                ↓
-menus/common_menus/main.yml
-  └── Individual menu settings
-```
-
-**Shop Menu:**
-
-```
-menus/shop_menu_templates/default.yml
-                  │
-                  ▼
-          Load menu template
-                  │
-                  ▼
-shops/farming.yml
-  └── settings.menu-settings
-                  │
-                  ▼
-       Override template settings
-                  │
-                  ▼
-config.yml → menu.ui
-  └── Fill missing graphical settings
-                  │
-                  ▼
-         Final menu configuration
-```
-
-Only graphical `ui` settings use the recursive default-filling mechanism shown above. Dialog, Bedrock, and other global settings are resolved through their respective configuration lookup methods.
-
-Item Sell is Inventory-only and does not inherit `menu.ui` or support Dialog, Ore, ArcMenu or Bedrock Form settings. Sell All is also Inventory-only and uses its own global `menu.sell-all` settings. Buy More does not inherit graphical defaults; only its `dialog.enabled` selector can choose native quantity input. Search and Favourite inherit ArcMenu layout defaults, excluding Ore templates. See [supported menu types](ui-overview.md#supported-menu-types).
-
-## Configuration Inheritance & Priority
-
-UltimateShop uses different inheritance rules depending on the configuration type.
-
-### Shop Menu Template Overrides
-
-The `settings.menu-settings` section allows a shop to override specific settings from its menu template.
-
-Suppose `menus/shop_menu_templates/default.yml` contains:
-
-```
-title: '&8Default Shop'
-
-size: 27
-
-layout:
-  - '000000000'
-  - '0000A0000'
-  - '000000000'
-
-dialog:
+bedrock:
   enabled: true
-  layout: multi-action
-  columns: 2
-
+arcmenu:
+  enabled: false
 ui:
-  products:
-    card:
-      icon-size: 32
-      padding: 9
+  style: classic
 ```
 
-In `shops/farming.yml`:
+In normal selection, both global and local switches must allow a presentation. Menu `dialog.enabled` and `bedrock.enabled` default to `true`; menu `arcmenu.enabled` defaults to `false`. `menu.force-ui` overrides those switches when enabled. Platform and menu-type requirements still apply. See [UI Modes](ui-overview.md).
 
-```
+Supported native labels and options are resolved from menu `dialog.*` / `bedrock.*`, then global `menu.dialog.*` / `menu.bedrock.*`. Some integration and resource-generation settings are global only; their presentation pages identify them. Screen descriptions use local `dialog.content`, `bedrock.content` or `arcmenu.content`, falling back to root `content`.
+
+## Shop templates and overrides
+
+A shop selects `menus/shop_menu_templates/farming.yml` with:
+
+```yaml
 settings:
-  menu: default
-
+  menu: farming
   menu-settings:
-    title: '&aFarming Shop'
-
+    title: '&aFarming Specials'
     dialog:
-      layout: ore
-
+      enabled: true
+      layout: multi-action
     ui:
       products:
         card:
-          icon-size: 48
+          icon-size: 40
 ```
 
-The resulting configuration is equivalent to:
+`settings.menu-settings` belongs in the **shop file**. It merges into the chosen template before graphical defaults are applied.
 
+| Value in the override | Result |
+| --- | --- |
+| A scalar such as `title` or `enabled` | Replaces the template value |
+| A nested section | Merges recursively with the template section |
+| A list such as `layout` or lore | Replaces the entire template list |
+| An omitted key | Preserves the template value |
+
+For example, overriding `dialog.layout` preserves the template's `dialog.columns`. To replace an Inventory layout, supply all its rows. A shop without `settings.menu` can define its screen directly in `settings.menu-settings`.
+
+## Shared graphical styles
+
+`ui/classic.yml` and `ui/bedrock.yml` provide the bundled graphical defaults. The plugin creates missing bundled style files and preserves existing files. Copy a preset to `ui/my-style.yml` to maintain your own version.
+
+A style file contains UI fields **directly**, without a wrapping `ui` section:
+
+```yaml
+theme:
+  accent: '#6CC349'
+products:
+  card:
+    icon-size: 40
 ```
-title: '&aFarming Shop'
 
-size: 27
+This partial style can be selected with `ui.style: my-style`; other fields fall back to global graphical defaults. For a complete independent layout, copy a full bundled preset before editing it.
 
-layout:
-  - '000000000'
-  - '0000A0000'
-  - '000000000'
+Select the global style in `config.yml`:
 
-dialog:
-  enabled: true
-  layout: ore
-  columns: 2
-
-ui:
-  products:
-    card:
-      icon-size: 48
-      padding: 9
-```
-
-**Merge Rules:**
-
-| Situation                                   | Result                            |
-| ------------------------------------------- | --------------------------------- |
-| An option is defined in the shop override   | The shop's value takes priority   |
-| An option is missing from the shop override | The template's value is preserved |
-| An option contains nested sections          | Sections are merged recursively   |
-| An option contains a list                   | The entire list is replaced       |
-
-You only need to include the settings you want to change in `settings.menu-settings`.
-
-If a shop does not specify `settings.menu` but provides `settings.menu-settings`, UltimateShop can also create its shop menu directly from those settings.
-
-### Graphical UI Inheritance
-
-Ore and ArcMenu use the `ui` section for graphical settings.
-
-Global configuration:
-
-```
+```yaml
 menu:
   ui:
-    products:
-      card:
-        icon-size: 32
-        padding: 9
-
+    style: classic
     theme:
-      background: '#141E30'
       accent: '#65E8EF'
 ```
 
-Individual menu configuration:
+Select a different style for one menu:
 
-```
+```yaml
 ui:
-  products:
-    card:
-      icon-size: 48
-
+  style: bedrock
   theme:
-    accent: '#FFAA00'
+    accent: '#6CC349'
 ```
 
-The resulting graphical configuration is:
+Normal graphical inheritance works in this order:
 
-```
-ui:
-  products:
-    card:
-      icon-size: 48
-      padding: 9
+1. Load the global style; explicit `menu.ui` values override its defaults.
+2. If a menu selects a different style, overlay that style on the resolved global defaults.
+3. Fill missing menu `ui` fields from those defaults. Explicit menu fields, including shop overrides, win.
 
-  theme:
-    background: '#141E30'
-    accent: '#FFAA00'
-```
+This means a different per-menu style can replace a global accent, while a menu's own `ui.theme.accent` always wins in normal selection. Nested sections merge recursively; lists are replaced as whole values.
 
-**Inheritance Rules:**
+The styles supply graphical layout and appearance for Ore/ArcMenu. `ui.style: bedrock` changes graphics; it does not turn a Java screen into a Bedrock Form.
 
-* Values explicitly defined in the menu take priority.
-* Missing values are inherited from global `menu.ui`.
-* Nested sections are filled recursively without overwriting existing values.
-* Explicit `false` values, empty strings, and empty lists are preserved.
+## Force a presentation and style
 
-For shop menus, the processing order is:
+In `config.yml`:
 
-**Menu Template → Shop Overrides → Global Graphical Defaults**
-
-### Other Presentation Settings
-
-Native settings for Dialog, Bedrock Form, and ArcMenu generally follow this lookup order:
-
-1. Current menu configuration.
-2. Global settings in `config.yml`.
-3. Built-in fallback values.
-
-For example:
-
-```
-# config.yml
+```yaml
 menu:
-  dialog:
-    not-auto-close: true
+  force-ui:
+    enabled: true
+    type: arcmenu
+    style: bedrock
 ```
 
-An individual menu can override this setting:
+`type` selects the presentation globally. A nonempty `style` also overrides menu-local graphical values wherever the resolved forced defaults provide that field. Local fields absent from those defaults remain. Entry placements and product-level overrides still need to fit the chosen layout.
 
-```
-dialog:
-  not-auto-close: false
-```
+Leave `style: ''` to force only the presentation and retain normal style selection. Both forced presentation and forced style are ignored when `enabled: false`. Supported types and client behavior are listed in [UI Modes](ui-overview.md#force-one-presentation).
 
-In this case, the menu uses `false`.
+## Product and button settings
 
-However, **presentation enablement does not follow ordinary override behavior**. If a presentation is disabled globally, an individual menu cannot force-enable it with `enabled: true`.
+| Purpose | Location |
+| --- | --- |
+| Ordinary button item and actions | Menu `buttons.<id>.display-item/actions` |
+| Product item, prices and trade rules | Shop `items.<id>` |
+| Presentation visibility | Button/product `menu-visibility.<presentation>` |
+| Graphical product placement | Menu `ui.products.placement`, overridden by product `ui.placement` |
+| Ordinary graphical button placement | Button `ui.placement` |
+| Graphical product price and actions | Product `ui.price` / `ui.actions`, then owning shop menu `ui.products.*`, then global `menu.ui.products.*` |
+| Graphical card styling | Menu `ui.products.card` |
+| Form icon and supplemental line | Active `display-item.bedrock.*` |
+| Form direct product action | Product `bedrock.click-event` |
 
-Some settings are also read exclusively from the global configuration, such as Bedrock client detection and certain resource-pack generation options.
+A product displayed in Search/Favourite retains its source product settings and trade rules. Graphical action/price lookup uses the owning shop menu for its menu-level defaults.
 
-Menu content uses a separate fallback mechanism:
+## Scope by menu type
 
-| Presentation | Content Lookup Order          |
-| ------------ | ----------------------------- |
-| Dialog / Ore | `dialog.content` → `content`  |
-| Bedrock Form | `bedrock.content` → `content` |
-| ArcMenu      | `arcmenu.content` → `content` |
+Common and Shop support Ore and ArcMenu defaults. Search and Favourite inherit ArcMenu defaults but exclude Ore template and card-lore defaults. Item Sell and Buy More do not inherit graphical `menu.ui` settings. Buy More reads its own `dialog.enabled` for native quantity input; its source shop supplies Form/Dialog quantity labels. Sell All uses only its dedicated `menu.sell-all` screen configuration.
 
-If neither value is configured, an empty string is used.
+Reload with `/shop reload` after editing menus, styles or selectors. Ore layout and texture changes also require rebuilding and distributing its [resource pack](ore-menus-premium.md#generate-the-resource-pack).
 
-## Menu Presentation Selection
-
-UltimateShop supports multiple presentations for the same menu content.
-
-| Presentation     | Global Setting                    | Menu Setting                            |
-| ---------------- | --------------------------------- | --------------------------------------- |
-| 📦 Inventory     | No additional enablement required | No additional enablement required       |
-| 💬 Dialog        | `menu.dialog.enabled`             | `dialog.enabled`                        |
-| 🪨 Ore           | `menu.dialog.enabled`             | `dialog.enabled` + `dialog.layout: ore` |
-| ✨ ArcMenu        | `menu.arcmenu.enabled`            | `arcmenu.enabled`                       |
-| 🛏️ Bedrock Form | `menu.bedrock.enabled`            | `bedrock.enabled`                       |
-
-Dialog, Ore, ArcMenu, and Bedrock Form require the Premium edition and their respective runtime requirements.
-
-### Java Client Priority
-
-For menus that support these presentations, the selection priority is:
-
-**ArcMenu → Dialog / Ore → Inventory**
-
-Dialog and Ore are selected using `dialog.layout`:
-
-| Value              | Presentation                 |
-| ------------------ | ---------------------------- |
-| `multi-action`     | Native Dialog action buttons |
-| `item-action-list` | Native Dialog item list      |
-| `ore`              | Ore graphical interface      |
-
-For example:
-
-```
-dialog:
-  enabled: true
-  layout: ore
-
-arcmenu:
-  enabled: true
-```
-
-If both presentations are globally enabled and supported by the runtime, ArcMenu takes priority.
-
-If ArcMenu cannot be used, UltimateShop can attempt Dialog/Ore. When no alternative presentation is available, Inventory is used.
-
-### Bedrock Clients
-
-For detected Bedrock players, UltimateShop determines whether to use Form based on `bedrock.enabled` and global `menu.bedrock.enabled`.
-
-Bedrock Form is selected separately and does not participate in the Java client presentation priority.
-
-### Default Values
-
-If a menu does not explicitly define these settings:
-
-| Menu Setting      | Default Value |
-| ----------------- | ------------- |
-| `dialog.enabled`  | `true`        |
-| `bedrock.enabled` | `true`        |
-| `arcmenu.enabled` | `false`       |
-
-These defaults do not guarantee that a presentation will be used. Global settings and runtime requirements must also be satisfied.
-
-## Button & Product Configuration
-
-In addition to menu-level settings, UltimateShop allows individual buttons and products to define presentation-specific behavior.
-
-### Presentation Visibility
-
-Use `menu-visibility` to control which presentations can display a button or product.
-
-For example:
-
-```
-buttons:
-  A:
-    display-item:
-      material: EMERALD
-      name: '&aExample'
-
-    menu-visibility:
-      inventory: true
-      form: true
-      dialog: true
-      item-action-list: false
-      ore: false
-      arcmenu: true
-```
-
-| Option             | Presentation     |
-| ------------------ | ---------------- |
-| `inventory`        | Inventory        |
-| `form`             | Bedrock Form     |
-| `dialog`           | Native Dialog    |
-| `item-action-list` | Dialog item list |
-| `ore`              | Ore              |
-| `arcmenu`          | ArcMenu          |
-
-All options default to visible.
-
-For `ore` and `item-action-list`, if their visibility is not explicitly configured, they inherit the value of `menu-visibility.dialog`.
-
-For example:
-
-```
-menu-visibility:
-  dialog: false
-  ore: true
-```
-
-This hides the entry in native Dialog and Item Action List while allowing it to appear in Ore.
-
-### Product Graphical Settings
-
-Ore and ArcMenu allow individual products to override graphical settings.
-
-For example, inside a shop file:
-
-```
-items:
-  A:
-    ui:
-      price:
-        enabled: false
-
-      actions:
-        primary:
-          - buy
-```
-
-For supported product-level settings such as `ui.price` and `ui.actions`, the lookup priority is:
-
-**Product `ui.*` → Menu `ui.products.*` → Global `menu.ui.products.*` → Default Value**
-
-These settings only affect graphical product presentation in Ore and ArcMenu. They do not change the action buttons of native Dialog or Bedrock Form.
-
-### Graphical Element Placement
-
-Ore and ArcMenu use `ui.placement` to determine the graphical position of buttons and products.
-
-For example:
-
-```
-buttons:
-  A:
-    display-item:
-      material: EMERALD
-      name: '&aExample'
-
-    ui:
-      appearance: button
-
-      placement:
-        area: sidebar
-        order: 0
-```
-
-The `ui.placement` section references areas defined in the menu's `ui.layout.areas`.
-
-Products can also inherit a default graphical placement from the menu's `ui.products.placement`.
-
-Note that `menu-visibility` controls whether an entry is allowed to appear in a particular presentation, while `ui.placement` determines how it is positioned in graphical interfaces.
-
-These settings serve different purposes and do not replace one another.
-
-## Configuration Reference
-
-The following table summarizes common menu settings and their locations.
-
-| Configuration                          | YAML Path                             |
-| -------------------------------------- | ------------------------------------- |
-| Menu title                             | `title`                               |
-| Menu content                           | `content`                             |
-| Inventory size                         | `size`                                |
-| Inventory slot layout                  | `layout`                              |
-| Menu buttons                           | `buttons`                             |
-| Menu opening conditions                | `conditions`                          |
-| Menu opening actions                   | `open-actions`                        |
-| Menu closing actions                   | `close-actions`                       |
-| Dynamic layout                         | `dynamic-layout`                      |
-| Dialog settings                        | `dialog`                              |
-| Bedrock Form settings                  | `bedrock`                             |
-| ArcMenu settings                       | `arcmenu`                             |
-| Graphical canvas and areas             | `ui.layout`                           |
-| Graphical product cards                | `ui.products.card`                    |
-| Graphical product prices               | `ui.products.price`                   |
-| Graphical product actions              | `ui.products.actions`                 |
-| Graphical theme colors                 | `ui.theme`                            |
-| Graphical text                         | `ui.text`                             |
-| Ore graphical templates                | `ui.renderers.ore`                    |
-| ArcMenu rendering settings             | `ui.renderers.arcmenu`                |
-| Button or product visibility           | `menu-visibility`                     |
-| Button or product graphical placement  | `ui.placement`                        |
-| Button Dialog presentation options     | `dialog.show-sprite`, `dialog.layout` |
-| Bedrock Form icons and additional text | `display-item.bedrock`                |
-| Shop menu template                     | `settings.menu`                       |
-| Shop-specific menu overrides           | `settings.menu-settings`              |
+[Layout & Buttons](layout-and-buttons.md) · [Graphical UI Layout](../menus-getting-started/ui-layout.md)

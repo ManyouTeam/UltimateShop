@@ -1,10 +1,14 @@
-# 📐 Graphical UI Layout - Premium
+# 📐 Graphical UI Layout — Premium
 
-Ore and ArcMenu share the `ui.layout` canvas/area model, `ui.products`, entry `ui.placement`, `ui.appearance` and `ui.theme`. Inventory uses the root slot `layout` instead, while Form and native Dialog use list rendering. Use [Ore - Premium](../menus/ore-menus-premium.md) or [ArcMenu - Premium](../menus/arcmenu-menus-premium.md) for renderer-specific behavior.
+Ore and ArcMenu share graphical styles, a logical canvas, named areas and entry placements. These settings position graphical controls; Inventory uses root `layout`, and native Form/Dialog use their own controls.
 
-## First graphical menu
+Common/Shop support both graphical renderers. Search/Favourite support ArcMenu; Buy More and physical selling screens do not use this canvas. See [UI Modes](../menus/ui-overview.md#supported-menu-types).
 
-Graphical styles live in `ui/classic.yml` and `ui/bedrock.yml` under the plugin folder. Select the global default with `config.yml` → `menu.ui.style`, or select a style per menu with `ui.style`. Existing `menu.ui` settings remain available as global overrides. The following menu uses the default areas `sidebar` and `content` and works as the starting point for **either** Ore or ArcMenu after enabling the chosen renderer:
+## Start with a shared style
+
+Select global `menu.ui.style` in `config.yml`, or menu-root `ui.style`. Bundled `classic` uses left navigation; `bedrock` uses a top navigation bar. Both provide named `sidebar`, `content` and `footer` areas. Style files live under `plugins/UltimateShop/ui/` and contain UI fields directly, without a wrapping `ui` section.
+
+This complete Common menu uses the inherited canvas:
 
 ```yaml
 title: '&8Categories'
@@ -16,6 +20,8 @@ dialog:
   layout: ore
 arcmenu:
   enabled: false
+ui:
+  style: classic
 buttons:
   A:
     display-item:
@@ -26,12 +32,15 @@ buttons:
         type: shop_menu
         shop: farming
     ui:
+      appearance: button
       placement:
         area: sidebar
         order: 0
 ```
 
-To select Ore, enable global `menu.dialog.enabled` and generate its resource pack. To select ArcMenu, enable both global and menu `arcmenu.enabled` with a compatible integration. The `farming` shop must exist. See [UI modes](../menus/ui-overview.md). For a shop's product cards, use:
+Create the target shop. For Ore, enable global Dialog, reload and [generate/distribute its pack](../menus/ore-menus-premium.md#generate-the-resource-pack). For ArcMenu, enable the global/menu ArcMenu switches with a compatible integration. The menu's root Inventory layout does not select graphical coordinates.
+
+For shop product cards, the inherited placement is normally:
 
 ```yaml
 ui:
@@ -40,30 +49,31 @@ ui:
       area: content
 ```
 
-This inherits the rest of the graphical canvas/grid/card defaults rather than duplicating them. Override the full canvas only when you need custom sizes or areas.
-
 ## Configuration scopes
 
-| Scope                             | Location                                                     |
-| --------------------------------- | ------------------------------------------------------------ |
-| Global UI defaults                | `config.yml`: `menu.ui`                                      |
-| Menu overrides                    | Menu root `ui`, including shop `settings.menu-settings.ui`   |
-| Product action/price overrides    | Product root `ui.actions`, `ui.price`                        |
-| Product/button graphical position | Product/button root `ui.placement`                           |
-| Ordinary button appearance        | Button root `ui.appearance`, `ui.font-size`, `ui.text-align` |
+| Scope | Configuration |
+| --- | --- |
+| Shared style file | `ui/<style>.yml`: `layout`, `products`, `theme`, `text`, `renderers` |
+| Global graphical defaults | `config.yml` → `menu.ui` |
+| Per-menu overrides | Menu root `ui`; for a shop, also `settings.menu-settings.ui` |
+| Individual product actions/price | Product root `ui.actions`, `ui.price` |
+| Individual entry placement | Product/button root `ui.placement` |
+| Ordinary entry appearance | Entry `ui.appearance`, `ui.font-size`, `ui.text-align` |
 
-Menu values inherit missing global values recursively. Graphical product action/price lookup uses product > owning shop menu > global defaults. Form and native Dialog do not read these graphical presentation options. Card styling is menu-wide. A product shown in search/favourites keeps its product settings and trade rules. Bundled menus contain explicit UI values, so inspect the menu when a global edit appears ineffective.
+In normal selection, explicit menu fields win over selected defaults. A different per-menu style overlays the global defaults; missing fields are filled recursively. Forced style selection can replace local defaults. See [Configuration & Inheritance](../menus/menu-configuration.md).
 
-Root `title` supplies the title. Ore uses `dialog.content` (then root `content`) for its header; ArcMenu uses `arcmenu.content` (then root `content`). Headers can reference `{title}` and `{content}`, language references and PlaceholderAPI. Start from the included main/shop/search/favourite menu examples. Other graphical layout formats are not automatically converted.
+Graphical product action/price lookup is product → owning shop menu → global defaults. Card appearance is menu-wide. Native Form price lines use `bedrock.price-extra-line`, independently of graphical prices.
 
-## Canvas, areas and pagination
+## Canvas and areas
+
+This menu fragment shows a complete classic-style canvas definition:
 
 ```yaml
 ui:
   layout:
     canvas:
       width: 648
-      height: 414
+      height: 405
     header:
       title:
         enabled: true
@@ -71,6 +81,7 @@ ui:
         x: 18
         y: 9
         width: 570
+        height: 27
         align: left
         font-size: 1.3
       content:
@@ -79,11 +90,13 @@ ui:
         x: 18
         y: 36
         width: 570
+        height: 27
         align: left
         font-size: 0.8
     areas:
       sidebar:
         type: stack
+        direction: vertical
         x: 18
         y: 90
         width: 108
@@ -126,39 +139,50 @@ ui:
         height: 27
 ```
 
-### Canvas, headers and areas
+Style sections merge recursively. Editing `header.title` does not remove other named headers inherited from a style; set unwanted header entries to `enabled: false`.
 
-| Path relative to `ui.layout`               | Meaning                                                                             |
-| ------------------------------------------ | ----------------------------------------------------------------------------------- |
-| `canvas.width`, `canvas.height`            | Logical canvas dimensions; width 144–900, height 144–540; height is a multiple of 9 |
-| `header.<id>`                              | Named text header; any descriptive ID may be used                                   |
-| `header.<id>.enabled`                      | Whether to render this header                                                       |
-| `header.<id>.text`                         | Text, with `{title}`/`{content}` replacement                                        |
-| `header.<id>.x`, `y`, `width`              | Canvas position and text width; header layout occupies a 27-high area               |
-| `header.<id>.align`                        | `left`, `center`, `right`                                                           |
-| `header.<id>.font-size`                    | ArcMenu text scale; Ore uses native font rendering                                  |
-| `areas.<id>.type`                          | `grid`, `stack` or `free`                                                           |
-| `areas.<id>.x`, `y`, `width`, `height`     | Named area's bounds within the canvas                                               |
-| `areas.<id>.columns`, `rows`               | Grid dimensions; columns 1–36, rows 1–60                                            |
-| `areas.<id>.cell-height`                   | Grid cell height; width is calculated from area width, columns and gaps             |
-| `areas.<id>.item-height`                   | Stack entry height; default 36                                                      |
-| `areas.<id>.gap`                           | Fallback for both horizontal and vertical gaps                                      |
-| `areas.<id>.gap-x`, `gap-y`                | Override the respective gap                                                         |
-| `pagination.enabled`                       | Enable graphical pagination controls                                                |
-| `pagination.previous`, `indicator`, `next` | Each supports `enabled`, `x`, `y`, `width`, `height`                                |
+| Path relative to `ui.layout` | Purpose |
+| --- | --- |
+| `canvas.width`, `canvas.height` | Logical dimensions: width `144–900`, height `144–540` |
+| `header.<id>.enabled/text` | Named header visibility and text |
+| `header.<id>.x/y/width/height` | Header bounds; default height `27` |
+| `header.<id>.align` | `left`, `center` or `right` |
+| `header.<id>.font-size`, `bold` | ArcMenu text scale and bold styling |
+| `areas.<id>.type` | `grid`, `stack` or `free` |
+| `areas.<id>.x/y/width/height` | Area bounds on the canvas |
+| `areas.<id>.columns/rows` | Grid dimensions: columns `1–36`, rows `1–60` |
+| `areas.<id>.cell-height` | Grid cell height; width derives from area width/columns/gaps |
+| `areas.<id>.direction` | Stack direction: `vertical` (default) or `horizontal` |
+| `areas.<id>.item-width` | Horizontal stack entry width; default `108` |
+| `areas.<id>.item-height` | Stack entry height; default `36` |
+| `areas.<id>.gap` | Fallback for horizontal and vertical gaps |
+| `areas.<id>.gap-x/gap-y` | Individual gap overrides |
+| `areas.<id>.background-enabled/background-padding` | ArcMenu area backdrop and padding |
+| `pagination.enabled` | Graphical page controls |
+| `pagination.previous/indicator/next` | Each supports `enabled`, `x`, `y`, `width`, `height` |
 
-Grid entries fill cells and paginate by area capacity. Explicit row/column cells are reserved before automatic placement. Stack entries sort by `placement.order` and stack vertically; free entries use coordinates within the area. Row/column indices start at 0.
+Headers can replace `{title}` and `{content}` and use normal language/PlaceholderAPI text. Ore description comes from `dialog.content`, ArcMenu from `arcmenu.content`, then local root `content`.
 
-Use multiples of 9 for vertical coordinates, heights and vertical gaps. Non-free cells must be at least 24 wide and 27 high; all entries with `appearance: card` must be at least 99 high, including category cards. Keep headers, pagination and actual entries within bounds and free of overlap. Errors are reported through ErrorManager. Increasing canvas size does not redesign ArcMenu's product details panel, whose internal coordinates are renderer-specific.
+## Area behavior and pagination
 
-### Entry placements
+**Grid** fills cells in order, reserving explicitly assigned row/column cells first. A `3 × 2` area holds six entries per page. Additional grid entries produce further pages; row/column indices start at zero, and rows beyond the first page identify later pages. Keep columns within the configured grid width.
+
+**Stack** lays out entries in `placement.order`, vertically or horizontally. It does not create extra pages; all entries must fit. The bundled Bedrock style's horizontal `sidebar` holds five navigation buttons and remains visible while grid pages change.
+
+**Free** uses offsets inside the area's bounds. Supply both `placement.x` and `placement.y`. Default free-entry size is `108 × 27`; larger entries still need to fit the area.
+
+Canvas height, all element Y coordinates/heights, and vertical gaps must be multiples of 9. Bounds must stay inside their parent. Rectangles require width at least 24 and height at least 9; non-free cells require height at least 27. Every `appearance: card` requires height at least 99. Visible entries must not overlap each other, headers or active pagination controls.
+
+Search/Favourite root result-slot counts limit source entries before graphical arrangement. A larger grid or more graphical pages does not expand that source capacity.
+
+## Entry placements
 
 ```yaml
 buttons:
   search:
     display-item:
       material: HOPPER
-      name: 'Search'
+      name: '&eSearch'
     actions:
       1:
         type: open_menu
@@ -173,7 +197,7 @@ buttons:
   close:
     display-item:
       material: BARRIER
-      name: 'Close'
+      name: '&cClose'
     actions:
       1:
         type: close
@@ -186,22 +210,24 @@ buttons:
         height: 27
 ```
 
-| Entry key                                        | Meaning                                                                 |
-| ------------------------------------------------ | ----------------------------------------------------------------------- |
-| `ui.placement.enabled`                           | Default true when placement exists; false disables this graphical entry |
-| `ui.placement.area`                              | Named area from `ui.layout.areas`                                       |
-| `ui.placement.order`                             | Sort order for stack/automatic placement; defaults to source slot       |
-| `ui.placement.row`, `column`                     | Optional explicit grid cell; zero-based                                 |
-| `ui.placement.x`, `y`                            | Offset relative to a free area's origin                                 |
-| `ui.placement.width`, `height`                   | Override entry dimensions; free entries otherwise default to 108 × 27   |
-| `ui.appearance`                                  | `button` or `card`; products use cards by default                       |
-| `ui.font-size`                                   | Ordinary ArcMenu button font scale                                      |
-| `ui.text-align`                                  | Ordinary graphical button alignment                                     |
-| `menu-visibility.ore`, `menu-visibility.arcmenu` | Boolean presentation filters; omitted values default to true            |
+The target Search menu must exist and requires Premium. The Close button is positioned relative to the footer's origin. Both controls can appear graphically without root layout markers.
 
-Ordinary buttons without a graphical placement are not displayed. The renderer does not generate Back/Close or infer a sidebar from actions. Root `layout` identifies Inventory/list entries. Graphical menu collection can also include explicitly placed ordinary buttons/products that are absent from the root slot layout. Product placement defaults to `ui.products.placement`; a product's own `ui.placement` overrides it. `appearance: card` also supports category/navigation cards.
+| Entry key | Purpose |
+| --- | --- |
+| `ui.placement.enabled` | Default `true` when placement exists; `false` disables graphical placement |
+| `ui.placement.area` | Named area ID |
+| `ui.placement.order` | Sort priority; defaults to source slot |
+| `ui.placement.row/column` | Explicit grid cell; a configured row enables explicit-cell placement |
+| `ui.placement.x/y` | Free-area offsets |
+| `ui.placement.width/height` | Entry dimension overrides |
+| `ui.appearance` | `button` or `card`; products default to cards |
+| `ui.font-size` | Ordinary ArcMenu button font scale |
+| `ui.text-align` | Ordinary graphical button text alignment |
+| `menu-visibility.ore/arcmenu` | Presentation visibility at entry root |
 
-## Graphical product cards and actions
+Ordinary entries need their own placement; products inherit `ui.products.placement` and merge their own overrides over it. `appearance: card` can also create category/navigation cards. Neither an empty sidebar nor an action automatically generates a navigation control.
+
+## Product cards, prices and actions
 
 ```yaml
 ui:
@@ -235,48 +261,72 @@ ui:
         sell: 'Sell'
 ```
 
-| Path relative to `ui.products`                | Meaning                                                                                            |
-| --------------------------------------------- | -------------------------------------------------------------------------------------------------- |
-| `placement`                                   | Default product area/placement, using the entry keys above                                         |
-| `card.icon-size`                              | Material/item icon size                                                                            |
-| `card.padding`                                | Card content padding                                                                               |
-| `card.name-size`, `price-size`                | ArcMenu name and compact price font scales                                                         |
-| `card.button-font-size`, `button-height`      | ArcMenu operation button font and height                                                           |
-| `card.buttons.inset-x`, `inset-bottom`, `gap` | ArcMenu operation button positioning                                                               |
-| `card.lore-lines`                             | Maximum product lore lines in Ore card bodies                                                      |
-| `card.description-lines`                      | Maximum Ore category-card description lines; ArcMenu calculates fitting lines from card space      |
-| `price.enabled`                               | Enable the compact product price line                                                              |
-| `price.formats.both`, `only-buy`, `only-sell` | Price format by available trade direction; `{buy-price}` and `{sell-price}`                        |
-| `actions.primary`                             | Ordered action IDs, at most two available primary actions                                          |
-| `actions.extra`                               | `auto` for remaining actions, explicit list to filter, or `[]` for none                            |
-| `actions.labels.<action-id>`                  | Label override; supports `{item-name}` and normal text placeholders                                |
+| Path relative to `ui.products` | Purpose |
+| --- | --- |
+| `card.icon-size`, `padding` | Item icon size and content padding |
+| `card.name-size/price-size` | ArcMenu product name/price font scales |
+| `card.button-font-size/button-height` | ArcMenu operation button text and height |
+| `card.buttons.inset-x/inset-bottom/gap` | ArcMenu operation button placement |
+| `card.lore-lines` | Maximum Ore product body lore lines |
+| `card.description-lines` | Maximum Ore category description lines; ArcMenu fits descriptions to available space |
+| `price.enabled` | Compact product price line |
+| `price.formats.both/only-buy/only-sell` | Format for the product's available trade directions |
+| `actions.primary` | Ordered preferred IDs; at most two available primary operations |
+| `actions.extra` | `auto` for remaining operations, an explicit list, or `[]` for none |
+| `actions.labels.<id>` | Operation label; supports `{item-name}` and normal text placeholders |
 
-Actions come from `menu.click-event` or product click overrides, with custom definitions in `menu.click-event-actions`. Listing an ID in `actions.primary` does not create an action without a binding. Buy/sell, quantity, sell-all and favourite availability is filtered by the product. Custom `buy-only`/`sell-only` restrictions also apply.
+Operation IDs come from product click bindings and custom `menu.click-event-actions`. Listing `buy` does not create a missing binding. Prices, product options and custom buy-only/sell-only restrictions filter available actions.
 
-Price text reuses dynamic price calculation and sell multiplier display. Compact prices represent one trade unit; information/detail content uses the applicable quantities. Original item lore and generated `add-lore` are retained in product information/tooltips. Presentation conditions can target `arcmenu`, `arcmenu-hover`, `ore` and `ore-hover`; see [Add Lore](../menus/display-item-add-lore.md). If there is no lore, tooltip content can fall back to the compact price line.
+Products can override `ui.price` and `ui.actions` at product root; card styling remains menu-wide. Compact price text represents one trade unit and uses shared dynamic price/multiplier calculation. Information/details use their applicable quantities. Original lore and applicable generated lore remain available to information/tooltips. Use [lore presentation conditions](../menus/display-item-add-lore.md#presentation-conditions) for different instructions.
 
-## Colors and graphical text
+## Theme and text
 
-`ui.theme` accepts `#RRGGBB` or ArcMenu `#AARRGGBB` strings; quote values in YAML. Ore's generated templates use RGB and drop the alpha channel.
+Quote colors in YAML. ArcMenu accepts `#RRGGBB` or `#AARRGGBB`; Ore's generated RGB textures discard alpha.
 
-| Theme key                                            | Element                    |
-| ---------------------------------------------------- | -------------------------- |
-| `background`                                         | Overall ArcMenu background |
-| `sidebar`                                            | Sidebar background         |
-| `card`                                               | Card background            |
-| `border`                                             | Card border                |
-| `accent`                                             | Selection/highlight accent |
-| `text`                                               | ArcMenu base text colour   |
-| `button.background`, `button.hover`, `button.border` | Ordinary controls          |
-| `buy.background`, `buy.hover`                        | Buy controls               |
-| `sell.background`, `sell.hover`                      | Sell controls              |
+| Path relative to `ui.theme` | Purpose |
+| --- | --- |
+| `background-enabled`, `background` | ArcMenu window backdrop |
+| `sidebar`, `card`, `border`, `accent`, `text` | Shared panel/card/accent colors and ArcMenu base text |
+| `button.background/hover/border/text-align` | Ordinary graphical controls |
+| `buy.background/hover`, `sell.background/hover` | Trade controls |
+| `title.background-enabled/background/decoration-enabled` | Independent ArcMenu title background and decoration |
+| `decorations.enabled/style/color/corner-color` | ArcMenu frame/corner styling |
+| `decorations.thickness/corner-thickness/corner-length/inset` | Decoration dimensions |
+| `decorations.dividers-enabled` | ArcMenu header accent |
+| `bevel.enabled/shadow/top/left/right/bottom` | ArcMenu beveled control defaults |
+| `tooltip.border/background` | ArcMenu hover panel colors |
+| `details.background`, `more-menu.background` | ArcMenu details and popup colors |
 
-`ui.text.cancel` and `ui.text.no-extra` label the extra-action popup. `ui.text.favourite-edit.forward`, `backward`, `remove` override favourite card editing labels. `ui.text.select-product` is the renderer's unselected-product hint. Use language references for translated labels.
+ArcMenu control-specific theme sections such as `buy`, `sell`, `quantity`, `pagination` and `cancel` can supply their own `text` and bevel colors. Bevel colors are composited against their control's base color.
 
-## Ore vs ArcMenu
+A title background can be enabled separately from the window backdrop:
 
-ArcMenu uses compact product price text and adjustable font scales; Ore uses generated assets, native text rendering and card body lore. Shared keys do not imply identical visual behavior. `ui.products.card.price-lines` is not supported; compact price text does not use a configurable line limit.
+```yaml
+ui:
+  theme:
+    background-enabled: false
+    title:
+      background-enabled: true
+      background: '#EF0C1223'
+      decoration-enabled: true
+    decorations:
+      enabled: true
+      style: corners
+      color: '#65E8EF'
+      corner-color: '#65E8EF'
+      thickness: 2
+      corner-thickness: 2
+      corner-length: 20
+      inset: 10
+      dividers-enabled: true
+```
 
-For entry-specific overrides, product `ui.actions` and `ui.price` take precedence over the owning shop menu and global `menu.ui.products`. Ordinary navigation entries need their own placements; a sidebar/back button is not automatically created.
+Decoration `style` accepts `frame`, `corners`, `both` or `none`. `none` adds no outer frame while allowing the header accent. Supported dimensions are thickness `0.5–6`, corner thickness `0.5–8`, corner length `0–80`, inset `0–30`. Title backgrounds/decorations follow the configured title-header bounds.
 
-[UI Modes](../menus/ui-overview.md) · [Ore - Premium](../menus/ore-menus-premium.md) · [ArcMenu - Premium](../menus/arcmenu-menus-premium.md) · [Layout and Buttons](../menus/layout-and-buttons.md)
+Graphical labels live in `ui.text`: `cancel`, `no-extra`, `amount-input`, `select-product` and `favourite-edit.forward/backward/remove`. Language references can localize them.
+
+## Renderer-specific settings
+
+Ore texture templates belong in `ui.renderers.ore.templates`; ArcMenu interaction, animation and tooltip options belong in `ui.renderers.arcmenu`. ArcMenu refresh `update-interval` is global only. Shared geometry does not promise identical font rendering or card bodies across the two renderers.
+
+[Ore](../menus/ore-menus-premium.md) · [ArcMenu](../menus/arcmenu-menus-premium.md) · [Configuration Compatibility](../menus/migration-guide.md)

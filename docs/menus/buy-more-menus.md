@@ -1,12 +1,12 @@
 # 🔽 Buy More Menus
 
-Buy More selects the number of trade units for an already selected product. One trade unit can contain several items according to the product's configured reward amount. It is not a standalone shop and cannot be opened meaningfully with `/shop menu`.
+Buy More selects a quantity for an already selected product. The quantity counts **trade units**; a unit can reward several physical items. Open it through a product's `select-amount` operation or a `buy_more_menu` action with shop/product context.
 
-Files live in `plugins/UltimateShop/menus/buy_more_menus/`. The bundled files are `buy-more.yml`, `buy-more-buy.yml` and `buy-more-sell.yml`.
+Inventory quantity files live in `menus/buy_more_menus/`. Bundled files are `buy-more.yml`, `buy-more-buy.yml` and `buy-more-sell.yml`. They are not standalone menus for `/shop menu`.
 
-## Enable and select the quantity menu
+## Select a menu and maximum
 
-Global settings in `config.yml`:
+Global defaults in `config.yml`:
 
 ```yaml
 menu:
@@ -24,15 +24,15 @@ menu:
       max-amount: 693
 ```
 
-| Key under `menu.buy-more-menu`           | Meaning                                                                                                            |
-| ---------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
-| `default.menu`, `default.max-amount`     | Menu and maximum trade count when both price directions exist                                                      |
-| `only-buy.menu`, `only-buy.max-amount`   | Defaults for a product without sell prices                                                                         |
-| `only-sell.menu`, `only-sell.max-amount` | Defaults for a product without buy prices                                                                          |
-| `not-open-when-invalid`                  | Block opening a menu whose confirmation buttons are all invalid for that product                                   |
-| `display-item-max-stack`                 | Allow preview stacks to use the extended display maximum instead of the material stack limit on supported runtimes |
+| Setting under `menu.buy-more-menu` | Purpose |
+| --- | --- |
+| `default` | Menu/maximum for products with both price directions |
+| `only-buy` | Menu/maximum for products without sell prices |
+| `only-sell` | Menu/maximum for products without buy prices |
+| `not-open-when-invalid` | Prevent opening when no confirmation control is valid for the product |
+| `display-item-max-stack` | Use an extended preview stack maximum of 99 on supported Minecraft 1.20.5+ runtimes |
 
-Shop `settings.buy-more` supplies the shop default. Product `buy-more` overrides whether that product allows quantity selection. Product `buy-more-menu` overrides the selected menu and maximum:
+Shop `settings.buy-more` supplies the enablement default. Product `buy-more` and `buy-more-menu` can override it:
 
 ```yaml
 items:
@@ -41,16 +41,15 @@ items:
     buy-more-menu:
       menu: buy-more
       max-amount: 128
-    # Product, prices and display follow here.
 ```
 
-Bind the `select-amount` product operation under `menu.click-event` (default `SHIFT_RIGHT`) or use the [buy\_more\_menu action](../format/action-format.md) with the required shop/product context. `NEVER` disables the corresponding click binding. The `buy_more_menu` action supports `shop` and `item`.
+This is a fragment to add to an existing product. The selected quantity is clamped from 1 to its configured maximum. Preview capacity does not set that maximum.
 
-### Custom Buy More action settings <mark style="color:red;">- Premium</mark>
+The bundled product click binding is `menu.click-event.select-amount: SHIFT_RIGHT`. Set a click binding to `NEVER` to disable it. A `buy_more_menu` action accepts `shop` and `item`; Premium actions can additionally provide `buy-more-menu.menu` and `buy-more-menu.max-amount` for that opening. See [Custom Click Event](../features/custom-click-event-premium.md#example-only-buy-more-menu).
 
-The `buy_more_menu` action also accepts a `buy-more-menu` section with `menu` and `max-amount` for that opening. Custom click actions can select separate buy-only and sell-only menus; see [Custom Click Event - Premium](../features/custom-click-event-premium.md#example-only-buy-more-menu).
+## Inventory quantity example
 
-## Inventory amount-selection example
+Save this as a new file in `menus/buy_more_menus/` and select its ID in the settings above:
 
 ```yaml
 title: 'Choose amount'
@@ -59,18 +58,20 @@ layout:
   - '000000000'
   - '01a2b3c00'
   - '000D0E000'
+dialog:
+  enabled: false
 amount-items:
-  1:
+  '1':
     display-item:
       material: RED_WOOL
       name: '&c-1'
     add-amount: -1
-  2:
+  '2':
     display-item:
       material: GREEN_WOOL
       name: '&a+1'
     add-amount: 1
-  3:
+  '3':
     display-item:
       material: PAPER
       name: '&eSet to 64'
@@ -94,42 +95,43 @@ confirm-items:
     modify-lore: true
 ```
 
-`0` is empty unless defined under ordinary `buttons`. Confirmation and amount IDs must occur in `layout`. Do not reuse an ID for unrelated control types.
+The amount, preview and confirmation IDs must appear in `layout`. Ordinary `buttons` can supply fillers or navigation; use separate IDs for each control type. The example starts with quantity 1.
 
-## Amount/preview/confirmation keys
+## Quantity file reference
 
-Inventory title, size, layout, ordinary buttons and lifecycle actions use the [Common menu settings](general-menus.md). The only presentation selector read from this file is `dialog.enabled`: it chooses native quantity input when global Dialog support is enabled. `bedrock`, `arcmenu`, `ui`, per-control graphical placements and `display-items-ui` are not supported here, and this menu does not inherit global `menu.ui` or the parent shop's `settings.menu-settings`. The parent shop is retained only as the trade context.
+| Key | Behavior |
+| --- | --- |
+| `amount-items.<id>.display-item` | Appearance of the quantity control |
+| `amount-items.<id>.add-amount` | Positive/negative adjustment |
+| `amount-items.<id>.set-amount` | Fixed value when `add-amount` is absent or zero |
+| `display-items` | Ordered preview markers; takes priority over singular `display-item` |
+| `display-item` | Alternative single preview marker |
+| `display-items-padding-item` | Display Item Format used for unused preview space |
+| `confirm-items.<id>.display-item` | Confirmation appearance; supports `{amount}` |
+| `confirm-items.<id>.click-action` | Fixed operation such as `buy`, `sell`, `buy-or-sell` or `sell-all`; omitted uses the click's configured operation |
+| `confirm-items.<id>.modify-lore` | Generate product lore for the selected quantity; default `true` |
+| Control `menu-visibility` | Presentation filtering for a control |
+| `dialog.enabled` | Allow native quantity input when Dialog is available |
 
-| Additional key                                                            | Meaning                                                                                                                  |
-| ------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
-| `amount-items.<id>.display-item`                                          | Appearance of an amount control                                                                                          |
-| `amount-items.<id>.add-amount`                                            | Add a positive/negative amount to the current count                                                                      |
-| `amount-items.<id>.set-amount`                                            | Set a fixed count when `add-amount` is absent or zero; set at least 1                                                    |
-| `display-items`                                                           | Ordered list of preview layout IDs; takes precedence over singular `display-item`                                        |
-| `display-item`                                                            | A single preview marker alternative to `display-items`                                                                   |
-| `display-items-padding-item`                                              | Display Item Format for unused preview slots after the first                                                             |
-| `confirm-items.<id>.display-item`                                         | Confirmation button appearance; `{amount}` is the selected quantity                                                      |
-| `confirm-items.<id>.click-action`                                         | Optional fixed operation such as `buy`, `sell`, `buy-or-sell`, `sell-all`; omitted means use the current click operation |
-| `confirm-items.<id>.modify-lore`                                          | Default true; generate the product price/stock/action lore using the selected amount                                     |
-| `amount-items.<id>.menu-visibility`, `confirm-items.<id>.menu-visibility` | Filter a control by presentation                                                                                         |
+Preview stacks split the quantity across preview slots in order, using the effective display stack maximum. Unused space shows padding or air. Confirmation uses normal trade validation and the selected quantity; displaying a large preview does not grant items.
 
-Preview stacks split the selected count across preview slots in list order, using the effective stack maximum (99 when enabled, otherwise the material maximum). Extra preview space shows the padding item or air. Preview capacity is visual; it does not replace `max-amount`. Quantity controls clamp the count to the permitted range. Supply at least one valid confirmation button for the trade direction you intend to support.
+This file supports ordinary title, size, layout, buttons and lifecycle settings. It does not inherit its parent shop's `settings.menu-settings` or global graphical `menu.ui`. Its `bedrock`, `arcmenu`, `ui` and `display-items-ui` fields do not define alternative quantity screens.
 
-## Quantity controls by presentation
+## Quantity selection in each presentation
 
-| Presentation        | Quantity UI                                                                                |
-| ------------------- | ------------------------------------------------------------------------------------------ |
-| Inventory           | Uses `amount-items`, preview markers and `confirm-items` from this file                    |
-| Bedrock Form        | Text input, then product information; no Inventory amount buttons                          |
-| Native Dialog | Native amount input when this file enables Dialog, then product information; otherwise Inventory |
-| ArcMenu             | `select-amount` opens product details directly; plus/minus and scrolling adjust the amount |
+| Presentation | Quantity controls | Text configuration |
+| --- | --- | --- |
+| Inventory | This file's amount buttons, previews and confirmations | This Buy More file |
+| Bedrock Form | Text entry, followed by product information | Source shop menu `bedrock.buy-or-sell`, then global `menu.bedrock.buy-or-sell` |
+| Native Dialog | Native amount input when this file enables Dialog; otherwise Inventory | Source shop menu `dialog.buy-more`, then global `menu.dialog.buy-more` |
+| ArcMenu | Product details with quantity controls | Graphical settings and ArcMenu text |
 
-ArcMenu details require Buy More and a menu, and adjustment requires an available `select-amount` binding. The same product maximum limits it, but it does not read this file's amount/confirmation layout. Right-click defaults to `select-amount` and can be changed in `ui.renderers.arcmenu.right-click-action`.
+Form quantity entry belongs to the source shop flow; it does not render this file's slot controls. Dialog keeps action-specific menu/maximum overrides through input and confirmation. Global forced UI can override the normal Dialog selector.
 
-Without a manual quantity selection, product operations keep `default-buy-amount` and `default-sell-amount` independently. After selection, both directions use the chosen count. `{buy-amount}` and `{sell-amount}` in generated lore reflect that distinction. Explicit display-item stack amounts are separate from the number of trade units. See [Default Trade Amounts](../shops/products.md#default-trade-amounts).
+ArcMenu's `select-amount` opens product details. Quantity adjustment requires Buy More, a selected quantity menu and an available quantity operation. Right-click defaults to `select-amount`; plus/minus and scrolling adjust quantity. Compatible ArcMenu versions also provide direct [quantity text input](arcmenu-menus-premium.md#quantity-input). Inventory confirmation labels do not rename graphical or native information actions.
 
-Form quantity labels are read from the source shop menu's `bedrock.buy-or-sell` (global `menu.bedrock.buy-or-sell` fallback). Dialog quantity labels come from that shop menu's `dialog.buy-more` (global `menu.dialog.buy-more` fallback), not this Buy More file. A custom `buy_more_menu` action retains its selected menu and `max-amount` throughout Dialog quantity entry and confirmation. Graphical product styling/actions are documented in [Graphical UI Layout - Premium](../menus-getting-started/ui-layout.md). Editing an Inventory confirmation label will not rename a Form information action.
+## Default trade amounts
 
-## Related documentation
+Before manual quantity selection, `default-buy-amount` and `default-sell-amount` apply independently. After selection, both directions use the chosen count. Generated `{buy-amount}` and `{sell-amount}` reflect the corresponding operation; an explicit display-item stack amount remains separate. See [Default Trade Amounts](../shops/products.md#default-trade-amounts).
 
-[Menu Configuration](menu-configuration.md) · [UI Modes](ui-overview.md) · [Shop Menus](shop-menus.md)
+[Shop Menus](shop-menus.md) · [UI Modes](ui-overview.md) · [Display Item Add Lore](display-item-add-lore.md)

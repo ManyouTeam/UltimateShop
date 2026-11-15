@@ -1,10 +1,10 @@
-# 🛏️ Bedrock Form menus - Premium
+# 🛏️ Bedrock Form UI — Premium
 
-Bedrock Form displays ordinary menu buttons as a **list**, with dedicated product information and quantity input forms. The same products, prices and click rules are shared with Java interfaces; Form does **not** use Ore/ArcMenu graphical coordinates.
+Bedrock Form presents menu entries as a list, with separate product information and quantity input forms. It shares shop products, prices and trade rules with Java interfaces. It uses native Bedrock controls rather than graphical `ui.layout` coordinates.
 
 ## Enable Form
 
-In `config.yml`:
+A supported Geyser/Floodgate setup and Bedrock player detection are required. In `config.yml`:
 
 ```yaml
 menu:
@@ -14,17 +14,12 @@ menu:
     not-auto-close: true
     auto-add-icon:
       enabled: true
-      format: 'https://raw.githubusercontent.com/InventivetalentDev/minecraft-assets/refs/heads/{version}/assets/minecraft/textures/{path}.png'
-    price-extra-line:
-      default: '{lang}'
-      only-buy: '{lang}'
-      only-sell: '{lang}'
 ```
 
-In a menu file:
+In a Common menu, for example `menus/common_menus/categories.yml`:
 
 ```yaml
-title: '&8Farming'
+title: '&8Categories'
 size: 9
 layout:
   - '0000A0000'
@@ -42,11 +37,17 @@ buttons:
         shop: farming
 ```
 
-Both the global and menu `bedrock.enabled` switches must allow Form. The server needs a supported Bedrock/Floodgate integration and the Premium functionality. If Form cannot be used, the usual Inventory interface is available.
+Create `farming`, reload, then open `/shop menu categories` as a Bedrock player. Normal selection requires both global and menu switches. Global `menu.force-ui` can override those switches; platform and integration requirements remain.
 
-## Set a custom button icon or second line
+## Entry list and visibility
 
-These keys belong **inside the active `display-item`**, not the root `ui` or the product's `bedrock.click-event`:
+Form collects root-layout entries and omits empty chest spacing. Shop product entries are listed before ordinary navigation controls. Buttons execute a LEFT click; a product normally opens its information Form.
+
+Hide decorative entries with button/product `menu-visibility.form: false`. The active display item's `bedrock.hide: true` or an empty button name can also omit a Form button.
+
+## Icons and supplemental text
+
+Place these fields inside the active `display-item`:
 
 ```yaml
 buttons:
@@ -58,25 +59,17 @@ buttons:
         icon: 'path;;textures/items/wheat.png'
         extra-line: '&7Seeds, crops and food'
         hide: false
-    actions:
-      1:
-        type: shop_menu
-        shop: farming
 ```
 
-| `display-item.bedrock` field | Meaning |
+| `display-item.bedrock` key | Meaning |
 | --- | --- |
 | `icon` | `path;;<client texture path>` or `url;;<public image URL>` |
-| `extra-line` | Additional button line; price placeholders are supported for products |
-| `hide` | `true` hides this particular Form button |
+| `extra-line` | Supplemental button text; products support price placeholders |
+| `hide` | Hide this display variant from Form |
 
-A `path;;` texture must exist **in the Bedrock client's resources**, not on the server disk. A `url;;` icon must be reachable by that client. Conditional display items should put icon settings on each intended variant.
+`path;;` points into the Bedrock client's resources. `url;;` points to an image the client can load. Without an explicit icon, automatic icons attempt the vanilla material texture using `bedrock.auto-add-icon`. Java custom model data does not automatically supply a Bedrock texture. Put variant-specific icon options inside each conditional display item.
 
-Without an explicit icon, `menu.bedrock.auto-add-icon.enabled: true` attempts to resolve the vanilla material texture using its URL format. This does not resolve Java custom model data automatically. A button with an empty name, or `bedrock.hide: true`, can be omitted from the Form list.
-
-## Product prices and click behavior
-
-The price/extra line for products reads the active `display-item.bedrock.extra-line` first. Otherwise it uses the menu's `bedrock.price-extra-line` and then global `menu.bedrock.price-extra-line`:
+For products, an explicit `display-item.bedrock.extra-line` wins; `''` intentionally leaves it blank. Otherwise, menu `bedrock.price-extra-line` falls back to global `menu.bedrock.price-extra-line`:
 
 ```yaml
 bedrock:
@@ -86,9 +79,11 @@ bedrock:
     only-sell: '&7Sell: {sell-price}'
 ```
 
-Set `display-item.bedrock.extra-line: ''` for an intentionally blank supplemental line. `{lang}` can use the matching language override.
+This text is independent of graphical `ui.products.price`.
 
-A shop product normally opens an information Form. To execute an action directly instead, set the product-level shortcut in the **shop file**:
+## Direct product actions
+
+To run a product operation instead of opening information, add a product-root shortcut in the shop file:
 
 ```yaml
 items:
@@ -97,40 +92,28 @@ items:
       click-event: buy
 ```
 
-This is separate from `display-item.bedrock.*`. The menu-level default is `bedrock.click-event`, and the global default is `menu.bedrock.click-event`. Trade availability, product conditions and click bindings still apply.
+Lookup order is product `bedrock.click-event`, owning shop menu `bedrock.click-event`, then global `menu.bedrock.click-event`. Only the LEFT product interaction uses this shortcut. Available bindings, trade conditions and item-aware selling routes remain in effect.
 
-## Form configuration reference
+## Form text reference
 
-Native Form defaults live under global `menu.bedrock`; override supported values with menu `bedrock`, except options read globally such as player detection.
+Supported options use menu `bedrock.*`, then global `menu.bedrock.*`. Player detection is global.
 
-| Key relative to `bedrock` | Effect |
+| Relative key | Purpose |
 | --- | --- |
-| `enabled` | Allow Form for this menu |
-| `content` | Menu description, root `content` as fallback |
-| `check-method` | Global Bedrock-player detection method, e.g. `FLOODGATE` |
-| `not-auto-close` | Reopen after supported information Form operations |
-| `auto-add-icon.enabled` | Attempt vanilla material icons |
-| `auto-add-icon.format` | URL template using `{version}` and `{path}` |
-| `price-extra-line.default/only-buy/only-sell` | Product supplemental price text |
-| `click-event` | Default direct shop-product action |
-| `info.title` | Product information title |
-| `info.buttons.buy/sell/buy-more/sell-all/back` | Information actions |
-| `buy-or-sell.title` | Quantity input form title |
-| `buy-or-sell.buttons.amount.name/tip` | Quantity input label and hint |
-| `search.input`, `search.buttons.search` | Search form text |
-| `favourite-edit.title/content`, `favourite-edit.buttons.*` | Favourite editing form text |
+| `enabled` | Allow Form |
+| `content` | Menu description, with local root `content` fallback |
+| `check-method` | Global detection method: `FLOODGATE` or `UUID` |
+| `not-auto-close` | Reopen after supported information-form trades |
+| `auto-add-icon.enabled/format` | Vanilla icon generation; format supports `{version}` and `{path}` |
+| `price-extra-line.default/only-buy/only-sell` | Supplemental product price text |
+| `click-event` | Default direct product operation |
+| `info.title`, `info.buttons.buy/sell/buy-more/sell-all/back` | Product information text |
+| `buy-or-sell.title`, `buy-or-sell.buttons.amount.name/tip` | Quantity input text |
+| `search.input`, `search.buttons.search` | Search input and button |
+| `favourite-edit.title/content/buttons.*` | Favourite editing text |
 
-The generated product action buttons come from available click bindings, **not** from graphical `ui.products.actions`. Form quantity input does not reuse the Inventory Buy More button grid.
+`{lang}` uses the matching language override. Form product actions come from available click operations. Graphical `ui.products.actions` and Inventory Buy More confirmation labels do not define native Form controls.
 
-## Visibility and related menus
+Search and Favourite use dedicated Form flows. Item Sell and Sell All retain their physical inventories. The graphical `ui.style: bedrock` preset is a separate appearance setting for Ore/ArcMenu.
 
-```yaml
-menu-visibility:
-  form: false
-```
-
-Put this at the button or product root to hide only that entry in Form. Unspecified presentations default to visible. Form uses entries from the menu's root `layout` but ignores empty chest-grid spacing; decorative fillers usually should be hidden.
-
-Search and Favourite have dedicated Form flows and reuse their data from the corresponding menu files. Physical Item Sell and Sell All remain Inventory screens.
-
-[🎨 Presentation selection](ui-overview.md) · [🔍 Search - Premium](search-menus-premium.md) · [❤️ Favourite - Premium](favourite-menus-premium.md) · [🩺 Troubleshooting](troubleshooting.md).
+[UI Modes](ui-overview.md) · [Buy More](buy-more-menus.md) · [Search](search-menus-premium.md) · [Favourite](favourite-menus-premium.md)

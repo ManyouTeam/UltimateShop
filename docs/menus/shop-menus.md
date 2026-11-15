@@ -1,30 +1,33 @@
 # 🛍️ Shop Menus
 
-A shop file defines **products, prices and trading**. A shop-menu template defines **which entries appear and where**, plus navigation buttons. One template may be reused by many shops.
+A shop file holds products, prices and trade rules. Its menu template holds layout, navigation buttons and presentation settings. Multiple shops can share one template.
 
-## Two files, two responsibilities
+## Create a shop and template
 
-* Shop file: `plugins/UltimateShop/shops/<shop-id>.yml`.
-* Template: `plugins/UltimateShop/menus/shop_menu_templates/<template-id>.yml`.
-* `settings.menu` inside the shop selects a template.
-* Open with `/shop menu <shop-id>` or a `shop_menu` action.
-
-## Example 1: menu template
-
-Create `menus/shop_menu_templates/farming.yml`:
+Save this template as `menus/shop_menu_templates/farming.yml`:
 
 ```yaml
 title: '{shop-name}'
 size: 9
 layout:
-  - '0000A0000'
+  - '0000A0X00'
+dialog:
+  enabled: false
+bedrock:
+  enabled: false
+arcmenu:
+  enabled: false
+buttons:
+  X:
+    display-item:
+      material: BARRIER
+      name: '&cClose'
+    actions:
+      1:
+        type: close
 ```
 
-`A` identifies a product supplied by the **shop**, not a button defined in the template.
-
-## Example 2: shop file
-
-Create `shops/farming.yml`:
+Save the shop as `shops/farming.yml`:
 
 ```yaml
 settings:
@@ -44,14 +47,17 @@ items:
         amount: 5
 ```
 
-This example needs your Vault-compatible economy. Reload and open `/shop menu farming`. For supported product/pricing variants, follow [Product configuration](../shops/products.md).
+With Vault and a compatible economy installed, run `/shop reload`, then `/shop menu farming`. In normal Inventory selection, marker `A` displays shop product `items.A`, and `X` displays the template's Close button. Global `menu.force-ui` can override the local presentation switches.
 
-## Override a template for one shop
+`settings.menu: farming` selects the template ID; `/shop menu farming` opens the **shop** ID. These IDs can differ. Shop templates are used by shops rather than opened as standalone Common menus.
 
-Use `settings.menu-settings` in the **shop** file:
+## Override one shop's template
+
+In the shop file:
 
 ```yaml
 settings:
+  shop-name: '&aFarming'
   menu: farming
   menu-settings:
     title: '&aFarming Specials'
@@ -61,35 +67,24 @@ settings:
     bedrock:
       enabled: true
       content: '&7Browse farming products'
+    ui:
+      style: bedrock
 ```
 
-Overrides are applied to the template _before_ global graphical `menu.ui` defaults fill any missing graphical fields. `settings.menu-settings` does **not** belong in `config.yml` or a menu template.
+Overrides merge recursively into the template; lists such as `layout` replace the full list. Global graphical defaults fill missing `ui` fields afterward. `settings.menu-settings` is also usable without a template when it supplies the complete screen definition. See [Configuration & Inheritance](menu-configuration.md).
 
-## Adding navigation buttons
+## Add products and navigation
 
-A template can define its own buttons:
+Add products under shop `items`, then reference their IDs in the template's Inventory layout. Ordinary navigation buttons can live in template `buttons` or shop `buttons`. Keep IDs distinct across these sources.
 
-```yaml
-buttons:
-  X:
-    display-item:
-      material: ARROW
-      name: '&eBack'
-    actions:
-      1:
-        type: back
-```
+Product clicks use `menu.click-event` and product overrides. Ordinary buttons use their action lists. Product pricing and rewards follow [Products](../shops/products.md); graphical layout does not change trading rules.
 
-Add `X` to an available `layout` slot. Product IDs and ordinary buttons must not collide in the visible layout. Products can also define `menu-visibility`, `display-conditions` and graphical `ui.placement`.
+## Present the same shop in different interfaces — Premium
 
-## Inventory / Dialog / Ore / ArcMenu / Form
+- Inventory uses root `size` and `layout`.
+- Form and native Dialog turn selected entries into lists or actions.
+- Ore and ArcMenu use the selected style's `ui.layout`, `ui.products.placement`, and individual button `ui.placement`.
 
-The **same shop items** can appear in different presentations. Inventory uses the template's root `layout`. Native Dialog and Form collect items as lists; Ore and ArcMenu use `ui.layout`, `ui.products.placement` and individual button `ui.placement`. A blank graphical area does not automatically create shop-category buttons.
+In a graphical shop, non-dynamic product collection can include products absent from root layout, using the default product placement. Dynamic layouts retain their selected products unless additional products have explicit graphical placement. Navigation controls always need their own placement. Use `menu-visibility` and display conditions to control eligibility.
 
-Use [UI selection](ui-overview.md) and [Graphical layout - Premium](../menus-getting-started/ui-layout.md) for the prerequisites and full configuration.
-
-## If a product is missing
-
-Check that `settings.menu` names a real template, `items.A` exists, `layout` references `A` for Inventory, the product is permitted for the player, and the product's `menu-visibility` and display conditions are satisfied. If graphical settings seem unchanged, check menu/template `ui` and the shop's `settings.menu-settings.ui`; explicit overrides take priority.
-
-[Quantity selection](buy-more-menus.md) · [Search - Premium](search-menus-premium.md) · [Troubleshooting](troubleshooting.md).
+[UI Modes](ui-overview.md) · [Graphical UI Layout](../menus-getting-started/ui-layout.md) · [Buy More](buy-more-menus.md)

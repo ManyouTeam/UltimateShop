@@ -1,14 +1,14 @@
-# ❤️ Favourite Menus - Premium
+# ❤️ Favourite Menus — Premium
 
-Favourite menus store a player's chosen shop products and their order. Files live in `plugins/UltimateShop/menus/favourite_menus/`; the bundled example is `favourite.yml`. Open with `/shop menu favourite` or an `open_menu` action. Saved lists are associated with the favourite menu ID, so use that same ID when adding a product.
+Favourite menus save a player's chosen shop products and order. The list belongs to the Favourite menu ID, so actions adding products must target that same ID. Products retain their source shop prices and trade rules.
 
-Files in the dedicated folder are automatically Favourite menus. Common-folder files can use `menu-type: favourite` (alias `favorite`) or be listed under `menu.favourite-gui.menu` in `config.yml`. Dedicated files do not require that legacy list. Keep IDs unique.
+Save files in `menus/favourite_menus/`. Open the bundled menu with `/shop menu favourite` or an `open_menu` action. The folder assigns the type; Common-folder files can use `menu-type: favourite` (alias `favorite`) or the legacy `menu.favourite-gui.menu` list.
 
 <a id="add-products"></a>
 
-## Add products to favourites
+## Add a product
 
-The built-in default binds `add-favourite` to `SWAP_OFFHAND` (F). Its configured action in `menu.click-event-actions.add-favourite` uses the `add_favourite` action:
+The bundled `add-favourite` operation uses `SWAP_OFFHAND` (F). Its custom action targets the bundled `favourite` list:
 
 ```yaml
 type: add_favourite
@@ -17,9 +17,11 @@ shop: '{shop}'
 item: '{item}'
 ```
 
-Use it within an action list with the relevant shop/product context. Products must allow favourites. Shared Form/Dialog/graphical extra actions can expose the same operation; adding an action label alone does not create its click binding. See [Custom Click Event - Premium](../features/custom-click-event-premium.md).
+Use this inside an action list with product context. For a custom list such as `my-favourites`, change `menu` to that ID in the adding action. Products must allow favourites. Native and graphical information/extra controls can expose the same configured operation; a label alone does not create an action binding.
 
-## Create a Favourite menu
+## Inventory example
+
+Save as `menus/favourite_menus/my-favourites.yml`:
 
 ```yaml
 title: 'Favourites'
@@ -29,6 +31,12 @@ layout:
   - '000000000'
   - '011111110'
   - '0000D0000'
+dialog:
+  enabled: false
+bedrock:
+  enabled: false
+arcmenu:
+  enabled: false
 result-item: '1'
 edit-mode-item:
   D:
@@ -51,59 +59,53 @@ editing-result-lore:
   - '&cDrop: remove'
 ```
 
-## Favourite-only keys
+Reload, add products to `my-favourites`, then open `/shop menu my-favourites`. The example selects Inventory in normal selection; global forced UI still applies.
 
-All [Common menu settings](general-menus.md) remain available. Ordinary navigation controls belong under `buttons`.
+## Favourite configuration
 
-| Additional key | Meaning |
+| Key | Purpose |
 | --- | --- |
-| `result-item` | Result marker used in `layout` |
-| `result-items` | List of additional result markers; combined with singular `result-item`; when neither is supplied, marker `6` is used |
-| `edit-mode-item.<id>.normal-display-item` | Display Item Format when editing is off |
-| `edit-mode-item.<id>.editing-display-item` | Display when editing is on |
-| `edit-mode-item.<id>.display-item` | Fallback display if the current normal/editing variant is missing |
-| `edit-mode-item.<id>.slot` | Optional zero-based fallback slot when the ID is not found in `layout` |
-| `edit-mode-item.<id>.menu-visibility` | Show/hide the editing toggle per presentation |
-| `edit-mode-item.<id>.ui` | ArcMenu graphical placement and appearance of the toggle |
-| `empty-item.display-item` | Placeholder shown in unoccupied result slots |
-| `empty-item.menu-visibility` | Presentation visibility for empty-slot placeholders |
-| `empty-item.ui` | Graphical placement of empty-slot placeholders |
-| `result-lore` | Extra lore in normal mode; supports `{shop}` and `{product}` |
-| `editing-result-lore` | Extra lore in edit mode; keep instructions appropriate to the presentation |
+| `result-item`, `result-items` | Combined result markers; default `6` when neither is supplied |
+| `edit-mode-item.<id>.normal-display-item` | Edit toggle appearance in normal mode |
+| `edit-mode-item.<id>.editing-display-item` | Toggle appearance in editing mode |
+| `edit-mode-item.<id>.display-item` | Fallback appearance when a variant is missing |
+| `edit-mode-item.<id>.slot` | Zero-based fallback when the toggle ID is absent from layout |
+| `empty-item.display-item` | Placeholder for an unfilled result slot |
+| `result-lore` | Normal result instructions; `{shop}` and `{product}` identify the source |
+| `editing-result-lore` | Editing instructions |
+| Special control `menu-visibility` | Presentation visibility |
+| Special control `ui` | ArcMenu placement and appearance |
 
-Edit-toggle displays support `{editing}` and `{edit-mode}` (true/false), plus `{favourite-amount}` and `{favorite-amount}`. Empty-slot displays support those amount aliases and `{slot-index}` (one-based result position).
+Use one resolved edit toggle. Root result markers determine the maximum displayed source entries, filled in saved order. Graphical pagination does not independently increase this capacity.
 
-Result slots are filled in saved order, limited by the number of configured result slots. Increasing graphical pagination capacity does not by itself increase that source limit. Use one edit toggle: the runtime keeps one resolved edit-mode button/slot rather than a collection of independent toggles.
+Edit-toggle text supports `{editing}`, `{edit-mode}`, `{favourite-amount}` and `{favorite-amount}`. Empty-slot text supports the amount aliases and `{slot-index}`, the one-based result position.
 
 ## Normal and editing modes
 
-In Inventory normal mode, product clicks use the product's configured click operations. Selecting the edit toggle switches to editing; it does not buy or sell. In Inventory editing:
+Normal mode uses product click operations. The edit toggle switches modes without executing a trade.
 
-| Input | Operation |
+| Inventory input in editing mode | Operation |
 | --- | --- |
-| Left click | Move the product one position forward |
-| Right click | Move it one position backward |
-| Drop / Control-Drop | Remove it from this favourite list |
+| Left click | Move forward one position |
+| Right click | Move backward one position |
+| Drop / Control-Drop | Remove from this list |
 
-Removing a favourite does not remove shop stock or player items. Toggle editing off to return to product operations. Saved product references and order are shared across presentations.
+Removing a favourite does not remove player items or shop stock. Turn editing off to resume product operations. The saved list and order are shared across presentations.
 
-## Presentation-specific behavior
-
-Select presentations with the global/menu `dialog.enabled`, `bedrock.enabled` and `arcmenu.enabled` switches. The `ui` section configures ArcMenu graphical layout for this menu. Ore graphics are not implemented for Favourite; `dialog.layout: ore` uses native `multi-action` Dialog and does not generate Ore assets for this menu.
+## Other presentations
 
 | Presentation | Normal mode | Editing mode |
 | --- | --- | --- |
-| Inventory | Product click bindings | Left/right/drop controls above |
-| Form | Product information Form | Selecting a product opens Forward/Backward/Remove/Back; closing returns to the editing list |
-| Native Dialog | Product information/actions | Dedicated editing controls; native Dialog omits empty result slots |
-| ArcMenu | Product cards and shared actions/details | Forward/Backward/Remove buttons on each card; also left/right/middle edit clicks (middle removes) |
+| Bedrock Form | Product information Form | Product opens Forward/Backward/Remove/Back controls |
+| Native Dialog | Product information/actions | Dedicated edit controls; empty result slots are omitted |
+| ArcMenu | Product cards, operations and details | Forward/Backward/Remove card buttons; left/right/middle edit clicks, with middle removing |
 
-Form can display configured empty-slot buttons. ArcMenu requires graphical `ui.placement` for the toggle and ordinary controls, and `ui.products.placement` for result cards. The bundled example disables graphical placement on empty slots.
+Form may display configured empty-slot buttons. ArcMenu needs `ui.placement` for the edit toggle and navigation, and `ui.products.placement` for result cards. Empty-slot graphical placement can be disabled.
 
-Global Form editing text is under `menu.bedrock.favourite-edit`: `title`, `content`, and `buttons.forward`, `backward`, `remove`, `back`. Dialog has the same structure under `menu.dialog.favourite-edit`. Titles/content accept `{item-name}`.
+Form editing text uses `bedrock.favourite-edit` with global `menu.bedrock.favourite-edit` fallback; Dialog uses `dialog.favourite-edit` and `menu.dialog.favourite-edit`. These contain `title`, `content` and `buttons.forward/backward/remove/back`; titles/content support `{item-name}`.
 
-ArcMenu card labels default to the Form favourite edit labels. Override them per menu with `ui.text.favourite-edit.forward`, `backward`, `remove`. Use presentation conditions in result lore when different clients need different instructions; see [Add Lore](display-item-add-lore.md).
+ArcMenu card edit labels default to the Form labels and can be overridden with `ui.text.favourite-edit.forward/backward/remove`. Adapt editing lore to each interface with [presentation conditions](display-item-add-lore.md#presentation-conditions).
 
-## Related documentation
+Favourite does not render Ore graphics. Setting `dialog.layout: ore` uses native `multi-action` and generates no Ore assets for this type.
 
-[UI Modes](ui-overview.md) · [Shop Menus](shop-menus.md) · [Troubleshooting](troubleshooting.md)
+[UI Modes](ui-overview.md) · [Custom Click Event](../features/custom-click-event-premium.md) · [Graphical UI Layout](../menus-getting-started/ui-layout.md)

@@ -1,12 +1,12 @@
 # 🛒 Sell All Menu
 
-Sell All is a single global Inventory interface: players deposit items, then close the window to sell them. It does not use a file in `menus/` and does not have a separate confirmation button. For explicit confirmation and price preview, use [Item Sell](item-sell-menus.md).
+Sell All is one global Inventory screen. Players deposit items and **close the window to sell them**. It has no explicit confirmation button. [Item Sell](item-sell-menus.md) provides price preview and confirmation when that flow is preferred.
 
 <a id="open-the-menu"></a>
 
-## Open Sell All
+## Open the screen
 
-`/shop sellall` requires `ultimateshop.sellall`. A menu button can use the `sell_all_menu` action:
+Use `/shop sellall` with permission `ultimateshop.sellall`, or add this action to a menu button:
 
 ```yaml
 actions:
@@ -14,9 +14,9 @@ actions:
     type: sell_all_menu
 ```
 
-This remains an Inventory interface even when the source shop/menu uses Form, Dialog, Ore or ArcMenu.
+Opening from Form, Dialog, Ore or ArcMenu still creates a physical Inventory.
 
-## Global configuration
+## Configure the screen
 
 In `config.yml`:
 
@@ -28,20 +28,31 @@ menu:
     black-slots: []
 ```
 
-| Key under `menu.sell-all` | Meaning |
+| Key under `menu.sell-all` | Purpose |
 | --- | --- |
-| `size` | Inventory size: 9, 18, 27, 36, 45 or 54 |
-| `title` | Title; `{lang}` uses the matching language override |
-| `black-slots` | Zero-based slot numbers that reject item placement, for example `[0, 1, 2]` |
+| `size` | Slot count: `9`, `18`, `27`, `36`, `45` or `54` |
+| `title` | Screen title; `{lang}` uses the matching language override |
+| `black-slots` | Zero-based slots that reject item placement, for example `[0, 1, 2]` |
 
-Configure excluded product references under `sell.sell-all.ignore-items` in `config.yml`, using `shop-id;;product-id`. This menu does not support common-menu layout/buttons, `ui.layout`, per-file modes or multiple independent menu IDs.
+This screen has no separate file in `menus/`, no ordinary layout/button configuration and no independent menu IDs. Graphical styles and forced presentation selection do not change it.
 
-## Sale behavior
+## Configure sale exclusions
 
-Closing scans shop products visible to the player, skips excluded references and runs the normal sell flow against the deposited inventory. Product conditions, prices, player/server limits and applicable sell multipliers still apply. Global `sell.max-amount` limits the sell engine (fallback 128); it is not this inventory's slot count or an Item Sell `max-sell-amount`.
+Exclude shop products in `config.yml` using `shop-id;;product-id`:
 
-The sale summary reports amount, reward and effective multiplier. Items that were not sold are returned to the player, or dropped if they cannot fit. Closing an empty menu does not create a reward. Products requiring item-aware price modifiers must use the configured Item Sell flow; Sell All does not replace that requirement.
+```yaml
+sell:
+  sell-all:
+    ignore-items:
+      - 'farming;;A'
+```
 
-## Related documentation
+This excludes that product reference from the Sell All flow. See [product configuration](../shops/products.md) for prices and sell requirements.
 
-[Inventory UI](inventory-ui.md) · [Item Sell](item-sell-menus.md) · [Troubleshooting](troubleshooting.md)
+## Sale on close
+
+Closing scans eligible shop products and runs normal selling against deposited items. Product conditions, limits, exclusions and applicable multipliers remain in effect. Global `sell.max-amount` limits the sell engine; it is separate from Inventory capacity and Item Sell's `max-sell-amount`.
+
+Unsold items return to the player, or drop when they cannot fit. An empty menu produces no reward. Products requiring item-aware price modifiers use the configured Item Sell flow.
+
+[Item Sell](item-sell-menus.md) · [Inventory UI](inventory-ui.md)
