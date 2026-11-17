@@ -1,0 +1,267 @@
+# Paper 26.3；数据检查压力测试物品。参见 ../component-testing.md。
+material: DIAMOND_SWORD
+amount: 1
+component:
+
+  custom-model-data:
+    float:
+      - 101.0
+      - 202.5
+    flag:
+      - true
+      - false
+    string:
+      - test-a
+      - test-b
+    color:
+      - '#FF5555'
+      - '#55FF55'
+
+  food:
+    nutrition: 1
+    saturation: 0.6
+    can-always-eat: true
+
+  tool:
+    damage-per-block: 1
+    mining-speed: 4.0
+    destroy-blocks-in-creative: true
+    rules:
+      - minecraft:stone,minecraft:deepslate,12.0,true
+      - minecraft:dirt,6.0,false
+
+  song: minecraft:cat
+
+  glow: true
+
+  unbreakable: true
+
+  rarity: EPIC
+
+  enchants:
+    sharpness: 5
+    unbreaking: 3
+
+  attributes:
+    - type: minecraft:attack_damage
+      name: ultimateshop:test_damage
+      amount: 8.0
+      operation: ADD_NUMBER
+      slot: mainhand
+      display-mode: RESET
+    - type: minecraft:attack_speed
+      name: ultimateshop:test_speed
+      amount: -1.5
+      operation: ADD_NUMBER
+      slot: mainhand
+      display-mode: RESET
+
+  damage: 37
+
+  max-damage: 2048
+
+  stored-enchants:
+    sharpness: 4
+    mending: 1
+
+  banner-patterns:
+    - 'minecraft:stripe_bottom: RED'
+    - 'minecraft:cross: BLUE'
+    - 'minecraft:border: BLACK'
+
+  potion:
+    base-effect: SWIFTNESS
+    color: '#55FFFF'
+    name: component_test
+    effects:
+      - minecraft:strength,600,1,false,true,true
+      - minecraft:regeneration,200,0,false,true,false
+
+  potion-duration-scale: 2.0
+
+  trim:
+    material: minecraft:diamond
+    pattern: minecraft:sentry
+
+  leather-color: '#55AAFF'
+
+  axolotl-variant: BLUE
+
+  tropical-fish-base-color: ORANGE
+
+  tropical-fish-pattern-color: BLUE
+
+  tropical-fish-pattern: KOB
+
+  firework:
+    duration: 2
+    '1':
+      type: STAR
+      flicker: true
+      trail: true
+      colors:
+        base:
+          - '#FF5555'
+          - '#55FF55'
+        fade:
+          - '#5555FF'
+
+  suspicious-stew-effects:
+    - minecraft:night_vision,200
+    - minecraft:saturation,20
+
+  ominous-bottle-amplifier: 2
+
+  music: minecraft:ponder_goat_horn
+
+  repair-cost: 7
+
+  enchantable: 20
+
+  glider: true
+
+  equippable:
+    slot: CHEST
+    asset-id: minecraft:leather
+    swappable: true
+    equip-sound: minecraft:item.armor.equip_leather
+    allowed-entities:
+      - minecraft:player
+    dispensable: true
+    damage-on-hurt: true
+    equip-on-interact: false
+    can-be-sheared: true
+    shear-sound: minecraft:entity.sheep.shear
+
+  use-cooldown:
+    cooldown-seconds: 3
+    cooldown-group: ultimateshop:component_test
+
+  consumable:
+    consume-seconds: 3.0
+    animation: EAT
+    sound: minecraft:entity.generic.eat
+    effects:
+      '1':
+        type: apply-effect
+        probability: 1.0
+        effects:
+          - minecraft:speed,200,0,false,true,false
+      '2':
+        type: play-sound
+        sound: minecraft:entity.player.levelup
+
+  weapon:
+    damage-per-attack: 2
+    disable-blocking-seconds: 3.0
+
+  damage-resistant: minecraft:is_fire
+
+  blocks-attacks:
+    block-delay-seconds: 0.25
+    disable-cooldown-scale: 1.0
+    block-sound: minecraft:item.shield.block
+    bypassed-by: minecraft:bypasses_shield
+
+  attack-range-key:
+    min-reach: 0.0
+    max-reach: 4.0
+    min-creative-reach: 0.0
+    max-creative-reach: 5.0
+    hitbox-margin: 0.3
+    mob-factor: 1.0
+
+  damage-type: minecraft:player_attack
+
+  kinetic-weapon:
+    contact-cooldown-ticks: 10
+    delay-ticks: 2
+    forward-movement: 0.3
+    damage-multiplier: 1.5
+    sound: minecraft:entity.player.attack.sweep
+    hit-sound: minecraft:entity.player.attack.knockback
+    damage-conditions:
+      max-duration-ticks: 20
+      min-speed: 0.15
+      min-relative-speed: 0.1
+    knockback-conditions:
+      max-duration-ticks: 30
+      min-speed: 0.12
+      min-relative-speed: 0.08
+    dismount-conditions:
+      max-duration-ticks: 15
+      min-speed: 0.2
+      min-relative-speed: 0.1
+
+  minimum-attack-charge: 0.65
+
+  piercing-weapon:
+    deals-knockback: true
+    dismounts: true
+    sound: minecraft:entity.player.attack.sweep
+    hit-sound: minecraft:entity.player.attack.strong
+
+  swing-animation:
+    type: NONE
+    duration: 7
+
+  use-effects:
+    can-sprint: true
+    interact-vibrations: false
+    speed-multiplier: 0.4
+
+  sulfur-cube-content:
+    material: DIAMOND
+    amount: 1
+
+  attack-animation:
+    type: NONE
+    duration: 9
+
+  interact-animation:
+    type: NONE
+    duration: 5
+
+  waxed: true
+
+  cushion-color: RED
+
+  villager-food: 4
+
+  provides-pottery-pattern: minecraft:angler
+
+  mob-visibility:
+    entities:
+      - minecraft:zombie
+      - minecraft:skeleton
+    visibility: 0.5
+
+  sign-text-front:
+    lines:
+      - Front line 1
+      - Front line 2
+      - Front line 3
+      - Front line 4
+    color: RED
+    glowing: true
+
+  sign-text-back:
+    lines:
+      - Back line 1
+      - Back line 2
+      - Back line 3
+      - Back line 4
+    color: BLUE
+    glowing: true
+
+  name: <aqua>Paper 26.3 component test
+
+  item-name: <gold>Component test
+
+  lore:
+    - <gray>Inspect component data with the matching Paper version.
+    - <yellow>Test behavior with the separate examples in the guide.
+
+  max-stack: 1
+
+  item-model: minecraft:diamond_sword
