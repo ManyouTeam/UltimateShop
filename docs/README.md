@@ -12,7 +12,7 @@
 
 **Modrinth:** [FREE](https://modrinth.com/plugin/ultimateshop) (weekly update, maybe not latest version)
 
-**Hanger:** [FREE](https://hangar.papermc.io/PQguanfang/UltimateShop) (monthly update, maybe not latest version)
+**Hangar:** [FREE](https://hangar.papermc.io/PQguanfang/UltimateShop) (monthly update, maybe not latest version)
 
 ### Get support
 
