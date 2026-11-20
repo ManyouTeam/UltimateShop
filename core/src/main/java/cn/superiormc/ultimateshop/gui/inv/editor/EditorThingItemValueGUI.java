@@ -2,10 +2,10 @@ package cn.superiormc.ultimateshop.gui.inv.editor;
 
 import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.editor.EditorLang;
+import cn.superiormc.ultimateshop.editor.EditorManager;
 import cn.superiormc.ultimateshop.editor.EditorTarget;
 import cn.superiormc.ultimateshop.editor.EditorUtil;
 import cn.superiormc.ultimateshop.gui.InvGUI;
-import cn.superiormc.ultimateshop.managers.MenuStatusManager;
 import cn.superiormc.ultimateshop.methods.Items.BuildItem;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
@@ -40,7 +40,7 @@ public class EditorThingItemValueGUI extends InvGUI {
         }
         inv.clear();
 
-        ConfigurationSection section = MenuStatusManager.menuStatusManager.getSection(target, path);
+        ConfigurationSection section = EditorUtil.getSection(target, path);
         if (section != null) {
             try {
                 ItemStack itemStack = BuildItem.buildItemStack(player, section, Math.max(section.getInt("amount", 1), 1));
@@ -110,7 +110,7 @@ public class EditorThingItemValueGUI extends InvGUI {
             return true;
         }
         if (slot == 22) {
-            MenuStatusManager.menuStatusManager.openTarget(player, target, path, 0);
+            EditorManager.editorManager.openTarget(player, target, path, 0);
             return true;
         }
         if (slot == 23) {
@@ -118,26 +118,26 @@ public class EditorThingItemValueGUI extends InvGUI {
             if (itemStack == null || itemStack.getType().isAir()) {
                 return true;
             }
-            MenuStatusManager.menuStatusManager.replaceInlineThingItem(player, target, path, itemStack);
-            MenuStatusManager.menuStatusManager.openTarget(player, target, path, 0);
+            EditorManager.editorManager.replaceInlineThingItem(player, target, path, itemStack);
+            EditorManager.editorManager.openTarget(player, target, path, 0);
             return true;
         }
         if (slot == 24) {
-            MenuStatusManager.menuStatusManager.clearInlineThingItem(player, target, path);
-            MenuStatusManager.menuStatusManager.openTarget(player, target, path, 0);
+            EditorManager.editorManager.clearInlineThingItem(player, target, path);
+            EditorManager.editorManager.openTarget(player, target, path, 0);
             return true;
         }
         if (slot == 26) {
-            MenuStatusManager.menuStatusManager.openTarget(player, target, path, 0);
+            EditorManager.editorManager.openTarget(player, target, path, 0);
             return true;
         }
         return true;
     }
 
     private void openNestedSection(String fullPath) {
-        MenuStatusManager.menuStatusManager.ensureSection(target, fullPath);
-        MenuStatusManager.menuStatusManager.save(player, target);
-        MenuStatusManager.menuStatusManager.openTarget(player, target, fullPath, 0);
+        EditorManager.editorManager.ensureSection(target, fullPath);
+        EditorManager.editorManager.save(player, target);
+        EditorManager.editorManager.openTarget(player, target, fullPath, 0);
     }
 
     @Override

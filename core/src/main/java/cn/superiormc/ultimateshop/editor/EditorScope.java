@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 
 public enum EditorScope {
 
@@ -16,15 +17,32 @@ public enum EditorScope {
     BUY_MORE_MENU("menus/buy_more_menus", "Buy More Menu"),
     FAVOURITE_MENU("menus/favourite_menus", "Favourite Menu"),
     SEARCH_MENU("menus/search_menus", "Search Menu"),
-    ITEM_SELL_MENU("menus/item_sell_menus", "Item Sell Menu");
+    ITEM_SELL_MENU("menus/item_sell_menus", "Item Sell Menu"),
+    CONFIG("", "Global Configuration", "config"),
+    UI_STYLE("ui", "UI Styles"),
+    ITEM("items", "Saved Items"),
+    LANGUAGE("languages", "Languages"),
+    RANDOM_PLACEHOLDER("placeholders/random_placeholders", "Random Placeholders"),
+    CONDITIONAL_PLACEHOLDER("placeholders/conditional_placeholders", "Conditional Placeholders"),
+    CUSTOM_PLACEHOLDER("placeholders/custom_placeholders", "Custom Placeholders"),
+    SHARED_USE_TIMES("shared_use_times", "Shared Use Times"),
+    SELL_STICK("sell_sticks", "Sell Sticks"),
+    SELL_CHEST("sell_chests", "Sell Chests");
 
     private final String folderName;
 
     private final String displayName;
 
+    private final String singleFileId;
+
     EditorScope(String folderName, String displayName) {
+        this(folderName, displayName, null);
+    }
+
+    EditorScope(String folderName, String displayName, String singleFileId) {
         this.folderName = folderName;
         this.displayName = displayName;
+        this.singleFileId = singleFileId;
     }
 
     public String getFolderName() {
@@ -43,7 +61,30 @@ public enum EditorScope {
         return new File(getFolder(), id + ".yml");
     }
 
+    public String getFilePath(String id) {
+        if (folderName.isEmpty()) {
+            return id + ".yml";
+        }
+        return folderName + "/" + id + ".yml";
+    }
+
+    public String getCommandName() {
+        return name().toLowerCase(Locale.ROOT);
+    }
+
+    public boolean isShopOrMenu() {
+        return this == SHOP || folderName.startsWith("menus/");
+    }
+
+    public boolean acceptsId(String id) {
+        return id != null && !id.isBlank() && id.indexOf('/') < 0 && id.indexOf('\\') < 0
+                && id.indexOf(':') < 0 && (singleFileId == null || singleFileId.equals(id));
+    }
+
     public List<String> listIds() {
+        if (singleFileId != null) {
+            return getFile(singleFileId).isFile() ? List.of(singleFileId) : List.of();
+        }
         File folder = getFolder();
         if (!folder.exists()) {
             folder.mkdirs();
@@ -68,27 +109,12 @@ public enum EditorScope {
         if (raw == null) {
             return null;
         }
-        String normalized = raw.toLowerCase();
-        if (normalized.equals("shop") || normalized.equals("shops")) {
-            return SHOP;
-        }
-        if (normalized.equals("menu") || normalized.equals("menus")) {
-            return MENU;
-        }
-        if (normalized.equals("shop_menu_template") || normalized.equals("shop_menu_templates")) {
-            return SHOP_MENU_TEMPLATE;
-        }
-        if (normalized.equals("buy_more_menu") || normalized.equals("buy_more_menus")) {
-            return BUY_MORE_MENU;
-        }
-        if (normalized.equals("favourite_menu") || normalized.equals("favourite_menus")) {
-            return FAVOURITE_MENU;
-        }
-        if (normalized.equals("search_menu") || normalized.equals("search_menus")) {
-            return SEARCH_MENU;
-        }
-        if (normalized.equals("item_sell_menu") || normalized.equals("item_sell_menus")) {
-            return ITEM_SELL_MENU;
+        String normalized = raw.toLowerCase(Locale.ROOT);
+        for (EditorScope scope : values()) {
+            String name = scope.getCommandName();
+            if (normalized.equals(name) || normalized.equals(name + "s")) {
+                return scope;
+            }
         }
         return null;
     }

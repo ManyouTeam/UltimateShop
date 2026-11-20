@@ -15,9 +15,11 @@ open-actions:
 
 dynamic-layout: true
 
+shop-items: ['P']
+
 layout:
   - '000000000'
-  - '000`{random_daily;;1}``{random_daily;;2}``{random_daily;;3}`000'
+  - '000`{random_daily;;1}||P``{random_daily;;2}||P``{random_daily;;3}||P`000'
   - '000000000'
   - '00003000c'
 

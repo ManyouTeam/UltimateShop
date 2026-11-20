@@ -79,6 +79,52 @@ settings:
 
 商品点击使用 `menu.click-event` 和商品自身覆盖设置，普通按钮使用动作列表。商品定价与奖励遵循[商品](../shops/products.md)规则，图形布局不会改变交易规则。
 
+## 用同一个布局摆放不同商店的商品
+
+在商店菜单模板里写 `shop-items`，指定哪些布局字符用来摆放商品。例如，下面四个 `P` 槽会从左到右放入商店 `items` 下的前四件商品。商品少于四件时，剩余的 `P` 槽留空。
+
+```yaml
+size: 9
+shop-items: ['P']
+layout:
+  - '0PPPP000X'
+```
+
+如果要给不同顺序的商品指定固定位置，可以写 `shop-items: ['A', 'B', 'C']`。布局里的 `A` 对应第一件商品，`B` 对应第二件，`C` 对应第三件。商品顺序以商店文件中 `items` 的书写顺序为准。
+
+用普通按钮或商品 ID 填其他槽位即可，例如这里的 `X` 可以是关闭按钮。商品的显示条件和可见性仍然生效。单个商店可以用 `settings.menu-settings.shop-items` 覆盖模板。游戏内编辑器里，这个设置叫 **商品槽位标记**。
+
+## 给物品栏商店加翻页按钮
+
+用一个 `shop-items` 标记重复摆放商品。上一页和下一页的按钮和 `amount-items` 一样，用布局字符作键，例如 `previous-page-item.l` 和 `next-page-item.r`。每页能放几件商品，就数 `layout` 里有几个单独的 `P` 槽。
+
+```yaml
+size: 18
+shop-items: ['P']
+layout:
+  - '0PPPPPPP0'
+  - 'l0000000r'
+
+previous-page-item:
+  l:
+    hide-on-first-page: true
+    display-item:
+      material: ARROW
+      name: '&e上一页'
+    hidden-item:
+      material: GRAY_STAINED_GLASS_PANE
+      name: ' '
+
+next-page-item:
+  r:
+    hide-on-last-page: true
+    display-item:
+      material: ARROW
+      name: '&e下一页'
+```
+
+按钮在首尾页默认隐藏。配置了 `hidden-item` 就显示替代物品，否则槽位留空。把对应隐藏选项设为 `false` 可以保留箭头，点到边界时页码保持原样。翻页只替换商品槽里的内容，普通按钮留在原位。Editor 里可以直接编辑这两个按钮。
+
 ## 用不同界面呈现同一商店 - 付费版
 
 - 物品栏使用根级 `size` 和 `layout`。

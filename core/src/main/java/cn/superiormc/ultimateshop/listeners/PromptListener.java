@@ -1,5 +1,6 @@
 package cn.superiormc.ultimateshop.listeners;
 
+import cn.superiormc.ultimateshop.editor.EditorManager;
 import cn.superiormc.ultimateshop.gui.PromptUtil;
 import cn.superiormc.ultimateshop.managers.MenuStatusManager;
 import cn.superiormc.ultimateshop.utils.SchedulerUtil;
@@ -23,7 +24,7 @@ public class PromptListener implements Listener {
         SchedulerUtil.runSync(() -> {
             if (PromptUtil.matchesCancel(player, message)) {
                 if (MenuStatusManager.menuStatusManager.cancelPromptAndShouldReopen(player)) {
-                    MenuStatusManager.menuStatusManager.reopen(player);
+                    EditorManager.editorManager.reopen(player);
                 }
                 return;
             }

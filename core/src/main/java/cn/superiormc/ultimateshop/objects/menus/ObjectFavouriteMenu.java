@@ -134,4 +134,10 @@ public class ObjectFavouriteMenu extends ObjectMenu {
     public ObjectFavouriteEmptyButton getEmptyButton() {
         return emptyButton;
     }
+
+    @Override
+    public boolean supportsGraphicalRenderer(String renderer) {
+        return "arcmenu".equals(renderer);
+    }
+
 }

@@ -434,6 +434,16 @@ editor:
     favourite_menu: 'Favourite Menu'
     search_menu: 'Search Menu'
     item_sell_menu: 'Item Sell Menu'
+    config: 'Global Configuration'
+    ui_style: 'Shared UI Styles'
+    item: 'Saved Items'
+    language: 'Languages'
+    random_placeholder: 'Random Placeholders'
+    conditional_placeholder: 'Conditional Placeholders'
+    custom_placeholder: 'Custom Placeholders'
+    shared_use_times: 'Shared Use Times'
+    sell_stick: 'Sell Sticks'
+    sell_chest: 'Sell Chests'
   common:
     root: 'root'
     back:
@@ -455,6 +465,9 @@ editor:
       name: '&eNext Page'
       desc: '&7Go to the next page'
   action:
+    exact-number: '&aPress Q to enter an exact value'
+    increase-row: '&aLeft click to add a row'
+    decrease-row: '&cRight click to remove a row'
     open: '&aLeft click to open'
     edit: '&aLeft click to edit'
     delete: '&cRight click to delete'
@@ -470,6 +483,14 @@ editor:
     middle-clear: '&eMiddle click to clear'
     read-only: '&7Read-only summary'
   summary:
+    thing:
+      unset: 'Nothing selected'
+      hook-item: 'Item from another plugin'
+      match-item: 'Item matching rules'
+      match-placeholder: 'Match a placeholder'
+      hook-economy: 'Currency from another plugin'
+      vanilla-economy: 'Minecraft experience'
+      vanilla-item: 'Minecraft item'
     type: '&7Current Type: &f{value}'
     section: 'Section'
     list: 'List'
@@ -522,6 +543,10 @@ editor:
     close:
       name: '&cClose'
       desc: '&7Close the editor'
+    settings:
+      title: 'UltimateShop Configuration'
+      name: '&eConfiguration'
+      desc: '&7Open global settings, shared UI styles and other configuration files'
   file-list:
     title: 'Editor {scope}s'
     type: '&7Type: &f{value}'
@@ -544,6 +569,10 @@ editor:
       thing-item: '&aLeft click: add item template'
       thing-economy: '&eRight click: add economy template'
   preset:
+    custom-limit-description: 'Use this limit when a player matches the condition group.'
+    custom-click-description: 'Choose the clicks that run this custom action.'
+    choices: '&7Options: &f{values}'
+    no-choices: '&7No values are currently available.'
     raw:
       name: '&eRaw Section'
       desc: '&7Open the raw section fallback editor'
@@ -679,6 +708,8 @@ editor:
     new-child: 'Input the key name for the new child'
     new-child-value: 'Input the value for &f{path}&7. Use &fsection &7or &f{} &7to create a section. Use &f;; &7for lists.'
   message:
+    invalid-field: '&c{path} requires {requirement}.'
+    invalid-choice: '&cChoose one of: &f{values}'
     target-not-found: '&#98FB98[UltimateShop] &cTarget file not found.'
     saved: '&#98FB98[UltimateShop] &aSaved &f{value}&a, don''t forget to reload the plugin after completing the editing to make your modifications take effect!'
     save-failed: '&#98FB98[UltimateShop] &cFailed to save file: {value}'
@@ -691,8 +722,25 @@ editor:
     invalid-new-child-value: '&#98FB98[UltimateShop] &cInvalid value. Use section/{}, boolean, number, list (;;), or plain text.'
     invalid-integer-list: '&#98FB98[UltimateShop] &cOne of the values is not an integer.'
     child-format: '&#98FB98[UltimateShop] &cUse format: key type'
-    command-usage: '&cUse /shop editor [shop|menu|shop_menu_template|buy_more_menu|favourite_menu|search_menu|item_sell_menu] <id>'
+    command-usage: '&cUse /shop editor <category> <id>. Press Tab to list categories.'
     target-missing: '&#98FB98[UltimateShop] &cCould not find {scope}: {id}'
+  validation:
+    date-format: 'a Java date-time pattern, for example yyyy-MM-dd HH:mm:ss'
+    trade-amount: 'an integer from 1 to 9999'
+    inventory-size: 'an inventory size from 9 to 54 in multiples of 9'
+    layout-list: 'a list of layout strings'
+    layout-token: 'balanced backticks around each multi-character slot ID'
+    layout-capacity: 'a layout that fits the configured inventory size'
+    reset-value: 'a reset time written as text'
+    random-placeholder: 'an existing random placeholder ID'
+    papi-placeholder: 'a complete PlaceholderAPI placeholder such as %example_time%'
+    timer-reset: 'one HH:mm:ss duration with optional month and day prefixes'
+    timed-reset: 'valid HH:mm:ss times with optional month and day prefixes, separated by double semicolons'
+    particle-name: 'a particle name available on this server'
+    potion-key: 'a valid potion effect key such as minecraft:speed'
+    sound-key: 'a valid sound key such as minecraft:block.note_block.pling'
+    finite-number: 'a finite number'
+    hex-color: 'a hexadecimal color such as #RRGGBB or #AARRGGBB'
   list:
     title: 'List Editor: {path}'
     current: '&7Current: &f{value}'
@@ -731,6 +779,10 @@ editor:
     title: 'Click Types: {path}'
     state: '&7Selected: &f{value}'
   reset-time:
+    custom-format: '&7Enter a complete PlaceholderAPI placeholder.'
+    custom-pattern: '&7Set the matching pattern under &fReset Time Pattern&7.'
+    random-format: '&7Choose an existing random placeholder.'
+    never-format: '&7This mode does not need a reset time.'
     title: 'Reset Time: {path}'
     current: '&7Current: &f{value}'
     mode:
@@ -749,6 +801,8 @@ editor:
       desc: '&7This reset mode does not use a time value.'
     prompt-add: 'Input the new reset time for &f{path}'
     prompt-edit: 'Input the new reset time for entry &f#{index}'
+    timer-format: '&7Enter &fHH:mm:ss &7with an optional month or day prefix. Example: &f00:15:00'
+    timed-format: '&7Enter &fHH:mm:ss &7with an optional month or day prefix. Example: &f19:00:00'
   presets:
     root_shop:
       title: 'Shop Preset'
@@ -782,6 +836,15 @@ editor:
             description:
               name: 'Command Description'
               desc: 'Description shown for this shop command.'
+          allow-favourite:
+            name: 'Allow favourites'
+            desc: 'Allow players to add products from this shop to favourites.'
+          buy-more:
+            name: 'Allow quantity selection'
+            desc: 'Enable quantity selection by default for products in this shop.'
+          shop-name:
+            name: 'Shop name'
+            desc: 'Shop name used in messages and placeholders.'
         general-configs:
           name: 'General Configs'
           desc: 'Default values shared by all products in this shop.'
@@ -944,9 +1007,21 @@ editor:
               padding:
                 name: Renderers Arcmenu Tooltip Padding
                 desc: Edit renderers.arcmenu.tooltip.padding in this UI section.
+        style:
+          name: 'UI style'
+          desc: 'Choose the shared UI style for this menu.'
     root_menu:
       title: 'Menu Preset'
       fields:
+        shop-items:
+          name: 'Product slot markers'
+          desc: 'Place products in shop order. With one marker, repeat it in the layout to fill several slots.'
+        previous-page-item:
+          name: 'Previous page button'
+          desc: 'Use a layout marker as the button key, then set its icon and appearance on the first page.'
+        next-page-item:
+          name: 'Next page button'
+          desc: 'Use a layout marker as the button key, then set its icon and appearance on the last page.'
         content:
           name: Menu Content
           desc: Shared content for Form, Dialog and graphical headers.
@@ -1019,6 +1094,20 @@ editor:
           content:
             name: 'Content'
             desc: 'Bedrock-specific content value for this menu.'
+          click-event:
+            name: 'Bedrock product action'
+            desc: 'Default action when a player taps a product in the Bedrock form.'
+          info:
+            name: 'Bedrock product details'
+            desc: 'Set the title and button labels in the Bedrock product details form.'
+          search:
+            input:
+              name: 'Bedrock search prompt'
+              desc: 'Label for the search keyword input in the Bedrock form.'
+            buttons:
+              search:
+                name: 'Bedrock search button label'
+                desc: 'Label on the button that opens the search keyword input.'
         layout:
           name: 'Layout'
           desc: 'Layout string list used to place buttons and products.'
@@ -1041,6 +1130,64 @@ editor:
           description:
             name: 'Command Description'
             desc: 'Description shown for this menu command.'
+        arcmenu:
+          enabled:
+            name: 'Enable ArcMenu'
+            desc: 'Open this menu in ArcMenu when ArcMenu is enabled server-wide.'
+          content:
+            name: 'ArcMenu content'
+            desc: 'Text shown below the ArcMenu title.'
+        dialog:
+          enabled:
+            name: 'Enable dialog'
+            desc: 'Open this menu as a dialog when dialogs are enabled server-wide.'
+          layout:
+            name: 'Dialog layout'
+            desc: 'Choose how items and buttons are arranged in the dialog.'
+          content:
+            name: 'Dialog content'
+            desc: 'Text shown below the dialog title.'
+          button-width:
+            name: 'Dialog button width'
+            desc: 'Set the width of a dialog button.'
+          columns:
+            name: 'Dialog button columns'
+            desc: 'Set how many columns of buttons appear in the dialog.'
+          info:
+            name: 'Dialog product details'
+            desc: 'Set the title, buttons and other content in the product details dialog.'
+          search:
+            input:
+              name: 'Dialog search prompt'
+              desc: 'Label for the search keyword input in the dialog.'
+            buttons:
+              search:
+                name: 'Dialog search button label'
+                desc: 'Label on the button that submits the search keyword.'
+        display-items-padding-item:
+          name: 'Product preview filler'
+          desc: 'Fill unused product preview slots with this item.'
+        input-items:
+          name: 'Input slot identifiers'
+          desc: 'Enter the layout identifiers for slots that accept items.'
+        result-items:
+          name: 'Favourite result slot identifiers'
+          desc: 'Enter the layout identifiers for slots that display favourites.'
+    shop_page_button:
+      title: 'Page Button'
+      fields:
+        display-item:
+          name: 'Button icon'
+          desc: 'Item shown when the player can use this button.'
+        hide-on-first-page:
+          name: 'Hide on first page'
+          desc: 'Hide the previous page button on the first page.'
+        hide-on-last-page:
+          name: 'Hide on last page'
+          desc: 'Hide the next page button on the last page.'
+        hidden-item:
+          name: 'Replacement item'
+          desc: 'Show this item when the button is hidden. Leave unset for an empty slot.'
     shop_item:
       title: 'Product Preset'
       fields:
@@ -1192,6 +1339,33 @@ editor:
         sell-times-max-value:
           name: 'Sell Max Value'
           desc: 'Maximum sell times value allowed before reset.'
+        allow-favourite:
+          name: 'Allow favourites'
+          desc: 'Allow players to add this product to favourites.'
+        buy-prices-conditions:
+          name: 'Buy price conditions'
+          desc: 'Set when each buy price applies by its entry ID.'
+        display-item-conditions:
+          name: 'Display item conditions'
+          desc: 'Choose when to show each version of the display item.'
+        hide-message:
+          name: 'Hide trade messages'
+          desc: 'Toggle trade messages for this product.'
+        menu-visibility:
+          name: 'Menu visibility'
+          desc: 'Choose which menu types display this product.'
+        price-modifier:
+          name: 'Enable price modifiers'
+          desc: 'Allow this product to use the configured global price modifiers.'
+        products-conditions:
+          name: 'Product conditions'
+          desc: 'Set when each product entry applies by its ID.'
+        sell-all:
+          name: 'Allow sell all'
+          desc: 'Allow players to sell all matching items from their inventory in one trade.'
+        sell-prices-conditions:
+          name: 'Sell price conditions'
+          desc: 'Set when each sell price applies by its entry ID.'
     button_entry:
       title: 'Button Preset'
       fields:
@@ -1202,6 +1376,9 @@ editor:
           show-sprite:
             name: 'Show Sprite'
             desc: 'Show or hide label sprites; unset uses automatic visibility.'
+          layout:
+            name: 'Dialog display style'
+            desc: 'Set the dialog display style for this button.'
         display-item:
           name: 'Display Item'
           desc: 'The display item used for this button.'
@@ -1217,6 +1394,12 @@ editor:
         display-conditions:
           name: 'Display Conditions'
           desc: 'Conditions that decide whether this button is shown.'
+        display-item-conditions:
+          name: 'Display item conditions'
+          desc: 'Choose when to show each version of the display item.'
+        menu-visibility:
+          name: 'Menu visibility'
+          desc: 'Choose which menu types show this button.'
     limits_section:
       title: 'Limit Section Preset'
       fields:
@@ -1298,6 +1481,15 @@ editor:
         take:
           name: 'Take'
           desc: 'If disabled, only check ownership instead of actually taking it.'
+        custom-type:
+          name: 'Custom price'
+          desc: 'Choose a price preset from the global configuration.'
+        hook-item-type:
+          name: 'Hooked item category'
+          desc: 'Enter the item''s category if the item plugin requires one.'
+        sprite:
+          name: 'Item sprite'
+          desc: 'Set the sprite ID used in menus that support item sprites.'
     action_entry:
       title: 'Action Preset'
       fields:
@@ -1445,6 +1637,21 @@ editor:
         pitch:
           name: 'Pitch'
           desc: 'Pitch rotation or sound pitch.'
+        cancel-actions:
+          name: 'Cancel actions'
+          desc: 'Run these actions when the player cancels the chat prompt.'
+        description:
+          name: 'Chat prompt'
+          desc: 'Tell the player what to enter in chat.'
+        reopen-on-cancel:
+          name: 'Reopen on cancel'
+          desc: 'Return to the previous menu if the player cancels.'
+        reopen-on-submit:
+          name: 'Reopen on submit'
+          desc: 'Return to the previous menu after the player submits an answer.'
+        time:
+          name: 'Delay'
+          desc: 'Wait this many game ticks before running the actions. 20 ticks is about a second.'
     condition_entry:
       title: 'Condition Preset'
       fields:
@@ -1503,3 +1710,303 @@ editor:
           name: 'Nested Conditions'
           desc: 'Nested condition list used by this condition.'
 
+    ui_area:
+      title: 'UI Area'
+      fields:
+        type:
+          name: 'Arrangement'
+          desc: 'Choose a grid, stack or free placement.'
+        direction:
+          name: 'Stack direction'
+          desc: 'Choose horizontal or vertical stacking.'
+        columns:
+          name: 'Columns'
+          desc: 'Set how many columns the grid has.'
+        rows:
+          name: 'Rows'
+          desc: 'Set how many rows the grid has.'
+        gap:
+          name: 'Default spacing'
+          desc: 'Used when horizontal or vertical spacing is unset.'
+        gap-x:
+          name: 'Horizontal spacing'
+          desc: 'Set the distance between adjacent columns.'
+        gap-y:
+          name: 'Vertical spacing'
+          desc: 'Set the distance between adjacent rows.'
+        cell-height:
+          name: 'Grid cell height'
+          desc: 'Set the height of each grid cell.'
+        item-height:
+          name: 'Stack item height'
+          desc: 'Set the height of each item in a stack.'
+        item-width:
+          name: 'Stack item width'
+          desc: 'Set the width of each item in a horizontal stack.'
+        background-enabled:
+          name: 'Show area background'
+          desc: 'Draw a background behind this area in ArcMenu.'
+        background-padding:
+          name: 'Background padding'
+          desc: 'Set the space around the edges of the area background.'
+        x:
+          name: 'Horizontal position'
+          desc: 'Distance from the left edge.'
+        y:
+          name: 'Vertical position'
+          desc: 'Distance from the top edge.'
+        width:
+          name: 'Width'
+          desc: 'Set the width on the canvas.'
+        height:
+          name: 'Height'
+          desc: 'Set the height on the canvas.'
+    ui_header:
+      title: 'Header Text'
+      fields:
+        enabled:
+          name: 'Show header'
+          desc: 'Show this header in the menu.'
+        text:
+          name: 'Header text'
+          desc: 'Enter the text to display. Placeholders are supported.'
+        align:
+          name: 'Text alignment'
+          desc: 'Align the text left, centre or right.'
+        bold:
+          name: 'Bold'
+          desc: 'Show the header in bold.'
+        font-size:
+          name: 'Font size'
+          desc: 'Set the size of the header text.'
+        x:
+          name: 'Horizontal position'
+          desc: 'Distance from the left edge.'
+        y:
+          name: 'Vertical position'
+          desc: 'Distance from the top edge.'
+        width:
+          name: 'Width'
+          desc: 'Set the width on the canvas.'
+        height:
+          name: 'Height'
+          desc: 'Set the height on the canvas.'
+    ui_theme:
+      title: 'Theme'
+      fields:
+        background-enabled:
+          name: 'Show background'
+          desc: 'Draw the background for this part of the menu.'
+        decoration-enabled:
+          name: 'Show title decoration'
+          desc: 'Show decorations around the title.'
+        dividers-enabled:
+          name: 'Show dividers'
+          desc: 'Show decorative dividers in the menu.'
+        enabled:
+          name: 'Enable effect'
+          desc: 'Toggle the visual effect for this part of the theme.'
+        style:
+          name: 'Decoration style'
+          desc: 'Choose a frame, corner marks, both or neither.'
+        bevel:
+          name: 'Bevel'
+          desc: 'Set the edge colours used for the bevel effect.'
+        button:
+          name: 'Normal buttons'
+          desc: 'Set the colours for normal buttons.'
+        buy:
+          name: 'Buy buttons'
+          desc: 'Set the colours for buy buttons.'
+        sell:
+          name: 'Sell buttons'
+          desc: 'Set the colours for sell buttons.'
+        decorations:
+          name: 'Decorations'
+          desc: 'Set frame, corner and divider decorations.'
+        details:
+          name: 'Product details'
+          desc: 'Set the colours used in the product details panel.'
+        more-menu:
+          name: 'More actions'
+          desc: 'Set the colours used in the more actions panel.'
+        title:
+          name: 'Menu title'
+          desc: 'Set the title area''s background and decorations.'
+        tooltip:
+          name: 'Tooltip'
+          desc: 'Set the colours of the tooltip shown when hovering over a product.'
+        accent:
+          name: 'Accent colour'
+          desc: 'Enter a #RRGGBB colour. Use #AARRGGBB to include opacity.'
+        background:
+          name: 'Background colour'
+          desc: 'Enter a #RRGGBB colour. Use #AARRGGBB to include opacity.'
+        border:
+          name: 'Border colour'
+          desc: 'Enter a #RRGGBB colour. Use #AARRGGBB to include opacity.'
+        bottom:
+          name: 'Bottom edge colour'
+          desc: 'Enter a #RRGGBB colour. Use #AARRGGBB to include opacity.'
+        card:
+          name: 'Product card colour'
+          desc: 'Enter a #RRGGBB colour. Use #AARRGGBB to include opacity.'
+        color:
+          name: 'Decoration colour'
+          desc: 'Enter a #RRGGBB colour. Use #AARRGGBB to include opacity.'
+        corner-color:
+          name: 'Corner decoration colour'
+          desc: 'Enter a #RRGGBB colour. Use #AARRGGBB to include opacity.'
+        hover:
+          name: 'Hover colour'
+          desc: 'Enter a #RRGGBB colour. Use #AARRGGBB to include opacity.'
+        left:
+          name: 'Left edge colour'
+          desc: 'Enter a #RRGGBB colour. Use #AARRGGBB to include opacity.'
+        shadow:
+          name: 'Shadow colour'
+          desc: 'Enter a #RRGGBB colour. Use #AARRGGBB to include opacity.'
+        sidebar:
+          name: 'Sidebar colour'
+          desc: 'Enter a #RRGGBB colour. Use #AARRGGBB to include opacity.'
+        text:
+          name: 'Text colour'
+          desc: 'Enter a #RRGGBB colour. Use #AARRGGBB to include opacity.'
+        top:
+          name: 'Top edge colour'
+          desc: 'Enter a #RRGGBB colour. Use #AARRGGBB to include opacity.'
+    visibility_section:
+      title: 'Where to Show This Entry'
+      fields:
+        inventory:
+          name: 'Inventory menu'
+          desc: 'Show this entry in inventory menus.'
+        form:
+          name: 'Bedrock forms'
+          desc: 'Show this entry in Bedrock forms.'
+        dialog:
+          name: 'Dialog'
+          desc: 'Show this entry in standard dialogs.'
+        item-action-list:
+          name: 'Item-list dialog'
+          desc: 'Show this entry in item-list dialogs.'
+        ore:
+          name: 'Ore'
+          desc: 'Show this entry in Ore.'
+        arcmenu:
+          name: 'ArcMenu'
+          desc: 'Show this entry in ArcMenu.'
+    buy_more_amount:
+      title: 'Quantity Button'
+      fields:
+        display-item:
+          name: 'Button icon'
+          desc: 'Set the icon and text shown in the inventory.'
+        add-amount:
+          name: 'Quantity change'
+          desc: 'Set how much to add on click. Use a negative number to subtract.'
+        set-amount:
+          name: 'Fixed quantity'
+          desc: 'Set the quantity to this value on click. Leave Quantity change unset or set it to 0.'
+    buy_more_confirm:
+      title: 'Trade Confirmation Button'
+      fields:
+        click-action:
+          name: 'Click action'
+          desc: 'Choose the buy, sell or custom action run on confirmation.'
+        display-item:
+          name: 'Button icon'
+          desc: 'Set the icon and text shown in the inventory.'
+        modify-lore:
+          name: 'Update the button lore'
+          desc: 'Update the button lore with the selected quantity and price.'
+    search_action:
+      title: 'Search Button'
+      fields:
+        action-type:
+          name: 'Click action'
+          desc: 'Open the keyword prompt, clear the search or take no action.'
+        display-item:
+          name: 'Button icon'
+          desc: 'Set the icon and text shown in the inventory.'
+    global_use_times:
+      title: 'Default Use Times'
+      fields:
+        default-max-value:
+          name: 'Default stored-use cap'
+          desc: 'Set the default cap on stored trade uses.'
+        default-reset-mode:
+          name: 'Default reset mode'
+          desc: 'Choose the reset mode used when a product leaves it unset.'
+        default-reset-time:
+          name: 'Default reset time'
+          desc: 'Enter a duration, time of day or placeholder for the default mode.'
+        default-reset-time-format:
+          name: 'Default time pattern'
+          desc: 'Set the Java date-time pattern used to read a placeholder''s output.'
+        default-reset-value:
+          name: 'Default reset value'
+          desc: 'Set the default number of uses applied at reset.'
+    shared_use_times:
+      title: 'Shared Use Times'
+      fields:
+        buy-limits:
+          name: 'Buy limits'
+          desc: 'Set the default, server-wide or condition group limits for this shared group.'
+        buy-limits-conditions:
+          name: 'Buy limit conditions'
+          desc: 'Set which conditions put a player in each limit group.'
+        buy-times-max-value:
+          name: 'Buy stored-use cap'
+          desc: 'Set the maximum number of uses stored for this shared group.'
+        buy-times-reset-mode:
+          name: 'Buy reset mode'
+          desc: 'Choose when the shared uses reset.'
+        buy-times-reset-time:
+          name: 'Buy reset time'
+          desc: 'Enter a duration, time of day or placeholder for the selected mode.'
+        buy-times-reset-time-format:
+          name: 'Buy reset time pattern'
+          desc: 'Set the Java date-time pattern used to read a placeholder''s output.'
+        buy-times-reset-value:
+          name: 'Buy reset value'
+          desc: 'Set the number of uses applied at reset.'
+        sell-limits:
+          name: 'Sell limits'
+          desc: 'Set the default, server-wide or condition group limits for this shared group.'
+        sell-limits-conditions:
+          name: 'Sell limit conditions'
+          desc: 'Set which conditions put a player in each limit group.'
+        sell-times-max-value:
+          name: 'Sell stored-use cap'
+          desc: 'Set the maximum number of uses stored for this shared group.'
+        sell-times-reset-mode:
+          name: 'Sell reset mode'
+          desc: 'Choose when the shared uses reset.'
+        sell-times-reset-time:
+          name: 'Sell reset time'
+          desc: 'Enter a duration, time of day or placeholder for the selected mode.'
+        sell-times-reset-time-format:
+          name: 'Sell reset time pattern'
+          desc: 'Set the Java date-time pattern used to read a placeholder''s output.'
+        sell-times-reset-value:
+          name: 'Sell reset value'
+          desc: 'Set the number of uses applied at reset.'
+    click_event_section:
+      title: 'Product Click Bindings'
+      fields:
+        buy:
+          name: 'Buy'
+          desc: 'Choose the clicks that buy the product directly.'
+        sell:
+          name: 'Sell'
+          desc: 'Choose the clicks that sell the product directly.'
+        buy-or-sell:
+          name: 'Buy or sell'
+          desc: 'Choose the clicks that trigger the buy-or-sell action.'
+        sell-all:
+          name: 'Sell all'
+          desc: 'Choose the clicks that sell all matching items.'
+        select-amount:
+          name: 'Select quantity'
+          desc: 'Choose the clicks that open quantity selection or the product details in ArcMenu.'

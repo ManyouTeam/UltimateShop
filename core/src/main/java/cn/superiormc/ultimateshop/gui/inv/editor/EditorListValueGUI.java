@@ -2,6 +2,7 @@ package cn.superiormc.ultimateshop.gui.inv.editor;
 
 import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.editor.EditorLang;
+import cn.superiormc.ultimateshop.editor.EditorManager;
 import cn.superiormc.ultimateshop.editor.EditorTarget;
 import cn.superiormc.ultimateshop.editor.EditorUtil;
 import cn.superiormc.ultimateshop.gui.InvGUI;
@@ -14,6 +15,7 @@ import org.bukkit.inventory.Inventory;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
 public class EditorListValueGUI extends InvGUI {
 
@@ -107,7 +109,7 @@ public class EditorListValueGUI extends InvGUI {
         }
 
         if (slot == 45) {
-            MenuStatusManager.menuStatusManager.openTarget(player, target, EditorUtil.parentPath(path), 0);
+            EditorManager.editorManager.openTarget(player, target, EditorUtil.parentPath(path), 0);
             return true;
         }
         if (slot == 49) {
@@ -115,7 +117,7 @@ public class EditorListValueGUI extends InvGUI {
             return true;
         }
         if (slot == 50) {
-            MenuStatusManager.menuStatusManager.setValue(player, target, path, new ArrayList<>());
+            EditorManager.editorManager.setValue(player, target, path, new ArrayList<>());
             new EditorListValueGUI(player, target, path, integerMode, 0).openGUI(true);
             return true;
         }
@@ -138,7 +140,7 @@ public class EditorListValueGUI extends InvGUI {
     private void delete(int index) {
         List<Object> values = getValues();
         values.remove(index);
-        MenuStatusManager.menuStatusManager.setValue(player, target, path, values);
+        EditorManager.editorManager.setValue(player, target, path, values);
         new EditorListValueGUI(player, target, path, integerMode, normalizePage(values.size())).openGUI(true);
     }
 
@@ -149,7 +151,7 @@ public class EditorListValueGUI extends InvGUI {
         }
         Object value = values.remove(from);
         values.add(to, value);
-        MenuStatusManager.menuStatusManager.setValue(player, target, path, values);
+        EditorManager.editorManager.setValue(player, target, path, values);
         new EditorListValueGUI(player, target, path, integerMode, normalizePage(values.size())).openGUI(true);
     }
 
@@ -163,7 +165,9 @@ public class EditorListValueGUI extends InvGUI {
                 return false;
             }
             values.add(parsed);
-            MenuStatusManager.menuStatusManager.setValue(player, target, path, values);
+            if (!EditorManager.editorManager.setValue(player, target, path, values)) {
+                return false;
+            }
             new EditorListValueGUI(player, target, path, integerMode, normalizePage(values.size())).openGUI(true);
             return true;
         });
@@ -179,17 +183,19 @@ public class EditorListValueGUI extends InvGUI {
                 return false;
             }
             values.set(index, parsed);
-            MenuStatusManager.menuStatusManager.setValue(player, target, path, values);
+            if (!EditorManager.editorManager.setValue(player, target, path, values)) {
+                return false;
+            }
             new EditorListValueGUI(player, target, path, integerMode, page).openGUI(true);
             return true;
         }, currentValue);
     }
 
-    private void promptValue(String description, java.util.function.Function<String, Boolean> handler) {
+    private void promptValue(String description, Function<String, Boolean> handler) {
         promptValue(description, handler, null);
     }
 
-    private void promptValue(String description, java.util.function.Function<String, Boolean> handler, Object currentValue) {
+    private void promptValue(String description, Function<String, Boolean> handler, Object currentValue) {
         MenuStatusManager.menuStatusManager.startPrompt(player, new Prompt(
                 currentValue == null ? description
                         : description + " " + EditorLang.text(player, "editor.list.current", "&7Current: &f{value}",

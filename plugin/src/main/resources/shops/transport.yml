@@ -7,7 +7,7 @@ settings:
   allow-favourite: true
 
 items:
-  A:
+  rail:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
     products:
@@ -26,7 +26,7 @@ items:
         amount: '1'
         placeholder: '{amount}$'
         start-apply: 0
-  B:
+  powered_rail:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
     products:
@@ -45,7 +45,7 @@ items:
         amount: '4.5'
         placeholder: '{amount}$'
         start-apply: 0
-  C:
+  activator_rail:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
     products:
@@ -64,7 +64,7 @@ items:
         amount: '3.3'
         placeholder: '{amount}$'
         start-apply: 0
-  D:
+  detector_rail:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
     products:
@@ -83,7 +83,7 @@ items:
         amount: '3.3'
         placeholder: '{amount}$'
         start-apply: 0
-  E:
+  minecart:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
     products:
@@ -102,7 +102,7 @@ items:
         amount: '8.4'
         placeholder: '{amount}$'
         start-apply: 0
-  F:
+  chest_minecart:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
     products:
@@ -121,7 +121,7 @@ items:
         amount: '10.2'
         placeholder: '{amount}$'
         start-apply: 0
-  G:
+  furnace_minecart:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
     products:
@@ -140,7 +140,7 @@ items:
         amount: '10.8'
         placeholder: '{amount}$'
         start-apply: 0
-  H:
+  hopper_minecart:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
     products:
@@ -159,7 +159,7 @@ items:
         amount: '16.8'
         placeholder: '{amount}$'
         start-apply: 0
-  I:
+  tnt_minecart:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
     products:

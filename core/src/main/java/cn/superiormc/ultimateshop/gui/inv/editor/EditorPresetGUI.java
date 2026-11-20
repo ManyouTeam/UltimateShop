@@ -1,9 +1,16 @@
 package cn.superiormc.ultimateshop.gui.inv.editor;
 
 import cn.superiormc.ultimateshop.UltimateShop;
-import cn.superiormc.ultimateshop.editor.*;
+import cn.superiormc.ultimateshop.editor.EditorLang;
+import cn.superiormc.ultimateshop.editor.EditorManager;
+import cn.superiormc.ultimateshop.editor.EditorPreset;
+import cn.superiormc.ultimateshop.editor.EditorPresetField;
+import cn.superiormc.ultimateshop.editor.EditorPresetFieldType;
+import cn.superiormc.ultimateshop.editor.EditorPresetKind;
+import cn.superiormc.ultimateshop.editor.EditorTarget;
+import cn.superiormc.ultimateshop.editor.EditorTypeResolver;
+import cn.superiormc.ultimateshop.editor.EditorUtil;
 import cn.superiormc.ultimateshop.gui.InvGUI;
-import cn.superiormc.ultimateshop.managers.MenuStatusManager;
 import cn.superiormc.ultimateshop.managers.HookManager;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
@@ -17,17 +24,22 @@ import java.util.List;
 
 public class EditorPresetGUI extends InvGUI {
 
+    private static final int FIELDS_PER_PAGE = 45;
+
     private final EditorTarget target;
 
     private final String path;
 
     private final EditorPreset preset;
 
-    public EditorPresetGUI(Player owner, EditorTarget target, String path, EditorPreset preset) {
+    private final int page;
+
+    public EditorPresetGUI(Player owner, EditorTarget target, String path, EditorPreset preset, int page) {
         super(owner);
         this.target = target;
         this.path = path == null ? "" : path;
         this.preset = preset;
+        this.page = Math.max(0, Math.min(page, (preset.getFields().size() - 1) / FIELDS_PER_PAGE));
     }
 
     @Override
@@ -39,9 +51,9 @@ public class EditorPresetGUI extends InvGUI {
         inv.clear();
 
         List<EditorPresetField> fields = preset.getFields();
-        for (int i = 0; i < Math.min(fields.size(), 45); i++) {
-            EditorPresetField field = fields.get(i);
-            inv.setItem(i, createItem(field));
+        int first = page * FIELDS_PER_PAGE;
+        for (int i = first; i < Math.min(fields.size(), first + FIELDS_PER_PAGE); i++) {
+            inv.setItem(i - first, createItem(fields.get(i)));
         }
 
         inv.setItem(45, EditorUtil.createItem(Material.ARROW,
@@ -56,6 +68,16 @@ public class EditorPresetGUI extends InvGUI {
         inv.setItem(49, EditorUtil.createItem(Material.CHEST,
                 EditorLang.text(player, "editor.preset.raw.name", "&eRaw Section"),
                 List.of(EditorLang.text(player, "editor.preset.raw.desc", "&7Open the raw section fallback editor"))));
+        if (page > 0) {
+            inv.setItem(51, EditorUtil.createItem(Material.SPECTRAL_ARROW,
+                    EditorLang.text(player, "editor.common.previous-page.name", "&ePrevious Page"),
+                    List.of(EditorLang.text(player, "editor.common.previous-page.desc", "&7Go to the previous page"))));
+        }
+        if ((page + 1) * FIELDS_PER_PAGE < fields.size()) {
+            inv.setItem(52, EditorUtil.createItem(Material.TIPPED_ARROW,
+                    EditorLang.text(player, "editor.common.next-page.name", "&eNext Page"),
+                    List.of(EditorLang.text(player, "editor.common.next-page.desc", "&7Go to the next page"))));
+        }
         inv.setItem(53, EditorUtil.createItem(Material.EMERALD,
                 EditorLang.text(player, "editor.common.reload.name", "&aReload Plugin"),
                 List.of(EditorLang.text(player, "editor.preset.reload.desc", "&7Apply changes to live shop/menu objects"))));
@@ -76,8 +98,10 @@ public class EditorPresetGUI extends InvGUI {
         }
         lore.add(EditorLang.text(player, "editor.lore.path", "&7Path: &f{value}",
                 "value", fullPath.isEmpty() ? EditorLang.displayPath(player, path) : fullPath));
-        lore.add(EditorLang.text(player, "editor.lore.description", "&7Description: &f{value}",
-                "value", fieldDescription));
+        if (!fieldDescription.isBlank()) {
+            lore.add(EditorLang.text(player, "editor.lore.description", "&7Description: &f{value}",
+                    "value", fieldDescription));
+        }
         if (value != null) {
             lore.addAll(EditorUtil.summarize(player, value));
         } else {
@@ -91,6 +115,12 @@ public class EditorPresetGUI extends InvGUI {
                 }
                 break;
             case STRING_CHOICE:
+                if (field.getChoices().isEmpty()) {
+                    lore.add(EditorLang.text(player, "editor.preset.no-choices", "&7No values are currently available."));
+                } else {
+                    lore.add(EditorLang.text(player, "editor.preset.choices", "&7Options: &f{values}",
+                            "values", EditorUtil.trim(String.join(", ", field.getChoices()), 54)));
+                }
                 lore.add(EditorLang.text(player, "editor.action.cycle", "&aLeft click to cycle"));
                 lore.add(EditorLang.text(player, "editor.action.cycle-back", "&aShift-left to cycle backwards"));
                 lore.add(EditorLang.text(player, "editor.action.delete", "&cRight click to delete"));
@@ -100,10 +130,16 @@ public class EditorPresetGUI extends InvGUI {
                 lore.add(EditorLang.text(player, "editor.action.delete", "&cRight click to delete"));
                 break;
             case INTEGER, DOUBLE:
-                lore.add(EditorLang.text(player, "editor.action.increase-ten", "&aLeft click to add 10"));
-                lore.add(EditorLang.text(player, "editor.action.decrease-ten", "&cRight click to subtract 10"));
-                lore.add(EditorLang.text(player, "editor.action.increase-one", "&aShift-left to add 1"));
-                lore.add(EditorLang.text(player, "editor.action.decrease-one", "&cShift-right to subtract 1"));
+                lore.add(EditorLang.text(player, "editor.action.exact-number", "&aPress Q to enter an exact value"));
+                if (isInventorySize(field)) {
+                    lore.add(EditorLang.text(player, "editor.action.increase-row", "&aLeft click to add a row"));
+                    lore.add(EditorLang.text(player, "editor.action.decrease-row", "&cRight click to remove a row"));
+                } else {
+                    lore.add(EditorLang.text(player, "editor.action.increase-ten", "&aLeft click to add 10"));
+                    lore.add(EditorLang.text(player, "editor.action.decrease-ten", "&cRight click to subtract 10"));
+                    lore.add(EditorLang.text(player, "editor.action.increase-one", "&aShift-left to add 1"));
+                    lore.add(EditorLang.text(player, "editor.action.decrease-one", "&cShift-right to subtract 1"));
+                }
                 lore.add(EditorLang.text(player, "editor.action.middle-clear", "&eMiddle click to clear"));
                 break;
             case DISPLAY:
@@ -119,37 +155,38 @@ public class EditorPresetGUI extends InvGUI {
 
     private String getDisplayValue() {
         if (preset.getKind() == EditorPresetKind.SINGLE_THING) {
-            ConfigurationSection section = MenuStatusManager.menuStatusManager.getSection(target, path);
+            ConfigurationSection section = EditorUtil.getSection(target, path);
             if (section == null) {
-                return "UNKNOWN";
+                return EditorLang.text(player, "editor.summary.thing.unset", "Nothing selected");
             }
             if (section.contains("hook-plugin") && section.contains("hook-item")) {
-                return "HOOK_ITEM";
+                return EditorLang.text(player, "editor.summary.thing.hook-item", "Item from another plugin");
             }
             if (section.contains("match-item")) {
-                return "MATCH_ITEM";
+                return EditorLang.text(player, "editor.summary.thing.match-item", "Item matching rules");
             }
             if (section.contains("match-placeholder")) {
-                return "CUSTOM";
+                return EditorLang.text(player, "editor.summary.thing.match-placeholder", "Match a placeholder");
             }
             if (section.contains("economy-plugin")) {
-                return "HOOK_ECONOMY";
+                return EditorLang.text(player, "editor.summary.thing.hook-economy", "Currency from another plugin");
             }
             if (section.contains("economy-type") && !section.contains("economy-plugin")) {
-                return "VANILLA_ECONOMY";
+                return EditorLang.text(player, "editor.summary.thing.vanilla-economy", "Minecraft experience");
             }
             if (section.contains("material") || section.contains("item")) {
-                return "VANILLA_ITEM";
+                return EditorLang.text(player, "editor.summary.thing.vanilla-item", "Minecraft item");
             }
         }
-        return "INFO";
+        return EditorLang.text(player, "editor.summary.thing.unset", "Nothing selected");
     }
 
     @Override
     public boolean clickEventHandle(Inventory inventory, ClickType type, int slot) {
         List<EditorPresetField> fields = preset.getFields();
-        if (slot >= 0 && slot < Math.min(fields.size(), 45)) {
-            EditorPresetField field = fields.get(slot);
+        int index = page * FIELDS_PER_PAGE + slot;
+        if (slot >= 0 && slot < FIELDS_PER_PAGE && index < fields.size()) {
+            EditorPresetField field = fields.get(index);
             if (field.getType() == EditorPresetFieldType.DISPLAY) {
                 return true;
             }
@@ -168,31 +205,31 @@ public class EditorPresetGUI extends InvGUI {
                 if (preset.getKind() == EditorPresetKind.LIMITS_SECTION
                         && !field.getKey().equals("default")
                         && !field.getKey().equals("global")) {
-                    MenuStatusManager.menuStatusManager.removeLimitConditionGroup(player, target, path, field.getKey());
+                    EditorManager.editorManager.removeLimitConditionGroup(player, target, path, field.getKey());
                 } else {
-                    MenuStatusManager.menuStatusManager.removeValue(player, target, fullPath);
+                    EditorManager.editorManager.removeValue(player, target, fullPath);
                 }
-                MenuStatusManager.menuStatusManager.openTarget(player, target, path, 0);
+                EditorManager.editorManager.openTarget(player, target, path, page);
                 return true;
             }
 
             switch (field.getType()) {
                 case SECTION -> {
-                    ConfigurationSection section = MenuStatusManager.menuStatusManager.ensureSection(target, fullPath);
-                    MenuStatusManager.menuStatusManager.save(player, target);
+                    ConfigurationSection section = EditorManager.editorManager.ensureSection(target, fullPath);
+                    EditorManager.editorManager.save(player, target);
                     if (EditorTypeResolver.isItemSection(fullPath, section)) {
                         new EditorItemValueGUI(player, target, fullPath).openGUI(true);
                     } else if (EditorTypeResolver.isEconomySection(fullPath, section)) {
                         new EditorEconomyValueGUI(player, target, fullPath).openGUI(true);
                     } else {
-                        MenuStatusManager.menuStatusManager.openTarget(player, target, fullPath, 0);
+                        EditorManager.editorManager.openTarget(player, target, fullPath, 0);
                     }
                     return true;
                 }
                 case ACTIONS, CONDITIONS -> {
-                    MenuStatusManager.menuStatusManager.ensureSection(target, fullPath);
-                    MenuStatusManager.menuStatusManager.save(player, target);
-                    MenuStatusManager.menuStatusManager.openTarget(player, target, fullPath, 0);
+                    EditorManager.editorManager.ensureSection(target, fullPath);
+                    EditorManager.editorManager.save(player, target);
+                    EditorManager.editorManager.openTarget(player, target, fullPath, 0);
                     return true;
                 }
                 case ITEM_INLINE -> {
@@ -204,9 +241,10 @@ public class EditorPresetGUI extends InvGUI {
                     return true;
                 }
                 case BOOLEAN -> {
-                    boolean current = target.getConfig().getBoolean(fullPath);
-                    MenuStatusManager.menuStatusManager.setValue(player, target, fullPath, !current);
-                    MenuStatusManager.menuStatusManager.openTarget(player, target, path, 0);
+                    boolean boundaryHide = preset.getKind() == EditorPresetKind.SHOP_PAGE_BUTTON;
+                    boolean current = target.getConfig().getBoolean(fullPath, boundaryHide);
+                    EditorManager.editorManager.setValue(player, target, fullPath, !current);
+                    EditorManager.editorManager.openTarget(player, target, path, page);
                     return true;
                 }
                 case STRING -> {
@@ -221,8 +259,8 @@ public class EditorPresetGUI extends InvGUI {
                     } else if (field.getKey().equals("as-sub-button")) {
                         new EditorSubButtonValueGUI(player, target, path).openGUI(true);
                     } else {
-                        MenuStatusManager.menuStatusManager.promptString(player, target, fullPath,
-                                () -> MenuStatusManager.menuStatusManager.openTarget(player, target, path, 0));
+                        EditorManager.editorManager.promptString(player, target, fullPath,
+                                () -> EditorManager.editorManager.openTarget(player, target, path, page));
                     }
                     return true;
                 }
@@ -235,33 +273,44 @@ public class EditorPresetGUI extends InvGUI {
                     return true;
                 }
                 case RESET_TIME -> {
-                    new EditorResetTimeValueGUI(player, target, fullPath, path).openGUI(true);
+                    new EditorResetTimeValueGUI(player, target, fullPath, path, page).openGUI(true);
                     return true;
                 }
                 case INTEGER -> {
+                    if (type == ClickType.DROP || type == ClickType.CONTROL_DROP) {
+                        EditorManager.editorManager.promptInteger(player, target, fullPath,
+                                () -> EditorManager.editorManager.openTarget(player, target, path, page));
+                        return true;
+                    }
                     if (type == ClickType.MIDDLE) {
-                        MenuStatusManager.menuStatusManager.removeValue(player, target, fullPath);
+                        EditorManager.editorManager.removeValue(player, target, fullPath);
                     } else {
                         int delta = resolveIntegerDelta(type);
                         if (delta != 0) {
                             int current = target.getConfig().getInt(fullPath, 0);
-                            MenuStatusManager.menuStatusManager.setValue(player, target, fullPath, current + delta);
+                            int step = isInventorySize(field) ? Integer.signum(delta) * 9 : delta;
+                            EditorManager.editorManager.setValue(player, target, fullPath, current + step);
                         }
                     }
-                    MenuStatusManager.menuStatusManager.openTarget(player, target, path, 0);
+                    EditorManager.editorManager.openTarget(player, target, path, page);
                     return true;
                 }
                 case DOUBLE -> {
+                    if (type == ClickType.DROP || type == ClickType.CONTROL_DROP) {
+                        EditorManager.editorManager.promptDouble(player, target, fullPath,
+                                () -> EditorManager.editorManager.openTarget(player, target, path, page));
+                        return true;
+                    }
                     if (type == ClickType.MIDDLE) {
-                        MenuStatusManager.menuStatusManager.removeValue(player, target, fullPath);
+                        EditorManager.editorManager.removeValue(player, target, fullPath);
                     } else {
                         double delta = resolveDoubleDelta(type);
                         if (delta != 0) {
                             double current = target.getConfig().getDouble(fullPath, 0D);
-                            MenuStatusManager.menuStatusManager.setValue(player, target, fullPath, current + delta);
+                            EditorManager.editorManager.setValue(player, target, fullPath, current + delta);
                         }
                     }
-                    MenuStatusManager.menuStatusManager.openTarget(player, target, path, 0);
+                    EditorManager.editorManager.openTarget(player, target, path, page);
                     return true;
                 }
                 case STRING_LIST -> {
@@ -280,11 +329,11 @@ public class EditorPresetGUI extends InvGUI {
 
         if (slot == 45) {
             if (path.equals("settings.menu-settings")) {
-                MenuStatusManager.menuStatusManager.openTarget(player, target, "", 0);
+                EditorManager.editorManager.openTarget(player, target, "", 0);
             } else if (path.isEmpty()) {
-                MenuStatusManager.menuStatusManager.openScope(player, target.getScope(), 0);
+                EditorManager.editorManager.openScope(player, target.getScope(), 0);
             } else {
-                MenuStatusManager.menuStatusManager.openTarget(player, target, EditorUtil.parentPath(path), 0);
+                EditorManager.editorManager.openTarget(player, target, EditorUtil.parentPath(path), 0);
             }
             return true;
         }
@@ -293,14 +342,22 @@ public class EditorPresetGUI extends InvGUI {
             return true;
         }
         if (slot == 50 && preset.getKind() == EditorPresetKind.LIMITS_SECTION) {
-            MenuStatusManager.menuStatusManager.promptCreateLimitConditionGroup(player, target, path,
-                    groupId -> MenuStatusManager.menuStatusManager.openTarget(player, target,
-                            MenuStatusManager.menuStatusManager.getLimitConditionsPathFor(path) + "." + groupId, 0),
-                    () -> MenuStatusManager.menuStatusManager.openTarget(player, target, path, 0));
+            EditorManager.editorManager.promptCreateLimitConditionGroup(player, target, path,
+                    groupId -> EditorManager.editorManager.openTarget(player, target,
+                            EditorUtil.limitConditionsPath(path) + "." + groupId, 0),
+                    () -> EditorManager.editorManager.openTarget(player, target, path, page));
+            return true;
+        }
+        if (slot == 51 && page > 0) {
+            EditorManager.editorManager.openTarget(player, target, path, page - 1);
+            return true;
+        }
+        if (slot == 52 && (page + 1) * FIELDS_PER_PAGE < fields.size()) {
+            EditorManager.editorManager.openTarget(player, target, path, page + 1);
             return true;
         }
         if (slot == 53) {
-            MenuStatusManager.menuStatusManager.reloadAndReopen(player);
+            EditorManager.editorManager.reloadAndReopen(player);
             return true;
         }
         return true;
@@ -319,8 +376,8 @@ public class EditorPresetGUI extends InvGUI {
         } else {
             index = (index + 1) % values.size();
         }
-        MenuStatusManager.menuStatusManager.setValue(player, target, fullPath, values.get(index));
-        MenuStatusManager.menuStatusManager.openTarget(player, target, path, 0);
+        EditorManager.editorManager.setValue(player, target, fullPath, values.get(index));
+        EditorManager.editorManager.openTarget(player, target, path, page);
     }
 
     private String fullPath(EditorPresetField field) {
@@ -328,6 +385,10 @@ public class EditorPresetGUI extends InvGUI {
             return "";
         }
         return path.isEmpty() ? field.getKey() : path + "." + field.getKey();
+    }
+
+    private boolean isInventorySize(EditorPresetField field) {
+        return field.getKey().equals("size") && preset.getKind() == EditorPresetKind.ROOT_MENU;
     }
 
     private int resolveIntegerDelta(ClickType type) {

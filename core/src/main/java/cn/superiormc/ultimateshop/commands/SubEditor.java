@@ -1,7 +1,7 @@
 package cn.superiormc.ultimateshop.commands;
 
 import cn.superiormc.ultimateshop.editor.EditorLang;
-import cn.superiormc.ultimateshop.managers.MenuStatusManager;
+import cn.superiormc.ultimateshop.editor.EditorManager;
 import cn.superiormc.ultimateshop.editor.EditorScope;
 import cn.superiormc.ultimateshop.editor.EditorTarget;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
@@ -30,14 +30,14 @@ public class SubEditor extends AbstractCommand {
             return;
         }
         if (args.length == 1) {
-            MenuStatusManager.menuStatusManager.openRoot(player);
+            EditorManager.editorManager.openRoot(player);
             return;
         }
 
         EditorScope scope = EditorScope.ofName(args[1]);
         if (scope == null) {
             EditorLang.send(player, "editor.message.command-usage",
-                    "&cUse /shop editor [shop|menu|shop_menu_template|buy_more_menu|favourite_menu|search_menu|item_sell_menu] <id>");
+                    "&cUse /shop editor <category> <id>. Press Tab to list categories.");
             return;
         }
 
@@ -49,20 +49,16 @@ public class SubEditor extends AbstractCommand {
             return;
         }
 
-        MenuStatusManager.menuStatusManager.openTarget(player, target, "", 0);
+        EditorManager.editorManager.openTarget(player, target, "", 0);
     }
 
     @Override
     public List<String> getTabResult(String[] args, Player player) {
         List<String> result = new ArrayList<>();
         if (args.length == 2) {
-            result.add("shop");
-            result.add("menu");
-            result.add("shop_menu_template");
-            result.add("buy_more_menu");
-            result.add("favourite_menu");
-            result.add("search_menu");
-            result.add("item_sell_menu");
+            for (EditorScope scope : EditorScope.values()) {
+                result.add(scope.getCommandName());
+            }
             return result;
         }
         if (args.length == 3) {

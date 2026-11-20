@@ -7,7 +7,7 @@ settings:
   allow-favourite: true
 
 items:
-  A:
+  wheat_seeds:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
     products:
@@ -26,7 +26,7 @@ items:
         amount: '0.4'
         placeholder: '{amount}$'
         start-apply: 0
-  B:
+  pumpkin_seeds:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
     products:
@@ -45,7 +45,7 @@ items:
         amount: '1.3'
         placeholder: '{amount}$'
         start-apply: 0
-  C:
+  beetroot_seeds:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
     products:
@@ -64,7 +64,7 @@ items:
         amount: '0.6'
         placeholder: '{amount}$'
         start-apply: 0
-  D:
+  melon_seeds:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
     products:
@@ -83,7 +83,7 @@ items:
         amount: '1.4'
         placeholder: '{amount}$'
         start-apply: 0
-  E:
+  wheat:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
     products:
@@ -102,7 +102,7 @@ items:
         amount: '1.2'
         placeholder: '{amount}$'
         start-apply: 0
-  F:
+  pumpkin:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
     products:
@@ -121,7 +121,7 @@ items:
         amount: '8'
         placeholder: '{amount}$'
         start-apply: 0
-  G:
+  melon_slice:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
     products:
@@ -140,7 +140,7 @@ items:
         amount: '0.9'
         placeholder: '{amount}$'
         start-apply: 0
-  H:
+  beetroot:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
     products:
@@ -159,7 +159,7 @@ items:
         amount: '1.1'
         placeholder: '{amount}$'
         start-apply: 0
-  I:
+  potato:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
     products:
@@ -178,7 +178,7 @@ items:
         amount: '1'
         placeholder: '{amount}$'
         start-apply: 0
-  J:
+  sugar_cane:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
     products:
@@ -197,7 +197,7 @@ items:
         amount: '1.4'
         placeholder: '{amount}$'
         start-apply: 0
-  K:
+  kelp:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
     products:
@@ -216,7 +216,7 @@ items:
         amount: '0.6'
         placeholder: '{amount}$'
         start-apply: 0
-  L:
+  vine:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
     products:
@@ -235,7 +235,7 @@ items:
         amount: '0.8'
         placeholder: '{amount}$'
         start-apply: 0
-  M:
+  carrot:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
     products:
@@ -254,7 +254,7 @@ items:
         amount: '1.1'
         placeholder: '{amount}$'
         start-apply: 0
-  N:
+  nether_wart:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
     products:
@@ -273,7 +273,7 @@ items:
         amount: '2.7'
         placeholder: '{amount}$'
         start-apply: 0
-  O:
+  lily_pad:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
     products:
@@ -292,7 +292,7 @@ items:
         amount: '2.1'
         placeholder: '{amount}$'
         start-apply: 0
-  P:
+  sweet_berries:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
     products:
@@ -311,7 +311,7 @@ items:
         amount: '1.2'
         placeholder: '{amount}$'
         start-apply: 0
-  Q:
+  glow_berries:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
     products:

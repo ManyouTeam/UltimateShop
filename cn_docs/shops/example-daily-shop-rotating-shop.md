@@ -9,13 +9,9 @@
 
 我们需要先创建一个随机占位符。&#x20;
 
-本例在 `random_placeholder` 文件夹下新建了一个名为 `daily.yml` 的随机占位符配置，各项含义是：
+把随机占位符配置保存为 `placeholders/random_placeholders/daily.yml`。
 
-* `reset-mode` 与 `reset-time`：让这个占位符每天刷新。
-* `element-amount`：每次刷新随机抽 5 个元素，正好对应每日商店的槽位数。
-* `elements`：抽到的结果会通过条件系统决定该槽位放哪个商品，所以元素总数应等于每日商店中所有可能出现的商品数。
-
-本例中每日商店有 5 个槽位、7 种可能的商品，所以每天会有 2 种被藏起来，随机挑 5 种上架。
+这个配置每天从 `elements` 抽出 5 个商品 ID，菜单显示抽取结果里的前三项。`elements` 里的 ID 要和商店文件 `items` 下的键一致。
 
 随机占位符的更多说明见[随机占位符](../placeholders/random-placeholder-premium.md)页面。
 
@@ -26,13 +22,13 @@ element-amount: 5
 per-player-element: false
 element-sort: true
 elements:
-  - 'A'
-  - 'B'
-  - 'C'
-  - 'D'
-  - 'E'
-  - 'F'
-  - 'G'
+  - 'redstone'
+  - 'iron_ingot'
+  - 'gold_ingot'
+  - 'copper_ingot'
+  - 'diamond'
+  - 'lapis_lazuli'
+  - 'emerald'
 ```
 
 ## 配置商店
@@ -64,7 +60,7 @@ general-configs:
   sell-times-reset-time: '{random_reset}'
 
 items:
-  A:
+  redstone:
     products:
       1:
         material: REDSTONE
@@ -75,7 +71,7 @@ items:
         amount: 1
         placeholder: '&6{amount} Coins'
         start-apply: 0
-  B:
+  iron_ingot:
     products:
       1:
         material: IRON_INGOT
@@ -86,7 +82,7 @@ items:
         amount: 3
         placeholder: '&6{amount} Coins'
         start-apply: 0
-  C:
+  gold_ingot:
     products:
       1:
         material: GOLD_INGOT
@@ -97,7 +93,7 @@ items:
         amount: 1.6
         placeholder: '&6{amount} Coins'
         start-apply: 0
-  D:
+  copper_ingot:
     products:
       1:
         material: COPPER_INGOT
@@ -108,7 +104,7 @@ items:
         amount: 2
         placeholder: '&6{amount} Coins'
         start-apply: 0
-  E:
+  diamond:
     products:
       1:
         material: DIAMOND
@@ -119,7 +115,7 @@ items:
         amount: 0.8
         placeholder: '&6{amount} Coins'
         start-apply: 0
-  F:
+  lapis_lazuli:
     products:
       1:
         material: LAPIS_LAZULI
@@ -138,7 +134,7 @@ items:
         amount: 3.3
         placeholder: '&6{amount} Coins'
         start-apply: 0
-  G:
+  emerald:
     products:
       1:
         material: EMERALD
@@ -155,6 +151,8 @@ items:
 
 本例用到的各项选项在[菜单](../menus/general-menus.md)页面有详细说明，若不确定某项的作用可以查阅该页。
 
+每个商品槽先用随机占位符选商品。如果该 ID 无法在这个槽位显示，就用 `P` 显示商店中按顺序对应的商品。
+
 ```yaml
 # PREMIUM version only.
 
@@ -168,9 +166,11 @@ open-actions:
 
 dynamic-layout: true
 
+shop-items: ['P']
+
 layout:
   - '000000000'
-  - '000`{random_daily;;1}``{random_daily;;2}``{random_daily;;3}`000'
+  - '000`{random_daily;;1}||P``{random_daily;;2}||P``{random_daily;;3}||P`000'
   - '000000000'
   - 'a0003000b'
 

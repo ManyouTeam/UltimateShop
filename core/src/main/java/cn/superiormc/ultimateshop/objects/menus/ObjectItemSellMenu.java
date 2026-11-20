@@ -69,4 +69,9 @@ public class ObjectItemSellMenu extends ObjectMenu {
     public int getMaxSellAmount() {
         return getInt("max-sell-amount", -1);
     }
+
+    @Override
+    protected boolean isInventoryOnly() {
+        return true;
+    }
 }

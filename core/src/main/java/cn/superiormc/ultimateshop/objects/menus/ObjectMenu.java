@@ -6,15 +6,12 @@ import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.DynamicCommandManager;
 import cn.superiormc.ultimateshop.managers.ErrorManager;
 import cn.superiormc.ultimateshop.managers.LanguageManager;
-import cn.superiormc.ultimateshop.objects.ObjectShop;
 import cn.superiormc.ultimateshop.objects.ObjectThingRun;
 import cn.superiormc.ultimateshop.objects.buttons.AbstractButton;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectButton;
-import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import cn.superiormc.ultimateshop.objects.items.ObjectAction;
 import cn.superiormc.ultimateshop.objects.items.ObjectCondition;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
-import cn.superiormc.ultimateshop.utils.ConfigurationUtil;
 import cn.superiormc.ultimateshop.utils.TextUtil;
 
 import org.bukkit.command.CommandSender;
@@ -58,11 +55,7 @@ public class ObjectMenu {
 
     public String fileName;
 
-    private final boolean hasMenuFile;
-
-    private String menuFolder = COMMON_MENU_FOLDER;
-
-    private ObjectShop shop = null;
+    private final String menuFolder;
 
     private ObjectCondition condition;
 
@@ -82,55 +75,12 @@ public class ObjectMenu {
 
     private boolean dynamicLayout;
 
-    public ObjectMenu(String fileName, ObjectShop shop) {
-        this.fileName = fileName;
-        this.shop = shop;
-        this.type = MenuType.Shop;
-        this.hasMenuFile = true;
-        this.menuFolder = SHOP_MENU_TEMPLATE_FOLDER;
-        initMenu();
-        initButtons();
-    }
-
-    public ObjectMenu(ObjectShop shop) {
-        this.fileName = shop.getShopName();
-        this.shop = shop;
-        this.type = MenuType.Shop;
-        this.hasMenuFile = false;
-        initMenu();
-        initButtons();
-    }
-
-    public ObjectMenu(String fileName, ObjectItem item) {
-        this.fileName = fileName;
-        this.shop = item.getShopObject();
-        this.type = MenuType.More;
-        this.hasMenuFile = true;
-        this.menuFolder = BUY_MORE_MENU_FOLDER;
-        initMenu();
-        initButtons();
-    }
-
     public ObjectMenu(String fileName) {
         this(fileName, COMMON_MENU_FOLDER);
     }
 
-    protected ObjectMenu(String fileName, String menuFolder) {
-        this.fileName = fileName;
-        this.type = MenuType.Common;
-        this.hasMenuFile = true;
-        this.menuFolder = menuFolder;
-        initMenu();
-        initButtons();
-        if (!UltimateShop.freeVersion) {
-            initCustomCommand();
-        }
-    }
-
     public ObjectMenu(String fileName, ConfigurationSection menuConfigs) {
-        this.fileName = fileName;
-        this.type = MenuType.Common;
-        this.hasMenuFile = false;
+        this(fileName, null, MenuType.Common);
         this.menuConfigs = menuConfigs;
         initMenu();
         initButtons();
@@ -139,36 +89,36 @@ public class ObjectMenu {
         }
     }
 
+    protected ObjectMenu(String fileName, String menuFolder, MenuType type) {
+        this.fileName = fileName;
+        this.menuFolder = menuFolder;
+        this.type = type;
+    }
+
+    protected ObjectMenu(String fileName, String menuFolder) {
+        this(fileName, menuFolder, MenuType.Common);
+        initMenu();
+        initButtons();
+        if (!UltimateShop.freeVersion) {
+            initCustomCommand();
+        }
+    }
+
+    protected void applyMenuOverrides() {
+    }
+
     public MenuType getType() {
         return type;
     }
 
-    private void applyShopMenuOverrides() {
-        if (shop == null || type != MenuType.Shop) {
-            return;
-        }
-
-        ConfigurationSection overrideSection = shop.getConfig().getConfigurationSection("settings.menu-settings");
-        if (overrideSection == null) {
-            return;
-        }
-
-        if (menuConfigs == null) {
-            menuConfigs = new YamlConfiguration();
-        }
-
-        ConfigurationUtil.merge(menuConfigs, overrideSection);
-    }
-
     public void initMenu() {
-        boolean inventoryOnly = this instanceof ObjectItemSellMenu;
         if (type == MenuType.Common) {
             commonMenus.put(fileName, this);
         } else if (fileName != null && !fileName.isEmpty()) {
             notCommonMenuNames.add(fileName);
         }
 
-        if (hasMenuFile) {
+        if (menuFolder != null) {
             File file = findMenuFile(menuFolder);
             if (!file.exists()) {
                 ErrorManager.errorManager.sendErrorMessage("§cError: We can not found your menu file: " +
@@ -180,7 +130,7 @@ public class ObjectMenu {
                 this.menuConfigs = YamlConfiguration.loadConfiguration(file);
             }
         }
-        applyShopMenuOverrides();
+        applyMenuOverrides();
         if (menuConfigs != null && supportsGraphicalRenderer("arcmenu")) {
             ConfigManager.configManager.applyMenuUI(menuConfigs, supportsGraphicalRenderer("ore"));
         }
@@ -188,27 +138,24 @@ public class ObjectMenu {
             this.condition = new ObjectCondition();
             this.openAction = new ObjectAction();
             this.closeAction = new ObjectAction();
-            this.useGeyser = !inventoryOnly && type != MenuType.More;
+            this.useGeyser = supportsForms();
             this.useDialog = false;
             return;
-        } else if (shop != null) {
-            this.condition = new ObjectCondition(menuConfigs.getConfigurationSection("conditions"));
-            this.openAction = new ObjectAction(menuConfigs.getConfigurationSection("open-actions"), shop);
-            this.closeAction = new ObjectAction(menuConfigs.getConfigurationSection("close-actions"));
-            this.useGeyser = true;
-        } else {
-            this.condition = new ObjectCondition(menuConfigs.getConfigurationSection("conditions"), shop);
-            this.openAction = new ObjectAction(menuConfigs.getConfigurationSection("open-actions"));
-            this.closeAction = new ObjectAction(menuConfigs.getConfigurationSection("close-actions"));
-            this.useGeyser = true;
         }
-        this.useGeyser = !inventoryOnly && type != MenuType.More && !UltimateShop.freeVersion
+        this.condition = new ObjectCondition(menuConfigs.getConfigurationSection("conditions"));
+        this.openAction = createOpenAction(menuConfigs.getConfigurationSection("open-actions"));
+        this.closeAction = new ObjectAction(menuConfigs.getConfigurationSection("close-actions"));
+        this.useGeyser = supportsForms() && !UltimateShop.freeVersion
             && ConfigManager.configManager.getMenuUIMode(menuConfigs, "bedrock").equals("form");
-        this.useDialog = !inventoryOnly && !UltimateShop.freeVersion
+        this.useDialog = !isInventoryOnly() && !UltimateShop.freeVersion
             && UltimateShop.methodUtil.methodID().equals("paper")
             && CommonUtil.getMinorVersion(21, 9)
             && ConfigManager.configManager.isMenuDialogEnabled(menuConfigs);
         this.dynamicLayout = menuConfigs.getBoolean("dynamic-layout", false) && !UltimateShop.freeVersion;
+    }
+
+    protected ObjectAction createOpenAction(ConfigurationSection section) {
+        return new ObjectAction(section);
     }
 
     private File findMenuFile(String folderName) {
@@ -234,24 +181,6 @@ public class ObjectMenu {
         return directFile;
     }
 
-    private void buildShopItems(MenuSender menuSender, Map<Integer, AbstractButton> target) {
-        if (menuConfigs == null) {
-            return;
-        }
-
-        parseLayout(menuConfigs.getStringList("layout"), (slot, rawId) -> {
-            String id = rawId;
-            if (dynamicLayout && !menuSender.isStatic()) {
-                id = TextUtil.withPAPI(id, menuSender.getPlayer());
-            }
-
-            AbstractButton button = getButtonByLayoutId(id, menuSender, true);
-            if (button != null) {
-                target.put(slot, button);
-            }
-        });
-    }
-
     public void initButtons() {
         if (menuConfigs == null) {
             return;
@@ -260,49 +189,45 @@ public class ObjectMenu {
         ConfigurationSection tempVal1 = menuConfigs.getConfigurationSection("buttons");
         if (tempVal1 != null) {
             for (String button : tempVal1.getKeys(false)) {
-                if (shop == null) {
-                    buttonItems.put(button, new ObjectButton(tempVal1.getConfigurationSection(button)));
-                } else {
-                    buttonItems.put(button, new ObjectButton(tempVal1.getConfigurationSection(button), shop));
-                }
+                buttonItems.put(button, createButton(tempVal1.getConfigurationSection(button)));
             }
         }
 
         if (!dynamicLayout) {
-            if (type == MenuType.Shop) {
-                buildShopItems(MenuSender.empty, menuItems);
-            } else {
-                buildButtonItems(MenuSender.empty, menuItems);
-            }
+            buildLayout(MenuSender.empty, menuItems);
         }
     }
 
-    private void buildButtonItems(MenuSender menuSender, Map<Integer, AbstractButton> target) {
+    protected ObjectButton createButton(ConfigurationSection section) {
+        return new ObjectButton(section);
+    }
+
+    private void buildLayout(MenuSender menuSender, Map<Integer, AbstractButton> target) {
         parseLayout(menuConfigs.getStringList("layout"), (slot, rawId) -> {
             String id = rawId;
             if (dynamicLayout && !menuSender.isStatic()) {
                 id = TextUtil.withPAPI(id, menuSender.getPlayer());
             }
 
-            AbstractButton buttonObj = getButtonByLayoutId(id, menuSender, false);
+            AbstractButton buttonObj = getButtonByLayoutId(id, slot, menuSender);
             if (buttonObj != null) {
-                target.putIfAbsent(slot, buttonObj);
+                target.put(slot, buttonObj);
             }
         });
     }
 
-    private AbstractButton getButtonByLayoutId(String id, MenuSender menuSender, boolean includeShopItems) {
+    private AbstractButton getButtonByLayoutId(String id, int slot, MenuSender menuSender) {
         if (id == null || id.isEmpty()) {
             return null;
         }
 
         if (!id.contains("||")) {
-            return getSingleButtonById(id, menuSender, includeShopItems);
+            return getSingleButtonById(id, slot, menuSender);
         }
 
         String[] candidates = id.split("\\|\\|");
         for (String candidate : candidates) {
-            AbstractButton button = getSingleButtonById(candidate.trim(), menuSender, includeShopItems);
+            AbstractButton button = getSingleButtonById(candidate.trim(), slot, menuSender);
             if (button != null) {
                 return button;
             }
@@ -310,35 +235,20 @@ public class ObjectMenu {
         return null;
     }
 
-    private AbstractButton getSingleButtonById(String id, MenuSender menuSender, boolean includeShopItems) {
+    protected AbstractButton getSingleButtonById(String id, int slot, MenuSender menuSender) {
         if (id == null || id.isEmpty()) {
             return null;
         }
 
-        if (includeShopItems && shop != null) {
-            if (!UltimateShop.freeVersion) {
-                AbstractButton copyItem = shop.getCopyItem(id);
-                if (copyItem != null && copyItem.isVisibleInMenu(menuSender.getPresentation()) && copyItem.canDisplay(menuSender)) {
-                    return copyItem;
-                }
-            }
-
-            AbstractButton button = shop.getButton(id);
-            if (button != null && button.isVisibleInMenu(menuSender.getPresentation()) && button.canDisplay(menuSender)) {
-                return button;
-            }
-
-            AbstractButton product = shop.getProduct(id);
-            if (product != null && product.isVisibleInMenu(menuSender.getPresentation()) && product.canDisplay(menuSender)) {
-                return product;
-            }
-        }
-
         AbstractButton buttonObj = buttonItems.get(id);
-        if (buttonObj != null && buttonObj.isVisibleInMenu(menuSender.getPresentation()) && buttonObj.canDisplay(menuSender)) {
+        if (canDisplayLayoutButton(buttonObj, menuSender)) {
             return buttonObj;
         }
         return null;
+    }
+
+    protected boolean canDisplayLayoutButton(AbstractButton button, MenuSender sender) {
+        return button != null && button.isVisibleInMenu(sender.getPresentation()) && button.canDisplay(sender);
     }
 
     private void initCustomCommand() {
@@ -383,11 +293,7 @@ public class ObjectMenu {
             return new TreeMap<>(menuItems);
         }
         Map<Integer, AbstractButton> result = new TreeMap<>();
-        if (type == MenuType.Shop) {
-            buildShopItems(effectiveSender, result);
-        } else {
-            buildButtonItems(effectiveSender, result);
-        }
+        buildLayout(effectiveSender, result);
         return result;
     }
 
@@ -397,10 +303,7 @@ public class ObjectMenu {
         List<AbstractButton> candidates = getUiCandidates();
         for (AbstractButton button : candidates) {
             int candidateKey = key++;
-            if (!result.containsValue(button) && button.isVisibleInMenu(sender.getPresentation()) && button.canDisplay(sender)) {
-                if (button instanceof ObjectItem item && shop != null && shop.getProductNotHidden(sender, item) == null) {
-                    continue;
-                }
+            if (!result.containsValue(button) && canDisplayUiCandidate(button, sender)) {
                 result.put(candidateKey, button);
             }
         }
@@ -421,21 +324,16 @@ public class ObjectMenu {
         return result;
     }
 
-    private List<AbstractButton> getUiCandidates() {
+    protected boolean canDisplayUiCandidate(AbstractButton button, MenuSender sender) {
+        return canDisplayLayoutButton(button, sender);
+    }
+
+    protected List<AbstractButton> getUiCandidates() {
         List<AbstractButton> result = new ArrayList<>();
         for (String id : new TreeSet<>(buttonItems.keySet())) {
             AbstractButton button = buttonItems.get(id);
             if (button.getButtonConfig() != null && button.getButtonConfig().contains("ui.placement")) {
                 result.add(button);
-            }
-        }
-        // Auxiliary menus retain their parent shop for trade context, but only
-        // shop menus should include products that are absent from the slot layout.
-        if (type == MenuType.Shop && shop != null) {
-            for (ObjectItem item : shop.getProductList()) {
-                if (!dynamicLayout || item.getButtonConfig().contains("ui.placement")) {
-                    result.add(item);
-                }
             }
         }
         return result;
@@ -447,22 +345,10 @@ public class ObjectMenu {
         parseLayout(menuConfigs.getStringList("layout"), (slot, rawId) -> {
             Set<AbstractButton> candidates = new LinkedHashSet<>();
             if (dynamicLayout && rawId.contains("%")) {
-                candidates.addAll(buttonItems.values());
-                if (shop != null) {
-                    candidates.addAll(shop.getProductList());
-                    ConfigurationSection buttons = shop.getShopConfig().getConfigurationSection("buttons");
-                    if (buttons != null) {
-                        for (String id : buttons.getKeys(false)) {
-                            AbstractButton button = shop.getButton(id);
-                            if (button != null) {
-                                candidates.add(button);
-                            }
-                        }
-                    }
-                }
+                collectDynamicLayoutCandidates(candidates);
             } else {
                 for (String id : rawId.split("\\|\\|")) {
-                    AbstractButton button = getSingleButtonById(id.trim(), sender, type == MenuType.Shop);
+                    AbstractButton button = getSingleButtonById(id.trim(), slot, sender);
                     if (button != null) {
                         candidates.add(button);
                         ConfigurationSection config = button.getButtonConfig();
@@ -479,6 +365,10 @@ public class ObjectMenu {
             }
         });
         return result;
+    }
+
+    protected void collectDynamicLayoutCandidates(Set<AbstractButton> candidates) {
+        candidates.addAll(buttonItems.values());
     }
 
     public Map<Integer, AbstractButton> getShopEntryButtons(MenuSender sender) {
@@ -501,13 +391,9 @@ public class ObjectMenu {
         return result;
     }
 
-    private boolean hasMenuVisibilitySettings() {
-        if (buttonItems.values().stream().anyMatch(button -> button.getButtonConfig() != null
-            && button.getButtonConfig().contains("menu-visibility"))) {
-            return true;
-        }
-        return shop != null && shop.getShopConfig().getKeys(true).stream()
-            .anyMatch(key -> key.endsWith("menu-visibility"));
+    protected boolean hasMenuVisibilitySettings() {
+        return buttonItems.values().stream().anyMatch(button -> button.getButtonConfig() != null
+            && button.getButtonConfig().contains("menu-visibility"));
     }
 
     public ObjectCondition getCondition() {
@@ -547,22 +433,19 @@ public class ObjectMenu {
             || !CommonUtil.isBedrockPlayer(player));
     }
 
+    protected boolean isInventoryOnly() {
+        return false;
+    }
+
+    protected boolean supportsForms() {
+        return !isInventoryOnly();
+    }
+
     public boolean supportsGraphicalRenderer(String renderer) {
-        if (this instanceof ObjectItemSellMenu || type == MenuType.More) {
-            return false;
-        }
-        if ("arcmenu".equals(renderer)) {
-            return true;
-        }
-        return "ore".equals(renderer)
-            && !(this instanceof ObjectSearchMenu)
-            && !(this instanceof ObjectFavouriteMenu);
+        return !isInventoryOnly() && ("arcmenu".equals(renderer) || "ore".equals(renderer));
     }
 
     public String getDialogLayout() {
-        if (type == MenuType.More) {
-            return "multi-action";
-        }
         String layout = ConfigManager.configManager.getDialogLayout(menuConfigs);
         if ("ore".equalsIgnoreCase(layout) && !supportsGraphicalRenderer("ore")) {
             return "multi-action";

@@ -1,53 +1,46 @@
-# ✏️In-game Editor - Premium
+# In-game editor (Premium)
 
-The editor is built into UltimateShop Premium. Open it with `/shop editor` using the `ultimateshop.editor` permission; no separate editor addon is required.
+Run `/shop editor` to open the editor. To enable it for the first time, set `editor.enabled` to `true` in `plugins/UltimateShop/config.yml` and run `/shop reload`. Players need the `ultimateshop.editor` permission.
 
-## Enable the editor
+## Open the file you want to change
 
-Set `editor.enabled: true` in `plugins/UltimateShop/config.yml`, then reload the plugin to enable the editor. Back up the plugin configuration before every use. The editor writes changes directly to YAML files; use its Reload Plugin button or `/shop reload` to rebuild live menus after editing.
+To edit a product, choose **Edit Shops**, open the shop file, then open `items` and choose the product. To edit a menu title, slot layout or button, choose the matching menu category on the home screen.
 
-## Open a file
+Choose **Configuration** at the bottom of the home screen to open `config.yml`, shared UI styles, saved items, language files, placeholders, shared use times, sell sticks or sell chests.
 
-The home screen lists shops and each menu folder separately. Commands omit the `.yml` extension:
+You can also open a file by command. For example, `/shop editor shop example` opens `shops/example.yml`, and `/shop editor config config` opens `config.yml`. Leave off the `.yml` extension and use Tab to complete category and file names.
 
-| Command | Folder relative to the plugin data folder |
+| Category | Folder |
 | --- | --- |
-| `/shop editor shop <id>` | `shops/` |
-| `/shop editor menu <id>` | `menus/common_menus/` |
-| `/shop editor shop_menu_template <id>` | `menus/shop_menu_templates/` |
-| `/shop editor buy_more_menu <id>` | `menus/buy_more_menus/` |
-| `/shop editor favourite_menu <id>` | `menus/favourite_menus/` |
-| `/shop editor search_menu <id>` | `menus/search_menus/` |
-| `/shop editor item_sell_menu <id>` | `menus/item_sell_menus/` |
+| `shop` | `shops/` |
+| `menu` | `menus/common_menus/` |
+| `shop_menu_template` | `menus/shop_menu_templates/` |
+| `buy_more_menu` | `menus/buy_more_menus/` |
+| `favourite_menu` | `menus/favourite_menus/` |
+| `search_menu` | `menus/search_menus/` |
+| `item_sell_menu` | `menus/item_sell_menus/` |
 
-All seven scopes support command completion. The editor opens existing files. To create a menu, copy the current bundled example into its matching folder, then open it in the editor. Legacy folders are moved during startup; see [Configuration Files](../info/configuration-files.md).
+To create a new menu, copy a bundled example into the matching folder and open the copy. See [Configuration files](../info/configuration-files.md) for other folders and migration from older versions.
 
-## Menu and UI presets
+## Change a value
 
-The menu preset edits root `title`, `content`, `size`, Inventory `layout`, conditions, actions and buttons. Open **UI** for the current presentation settings:
+Hover over a field to see what each click does. Click a toggle to turn it on or off. Click a field with fixed choices, such as a product's price mode or a menu's shared UI style, to cycle through its options. To set the default purchase amount to 32, hover over the field, press your Drop key (**Q** by default), then type `32` in chat.
 
-* `mode.java`: `inherit`, `inventory`, `dialog`, `ore`, `arcmenu`.
-* `mode.bedrock`: `inherit`, `inventory`, `form`.
-* `layout.canvas`, `layout.header`, `layout.areas`, `layout.pagination`: shared Ore/ArcMenu layout.
-* `products`: default product placement, card style, price formats and operation lists.
-* `renderers.dialog`: native Dialog layout, button width and columns.
-* `renderers.form` and `renderers.ore`: presentation settings.
-* `renderers.arcmenu`: right-click action, screen scale, update interval, animation and tooltips.
+Open a list to add, edit or remove individual entries. For a reset time, choose the mode first. For example, use `TIMER` with `00:15:00` to reset 15 minutes after a trade. Use `TIMED` with `19:00:00` for a daily reset at 7 p.m.
 
-Paths here are relative to the menu's `ui` section. The global defaults live under `menu.ui` in `config.yml` and are edited in that file. A shop's `settings.menu-settings.ui` uses the same menu UI preset.
+Common fields have their own buttons. If you can't find a setting, open **Raw Section** to browse or add keys in the same structure as the YAML file.
 
-ArcMenu right-click defaults to `select-amount`, which opens product details. The choice field includes standard and configured custom product actions. ArcMenu does not render Inventory Buy More slots; changing `amount-items` or `confirm-items` affects the original quantity menu, not the ArcMenu details panel.
+## Find layout and button settings
 
-Search presets also expose input/result identifiers, action buttons, state buttons, empty results and result lore. Favourite presets expose result identifiers, the edit-mode button, empty state and normal/editing lore. Quantity and item-sell presets expose their own controls.
+- **Inventory menus.** Use `size` and `layout` in the menu file to change its size and slots. In a Buy More menu, edit quantity buttons under `amount-items` and confirmation buttons under `confirm-items`.
+- **Dialog, Bedrock forms and ArcMenu.** Enable these in the menu file with `dialog.enabled`, `bedrock.enabled` and `arcmenu.enabled`. Choose the Dialog layout with `dialog.layout`. Open `ui` to edit Ore and ArcMenu layouts, styles and colors.
+- **One product or button.** Use `menu-visibility` to choose where it appears and `dialog.show-sprite` to show its item icon in Dialog. To change its ArcMenu position, font size or alignment, open its own `ui` section.
+- **Right-clicking a product in ArcMenu.** Choose the action in `ui.renderers.arcmenu.right-click-action`. The default, `select-amount`, opens the product details. The inventory quantity buttons are edited in the Buy More menu file.
 
-## Product and button UI
+To give several menus the same look, open the shared UI style from **Configuration**. Global defaults live under `menu.ui` in `config.yml`, and individual menus can override them. See [Unified UI and ArcMenu](../menus/arcmenu-menus-premium.md) for layout examples.
 
-Open `ui` from a product or ordinary button preset to edit `visible-in`, `show-sprite`, `appearance`, placement, font size, text alignment, price and actions. The menu `ui.products` preset only exposes shared product defaults. Ordinary button actions remain in the button's root `actions` section; `ui.actions` controls product operation display and does not contain numbered action definitions.
+## Apply your changes
 
-For `visible-in`, enter a string list such as `inventory;;dialog;;ore;;arcmenu`; Form uses `form`. An empty list hides the entry everywhere. Removing the list restores the default visibility rules. `dialog` includes the native item-action-list layout.
+The editor writes each successful change to the file. When you're finished, click **Reload Plugin** or run `/shop reload`, then reopen the menu to see the result.
 
-## Saving and advanced sections
-
-Follow the click hints on each field: choice fields cycle values, boolean fields toggle, and number/string fields open chat prompts. List prompts separate entries with `;;`. Right-click deletion is available where shown. Raw Section opens the YAML structure for fields outside a preset, including named layout areas, headers, price formats and extra actions. `ui.products`, `ui.actions` and areas named `content` are treated as UI settings, not trade items or executable actions.
-
-Menu-level overrides take precedence over global defaults; product/button overrides take precedence where supported. Removing a local value restores inheritance after reload. See [Unified UI and ArcMenu](../menus/arcmenu-menus-premium.md) for placement dimensions, precedence and a layout example.
+If a save fails because the file changed while you were editing, go back to the file list, reopen the file and enter your change again.

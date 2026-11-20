@@ -79,6 +79,52 @@ Add products under shop `items`, then reference their IDs in the template's Inve
 
 Product clicks use `menu.click-event` and product overrides. Ordinary buttons use their action lists. Product pricing and rewards follow [Products](../shops/products.md); graphical layout does not change trading rules.
 
+## Reuse a layout across shops
+
+Use `shop-items` in the shop menu template to mark product slots. The four `P` slots below show the first four products under the shop's `items` section, from left to right. Spare slots stay empty if the shop has fewer products.
+
+```yaml
+size: 9
+shop-items: ['P']
+layout:
+  - '0PPPP000X'
+```
+
+To place numbered positions independently, use several markers such as `shop-items: ['A', 'B', 'C']`. In the layout, `A` shows the first product, `B` the second and `C` the third. Product order follows the order in the shop file.
+
+Use regular button and product IDs in other slots. For example, `X` can be a close button. Products still follow their display conditions and visibility settings. To override the template for one shop, set `settings.menu-settings.shop-items`. The in-game editor lists this setting as **Product slot markers**.
+
+## Add page buttons to an inventory shop
+
+Repeat a single `shop-items` marker to make product slots. Use the layout markers as the button keys, just as with `amount-items`. For example, use `previous-page-item.l` and `next-page-item.r`. The layout below fits seven products per page.
+
+```yaml
+size: 18
+shop-items: ['P']
+layout:
+  - '0PPPPPPP0'
+  - 'l0000000r'
+
+previous-page-item:
+  l:
+    hide-on-first-page: true
+    display-item:
+      material: ARROW
+      name: '&ePrevious page'
+    hidden-item:
+      material: GRAY_STAINED_GLASS_PANE
+      name: ' '
+
+next-page-item:
+  r:
+    hide-on-last-page: true
+    display-item:
+      material: ARROW
+      name: '&eNext page'
+```
+
+The previous button hides on the first page and the next button hides on the final page by default. Use `hidden-item` to fill the slot, or leave it unset for an empty slot. Set the relevant hide option to `false` to keep the arrow visible at the boundary. Normal menu buttons stay in place as products change. Both page buttons are editable in the in-game editor.
+
 ## Present the same shop in different interfaces — Premium
 
 - Inventory uses root `size` and `layout`.

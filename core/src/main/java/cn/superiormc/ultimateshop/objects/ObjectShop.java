@@ -12,6 +12,7 @@ import cn.superiormc.ultimateshop.objects.buttons.ObjectCopyItem;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import cn.superiormc.ultimateshop.objects.menus.MenuSender;
 import cn.superiormc.ultimateshop.objects.menus.ObjectMenu;
+import cn.superiormc.ultimateshop.objects.menus.ObjectShopMenu;
 import cn.superiormc.ultimateshop.utils.TextUtil;
 
 import org.bukkit.command.CommandSender;
@@ -25,6 +26,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class ObjectShop {
 
@@ -38,7 +40,7 @@ public class ObjectShop {
 
     private final String shopName;
 
-    private ObjectMenu menu;
+    private ObjectShopMenu menu;
 
     public ObjectShop(String fileName, YamlConfiguration config) {
         this.shopName = fileName;
@@ -105,12 +107,12 @@ public class ObjectShop {
     public void initMenus() {
         String menuName = config.getString("settings.menu");
         if (menuName != null && !menuName.isEmpty()) {
-            this.menu = new ObjectMenu(menuName, this);
+            this.menu = new ObjectShopMenu(menuName, this);
             return;
         }
 
         if (config.getConfigurationSection("settings.menu-settings") != null) {
-            this.menu = new ObjectMenu(this);
+            this.menu = new ObjectShopMenu(this);
         }
     }
 
@@ -197,7 +199,8 @@ public class ObjectShop {
             return null;
         }
         if (ConfigManager.configManager.getBoolean("secret-shop-items.require-display-in-menu") &&
-            menu != null && !menu.getMenu(menuSender).containsValue(item) && config.getBoolean("settings.secret-shop-items", true)) {
+            menu != null && config.getBoolean("settings.secret-shop-items", true)
+            && !menu.getListedButtons(menuSender).contains(item)) {
             return null;
         }
         return item;
@@ -219,6 +222,24 @@ public class ObjectShop {
         return resultItems;
     }
 
+    public void addDynamicLayoutCandidates(Set<AbstractButton> candidates) {
+        candidates.addAll(getProductList());
+        ConfigurationSection buttons = config.getConfigurationSection("buttons");
+        if (buttons == null) {
+            return;
+        }
+        for (String id : buttons.getKeys(false)) {
+            AbstractButton button = getButton(id);
+            if (button != null) {
+                candidates.add(button);
+            }
+        }
+    }
+
+    public boolean hasMenuVisibilitySettings() {
+        return config.getKeys(true).stream().anyMatch(key -> key.endsWith("menu-visibility"));
+    }
+
     public List<ObjectItem> getProductListNotHidden(Player player) {
         return getProductListNotHidden(MenuSender.of(player));
     }
@@ -230,13 +251,16 @@ public class ObjectShop {
             && config.getBoolean("settings.secret-shop-items", true)) {
             return resultItems;
         }
-        for (String key : items.keySet()) {
-            ObjectItem item = items.get(key);
-            if (ConfigManager.configManager.getBoolean("secret-shop-items.require-display-in-menu") &&
-                menu != null && !menu.getMenu(sender).containsValue(item) && config.getBoolean("settings.secret-shop-items", true)) {
-                continue;
+        if (ConfigManager.configManager.getBoolean("secret-shop-items.require-display-in-menu")
+            && menu != null && config.getBoolean("settings.secret-shop-items", true)) {
+            Set<AbstractButton> listedButtons = menu.getListedButtons(sender);
+            for (ObjectItem item : items.values()) {
+                if (listedButtons.contains(item)) {
+                    resultItems.add(item);
+                }
             }
-            resultItems.add(item);
+        } else {
+            resultItems.addAll(items.values());
         }
         return resultItems;
     }

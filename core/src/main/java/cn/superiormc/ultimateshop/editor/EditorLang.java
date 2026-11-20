@@ -4,6 +4,8 @@ import cn.superiormc.ultimateshop.managers.LanguageManager;
 import cn.superiormc.ultimateshop.utils.TextUtil;
 import org.bukkit.entity.Player;
 
+import java.util.Locale;
+
 public class EditorLang {
 
     public static String text(Player player, String key, String fallback, String... args) {
@@ -18,11 +20,11 @@ public class EditorLang {
     }
 
     public static String scope(Player player, EditorScope scope) {
-        return text(player, "editor.scope." + scope.name().toLowerCase(), scope.getDisplayName());
+        return text(player, "editor.scope." + scope.getCommandName(), scope.getDisplayName());
     }
 
     public static String valueKind(Player player, EditorValueKind kind) {
-        return text(player, "editor.value-kind." + kind.name().toLowerCase(), kind.name());
+        return text(player, "editor.value-kind." + kind.name().toLowerCase(Locale.ROOT), kind.name());
     }
 
     public static String displayPath(Player player, String path) {
@@ -33,7 +35,7 @@ public class EditorLang {
     }
 
     public static String presetTitle(Player player, EditorPreset preset) {
-        return text(player, "editor.presets." + preset.getKind().name().toLowerCase() + ".title",
+        return text(player, "editor.presets." + preset.getKind().name().toLowerCase(Locale.ROOT) + ".title",
                 fallbackPresetTitle(preset.getKind()));
     }
 
@@ -42,15 +44,23 @@ public class EditorLang {
     }
 
     public static String presetFieldDescription(Player player, EditorPreset preset, EditorPresetField field) {
-        return text(player, fieldPath(preset, field) + ".desc", fallbackFieldDescription(field));
+        String description = field.getDescription();
+        if (preset.getKind() == EditorPresetKind.LIMITS_SECTION && field.getKey().equals(field.getTitle())) {
+            description = text(player, "editor.preset.custom-limit-description",
+                    "Limit used when the player matches this condition group.");
+        } else if (preset.getKind() == EditorPresetKind.CLICK_EVENT_SECTION && field.getKey().equals(field.getTitle())) {
+            description = text(player, "editor.preset.custom-click-description",
+                    "Choose the clicks that run this custom action.");
+        }
+        return text(player, fieldPath(preset, field) + ".desc", description == null ? "" : description);
     }
 
     private static String fieldPath(EditorPreset preset, EditorPresetField field) {
-        return "editor.presets." + preset.getKind().name().toLowerCase() + ".fields." + normalizeFieldKey(field);
+        return "editor.presets." + preset.getKind().name().toLowerCase(Locale.ROOT) + ".fields." + normalizeFieldKey(field);
     }
 
     private static String fallbackPresetTitle(EditorPresetKind kind) {
-        return humanize(kind.name().toLowerCase());
+        return humanize(kind.name().toLowerCase(Locale.ROOT));
     }
 
     private static String fallbackFieldName(EditorPresetField field) {
@@ -58,13 +68,6 @@ public class EditorLang {
             return field.getTitle();
         }
         return humanize(normalizeFieldKey(field));
-    }
-
-    private static String fallbackFieldDescription(EditorPresetField field) {
-        if (field.getDescription() != null && !field.getDescription().isEmpty()) {
-            return field.getDescription();
-        }
-        return "No description";
     }
 
     private static String normalizeFieldKey(EditorPresetField field) {
