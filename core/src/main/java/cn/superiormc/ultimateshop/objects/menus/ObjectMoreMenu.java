@@ -1,10 +1,12 @@
 package cn.superiormc.ultimateshop.objects.menus;
 
 import cn.superiormc.ultimateshop.objects.buttons.AbstractButton;
+import cn.superiormc.ultimateshop.objects.buttons.ObjectButton;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectMoreButton;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectMoreBuyButton;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectMoreDisplayButton;
+import cn.superiormc.ultimateshop.objects.items.ObjectAction;
 
 import org.bukkit.configuration.ConfigurationSection;
 
@@ -24,14 +26,51 @@ public class ObjectMoreMenu extends ObjectMenu {
     private boolean invalid;
 
     public ObjectMoreMenu(ConfigurationSection section, ObjectItem item) {
-        super(section.getString("menu", "buy-more"), item);
+        super(section.getString("menu", "buy-more"), BUY_MORE_MENU_FOLDER, MenuType.More);
         this.item = item;
-        this.type = MenuType.More;
         this.section = section;
         this.invalid = true;
+        initMenu();
+        initButtons();
         initDisplayItem();
         initConfirmItem();
         initSelectAmountItem();
+    }
+
+    @Override
+    protected boolean supportsForms() {
+        return false;
+    }
+
+    @Override
+    public boolean supportsGraphicalRenderer(String renderer) {
+        return false;
+    }
+
+    @Override
+    public String getDialogLayout() {
+        return "multi-action";
+    }
+
+    @Override
+    protected ObjectAction createOpenAction(ConfigurationSection section) {
+        return new ObjectAction(section, item.getShopObject());
+    }
+
+    @Override
+    protected ObjectButton createButton(ConfigurationSection section) {
+        return new ObjectButton(section, item.getShopObject());
+    }
+
+    @Override
+    protected void collectDynamicLayoutCandidates(Set<AbstractButton> candidates) {
+        super.collectDynamicLayoutCandidates(candidates);
+        item.getShopObject().addDynamicLayoutCandidates(candidates);
+    }
+
+    @Override
+    protected boolean hasMenuVisibilitySettings() {
+        return super.hasMenuVisibilitySettings() || item.getShopObject().hasMenuVisibilitySettings();
     }
 
     private void initDisplayItem() {

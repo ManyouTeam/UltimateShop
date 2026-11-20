@@ -1,5 +1,3 @@
-# Inventory quantity controls. dialog.enabled selects native quantity input; graphical details use the source shop menu.
-
 title: '{lang:buy-more-title}'
 size: 54
 

@@ -26,7 +26,7 @@ items:
   # Potion Example
   # This item does not include sell price, so it can not be sold.
   #
-  A:
+  potion:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
     products:
@@ -45,7 +45,7 @@ items:
   #
   # Bundle Example
   #
-  B:
+  bundle:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
     products:
@@ -65,7 +65,7 @@ items:
   #
   # Brushable Sand Example
   #
-  C:
+  suspicious_sand:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
     add-lore:
@@ -88,7 +88,7 @@ items:
   #
   # Enchanted Item Example
   #
-  D:
+  diamond_axe:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
     products:
@@ -113,7 +113,7 @@ items:
   #
   # Enchanting book Example
   #
-  E:
+  enchanted_book:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
     products:
@@ -132,7 +132,7 @@ items:
   # Conditional Price Product
   # Seasonal Price Example
   #
-  F:
+  potato:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
     products:
@@ -183,7 +183,7 @@ items:
   #
   # Banner Example
   #
-  G:
+  blue_banner:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
     products:
@@ -201,7 +201,7 @@ items:
   #
   # Axolotl Bucket Example
   #
-  H:
+  axolotl_bucket:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
     products:
@@ -218,7 +218,7 @@ items:
   #
   # Tropical Fish Example
   #
-  I:
+  tropical_fish_bucket:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
     products:
@@ -237,7 +237,7 @@ items:
   #
   # Player Head Example
   #
-  J:
+  player_head_textured:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
     products:
@@ -251,7 +251,7 @@ items:
         amount: 5
         placeholder: '&6{amount} Exps'
         start-apply: 0
-  K:
+  player_head_pqguanfang:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
     products:
@@ -268,7 +268,7 @@ items:
   #
   # Firework Example
   #
-  L:
+  firework_rocket:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
     products:
@@ -295,7 +295,7 @@ items:
   #
   # Color Armor Example
   #
-  M:
+  leather_chestplate:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
     products:
@@ -312,7 +312,7 @@ items:
   #
   # Spawner Example
   #
-  N:
+  spawner:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
     products:
@@ -335,7 +335,7 @@ items:
   #
   # Command Shop Example
   #
-  O:
+  paper_magic_crate_key:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
     display-item:
@@ -356,7 +356,7 @@ items:
   # Total Custom Product
   # Only PREMIUM version support this!
   #
-  P:
+  apple:
     products:
       1:
         # The product
@@ -390,7 +390,7 @@ items:
   #
   # Save Item
   #
-  Q:
+  super_apple:
     display-item:
       material: SUPER_APPLE # Put save item ID here!
       # You need use command /shop saveitem SUPER_APPLE before this product can display in shop.
@@ -410,7 +410,7 @@ items:
   # Custom Product
   # Requires MythicChanger plugin!
   #
-  R:
+  paper_magic_flight:
     display-item:
       material: PAPER
       custom-model-data: 200
@@ -449,7 +449,7 @@ items:
   # Custom Reset
   # The Cron expression in this example means to reset at 0:00 every Thursday
   #
-  S:
+  echo_shard:
     products:
       1:
         material: echo_shard

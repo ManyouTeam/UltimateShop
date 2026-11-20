@@ -22,7 +22,7 @@ general-configs:
   sell-times-reset-time: '{random_reset}'
 
 items:
-  A:
+  redstone:
     products:
       1:
         material: REDSTONE
@@ -33,7 +33,7 @@ items:
         amount: 1
         placeholder: '&6{amount} Coins'
         start-apply: 0
-  B:
+  iron_ingot:
     products:
       1:
         material: IRON_INGOT
@@ -44,7 +44,7 @@ items:
         amount: 3
         placeholder: '&6{amount} Coins'
         start-apply: 0
-  C:
+  gold_ingot:
     products:
       1:
         material: GOLD_INGOT
@@ -55,7 +55,7 @@ items:
         amount: 1.6
         placeholder: '&6{amount} Coins'
         start-apply: 0
-  D:
+  copper_ingot:
     products:
       1:
         material: COPPER_INGOT
@@ -66,7 +66,7 @@ items:
         amount: 2
         placeholder: '&6{amount} Coins'
         start-apply: 0
-  E:
+  diamond:
     products:
       1:
         material: DIAMOND
@@ -77,7 +77,7 @@ items:
         amount: 0.8
         placeholder: '&6{amount} Coins'
         start-apply: 0
-  F:
+  lapis_lazuli:
     products:
       1:
         material: LAPIS_LAZULI
@@ -96,7 +96,7 @@ items:
         amount: 3.3
         placeholder: '&6{amount} Coins'
         start-apply: 0
-  G:
+  emerald:
     products:
       1:
         material: EMERALD

@@ -5,9 +5,17 @@ import cn.superiormc.ultimateshop.utils.CommonUtil;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.Set;
+import java.util.function.BiConsumer;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
+import java.util.stream.Stream;
 
 public class InitManager extends AbstractManager {
 
@@ -15,6 +23,9 @@ public class InitManager extends AbstractManager {
         "shop_menu_templates", "buy_more_menus", "favourite_menus", "search_menus", "item_sell_menus");
 
     public static InitManager initManager;
+
+    private final BiConsumer<String, Throwable> errorLogger = (message, exception) ->
+            ErrorManager.errorManager.sendErrorMessage("§cError: " + message + ": " + exception.getMessage());
 
     private boolean firstLoad = false;
 
@@ -30,54 +41,14 @@ public class InitManager extends AbstractManager {
 
     public void init() {
         migrateLegacyFolders();
-        resourceOutput("ui/classic.yml", true);
-        resourceOutput("ui/bedrock.yml", true);
-        resourceOutput("languages/en_US.yml", true);
-        resourceOutput("languages/zh_CN.yml", true);
-        resourceOutput("languages/cs_CZ.yml", true);
-        resourceOutput("languages/sk_SK.yml", true);
-        resourceOutput("languages/es_ES.yml", true);
-        resourceOutput("languages/de_DE.yml", true);
-        resourceOutput("languages/pt_BR.yml", true);
-        resourceOutput("languages/tr_TR.yml", true);
-        resourceOutput("shops/concretes.yml", false);
-        resourceOutput("shops/blocks.yml", false);
-        resourceOutput("shops/blocks2.yml", false);
-        resourceOutput("shops/farming.yml", false);
-        resourceOutput("shops/fish.yml", false);
-        resourceOutput("shops/flowers.yml", false);
-        resourceOutput("shops/glass.yml", false);
-        resourceOutput("shops/drops.yml", false);
-        resourceOutput("shops/minerals.yml", false);
-        resourceOutput("shops/logs.yml", false);
-        resourceOutput("shops/redstone.yml", false);
-        resourceOutput("shops/terracottas.yml", false);
-        resourceOutput("shops/special.yml", false);
-        resourceOutput("shops/transport.yml", false);
-        resourceOutput("shops/wools.yml", false);
-        resourceOutput("shops/example.yml", false);
-        resourceOutput("shops/daily.yml", false);
-        resourceOutput("menus/common_menus/main.yml", false);
-        resourceOutput("menus/buy_more_menus/buy-more.yml", false);
-        resourceOutput("menus/buy_more_menus/buy-more-buy.yml", false);
-        resourceOutput("menus/buy_more_menus/buy-more-sell.yml", false);
-        resourceOutput("menus/search_menus/search.yml", false);
-        resourceOutput("menus/favourite_menus/favourite.yml", false);
-        resourceOutput("menus/item_sell_menus/item-sell.yml", false);
-        resourceOutput("menus/shop_menu_templates/example-shop-menu.yml", false);
-        resourceOutput("menus/shop_menu_templates/daily-shop-menu.yml", false);
-        resourceOutput("shared_use_times/example.yml", true);
-        resourceOutput("placeholders/random_placeholders/daily.yml", false);
-        resourceOutput("placeholders/random_placeholders/reset.yml", false);
-        resourceOutput("placeholders/random_placeholders/rate_example.yml", false);
-        resourceOutput("placeholders/custom_placeholders/example.yml", false);
-        resourceOutput("sell_sticks/A.yml", false);
-        resourceOutput("sell_sticks/B.yml", false);
-        resourceOutput("sell_sticks/C.yml", false);
-        resourceOutput("sell_chests/A.yml", false);
-        resourceOutput("placeholders/conditional_placeholders/buy.yml", false);
-        resourceOutput("placeholders/conditional_placeholders/sell.yml", false);
-        resourceOutput("placeholders/conditional_placeholders/example.yml", false);
+        resourceOutputFolder("ui", true);
+        resourceOutputFolder("languages", true);
+        resourceOutputFolder("shops", false);
+        resourceOutputFolder("menus", false);
+        resourceOutputFolder("shared_use_times", false);
+        resourceOutputFolder("placeholders", false);
+        resourceOutputFolder("sell_sticks", false);
+        resourceOutputFolder("sell_chests", false);
     }
 
     private void migrateLegacyFolders() {
@@ -126,6 +97,49 @@ public class InitManager extends AbstractManager {
             }
         } catch (IOException exception) {
             ErrorManager.errorManager.sendErrorMessage("§cError: Cannot migrate " + source + " to " + target + ": " + exception.getMessage());
+        }
+    }
+
+    private void resourceOutputFolder(String folderName, boolean regenerate) {
+        String normalizedFolder = folderName.endsWith("/") ? folderName : folderName + "/";
+        File sourceFile;
+        try {
+            sourceFile = new File(InitManager.class.getProtectionDomain()
+                    .getCodeSource().getLocation().toURI());
+            // Maven and IDE runs load classes from a directory rather than a plugin JAR.
+            if (sourceFile.isDirectory()) {
+                URL resource = InitManager.class.getResource("/" + normalizedFolder);
+                if (resource == null) {
+                    return;
+                }
+                Path folder = Path.of(resource.toURI());
+                try (Stream<Path> files = Files.walk(folder)) {
+                    files.filter(Files::isRegularFile).forEach(file -> resourceOutput(
+                            normalizedFolder + folder.relativize(file).toString().replace('\\', '/'),
+                            regenerate));
+                }
+                return;
+            }
+        } catch (URISyntaxException | IOException exception) {
+            errorLogger.accept("Failed to extract resource folder: " + folderName, exception);
+            return;
+        }
+
+        try (JarFile jarFile = new JarFile(sourceFile)) {
+            Enumeration<JarEntry> entries = jarFile.entries();
+            while (entries.hasMoreElements()) {
+                JarEntry jarEntry = entries.nextElement();
+                if (jarEntry.isDirectory()) {
+                    continue;
+                }
+                String entryName = jarEntry.getName();
+                if (!entryName.startsWith(normalizedFolder)) {
+                    continue;
+                }
+                resourceOutput(entryName, regenerate);
+            }
+        } catch (IOException exception) {
+            errorLogger.accept("Failed to extract resource folder: " + folderName, exception);
         }
     }
 

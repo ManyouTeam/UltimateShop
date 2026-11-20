@@ -428,6 +428,16 @@ editor:
     favourite_menu: '收藏菜单'
     search_menu: '搜索菜单'
     item_sell_menu: '物品出售菜单'
+    config: '全局配置'
+    ui_style: '共享界面样式'
+    item: '已保存物品'
+    language: '语言文件'
+    random_placeholder: '随机占位符'
+    conditional_placeholder: '条件占位符'
+    custom_placeholder: '自定义占位符'
+    shared_use_times: '共享限购次数'
+    sell_stick: '出售棒'
+    sell_chest: '出售箱'
   common:
     root: '根节点'
     back:
@@ -449,6 +459,9 @@ editor:
       name: '&e下一页'
       desc: '&7查看下一页内容'
   action:
+    exact-number: '&a按 Q 输入精确数值'
+    increase-row: '&a左键增加一行'
+    decrease-row: '&c右键减少一行'
     open: '&a左键打开'
     edit: '&a左键编辑'
     delete: '&c右键删除'
@@ -464,6 +477,14 @@ editor:
     middle-clear: '&e中键清除'
     read-only: '&7这里只显示摘要，不能直接修改'
   summary:
+    thing:
+      unset: '尚未设置'
+      hook-item: '其他插件提供的物品'
+      match-item: '按条件匹配物品'
+      match-placeholder: '按占位符匹配'
+      hook-economy: '其他插件提供的货币'
+      vanilla-economy: '游戏经验'
+      vanilla-item: '原版物品'
     type: '&7当前类型: &f{value}'
     section: '配置节点'
     list: '列表'
@@ -492,6 +513,10 @@ editor:
     unknown: '未知'
   root:
     title: 'UltimateShop 编辑器'
+    settings:
+      title: 'UltimateShop 配置文件'
+      name: '&e配置文件'
+      desc: '&7打开全局设置、共享样式和其他配置文件'
     shops:
       name: '&e编辑商店'
       desc: '&7打开 &f/shops &7目录下的商店 yml 文件'
@@ -538,6 +563,10 @@ editor:
       thing-item: '&a左键：新增物品模板'
       thing-economy: '&e右键：新增经济模板'
   preset:
+    custom-limit-description: '玩家符合这组条件时，使用这里设置的限额。'
+    custom-click-description: '选择触发这个自定义动作的点击方式。'
+    choices: '&7可选值：&f{values}'
+    no-choices: '&7当前没有可选值。'
     add-limit-group:
       name: '&e新增条件组'
       desc: '&7创建一个新的限制条件组，并同步建立对应限制值。'
@@ -673,6 +702,8 @@ editor:
     new-child: '请输入新子节点的键名'
     new-child-value: '请输入 &f{path} &7的值。输入 &fsection &7或 &f{} &7可创建 section，输入 &f;; &7可创建列表。'
   message:
+    invalid-field: '&c{path} 需要填写{requirement}。'
+    invalid-choice: '&c请选择以下值之一：&f{values}'
     target-not-found: '&#98FB98[UltimateShop] &c找不到目标文件。'
     saved: '&#98FB98[UltimateShop] &a已保存 &f{value}&a，不要忘记在完成编辑后重启插件以让你的修改生效！'
     save-failed: '&#98FB98[UltimateShop] &c保存文件失败: {value}'
@@ -685,8 +716,25 @@ editor:
     invalid-new-child-value: '&#98FB98[UltimateShop] &c无效值。可使用 section/{}, 布尔值, 数字, 列表 (;;), 或普通文本。'
     invalid-integer-list: '&#98FB98[UltimateShop] &c列表里有某个值不是整数。'
     child-format: '&#98FB98[UltimateShop] &c请输入: 键名 类型'
-    command-usage: '&c使用 /shop editor [shop|menu|shop_menu_template|buy_more_menu|favourite_menu|search_menu|item_sell_menu] <id>'
+    command-usage: '&c使用 /shop editor <分类> <ID>。按 Tab 查看分类。'
     target-missing: '&#98FB98[UltimateShop] &c找不到{scope}: {id}'
+  validation:
+    date-format: '有效的 Java 日期时间格式，例如 yyyy-MM-dd HH:mm:ss'
+    trade-amount: '1 到 9999 的整数'
+    inventory-size: '9 到 54 之间且为 9 的倍数的物品栏大小'
+    layout-list: '由字符串组成的布局列表'
+    layout-token: '成对的反引号，且其中包含有效的非空布局标记'
+    layout-capacity: '不超过物品栏大小的布局'
+    reset-value: '字符串格式的重置时间'
+    random-placeholder: '已存在的随机占位符 ID'
+    papi-placeholder: '完整的 PlaceholderAPI 占位符，例如 %example_time%'
+    timer-reset: '单个 HH:mm:ss 时长，也可以加日或月前缀'
+    timed-reset: '有效的 HH:mm:ss 时间，也可以加日或月前缀，多项用双分号分隔'
+    particle-name: '服务器支持的粒子名称'
+    potion-key: '有效格式的药水效果 ID，例如 minecraft:speed'
+    sound-key: '有效格式的声音 ID，例如 minecraft:block.note_block.pling'
+    finite-number: '有限数字'
+    hex-color: '十六进制颜色，例如 #RRGGBB 或 #AARRGGBB'
   list:
     title: '列表编辑器: {path}'
     current: '&7当前值: &f{value}'
@@ -725,7 +773,13 @@ editor:
     title: '点击类型: {path}'
     state: '&7已选中: &f{value}'
   reset-time:
+    custom-format: '&7输入完整的 PlaceholderAPI 占位符。'
+    custom-pattern: '&7在 &f重置时间格式 &7里填写与返回值匹配的格式。'
+    random-format: '&7选择一个已有的随机占位符。'
+    never-format: '&7这个模式不用填重置时间。'
     title: '重置时间: {path}'
+    timer-format: '&7格式 &fHH:mm:ss &7，可加月或日前缀。例如 &f00:15:00'
+    timed-format: '&7格式 &fHH:mm:ss &7，可加月或日前缀。例如 &f19:00:00'
     current: '&7当前值: &f{value}'
     mode:
       name: '&e当前模式'
@@ -776,6 +830,15 @@ editor:
             description:
               name: '命令描述'
               desc: '这个商店指令显示的描述文本。'
+          allow-favourite:
+            name: '允许收藏'
+            desc: '允许玩家收藏这家商店里的商品。'
+          buy-more:
+            name: '允许选择数量'
+            desc: '为店里的商品默认启用数量选择。'
+          shop-name:
+            name: '商店名称'
+            desc: '供消息和占位符使用的商店名称。'
         general-configs:
           name: '通用配置'
           desc: '对这个商店所有商品生效的默认值。'
@@ -938,9 +1001,21 @@ editor:
               padding:
                 name: Renderers Arcmenu Tooltip Padding
                 desc: 编辑此 UI 下的 renderers.arcmenu.tooltip.padding 配置。
+        style:
+          name: '界面样式'
+          desc: '选择这个菜单使用的共享 UI 样式。'
     root_menu:
       title: '菜单预设'
       fields:
+        shop-items:
+          name: '商品槽位标记'
+          desc: '按商店里的商品顺序分配槽位。只填一个标记时，可以在布局里重复使用。'
+        previous-page-item:
+          name: '上一页按钮'
+          desc: '用布局字符作为按钮的键，再设置图标和第一页的显示方式。'
+        next-page-item:
+          name: '下一页按钮'
+          desc: '用布局字符作为按钮的键，再设置图标和最后一页的显示方式。'
         content:
           name: 菜单正文
           desc: Form、Dialog 与图形菜单共用的正文。
@@ -1013,6 +1088,20 @@ editor:
           content:
             name: '内容'
             desc: '这个菜单使用的基岩版内容值。'
+          click-event:
+            name: '基岩版商品点击动作'
+            desc: '点击商品时执行的默认动作。'
+          info:
+            name: '基岩版商品详情'
+            desc: '设置商品详情表单的标题和按钮文字。'
+          search:
+            input:
+              name: '基岩版搜索输入提示'
+              desc: '显示在搜索关键词输入框旁的文字。'
+            buttons:
+              search:
+                name: '基岩版搜索按钮文字'
+                desc: '显示在打开关键词输入框的按钮上。'
         layout:
           name: '布局'
           desc: '用于放置按钮和商品的布局字符串列表。'
@@ -1035,6 +1124,64 @@ editor:
           description:
             name: '命令描述'
             desc: '这个菜单指令显示的描述文本。'
+        arcmenu:
+          enabled:
+            name: '启用 ArcMenu'
+            desc: '服务端已启用 ArcMenu 时，用它打开这个菜单。'
+          content:
+            name: 'ArcMenu 正文'
+            desc: '显示在 ArcMenu 标题下方的文字。'
+        dialog:
+          enabled:
+            name: '启用对话框'
+            desc: '服务端已启用对话框时，用对话框打开这个菜单。'
+          layout:
+            name: '对话框布局'
+            desc: '选择对话框里商品和按钮的排列方式。'
+          content:
+            name: '对话框正文'
+            desc: '显示在对话框标题下方的文字。'
+          button-width:
+            name: '对话框按钮宽度'
+            desc: '设置对话框中单个按钮的宽度。'
+          columns:
+            name: '对话框按钮列数'
+            desc: '设置对话框里每行有几列按钮。'
+          info:
+            name: '对话框商品详情'
+            desc: '设置商品详情对话框的标题和按钮等内容。'
+          search:
+            input:
+              name: '对话框搜索输入提示'
+              desc: '显示在搜索关键词输入框旁的文字。'
+            buttons:
+              search:
+                name: '对话框搜索按钮文字'
+                desc: '显示在提交搜索关键词的按钮上。'
+        display-items-padding-item:
+          name: '商品预览填充物'
+          desc: '预览商品未占满槽位时，用这个物品填充。'
+        input-items:
+          name: '多个输入槽标识'
+          desc: '填写布局里可放入物品的槽位标识。'
+        result-items:
+          name: '多个收藏结果槽标识'
+          desc: '填写布局里用来显示收藏商品的槽位标识。'
+    shop_page_button:
+      title: '翻页按钮'
+      fields:
+        display-item:
+          name: '按钮图标'
+          desc: '翻页按钮正常显示时使用的物品。'
+        hide-on-first-page:
+          name: '第一页隐藏'
+          desc: '开启后，第一页不显示上一页按钮。'
+        hide-on-last-page:
+          name: '最后一页隐藏'
+          desc: '开启后，最后一页不显示下一页按钮。'
+        hidden-item:
+          name: '隐藏时的替代物品'
+          desc: '按钮隐藏时在原位置显示这个物品。留空就空着。'
     shop_item:
       title: '商品预设'
       fields:
@@ -1186,6 +1333,33 @@ editor:
         sell-times-max-value:
           name: '出售最大值'
           desc: '重置前允许达到的出售次数上限。'
+        allow-favourite:
+          name: '允许收藏'
+          desc: '允许玩家把这个商品加入收藏。'
+        buy-prices-conditions:
+          name: '购买价格条件'
+          desc: '按价格条目 ID 设置使用该价格的条件。'
+        display-item-conditions:
+          name: '展示物品条件'
+          desc: '决定在什么情况下显示各个版本的展示物品。'
+        hide-message:
+          name: '隐藏交易提示'
+          desc: '开关这个商品的交易提示。'
+        menu-visibility:
+          name: '显示在哪些界面'
+          desc: '分别设置商品在各种界面中是否出现。'
+        price-modifier:
+          name: '启用价格修正'
+          desc: '允许这个商品使用全局配置中的价格修正规则。'
+        products-conditions:
+          name: '交付物品条件'
+          desc: '按商品条目 ID 设置使用该条目的条件。'
+        sell-all:
+          name: '允许全部出售'
+          desc: '允许玩家一次出售背包中能卖给该商品的物品。'
+        sell-prices-conditions:
+          name: '出售价格条件'
+          desc: '按价格条目 ID 设置使用该价格的条件。'
     button_entry:
       title: '按钮预设'
       fields:
@@ -1196,6 +1370,9 @@ editor:
           show-sprite:
             name: '显示 Sprite'
             desc: '显示或隐藏文字中的 Sprite；未设置时使用自动规则。'
+          layout:
+            name: '对话框显示样式'
+            desc: '给这个按钮指定对话框样式。'
         display-item:
           name: '显示物品'
           desc: '这个按钮使用的显示物品。'
@@ -1211,6 +1388,12 @@ editor:
         display-conditions:
           name: '显示条件'
           desc: '决定这个按钮是否显示的条件。'
+        display-item-conditions:
+          name: '展示物品条件'
+          desc: '决定在什么情况下显示各个版本的展示物品。'
+        menu-visibility:
+          name: '显示在哪些界面'
+          desc: '分别设置按钮在各种界面中是否出现。'
     limits_section:
       title: '限制预设'
       fields:
@@ -1292,6 +1475,15 @@ editor:
         take:
           name: '真正扣除'
           desc: '关闭后只检查是否拥有，而不真正扣除。'
+        custom-type:
+          name: '自定义价格'
+          desc: '使用全局配置中指定的价格方案。'
+        hook-item-type:
+          name: '物品插件的分类'
+          desc: '在物品插件需要分类时，填写该物品的分类。'
+        sprite:
+          name: '物品图标'
+          desc: '设置支持图标的界面中使用的 sprite ID。'
     action_entry:
       title: '动作预设'
       fields:
@@ -1439,6 +1631,21 @@ editor:
         pitch:
           name: 'Pitch'
           desc: '朝向 pitch 或声音音高。'
+        cancel-actions:
+          name: '取消时执行'
+          desc: '玩家取消聊天输入时执行这里的动作。'
+        description:
+          name: '聊天输入提示'
+          desc: '让玩家知道需要在聊天栏输入什么。'
+        reopen-on-cancel:
+          name: '取消后打开原菜单'
+          desc: '玩家取消输入时回到刚才的菜单。'
+        reopen-on-submit:
+          name: '提交后打开原菜单'
+          desc: '玩家提交输入时回到刚才的菜单。'
+        time:
+          name: '延迟时间'
+          desc: '等待多少游戏刻再执行动作，20 刻约为 1 秒。'
     condition_entry:
       title: '条件预设'
       fields:
@@ -1497,3 +1704,303 @@ editor:
           name: '嵌套条件'
           desc: '这个条件内部继续使用的条件列表。'
 
+    ui_area:
+      title: '布局区域'
+      fields:
+        type:
+          name: '排列方式'
+          desc: '选择网格、堆叠或自由摆放。'
+        direction:
+          name: '堆叠方向'
+          desc: '选择横向或纵向排列。'
+        columns:
+          name: '列数'
+          desc: '设置网格每行有几列。'
+        rows:
+          name: '行数'
+          desc: '设置网格有几行。'
+        gap:
+          name: '默认间距'
+          desc: '没有单独设置横向或纵向间距时使用。'
+        gap-x:
+          name: '横向间距'
+          desc: '设置相邻两列之间的距离。'
+        gap-y:
+          name: '纵向间距'
+          desc: '设置相邻两行之间的距离。'
+        cell-height:
+          name: '网格格子高度'
+          desc: '设置每个网格格子的高度。'
+        item-height:
+          name: '堆叠条目高度'
+          desc: '设置堆叠区域里每个条目的高度。'
+        item-width:
+          name: '堆叠条目宽度'
+          desc: '设置横向堆叠时每个条目的宽度。'
+        background-enabled:
+          name: '显示区域背景'
+          desc: '在 ArcMenu 中为这个区域绘制背景。'
+        background-padding:
+          name: '背景留边'
+          desc: '设置区域背景边缘留出的空间。'
+        x:
+          name: '横向位置'
+          desc: '离左侧有多远。'
+        y:
+          name: '纵向位置'
+          desc: '离顶部有多远。'
+        width:
+          name: '宽度'
+          desc: '设置在画布上占用的宽度。'
+        height:
+          name: '高度'
+          desc: '设置在画布上占用的高度。'
+    ui_header:
+      title: '页眉文字'
+      fields:
+        enabled:
+          name: '显示页眉'
+          desc: '在菜单上显示这条页眉文字。'
+        text:
+          name: '页眉文字'
+          desc: '输入要显示的内容，可以使用占位符。'
+        align:
+          name: '文字对齐'
+          desc: '让文字靠左、居中或靠右。'
+        bold:
+          name: '加粗'
+          desc: '让这条页眉使用粗体。'
+        font-size:
+          name: '字号'
+          desc: '调整页眉文字的大小。'
+        x:
+          name: '横向位置'
+          desc: '离左侧有多远。'
+        y:
+          name: '纵向位置'
+          desc: '离顶部有多远。'
+        width:
+          name: '宽度'
+          desc: '设置在画布上占用的宽度。'
+        height:
+          name: '高度'
+          desc: '设置在画布上占用的高度。'
+    ui_theme:
+      title: '界面配色'
+      fields:
+        background-enabled:
+          name: '显示背景'
+          desc: '开关当前部分的背景绘制。'
+        decoration-enabled:
+          name: '显示标题装饰'
+          desc: '开关标题周围的装饰。'
+        dividers-enabled:
+          name: '显示分隔线'
+          desc: '开关界面里的装饰分隔线。'
+        enabled:
+          name: '启用效果'
+          desc: '开关当前部分的视觉效果。'
+        style:
+          name: '装饰样式'
+          desc: '选择边框、四角、两者都用或关闭装饰。'
+        bevel:
+          name: '立体边缘'
+          desc: '调整用来表现立体感的边缘颜色。'
+        button:
+          name: '普通按钮'
+          desc: '设置普通按钮的颜色。'
+        buy:
+          name: '购买按钮'
+          desc: '设置购买按钮的颜色。'
+        sell:
+          name: '出售按钮'
+          desc: '设置出售按钮的颜色。'
+        decorations:
+          name: '界面装饰'
+          desc: '设置边框、四角和分隔线。'
+        details:
+          name: '商品详情'
+          desc: '设置商品详情面板的颜色。'
+        more-menu:
+          name: '更多操作'
+          desc: '设置更多操作面板的颜色。'
+        title:
+          name: '菜单标题'
+          desc: '设置标题区域的背景和装饰。'
+        tooltip:
+          name: '悬停提示框'
+          desc: '设置鼠标指向商品时出现的提示框颜色。'
+        accent:
+          name: '强调色'
+          desc: '输入 #RRGGBB 颜色。需要透明度时，用 #AARRGGBB。'
+        background:
+          name: '背景色'
+          desc: '输入 #RRGGBB 颜色。需要透明度时，用 #AARRGGBB。'
+        border:
+          name: '边框色'
+          desc: '输入 #RRGGBB 颜色。需要透明度时，用 #AARRGGBB。'
+        bottom:
+          name: '底边色'
+          desc: '输入 #RRGGBB 颜色。需要透明度时，用 #AARRGGBB。'
+        card:
+          name: '商品卡片颜色'
+          desc: '输入 #RRGGBB 颜色。需要透明度时，用 #AARRGGBB。'
+        color:
+          name: '装饰颜色'
+          desc: '输入 #RRGGBB 颜色。需要透明度时，用 #AARRGGBB。'
+        corner-color:
+          name: '四角装饰颜色'
+          desc: '输入 #RRGGBB 颜色。需要透明度时，用 #AARRGGBB。'
+        hover:
+          name: '悬停颜色'
+          desc: '输入 #RRGGBB 颜色。需要透明度时，用 #AARRGGBB。'
+        left:
+          name: '左边缘颜色'
+          desc: '输入 #RRGGBB 颜色。需要透明度时，用 #AARRGGBB。'
+        shadow:
+          name: '阴影色'
+          desc: '输入 #RRGGBB 颜色。需要透明度时，用 #AARRGGBB。'
+        sidebar:
+          name: '侧栏颜色'
+          desc: '输入 #RRGGBB 颜色。需要透明度时，用 #AARRGGBB。'
+        text:
+          name: '文字颜色'
+          desc: '输入 #RRGGBB 颜色。需要透明度时，用 #AARRGGBB。'
+        top:
+          name: '上边缘颜色'
+          desc: '输入 #RRGGBB 颜色。需要透明度时，用 #AARRGGBB。'
+    visibility_section:
+      title: '显示在哪些界面'
+      fields:
+        inventory:
+          name: '物品栏菜单'
+          desc: '在物品栏菜单中显示。'
+        form:
+          name: '基岩版表单'
+          desc: '在基岩版表单中显示。'
+        dialog:
+          name: '对话框'
+          desc: '在普通对话框中显示。'
+        item-action-list:
+          name: '物品列表对话框'
+          desc: '在物品列表对话框中显示。'
+        ore:
+          name: 'Ore 界面'
+          desc: '在 Ore 界面中显示。'
+        arcmenu:
+          name: 'ArcMenu 界面'
+          desc: '在 ArcMenu 中显示。'
+    buy_more_amount:
+      title: '数量按钮'
+      fields:
+        display-item:
+          name: '按钮图标'
+          desc: '设置物品栏里显示的图标和文字。'
+        add-amount:
+          name: '加减数量'
+          desc: '点击时增加多少。要减少就填负数。'
+        set-amount:
+          name: '设为指定数量'
+          desc: '点击时把数量设为这个值。将加减数量留空或设为 0。'
+    buy_more_confirm:
+      title: '交易确认按钮'
+      fields:
+        click-action:
+          name: '点击后执行'
+          desc: '选择确认时执行的购买、出售或自定义动作。'
+        display-item:
+          name: '按钮图标'
+          desc: '设置物品栏里显示的图标和文字。'
+        modify-lore:
+          name: '在图标说明里显示交易信息'
+          desc: '用所选交易数量和价格更新按钮说明。'
+    search_action:
+      title: '搜索按钮'
+      fields:
+        action-type:
+          name: '点击后执行'
+          desc: '选择打开关键词输入框、清空搜索或不执行动作。'
+        display-item:
+          name: '按钮图标'
+          desc: '设置物品栏里显示的图标和文字。'
+    global_use_times:
+      title: '全局交易次数设置'
+      fields:
+        default-max-value:
+          name: '默认累计上限'
+          desc: '设置交易次数可累计到的默认上限。'
+        default-reset-mode:
+          name: '默认重置模式'
+          desc: '设置商品没有指定重置模式时的默认值。'
+        default-reset-time:
+          name: '默认重置时间'
+          desc: '按默认重置模式填写时长、时间点或占位符。'
+        default-reset-time-format:
+          name: '默认时间格式'
+          desc: '用 Java 日期时间格式来读取占位符返回的时间。'
+        default-reset-value:
+          name: '默认重置值'
+          desc: '设置触发重置时使用的默认次数。'
+    shared_use_times:
+      title: '共享交易次数'
+      fields:
+        buy-limits:
+          name: '购买次数限制'
+          desc: '设置该共享组的默认、全服或指定条件组限额。'
+        buy-limits-conditions:
+          name: '购买限制条件'
+          desc: '设置玩家归入哪个限额组的条件。'
+        buy-times-max-value:
+          name: '购买累计上限'
+          desc: '设置这个共享组可累计的最高次数。'
+        buy-times-reset-mode:
+          name: '购买次数重置模式'
+          desc: '选择共享次数什么时候重置。'
+        buy-times-reset-time:
+          name: '购买次数重置时间'
+          desc: '按所选模式填写时长、时间点或占位符。'
+        buy-times-reset-time-format:
+          name: '购买重置时间格式'
+          desc: '用 Java 日期时间格式来读取占位符返回的时间。'
+        buy-times-reset-value:
+          name: '购买次数重置值'
+          desc: '设置触发重置时使用的次数。'
+        sell-limits:
+          name: '出售次数限制'
+          desc: '设置该共享组的默认、全服或指定条件组限额。'
+        sell-limits-conditions:
+          name: '出售限制条件'
+          desc: '设置玩家归入哪个限额组的条件。'
+        sell-times-max-value:
+          name: '出售累计上限'
+          desc: '设置这个共享组可累计的最高次数。'
+        sell-times-reset-mode:
+          name: '出售次数重置模式'
+          desc: '选择共享次数什么时候重置。'
+        sell-times-reset-time:
+          name: '出售次数重置时间'
+          desc: '按所选模式填写时长、时间点或占位符。'
+        sell-times-reset-time-format:
+          name: '出售重置时间格式'
+          desc: '用 Java 日期时间格式来读取占位符返回的时间。'
+        sell-times-reset-value:
+          name: '出售次数重置值'
+          desc: '设置触发重置时使用的次数。'
+    click_event_section:
+      title: '商品点击绑定'
+      fields:
+        buy:
+          name: '购买'
+          desc: '选择直接购买时使用的点击方式。'
+        sell:
+          name: '出售'
+          desc: '选择直接出售时使用的点击方式。'
+        buy-or-sell:
+          name: '购买或出售'
+          desc: '选择触发购买或出售动作的点击方式。'
+        sell-all:
+          name: '全部出售'
+          desc: '选择一次出售所有匹配物品的点击方式。'
+        select-amount:
+          name: '选择数量'
+          desc: '选择打开数量菜单的点击方式。在 ArcMenu 中会打开商品详情。'

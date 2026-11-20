@@ -9,13 +9,9 @@ This example is using random placeholder to display different product in one sho
 
 We need to create a random placeholder.&#x20;
 
-In this example, we created a new random placeholder config called `daily.yml` at `random_placeholder` folder. And it's options represents:
+Save the random placeholder as `placeholders/random_placeholders/daily.yml`.
 
-* `reset-mode` and `reset-time`: This placeholder refreshed every day.
-* `element-amount`: This placeholder will randomly pick 5 elements when it refresh, this is same as the amount of slots in this daily shop.
-* `elements`: The result determines what product will appear in this slot by the condition system. So the quantity of elements should be equal to the quantity of all possible products in the daily shop.
-
-In this example, this daily shop will has 5 slots and 7 possible products, so each day, it will has 2 products be hidden, and 5 products randomly picked to display in shop.
+The placeholder draws five product IDs from `elements` each day. The menu uses the first three results. Each ID in `elements` must match a key under `items` in the shop file.
 
 Please view [Random Placeholder](../placeholders/random-placeholder-premium.md) page for more info about random placeholder.
 
@@ -26,13 +22,13 @@ element-amount: 5
 per-player-element: false
 element-sort: true
 elements:
-  - 'A'
-  - 'B'
-  - 'C'
-  - 'D'
-  - 'E'
-  - 'F'
-  - 'G'
+  - 'redstone'
+  - 'iron_ingot'
+  - 'gold_ingot'
+  - 'copper_ingot'
+  - 'diamond'
+  - 'lapis_lazuli'
+  - 'emerald'
 ```
 
 ## Configure Shop
@@ -64,7 +60,7 @@ general-configs:
   sell-times-reset-time: '{random_reset}'
 
 items:
-  A:
+  redstone:
     products:
       1:
         material: REDSTONE
@@ -75,7 +71,7 @@ items:
         amount: 1
         placeholder: '&6{amount} Coins'
         start-apply: 0
-  B:
+  iron_ingot:
     products:
       1:
         material: IRON_INGOT
@@ -86,7 +82,7 @@ items:
         amount: 3
         placeholder: '&6{amount} Coins'
         start-apply: 0
-  C:
+  gold_ingot:
     products:
       1:
         material: GOLD_INGOT
@@ -97,7 +93,7 @@ items:
         amount: 1.6
         placeholder: '&6{amount} Coins'
         start-apply: 0
-  D:
+  copper_ingot:
     products:
       1:
         material: COPPER_INGOT
@@ -108,7 +104,7 @@ items:
         amount: 2
         placeholder: '&6{amount} Coins'
         start-apply: 0
-  E:
+  diamond:
     products:
       1:
         material: DIAMOND
@@ -119,7 +115,7 @@ items:
         amount: 0.8
         placeholder: '&6{amount} Coins'
         start-apply: 0
-  F:
+  lapis_lazuli:
     products:
       1:
         material: LAPIS_LAZULI
@@ -138,7 +134,7 @@ items:
         amount: 3.3
         placeholder: '&6{amount} Coins'
         start-apply: 0
-  G:
+  emerald:
     products:
       1:
         material: EMERALD
@@ -155,6 +151,8 @@ items:
 
 The various options used in this example are detailed on the [Menus](../menus/general-menus.md) page. If you are unsure of the purpose of each option, please refer to that article.
 
+Each product slot tries the random placeholder first. If that product cannot appear in the slot, `P` shows the product in the corresponding position in the shop file.
+
 ```yaml
 # PREMIUM version only.
 
@@ -168,9 +166,11 @@ open-actions:
 
 dynamic-layout: true
 
+shop-items: ['P']
+
 layout:
   - '000000000'
-  - '000`{random_daily;;1}``{random_daily;;2}``{random_daily;;3}`000'
+  - '000`{random_daily;;1}||P``{random_daily;;2}||P``{random_daily;;3}||P`000'
   - '000000000'
   - 'a0003000b'
 

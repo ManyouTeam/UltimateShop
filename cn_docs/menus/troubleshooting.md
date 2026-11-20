@@ -39,7 +39,7 @@ Java 优先级为 ArcMenu → Dialog/Ore → 物品栏。ArcMenu 无法打开时
 | 原生对话框 | 来源 `layout` 和适用的 `menu-visibility.dialog` / `item-action-list` |
 | Ore/ArcMenu | 命名 `ui.layout.areas`、按钮 `ui.placement`、商品 `ui.products.placement`、边界与分页 |
 
-`menu-visibility` 过滤指定呈现方式。`ui.placement.enabled: false` **只关闭图形定位**，不会隐藏物品栏槽位。根级 `layout` 和图形 `ui.layout` 是不同概念。
+物品栏里有按钮、ArcMenu 里没有时，先查该按钮是否设置了 `ui.placement`，再查 `ui.placement.enabled` 和 `menu-visibility.arcmenu`。根级 `layout` 只分配物品栏槽位。商品可使用 `ui.products.placement` 的默认位置。 [配置示例](arcmenu-menus-premium.md#按钮在物品栏里有arcmenu-里没有)
 
 ## 图形元素重叠或消失 <mark style="color:red;">- 付费版</mark>
 

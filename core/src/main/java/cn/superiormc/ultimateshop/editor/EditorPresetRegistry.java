@@ -3,8 +3,8 @@ package cn.superiormc.ultimateshop.editor;
 import cn.superiormc.ultimateshop.managers.ActionManager;
 import cn.superiormc.ultimateshop.managers.ConditionManager;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
-import cn.superiormc.ultimateshop.managers.MenuStatusManager;
 import cn.superiormc.ultimateshop.methods.ProductTradeStatus;
+import cn.superiormc.ultimateshop.objects.menus.MenuType;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.inventory.ClickType;
@@ -46,9 +46,39 @@ public class EditorPresetRegistry {
             case ROOT_SHOP -> new EditorPreset(kind, rootShopFields());
             case ROOT_MENU -> new EditorPreset(kind, rootMenuFields(target));
             case UI_SECTION -> new EditorPreset(kind, uiFields(target, path));
+            case UI_AREA -> new EditorPreset(kind, areaFields());
+            case UI_HEADER -> new EditorPreset(kind, headerFields());
+            case UI_THEME -> new EditorPreset(kind, themeFields(path));
             case VISIBILITY_SECTION -> new EditorPreset(kind, visibilityFields(target));
             case SHOP_ITEM -> new EditorPreset(kind, shopItemFields());
             case BUTTON_ENTRY -> new EditorPreset(kind, buttonFields(target));
+            case SHOP_PAGE_BUTTON -> {
+                String group = EditorUtil.parentPath(path);
+                String hideKey = group.endsWith("previous-page-item") ? "hide-on-first-page" : "hide-on-last-page";
+                yield new EditorPreset(kind, List.of(
+                        field("display-item", Material.ARROW, EditorPresetFieldType.SECTION),
+                        field(hideKey, Material.LEVER, EditorPresetFieldType.BOOLEAN),
+                        field("hidden-item", Material.GRAY_STAINED_GLASS_PANE, EditorPresetFieldType.SECTION)));
+            }
+            case BUY_MORE_AMOUNT -> new EditorPreset(kind, List.of(
+                    field("display-item", Material.ITEM_FRAME, EditorPresetFieldType.SECTION),
+                    field("add-amount", Material.SLIME_BALL, EditorPresetFieldType.INTEGER),
+                    field("set-amount", Material.CLOCK, EditorPresetFieldType.INTEGER)));
+            case BUY_MORE_CONFIRM -> new EditorPreset(kind, List.of(
+                    field("display-item", Material.ITEM_FRAME, EditorPresetFieldType.SECTION),
+                    field("modify-lore", Material.WRITABLE_BOOK, EditorPresetFieldType.BOOLEAN),
+                    choice("click-action", Material.STONE_BUTTON, buyMoreActions())));
+            case SEARCH_ACTION -> new EditorPreset(kind, List.of(
+                    field("display-item", Material.ITEM_FRAME, EditorPresetFieldType.SECTION),
+                    choice("action-type", Material.STONE_BUTTON, "input-name", "search-name", "clear-search", "none")));
+            case GLOBAL_USE_TIMES -> new EditorPreset(kind, List.of(
+                    choice("default-reset-mode", Material.REPEATER, RESET_MODES),
+                    EditorPresetField.resetTime("default-reset-time", "Default Reset Time",
+                            "The reset mode determines the time format.", Material.CLOCK),
+                    field("default-reset-time-format", Material.CLOCK, EditorPresetFieldType.STRING),
+                    field("default-reset-value", Material.SLIME_BALL, EditorPresetFieldType.STRING),
+                    field("default-max-value", Material.BARRIER, EditorPresetFieldType.STRING)));
+            case SHARED_USE_TIMES -> new EditorPreset(kind, sharedUseTimesFields());
             case LIMITS_SECTION -> new EditorPreset(kind, limitFields(target, path));
             case CLICK_EVENT_SECTION -> new EditorPreset(kind, clickEventFields());
             case SINGLE_THING -> new EditorPreset(kind, singleThingFields(path));
@@ -57,12 +87,58 @@ public class EditorPresetRegistry {
         };
     }
 
+    public static EditorPresetField findField(EditorTarget target, String path) {
+        String parent = EditorUtil.parentPath(path);
+        while (true) {
+            EditorPreset preset = resolve(target, parent);
+            if (preset != null) {
+                String key = parent.isEmpty() ? path : path.substring(parent.length() + 1);
+                for (EditorPresetField field : preset.getFields()) {
+                    if (field.getKey().equals(key)) {
+                        return field;
+                    }
+                }
+            }
+            if (parent.isEmpty()) {
+                return null;
+            }
+            parent = EditorUtil.parentPath(parent);
+        }
+    }
+
     public static EditorPresetKind resolveKind(EditorTarget target, String path) {
         String normalizedPath = path == null ? "" : path;
         String[] split = normalizedPath.isEmpty() ? new String[0] : normalizedPath.split("\\.");
 
+        if (target.getScope() == EditorScope.CONFIG && normalizedPath.equals("use-times")) {
+            return EditorPresetKind.GLOBAL_USE_TIMES;
+        }
+        if (target.getScope() == EditorScope.SHARED_USE_TIMES && normalizedPath.isEmpty()) {
+            return EditorPresetKind.SHARED_USE_TIMES;
+        }
+        if (normalizedPath.matches("(?:(?:settings\\.menu-settings\\.)?ui\\.|menu\\.ui\\.)theme(?:\\.(?:title|decorations|button|buy|sell|bevel|tooltip|details|more-menu))?")
+                || target.getScope() == EditorScope.UI_STYLE
+                && normalizedPath.matches("theme(?:\\.(?:title|decorations|button|buy|sell|bevel|tooltip|details|more-menu))?")) {
+            return EditorPresetKind.UI_THEME;
+        }
+        if (normalizedPath.matches("(?:(?:settings\\.menu-settings\\.)?ui\\.|menu\\.ui\\.)layout\\.areas\\.[^.]+")
+                || target.getScope() == EditorScope.UI_STYLE && normalizedPath.matches("layout\\.areas\\.[^.]+")) {
+            return EditorPresetKind.UI_AREA;
+        }
+        if (normalizedPath.matches("(?:(?:settings\\.menu-settings\\.)?ui\\.|menu\\.ui\\.)layout\\.header\\.[^.]+")
+                || target.getScope() == EditorScope.UI_STYLE && normalizedPath.matches("layout\\.header\\.[^.]+")) {
+            return EditorPresetKind.UI_HEADER;
+        }
+        if (!target.getScope().isShopOrMenu()) {
+            return null;
+        }
         if (normalizedPath.isEmpty()) {
             return target.getScope() == EditorScope.SHOP ? EditorPresetKind.ROOT_SHOP : EditorPresetKind.ROOT_MENU;
+        }
+        if (EditorTypeResolver.isShopPageButtonSection(EditorUtil.parentPath(normalizedPath))
+                && (target.getScope() == EditorScope.SHOP_MENU_TEMPLATE && split.length == 2
+                || target.getScope() == EditorScope.SHOP && split.length == 4)) {
+            return EditorPresetKind.SHOP_PAGE_BUTTON;
         }
         if (normalizedPath.equals("menu-visibility") || normalizedPath.endsWith(".menu-visibility")) {
             return EditorPresetKind.VISIBILITY_SECTION;
@@ -90,6 +166,17 @@ public class EditorPresetRegistry {
         }
         if (split.length >= 2 && split[split.length - 2].equals("buttons")) {
             return EditorPresetKind.BUTTON_ENTRY;
+        }
+        if (split.length == 2 && target.getScope() == EditorScope.BUY_MORE_MENU) {
+            if (split[0].equals("amount-items")) {
+                return EditorPresetKind.BUY_MORE_AMOUNT;
+            }
+            if (split[0].equals("confirm-items")) {
+                return EditorPresetKind.BUY_MORE_CONFIRM;
+            }
+        }
+        if (split.length == 2 && split[0].equals("action-items") && menuScope(target) == EditorScope.SEARCH_MENU) {
+            return EditorPresetKind.SEARCH_ACTION;
         }
         if (target.getScope() == EditorScope.SHOP && split.length == 3 && split[0].equals("items")
                 && EditorTypeResolver.isLimitSection(normalizedPath)) {
@@ -161,6 +248,9 @@ public class EditorPresetRegistry {
                 field("dialog.columns", Material.BOOKSHELF, EditorPresetFieldType.INTEGER),
                 field("bedrock.enabled", Material.LEVER, EditorPresetFieldType.BOOLEAN),
                 field("bedrock.content", Material.PAPER, EditorPresetFieldType.STRING),
+                choice("bedrock.click-event", Material.STONE_BUTTON, clickActionIds()),
+                field("bedrock.info", Material.PAPER, EditorPresetFieldType.SECTION),
+                field("dialog.info", Material.PAPER, EditorPresetFieldType.SECTION),
                 field("arcmenu.enabled", Material.LEVER, EditorPresetFieldType.BOOLEAN),
                 field("arcmenu.content", Material.PAPER, EditorPresetFieldType.STRING),
                 field("ui", Material.PAINTING, EditorPresetFieldType.SECTION),
@@ -184,17 +274,28 @@ public class EditorPresetRegistry {
             fields.removeIf(field -> field.getKey().equals("dynamic-layout") || field.getKey().equals("conditions")
                     || field.getKey().startsWith("custom-command."));
         }
+        if (scope == EditorScope.SHOP || scope == EditorScope.SHOP_MENU_TEMPLATE) {
+            fields.add(field("shop-items", Material.ITEM_FRAME, EditorPresetFieldType.STRING_LIST));
+            fields.add(field("previous-page-item", Material.SPECTRAL_ARROW, EditorPresetFieldType.SECTION));
+            fields.add(field("next-page-item", Material.TIPPED_ARROW, EditorPresetFieldType.SECTION));
+        }
         switch (scope) {
             case SEARCH_MENU -> {
                 fields.add(field("input-item", Material.HOPPER, EditorPresetFieldType.STRING));
+                fields.add(field("input-items", Material.HOPPER, EditorPresetFieldType.STRING_LIST));
                 fields.add(field("result-item", Material.CHEST, EditorPresetFieldType.STRING));
                 fields.add(field("action-items", Material.STONE_BUTTON, EditorPresetFieldType.SECTION));
                 fields.add(field("state-items", Material.PAPER, EditorPresetFieldType.SECTION));
                 fields.add(field("no-result-item", Material.BARRIER, EditorPresetFieldType.SECTION));
                 fields.add(field("result-lore", Material.WRITABLE_BOOK, EditorPresetFieldType.STRING_LIST));
+                fields.add(field("bedrock.search.input", Material.PAPER, EditorPresetFieldType.STRING));
+                fields.add(field("bedrock.search.buttons.search", Material.STONE_BUTTON, EditorPresetFieldType.STRING));
+                fields.add(field("dialog.search.input", Material.PAPER, EditorPresetFieldType.STRING));
+                fields.add(field("dialog.search.buttons.search", Material.STONE_BUTTON, EditorPresetFieldType.STRING));
             }
             case FAVOURITE_MENU -> {
                 fields.add(field("result-item", Material.CHEST, EditorPresetFieldType.STRING));
+                fields.add(field("result-items", Material.CHEST, EditorPresetFieldType.STRING_LIST));
                 fields.add(field("edit-mode-item", Material.NAME_TAG, EditorPresetFieldType.SECTION));
                 fields.add(field("empty-item", Material.BARRIER, EditorPresetFieldType.SECTION));
                 fields.add(field("result-lore", Material.WRITABLE_BOOK, EditorPresetFieldType.STRING_LIST));
@@ -203,10 +304,12 @@ public class EditorPresetRegistry {
             case BUY_MORE_MENU -> {
                 fields.add(field("amount-items", Material.SLIME_BALL, EditorPresetFieldType.SECTION));
                 fields.add(field("display-items", Material.WRITABLE_BOOK, EditorPresetFieldType.STRING_LIST));
+                fields.add(field("display-items-padding-item", Material.ITEM_FRAME, EditorPresetFieldType.SECTION));
                 fields.add(field("confirm-items", Material.STONE_BUTTON, EditorPresetFieldType.SECTION));
             }
             case ITEM_SELL_MENU -> {
                 fields.add(field("input-item", Material.HOPPER, EditorPresetFieldType.STRING));
+                fields.add(field("input-items", Material.HOPPER, EditorPresetFieldType.STRING_LIST));
                 fields.add(field("confirm-item", Material.STONE_BUTTON, EditorPresetFieldType.STRING));
                 fields.add(field("confirm-button", Material.STONE_BUTTON, EditorPresetFieldType.SECTION));
                 fields.add(field("max-sell-amount", Material.SLIME_BALL, EditorPresetFieldType.INTEGER));
@@ -228,6 +331,15 @@ public class EditorPresetRegistry {
             }
         }
         return actions.toArray(new String[0]);
+    }
+
+    private static String[] buyMoreActions() {
+        LinkedHashSet<String> actions = new LinkedHashSet<>(List.of("buy", "sell", "buy-or-sell", "sell-all"));
+        ConfigurationSection custom = ConfigManager.configManager.getSection("menu.click-event-actions");
+        if (custom != null) {
+            actions.addAll(custom.getKeys(false));
+        }
+        return actions.toArray(String[]::new);
     }
 
     private static List<EditorPresetField> visibilityFields(EditorTarget target) {
@@ -283,6 +395,7 @@ public class EditorPresetRegistry {
             );
         }
         List<EditorPresetField> fields = new ArrayList<>(List.of(
+                choice("style", Material.PAINTING, EditorScope.UI_STYLE.listIds().toArray(String[]::new)),
                 field("layout.canvas.width", Material.PAPER, EditorPresetFieldType.INTEGER),
                 field("layout.canvas.height", Material.PAPER, EditorPresetFieldType.INTEGER),
                 field("layout.header", Material.NAME_TAG, EditorPresetFieldType.SECTION),
@@ -308,6 +421,100 @@ public class EditorPresetRegistry {
         EditorScope scope = menuScope(target);
         if (scope == EditorScope.SEARCH_MENU || scope == EditorScope.FAVOURITE_MENU) {
             fields.removeIf(field -> field.getKey().equals("renderers.ore"));
+        }
+        return fields;
+    }
+
+    private static List<EditorPresetField> areaFields() {
+        return List.of(
+                choice("type", Material.PAINTING, "grid", "stack", "free"),
+                choice("direction", Material.COMPASS, "vertical", "horizontal"),
+                field("x", Material.PAPER, EditorPresetFieldType.INTEGER),
+                field("y", Material.PAPER, EditorPresetFieldType.INTEGER),
+                field("width", Material.PAPER, EditorPresetFieldType.INTEGER),
+                field("height", Material.PAPER, EditorPresetFieldType.INTEGER),
+                field("columns", Material.PAPER, EditorPresetFieldType.INTEGER),
+                field("rows", Material.PAPER, EditorPresetFieldType.INTEGER),
+                field("gap", Material.PAPER, EditorPresetFieldType.INTEGER),
+                field("gap-x", Material.PAPER, EditorPresetFieldType.INTEGER),
+                field("gap-y", Material.PAPER, EditorPresetFieldType.INTEGER),
+                field("cell-height", Material.PAPER, EditorPresetFieldType.INTEGER),
+                field("item-width", Material.PAPER, EditorPresetFieldType.INTEGER),
+                field("item-height", Material.PAPER, EditorPresetFieldType.INTEGER),
+                field("background-enabled", Material.LEVER, EditorPresetFieldType.BOOLEAN),
+                field("background-padding", Material.PAPER, EditorPresetFieldType.DOUBLE));
+    }
+
+    private static List<EditorPresetField> headerFields() {
+        return List.of(
+                field("enabled", Material.LEVER, EditorPresetFieldType.BOOLEAN),
+                field("text", Material.WRITABLE_BOOK, EditorPresetFieldType.STRING),
+                choice("align", Material.PAPER, "left", "center", "right"),
+                field("bold", Material.LEVER, EditorPresetFieldType.BOOLEAN),
+                field("font-size", Material.PAPER, EditorPresetFieldType.DOUBLE),
+                field("x", Material.PAPER, EditorPresetFieldType.INTEGER),
+                field("y", Material.PAPER, EditorPresetFieldType.INTEGER),
+                field("width", Material.PAPER, EditorPresetFieldType.INTEGER),
+                field("height", Material.PAPER, EditorPresetFieldType.INTEGER));
+    }
+
+    private static List<EditorPresetField> themeFields(String path) {
+        return switch (EditorTypeResolver.lastSegment(path)) {
+            case "title" -> List.of(
+                    field("background-enabled", Material.LEVER, EditorPresetFieldType.BOOLEAN),
+                    field("decoration-enabled", Material.LEVER, EditorPresetFieldType.BOOLEAN),
+                    field("background", Material.PAPER, EditorPresetFieldType.STRING));
+            case "decorations" -> List.of(
+                    field("enabled", Material.LEVER, EditorPresetFieldType.BOOLEAN),
+                    choice("style", Material.PAINTING, "frame", "corners", "both", "none"),
+                    field("color", Material.PAPER, EditorPresetFieldType.STRING),
+                    field("corner-color", Material.PAPER, EditorPresetFieldType.STRING),
+                    field("dividers-enabled", Material.LEVER, EditorPresetFieldType.BOOLEAN));
+            case "button", "buy", "sell" -> List.of(
+                    field("background", Material.PAPER, EditorPresetFieldType.STRING),
+                    field("hover", Material.PAPER, EditorPresetFieldType.STRING),
+                    field("border", Material.PAPER, EditorPresetFieldType.STRING));
+            case "bevel" -> List.of(
+                    field("enabled", Material.LEVER, EditorPresetFieldType.BOOLEAN),
+                    field("shadow", Material.PAPER, EditorPresetFieldType.STRING),
+                    field("top", Material.PAPER, EditorPresetFieldType.STRING),
+                    field("left", Material.PAPER, EditorPresetFieldType.STRING),
+                    field("bottom", Material.PAPER, EditorPresetFieldType.STRING));
+            case "tooltip", "details", "more-menu" -> List.of(
+                    field("background", Material.PAPER, EditorPresetFieldType.STRING),
+                    field("border", Material.PAPER, EditorPresetFieldType.STRING));
+            default -> List.of(
+                    field("background-enabled", Material.LEVER, EditorPresetFieldType.BOOLEAN),
+                    field("background", Material.PAPER, EditorPresetFieldType.STRING),
+                    field("sidebar", Material.PAPER, EditorPresetFieldType.STRING),
+                    field("card", Material.PAPER, EditorPresetFieldType.STRING),
+                    field("border", Material.PAPER, EditorPresetFieldType.STRING),
+                    field("accent", Material.PAPER, EditorPresetFieldType.STRING),
+                    field("text", Material.PAPER, EditorPresetFieldType.STRING),
+                    field("title", Material.PAPER, EditorPresetFieldType.SECTION),
+                    field("decorations", Material.PAPER, EditorPresetFieldType.SECTION),
+                    field("button", Material.STONE_BUTTON, EditorPresetFieldType.SECTION),
+                    field("buy", Material.PAPER, EditorPresetFieldType.SECTION),
+                    field("sell", Material.PAPER, EditorPresetFieldType.SECTION),
+                    field("bevel", Material.PAPER, EditorPresetFieldType.SECTION),
+                    field("tooltip", Material.PAPER, EditorPresetFieldType.SECTION),
+                    field("details", Material.PAPER, EditorPresetFieldType.SECTION),
+                    field("more-menu", Material.PAPER, EditorPresetFieldType.SECTION));
+        };
+    }
+
+    private static List<EditorPresetField> sharedUseTimesFields() {
+        List<EditorPresetField> fields = new ArrayList<>();
+        for (String direction : List.of("buy", "sell")) {
+            fields.add(field(direction + "-limits", Material.BARRIER, EditorPresetFieldType.SECTION));
+            fields.add(field(direction + "-limits-conditions", Material.COMPARATOR, EditorPresetFieldType.SECTION));
+            String prefix = direction + "-times-";
+            fields.add(choice(prefix + "reset-mode", Material.REPEATER, RESET_MODES));
+            fields.add(EditorPresetField.resetTime(prefix + "reset-time", null,
+                    "The reset mode determines the time format.", Material.CLOCK));
+            fields.add(field(prefix + "reset-time-format", Material.CLOCK, EditorPresetFieldType.STRING));
+            fields.add(field(prefix + "reset-value", Material.SLIME_BALL, EditorPresetFieldType.STRING));
+            fields.add(field(prefix + "max-value", Material.BARRIER, EditorPresetFieldType.STRING));
         }
         return fields;
     }
@@ -350,6 +557,11 @@ public class EditorPresetRegistry {
                 new EditorPresetField("allow-favourite", "Allow Favourite",
                         "Allow this product to be added into favourite menus.", Material.NAME_TAG, EditorPresetFieldType.BOOLEAN),
                 field("sell-all", Material.HOPPER, EditorPresetFieldType.BOOLEAN),
+                field("price-modifier", Material.GOLD_INGOT, EditorPresetFieldType.BOOLEAN),
+                conditionalSection("display-item-key", "display-item-conditions"),
+                conditionalSection("products-key", "products-conditions"),
+                conditionalSection("buy-prices-key", "buy-prices-conditions"),
+                conditionalSection("sell-prices-key", "sell-prices-conditions"),
                 field("as-sub-button", Material.CHAINMAIL_HELMET, EditorPresetFieldType.STRING),
                 field("bedrock.icon", Material.ITEM_FRAME, EditorPresetFieldType.STRING),
                 field("limits", Material.BARRIER, EditorPresetFieldType.SECTION),
@@ -364,7 +576,7 @@ public class EditorPresetRegistry {
                 field("buy-times-reset-time-format", Material.CLOCK, EditorPresetFieldType.STRING),
                 field("buy-times-reset-value", Material.SLIME_BALL, EditorPresetFieldType.STRING),
                 field("buy-times-max-value", Material.BARRIER, EditorPresetFieldType.STRING),
-                field("shared-use-times", Material.CHAINMAIL_HELMET, EditorPresetFieldType.STRING),
+                choice("shared-use-times", Material.CHAINMAIL_HELMET, EditorScope.SHARED_USE_TIMES.listIds().toArray(String[]::new)),
                 choice("sell-times-reset-mode", Material.REPEATER, RESET_MODES),
                 EditorPresetField.resetTime("sell-times-reset-time", "Sell Reset Time",
                         "Reset time value editor that adapts to the selected sell reset mode.", Material.REPEATER),
@@ -377,6 +589,7 @@ public class EditorPresetRegistry {
     private static List<EditorPresetField> buttonFields(EditorTarget target) {
         List<EditorPresetField> fields = new ArrayList<>(List.of(
                 field("display-item", Material.ITEM_FRAME, EditorPresetFieldType.SECTION),
+                conditionalSection("display-item-key", "display-item-conditions"),
                 choice("dialog.layout", Material.ITEM_FRAME, "multi-action", "item-action-list"),
                 field("dialog.show-sprite", Material.ITEM_FRAME, EditorPresetFieldType.BOOLEAN),
                 field("menu-visibility", Material.ENDER_EYE, EditorPresetFieldType.SECTION),
@@ -400,7 +613,7 @@ public class EditorPresetRegistry {
         result.add(new EditorPresetField("global", "Global Limit",
                 "Global shared limit applied to the whole server for this product.", Material.GLOBE_BANNER_PATTERN, EditorPresetFieldType.STRING));
 
-        ConfigurationSection section = MenuStatusManager.menuStatusManager.getSection(target, path);
+        ConfigurationSection section = EditorUtil.getSection(target, path);
         if (section == null) {
             return result;
         }
@@ -414,7 +627,7 @@ public class EditorPresetRegistry {
         }
         customKeys.sort(Comparator.naturalOrder());
         for (String key : customKeys) {
-            result.add(field(key, Material.NAME_TAG, EditorPresetFieldType.STRING));
+            result.add(new EditorPresetField(key, key, null, Material.NAME_TAG, EditorPresetFieldType.STRING));
         }
         return result;
     }
@@ -456,6 +669,7 @@ public class EditorPresetRegistry {
         fields.add(field("sprite", Material.PAINTING, EditorPresetFieldType.STRING));
         fields.add(field("hook-plugin", Material.CHEST_MINECART, EditorPresetFieldType.STRING));
         fields.add(field("hook-item", Material.CHEST_MINECART, EditorPresetFieldType.STRING));
+        fields.add(field("hook-item-type", Material.CHEST_MINECART, EditorPresetFieldType.STRING));
         fields.add(field("match-item", Material.HOPPER, EditorPresetFieldType.SECTION));
         fields.add(field("match-placeholder", Material.PAPER, EditorPresetFieldType.STRING));
         fields.add(field("economy-plugin", Material.GOLD_INGOT, EditorPresetFieldType.STRING));
@@ -464,6 +678,9 @@ public class EditorPresetRegistry {
         fields.add(field("min-amount", Material.REDSTONE, EditorPresetFieldType.DOUBLE));
         fields.add(field("max-amount", Material.REDSTONE, EditorPresetFieldType.DOUBLE));
         if (priceThing) {
+            ConfigurationSection prices = ConfigManager.configManager.getSection("prices");
+            fields.add(choice("custom-type", Material.GOLD_INGOT,
+                    prices == null ? new String[0] : prices.getKeys(false).toArray(String[]::new)));
             fields.add(field("start-apply", Material.CLOCK, EditorPresetFieldType.INTEGER));
             fields.add(field("end-apply", Material.CLOCK, EditorPresetFieldType.INTEGER));
             fields.add(field("apply", Material.CLOCK, EditorPresetFieldType.INTEGER_LIST));
@@ -492,7 +709,7 @@ public class EditorPresetRegistry {
         result.add(field("java-only", Material.MAP, EditorPresetFieldType.BOOLEAN));
         result.add(choice("fail-type", Material.BARRIER, FAIL_TYPES));
 
-        ConfigurationSection section = MenuStatusManager.menuStatusManager.getSection(target, path);
+        ConfigurationSection section = EditorUtil.getSection(target, path);
         String type = section == null ? "message" : section.getString("type", "message");
         switch (type) {
             case "message", "action_bar", "announcement" ->
@@ -528,6 +745,11 @@ public class EditorPresetRegistry {
                 result.add(field("shop", Material.CHEST, EditorPresetFieldType.STRING));
             }
             case "buy_more_menu" -> {
+                result.add(field("shop", Material.CHEST, EditorPresetFieldType.STRING));
+                result.add(field("item", Material.NAME_TAG, EditorPresetFieldType.STRING));
+            }
+            case "toggle_favourite", "add_favourite", "remove_favourite" -> {
+                result.add(field("menu", Material.BOOK, EditorPresetFieldType.STRING));
                 result.add(field("shop", Material.CHEST, EditorPresetFieldType.STRING));
                 result.add(field("item", Material.NAME_TAG, EditorPresetFieldType.STRING));
             }
@@ -612,18 +834,20 @@ public class EditorPresetRegistry {
         result.add(field("meet-actions", Material.BLAZE_POWDER, EditorPresetFieldType.ACTIONS));
         result.add(field("not-meet-actions", Material.BLAZE_POWDER, EditorPresetFieldType.ACTIONS));
 
-        ConfigurationSection section = MenuStatusManager.menuStatusManager.getSection(target, path);
+        ConfigurationSection section = EditorUtil.getSection(target, path);
         String type = section == null ? "permission" : section.getString("type", "permission");
         switch (type) {
             case "menu" ->
                     result.add(field("menu", Material.BOOK, EditorPresetFieldType.STRING));
-            case "menu-type" ->
-                    result.add(field("menu-type", Material.BOOKSHELF, EditorPresetFieldType.STRING));
+            case "menu_type" -> {
+                result.add(choice("menu-type", Material.BOOKSHELF,
+                        Arrays.stream(MenuType.values()).map(Enum::name).toArray(String[]::new)));
+            }
             case "permission" ->
                     result.add(field("permission", Material.TRIPWIRE_HOOK, EditorPresetFieldType.STRING));
             case "placeholder" -> {
                 result.add(field("placeholder", Material.PAPER, EditorPresetFieldType.STRING));
-                result.add(field("rule", Material.PAPER, EditorPresetFieldType.STRING));
+                result.add(choice("rule", Material.PAPER, ">=", ">", "=", "<", "<=", "==", "!=", "*=", "=*", "!*=", "!=*"));
                 result.add(field("value", Material.PAPER, EditorPresetFieldType.STRING));
             }
             case "biome" ->
@@ -648,6 +872,11 @@ public class EditorPresetRegistry {
 
     private static EditorPresetField field(String key, Material material, EditorPresetFieldType type) {
         return new EditorPresetField(key, material, type);
+    }
+
+    private static EditorPresetField conditionalSection(String option, String fallback) {
+        String key = ConfigManager.configManager.getString("conditions." + option, fallback);
+        return field(key.isBlank() ? fallback : key, Material.COMPARATOR, EditorPresetFieldType.SECTION);
     }
 
     private static EditorPresetField choice(String key, Material material, String... choices) {

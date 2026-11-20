@@ -39,7 +39,7 @@ Java priority is ArcMenu → Dialog/Ore → Inventory. If ArcMenu cannot open, D
 | Native Dialog | Source `layout` and applicable `menu-visibility.dialog` / `item-action-list`                           |
 | Ore/ArcMenu   | Named `ui.layout.areas`, button `ui.placement`, product `ui.products.placement`, bounds and pagination |
 
-`menu-visibility` filters one presentation. `ui.placement.enabled: false` disables graphical placement **only**; it does not hide an Inventory slot. Root `layout` and graphical `ui.layout` are different concepts.
+If a button appears in the inventory but not in ArcMenu, check that it has `ui.placement`, then check `ui.placement.enabled` and `menu-visibility.arcmenu`. The root `layout` assigns inventory slots. Products can use the default `ui.products.placement`. [Placement example](arcmenu-menus-premium.md#a-button-appears-in-the-inventory-but-not-in-arcmenu)
 
 ## Graphical elements overlap or disappear <mark style="color:red;">- Premium</mark>
 

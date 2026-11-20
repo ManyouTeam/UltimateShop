@@ -10,18 +10,21 @@ import cn.superiormc.ultimateshop.managers.CacheManager;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.LanguageManager;
 import cn.superiormc.ultimateshop.objects.ObjectShop;
+import cn.superiormc.ultimateshop.objects.buttons.AbstractButton;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import cn.superiormc.ultimateshop.objects.caches.ObjectCache;
 import cn.superiormc.ultimateshop.objects.caches.ObjectUseTimesCache;
 import cn.superiormc.ultimateshop.objects.caches.UseTimesStorageKey;
 import cn.superiormc.ultimateshop.objects.menus.MenuSender;
 import cn.superiormc.ultimateshop.objects.menus.ObjectMenu;
+import cn.superiormc.ultimateshop.objects.menus.ObjectShopMenu;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.Inventory;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -30,6 +33,10 @@ public class ShopGUI extends InvGUI {
     private final ObjectShop shop;
 
     private final ObjectMenu shopMenu;
+
+    private int page;
+
+    private int pageCount = 1;
 
     private ShopGUI(Player owner, ObjectShop shop, ObjectMenu shopMenu, boolean bypass) {
         super(owner, bypass);
@@ -65,7 +72,16 @@ public class ShopGUI extends InvGUI {
                 tempVal4.refreshTimes();
             }
         }
-        menuButtons = shopMenu.getMenu(MenuSender.of(player, "inventory"));
+        MenuSender sender = MenuSender.of(player, "inventory");
+        ObjectShopMenu paginatedMenu = shopMenu instanceof ObjectShopMenu menu && menu.hasInventoryPagination() ? menu : null;
+        if (paginatedMenu != null) {
+            List<AbstractButton> products = paginatedMenu.getPageProducts(sender);
+            pageCount = paginatedMenu.getPageCount(products.size());
+            page = Math.min(page, pageCount - 1);
+            menuButtons = paginatedMenu.getInventoryPage(sender, products, page);
+        } else {
+            menuButtons = shopMenu.getMenu(sender);
+        }
         menuItems = getMenuItems(player);
 
         ObjectMenu menu = shop.getShopMenuObject();
@@ -74,6 +90,9 @@ public class ShopGUI extends InvGUI {
             if (Objects.isNull(inv)) {
                 inv = UltimateShop.methodUtil.createNewInv(player, shop.getShopMenuObject().getInt("size", 54), title, this);
             }
+        }
+        if (paginatedMenu != null) {
+            inv.clear();
         }
         for (int slot : menuButtons.keySet()) {
             inv.setItem(slot, menuItems.get(slot));
@@ -84,6 +103,17 @@ public class ShopGUI extends InvGUI {
     public boolean clickEventHandle(Inventory inventory, ClickType type, int slot) {
         if (menuButtons.get(slot) == null) {
             return true;
+        }
+        if (shopMenu instanceof ObjectShopMenu menu) {
+            int direction = menu.getPageDirection(slot);
+            if (direction != 0) {
+                int nextPage = page + direction;
+                if (nextPage >= 0 && nextPage < pageCount) {
+                    page = nextPage;
+                    constructGUI();
+                }
+                return true;
+            }
         }
         if (menuButtons.get(slot) instanceof ObjectItem itemButton) {
             itemButton.clickEvent(type, player);

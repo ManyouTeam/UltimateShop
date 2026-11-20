@@ -1,7 +1,9 @@
 package cn.superiormc.ultimateshop.gui.inv.editor;
 
 import cn.superiormc.ultimateshop.UltimateShop;
+import cn.superiormc.ultimateshop.editor.EditorFieldRules;
 import cn.superiormc.ultimateshop.editor.EditorLang;
+import cn.superiormc.ultimateshop.editor.EditorManager;
 import cn.superiormc.ultimateshop.editor.EditorTarget;
 import cn.superiormc.ultimateshop.editor.EditorUtil;
 import cn.superiormc.ultimateshop.gui.InvGUI;
@@ -27,11 +29,18 @@ public class EditorResetTimeValueGUI extends InvGUI {
 
     private final String backPath;
 
+    private final int backPage;
+
     public EditorResetTimeValueGUI(Player owner, EditorTarget target, String path, String backPath) {
+        this(owner, target, path, backPath, 0);
+    }
+
+    public EditorResetTimeValueGUI(Player owner, EditorTarget target, String path, String backPath, int backPage) {
         super(owner);
         this.target = target;
         this.path = path;
         this.backPath = backPath;
+        this.backPage = backPage;
     }
 
     @Override
@@ -67,7 +76,7 @@ public class EditorResetTimeValueGUI extends InvGUI {
     public boolean clickEventHandle(Inventory inventory, ClickType type, int slot) {
         String mode = getMode();
         if (slot == 45) {
-            MenuStatusManager.menuStatusManager.openTarget(player, target, backPath, 0);
+            EditorManager.editorManager.openTarget(player, target, backPath, backPage);
             return true;
         }
         if (isListMode(mode)) {
@@ -80,8 +89,8 @@ public class EditorResetTimeValueGUI extends InvGUI {
             return handleManualStringMode(slot);
         }
         if (slot == 49) {
-            MenuStatusManager.menuStatusManager.removeValue(player, target, path);
-            MenuStatusManager.menuStatusManager.openTarget(player, target, backPath, 0);
+            EditorManager.editorManager.removeValue(player, target, path);
+            EditorManager.editorManager.openTarget(player, target, backPath, backPage);
         }
         return true;
     }
@@ -112,7 +121,7 @@ public class EditorResetTimeValueGUI extends InvGUI {
             if (type.isRightClick()) {
                 values.remove(slot);
                 saveListValues(values);
-                new EditorResetTimeValueGUI(player, target, path, backPath).openGUI(true);
+                new EditorResetTimeValueGUI(player, target, path, backPath, backPage).openGUI(true);
                 return true;
             }
             promptEdit(slot, values.get(slot));
@@ -123,8 +132,8 @@ public class EditorResetTimeValueGUI extends InvGUI {
             return true;
         }
         if (slot == 50) {
-            MenuStatusManager.menuStatusManager.removeValue(player, target, path);
-            MenuStatusManager.menuStatusManager.openTarget(player, target, backPath, 0);
+            EditorManager.editorManager.removeValue(player, target, path);
+            EditorManager.editorManager.openTarget(player, target, backPath, backPage);
             return true;
         }
         return true;
@@ -153,8 +162,8 @@ public class EditorResetTimeValueGUI extends InvGUI {
             return true;
         }
         if (slot == 15) {
-            MenuStatusManager.menuStatusManager.removeValue(player, target, path);
-            MenuStatusManager.menuStatusManager.openTarget(player, target, backPath, 0);
+            EditorManager.editorManager.removeValue(player, target, path);
+            EditorManager.editorManager.openTarget(player, target, backPath, backPage);
             return true;
         }
         return true;
@@ -178,13 +187,13 @@ public class EditorResetTimeValueGUI extends InvGUI {
 
     private boolean handleManualStringMode(int slot) {
         if (slot == 13) {
-            MenuStatusManager.menuStatusManager.promptString(player, target, path,
-                    () -> MenuStatusManager.menuStatusManager.openTarget(player, target, backPath, 0));
+            EditorManager.editorManager.promptString(player, target, path,
+                    () -> EditorManager.editorManager.openTarget(player, target, backPath, backPage));
             return true;
         }
         if (slot == 15) {
-            MenuStatusManager.menuStatusManager.removeValue(player, target, path);
-            MenuStatusManager.menuStatusManager.openTarget(player, target, backPath, 0);
+            EditorManager.editorManager.removeValue(player, target, path);
+            EditorManager.editorManager.openTarget(player, target, backPath, backPage);
             return true;
         }
         return true;
@@ -216,10 +225,10 @@ public class EditorResetTimeValueGUI extends InvGUI {
 
     private void saveListValues(List<String> values) {
         if (values == null || values.isEmpty()) {
-            MenuStatusManager.menuStatusManager.removeValue(player, target, path);
+            EditorManager.editorManager.removeValue(player, target, path);
             return;
         }
-        MenuStatusManager.menuStatusManager.setValue(player, target, path, CommonUtil.translateStringList(values));
+        EditorManager.editorManager.setValue(player, target, path, CommonUtil.translateStringList(values));
     }
 
     private void promptAdd() {
@@ -230,9 +239,9 @@ public class EditorResetTimeValueGUI extends InvGUI {
                     List<String> values = getListValues();
                     values.add(input.trim());
                     saveListValues(values);
-                    new EditorResetTimeValueGUI(player, target, path, backPath).openGUI(true);
+                    new EditorResetTimeValueGUI(player, target, path, backPath, backPage).openGUI(true);
                 },
-                p -> new EditorResetTimeValueGUI(player, target, path, backPath).openGUI(true)
+                p -> new EditorResetTimeValueGUI(player, target, path, backPath, backPage).openGUI(true)
         ));
     }
 
@@ -247,9 +256,9 @@ public class EditorResetTimeValueGUI extends InvGUI {
                     List<String> values = getListValues();
                     values.set(index, input.trim());
                     saveListValues(values);
-                    new EditorResetTimeValueGUI(player, target, path, backPath).openGUI(true);
+                    new EditorResetTimeValueGUI(player, target, path, backPath, backPage).openGUI(true);
                 },
-                p -> new EditorResetTimeValueGUI(player, target, path, backPath).openGUI(true)
+                p -> new EditorResetTimeValueGUI(player, target, path, backPath, backPage).openGUI(true)
         ));
     }
 
@@ -270,26 +279,16 @@ public class EditorResetTimeValueGUI extends InvGUI {
         } else {
             index = (index + 1) % ids.size();
         }
-        MenuStatusManager.menuStatusManager.setValue(player, target, path, ids.get(index));
-        new EditorResetTimeValueGUI(player, target, path, backPath).openGUI(true);
+        EditorManager.editorManager.setValue(player, target, path, ids.get(index));
+        new EditorResetTimeValueGUI(player, target, path, backPath, backPage).openGUI(true);
     }
 
     private String getMode() {
-        return target.getConfig().getString(getModePath(), "NEVER").toUpperCase();
-    }
-
-    private String getModePath() {
-        if (!path.endsWith("-time")) {
-            return path;
-        }
-        return path.substring(0, path.length() - 5) + "-mode";
+        return EditorFieldRules.resetMode(target, path);
     }
 
     private boolean isListMode(String mode) {
-        return mode.equals("TIMER")
-                || mode.equals("TIMED")
-                || mode.equals("COOLDOWN_TIMER")
-                || mode.equals("COOLDOWN_TIMED");
+        return mode.equals("TIMED") || mode.equals("COOLDOWN_TIMED");
     }
 
     private boolean isRandomPlaceholderMode(String mode) {
@@ -297,7 +296,8 @@ public class EditorResetTimeValueGUI extends InvGUI {
     }
 
     private boolean isManualStringMode(String mode) {
-        return mode.equals("CUSTOM") || mode.equals("COOLDOWN_CUSTOM");
+        return mode.equals("CUSTOM") || mode.equals("COOLDOWN_CUSTOM")
+                || mode.equals("TIMER") || mode.equals("COOLDOWN_TIMER");
     }
 
     private List<String> modeLore(String mode) {
@@ -306,23 +306,25 @@ public class EditorResetTimeValueGUI extends InvGUI {
         lore.add(EditorLang.text(player, "editor.reset-time.mode.desc", "&7This editor changes behavior based on the selected reset mode."));
         switch (mode) {
             case "TIMER", "COOLDOWN_TIMER" -> {
-                lore.add("&7Format: &fss:mm:hh");
-                lore.add("&7Also supports day/month at the front.");
-                lore.add("&7Example: &f15:00:00");
+                lore.add(EditorLang.text(player, "editor.reset-time.timer-format",
+                        "&7Format: &fHH:mm:ss &7(optional month/day prefix). Example: &f00:15:00"));
             }
             case "TIMED", "COOLDOWN_TIMED" -> {
-                lore.add("&7Format: &fss:mm:hh");
-                lore.add("&7Also supports day/month at the front.");
-                lore.add("&7Supports multiple entries with &f;;");
-                lore.add("&7Example: &f20:00:00;;19:00:00");
+                lore.add(EditorLang.text(player, "editor.reset-time.timed-format",
+                        "&7Format: &fHH:mm:ss &7(optional month/day prefix). Example: &f19:00:00"));
             }
             case "CUSTOM", "COOLDOWN_CUSTOM" -> {
-                lore.add("&7Input a full PlaceholderAPI placeholder.");
-                lore.add("&7Set the matching time format in");
-                lore.add("&7the reset-time-format option.");
+                lore.add(EditorLang.text(player, "editor.reset-time.custom-format",
+                        "&7Enter a complete PlaceholderAPI placeholder."));
+                lore.add(EditorLang.text(player, "editor.reset-time.custom-pattern",
+                        "&7Set the matching pattern under &fReset Time Pattern&7."));
             }
-            case "RANDOM_PLACEHOLDER" -> lore.add("&7Select a valid random placeholder id.");
-            case "NEVER" -> lore.add("&7No reset time value is required.");
+            case "RANDOM_PLACEHOLDER" -> {
+                lore.add(EditorLang.text(player, "editor.reset-time.random-format", "&7Choose an existing random placeholder."));
+            }
+            case "NEVER" -> {
+                lore.add(EditorLang.text(player, "editor.reset-time.never-format", "&7This mode does not need a reset time."));
+            }
             default -> {
             }
         }

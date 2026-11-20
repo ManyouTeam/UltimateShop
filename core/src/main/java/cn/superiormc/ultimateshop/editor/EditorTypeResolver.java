@@ -1,5 +1,6 @@
 package cn.superiormc.ultimateshop.editor;
 
+import cn.superiormc.ultimateshop.managers.ConfigManager;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.List;
@@ -8,11 +9,15 @@ import java.util.Locale;
 public class EditorTypeResolver {
 
     public static EditorValueKind resolve(ConfigurationSection parent, String key) {
+        return resolve(parent, key, true);
+    }
+
+    public static EditorValueKind resolve(ConfigurationSection parent, String key, boolean menuStructure) {
         Object value = parent.get(key);
         String path = buildPath(parent.getCurrentPath(), key);
 
         if (value instanceof ConfigurationSection section) {
-            if (isUiPath(path)) {
+            if (!menuStructure || isUiPath(path)) {
                 return EditorValueKind.SECTION;
             }
             if (isActionCollection(path)) {
@@ -53,10 +58,10 @@ public class EditorTypeResolver {
             return allNumbers ? EditorValueKind.INTEGER_LIST : EditorValueKind.STRING_LIST;
         }
         if (value instanceof String) {
-            if ("type".equalsIgnoreCase(key) && isActionEntry(parent.getCurrentPath())) {
+            if (menuStructure && "type".equalsIgnoreCase(key) && isActionEntry(parent.getCurrentPath())) {
                 return EditorValueKind.ACTION_TYPE;
             }
-            if ("type".equalsIgnoreCase(key) && isConditionEntry(parent.getCurrentPath())) {
+            if (menuStructure && "type".equalsIgnoreCase(key) && isConditionEntry(parent.getCurrentPath())) {
                 return EditorValueKind.CONDITION_TYPE;
             }
             return EditorValueKind.STRING;
@@ -74,12 +79,34 @@ public class EditorTypeResolver {
     }
 
     public static boolean isConditionCollection(String path) {
+        if (isGroupedConditionRoot(path)) {
+            return false;
+        }
+        if (isGroupedConditionRoot(parentSectionPath(path))) {
+            return true;
+        }
         String last = lastSegment(path);
         if (last.endsWith("conditions")) {
             return true;
         }
         String parent = parentSectionPath(path);
         return isLimitConditionRoot(parent) && !last.matches("\\d+");
+    }
+
+    public static boolean isGroupedConditionRoot(String path) {
+        String parent = parentSectionPath(path);
+        if (!parent.equals("general-configs") && !parent.matches("items\\.[^.]+|(?:.*\\.)?buttons\\.[^.]+")) {
+            return false;
+        }
+        ConfigManager config = ConfigManager.configManager;
+        if (config == null) {
+            return false;
+        }
+        String key = path.substring(parent.length() + 1);
+        return key.equals(config.getString("conditions.display-item-key", "display-item-conditions"))
+                || key.equals(config.getString("conditions.products-key", "products-conditions"))
+                || key.equals(config.getString("conditions.buy-prices-key", "buy-prices-conditions"))
+                || key.equals(config.getString("conditions.sell-prices-key", "sell-prices-conditions"));
     }
 
     public static boolean isThingCollection(String path) {
@@ -136,7 +163,8 @@ public class EditorTypeResolver {
 
     public static boolean isItemSection(String path, ConfigurationSection section) {
         String lowerPath = path.toLowerCase(Locale.ENGLISH);
-        if (lowerPath.contains("match-item")) {
+        if (lowerPath.contains("match-item") || isShopPageButtonSection(path)
+                || isShopPageButtonSection(EditorUtil.parentPath(path))) {
             return false;
         }
         return lowerPath.endsWith("display-item")
@@ -147,6 +175,11 @@ public class EditorTypeResolver {
                 || section.contains("hook-plugin")
                 || section.contains("hook-item")
                 || section.contains("component");
+    }
+
+    public static boolean isShopPageButtonSection(String path) {
+        return path.equals("previous-page-item") || path.equals("next-page-item")
+                || path.equals("settings.menu-settings.previous-page-item") || path.equals("settings.menu-settings.next-page-item");
     }
 
     public static String buildPath(String parentPath, String key) {

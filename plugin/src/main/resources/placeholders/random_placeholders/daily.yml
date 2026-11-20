@@ -4,10 +4,10 @@ per-player-element: false
 element-sort: true
 element-amount: 5
 elements:
-  - 'A'
-  - 'B'
-  - 'C'
-  - 'D'
-  - 'E'
-  - 'F'
-  - 'G'
+  - 'redstone'
+  - 'iron_ingot'
+  - 'gold_ingot'
+  - 'copper_ingot'
+  - 'diamond'
+  - 'lapis_lazuli'
+  - 'emerald'

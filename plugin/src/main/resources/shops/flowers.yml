@@ -7,7 +7,7 @@ settings:
   allow-favourite: true
 
 items:
-  A:
+  peony:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
     products:
@@ -26,7 +26,7 @@ items:
         amount: '2.1'
         placeholder: '{amount}$'
         start-apply: 0
-  B:
+  sunflower:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
     products:
@@ -45,7 +45,7 @@ items:
         amount: '2.3'
         placeholder: '{amount}$'
         start-apply: 0
-  C:
+  pink_petals:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
     products:
@@ -64,7 +64,7 @@ items:
         amount: '1.3'
         placeholder: '{amount}$'
         start-apply: 0
-  D:
+  blue_orchid:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
     products:
@@ -83,7 +83,7 @@ items:
         amount: '1.7'
         placeholder: '{amount}$'
         start-apply: 0
-  E:
+  white_tulip:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
     products:
@@ -102,7 +102,7 @@ items:
         amount: '1.7'
         placeholder: '{amount}$'
         start-apply: 0
-  F:
+  orange_tulip:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
     products:
@@ -121,7 +121,7 @@ items:
         amount: '1.7'
         placeholder: '{amount}$'
         start-apply: 0
-  G:
+  red_tulip:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
     products:
@@ -140,7 +140,7 @@ items:
         amount: '1.7'
         placeholder: '{amount}$'
         start-apply: 0
-  H:
+  lilac:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
     products:
@@ -159,7 +159,7 @@ items:
         amount: '2.1'
         placeholder: '{amount}$'
         start-apply: 0
-  I:
+  cornflower:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
     products:
@@ -178,7 +178,7 @@ items:
         amount: '1.8'
         placeholder: '{amount}$'
         start-apply: 0
-  J:
+  pink_tulip:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
     products:
@@ -197,7 +197,7 @@ items:
         amount: '1.7'
         placeholder: '{amount}$'
         start-apply: 0
-  K:
+  poppy:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
     products:
@@ -216,7 +216,7 @@ items:
         amount: '1.2'
         placeholder: '{amount}$'
         start-apply: 0
-  L:
+  dandelion:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
     products:
@@ -235,7 +235,7 @@ items:
         amount: '1.1'
         placeholder: '{amount}$'
         start-apply: 0
-  M:
+  rose_bush:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
     products:
@@ -254,7 +254,7 @@ items:
         amount: '2.1'
         placeholder: '{amount}$'
         start-apply: 0
-  N:
+  azure_bluet:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
     products:
@@ -273,7 +273,7 @@ items:
         amount: '1.3'
         placeholder: '{amount}$'
         start-apply: 0
-  O:
+  allium:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
     products:
@@ -292,7 +292,7 @@ items:
         amount: '1.9'
         placeholder: '{amount}$'
         start-apply: 0
-  P:
+  lily_of_the_valley:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
     products:
@@ -311,7 +311,7 @@ items:
         amount: '3.6'
         placeholder: '{amount}$'
         start-apply: 0
-  Q:
+  oxeye_daisy:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
     products:

@@ -181,4 +181,10 @@ public class ObjectSearchMenu extends ObjectMenu {
     public int getNoResultSlot() {
         return noResultSlot;
     }
+
+    @Override
+    public boolean supportsGraphicalRenderer(String renderer) {
+        return "arcmenu".equals(renderer);
+    }
+
 }

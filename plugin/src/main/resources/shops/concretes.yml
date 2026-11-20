@@ -7,7 +7,7 @@ settings:
   allow-favourite: true
 
 items:
-  A:
+  red_concrete:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
     products:
@@ -26,7 +26,7 @@ items:
         amount: '3.3'
         placeholder: '{amount}$'
         start-apply: 0
-  B:
+  orange_concrete:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
     products:
@@ -45,7 +45,7 @@ items:
         amount: '3.3'
         placeholder: '{amount}$'
         start-apply: 0
-  C:
+  yellow_concrete:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
     products:
@@ -64,7 +64,7 @@ items:
         amount: '3.3'
         placeholder: '{amount}$'
         start-apply: 0
-  D:
+  lime_concrete:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
     products:
@@ -83,7 +83,7 @@ items:
         amount: '3.3'
         placeholder: '{amount}$'
         start-apply: 0
-  E:
+  green_concrete:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
     products:
@@ -102,7 +102,7 @@ items:
         amount: '3.3'
         placeholder: '{amount}$'
         start-apply: 0
-  F:
+  light_blue_concrete:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
     products:
@@ -121,7 +121,7 @@ items:
         amount: '3.3'
         placeholder: '{amount}$'
         start-apply: 0
-  G:
+  cyan_concrete:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
     products:
@@ -140,7 +140,7 @@ items:
         amount: '3.3'
         placeholder: '{amount}$'
         start-apply: 0
-  H:
+  blue_concrete:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
     products:
@@ -159,7 +159,7 @@ items:
         amount: '3.3'
         placeholder: '{amount}$'
         start-apply: 0
-  I:
+  purple_concrete:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
     products:
@@ -178,7 +178,7 @@ items:
         amount: '3.3'
         placeholder: '{amount}$'
         start-apply: 0
-  J:
+  magenta_concrete:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
     products:
@@ -197,7 +197,7 @@ items:
         amount: '3.3'
         placeholder: '{amount}$'
         start-apply: 0
-  K:
+  pink_concrete:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
     products:
@@ -216,7 +216,7 @@ items:
         amount: '3.3'
         placeholder: '{amount}$'
         start-apply: 0
-  L:
+  brown_concrete:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
     products:
@@ -235,7 +235,7 @@ items:
         amount: '3.3'
         placeholder: '{amount}$'
         start-apply: 0
-  M:
+  black_concrete:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
     products:
@@ -254,7 +254,7 @@ items:
         amount: '3.3'
         placeholder: '{amount}$'
         start-apply: 0
-  N:
+  gray_concrete:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
     products:
@@ -273,7 +273,7 @@ items:
         amount: '3.3'
         placeholder: '{amount}$'
         start-apply: 0
-  O:
+  light_gray_concrete:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
     products:
@@ -292,7 +292,7 @@ items:
         amount: '3.3'
         placeholder: '{amount}$'
         start-apply: 0
-  P:
+  white_concrete:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
     products:

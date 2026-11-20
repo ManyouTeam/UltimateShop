@@ -7,7 +7,7 @@ settings:
   allow-favourite: true
 
 items:
-  A:
+  cod:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
     products:
@@ -26,7 +26,7 @@ items:
         amount: '1.8'
         placeholder: '{amount}$'
         start-apply: 0
-  B:
+  cooked_cod:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
     products:
@@ -45,7 +45,7 @@ items:
         amount: '2.7'
         placeholder: '{amount}$'
         start-apply: 0
-  C:
+  salmon:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
     products:
@@ -64,7 +64,7 @@ items:
         amount: '2.4'
         placeholder: '{amount}$'
         start-apply: 0
-  D:
+  cooked_salmon:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
     products:
@@ -83,7 +83,7 @@ items:
         amount: '3.3'
         placeholder: '{amount}$'
         start-apply: 0
-  E:
+  tropical_fish:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
     products:
@@ -102,7 +102,7 @@ items:
         amount: '5.4'
         placeholder: '{amount}$'
         start-apply: 0
-  F:
+  pufferfish:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
     products:

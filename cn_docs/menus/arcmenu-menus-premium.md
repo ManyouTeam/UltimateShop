@@ -57,6 +57,23 @@ buttons:
 
 菜单内设置的字段会覆盖样式的常规默认值；强制样式则可通过 `menu.force-ui.style` 反过来覆盖这些本地字段，详见[配置与继承](menu-configuration.md)。几何参数与共享卡片配置键的说明见[图形 UI 布局](../menus-getting-started/ui-layout.md)。
 
+## 按钮在物品栏里有，ArcMenu 里没有
+
+**普通按钮没有 `ui.placement` 时，ArcMenu 会跳过它。** 根级 `layout` 只决定按钮在物品栏里的槽位。商品可以继承 `ui.products.placement`，普通按钮需要各自设置位置。
+
+例如，旧版 `blocks` 和 `blocks2` 的箭头用 `shop_menu` 动作打开另一家商店。要在 ArcMenu 里继续显示这种按钮，可以在按钮原来的配置下加上：
+
+```yaml
+ui:
+  placement:
+    area: sidebar
+    order: 20
+```
+
+如果按钮定义在商店文件的 `buttons` 下，商店菜单的 `layout` 里还要保留它的标记。
+
+如果只是想翻看同一家商店的商品，使用 ArcMenu 自带的分页即可。商品多到一页放不下时，`ui.layout.pagination` 控制图形翻页按钮的位置。商店菜单的 `previous-page-item` 和 `next-page-item` 用于物品栏。更多位置配置见[图形 UI 布局](../menus-getting-started/ui-layout.md)。
+
 ## 商品操作
 
 卡片会从 `ui.products.actions.primary` 中最多展示两个可用操作，并通过 `ui.products.actions.extra` 展示其余的或指定的额外操作。这些操作必须已存在于商品点击绑定中，并且仍会被价格、条件、数量权限以及自定义的仅购买/仅出售限制过滤。

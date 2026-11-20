@@ -7,7 +7,7 @@ settings:
   allow-favourite: true
 
 items:
-  A:
+  experience_bottle:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
     products:
@@ -26,7 +26,7 @@ items:
         amount: '7'
         placeholder: '{amount}$'
         start-apply: 0
-  B:
+  heart_of_the_sea:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
     products:
@@ -45,7 +45,7 @@ items:
         amount: '110'
         placeholder: '{amount}$'
         start-apply: 0
-  C:
+  nautilus_shell:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
     products:

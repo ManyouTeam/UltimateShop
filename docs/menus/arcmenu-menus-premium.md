@@ -57,6 +57,23 @@ The `bedrock` preset uses the named `sidebar` area for its horizontal navigation
 
 Menu-local fields override normal style defaults. A forced style can override local fields through `menu.force-ui.style`; see [Configuration & Inheritance](menu-configuration.md). Geometry and shared card keys are documented in [Graphical UI Layout](../menus-getting-started/ui-layout.md).
 
+## A button appears in the inventory but not in ArcMenu
+
+**ArcMenu skips ordinary buttons that have no `ui.placement`.** The root `layout` sets inventory slots. Products can inherit `ui.products.placement`, while ordinary buttons need their own placement.
+
+For example, the old `blocks` and `blocks2` arrows used a `shop_menu` action to open a different shop. To make this kind of button appear in ArcMenu, add this under the existing button configuration:
+
+```yaml
+ui:
+  placement:
+    area: sidebar
+    order: 20
+```
+
+If the button is defined in the shop file's `buttons` section, keep its marker in the shop menu's `layout` as well.
+
+To browse more products in the same shop, use ArcMenu's own pagination. When the products fill more than one page, `ui.layout.pagination` positions the page controls. The shop menu's `previous-page-item` and `next-page-item` apply to inventories. See [Graphical UI Layout](../menus-getting-started/ui-layout.md) for more placement options.
+
 ## Product operations
 
 Cards expose up to two available operations from `ui.products.actions.primary`, plus remaining or selected extra actions from `ui.products.actions.extra`. Operations must already exist in the configured product click bindings. Prices, conditions, quantity permissions and custom buy-only/sell-only restrictions still filter them.

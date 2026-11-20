@@ -7,7 +7,7 @@ settings:
   allow-favourite: true
 
 items:
-  A:
+  cherry_log:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
     products:
@@ -26,7 +26,7 @@ items:
         amount: '3.3'
         placeholder: '{amount}$'
         start-apply: 0
-  B:
+  oak_log:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
     products:
@@ -45,7 +45,7 @@ items:
         amount: '3'
         placeholder: '{amount}$'
         start-apply: 0
-  C:
+  spruce_log:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
     products:
@@ -64,7 +64,7 @@ items:
         amount: '3'
         placeholder: '{amount}$'
         start-apply: 0
-  D:
+  birch_log:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
     products:
@@ -83,7 +83,7 @@ items:
         amount: '3'
         placeholder: '{amount}$'
         start-apply: 0
-  E:
+  mangrove_log:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
     products:
@@ -102,7 +102,7 @@ items:
         amount: '3.3'
         placeholder: '{amount}$'
         start-apply: 0
-  F:
+  jungle_log:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
     products:
@@ -121,7 +121,7 @@ items:
         amount: '3'
         placeholder: '{amount}$'
         start-apply: 0
-  G:
+  acacia_log:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
     products:
@@ -140,7 +140,7 @@ items:
         amount: '3'
         placeholder: '{amount}$'
         start-apply: 0
-  H:
+  dark_oak_log:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
     products:
@@ -159,7 +159,7 @@ items:
         amount: '3.1'
         placeholder: '{amount}$'
         start-apply: 0
-  I:
+  cherry_sapling:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
     products:
@@ -178,7 +178,7 @@ items:
         amount: '2.1'
         placeholder: '{amount}$'
         start-apply: 0
-  J:
+  oak_sapling:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
     products:
@@ -197,7 +197,7 @@ items:
         amount: '1.8'
         placeholder: '{amount}$'
         start-apply: 0
-  K:
+  spruce_sapling:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
     products:
@@ -216,7 +216,7 @@ items:
         amount: '1.8'
         placeholder: '{amount}$'
         start-apply: 0
-  L:
+  birch_sapling:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
     products:
@@ -235,7 +235,7 @@ items:
         amount: '1.8'
         placeholder: '{amount}$'
         start-apply: 0
-  M:
+  mangrove_propagule:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
     products:
@@ -254,7 +254,7 @@ items:
         amount: '2.4'
         placeholder: '{amount}$'
         start-apply: 0
-  N:
+  jungle_sapling:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
     products:
@@ -273,7 +273,7 @@ items:
         amount: '1.9'
         placeholder: '{amount}$'
         start-apply: 0
-  O:
+  acacia_sapling:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
     products:
@@ -292,7 +292,7 @@ items:
         amount: '1.9'
         placeholder: '{amount}$'
         start-apply: 0
-  P:
+  dark_oak_sapling:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
     products:
