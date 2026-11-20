@@ -1,0 +1,1502 @@
+error:
+  product-not-found: "&#98FB98[UltimateShop] &cNie znaleziono produktu {product}!"
+  shop-not-found: "&#98FB98[UltimateShop] &cNie znaleziono sklepu {shop}!"
+  player-not-found: "&#98FB98[UltimateShop] &cNie znaleziono gracza {player}!"
+  item-not-found: "&#98FB98[UltimateShop] &cNie znaleziono przedmiotu do sprzedaży {item}!"
+  save-item-not-found: "&#98FB98[UltimateShop] &cNie znaleziono zapisanego przedmiotu o nazwie {item}!"
+  args: "&#98FB98[UltimateShop] &cNieprawidłowe użycie komendy. W razie potrzeby wpisz /shop help!"
+  in-game: "&#98FB98[UltimateShop] &cTej komendy można użyć tylko w grze!"
+  miss-permission: "&#98FB98[UltimateShop] &cNie masz uprawnień do użycia tej komendy!"
+  menu-not-found: "&#98FB98[UltimateShop] &cNie znaleziono menu: {menu}!"
+  buy-more-menu-direct-open: "&#98FB98[UltimateShop] &cTo menu wyboru ilości i nie można otworzyć go bezpośrednio!"
+  shop-menu-not-found: "&#98FB98[UltimateShop] &cNie znaleziono menu {menu} sklepu {shop}!"
+  shop-does-not-have-menu: "&#98FB98[UltimateShop] &cSklep {shop} nie ma prawidłowego menu!"
+  random-placeholder-not-found: "&#98FB98[UltimateShop] &cNie znaleziono losowego placeholdera: {placeholder}!"
+  custom-placeholder-not-found: "&#98FB98[UltimateShop] &cNie znaleziono własnego placeholdera: {placeholder}!"
+  custom-placeholder-invalid-number: "&#98FB98[UltimateShop] &cWartość własnego placeholdera musi być liczbą: {value}!"
+  custom-placeholder-player-arg-required: "&#98FB98[UltimateShop] &cWłasny placeholder {placeholder} przechowuje dane gracza — musisz wskazać konkretnego gracza!"
+  random-placeholder-player-arg-required: "&#98FB98[UltimateShop] &cLosowy placeholder {placeholder} przechowuje dane gracza — musisz wskazać konkretnego gracza!"
+  result-empty: "&#98FB98[UltimateShop] &cWygląda na to, że tego przedmiotu nie ma w sklepie!"
+  favourite-empty: "&#98FB98[UltimateShop] &cTa lista ulubionych nie zawiera jeszcze żadnych produktów!"
+  favourite-not-allowed: "&#98FB98[UltimateShop] &cNie można dodać produktu {item} do ulubionych."
+  favourite-limit-reached: "&#98FB98[UltimateShop] &cLista ulubionych {menu} jest pełna. Limit: {limit}."
+
+plugin:
+  search: |
+    &#98FB98&lUltimateShop &7Wynik wyszukiwania
+    &fSzukany przedmiot: {item-name} w sklepie {shop} &7(/shop menu {shop})
+    &fCena kupna: {buy-price}
+    &fCena sprzedaży: {sell-price}
+  search-gui-name-input: "&fWpisz na czacie nazwę przedmiotu, którego szukasz. Wpisz {value}, aby usunąć filtr nazwy."
+  search-gui-name-empty: "Brak"
+  item-sell-no-price: "&cBrak przedmiotów do sprzedaży"
+  item-sell-nothing: "&#98FB98[UltimateShop] &cW tym menu nie ma przedmiotów, które można sprzedać."
+  reloading: "&#98FB98[UltimateShop] &fPróba ponownego załadowania pluginu. Jeśli w sklepie jest dużo produktów i na serwerze przebywa wielu graczy, może to spowodować spadek TPS, a nawet awarię serwera, ponieważ dane graczy są zapisywane w głównym wątku serwera. Aby zapewnić bezpieczeństwo danych, zalecamy ponowne uruchomienie serwera zamiast przeładowywania pluginu."
+  reloaded: "&#98FB98[UltimateShop] &fPlugin został przeładowany!"
+  reload-close-gui: "&#98FB98[UltimateShop] &fTwoje GUI zostało zamknięte, ponieważ administrator serwera próbuje przeładować plugin!"
+  saved: "&#98FB98[UltimateShop] &fPrzedmiot został zapisany!"
+  generated: "&#98FB98[UltimateShop] &fFormat trzymanego przedmiotu został wygenerowany w folderze konfiguracji pluginu. Skopiuj go do konfiguracji menu lub sklepu!"
+
+placeholderapi:
+  unknown-shop: "Nieznany sklep"
+  unknown-product: "Nieznany produkt"
+
+command-tab:
+  unknown-shop: "[Nieznany sklep]"
+  unknown-random-placeholder: "[Nieznany losowy placeholder]"
+  unknown-custom-placeholder: "[Nieznany własny placeholder]"
+  type-item-id: "[Wpisz wybrane ID przedmiotu]"
+
+# Wszystkie komunikaty mogą być również wielowierszowe — użyj poniższego formatu!
+help:
+  main: |
+    &#98FB98&lUltimateShop &7Autor: @PQguanfang
+    &f/shop help &7- Wyświetla pomoc.
+    &f/shop menu <menuName> &7- Otwiera wskazane wspólne menu.
+    &f/shop menu <shopName> &7- Otwiera menu wskazanego sklepu.
+    &f/shop searchgui &7- Otwiera GUI wyszukiwania przedmiotów.
+    &f/shop sellhand &7- Sprzedaje cały stos trzymany w głównej ręce.
+    &f/shop sellall &7- Otwiera menu sprzedaży wszystkich przedmiotów.
+  main-admin: |
+    &#98FB98&lUltimateShop &7Autor: @PQguanfang
+    &f/shop help &7- Wyświetla pomoc.
+    &f/shop menu <menuName> &7- Otwiera wskazane wspólne menu.
+    &f/shop menu <shopName> &7- Otwiera menu wskazanego sklepu.
+    &f/shop searchgui &7- Otwiera GUI wyszukiwania przedmiotów.
+    &f/shop sellhand &7- Sprzedaje cały stos trzymany w głównej ręce.
+    &f/shop quickbuy <shopName> <itemName> &7- Szybko kupuje wskazany przedmiot bez otwierania menu.
+    &f/shop quicksell <shopName> <itemName> &7- Szybko sprzedaje wskazany przedmiot bez otwierania menu.
+    &f/shop reload &7- Przeładowuje plugin.
+    &f/shop sellall &7- Otwiera menu sprzedaży wszystkich przedmiotów.
+    &f/shop setbuytimes <shopName> <itemName> <playerName> [amount] &7- Ustawia liczbę zakupów.
+    &f/shop setselltimes <shopName> <itemName> <playerName> [amount] &7- Ustawia liczbę sprzedaży.
+    &f/shop addbuytimes <shopName> <itemName> <playerName> <amount> &7- Dodaje liczbę zakupów.
+    &f/shop addselltimes <shopName> <itemName> <playerName> <amount> &7- Dodaje liczbę sprzedaży.
+    &f/shop resetrandomplaceholder <placeholderID> &7- Resetuje wartość losowego placeholdera. &c(Premium)
+    &f/shop setrandomplaceholder <placeholderID> [element] &7- Ustawia wartość losowego placeholdera. &c(Premium)
+    &f/shop setcustomplaceholder <placeholderID> <value> [playerName] &7- Ustawia wartość własnego placeholdera. &c(Premium)
+    &f/shop getplaceholdervalue <text> &7- Przetwarza podany tekst. &c(Premium)
+    &f/shop saveitem <itemID> &7- Zapisuje trzymany przedmiot.
+    &f/shop generateitemformat &7- Konwertuje trzymany przedmiot do formatu ItemFormat.
+    &f/shop givesellstick <itemID> <playerID> [amount] &7- Daje przedmiot-laskę sprzedaży. &c(Premium)
+  main-console: |
+    &#98FB98&lUltimateShop &7Autor: @PQguanfang
+    &f/shop help &7- Wyświetla pomoc.
+    &f/shop menu <menuName> <playerName> &7- Wymusza otwarcie wskazanego wspólnego menu dla gracza.
+    &f/shop menu <shopName> <playerName> &7- Wymusza otwarcie menu wskazanego sklepu dla gracza.
+    &f/shop reload &7- Przeładowuje plugin.
+    &f/shop setbuytimes <shopName> <itemName> <playerName> [amount] &7- Ustawia liczbę zakupów.
+    &f/shop setselltimes <shopName> <itemName> <playerName> [amount] &7- Ustawia liczbę sprzedaży.
+    &f/shop addbuytimes <shopName> <itemName> <playerName> <amount> &7- Dodaje liczbę zakupów.
+    &f/shop addselltimes <shopName> <itemName> <playerName> <amount> &7- Dodaje liczbę sprzedaży.
+    &f/shop resetrandomplaceholder <placeholderID> &7- Resetuje wartość losowego placeholdera. &c(Premium)
+    &f/shop setrandomplaceholder <placeholderID> [element] &7- Ustawia wartość losowego placeholdera. &c(Premium)
+    &f/shop getplaceholdervalue <text> &7- Przetwarza podany tekst. &c(Premium)
+    &f/shop givesellstick <itemID> <playerID> [amount] &7- Daje przedmiot-laskę sprzedaży. &c(Premium)
+
+inventory-full: "&#98FB98[UltimateShop] &fNie możesz ukończyć tej transakcji, ponieważ po jej zakończeniu ekwipunek będzie pełny!"
+start-sell-all: "&#98FB98[UltimateShop] &fSprzedano wszystkie przedmioty, które można było sprzedać ({amount}x). Otrzymujesz za nie {reward}!"
+start-sell-stick: "&#98FB98[UltimateShop] &fSprzedano wszystkie przedmioty z tego pojemnika, które można było sprzedać. Otrzymujesz {reward} z mnożnikiem {multiplier}!"
+give-sell-stick: "&#98FB98[UltimateShop] &fPrzekazano graczowi {player} laskę sprzedaży {item} x{amount}!"
+give-save-item: "&#98FB98[UltimateShop] &fPrzekazano graczowi {player} zapisany przedmiot {item} x{amount}!"
+add-times: "&#98FB98[UltimateShop] &fDodano {times} do licznika użyć przedmiotu {item} gracza {player}!"
+set-times: "&#98FB98[UltimateShop] &fUstawiono licznik użyć przedmiotu {item} gracza {player} na {times}!"
+add-times-shop: "&#98FB98[UltimateShop] &fDodano {times} do liczników użyć wszystkich produktów sklepu {shop} gracza {player}!"
+set-times-shop: "&#98FB98[UltimateShop] &fUstawiono liczniki użyć wszystkich produktów sklepu {shop} gracza {player} na {times}!"
+success-buy: "&#98FB98[UltimateShop] &fPomyślnie kupiono {item}&fx{amount}. Koszt: {price}&f!"
+success-sell: "&#98FB98[UltimateShop] &fPomyślnie sprzedano {item}&fx{amount}. Otrzymano {price} &fprzy mnożniku &cx{multiplier}!"
+menu-condition-not-meet: "&#98FB98[UltimateShop] &cNie spełniasz warunków wymaganych do otwarcia tego menu!"
+buy-condition-not-meet: "&#98FB98[UltimateShop] &cNie spełniasz warunków wymaganych do kupienia tego produktu!"
+sell-condition-not-meet: "&#98FB98[UltimateShop] &cNie spełniasz warunków wymaganych do sprzedania tego produktu!"
+limit-reached-buy-player: "&#98FB98[UltimateShop] &cNie możesz już kupić przedmiotu {item}. Kupiono go {times} razy, a Twój limit wynosi {limit}. Następne odświeżenie: {refresh}."
+limit-reached-sell-player: "&#98FB98[UltimateShop] &cNie możesz już sprzedać przedmiotu {item}. Sprzedano go {times} razy, a Twój limit wynosi {limit}. Następne odświeżenie: {refresh}."
+limit-reached-buy-server: "&#98FB98[UltimateShop] &cNie można już kupić przedmiotu {item}. Wszyscy gracze kupili go {times} razy, a limit serwera wynosi {limit}. Następne odświeżenie: {refresh}."
+limit-reached-sell-server: "&#98FB98[UltimateShop] &cNie można już sprzedać przedmiotu {item}. Wszyscy gracze sprzedali go {times} razy, a limit serwera wynosi {limit}. Następne odświeżenie: {refresh}."
+buy-price-not-enough: "&#98FB98[UltimateShop] &cNie masz wystarczająco pieniędzy, aby kupić {item}. Wymagana kwota: {price}."
+sell-products-not-enough: "&#98FB98[UltimateShop] &cNie masz wystarczającej liczby przedmiotów {item}, aby je sprzedać."
+parsed-value: "&#98FB98[UltimateShop] &fPrzetworzona wartość: {text}"
+reset-random-placeholder: "&#98FB98[UltimateShop] &fPomyślnie zresetowano losowy placeholder {placeholder}. Nowa wartość: {value}."
+set-random-placeholder: "&#98FB98[UltimateShop] &fPomyślnie ustawiono nową wartość losowego placeholdera {placeholder}: {value}. Pamiętaj, że czas odświeżenia nie został zresetowany!"
+set-custom-placeholder: "&#98FB98[UltimateShop] &fPomyślnie ustawiono nową wartość własnego placeholdera {placeholder}: {value}."
+gui-updated: "&#98FB98[UltimateShop] &fZaktualizowano GUI gracza {player}!"
+gui-not-opened: "&#98FB98[UltimateShop] &cGracz {player} nie ma otwartego żadnego GUI!"
+dupe-removed: "&#98FB98[UltimateShop] &fUsunięto nieprawidłowy przedmiot z Twojego ekwipunku!"
+
+favourite-added: "&#98FB98[UltimateShop] &fDodano {item} do listy ulubionych {menu}."
+favourite-removed: "&#98FB98[UltimateShop] &fUsunięto {item} z listy ulubionych {menu}."
+
+override-lang:
+  item-sell-title: 'Sprzedaj przedmioty'
+  item-sell-confirm-name: '&aPotwierdź sprzedaż'
+  item-sell-confirm-price: '&7Cena: &f{price}'
+  item-sell-confirm-original-price: '&7Cena przed zmianami: &f{original-price}'
+  item-sell-confirm-multiplier: '&7Końcowy mnożnik: &fx{multiplier}'
+  item-sell-confirm-amount: '&7Przedmioty do sprzedaży: &f{item-amount}'
+  item-sell-confirm-unsellable: '&7Przedmioty, których nie można sprzedać: &f{unsellable-amount}'
+  item-sell-confirm-click: '&aKliknij, aby sprzedać powyższe przedmioty.'
+  search-gui-guide-name: '&eFiltry wyszukiwania'
+  search-gui-guide-line-1: '&7Umieść przedmioty w poniższych polach'
+  search-gui-guide-line-2: '&7lub wpisz nazwę produktu na czacie.'
+  search-gui-guide-line-3: '&7Użyj tego menu, aby szybko znaleźć'
+  search-gui-guide-line-4: '&7pasujące produkty we wszystkich sklepach.'
+  search-gui-clear-name: '&cWyczyść wyszukiwanie'
+  search-gui-clear-line-1: '&7Zwróć wszystkie przedmioty filtrów i wyczyść wyszukiwaną nazwę.'
+  search-gui-empty-name: '&eRozpocznij wyszukiwanie'
+  search-gui-empty-line-1: '&7Umieść przedmioty w poniższych polach filtrów.'
+  search-gui-empty-line-2: '&7Możesz też użyć lejka powyżej, aby wyszukiwać według nazwy.'
+  search-gui-state-name: '&aPodsumowanie wyszukiwania'
+  search-gui-state-line-1: '&7Dopasowane produkty: &f{result-amount}'
+  search-gui-state-line-2: '&7Wyświetlono &f{showing-amount} &7wyników na podstawie &f{input-amount} &7filtrów.'
+  search-gui-state-line-3: '&7Filtr nazwy: &f{name-keyword}'
+  search-gui-no-result-name: '&cBrak pasujących produktów'
+  search-gui-no-result-line-1: '&7Żaden produkt w domyślnych sklepach nie pasuje do'
+  search-gui-no-result-line-2: '&7aktualnych przedmiotów lub filtra nazwy.'
+  search-gui-result-shop: '&8Sklep: &f{shop}'
+  search-gui-result-product: '&8Produkt: &f{product}'
+  search-gui-result-click: '&7Kliknij, aby dokonać transakcji tym produktem.'
+  favourite-empty-name: '&7Puste miejsce na ulubiony produkt'
+  favourite-empty-line-1: '&7Zapisuj tutaj produkty z dowolnego menu sklepu.'
+  favourite-empty-line-2: '&7Użyj trybu edycji, aby sortować lub usuwać wpisy.'
+  favourite-result-shop: '&8Sklep: &f{shop}'
+  favourite-result-product: '&8Produkt: &f{product}'
+  favourite-result-click: '&7Kliknij, aby dokonać transakcji tym produktem.'
+  favourite-result-enter-edit: '&7Użyj przycisku poniżej, aby włączyć tryb edycji.'
+  favourite-result-edit-forward: '&7Lewy przycisk myszy: przesuń wpis wyżej.'
+  favourite-result-edit-backward: '&7Prawy przycisk myszy: przesuń wpis niżej.'
+  favourite-result-edit-remove: '&7Naciśnij Q: usuń ten wpis.'
+  edit-mode-enable-name: '&eWłącz tryb edycji'
+  edit-mode-enable-line-1: '&7Zmieniaj kolejność lub usuwaj zapisane produkty.'
+  edit-mode-disable-name: '&aWyłącz tryb edycji'
+  edit-mode-disable-line-1: '&7Wróć do zwykłego klikania i handlu.'
+  add-favourite-action: 'Dodaj do ulubionych'
+  search-menu-button-name: '&bWyszukiwanie produktów'
+  search-menu-button-line-1: '&7Wyszukuj według przedmiotu lub nazwy.'
+  search-menu-button-line-2: '&7Przydatne, gdy Twój sklep staje się duży.'
+  favourite-menu-button-name: '&dLista ulubionych'
+  favourite-menu-button-line-1: '&7Przechowuj najczęściej używane produkty'
+  favourite-menu-button-line-2: '&7w jednym menu szybkiego dostępu.'
+  sell-all-menu-button-name: '&6Sprzedaj wszystko'
+  sell-all-menu-button-line-1: '&7Otwórz menu masowej sprzedaży dla'
+  sell-all-menu-button-line-2: '&7aktualnej zawartości ekwipunku.'
+  shop-title: 'Targ serwerowy'
+  buy-more-title: 'Wybierz ilość'
+  buy-more-add-1: '&7Zwiększ ilość o 1.'
+  buy-more-add-10: '&7Zwiększ ilość o 10.'
+  buy-more-add-32: '&7Zwiększ ilość o 32.'
+  buy-more-reduce-1: '&7Zmniejsz ilość o 1.'
+  buy-more-reduce-10: '&7Zmniejsz ilość o 10.'
+  buy-more-reduce-32: '&7Zmniejsz ilość o 32.'
+  buy-more-buy-button: '&aPotwierdź zakup'
+  buy-more-sell-button: '&cPotwierdź sprzedaż'
+  buy-more-buy-button-lore-1: '&7Zrealizuj transakcję z'
+  buy-more-buy-button-lore-2: '&7aktualnie wybraną ilością.'
+  buy-more-sell-button-lore-1: '&7Zrealizuj transakcję z'
+  buy-more-sell-button-lore-2: '&7aktualnie wybraną ilością.'
+  back-button: '&cWstecz'
+  close-button: '&cZamknij'
+  next-page-button: '&eNastępna strona >'
+  previous-page-button: '&e< Poprzednia strona'
+  welcome-message: '&7Przeglądaj kategorie, wyszukuj produkty lub otwórz listę ulubionych.'
+  farming-name: '&a&lRolnictwo'
+  farming-lore-1: '&7Nasiona, uprawy i zebrane plony.'
+  farming-lore-2: '&7Dobry punkt wyjścia do rozgrywki survivalowej.'
+  drops-name: '&b&lŁupy z mobów'
+  drops-lore-1: '&7Kości, perły, slime i wiele więcej.'
+  drops-lore-2: '&7Przydatne łupy z wrogich mobów.'
+  concretes-name: '&6&lBeton'
+  concretes-lore-1: '&7Wszystkie kolory bloków betonu'
+  concretes-lore-2: '&7do dużych projektów dekoracyjnych.'
+  flowers-name: '&d&lKwiaty'
+  flowers-lore-1: '&7Naturalne ozdoby i rośliny nadające się'
+  flowers-lore-2: '&7do barwienia, idealne do ogrodów i ścieżek.'
+  logs-name: '&6&lDrewno i sadzonki'
+  logs-lore-1: '&7Kłody drzew i pasujące do nich sadzonki'
+  logs-lore-2: '&7do budowania i ponownego sadzenia.'
+  minerals-name: '&b&lMinerały'
+  minerals-lore-1: '&7Rudy, kamienie szlachetne i przetworzone surowce.'
+  minerals-lore-2: '&7Cenniejsze dobra przydatne w rozwoju.'
+  blocks-name: '&e&lBloki'
+  blocks-lore-1: '&7Podstawowe bloki budowlane i naturalne'
+  blocks-lore-2: '&7materiały do codziennych projektów.'
+  terracotta-name: '&6&lTerakota'
+  terracotta-lore-1: '&7Pełna gama kolorów terakoty'
+  terracotta-lore-2: '&7do ciepłych, rustykalnych budowli.'
+  glass-name: '&f&lSzkło'
+  glass-lore-1: '&7Szkło, barwione szkło oraz'
+  glass-lore-2: '&7dekoracyjne bloki idealne na okna.'
+  wool-name: '&f&lWełna'
+  wool-lore-1: '&7Kolorowa wełna do banerów,'
+  wool-lore-2: '&7pixel artu i miękkich dekoracji.'
+  special-items-name: '&d&lSpecjalne'
+  special-items-lore-1: '&7Rzadkie lub użytkowe przedmioty,'
+  special-items-lore-2: '&7które wyróżniają się na tle codziennego asortymentu.'
+  redstone-name: '&c&lRedstone'
+  redstone-lore-1: '&7Elementy automatyzacji i logiki'
+  redstone-lore-2: '&7do konstrukcji technicznych.'
+  fish-name: '&9&lRyby'
+  fish-lore-1: '&7Surowe i ugotowane ryby oraz'
+  fish-lore-2: '&7kilka rzadszych oceanicznych okazów.'
+  transports-name: '&6&lTransport'
+  transports-lore-1: '&7Tory, wagoniki i wyposażenie pomocnicze'
+  transports-lore-2: '&7do kopalń i tras podróżnych.'
+  blocks-shop-name: 'Sklep z blokami'
+  concretes-shop-name: 'Sklep z betonem'
+  drops-shop-name: 'Sklep z łupami'
+  farming-shop-name: 'Sklep rolniczy'
+  fish-shop-name: 'Sklep z rybami'
+  flowers-shop-name: 'Sklep z kwiatami'
+  glass-shop-name: 'Sklep ze szkłem'
+  logs-shop-name: 'Sklep z drewnem'
+  minerals-shop-name: 'Sklep z minerałami'
+  redstone-shop-name: 'Sklep z redstonem'
+  special-items-shop-name: 'Sklep specjalny'
+  terracotta-shop-name: 'Sklep z terakotą'
+  wools-shop-name: 'Sklep z wełną'
+  daily-shop-name: 'Sklep codzienny (Premium)'
+  transport-shop-name: 'Sklep transportowy'
+  sell:
+    sell-chest:
+      price-empty: 'Brak historii sprzedaży'
+  menu:
+    prompt:
+      cancel-keyword: 'anuluj'
+    sell-all:
+      title: '&fSprzedaj wszystko &7- naciśnij Esc, aby potwierdzić!'
+    search-gui:
+      title: '&8Wyszukiwanie produktów'
+      prompt:
+        clear-keyword: 'wyczyść'
+    favourite:
+      title: '&8Lista ulubionych'
+      content: '&7Zapisz produkty, którymi handlujesz najczęściej, aby mieć do nich szybki dostęp.'
+    arcmenu:
+      cancel: Anuluj
+      amount-input: Podaj ilość
+      amount-input-done: Wpisz ilość, a następnie naciśnij Esc, aby zakończyć.
+      navigation: SZYBKIE AKCJE
+      no-extra: Brak dodatkowych akcji
+      favourite: 'Przełącz ulubione'
+      categories: 'KATEGORIE'
+      products: 'PRODUKTY'
+      select-product: 'Wybierz produkt'
+      back: 'Wstecz'
+      close: 'Zamknij'
+      buy: 'Kup'
+      sell: 'Sprzedaj'
+      trade:
+        done: 'Transakcja zakończona'
+        error: 'Transakcja nie powiodła się'
+        permission: 'Wymagane uprawnienia'
+        player-max: 'Osiągnięto Twój limit'
+        server-max: 'Osiągnięto limit serwera'
+        not-enough: 'Niewystarczająca ilość pieniędzy lub przedmiotów'
+        condition: 'Nie spełniono wymagań'
+        inventory-full: 'Ekwipunek jest pełny'
+        cancelled: 'Transakcja anulowana'
+    dialog:
+      default-button: 'OK'
+      details: 'Pokaż szczegóły'
+      search:
+        input: 'Szukaj'
+        buttons:
+          search: 'Szukaj'
+      buy-more:
+        title: 'Wybierz ilość: {item-name}'
+        input: 'Ilość'
+        buttons:
+          confirm: 'Potwierdź'
+      info:
+        title: 'Informacje o produkcie: {item-name} x{amount}'
+        buttons:
+          buy: 'Kup'
+          sell: 'Sprzedaj'
+          buy-more: 'Wybierz ilość'
+          sell-all: 'Sprzedaj wszystko'
+          back: '&cWstecz'
+      favourite-edit:
+        title: 'Edytuj ulubiony produkt: {item-name}'
+        content: '&7Wybierz sposób edycji wpisu ulubionych nr {index}.'
+        buttons:
+          forward: '&ePrzesuń wyżej'
+          backward: '&ePrzesuń niżej'
+          remove: '&cUsuń'
+          back: '&7Wstecz'
+    bedrock:
+      search:
+        input: 'Szukaj'
+        buttons:
+          search: 'Szukaj'
+      price-extra-line:
+        default: '&6Kupno: {buy-price} &6| Sprzedaż: {sell-price}'
+        only-buy: '&6Kupno: {buy-price}'
+        only-sell: '&6Sprzedaż: {sell-price}'
+      favourite-edit:
+        title: 'Edytuj ulubiony produkt: {item-name}'
+        content: '&7Wybierz sposób edycji wpisu ulubionych nr {index}.'
+        buttons:
+          forward: '&ePrzesuń wyżej'
+          backward: '&ePrzesuń niżej'
+          remove: '&cUsuń'
+          back: '&7Wstecz'
+      buy-or-sell:
+        title: 'Wybierz ilość: {item-name}'
+        buttons:
+          amount:
+            name: 'Ilość'
+            tip: 'Wpisz tutaj ilość!'
+      info:
+        title: 'Informacje o produkcie: {item-name} x{amount}'
+        buttons:
+          buy: 'Kup'
+          sell: 'Sprzedaj'
+          buy-more: 'Wybierz ilość'
+          sell-all: 'Sprzedaj wszystko'
+          back: '&cWstecz'
+  placeholder:
+    compare:
+      up: '↑'
+      down: '↓'
+      same: '-'
+    cron:
+      format: "yyyy-MM-dd HH:mm:ss"
+    refresh:
+      format: "yyyy-MM-dd HH:mm:ss"
+      never: "Nigdy"
+    next:
+      with-day-format: "{d}d {h}g {m}m {s}s"
+      without-day-format: "{h}g {m}m {s}s"
+      never: "Oczekiwanie na następne odświeżenie"
+    price:
+      split-symbol-any: ', '
+      split-symbol-all: ', '
+      replace-new-line-symbol: ', '
+      unknown: "Nieznane"
+      unknown-price-type: "Nieznany typ ceny"
+      empty: "Cena jest pusta!"
+    click:
+      buy: '&#FFFACDKliknij lewym przyciskiem, aby kupić!'
+      sell: '&#FFFACDKliknij prawym przyciskiem, aby sprzedać!'
+      buy-with-no-sell: '&#FFFACDKliknij, aby kupić!'
+      sell-with-no-buy: '&#FFFACDKliknij, aby sprzedać!'
+      buy-max-limit-player: '&#ff3300Nie możesz kupić więcej!'
+      buy-max-limit-server: '&#ff3300WYPRZEDANE!'
+      sell-max-limit-player: '&#ff3300Nie możesz sprzedać więcej!'
+      sell-max-limit-server: '&#ff3300TEGO PRZEDMIOTU NIE MOŻNA SPRZEDAĆ!'
+      buy-price-not-enough: '&#ff3300Nie masz wystarczająco pieniędzy, aby kupić!'
+      sell-price-not-enough: '&#ff3300Nie masz wystarczającej liczby przedmiotów do sprzedaży!'
+      error: '&#ff3300Błąd!'
+      buy-condition-not-meet: '&#ff3300Nie spełniasz warunków zakupu!'
+      sell-condition-not-meet: '&#ff3300Nie spełniasz warunków sprzedaży!'
+    sell-stick:
+      infinite: "&cBez końca"
+  display-item:
+    add-lore:
+    - '@n@y '
+    - '@a&eKupno: {buy-price}'
+    - '@b(@z[rich])&eSprzedaż: {sell-price}'
+    - '@b@z[rich]&eSprzedaż: {sell-price} &8(Podatek:&c -10%&8)'
+    - '@b@z[vip]&6Bonus VIP:&a +10%'
+    - '@c&#FF7777Zakupy gracza: {buy-times-player}/{buy-limit-player}'
+    - '@d&#FF7777Zakupy na serwerze: {buy-times-server}/{buy-limit-server}'
+    - '@e&#FF7777Limit sprzedaży gracza: {sell-times-player}/{sell-limit-player}'
+    - '@f&#FF7777Limit sprzedaży serwera: {sell-times-server}/{sell-limit-server}'
+    - '@g '
+    - '@g&#ff3300cNie możesz kupić więcej!'
+    - '@g&8Czas odświeżenia: {buy-refresh-player}'
+    - '@i '
+    - '@i&#ff3300Wyprzedane!'
+    - '@i&8Czas odświeżenia: {buy-refresh-server}'
+    - '@h '
+    - '@h&#ff3300Nie możesz sprzedać więcej!'
+    - '@h&8Czas odświeżenia: {sell-refresh-player}'
+    - '@j'
+    - '@j&#ff3300Osiągnięto limit sprzedaży na serwerze!'
+    - '@j&8Czas odświeżenia: {sell-refresh-server}'
+    - '@t[inventory]@n@y '
+    - '@t[inventory]@a@u@y{buy-click}'
+    - '@t[inventory]@b@v@y{sell-click}'
+    - '@t[inventory]@k@q@y&#FFFACDKliknij Prawy Shift, aby wybrać ilość!'
+    - '@t[inventory]@l(@o)@y(@w)&#FFFACDZamień przedmiot w ręce (klawisz F), aby dodać go do ulubionych!'
+    - '@t[inventory]@m@v@y(@w)&#FFFACDNaciśnij Q, aby sprzedać wszystkie!'
+    - '(@n)&c&l:( Nie można tego zrobić'
+    - '(@a)@u@p&cTego przedmiotu nie można kupić'
+    - '(@b)@v@p&cTego przedmiotu nie można sprzedać'
+
+editor:
+  scope:
+    shop: 'Sklep'
+    menu: 'Menu'
+    shop_menu_template: 'Szablon menu sklepu'
+    buy_more_menu: 'Menu wyboru ilości'
+    favourite_menu: 'Menu ulubionych'
+    search_menu: 'Menu wyszukiwania'
+    item_sell_menu: 'Menu sprzedaży przedmiotów'
+  common:
+    root: 'główny'
+    back:
+      name: '&eWstecz'
+      desc: '&7Wróć do poprzedniego ekranu'
+    clear:
+      name: '&cWyczyść'
+      desc: '&7Usuń tę wartość'
+    refresh:
+      name: '&eOdśwież'
+    reload:
+      name: '&aPrzeładuj plugin'
+    enabled: 'włączone'
+    disabled: 'wyłączone'
+    previous-page:
+      name: '&ePoprzednia strona'
+      desc: '&7Przejdź do poprzedniej strony'
+    next-page:
+      name: '&eNastępna strona'
+      desc: '&7Przejdź do następnej strony'
+  action:
+    open: '&aKliknij lewym przyciskiem, aby otworzyć'
+    edit: '&aKliknij lewym przyciskiem, aby edytować'
+    delete: '&cKliknij prawym przyciskiem, aby usunąć'
+    toggle: '&aKliknij lewym przyciskiem, aby przełączyć'
+    cycle: '&aKliknij lewym przyciskiem, aby zmienić'
+    cycle-back: '&aShift + lewy przycisk: zmień wstecz'
+    cycle-action: '&aKliknij lewym przyciskiem, aby zmienić typ akcji'
+    cycle-condition: '&aKliknij lewym przyciskiem, aby zmienić typ warunku'
+    increase-ten: '&aKliknij lewym przyciskiem, aby dodać 10'
+    decrease-ten: '&cKliknij prawym przyciskiem, aby odjąć 10'
+    increase-one: '&aShift + lewy przycisk: dodaj 1'
+    decrease-one: '&cShift + prawy przycisk: odejmij 1'
+    middle-clear: '&eKliknij środkowym przyciskiem, aby wyczyścić'
+    read-only: '&7Podsumowanie tylko do odczytu'
+  summary:
+    type: '&7Aktualny typ: &f{value}'
+    section: 'Sekcja'
+    list: 'Lista'
+    keys: '&7Klucze podrzędne: &f{value}'
+    size: '&7Aktualny rozmiar: &f{value}'
+    value: '&7Aktualna wartość: &f{value}'
+  lore:
+    path: '&7Ścieżka: &f{value}'
+    kind: '&7Rodzaj: &f{value}'
+    description: '&7Opis: &f{value}'
+    not-set: '&7Aktualna wartość: &f<nie ustawiono>'
+  value-kind:
+    item_section: 'Sekcja przedmiotu'
+    economy_section: 'Sekcja ekonomii'
+    action_collection: 'Zbiór akcji'
+    condition_collection: 'Zbiór warunków'
+    action_type: 'Typ akcji'
+    condition_type: 'Typ warunku'
+    boolean: 'Wartość logiczna'
+    integer: 'Liczba całkowita'
+    double: 'Liczba'
+    string: 'Tekst'
+    string_list: 'Lista tekstów'
+    integer_list: 'Lista liczb całkowitych'
+    section: 'Sekcja'
+    unknown: 'Nieznane'
+  root:
+    title: 'Edytor UltimateShop'
+    shops:
+      name: '&eEdytuj sklepy'
+      desc: '&7Otwórz pliki YAML sklepów z katalogu &f/shops'
+    menus:
+      name: '&eEdytuj menu'
+      desc: '&7Otwórz pliki YAML menu z katalogu &f/menus/common_menus'
+    shop-menu-templates:
+      name: '&eEdytuj szablony menu sklepów'
+      desc: '&7Otwórz pliki YAML menu z katalogu &f/menus/shop_menu_templates'
+    buy-more-menus:
+      name: '&eEdytuj menu wyboru ilości'
+      desc: '&7Otwórz pliki YAML menu z katalogu &f/menus/buy_more_menus'
+    favourite-menus:
+      name: '&eEdytuj menu ulubionych'
+      desc: '&7Otwórz pliki YAML menu z katalogu &f/menus/favourite_menus'
+    search-menus:
+      name: '&eEdytuj menu wyszukiwania'
+      desc: '&7Otwórz pliki YAML menu z katalogu &f/menus/search_menus'
+    item-sell-menus:
+      name: '&eEdytuj menu sprzedaży przedmiotów'
+      desc: '&7Otwórz pliki YAML menu z katalogu &f/menus/item_sell_menus'
+    close:
+      name: '&cZamknij'
+      desc: '&7Zamknij edytor'
+  file-list:
+    title: 'Edytor: {scope}'
+    type: '&7Typ: &f{value}'
+    file: '&7Plik: &f{value}'
+    back: '&7Wróć do strony głównej edytora'
+    refresh: '&7Odśwież listę plików'
+  section:
+    path:
+      name: '&eAktualna ścieżka'
+      desc: '&f{value}'
+    reload:
+      line-1: '&7Zmiany zostały już zapisane na dysku.'
+      line-2: '&7Użyj tego, aby przebudować aktywne obiekty sklepu/menu.'
+    add-child:
+      name: '&eDodaj element podrzędny'
+      numbered: '&7Dodaj nowy wpis z numerem'
+      named: '&7Utwórz nowy nazwany wpis sekcji'
+      generic: '&7Dodaj nowy węzeł podrzędny w tej sekcji'
+      value-mode: '&7Po kluczu wpisz bezpośrednio wartość. Użyj &fsection &7lub &f{} &7, aby utworzyć sekcję.'
+      thing-item: '&aLewy przycisk: dodaj szablon przedmiotu'
+      thing-economy: '&ePrawy przycisk: dodaj szablon ekonomii'
+  preset:
+    raw:
+      name: '&eSekcja surowa'
+      desc: '&7Otwórz zapasowy edytor surowej sekcji'
+    reload:
+      desc: '&7Zastosuj zmiany do aktywnych obiektów sklepu/menu'
+    add-limit-group:
+      name: '&eDodaj grupę limitów'
+      desc: '&7Utwórz nową nazwaną grupę warunków dla tej sekcji limitów'
+  item:
+    title: 'Edytor przedmiotu: {path}'
+    slot:
+      name: '&eSlot ItemFormat'
+      line-1: '&7Umieść wybrany przedmiot w slocie 13.'
+      line-2: '&7Następnie kliknij Zapisz, aby przekształcić przedmiot do formatu YAML.'
+    apply:
+      name: '&aZastosuj przedmiot'
+      desc: '&7Zapisz zawartość slotu 13 w bieżącej sekcji'
+    raw:
+      name: '&eSekcja surowa'
+      desc: '&7Otwórz wszystkie klucze w tej sekcji przedmiotu'
+    clear:
+      name: '&cWyczyść sekcję'
+      desc: '&7Usuń całą tę sekcję przedmiotu'
+    back:
+      desc: '&7Wróć do sekcji nadrzędnej'
+  economy:
+    title: 'Edytor ekonomii: {path}'
+    current: '&7Aktualnie: &f{value}'
+    provider:
+      name: '&eDostawca'
+    currency:
+      name: '&eTyp waluty'
+    amount:
+      name: '&eIlość'
+    placeholder:
+      name: '&ePlaceholder'
+    conditions:
+      name: '&eWarunki'
+      desc: '&7Otwórz zagnieżdżoną sekcję warunków'
+    raw:
+      name: '&eSekcja surowa'
+      desc: '&7Otwórz wszystkie klucze w tej sekcji ekonomii'
+    delete:
+      name: '&cUsuń sekcję'
+      desc: '&7Usuń tę sekcję formatu ekonomii'
+    back:
+      desc: '&7Wróć do sekcji nadrzędnej'
+  thing-item:
+    title: 'ItemFormat elementu: {path}'
+    slot:
+      name: '&eWbudowany ItemFormat'
+      line-1: '&7Umieść przedmiot w slocie 13.'
+      line-2: '&7Spowoduje to odświeżenie wyłącznie pól formatu przedmiotu.'
+      line-3: '&7Wspólne opcje pojedynczego elementu zostaną zachowane.'
+    apply:
+      name: '&aZastosuj ItemFormat'
+      desc: '&7Zaktualizuj dane przedmiotu w tym pojedynczym elemencie'
+    apply-conditions:
+      name: '&eWarunki zastosowania'
+      desc: '&7Otwórz apply-conditions dla tego pojedynczego elementu'
+    require-conditions:
+      name: '&eWymagane warunki'
+      desc: '&7Otwórz require-conditions dla tego pojedynczego elementu'
+    give-actions:
+      name: '&eAkcje przekazania'
+      desc: '&7Otwórz give-actions dla tego pojedynczego elementu'
+    take-actions:
+      name: '&eAkcje pobrania'
+      desc: '&7Otwórz take-actions dla tego pojedynczego elementu'
+    preset:
+      name: '&eEdytor ustawień wstępnych'
+      desc: '&7Wróć do edytora ustawień wstępnych pojedynczego elementu'
+    raw:
+      name: '&eSekcja surowa'
+      desc: '&7Otwórz wszystkie klucze tego pojedynczego elementu'
+    clear:
+      name: '&cWyczyść pola przedmiotu'
+      desc: '&7Usuń wyłącznie pola material / hook-item / item-format'
+    back:
+      desc: '&7Wróć do edytora ustawień wstępnych'
+  thing-economy:
+    title: 'EconomyFormat elementu: {path}'
+    provider:
+      name: '&eDostawca'
+      desc: '&7Zmień ten pojedynczy element na standardowy lub podłączony format ekonomii.'
+    currency:
+      name: '&eTyp waluty'
+      desc: '&7Identyfikator waluty używany przez wybranego dostawcę ekonomii.'
+    placeholder:
+      name: '&ePlaceholder'
+      desc: '&7Tekst wyświetlany dla ceny lub produktu tego pojedynczego elementu.'
+    apply-conditions:
+      name: '&eWarunki zastosowania'
+      desc: '&7Otwórz apply-conditions dla tego pojedynczego elementu'
+    require-conditions:
+      name: '&eWymagane warunki'
+      desc: '&7Otwórz require-conditions dla tego pojedynczego elementu'
+    give-actions:
+      name: '&eAkcje przekazania'
+      desc: '&7Otwórz give-actions dla tego pojedynczego elementu'
+    take-actions:
+      name: '&eAkcje pobrania'
+      desc: '&7Otwórz take-actions dla tego pojedynczego elementu'
+    preset:
+      name: '&eEdytor ustawień wstępnych'
+      desc: '&7Wróć do edytora ustawień wstępnych pojedynczego elementu'
+    raw:
+      name: '&eSekcja surowa'
+      desc: '&7Otwórz wszystkie klucze tego pojedynczego elementu'
+    apply:
+      name: '&aZastosuj EconomyFormat'
+      desc: '&7Przekształć ten pojedynczy element do formatu ekonomii, zachowując wspólne pola sterujące'
+    clear:
+      name: '&cWyczyść pola ekonomii'
+      desc: '&7Usuń wyłącznie pola economy-plugin / economy-type'
+    back:
+      desc: '&7Wróć do edytora ustawień wstępnych'
+  prompt:
+    description: '&#98FB98[UltimateShop] &f{value}'
+    cancel-keyword: 'anuluj'
+    cancel-tip: '&#98FB98[UltimateShop] &7Wpisz &f{value} &7, aby anulować tę edycję.'
+    new-entry-id: 'Wpisz identyfikator nowego wpisu'
+    new-condition-id: 'Wpisz identyfikator nowej grupy warunków'
+    string: 'Wpisz nowy tekst dla &f{path}'
+    integer: 'Wpisz nową liczbę całkowitą dla &f{path}'
+    double: 'Wpisz nową liczbę dla &f{path}'
+    string-list: 'Wpisz nową listę dla &f{path} &7(użyj &f;; &7jako separatora)'
+    string-list-entry: 'Wpisz nowy element listy dla &f{path}'
+    string-list-entry-edit: 'Wpisz nową wartość elementu listy &f#{index}'
+    integer-list: 'Wpisz nową listę liczb całkowitych dla &f{path} &7(użyj &f;; &7jako separatora)'
+    integer-list-entry: 'Wpisz nowy element listy liczb całkowitych dla &f{path}'
+    integer-list-entry-edit: 'Wpisz nową liczbę całkowitą dla elementu listy &f#{index}'
+    new-child: 'Wpisz nazwę klucza nowego elementu podrzędnego'
+    new-child-value: 'Wpisz wartość dla &f{path}&7. Użyj &fsection &7lub &f{} &7, aby utworzyć sekcję. Użyj &f;; &7dla list.'
+  message:
+    target-not-found: '&#98FB98[UltimateShop] &cNie znaleziono pliku docelowego.'
+    saved: '&#98FB98[UltimateShop] &aZapisano &f{value}&a. Po zakończeniu edycji pamiętaj o przeładowaniu pluginu, aby zmiany zaczęły obowiązywać!'
+    save-failed: '&#98FB98[UltimateShop] &cNie udało się zapisać pliku: {value}'
+    empty-id: '&#98FB98[UltimateShop] &cIdentyfikator wpisu nie może być pusty.'
+    disabled: '&#98FB98[UltimateShop] &cUstaw &feditor.enabled &cna true w pliku &fconfig.yml &ci przeładuj plugin, aby włączyć edytor.'
+    backup-required: '&#98FB98[UltimateShop] &7Przed każdym użyciem edytora wykonaj kopię zapasową konfiguracji pluginu.'
+    unknown-type: '&#98FB98[UltimateShop] &cNieznany typ. Użyj section/string/int/double/boolean/list/int-list.'
+    invalid-integer: '&#98FB98[UltimateShop] &cTo nie jest prawidłowa liczba całkowita.'
+    invalid-number: '&#98FB98[UltimateShop] &cTo nie jest prawidłowa liczba.'
+    invalid-new-child-value: '&#98FB98[UltimateShop] &cNieprawidłowa wartość. Użyj section/{}, boolean, number, list (;;), lub zwykłego tekstu.'
+    invalid-integer-list: '&#98FB98[UltimateShop] &cJedna z wartości nie jest liczbą całkowitą.'
+    child-format: '&#98FB98[UltimateShop] &cUżyj formatu: key type'
+    command-usage: '&cUżyj /shop editor [shop|menu|shop_menu_template|buy_more_menu|favourite_menu|search_menu|item_sell_menu] <id>'
+    target-missing: '&#98FB98[UltimateShop] &cNie znaleziono {scope}: {id}'
+  list:
+    title: 'Edytor listy: {path}'
+    current: '&7Aktualnie: &f{value}'
+    add:
+      name: '&eDodaj wiersz'
+      desc: '&7Dodaj nowy wiersz do tej listy'
+    clear:
+      name: '&cWyczyść listę'
+      desc: '&7Usuń wszystkie wpisy z tej listy'
+    move-up: '&eShift + lewy przycisk: przesuń w górę'
+    move-down: '&eShift + prawy przycisk: przesuń w dół'
+  sub-button:
+    title: 'Przycisk podrzędny: {path}'
+    current: '&7Aktualnie: &f{value}'
+    not-set: '<nie ustawiono>'
+    same-shop:
+      name: '&eProdukt z bieżącego sklepu'
+    cross-shop:
+      name: '&eSklep docelowy'
+    cross-product:
+      name: '&eProdukt docelowy'
+    preview:
+      name: '&ePodgląd'
+    same-preview: '&7Ten sam sklep: &f{value}'
+    cross-preview: '&7Inny sklep: &f{value}'
+    apply-same:
+      name: '&aUżyj produktu z bieżącego sklepu'
+      desc: '&7Zapisz jako &fProductID'
+    apply-cross:
+      name: '&aUżyj produktu z innego sklepu'
+      desc: '&7Zapisz jako &fShopID;;ProductID'
+    clear:
+      name: '&cWyczyść'
+      desc: '&7Usuń wartość as-sub-button'
+  click-binding:
+    title: 'Typy kliknięcia: {path}'
+    state: '&7Wybrano: &f{value}'
+  reset-time:
+    title: 'Czas resetu: {path}'
+    current: '&7Aktualnie: &f{value}'
+    mode:
+      name: '&eAktualny tryb'
+      value: '&7Tryb: &f{value}'
+      desc: '&7Działanie tego edytora zależy od wybranego trybu resetowania.'
+    add:
+      name: '&eDodaj czas'
+      desc: '&7Dodaj nowy wpis czasu resetu'
+    random:
+      name: '&eLosowy placeholder'
+    manual:
+      name: '&eEdytuj wartość'
+    never:
+      name: '&eCzas resetu nie jest wymagany'
+      desc: '&7Ten tryb resetowania nie używa wartości czasu.'
+    prompt-add: 'Wpisz nowy czas resetu dla &f{path}'
+    prompt-edit: 'Wpisz nowy czas resetu dla wpisu &f#{index}'
+  presets:
+    root_shop:
+      title: 'Ustawienia wstępne sklepu'
+      fields:
+        settings:
+          menu:
+            name: 'Plik menu'
+            desc: 'Przypisz ten sklep do identyfikatora pliku menu.'
+          menu-settings:
+            name: 'Wbudowane ustawienia menu'
+            desc: 'Zastąp część ustawień menu wyłącznie dla tego sklepu.'
+            buy-more:
+              name: 'Domyślny wybór ilości'
+              desc: 'Określa, czy produkty w tym sklepie domyślnie otwierają menu wyboru ilości.'
+            allow-favourite:
+              name: 'Zezwól na dodawanie do ulubionych'
+              desc: 'Pozwala dodawać produkty z tego sklepu do list ulubionych.'
+            shop-name:
+              name: 'Wyświetlana nazwa sklepu'
+              desc: 'Nazwa wyświetlana przez placeholdery, takie jak {shop-name}.'
+          hide-message:
+            name: 'Ukryj komunikat o sukcesie'
+            desc: 'Ukrywa domyślny komunikat o powodzeniu dla tego sklepu.'
+          secret-shop-items:
+            name: 'Ukryte przedmioty sklepu'
+            desc: 'Ukrywa produkty, gdy ich warunki wyświetlania nie są spełnione.'
+          custom-command:
+            name:
+              name: 'Nazwa komendy'
+              desc: 'Komenda, której gracze mogą użyć, aby otworzyć ten sklep.'
+            description:
+              name: 'Opis komendy'
+              desc: 'Opis wyświetlany dla komendy tego sklepu.'
+        general-configs:
+          name: 'Ustawienia ogólne'
+          desc: 'Wartości domyślne wspólne dla wszystkich produktów w tym sklepie.'
+        items:
+          name: 'Produkty'
+          desc: 'Wszystkie produkty w tym sklepie, które można edytować.'
+        buttons:
+          name: 'Przyciski'
+          desc: 'Dodatkowe przyciski menu wyświetlane w tym sklepie.'
+    ui_section:
+      title: Ujednolicone ustawienia interfejsu
+      fields:
+        placement:
+          name: Położenie produktu
+          desc: Domyślne położenie produktów w Ore i ArcMenu.
+          enabled:
+            name: Włącz pozycjonowanie
+            desc: Uwzględnij ten wpis w układzie graficznym.
+          area:
+            name: Obszar układu
+            desc: Nazwa obszaru zdefiniowanego w ui.layout.areas.
+          order:
+            name: Kolejność w układzie
+            desc: Kolejność sortowania wewnątrz obszaru.
+          row:
+            name: Wiersz siatki
+            desc: Numer wiersza siatki liczony od zera; usuń, aby włączyć automatyczne rozmieszczanie.
+          column:
+            name: Kolumna siatki
+            desc: Numer kolumny siatki liczony od zera.
+          x:
+            name: Położenie X
+            desc: Edytuj placement.x w tej sekcji interfejsu.
+          y:
+            name: Położenie Y
+            desc: Edytuj placement.y w tej sekcji interfejsu.
+          width:
+            name: Szerokość położenia
+            desc: Edytuj placement.width w tej sekcji interfejsu.
+          height:
+            name: Wysokość położenia
+            desc: Edytuj placement.height w tej sekcji interfejsu.
+        card:
+          name: Styl karty produktu
+          desc: Wspólne rozmiary kart, czcionki i odstępy między przyciskami.
+        price:
+          enabled:
+            name: Pokaż cenę
+            desc: Wyświetla wiersz z ceną produktu.
+          formats:
+            name: Formaty cen
+            desc: Formaty dla kupna i sprzedaży oraz tylko kupna lub tylko sprzedaży.
+        actions:
+          name: Wyświetlanie akcji produktu
+          desc: Edytuj akcje główne, dodatkowe (automatyczne lub jako lista) oraz etykiety; nie są to numerowane akcje.
+          primary:
+            name: Główne akcje
+            desc: Edytuj actions.primary w tej sekcji interfejsu.
+        visible-in:
+          name: Widoczne formy prezentacji
+          desc: 'Lista: inventory, form, dialog, ore lub arcmenu. Pusta lista ukrywa element we wszystkich widokach.'
+        show-sprite:
+          name: Pokaż ikonę
+          desc: Zastępuje domyślne wyświetlanie ikon w oknie Dialog dla tego wpisu.
+        appearance:
+          name: Wygląd
+          desc: Wygląd graficznej karty lub przycisku.
+        font-size:
+          name: Rozmiar czcionki
+          desc: Edytuj font-size w tej sekcji interfejsu.
+        text-align:
+          name: Wyrównanie tekstu
+          desc: Edytuj text-align w tej sekcji interfejsu.
+        mode:
+          java:
+            name: Prezentacja Java
+            desc: inherit, inventory, dialog, ore lub arcmenu.
+          bedrock:
+            name: Prezentacja Bedrock
+            desc: inherit, inventory lub form.
+        layout:
+          canvas:
+            width:
+              name: Szerokość obszaru układu
+              desc: Edytuj layout.canvas.width w tej sekcji interfejsu.
+            height:
+              name: Wysokość obszaru układu
+              desc: Edytuj layout.canvas.height w tej sekcji interfejsu.
+          header:
+            name: Nagłówki układu
+            desc: Nazwane wpisy tekstowe korzystające z placeholderów title i content.
+          areas:
+            name: Obszary układu
+            desc: Nazwane obszary typu grid, stack i free. Umieszczaj wpisy w obrębie obszaru układu.
+          pagination:
+            name: Stronicowanie układu
+            desc: Edytuj layout.pagination w tej sekcji interfejsu.
+        products:
+          name: Domyślne ustawienia produktów
+          desc: Położenie, styl karty, formaty cen i akcje produktu.
+        theme:
+          name: Motyw
+          desc: Edytuj theme w tej sekcji interfejsu.
+        text:
+          name: Tekst
+          desc: Edytuj text w tej sekcji interfejsu.
+        renderers:
+          inventory:
+            name: Renderer ekwipunku
+            desc: Edytuj renderers.inventory w tej sekcji interfejsu.
+          form:
+            name: Renderer formularza
+            desc: Edytuj renderers.form w tej sekcji interfejsu.
+          dialog:
+            name: Renderer okna dialogowego
+            desc: Edytuj renderers.dialog w tej sekcji interfejsu.
+            layout:
+              name: Układ renderera okna dialogowego
+              desc: Edytuj renderers.dialog.layout w tej sekcji interfejsu.
+            button-width:
+              name: Szerokość przycisków renderera okna dialogowego
+              desc: Edytuj renderers.dialog.button-width w tej sekcji interfejsu.
+            columns:
+              name: Kolumny renderera okna dialogowego
+              desc: Edytuj renderers.dialog.columns w tej sekcji interfejsu.
+          ore:
+            name: Renderer Ore
+            desc: Edytuj renderers.ore w tej sekcji interfejsu.
+          arcmenu:
+            right-click-action:
+              name: Akcja prawego przycisku w ArcMenu
+              desc: Domyślna akcja select-amount otwiera szczegóły produktu. Obsługiwane są własne akcje produktu.
+            screen-scale:
+              name: Skala ekranu renderera ArcMenu
+              desc: Edytuj renderers.arcmenu.screen-scale w tej sekcji interfejsu.
+            update-interval:
+              name: Interwał aktualizacji renderera ArcMenu
+              desc: Edytuj renderers.arcmenu.update-interval w tej sekcji interfejsu.
+            animation:
+              enabled:
+                name: Włączenie animacji renderera ArcMenu
+                desc: Edytuj renderers.arcmenu.animation.enabled w tej sekcji interfejsu.
+              duration:
+                name: Czas trwania animacji renderera ArcMenu
+                desc: Edytuj renderers.arcmenu.animation.duration w tej sekcji interfejsu.
+            more-menu:
+              columns:
+                name: Kolumny dodatkowego menu ArcMenu
+                desc: Edytuj renderers.arcmenu.more-menu.columns w tej sekcji interfejsu.
+            tooltip:
+              enabled:
+                name: Włączenie podpowiedzi renderera ArcMenu
+                desc: Edytuj renderers.arcmenu.tooltip.enabled w tej sekcji interfejsu.
+              width:
+                name: Szerokość podpowiedzi renderera ArcMenu
+                desc: Edytuj renderers.arcmenu.tooltip.width w tej sekcji interfejsu.
+              font-size:
+                name: Rozmiar czcionki podpowiedzi renderera ArcMenu
+                desc: Edytuj renderers.arcmenu.tooltip.font-size w tej sekcji interfejsu.
+              padding:
+                name: Wewnętrzny odstęp podpowiedzi renderera ArcMenu
+                desc: Edytuj renderers.arcmenu.tooltip.padding w tej sekcji interfejsu.
+    root_menu:
+      title: 'Ustawienia wstępne menu'
+      fields:
+        content:
+          name: Zawartość menu
+          desc: Wspólna zawartość formularzy, okien dialogowych i nagłówków graficznych.
+        ui:
+          name: Ujednolicony interfejs menu
+          desc: Tryby prezentacji, układ, style produktów i ustawienia rendererów.
+        input-item:
+          name: Identyfikator slotu wejściowego
+          desc: Identyfikator zarezerwowany dla slotów wejściowych w układzie ekwipunku.
+        result-item:
+          name: Identyfikator slotu wyników
+          desc: Identyfikator zarezerwowany dla wyników w układzie ekwipunku.
+        action-items:
+          name: Akcje wyszukiwania
+          desc: Elementy sterujące wprowadzaniem tekstu i czyszczeniem wyszukiwania.
+        state-items:
+          name: Stan wyszukiwania
+          desc: Przyciski wyświetlające stan wyszukiwania.
+        no-result-item:
+          name: Brak wyników
+          desc: Wyświetlane, gdy żaden produkt nie pasuje.
+        result-lore:
+          name: Opis wyniku
+          desc: Dodatkowy opis wyniku.
+        editing-result-lore:
+          name: Opis wyniku w trybie edycji
+          desc: Opis ulubionego produktu w trybie edycji.
+        edit-mode-item:
+          name: Przełącznik edycji ulubionych
+          desc: Wygląd przycisku w trybie normalnym i edycji.
+        empty-item:
+          name: Puste miejsce na ulubione
+          desc: Wygląd niewykorzystanych slotów listy ulubionych.
+        amount-items:
+          name: Przyciski ilości
+          desc: Przyciski zmiany ilości w ekwipunku; ArcMenu używa szczegółów produktu.
+        display-items:
+          name: Identyfikatory podglądu
+          desc: Identyfikatory w układzie ekwipunku wyświetlające wybrany produkt.
+        display-items-ui:
+          name: Interfejs podglądu
+          desc: Ustawienia interfejsu wyświetlanego przedmiotu w obsługiwanych menu graficznych.
+        confirm-items:
+          name: Przyciski potwierdzania ilości
+          desc: Elementy sterujące zakupem i sprzedażą określonej ilości w ekwipunku.
+        confirm-item:
+          name: Identyfikator potwierdzenia sprzedaży
+          desc: Identyfikator slotu potwierdzenia sprzedaży w ekwipunku.
+        confirm-button:
+          name: Przycisk potwierdzenia sprzedaży
+          desc: Element sterujący potwierdzaniem sprzedaży przedmiotów.
+        max-sell-amount:
+          name: Maksymalna ilość sprzedaży
+          desc: Maksymalna ilość akceptowana przez to menu sprzedaży przedmiotów.
+        title:
+          name: 'Tytuł'
+          desc: 'Tytuł menu wspólny dla wybranych sposobów prezentacji.'
+        size:
+          name: 'Rozmiar'
+          desc: 'Rozmiar ekwipunku, zwykle wielokrotność 9.'
+        dynamic-layout:
+          name: 'Układ dynamiczny'
+          desc: 'Przebudowuje układ za każdym otwarciem menu.'
+        bedrock:
+          name: 'Ustawienia Bedrock'
+          desc: 'Ustawienia wyświetlania i zgodności specyficzne dla Bedrock.'
+          enabled:
+            name: 'Włączone'
+            desc: 'Określa, czy to menu ma korzystać z obsługi Bedrock.'
+          content:
+            name: 'Zawartość'
+            desc: 'Wartość zawartości tego menu specyficzna dla Bedrock.'
+        layout:
+          name: 'Układ'
+          desc: 'Lista ciągów znaków określająca rozmieszczenie przycisków i produktów.'
+        conditions:
+          name: 'Warunki otwarcia'
+          desc: 'Warunki, które muszą być spełnione, aby menu mogło zostać otwarte.'
+        open-actions:
+          name: 'Akcje otwarcia'
+          desc: 'Akcje wykonywane po otwarciu menu.'
+        close-actions:
+          name: 'Akcje zamknięcia'
+          desc: 'Akcje wykonywane po zamknięciu menu.'
+        buttons:
+          name: 'Przyciski'
+          desc: 'Wszystkie przyciski umieszczone w tym menu.'
+        custom-command:
+          name:
+            name: 'Nazwa komendy'
+            desc: 'Komenda, której gracze mogą użyć, aby otworzyć to menu.'
+          description:
+            name: 'Opis komendy'
+            desc: 'Opis wyświetlany dla komendy tego menu.'
+    shop_item:
+      title: 'Ustawienia wstępne produktu'
+      fields:
+        ui:
+          name: Interfejs produktu i przycisku
+          desc: Widoczność, ikony, położenie, czcionki i wyświetlanie operacji na produkcie.
+        display-name:
+          name: 'Nazwa wyświetlana'
+          desc: 'Logiczna nazwa wyświetlana tego produktu.'
+        display-item:
+          name: 'Wyświetlany przedmiot'
+          desc: 'Przedmiot GUI widoczny dla graczy w menu.'
+        add-lore:
+          name: 'Dodaj opis'
+          desc: 'Dodatkowe wiersze opisu dołączane do wyświetlanego przedmiotu.'
+        price-mode:
+          name: 'Tryb ceny'
+          desc: 'Określa sposób łączenia wielu cen podczas płatności.'
+        product-mode:
+          name: 'Tryb produktu'
+          desc: 'Określa sposób łączenia wielu produktów przy przyznawaniu nagrody.'
+        products:
+          name: 'Produkty'
+          desc: 'Pojedyncze elementy, które gracz otrzymuje lub przekazuje jako produkty.'
+        buy-prices:
+          name: 'Ceny kupna'
+          desc: 'Pojedyncze elementy pobierane podczas zakupu.'
+        sell-prices:
+          name: 'Ceny sprzedaży'
+          desc: 'Pojedyncze elementy przyznawane podczas sprzedaży.'
+        conditions:
+          name: 'Wspólne warunki'
+          desc: 'Starsze wspólne warunki dotyczące kupna i sprzedaży.'
+        buy-conditions:
+          name: 'Warunki kupna'
+          desc: 'Warunki sprawdzane wyłącznie podczas kupowania.'
+        sell-conditions:
+          name: 'Warunki sprzedaży'
+          desc: 'Warunki sprawdzane wyłącznie podczas sprzedawania.'
+        display-conditions:
+          name: 'Warunki wyświetlania'
+          desc: 'Warunki określające, czy ten produkt jest wyświetlany.'
+        buy-actions:
+          name: 'Akcje kupna'
+          desc: 'Akcje wykonywane po udanym zakupie.'
+        sell-actions:
+          name: 'Akcje sprzedaży'
+          desc: 'Akcje wykonywane po udanej sprzedaży.'
+        fail-actions:
+          name: 'Akcje niepowodzenia'
+          desc: 'Akcje wykonywane, gdy transakcja się nie powiedzie.'
+        click-event:
+          name: 'Zdarzenie kliknięcia'
+          desc: 'Własne reguły kliknięcia przycisku tego produktu.'
+        buy-more:
+          name: 'Wybór ilości'
+          desc: 'Określa, czy ten produkt może otwierać GUI wyboru ilości.'
+        buy-more-menu:
+          name: 'Menu wyboru ilości'
+          desc: 'Dedykowane menu wyboru ilości dla tego produktu.'
+          menu:
+            name: 'Plik menu'
+            desc: 'Plik menu wyboru ilości; w ArcMenu akcja select-amount otwiera zamiast tego szczegóły produktu.'
+          max-amount:
+            name: 'Maksymalna ilość'
+            desc: 'Maksymalna możliwa do wybrania ilość, także w szczegółach produktu ArcMenu.'
+          hide-message:
+            name: 'Ukryj komunikat'
+            desc: 'Ukrywa komunikat o powodzeniu dla tego produktu.'
+          allow-favourite:
+            name: 'Zezwól na dodawanie do ulubionych'
+            desc: 'Pozwala dodawać ten produkt do menu ulubionych.'
+          sell-all:
+            name: 'Włącz sprzedaż wszystkiego'
+            desc: 'Pozwala uwzględniać ten produkt w funkcji sprzedaży wszystkiego.'
+        as-sub-button:
+          name: 'Jako przycisk podrzędny'
+          desc: 'Wyświetla ten produkt jako przycisk podrzędny innego produktu.'
+        default-buy-amount:
+          name: 'Domyślna ilość zakupu'
+          desc: 'Liczba sztuk w bezpośrednim zakupie (1–9999), domyślnie 1. Nieustawione przyciski podrzędne dziedziczą wartość produktu docelowego.'
+        dialog:
+          show-sprite:
+            name: 'Pokaż ikonę'
+            desc: 'Pokazuje lub ukrywa ikony etykiet; brak ustawienia oznacza automatyczną widoczność.'
+        default-sell-amount:
+          name: 'Domyślna ilość sprzedaży'
+          desc: 'Liczba sztuk w bezpośredniej sprzedaży (1–9999), domyślnie 1. Nieustawione przyciski podrzędne dziedziczą wartość produktu docelowego.'
+        bedrock:
+          name: 'Ustawienia Bedrock'
+          desc: 'Ustawienia wyświetlania tego produktu specyficzne dla Bedrock.'
+          click-event:
+            name: 'Akcja kliknięcia Bedrock'
+            desc: 'Akcja wykonywana bezpośrednio po dotknięciu produktu przez gracza Bedrock, np. select-amount. Tylko LEFT.'
+          hide:
+            name: 'Ukryj'
+            desc: 'Określa, czy ten produkt ma być ukryty w Bedrock.'
+          icon:
+            name: 'Ikona'
+            desc: 'Wartość ikony Bedrock lub adres URL ikony tego produktu.'
+        limits:
+          name: 'Wspólne limity'
+          desc: 'Wspólne limity zapasów i użycia dla kupna i sprzedaży.'
+        limits-conditions:
+          name: 'Wspólne grupy limitów'
+          desc: 'Nazwane grupy warunków używane w sekcji wspólnych limitów.'
+        buy-limits:
+          name: 'Limity kupna'
+          desc: 'Limity zapasów lub liczby zakupów.'
+        buy-limits-conditions:
+          name: 'Grupy limitów kupna'
+          desc: 'Nazwane grupy warunków używane w sekcji limitów kupna.'
+        sell-limits:
+          name: 'Limity sprzedaży'
+          desc: 'Limity zapasów lub liczby sprzedaży.'
+        sell-limits-conditions:
+          name: 'Grupy limitów sprzedaży'
+          desc: 'Nazwane grupy warunków używane w sekcji limitów sprzedaży.'
+        buy-times-reset-mode:
+          name: 'Tryb resetowania kupna'
+          desc: 'Określa sposób resetowania licznika zakupów.'
+        buy-times-reset-time:
+          name: 'Czas resetowania kupna'
+          desc: 'Określa, kiedy licznik zakupów jest resetowany.'
+        buy-times-reset-time-format:
+          name: 'Format czasu resetowania kupna'
+          desc: 'Format czasu używany do odczytu wartości czasu resetowania kupna.'
+        buy-times-reset-value:
+          name: 'Wartość resetowania kupna'
+          desc: 'Wartość ustawiana podczas resetowania licznika zakupów.'
+        buy-times-max-value:
+          name: 'Maksymalna wartość kupna'
+          desc: 'Maksymalna dozwolona liczba zakupów przed resetem.'
+        shared-use-times:
+          name: 'Wspólna grupa liczników użycia'
+          desc: 'Produkty z tym samym identyfikatorem grupy współdzielą liczniki kupna/sprzedaży i dane czasu odnowienia.'
+        sell-times-reset-mode:
+          name: 'Tryb resetowania sprzedaży'
+          desc: 'Określa sposób resetowania licznika sprzedaży.'
+        sell-times-reset-time:
+          name: 'Czas resetowania sprzedaży'
+          desc: 'Określa, kiedy licznik sprzedaży jest resetowany.'
+        sell-times-reset-time-format:
+          name: 'Format czasu resetowania sprzedaży'
+          desc: 'Format czasu używany do odczytu wartości czasu resetowania sprzedaży.'
+        sell-times-reset-value:
+          name: 'Wartość resetowania sprzedaży'
+          desc: 'Wartość ustawiana podczas resetowania licznika sprzedaży.'
+        sell-times-max-value:
+          name: 'Maksymalna wartość sprzedaży'
+          desc: 'Maksymalna dozwolona liczba sprzedaży przed resetem.'
+    button_entry:
+      title: 'Ustawienia wstępne przycisku'
+      fields:
+        ui:
+          name: Interfejs produktu i przycisku
+          desc: Widoczność, ikony, położenie, czcionki i wyświetlanie operacji na produkcie.
+        dialog:
+          show-sprite:
+            name: 'Pokaż ikonę'
+            desc: 'Pokazuje lub ukrywa ikony etykiet; brak ustawienia oznacza automatyczną widoczność.'
+        display-item:
+          name: 'Wyświetlany przedmiot'
+          desc: 'Przedmiot wyświetlany dla tego przycisku.'
+        actions:
+          name: 'Akcjas'
+          desc: 'Akcje wykonywane po kliknięciu tego przycisku.'
+        fail-actions:
+          name: 'Akcje niepowodzenia'
+          desc: 'Akcje wykonywane, gdy warunki przycisku nie są spełnione.'
+        conditions:
+          name: 'Warunki'
+          desc: 'Warunki, które muszą być spełnione, aby można było użyć tego przycisku.'
+        display-conditions:
+          name: 'Warunki wyświetlania'
+          desc: 'Warunki określające, czy ten przycisk jest wyświetlany.'
+    limits_section:
+      title: 'Ustawienia wstępne sekcji limitów'
+      fields:
+        default:
+          name: 'Limit domyślny'
+          desc: 'Limit używany, gdy gracz nie pasuje do żadnej własnej grupy warunków limitu.'
+        global:
+          name: 'Limit globalny'
+          desc: 'Globalny, współdzielony limit tego produktu obowiązujący na całym serwerze.'
+    single_thing:
+      title: 'Ustawienia wstępne pojedynczego elementu'
+      fields:
+        display:
+          name: 'Wykryty typ elementu'
+          desc: 'Plugin wykrywa typ pojedynczego elementu na podstawie aktualnie istniejących pól.'
+        inline-item:
+          name: 'ItemFormat'
+          desc: 'Przeciągnij tutaj przedmiot, aby odświeżyć pola item-format, zachowując wspólne pola sterujące.'
+        inline-economy:
+          name: 'EconomyFormat'
+          desc: 'Przełącz ten pojedynczy element na format ekonomii, zachowując pola ilości, akcji i warunków.'
+        amount:
+          name: 'Ilość'
+          desc: 'Wartość ilości. W zależności od kontekstu obsługuje stałe liczby, formuły lub placeholdery.'
+        material:
+          name: 'Materiał'
+          desc: 'Podstawowy materiał dla standardowego formatu przedmiotu.'
+        hook-plugin:
+          name: 'Plugin zewnętrznych przedmiotów'
+          desc: 'Nazwa zewnętrznego pluginu przedmiotów używanego przez ten element.'
+        hook-item:
+          name: 'ID zewnętrznego przedmiotu'
+          desc: 'Identyfikator przedmiotu z podłączonego pluginu.'
+        match-item:
+          name: 'Dopasuj przedmiot'
+          desc: 'Użyj reguł dopasowania zamiast dokładnego stosu przedmiotów.'
+        match-placeholder:
+          name: 'Placeholder dopasowania'
+          desc: 'Placeholder używany do odczytywania własnych wartości na potrzeby porównania.'
+        economy-plugin:
+          name: 'Plugin ekonomii'
+          desc: 'Plugin dostawcy ekonomii używany przez ten wpis ceny.'
+        economy-type:
+          name: 'Typ ekonomii'
+          desc: 'Typ waluty, exp, poziomy lub identyfikator wielu walut.'
+        placeholder:
+          name: 'Placeholder wyświetlania'
+          desc: 'Tekst wyświetlany w opisie przedmiotu i placeholderach cen.'
+        min-amount:
+          name: 'Minimalna ilość'
+          desc: 'Minimalna ilość, gdy wartość jest dynamiczna.'
+        max-amount:
+          name: 'Maksymalna ilość'
+          desc: 'Maksymalna ilość, gdy wartość jest dynamiczna.'
+        start-apply:
+          name: 'Początek stosowania'
+          desc: 'Rozpocznij stosowanie od tej liczby transakcji.'
+        end-apply:
+          name: 'Koniec stosowania'
+          desc: 'Zakończ stosowanie po tej liczbie transakcji.'
+        apply:
+          name: 'Lista zastosowań'
+          desc: 'Stosuj wyłącznie przy tych liczbach transakcji.'
+        apply-conditions:
+          name: 'Apply Waruneks'
+          desc: 'Warunki określające, czy ten pojedynczy element zostanie uwzględniony w bieżącej transakcji.'
+        require-conditions:
+          name: 'Require Waruneks'
+          desc: 'Warunki, które muszą być spełnione po wybraniu tego pojedynczego elementu.'
+        give-actions:
+          name: 'Give Akcjas'
+          desc: 'Akcje wykonywane, gdy ten pojedynczy element zostaje przekazany.'
+        take-actions:
+          name: 'Take Akcjas'
+          desc: 'Akcje wykonywane, gdy ten pojedynczy element zostaje pobrany.'
+        give-item:
+          name: 'Przekaż przedmiot'
+          desc: 'Jeśli wyłączone, wykonywane są tylko akcje give-actions, a sam przedmiot nie zostaje przekazany.'
+        take:
+          name: 'Pobierz'
+          desc: 'Jeśli wyłączone, sprawdzane jest tylko posiadanie przedmiotu, bez faktycznego pobierania.'
+    action_entry:
+      title: 'Ustawienia wstępne akcji'
+      fields:
+        type:
+          name: 'Typ'
+          desc: 'Typ akcji do wykonania.'
+        start-apply:
+          name: 'Początek stosowania'
+          desc: 'Rozpocznij wykonywanie od tej liczby transakcji.'
+        end-apply:
+          name: 'Koniec stosowania'
+          desc: 'Zakończ wykonywanie po tej liczbie transakcji.'
+        apply:
+          name: 'Lista zastosowań'
+          desc: 'Wykonuj wyłącznie przy tych liczbach transakcji.'
+        multi-once:
+          name: 'Tylko raz przy wielu transakcjach'
+          desc: 'Wykonaj tylko raz podczas wielokrotnego kupna lub sprzedaży.'
+        sell-all-once:
+          name: 'Tylko raz przy sprzedaży wszystkiego'
+          desc: 'Wykonaj tylko raz podczas sprzedaży wszystkiego.'
+        open-once:
+          name: 'Tylko przy pierwszym otwarciu'
+          desc: 'Nie wykonuj ponownie po ponownym otwarciu menu.'
+        click-type:
+          name: 'Typ kliknięcia'
+          desc: 'Ogranicz tę akcję do określonego typu kliknięcia.'
+        bedrock-only:
+          name: 'Tylko Bedrock'
+          desc: 'Wykonuj wyłącznie dla graczy Bedrock.'
+        java-only:
+          name: 'Tylko Java'
+          desc: 'Wykonuj wyłącznie dla graczy Java.'
+        fail-type:
+          name: 'Typ niepowodzenia'
+          desc: 'Wykonuj wyłącznie dla określonego typu niepowodzenia.'
+        message:
+          name: 'Wiadomość'
+          desc: 'Treść wiadomości wysyłanej przez tę akcję.'
+        main-title:
+          name: 'Tytuł główny'
+          desc: 'Tekst tytułu głównego.'
+        sub-title:
+          name: 'Podtytuł'
+          desc: 'Tekst podtytułu.'
+        fade-in:
+          name: 'Pojawianie się'
+          desc: 'Czas pojawiania się w tickach.'
+        stay:
+          name: 'Wyświetlanie'
+          desc: 'Czas wyświetlania w tickach.'
+        fade-out:
+          name: 'Zanikanie'
+          desc: 'Czas zanikania w tickach.'
+        sound:
+          name: 'Dźwięk'
+          desc: 'Identyfikator dźwięku do odtworzenia.'
+        volume:
+          name: 'Głośność'
+          desc: 'Wartość głośności.'
+        particle:
+          name: 'Cząsteczka'
+          desc: 'Identyfikator cząsteczki do wygenerowania.'
+        count:
+          name: 'Liczba'
+          desc: 'Liczba cząsteczek do wygenerowania.'
+        offset-x:
+          name: 'Przesunięcie X'
+          desc: 'Przesunięcie cząsteczki w osi X.'
+        offset-y:
+          name: 'Przesunięcie Y'
+          desc: 'Przesunięcie cząsteczki w osi Y.'
+        offset-z:
+          name: 'Przesunięcie Z'
+          desc: 'Przesunięcie cząsteczki w osi Z.'
+        speed:
+          name: 'Prędkość'
+          desc: 'Prędkość cząsteczki.'
+        command:
+          name: 'Komenda'
+          desc: 'Komenda wykonywana przez tę akcję.'
+        shop:
+          name: 'Sklep'
+          desc: 'Identyfikator sklepu docelowego używany przez tę akcję.'
+        menu:
+          name: 'Menu'
+          desc: 'Identyfikator menu docelowego używany przez tę akcję.'
+        item:
+          name: 'Przedmiot'
+          desc: 'Identyfikator docelowego produktu lub przedmiotu używany przez tę akcję.'
+        amount:
+          name: 'Ilość'
+          desc: 'Ilość lub liczba używana przez tę akcję.'
+        sell-all:
+          name: 'Sprzedaj wszystko'
+          desc: 'Określa, czy akcja ma przetwarzać wszystkie pasujące przedmioty.'
+        rate:
+          name: 'Szansa'
+          desc: 'Szansa powodzenia od 0 do 100.'
+        actions:
+          name: 'Zagnieżdżone akcje'
+          desc: 'Zagnieżdżone akcje wykonywane przez tę akcję.'
+        conditions:
+          name: 'Warunki'
+          desc: 'Warunki sprawdzane przez tę akcję.'
+        server:
+          name: 'Serwer'
+          desc: 'Nazwa serwera docelowego.'
+        potion:
+          name: 'Mikstura'
+          desc: 'Identyfikator efektu mikstury.'
+        duration:
+          name: 'Czas trwania'
+          desc: 'Czas trwania w tickach.'
+        level:
+          name: 'Poziom'
+          desc: 'Wartość poziomu używana przez tę akcję.'
+        ambient:
+          name: 'Otoczenie'
+          desc: 'Określa, czy efekt jest otoczeniowy.'
+        particles:
+          name: 'Cząsteczki'
+          desc: 'Określa, czy efekt wyświetla cząsteczki.'
+        icon:
+          name: 'Ikona'
+          desc: 'Określa, czy efekt wyświetla ikonę.'
+        entity:
+          name: 'Istota'
+          desc: 'Identyfikator istoty lub MythicMob do przywołania.'
+        world:
+          name: 'Świat'
+          desc: 'Nazwa świata używana przez tę akcję.'
+        x:
+          name: 'X'
+          desc: 'Współrzędna X.'
+        y:
+          name: 'Y'
+          desc: 'Współrzędna Y.'
+        z:
+          name: 'Z'
+          desc: 'Współrzędna Z.'
+        yaw:
+          name: 'Odchylenie'
+          desc: 'Obrót w poziomie (yaw).'
+        pitch:
+          name: 'Pochylenie'
+          desc: 'Pochylenie (pitch) lub wysokość dźwięku.'
+    condition_entry:
+      title: 'Ustawienia wstępne warunku'
+      fields:
+        type:
+          name: 'Typ'
+          desc: 'Typ warunku do sprawdzenia.'
+        start-apply:
+          name: 'Początek stosowania'
+          desc: 'Rozpocznij sprawdzanie od tej liczby transakcji.'
+        end-apply:
+          name: 'Koniec stosowania'
+          desc: 'Zakończ sprawdzanie po tej liczbie transakcji.'
+        apply:
+          name: 'Lista zastosowań'
+          desc: 'Sprawdzaj wyłącznie przy tych liczbach transakcji.'
+        click-type:
+          name: 'Typ kliknięcia'
+          desc: 'Ogranicz ten warunek do określonego typu kliknięcia.'
+        bedrock-only:
+          name: 'Tylko Bedrock'
+          desc: 'Sprawdzaj wyłącznie dla graczy Bedrock.'
+        java-only:
+          name: 'Tylko Java'
+          desc: 'Sprawdzaj wyłącznie dla graczy Java.'
+        meet-actions:
+          name: 'Akcje po spełnieniu'
+          desc: 'Akcje wykonywane, gdy warunek zostanie spełniony.'
+        not-meet-actions:
+          name: 'Akcje po niespełnieniu'
+          desc: 'Akcje wykonywane, gdy warunek nie zostanie spełniony.'
+        permission:
+          name: 'Uprawnienie'
+          desc: 'Węzeł uprawnień, który musi posiadać gracz.'
+        placeholder:
+          name: 'Placeholder'
+          desc: 'Placeholder używany przez warunek.'
+        rule:
+          name: 'Reguła'
+          desc: 'Reguła porównania, np. ==, >=, <=.'
+        value:
+          name: 'Wartość'
+          desc: 'Wartość docelowa używana do porównania.'
+        menu:
+          name: 'Menu'
+          desc: 'Wymagany identyfikator aktualnie otwartego menu.'
+        menu-type:
+          name: 'Typ menu'
+          desc: 'Wymagany typ aktualnie otwartego menu, np. Favourite lub Search.'
+        biome:
+          name: 'Biom'
+          desc: 'Wymagana nazwa biomu.'
+        world:
+          name: 'Świat'
+          desc: 'Wymagana nazwa świata.'
+        conditions:
+          name: 'Zagnieżdżone warunki'
+          desc: 'Lista zagnieżdżonych warunków używana przez ten warunek.'
+
