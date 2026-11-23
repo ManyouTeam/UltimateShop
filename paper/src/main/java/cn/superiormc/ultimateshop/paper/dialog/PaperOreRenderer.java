@@ -257,7 +257,7 @@ public class PaperOreRenderer {
             && !iconText.isEmpty()
             && row == iconTextRow
             && !("1".equals(iconText) && DialogPackManager.hidesOneIconAmount())) {
-            int textWidth = iconText.codePoints().map(TextUtil::getGlyphWidth).sum();
+            int textWidth = iconText.codePoints().map(TextUtil::getOreGlyphWidth).sum();
             int right = template.getPadding() + template.getIconSize() + 1;
             result =
                 result.append(spacing(right - textWidth - width))
@@ -460,13 +460,8 @@ public class PaperOreRenderer {
                     continue;
                 }
                 String value = Character.toString(code);
-                double boldOffset = code > 255 ? .5 : 1;
-                double advance =
-                    TextUtil.getGlyphWidth(code)
-                    + (style.decoration(TextDecoration.BOLD)
-                    == TextDecoration.State.TRUE
-                    ? boldOffset
-                    : 0);
+                boolean bold = style.decoration(TextDecoration.BOLD) == TextDecoration.State.TRUE;
+                double advance = TextUtil.getOreGlyphWidth(code, bold);
                 result.add(new Glyph(Component.text(value).style(style), advance, code == '\n'));
             }
         } else if (component instanceof ObjectComponent object) {
@@ -479,7 +474,7 @@ public class PaperOreRenderer {
         } else {
             Component value = component.children(List.of()).style(style);
             String plain = PlainTextComponentSerializer.plainText().serialize(value);
-            int advance = plain.codePoints().map(TextUtil::getGlyphWidth).sum();
+            int advance = plain.codePoints().map(TextUtil::getOreGlyphWidth).sum();
             result.add(new Glyph(value, Math.min(120, Math.max(9, advance)), false));
         }
         for (Component child : component.children()) {

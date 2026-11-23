@@ -5,6 +5,7 @@ import cn.superiormc.ultimateshop.utils.CommonUtil;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
@@ -42,6 +43,7 @@ public class InitManager extends AbstractManager {
     public void init() {
         migrateLegacyFolders();
         resourceOutputFolder("ui", true);
+        resourceOutput("glyph-widths.yml", true);
         resourceOutputFolder("languages", true);
         resourceOutputFolder("shops", false);
         resourceOutputFolder("menus", false);

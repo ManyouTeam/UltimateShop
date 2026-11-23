@@ -40,6 +40,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.NavigableMap;
+import java.util.TreeMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static cn.superiormc.ultimateshop.managers.SellChestManager.SELL_CHEST_ID;
 import static cn.superiormc.ultimateshop.objects.ObjectSellStick.SELL_STICK_ID;
@@ -49,6 +53,8 @@ import static cn.superiormc.ultimateshop.objects.menus.ObjectMenu.ITEM_SELL_MENU
 import static cn.superiormc.ultimateshop.objects.menus.ObjectMenu.SEARCH_MENU_FOLDER;
 
 public class ConfigManager extends AbstractManager {
+
+    private static final Pattern GLYPH_RANGE = Pattern.compile("U\\+([0-9A-Fa-f]{1,6})(?:-U\\+([0-9A-Fa-f]{1,6}))?");
 
     public static ConfigManager configManager;
 
@@ -68,15 +74,15 @@ public class ConfigManager extends AbstractManager {
 
     public Map<String, ObjectSellChest> sellChestMap = new HashMap<>();
 
-    private final Map<String, ConfigurationSection> uiStyles = new HashMap<>();
+    public Map<String, ConfigurationSection> uiStyles = new HashMap<>();
+
+    public Map<String, NavigableMap<Integer, Double>> glyphRules = new HashMap<>();
 
     public ConfigManager() {
-        configManager = this;
         UltimateShop.instance.saveDefaultConfig();
         this.config = UltimateShop.instance.getConfig();
-        if (config.getBoolean("menu.force-ui.enabled", false) && getForcedMenuUIMode().isEmpty()) {
-            ErrorManager.errorManager.sendErrorMessage("§cError: menu.force-ui.type must be inventory, arcmenu, dialog, ore, item-action-list or form");
-        }
+        configManager = this;
+        initGlyphRules();
         initUIStyles();
         if (!UltimateShop.freeVersion) {
             initSharedUseTimesConfigs();
@@ -94,6 +100,18 @@ public class ConfigManager extends AbstractManager {
             }
         }
         MathUtil.init();
+    }
+
+    private void initGlyphRules() {
+        glyphRules.clear();
+        File file = new File(UltimateShop.instance.getDataFolder(), "glyph-widths.yml");
+        try {
+            YamlConfiguration rules = new YamlConfiguration();
+            rules.load(file);
+            glyphRules.putAll(compileGlyphRules(rules));
+        } catch (IOException | InvalidConfigurationException | IllegalArgumentException exception) {
+            ErrorManager.errorManager.sendErrorMessage("§cError: Cannot load " + "glyph-widths.yml" + ": " + exception.getMessage());
+        }
     }
 
     private void initUIStyles() {
@@ -414,6 +432,22 @@ public class ConfigManager extends AbstractManager {
 
     public double getDouble(String path, double defaultValue) {
         return config.getDouble(path, defaultValue);
+    }
+
+    public double getGlyphWidth(int code, boolean ore, boolean bold) {
+        if (glyphRules.isEmpty()) {
+            return 0;
+        }
+        Double width = glyphRule(ore ? "ore.width" : "shared.width", code);
+        if (width.isNaN()) {
+            width = glyphRule("shared.width", code);
+        }
+        return bold ? width + glyphRule(ore ? "ore.bold-extra" : "shared.bold-extra", code) : width;
+    }
+
+    private Double glyphRule(String path, int code) {
+        int codePoint = Math.max(0, Math.min(code, Character.MAX_CODE_POINT));
+        return glyphRules.get(path).floorEntry(codePoint).getValue();
     }
 
     public ConfigurationSection getSection(String path) {
@@ -762,6 +796,56 @@ public class ConfigManager extends AbstractManager {
         }
         Object global = config.get("menu.ui.products." + path, fallback);
         return menu == null ? global : menu.get("ui.products." + path, global);
+    }
+
+
+    private Map<String, NavigableMap<Integer, Double>> compileGlyphRules(ConfigurationSection config) {
+        return Map.of(
+            "shared.width", compileGlyphRule(config, "shared.width", 1, true),
+            "shared.bold-extra", compileGlyphRule(config, "shared.bold-extra", 1, true),
+            "ore.width", compileGlyphRule(config, "ore.width", 1, false),
+            "ore.bold-extra", compileGlyphRule(config, "ore.bold-extra", 4, true));
+    }
+
+    private NavigableMap<Integer, Double> compileGlyphRule(ConfigurationSection config, String path, int precision,
+                                                          boolean requireFullCoverage) {
+        NavigableMap<Integer, Double> rules = new TreeMap<>();
+        rules.put(0, Double.NaN);
+        applyGlyphRules(rules, config, path, precision);
+        if (requireFullCoverage && rules.headMap(Character.MAX_CODE_POINT, true).containsValue(Double.NaN)) {
+            throw new IllegalArgumentException(path + " must cover U+0000-U+10FFFF");
+        }
+        return rules;
+    }
+
+    private void applyGlyphRules(NavigableMap<Integer, Double> rules, ConfigurationSection config, String path, int precision) {
+        ConfigurationSection section = config.getConfigurationSection(path);
+        if (section == null) {
+            if (config.contains(path)) {
+                throw new IllegalArgumentException(path + " must be a mapping of Unicode ranges to pixel widths");
+            }
+            return;
+        }
+        for (Map.Entry<String, Object> rule : section.getValues(false).entrySet()) {
+            Matcher matcher = GLYPH_RANGE.matcher(rule.getKey());
+            if (!matcher.matches()) {
+                throw new IllegalArgumentException(path + " has an invalid Unicode range: " + rule.getKey());
+            }
+            int first = Integer.parseInt(matcher.group(1), 16);
+            int last = matcher.group(2) == null ? first : Integer.parseInt(matcher.group(2), 16);
+            if (last > Character.MAX_CODE_POINT || first > last) {
+                throw new IllegalArgumentException(path + " has an invalid Unicode range: " + rule.getKey());
+            }
+            double value = rule.getValue() instanceof Number number ? number.doubleValue() : Double.NaN;
+            if (!Double.isFinite(value) || value < 0 || value > 1999 || value * precision != Math.rint(value * precision)) {
+                throw new IllegalArgumentException(path + " has an invalid pixel width for " + rule.getKey());
+            }
+            // Preserve the previous width immediately after the replaced range.
+            double nextValue = rules.floorEntry(last + 1).getValue();
+            rules.subMap(first, true, last, true).clear();
+            rules.put(first, value);
+            rules.put(last + 1, nextValue);
+        }
     }
 
 }

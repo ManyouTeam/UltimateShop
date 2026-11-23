@@ -43,28 +43,19 @@ public class TextUtil {
         "<(?:lang|translate|translatable):['\"]?((?:item|block)\\.minecraft\\.[a-z0-9_.]+)['\"]?>");
 
     public static int getGlyphWidth(int code) {
-        if (code == '\n') {
-            return 0;
-        }
-        if (code == ' ') {
-            return 4;
-        }
-        if (code < 128 && "!.,:;i|'".indexOf(code) >= 0) {
-            return 2;
-        }
-        if (code == '`' || code == 'l') {
-            return 3;
-        }
-        if (code < 128 && "\"()*I[]t{}".indexOf(code) >= 0) {
-            return 4;
-        }
-        if (code < 128 && "<>fk".indexOf(code) >= 0) {
-            return 5;
-        }
-        if (code == '@' || code == '~') {
-            return 7;
-        }
-        return code < 256 ? 6 : 9;
+        return getStyledGlyphWidth(code, false);
+    }
+
+    public static int getOreGlyphWidth(int code) {
+        return (int) getOreGlyphWidth(code, false);
+    }
+
+    public static double getOreGlyphWidth(int code, boolean bold) {
+        return ConfigManager.configManager.getGlyphWidth(code, true, bold);
+    }
+
+    private static int getStyledGlyphWidth(int code, boolean bold) {
+        return (int) ConfigManager.configManager.getGlyphWidth(code, false, bold);
     }
 
     public static boolean isEnglishWordCharacter(int value) {
@@ -96,7 +87,7 @@ public class TextUtil {
                 maximum = Math.max(maximum, width);
                 width = 0;
             } else {
-                width += getGlyphWidth(code) + (bold && code != ' ' ? 1 : 0);
+                width += getStyledGlyphWidth(code, bold);
             }
         }
         return Math.max(maximum, width);
@@ -152,7 +143,7 @@ public class TextUtil {
             int code = text.codePointAt(index);
             offsets[count] = rawStart;
             values[count] = code;
-            widths[count] = pixels ? getGlyphWidth(code) + (bold && code != ' ' ? 1 : 0) : 1;
+            widths[count] = pixels ? getStyledGlyphWidth(code, bold) : 1;
             prefixes[count] = styleBeforeRaw;
             count++;
             index += Character.charCount(code);

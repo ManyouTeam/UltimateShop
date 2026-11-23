@@ -97,4 +97,10 @@ Set `style` to a style ID such as `bedrock` to force graphical defaults too, or 
 
 Root `content` is the shared description fallback; `dialog.content`, `bedrock.content` and `arcmenu.content` override it for their route. The graphical `ui` section controls drawing and placement. It does not select a presentation with `ui.mode`.
 
+## Text width for ArcMenu and Dialog
+
+UltimateShop now calculates text widths using the rules in `plugins/UltimateShop/glyph-widths.yml`. If you use a language outside the primary supported languages, the default widths may cause text to be clipped, wrap unexpectedly, or appear misaligned in parts of ArcMenu (`arcmenu`) or Dialog (`dialog`), including the Ore layout.
+
+To adjust the measurement, edit `shared.width` in `glyph-widths.yml`. Set widths in pixels for individual Unicode code points such as `U+0041` or inclusive ranges such as `U+0041-U+005A`. Later entries in the same section override earlier ones. Ore can override shared widths under `ore.width`. Run `/shop reload` after saving, then reopen the affected menu to check the result.
+
 [Menu System](README.md) · [Layout & Buttons](layout-and-buttons.md) · [Graphical UI Layout](../menus-getting-started/ui-layout.md)

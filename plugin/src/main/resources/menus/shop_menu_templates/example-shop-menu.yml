@@ -13,6 +13,14 @@ open-actions:
     type: sound
     sound: item.book.page_turn
 
+layout:
+  - '0f00s00x0'
+  - '000000000'
+  - '1PPPPPPP2'
+  - '1PPPPPPP2'
+  - '1PPPPPPP2'
+  - 'l0003000r'
+
 shop-items:
   - P
 
@@ -37,14 +45,6 @@ next-page-item:
     hidden-item:
       material: LIGHT_BLUE_STAINED_GLASS_PANE
       name: ' '
-
-layout:
-  - '0f00s00x0'
-  - '000000000'
-  - '1PPPPPPP2'
-  - '1PPPPPPP2'
-  - '1PPPPPPP2'
-  - 'l0003000r'
 
 buttons:
   0:

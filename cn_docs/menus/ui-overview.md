@@ -97,4 +97,10 @@ menu:
 
 根级 `content` 是共享说明的后备值；`dialog.content`、`bedrock.content`、`arcmenu.content` 分别覆盖各自界面说明。图形 `ui` 配置段控制绘制和位置，不能通过 `ui.mode` 选择呈现方式。
 
+## ArcMenu 和对话框的文本宽度
+
+UltimateShop 现在根据 `plugins/UltimateShop/glyph-widths.yml` 中的规则计算文本宽度。如果使用主要支持语言之外的语言，默认宽度可能导致 ArcMenu（`arcmenu`）或对话框（`dialog`，含 Ore 布局）的部分文字被截断、意外换行或对齐偏移。
+
+可在 `glyph-widths.yml` 的 `shared.width` 中以像素为单位设置单个 Unicode 码位（如 `U+0041`）或包含首尾的范围（如 `U+0041-U+005A`）的宽度。同一配置段中，后面的规则会覆盖前面的规则。Ore 可通过 `ore.width` 覆盖共享宽度。保存后执行 `/shop reload`，再重新打开受影响的菜单检查显示效果。
+
 [菜单系统](README.md) · [布局与按钮](layout-and-buttons.md) · [图形 UI 布局](../menus-getting-started/ui-layout.md)
