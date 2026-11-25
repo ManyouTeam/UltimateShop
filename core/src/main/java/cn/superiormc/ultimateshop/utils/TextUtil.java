@@ -19,12 +19,13 @@ import org.bukkit.entity.Player;
 
 import java.awt.Color;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -447,6 +448,16 @@ public class TextUtil {
     public static Pattern pattern8 = Pattern.compile("\\{custom_(.*?)}");
     public static Pattern pattern9 = Pattern.compile("\\{random-last-reset_(.*?)}");
 
+    public static LocalDateTime getNextCronExecution(String expression, LocalDateTime now) {
+        CronParser parser = new CronParser(CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ));
+        Cron cron = parser.parse(expression);
+        cron.validate();
+        return ExecutionTime.forCron(cron).nextExecution(now.atZone(ZoneId.systemDefault()))
+                .map(ZonedDateTime::toLocalDateTime).orElse(null);
+    }
+
+    private static final Pattern CUSTOM_RESET_TIME = Pattern.compile("\\{custom-times_(.*?)}");
+
     public static String parseBuiltInPlaceholder(String text, Player player) {
         text = text.replace("{discount_", "{conditional_");
         if (player != null) {
@@ -482,6 +493,17 @@ public class TextUtil {
             text = text.replace("{compare_" + compareNumber + "_" + baseNumber + "}",
                 StaticPlaceholder.getCompareValue(player, new BigDecimal(baseNumber), new BigDecimal(compareNumber)));
         }
+        Matcher matcher8 = pattern8.matcher(text);
+        while (matcher8.find()) {
+            String placeholder = matcher8.group(1);
+            text = text.replace("{custom_" + placeholder + "}",
+                ObjectCustomPlaceholder.getNowValue(player, placeholder));
+        }
+        Matcher customReset = CUSTOM_RESET_TIME.matcher(text);
+        while (customReset.find()) {
+            String id = customReset.group(1);
+            text = text.replace(customReset.group(), ObjectCustomPlaceholder.getResetTime(player, id));
+        }
         Matcher matcher5 = pattern5.matcher(text);
         while (matcher5.find()) {
             String placeholder = matcher5.group(1);
@@ -497,31 +519,10 @@ public class TextUtil {
         Matcher matcher7 = pattern7.matcher(text);
         while (matcher7.find()) {
             String cronExpression = matcher7.group(1);
-
-            // 使用 Quartz 格式解析
-            CronParser parser = new CronParser(CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ));
-            Cron cron = parser.parse(cronExpression);
-            cron.validate(); // 检查合法性
-
-            // 当前时间
-            ZonedDateTime now = ZonedDateTime.now();
-
-            // 获取下一次执行时间
-            ExecutionTime executionTime = ExecutionTime.forCron(cron);
-            Optional<ZonedDateTime> nextExecution = executionTime.nextExecution(now);
-
-            String time = "";
-
-            if (nextExecution.isPresent()) {
-                time = CommonUtil.timeToString(nextExecution.get().toLocalDateTime(), ConfigManager.configManager.getStringWithLang(player, "placeholder.cron.format"));
-            }
+            LocalDateTime nextExecution = getNextCronExecution(cronExpression, LocalDateTime.now());
+            String time = nextExecution == null ? "" : CommonUtil.timeToString(nextExecution,
+                    ConfigManager.configManager.getStringWithLang(player, "placeholder.cron.format"));
             text = text.replace("{cron_\"" + cronExpression + "\"}", time);
-        }
-        Matcher matcher8 = pattern8.matcher(text);
-        while (matcher8.find()) {
-            String placeholder = matcher8.group(1);
-            text = text.replace("{custom_" + placeholder + "}",
-                ObjectCustomPlaceholder.getNowValue(player, placeholder));
         }
         Matcher matcher9 = pattern9.matcher(text);
         while (matcher9.find()) {

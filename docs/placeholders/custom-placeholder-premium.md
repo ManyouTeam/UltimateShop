@@ -1,9 +1,13 @@
-# 🗯️Custom Placeholder - Premium
+# 🗯️Custom Placeholder
 
 
 
 {% hint style="info" %}
 This feature was added in version **4.5.26**, and still in **BETA** test.
+{% endhint %}
+
+{% hint style="info" %}
+The free version can create up to **5** custom placeholders; the premium version has no limit.
 {% endhint %}
 
 The main purpose of a custom placeholder is to record desired information, such as the quantity of same of material sold, or the earning. Simply modify the placeholder value using commands in the appropriate places to achieve the desired effect.

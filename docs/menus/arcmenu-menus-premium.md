@@ -1,12 +1,12 @@
-# ✨ ArcMenu UI — Premium
+﻿# ✨ArcMenu UI - Premium
 
-ArcMenu displays Common, Shop, Search and Favourite menus as interactive graphical screens for Java players. It shares styles, areas, placements and product card settings with Ore, while using its own ArcMenu integration and client setup.
+ArcMenu renders Common, Shop, Search, and Favourite menus as interactive graphical screens for Java players. It shares styles, named areas, placement, and product card settings with Ore, while using its own ArcMenu integration and client setup.
 
 ## Enable ArcMenu
 
-Install a compatible ArcMenu plugin and complete its client resource setup. This project integrates with the ArcMenu 3.4.3 API, including its native text input service.
+Install a compatible ArcMenu plugin and complete its client resource setup (UltimateShop targets the **ArcMenu 3.4.3 API**, including native text input).
 
-In `config.yml`:
+Enable global settings in `config.yml`:
 
 ```yaml
 menu:
@@ -42,26 +42,26 @@ buttons:
         order: 0
 ```
 
-Create `farming`, reload and open `/shop menu categories`. The selected style provides the canvas and `sidebar` area. In normal selection, Java tries ArcMenu before an enabled Dialog/Ore route and Inventory. Bedrock uses its own presentation selection. See [UI Modes](ui-overview.md) for global forced selection.
+Make sure the `farming` shop already exists. Save your config, run `/shop reload`, and run `/shop menu categories` (the button appears in the chosen style's `sidebar` area). Under normal selection, Java tries ArcMenu first, then Dialog/Ore, then Inventory; see [UI Modes](ui-overview.md).
 
-## Styles and layout
+## Styles & Presets
 
-Use menu `ui.style: classic` or `ui.style: bedrock`, or select the global default with `menu.ui.style`. Style files live in `plugins/UltimateShop/ui/`, contain graphical fields directly, and can be copied for custom presets. Existing files are preserved when the plugin creates missing bundled presets.
+Select `classic` or `bedrock` via global `menu.ui.style` or menu `ui.style`, or copy a file in `plugins/UltimateShop/ui/` to create your own:
 
-| Preset | Appearance and placement |
+| Preset | Visual Style & Layout |
 | --- | --- |
-| `classic` | Vertical navigation at the left, product grid at the right |
-| `bedrock` | Charcoal panels, beveled controls, green buying/hover states, pale selling controls, five-button top navigation and a three-column product grid |
+| `classic` | Left vertical sidebar + right product grid |
+| `bedrock` | Charcoal panels, beveled controls, green buy/hover states, light sell controls, top 5-button navigation bar + 3-column product grid |
 
-The `bedrock` preset uses the named `sidebar` area for its horizontal navigation. The name identifies an area, not a fixed screen position. Both presets use existing item icons and fonts. Adapt explicit row/column positions and custom areas when changing presets.
+Note that `bedrock` also names its top horizontal bar `sidebar` (`sidebar` is just an area ID, not a fixed screen edge). When switching presets, update any hardcoded `row`/`column` indices or custom area coordinates.
 
-Menu-local fields override normal style defaults. A forced style can override local fields through `menu.force-ui.style`; see [Configuration & Inheritance](menu-configuration.md). Geometry and shared card keys are documented in [Graphical UI Layout](../menus-getting-started/ui-layout.md).
+Menu fields override style defaults, while `menu.force-ui.style` can override local defaults; see [Menu Configuration & Inheritance](menu-configuration.md) and [Graphical UI Layout](../menus-getting-started/ui-layout.md).
 
-## A button appears in the inventory but not in ArcMenu
+## Why a Button Appears in Inventory but Not ArcMenu
 
-**ArcMenu skips ordinary buttons that have no `ui.placement`.** The root `layout` sets inventory slots. Products can inherit `ui.products.placement`, while ordinary buttons need their own placement.
+**ArcMenu skips common buttons that lack `ui.placement`.** Root `layout` only positions Inventory slots; products inherit `ui.products.placement`, whereas common buttons must set their own graphical placement.
 
-For example, the old `blocks` and `blocks2` arrows used a `shop_menu` action to open a different shop. To make this kind of button appear in ArcMenu, add this under the existing button configuration:
+For example, to show legacy shop-link arrows in ArcMenu, add:
 
 ```yaml
 ui:
@@ -70,31 +70,27 @@ ui:
     order: 20
 ```
 
-If the button is defined in the shop file's `buttons` section, keep its marker in the shop menu's `layout` as well.
+If the button is defined under a shop's `buttons`, keep its symbol in the shop menu `layout` as well. For multi-page products inside one shop, use `ui.layout.pagination` instead of manual page arrows (`previous-page-item` / `next-page-item` are Inventory-only).
 
-To browse more products in the same shop, use ArcMenu's own pagination. When the products fill more than one page, `ui.layout.pagination` positions the page controls. The shop menu's `previous-page-item` and `next-page-item` apply to inventories. See [Graphical UI Layout](../menus-getting-started/ui-layout.md) for more placement options.
+## Product Actions & Quantity Controls
 
-## Product operations
+Product cards show up to two available actions from `ui.products.actions.primary` and remaining/listed actions in `ui.products.actions.extra` (filtered by existing click bindings, prices, conditions, and buy-only/sell-only rules).
 
-Cards expose up to two available operations from `ui.products.actions.primary`, plus remaining or selected extra actions from `ui.products.actions.extra`. Operations must already exist in the configured product click bindings. Prices, conditions, quantity permissions and custom buy-only/sell-only restrictions still filter them.
+Right-clicking a product defaults to `select-amount` (customizable via `ui.renderers.arcmenu.right-click-action`), opening the graphical **product details panel** rather than an Inventory Buy More file. When Buy More and a quantity action are available, +/- buttons and the scroll wheel adjust the count (Inventory `amount-items` and preview slots do not style graphical details).
 
-Right-click defaults to `select-amount`. Change menu `ui.renderers.arcmenu.right-click-action` to select another available operation. `select-amount` opens graphical product details rather than rendering a Buy More file.
+A stack count > 1 on the item icon reflects the display item's stack size, independent of the selected trade units.
 
-Default buy/sell quantities apply independently until the player selects a quantity. Plus/minus and scrolling adjust the selected quantity when Buy More and a quantity operation are available. Inventory `amount-items`, previews and confirmation slots do not define the graphical detail panel.
+<a id="quantity-input"></a>
 
-Item icons show the displayed stack count at their bottom-right when greater than one. This count describes the displayed stack, independently of the selected number of trade units.
+## Text Quantity Input
 
-## Quantity input
+When ArcMenu's text input service is available, clicking the number between `-` and `+` lets players type a quantity directly (even when ArcMenu hides the vanilla anvil UI, live input appears inside the focused graphical field).
 
-With a compatible ArcMenu text input service, click the quantity between `-` and `+` to edit it directly. UltimateShop shows the live draft in the focused graphical field even when ArcMenu hides the native anvil screen.
+Finishing input (`Esc` in mouse mode) clamps valid integers between `1` and the Buy More cap; invalid input keeps the previous count. Players still click Buy or Sell to execute the trade. Prompt text comes from `ui.text.amount-input` (requires Buy More enabled, a valid quantity menu, and `select-amount`).
 
-Finish editing, using Esc in mouse mode, to apply a valid whole number. The value is clamped from 1 to the selected Buy More maximum; invalid input keeps the previous quantity. Finishing input only selects the amount. The player then chooses Buy or Sell to trade.
+## ArcMenu Renderer Settings
 
-The input label is `ui.text.amount-input`. The source product still needs Buy More, a valid quantity menu and an available `select-amount` operation.
-
-## ArcMenu renderer settings
-
-Menu-local renderer settings belong under `ui.renderers.arcmenu`:
+Per-menu settings live under `ui.renderers.arcmenu`:
 
 ```yaml
 ui:
@@ -114,15 +110,15 @@ ui:
         padding: 8
 ```
 
-| Relative key | Purpose |
+| Relative Key | Purpose |
 | --- | --- |
-| `right-click-action` | Product right-click operation |
+| `right-click-action` | Action triggered on product right-click |
 | `screen-scale` | Overall graphical scale |
-| `animation.enabled/duration` | Opening animation; same-menu reopens skip it |
-| `more-menu.columns` | Extra-action popup columns |
-| `tooltip.enabled/width/font-size/padding` | Hover tooltip appearance |
+| `animation.enabled` / `duration` | Open animation (skipped when reopening the same menu) |
+| `more-menu.columns` | Column count for the extra-actions popup |
+| `tooltip.enabled` / `width` / `font-size` / `padding` | Hover tooltip appearance |
 
-Refresh interval is read **globally**, even when other settings are local:
+The refresh interval **always reads from global `config.yml`** in ticks (minimum `5`, or from the global style; per-menu `update-interval` is ignored):
 
 ```yaml
 menu:
@@ -132,18 +128,18 @@ menu:
         update-interval: 20
 ```
 
-The interval is in ticks, with a minimum of 5. It can also be supplied by the selected global style. Per-menu `update-interval` does not set the refresh schedule.
+## Backgrounds, Decorations, and Tooltips
 
-## Backgrounds, decorations and text
+ArcMenu reads colors from resolved `ui.theme` (window and title backgrounds toggle independently, and `theme.decorations` controls frames, corner accents, and header dividers; see [Theme and Text](../menus-getting-started/ui-layout.md#theme-and-text)).
 
-ArcMenu reads graphical colors from resolved `ui.theme`. Window and title backgrounds have independent enable switches. `theme.decorations` supports frames, corners and header accents; bevels and control-specific colors let a style define its appearance without depending on its file name. See the [theme reference](../menus-getting-started/ui-layout.md#theme-and-text).
+Tooltips lay out formatted lore as left-aligned blocks and scale down if oversized; mouse mode adapts to surface bounds, cursor sensitivity, player preference, margin, and vertical pitch limits, while touch/Vision mode uses surface bounds.
 
-Tooltips wrap formatted lore in a left-aligned block and shrink oversized content to fit. Mouse layout fitting accounts for the active surface, cursor sensitivity, player preferences, cursor margin and the vertical pitch limit. Touch/Vision use the surface bounds.
+## Menu-Type Behaviour
 
-## Menu-type behavior
+* **Search & Favourite**: use ArcMenu graphical layouts and dedicated controls (source capacity is still capped by root result slots); Favourite edit mode provides reorder and remove controls.
+* **Buy More**: handled inside the product details panel.
+* **Item Sell / Sell All**: remain physical Inventory screens.
 
-Search/Favourite use ArcMenu layouts and their own controls, while root result-slot capacity still limits source results. Favourite editing exposes reordering/removal controls. Item Sell/Sell All remain physical inventories. Buy More quantity selection stays within product details.
+ArcMenu never uses `/shop dialogpack` (that command builds Ore assets only).
 
-ArcMenu does not use `/shop dialogpack` for its own controls; that command builds Ore assets.
-
-[Search](search-menus-premium.md) · [Favourite](favourite-menus-premium.md) · [Buy More](buy-more-menus.md)
+[Search Menus](search-menus-premium.md) · [Favourite Menus](favourite-menus-premium.md) · [Buy More Menus](buy-more-menus.md)

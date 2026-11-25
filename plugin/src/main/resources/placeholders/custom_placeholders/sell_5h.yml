@@ -1,0 +1,5 @@
+type: number
+default-value: '0'
+per-player-value: true
+reset-mode: TIMER
+reset-time: '05:00:00'

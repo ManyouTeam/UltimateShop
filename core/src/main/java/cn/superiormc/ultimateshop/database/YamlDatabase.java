@@ -111,16 +111,16 @@ public class YamlDatabase extends AbstractDatabase {
                     }
                 });
             }
+        }
 
-            ConfigurationSection customSection = config.getConfigurationSection("customPlaceholder");
-            if (customSection != null) {
-                customSection.getKeys(false).forEach(phID -> {
-                    String nowValue = customSection.getString(phID, null);
-                    if (nowValue != null) {
-                        cache.setCustomPlaceholderCache(phID, nowValue);
-                    }
-                });
-            }
+        ConfigurationSection customSection = config.getConfigurationSection("customPlaceholder");
+        if (customSection != null) {
+            customSection.getKeys(false).forEach(phID -> {
+                String nowValue = customSection.getString(phID, null);
+                if (nowValue != null) {
+                    cache.setCustomPlaceholderCache(phID, nowValue);
+                }
+            });
         }
         cache.ready();
     }
@@ -162,10 +162,10 @@ public class YamlDatabase extends AbstractDatabase {
                 phSection.set("refreshDoneTime", placeholder.refreshDoneTime());
                 phSection.set("lastResetTime", placeholder.lastResetTime());
             }
-
-            ConfigurationSection customSection = config.createSection("customPlaceholder");
-            snapshot.customPlaceholders().forEach(customSection::set);
         }
+
+        ConfigurationSection customSection = config.createSection("customPlaceholder");
+        snapshot.customPlaceholders().forEach(customSection::set);
 
         try {
             config.save(file);

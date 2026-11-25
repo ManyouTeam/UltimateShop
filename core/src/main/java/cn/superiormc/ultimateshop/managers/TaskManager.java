@@ -39,7 +39,7 @@ public class TaskManager extends AbstractManager {
                     cache.shutCache(false);
                 }
             }
-        }, 180L, ConfigManager.configManager.config.getLong("auto-save.period-tick", 600));
+        }, 180L, ConfigManager.configManager.getLong("auto-save.period-tick", 600));
     }
 
     public void initSellChestTasks() {

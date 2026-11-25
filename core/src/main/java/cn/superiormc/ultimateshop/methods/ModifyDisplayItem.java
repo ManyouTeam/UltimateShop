@@ -444,11 +444,15 @@ public class ModifyDisplayItem {
         map.put('e', ignored -> item.getPlayerSellLimit(player) != -1);
         map.put('f', ignored -> item.getServerSellLimit(player) != -1);
 
-        map.put('g', ignored -> item.getPlayerBuyLimit(player) > 0 && p.getBuyUseTimes() >= item.getPlayerBuyLimit(player));
-        map.put('h', ignored -> item.getPlayerSellLimit(player) > 0 && p.getSellUseTimes() >= item.getPlayerSellLimit(player));
+        map.put('g', ignored -> item.getPlayerBuyLimit(player) > 0
+                && (long) p.getBuyUseTimes() + item.getBuyTimesIncrement() > item.getPlayerBuyLimit(player));
+        map.put('h', ignored -> item.getPlayerSellLimit(player) > 0
+                && (long) p.getSellUseTimes() + item.getSellTimesIncrement() > item.getPlayerSellLimit(player));
 
-        map.put('i', ignored -> item.getServerBuyLimit(player) > 0 && s.getBuyUseTimes() >= item.getServerBuyLimit(player));
-        map.put('j', ignored -> item.getServerSellLimit(player) > 0 && s.getSellUseTimes() >= item.getServerSellLimit(player));
+        map.put('i', ignored -> item.getServerBuyLimit(player) > 0
+                && (long) s.getBuyUseTimes() + item.getBuyTimesIncrement() > item.getServerBuyLimit(player));
+        map.put('j', ignored -> item.getServerSellLimit(player) > 0
+                && (long) s.getSellUseTimes() + item.getSellTimesIncrement() > item.getServerSellLimit(player));
 
         map.put('k', ignored -> item.getBuyMore());
         map.put('l', ignored -> item.isAllowFavourite());
@@ -459,6 +463,8 @@ public class ModifyDisplayItem {
 
         map.put('p', ignored -> buyMore);
         map.put('q', ignored -> !buyMore);
+
+        map.put('r', argument -> item.usesSharedPrice(argument));
 
         map.put('u', ignored -> parseClickType(item, clickType, true));
         map.put('v', ignored -> parseClickType(item, clickType, false));

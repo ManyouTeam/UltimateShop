@@ -1,39 +1,14 @@
-# 💰商品配置：单项
+# 💰商品配置：单项内容
 
-本页讲 `products`、`buy-prices`、`sell-prices` 这三节，按插件在代码里实际的运作方式来解释。
-
-如果只记一条，请记这个：
-
-* **单项**就是 `products`、`buy-prices`、`sell-prices` 下面的一个条目。
-* 一个商品可以有多个单项。
-* 插件先判断哪些单项可用、算出各自数量、校验条件，再把它们发放或扣除。
+本页按插件实际的处理逻辑，说明商品配置中的 `products`、`buy-prices` 与 `sell-prices` 三节。
 
 ## 什么是单项？
 
-同一个商店物品里，下面这三节都是由单项组成的：
+在商店商品中，`products`、`buy-prices`、`sell-prices` 下的每一个独立条目（如 `1:`、`2:`）都称为一个**单项**。一个商品可以包含任意多个单项。
 
-#### `products`
-
-买入时玩家拿到什么，卖出时玩家必须交出什么。可选。
-
-若没有 `products`：
-
-* 买入时依然会执行 `buy-actions`
-* 卖出时依然会执行 `sell-actions`
-* 但买入不会给玩家任何物品
-* 卖出也不要求玩家交出任何物品
-
-做命令商店时这种配置很有用。
-
-#### `buy-prices`
-
-买入需要支付什么。可选；不写就无法购买。
-
-#### `sell-prices`
-
-卖出后玩家得到什么。可选；不写就无法出售。
-
-示例：
+* **`products`（商品内容）**：可选。买入时玩家获得的物品/奖励，卖出时玩家需要交出的物品。若省略整节，买入和卖出仍会正常执行 `buy-actions` / `sell-actions`，但不会发放或扣除任何物品（常用于纯命令商店）。
+* **`buy-prices`（购买价格）**：可选。买入该商品需要支付的代价；不配置则无法购买。
+* **`sell-prices`（出售价格）**：可选。卖出该商品后玩家获得的收益；不配置则无法出售。
 
 ```yaml
 items:
@@ -55,34 +30,31 @@ items:
         placeholder: '{amount}$'
 ```
 
-上例中：
+上例中，`products.1`、`products.2`、`buy-prices.1`、`sell-prices.1` 各自都是一个单项。
 
-* `products.1` 是一个单项
-* `products.2` 是一个单项
-* `buy-prices.1` 是一个单项
-* `sell-prices.1` 是一个单项
+## 插件如何处理单项？
 
-## 插件如何使用单项？
+玩家进行购买或出售时，插件会按以下顺序处理每一节的单项：
 
-玩家买卖时，插件并不是从上到下顺着读这一节，而是按下面的流程处理：
+1. 读取 `products`、`buy-prices` 或 `sell-prices` 下的全部单项。
+2. 使用每个单项的 `apply-conditions`（旧版写法为 `conditions`）进行过滤。
+3. 根据该节的模式（`ANY`、`ALL`、`CLASSIC_ANY`、`CLASSIC_ALL`）决定本次交易选中哪些单项。
+4. 计算每个被选中单项的实际数量（`amount`）。
+5. 检查玩家是否持有足够的物品或货币。
+6. 校验每个被选中单项的 `require-conditions`。
+7. 实际发放或扣除物品/货币，并执行单项对应的 `give-actions` / `take-actions`。
 
-1. 读出 `products`、`buy-prices` 或 `sell-prices` 里的所有单项。
-2. 用 `apply-conditions`（旧版写法是 `conditions`）过滤一遍。
-3. 按这一节的模式（`ANY`、`ALL`、`CLASSIC_ANY`、`CLASSIC_ALL`）决定选中哪些单项。
-4. 计算每个被选中单项的实际数量。
-5. 检查玩家持有量是否足够。
-6. 检查 `require-conditions`。
-7. 执行 `give-actions` / `take-actions`，实际发放或扣除。
-
-这就是 `apply-conditions` 与 `require-conditions` 不是一回事的原因。
+{% hint style="info" %}
+`apply-conditions` 在**筛选单项之前**生效，决定该条目是否参与本次交易；`require-conditions` 在**选中并算完数量之后**校验，决定这笔交易是否允许成交。
+{% endhint %}
 
 ## 单项的类型
 
-插件会根据你在单项里写的选项，判断它属于哪种类型。
+插件会根据单项中填写的键，自动识别它属于哪种类型。
 
 ### 原版物品
 
-用普通的[物品格式](../../format/itemformat-tm/README.md)告诉插件：你想在商店里卖什么原版物品，或想让玩家支付什么。**（购买/出售/商品）**
+使用[物品格式（ItemFormat™）](../../format/itemformat-tm/)定义普通的 Minecraft 原版物品，可用于 `products`、`buy-prices` 与 `sell-prices`。
 
 ```yaml
 products:
@@ -93,14 +65,9 @@ products:
     amount: 16
 ```
 
-在以下情况下使用：
-
-* 这个对象就是普通的 Minecraft 物品
-* 你希望插件真的去比对、发放或扣除实际物品
-
 ### 挂钩物品
 
-用[支持的插件](../../info/compatibility.md)提供的物品，告诉插件你想卖什么自定义物品、或想让玩家支付什么。该类型同样使用[物品格式](../../format/itemformat-tm/README.md)。**（购买/出售/商品）**
+通过[兼容插件](../../info/compatibility.md)引入自定义物品，同样使用[物品格式（ItemFormat™）](../../format/itemformat-tm/)，可用于 `products`、`buy-prices` 与 `sell-prices`。
 
 ```yaml
 products:
@@ -109,14 +76,9 @@ products:
     hook-item: 'AXE;;MAGIC_AXE'
 ```
 
-在以下情况下使用：
-
-* 该物品由其他物品插件提供
-* 你仍希望 UltimateShop 把它当作物品来处理
-
 ### 匹配物品
 
-用[自定义物品匹配方式](../../features/custom-item-match-method.md)里的匹配规则，告诉插件要匹配哪些物品。**（购买/商品）**
+使用[自定义物品匹配方式](../../features/custom-item-match-method.md)按 Lore、NBT、名称等规则模糊匹配玩家背包中的物品，常用于无固定物品 ID 的自定义物品（可用于购买价格或商品回收）。
 
 ```yaml
 products:
@@ -127,14 +89,9 @@ products:
     amount: 64
 ```
 
-在以下情况下使用：
-
-* 没有精确的物品 ID 可供比对
-* 你想按物品描述、NBT、名称或其他自定义规则来匹配
-
 ### 原版经济 / 挂钩经济
 
-直接操作经济余额，而不是物品。写法见[经济格式](../../format/economyformat-tm.md)。
+直接操作金币、点券、经验等经济数值，写法见[经济格式（EconomyFormat™）](../../format/economyformat-tm.md)，可用于 `products`、`buy-prices` 与 `sell-prices`。
 
 ```yaml
 buy-prices:
@@ -144,13 +101,9 @@ buy-prices:
     placeholder: '{amount}$'
 ```
 
-在以下情况下使用：
-
-* 玩家需要支付或获得金钱、点券、经验、等级之类的东西
-
 ### 自定义 <mark style="color:red;">- 付费版</mark>
 
-当对象既不是普通物品、也不是已支持的经济类型时，用 `match-placeholder`。
+当你需要对接插件未内置支持的数值或货币系统时，可通过 `match-placeholder` 读取玩家当前的数值占位符（用于校验持有量），再配合 `take-actions` / `give-actions` 执行实际增减。
 
 ```yaml
 buy-prices:
@@ -165,114 +118,82 @@ buy-prices:
         command: 'health take {player} {amount}'
 ```
 
-在以下情况下使用：
-
-* 想比较任意自定义数值
-* 插件本身并不支持那种货币或系统
-
-要注意：
-
-* 占位符只负责读出玩家当前有多少
-* 真正修改数值的是 `take-actions` / `give-actions`
-
 ### 免费 / 空
 
-如果某个单项既没有物品数据、经济数据，也没有 `match-item` 或 `match-placeholder`，它就被视为免费。
-
-适用于：
-
-* 命令商店
-* 权限商店
-* 只靠动作发奖的奖励
+若某个单项既未配置物品、经济，也未配置 `match-item` 或 `match-placeholder`，则视为免费条目，常用于纯命令商店、权限商店或仅通过动作发奖的礼包。
 
 ## 单项的选项
 
-下面这些是实际配置时最常用到的选项。
+### `amount`
 
-#### `amount`
-
-单项的基础数量。
-
-可以是：
-
-* 一个固定数字
-* PlaceholderAPI 变量，可用的内置占位符见[本页](../products.md#dynamic-value)。&#x20;
-* 数学表达式，写法见[数学计算格式](../../format/math-calculate-format.md)。
-* 动态公式
-
-示例：
+单项的基础数量，支持固定数字、PlaceholderAPI 变量、[内置占位符](../../placeholders/built-in-placeholders.md)以及[数学计算格式](../../format/math-calculate-format.md)动态公式。
 
 ```yaml
 amount: '55 + ({buy-times-server} - {sell-times-server}) * 0.1'
 ```
 
-#### `apply-conditions`
+### `max-sell-amount`
 
-这个单项是否参与本次交易。
+可选，可写在单个 `products` 或 `sell-prices` 条目下，用于手动指定 **Sell All（全部出售）** 时该单项最多可出售的次数。
 
-#### `require-conditions`
+{% hint style="info" %}
+使用动态价格或动态数量时，若不填写 `max-sell-amount`，插件只能逐笔穷举试算来寻找最大可售次数。根据价格公式填写此选项后，插件可直接算出上限，显著提升 Sell All 的性能。具体公式示例见[动态价格](../../dynamic-prices/dynamic-price.md)。
+{% endhint %}
 
-被选中之后，是否允许这笔交易真的使用它。
+**多条目合并规则：**
+* `ALL` 模式下，取所有已配置公式结果中的最小值。
+* `ANY` 模式下，仅当所有参与交易的条目都配置了该公式时，才会将各条目上限相加。
 
-#### `give-actions`
+如需按 Vault 回收限额的剩余额度反推次数，可参考[回收限额示例 - Sell All 怎么算最多能卖几次](../../features/sell-income-limits-example.md#sell-all-怎么算最多能卖几次)。
 
-把这个单项发放给玩家时执行的动作。
+**公式可用占位符：**
 
-常见用途：
+| 占位符 | 可用位置 | 说明 |
+| --- | --- | --- |
+| `{stock}` | 仅 `products` | 玩家当前持有的该物品数量（经济类单项则为当前余额） |
+| `{sell-unit-income}` | 仅 `CLASSIC_ANY` / `CLASSIC_ALL` 模式下的 `sell-prices` | 单次出售实际到账的金额（已含售价倍率）；引用同一 Shared Price 模板的卖价项会合并计算 |
+| `{require-conditions.<key>.value}` | `products` 与 `sell-prices` | 读取对应 `require-conditions` 条目中的 `value` 数值 |
+| `{buy-times-player}`、`{buy-times-server}`、`{buy-times-increment}`、`{sell-times-player}`、`{sell-times-server}`、`{sell-times-increment}` | `products` 与 `sell-prices`（任意模式） | 本次出售开始前的买卖次数，以及每笔交易增加的计数步长 |
+| `{custom_...}` 等内置占位符、`%...%` | 所有单项 | 与 `amount` 相同，支持内置占位符与 PlaceholderAPI，详见[内置占位符](../../placeholders/built-in-placeholders.md) |
 
-* 命令商店的奖励
-* 权限奖励
-* 自定义货币奖励
+**注意事项：**
 
-#### `take-actions`
+* 公式中**不能使用 `{amount}`**（该公式本身就是为了求解次数，此时尚未得出次数）；如需读取上限数值，请使用 `{require-conditions.<key>.value}`。
+* `{buy-times-increment}` / `{sell-times-increment}` 对应商品的计数增量配置（即每笔交易占用多少次计数）。当需要把「剩余可占用次数」换算成「可交易笔数」时才需使用，例如：`max-sell-amount: '({require-conditions.1.value} - {buy-times-server}) / {buy-times-increment}'`。
+* `{stock}` 仅在 `products` 中会被替换；若误写在 `sell-prices` 中会原样保留并导致公式失效。
+* `{sell-unit-income}` 仅存在于卖价侧，且在 `ANY` / `ALL` 动态价格模式下会被跳过（因为批内单价会变化）；动态价格请改用次数计数器推导，见[动态价格](../../dynamic-prices/dynamic-price.md)。
+* 所有次数计数器均取「本次出售开始前」的值（例如从未卖过该商品的玩家，`{sell-times-player}` 为 `0`）。
+* 结果会向下取整为整数，且不会超过库存、`sell-limits` 与 `sell.max-amount` 允许的范围；负值按 `0` 处理。
+* 若公式求值失败（占位符拼错、除以 `0`、未开启 `math.enabled`），该公式会被静默忽略并退回默认计算，不会导致出售失败；使用 `min()`、`max()`、`ceil()` 等函数需开启 `math.enable-function`。
+* 商品开启 `price-modifier: true` 时，`sell-prices` 中的 `max-sell-amount` 公式不生效。
 
-从这个单项扣除时执行的动作。
+**示例（商品侧按库存限制，卖价侧按每日收入上限限制）：**
 
-常见用途：
+```yaml
+products:
+  1:
+    material: EMERALD
+    amount: 4
+    max-sell-amount: '{stock} / 4'
 
-* 扣除自定义货币
-* 执行一条当作花费的命令
-* 与其他插件同步
+sell-prices:
+  1:
+    economy-plugin: Vault
+    amount: 20
+    placeholder: '{amount}$'
+    max-sell-amount: '({require-conditions.1.value} - {custom_sell_daily}) / {sell-unit-income}'
+    require-conditions:
+      1:
+        type: placeholder
+        placeholder: '{custom_sell_daily} + {amount}'
+        rule: '<='
+        value: '10000'
+```
 
-#### `give-item`
+### `apply-conditions` 与 `require-conditions`
 
-只对「像物品的奖励」有意义。
-
-设为 `false` 时，插件不会真的发放该物品，但 `give-actions` 照常执行。
-
-大多数命令商店都是这么做出来的。
-
-#### `take`
-
-设为 `false` 时，该单项仍会作为条件被检查，但实际不会被扣除。
-
-适合这种需求：
-
-* 必须有这件物品
-* 但不想把它消耗掉
-
-### `apply-conditions` 与 `require-conditions` 的区别
-
-这是整套机制里最关键的部分。
-
-#### `apply-conditions`
-
-`apply-conditions` 决定这个单项到底要不要纳入本次交易。
-
-条件不满足时：
-
-* 该单项被忽略
-* 不会被选中
-* 不参与价格/商品的计算
-
-适合用来做：
-
-* 仅 VIP 可用的价格档位
-* 季节限定商品
-* 不同玩家给不同奖励
-* 按权限或占位符区分价格
-
-示例：
+* **`apply-conditions`**：决定该单项是否纳入本次交易的候选列表。条件不满足时，插件会直接忽略该条目，常用于 VIP 专属价格档位、特定条件奖励或按权限区分定价。
+* **`require-conditions`**：在单项已被选中并算出数量后校验。条件不满足时，整笔交易会被拦截并失败，常用于购买资格校验、限额拦截等。
 
 ```yaml
 products:
@@ -286,31 +207,7 @@ products:
       1:
         type: permission
         permission: group.vip
-```
 
-结果：
-
-* 普通玩家用的是 `products.1`
-* VIP 玩家还能用上 `products.2`
-
-#### `require-conditions`
-
-`require-conditions` 不负责挑选。它管的是：单项已经被选中、数量也已经算好之后，这笔交易还能不能继续。
-
-条件不满足时：
-
-* 交易被拦下
-* 商品/价格虽然被选中了，却用不了
-
-适合用来做：
-
-* 支付或获得某样东西之前先要求权限
-* 玩家不满足某条额外规则就不给奖励
-* 算出来的数量只在某些情况下才允许成交
-
-示例：
-
-```yaml
 buy-prices:
   1:
     economy-plugin: Vault
@@ -322,63 +219,24 @@ buy-prices:
         permission: shop.buy.special
 ```
 
-结果：
+上例中，普通玩家只拿到 `products.1`，VIP 玩家可额外拿到 `products.2`；而购买价格 `buy-prices.1` 始终会被选中，但没有 `shop.buy.special` 权限的玩家在付款时会被拦截。
 
-* 这个价格照样能被选中
-* 但玩家没有 `shop.buy.special` 时购买会失败
+### `give-actions` 与 `take-actions`
 
-### 与单项的 `give-actions` / `take-actions`、物品的 `buy-actions` / `sell-actions` 有何不同
+* **`give-actions`**：将该单项发放给玩家时执行的动作（如发放命令奖励、权限或自定义货币）。
+* **`take-actions`**：从玩家扣除该单项时执行的动作（如扣除自定义货币或执行扣费命令）。
 
-这两层动作看着很像，但负责的事情并不一样。
+### `give-item` 与 `take`
 
-#### 单项的 `give-actions` / `take-actions`
+* **`give-item`**：仅对物品类单项有效。设为 `false` 时，插件不会真的把该物品发给玩家，但 `give-actions` 仍会正常执行（命令商店常用）。
+* **`take`**：设为 `false` 时，插件仍会检查玩家是否持有该物品，但交易时不会将其消耗（适合「需持有某信物但不消耗」的场景）。
 
-这些动作属于某一个具体的单项。
+## 单项动作与物品动作的区别
 
-只有下面两条同时成立时才执行：
+单项下的 `give-actions` / `take-actions` 与商品外层的 `buy-actions` / `sell-actions` 作用层级不同：
 
-* 被选中的正是这个单项
-* 并且确实在发放或扣除这个单项
-
-因此它们最适合：
-
-* 某一条特殊的奖励分支
-* 某一条特殊的价格分支
-* 某一条自定义货币分支
-* 只该为某个单项执行的命令
-
-#### 物品的 `buy-actions` / `sell-actions`
-
-这些动作属于整个商店物品。
-
-它们在下面情况执行：
-
-* 整笔买入交易成功，或
-* 整笔卖出交易成功
-
-它们不绑定到某个具体的单项分支。
-
-因此它们最适合：
-
-* 全局的成功提示
-* 日志记录
-* 音效
-* 每次买卖成功后都该执行的命令
-* 作用于整个商品、而不是某一条价格或奖励分支的效果
-
-#### 最关键的区别：`{amount}`
-
-在单项的动作里：
-
-* `{amount}` 表示该单项最终的数量
-
-在物品的动作里：
-
-* `{amount}` 表示买卖流程传来的、商品层级的交易数量
-* 一般配置下，这就是界面上显示的那笔交易总量
-* 若关闭了 `display-item.calculate-amount`，通常就是买入/卖出的份数
-
-示例：
+* **单项动作（`give-actions` / `take-actions`）**：仅当**该具体单项被选中并实际发生发放/扣除**时才执行，适合绑定到某个特定奖励分支或自定义货币分支；其中的 `{amount}` 代表**该单项最终计算出的数量**。
+* **物品动作（`buy-actions` / `sell-actions`）**：只要**整笔买入或卖出交易成功**就会执行，与具体走了哪条价格/商品分支无关，适合做全局提示、音效或日志；其中的 `{amount}` 代表**商品层级的交易数量**（通常为界面上选择的购买/出售份数；若关闭了 `display-item.calculate-amount`，则为买入/卖出的次数）。
 
 ```yaml
 products:
@@ -396,65 +254,15 @@ buy-actions:
     message: 'Item action amount = {amount}'
 ```
 
-如果玩家买了 5 次：
+简单判断原则：逻辑属于某条特定分支时放单项动作；无论走哪条分支都要执行时放物品动作。
 
-* 单项的 `give-actions` 拿到的是该分支真实的数量
-* 物品层级的 `buy-actions` 拿到的是购买流程准备好的交易数量
+## 仅适用于价格的选项
 
-很多常规配置里两个值看起来差不多，但它们来自不同的层级，也该用在不同的事情上。
+以下选项主要用于 `buy-prices` 与 `sell-prices`：
 
-#### 实用规则
-
-逻辑属于某一条被选中的价格或奖励时，用单项动作。
-
-逻辑是「不论走了哪条分支，买卖成功后就该执行」时，用物品动作。
-
-### 仅适用于价格的选项
-
-这些选项主要在 `buy-prices` 和 `sell-prices` 中起作用。
-
-#### `placeholder`
-
-在 `{price}` 这类价格占位符中显示的名称。
-
-```yaml
-placeholder: '{amount}$'
-```
-
-价格一般都应该配置这一项。
-
-支持的占位符：
-
-* {amount}
-* {status} - 显示动态价格的状态。
-* {display} - 若价格是原版物品或挂钩物品，该占位符会显示它的名称。会额外消耗服务器性能。
-* 所有 PlaceholderAPI 占位符。
-
-#### `start-apply`、`end-apply`、`apply`
-
-这几项控制价格在什么时候生效。
-
-它们主要在有别于经典模式的价格模式下才有意义：
-
-* `ANY`
-* `ALL`
-
-适合用来实现：
-
-* 早买便宜
-* 越买越贵
-* 购买次数落在某段区间时使用某个价格
-
-#### `min-amount` 与 `max-amount`
-
-这两项用来夹住最终算出的动态数量。
-
-适用于：
-
-* 价格公式可能算得过小
-* 价格公式可能算得过大
-
-示例：
+* **`placeholder`**：定义 `{buy-price}` / `{sell-price}` 等价格占位符的显示格式（如 `placeholder: '{amount}$'`）。支持 `{amount}`、`{status}`（动态价格状态）、`{display}`（物品名称，会带来额外性能开销）以及所有 PlaceholderAPI 变量。
+* **`start-apply` / `end-apply` / `apply`**：控制价格在买卖次数达到特定区间时才生效，仅在 `ANY` / `ALL` 非经典模式下有效，可用于实现「早买优惠」「阶梯涨价」等效果。
+* **`min-amount` 与 `max-amount`**：限制动态公式算出的最终价格上下限，防止数值过小或溢出。
 
 ```yaml
 buy-prices:
@@ -466,24 +274,18 @@ buy-prices:
     placeholder: '{amount}$'
 ```
 
-## 关于模式：`ANY`、`ALL`、`CLASSIC_ANY`、`CLASSIC_ALL`
+## 模式说明：`ANY`、`ALL`、`CLASSIC_ANY`、`CLASSIC_ALL`
 
-不必把细节全搞懂也能用，但记住下面这个概念会有帮助：
+* **`CLASSIC_ALL`**：所有适用的单项作为一个固定组合同时生效（最常用，适合固定价格的普通商店）。
+* **`CLASSIC_ANY`**：每次只从适用的单项中选用一个，不随批内数量动态切换。
+* **`ALL`**：所有适用的单项同时生效，且支持动态公式与 `start-apply` 等区间参数在批内逐笔变化。
+* **`ANY`**：每次只选用一个适用的单项，且生效区间会随数量动态切换。
 
-* `ANY`：每次只用一个适用的单项，且动态生效区间会随数量变化
-* `ALL`：每次都使用所有适用的单项
-* `CLASSIC_ANY`：每次用一个适用的单项，但更像是固定打包
-* `CLASSIC_ALL`：所有适用的单项作为一个固定包使用
-
-实用建议：
-
-* 简单的固定价格商店用 `CLASSIC_ALL`
-* 「从多个有效奖励/价格里挑一个」的配置用 `CLASSIC_ANY`
-* 只有需要生效区间或更高级的动态行为时，才用 `ANY` / `ALL`
+常规配置建议从 `CLASSIC_ALL` 起步；需要「多选一」时用 `CLASSIC_ANY`；只有使用动态价格公式或生效区间时才需要切换为 `ALL` 或 `ANY`。
 
 ## 共享条件键
 
-插件还支持通过 `config.yml` 指定共享的 apply 条件节：
+在 `config.yml` 中配置共享条件键名后，可以将 `apply-conditions` 集中写到商品外层的独立配置节中（`require-conditions` 仍需写在单项内部）：
 
 ```yaml
 conditions:
@@ -493,7 +295,7 @@ conditions:
   display-item-key: 'display-item-conditions'
 ```
 
-这样就可以写成：
+在商店配置中按对应键名引用即可：
 
 ```yaml
 products:
@@ -517,14 +319,11 @@ products-conditions:
       value: 'B'
 ```
 
-要注意：
+## 常见配置示例
 
-* 这些共享键只管 apply 条件
-* `require-conditions` 仍然写在单项自己内部
+### 示例 A：普通物品商店
 
-## 两个最常见的套路
-
-### 套路 A：普通物品商店
+买入扣除金币并给予苹果，卖出扣除苹果并给予金币：
 
 ```yaml
 A:
@@ -546,14 +345,9 @@ A:
       placeholder: '{amount}$'
 ```
 
-这是最简单的配置：
+### 示例 B：命令商店
 
-* 买入给苹果
-* 买入要花钱
-* 卖出扣苹果
-* 卖出给钱
-
-### 套路 B：命令商店
+命令商店有两种常见写法：一种是省略 `products` 直接写 `buy-actions`（需要手动配置 `display-item`）；另一种是在 `products` 中配置一个虚拟展示物品并设置 `give-item: false`，通过 `give-actions` 发奖。两种写法基础效果相同，但后者可以配合 `apply-conditions` 为不同权限组发放不同奖励：
 
 ```yaml
   A:
@@ -569,14 +363,16 @@ A:
         economy-plugin: Vault
         amount: 150
         placeholder: '{amount}⛂'
-    buy-actions: # In product config
+    buy-actions:
       1:
         type: console_command
-        command: "crate give {player} magic" # Put command here.
+        command: "crate give {player} magic"
       2:
-        multi-once: true # If you want to use {amount} placeholder in your give item command, make sure add this line to make sure this action only execute once when purchase multi quantity.
+        # 批量购买时如在命令中使用 {amount}，需加上 multi-once: true 避免重复执行
+        multi-once: true
         type: console_command
-        command: "crate give {player} magic {amount}" 
+        command: "crate give {player} magic {amount}"
+
   B:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
@@ -586,52 +382,24 @@ A:
         material: PAPER
         custom-model-data: 500
         amount: 1
-        give-item: false # You need add this to make sure the "fake" product will not give to player
-        give-actions: # In single things config
-          1:
-            type: console_command
-            command: "crate give {player} magic"
-          2:
-            multi-once: true # If you want to use {amount} placeholder in your give item command, make sure add this line to make sure this action only execute once when purchase multi quantity.
-            type: console_command
-            command: "crate give {player} magic {amount}" 
-    buy-prices:
-      1:
-        economy-plugin: Vault
-        amount: 150
-        placeholder: '{amount}⛂'
-```
-
-上面两个例子最终效果完全一样。不过你想过没有：如果配合 `conditions` 选项，用 **give-actions** 的方式，还能让不同玩家走不同的条件！
-
-```yaml
-  B:
-    price-mode: CLASSIC_ALL
-    product-mode: CLASSIC_ALL
-    products:
-      1:
-        name: 'Magic Crate Key'
-        material: PAPER
-        custom-model-data: 500
-        amount: 1
-        give-item: false # You need add this to make sure the "fake" product will not give to player
-        give-actions: # In single things config
+        give-item: false
+        give-actions:
           1:
             multi-once: true
             type: console_command
             command: "crate give {player} magic {amount}"
       2:
-        name: 'Magic Crate Key (VIP plus 1 for free)'
+        name: 'Magic Crate Key (VIP 额外赠送)'
         material: PAPER
         custom-model-data: 500
         amount: 1
-        give-item: false # You need add this to make sure the "fake" product will not give to player
-        give-actions: # In single things config
+        give-item: false
+        give-actions:
           1:
             multi-once: true
             type: console_command
             command: "crate give {player} magic {amount}"
-        conditions:
+        apply-conditions:
           1:
             type: permission
             permission: group.vip
@@ -642,50 +410,13 @@ A:
         placeholder: '{amount}⛂'
 ```
 
-为什么这样能行：
-
-* 有商品存在，插件才有东西可处理
-* `give-item: false` 让那个「假物品」不会被真的发出去
-* `give-actions` 用命令给出真正的奖励
-
-### 逻辑该放在物品上，还是放在单项上？
-
-规则只属于某一条价格或奖励时，用单项逻辑。
-
-好的例子：
-
-* 若干奖励里只有一条是 VIP 专属
-* 若干价格里只有一种季节价
-* 某条命令奖励只该在一个分支里执行
-
-规则是「不论选中哪个单项，整个商品都要遵守」时，用物品层级的 `buy-actions`、`sell-actions`、`buy-conditions`、`sell-conditions`。
-
-### 最佳实践
-
-* 除非确实需要高级行为，否则从 `CLASSIC_ALL` 起步。
-* 用 `apply-conditions` 来挑分支。
-* 用 `require-conditions` 来拦截交易。
-* 命令商店用 `give-item: false`。
-* 需要「必须有但不能被消耗」时用 `take: false`。
-* 先把价格和奖励写得小而明确，再加动态公式。
-* 用了动态值就配上 `min-amount` 和 `max-amount`，避免算出离谱的结果。
-
-### 一个简单的判断口诀
-
-拿不准该用哪个选项时：
-
-* 「这条分支该不该被忽略？」→ 用 `apply-conditions`
-* 「这笔交易该不该失败？」→ 用 `require-conditions`
-* 「插件要不要真的给/扣物品？」→ 用 `give-item` 或 `take`
-* 「用到这个单项时要不要执行命令？」→ 用 `give-actions` / `take-actions`
-
-有这个判断框架，大多数商店都能配对。
-
 ## 在物品描述中自动显示价格
 
-* 下载并安装 MythicChanger，见[此处](https://www.spigotmc.org/resources/mythicchanger-auto-match-change-drag-change-gui-change-in-1-plugin-1-14-1-21-8.98523/)。（该插件需要 packetevents）
-* 在 `plugins/MythicChanger/rules` 下新建一个名为 `shop-display.yml` 的文件。
-* 把下面的内容复制进去，然后重启服务器。
+如果你希望玩家背包里的物品直接显示商店的买卖价格与总价值，可以搭配 **MythicChanger**（需前置 `packetevents`）：
+
+1. 下载并安装 [MythicChanger](https://www.spigotmc.org/resources/mythicchanger-auto-match-change-drag-change-gui-change-in-1-plugin-1-14-1-21-8.98523/)。
+2. 在 `plugins/MythicChanger/rules` 目录下新建 `shop-display.yml`。
+3. 填入以下内容并重启服务器：
 
 ```yaml
 weight: 15

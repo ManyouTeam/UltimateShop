@@ -8,6 +8,7 @@ settings:
 
 items:
   diamond:
+    shared-use-times: minerals-diamond
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
     products:
@@ -16,17 +17,40 @@ items:
         amount: 1
     buy-prices:
       1:
-        economy-plugin: Vault
+        shared-price: vault
         amount: '90'
         placeholder: '{amount}$'
         start-apply: 0
     sell-prices:
       1:
-        economy-plugin: Vault
+        shared-price: vault-sell
         amount: '54'
         placeholder: '{amount}$'
         start-apply: 0
+  diamond_block:
+    shared-use-times: minerals-diamond
+    buy-times-increment: 9
+    sell-times-increment: 9
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: DIAMOND_BLOCK
+        amount: 1
+    buy-prices:
+      1:
+        shared-price: vault
+        amount: '810'
+        placeholder: '{amount}$'
+        start-apply: 0
+    sell-prices:
+      1:
+        shared-price: vault-sell
+        amount: '486'
+        placeholder: '{amount}$'
+        start-apply: 0
   gold_ingot:
+    shared-use-times: minerals-gold-ingot
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
     products:
@@ -35,17 +59,40 @@ items:
         amount: 1
     buy-prices:
       1:
-        economy-plugin: Vault
+        shared-price: vault
         amount: '18'
         placeholder: '{amount}$'
         start-apply: 0
     sell-prices:
       1:
-        economy-plugin: Vault
+        shared-price: vault-sell
         amount: '11'
         placeholder: '{amount}$'
         start-apply: 0
+  gold_block:
+    shared-use-times: minerals-gold-ingot
+    buy-times-increment: 9
+    sell-times-increment: 9
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: GOLD_BLOCK
+        amount: 1
+    buy-prices:
+      1:
+        shared-price: vault
+        amount: '162'
+        placeholder: '{amount}$'
+        start-apply: 0
+    sell-prices:
+      1:
+        shared-price: vault-sell
+        amount: '99'
+        placeholder: '{amount}$'
+        start-apply: 0
   iron_ingot:
+    shared-use-times: minerals-iron-ingot
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
     products:
@@ -54,17 +101,40 @@ items:
         amount: 1
     buy-prices:
       1:
-        economy-plugin: Vault
+        shared-price: vault
         amount: '9'
         placeholder: '{amount}$'
         start-apply: 0
     sell-prices:
       1:
-        economy-plugin: Vault
+        shared-price: vault-sell
         amount: '5.4'
         placeholder: '{amount}$'
         start-apply: 0
+  iron_block:
+    shared-use-times: minerals-iron-ingot
+    buy-times-increment: 9
+    sell-times-increment: 9
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: IRON_BLOCK
+        amount: 1
+    buy-prices:
+      1:
+        shared-price: vault
+        amount: '81'
+        placeholder: '{amount}$'
+        start-apply: 0
+    sell-prices:
+      1:
+        shared-price: vault-sell
+        amount: '48.6'
+        placeholder: '{amount}$'
+        start-apply: 0
   lapis_lazuli:
+    shared-use-times: minerals-lapis-lazuli
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
     products:
@@ -73,17 +143,40 @@ items:
         amount: 1
     buy-prices:
       1:
-        economy-plugin: Vault
+        shared-price: vault
         amount: '4.5'
         placeholder: '{amount}$'
         start-apply: 0
     sell-prices:
       1:
-        economy-plugin: Vault
+        shared-price: vault-sell
         amount: '2.7'
         placeholder: '{amount}$'
         start-apply: 0
+  lapis_block:
+    shared-use-times: minerals-lapis-lazuli
+    buy-times-increment: 9
+    sell-times-increment: 9
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: LAPIS_BLOCK
+        amount: 1
+    buy-prices:
+      1:
+        shared-price: vault
+        amount: '40.5'
+        placeholder: '{amount}$'
+        start-apply: 0
+    sell-prices:
+      1:
+        shared-price: vault-sell
+        amount: '24.3'
+        placeholder: '{amount}$'
+        start-apply: 0
   redstone:
+    shared-use-times: minerals-redstone
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
     products:
@@ -92,17 +185,40 @@ items:
         amount: 1
     buy-prices:
       1:
-        economy-plugin: Vault
+        shared-price: vault
         amount: '3.2'
         placeholder: '{amount}$'
         start-apply: 0
     sell-prices:
       1:
-        economy-plugin: Vault
+        shared-price: vault-sell
         amount: '1.9'
         placeholder: '{amount}$'
         start-apply: 0
+  redstone_block:
+    shared-use-times: minerals-redstone
+    buy-times-increment: 9
+    sell-times-increment: 9
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: REDSTONE_BLOCK
+        amount: 1
+    buy-prices:
+      1:
+        shared-price: vault
+        amount: '28.8'
+        placeholder: '{amount}$'
+        start-apply: 0
+    sell-prices:
+      1:
+        shared-price: vault-sell
+        amount: '17.1'
+        placeholder: '{amount}$'
+        start-apply: 0
   coal:
+    shared-use-times: minerals-coal
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
     products:
@@ -111,17 +227,40 @@ items:
         amount: 1
     buy-prices:
       1:
-        economy-plugin: Vault
+        shared-price: vault
         amount: '2.4'
         placeholder: '{amount}$'
         start-apply: 0
     sell-prices:
       1:
-        economy-plugin: Vault
+        shared-price: vault-sell
         amount: '1.4'
         placeholder: '{amount}$'
         start-apply: 0
+  coal_block:
+    shared-use-times: minerals-coal
+    buy-times-increment: 9
+    sell-times-increment: 9
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: COAL_BLOCK
+        amount: 1
+    buy-prices:
+      1:
+        shared-price: vault
+        amount: '21.6'
+        placeholder: '{amount}$'
+        start-apply: 0
+    sell-prices:
+      1:
+        shared-price: vault-sell
+        amount: '12.6'
+        placeholder: '{amount}$'
+        start-apply: 0
   amethyst_shard:
+    shared-use-times: minerals-amethyst-shard
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
     products:
@@ -130,14 +269,36 @@ items:
         amount: 1
     buy-prices:
       1:
-        economy-plugin: Vault
+        shared-price: vault
         amount: '7.5'
         placeholder: '{amount}$'
         start-apply: 0
     sell-prices:
       1:
-        economy-plugin: Vault
+        shared-price: vault-sell
         amount: '4.5'
+        placeholder: '{amount}$'
+        start-apply: 0
+  amethyst_block:
+    shared-use-times: minerals-amethyst-shard
+    buy-times-increment: 4
+    sell-times-increment: 4
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: AMETHYST_BLOCK
+        amount: 1
+    buy-prices:
+      1:
+        shared-price: vault
+        amount: '30'
+        placeholder: '{amount}$'
+        start-apply: 0
+    sell-prices:
+      1:
+        shared-price: vault-sell
+        amount: '18'
         placeholder: '{amount}$'
         start-apply: 0
   ancient_debris:
@@ -149,13 +310,13 @@ items:
         amount: 1
     buy-prices:
       1:
-        economy-plugin: Vault
+        shared-price: vault
         amount: '480'
         placeholder: '{amount}$'
         start-apply: 0
     sell-prices:
       1:
-        economy-plugin: Vault
+        shared-price: vault-sell
         amount: '300'
         placeholder: '{amount}$'
         start-apply: 0
@@ -168,17 +329,18 @@ items:
         amount: 1
     buy-prices:
       1:
-        economy-plugin: Vault
+        shared-price: vault
         amount: '5.4'
         placeholder: '{amount}$'
         start-apply: 0
     sell-prices:
       1:
-        economy-plugin: Vault
+        shared-price: vault-sell
         amount: '3.2'
         placeholder: '{amount}$'
         start-apply: 0
   copper_ingot:
+    shared-use-times: minerals-copper-ingot
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
     products:
@@ -187,13 +349,35 @@ items:
         amount: 1
     buy-prices:
       1:
-        economy-plugin: Vault
+        shared-price: vault
         amount: '6.5'
         placeholder: '{amount}$'
         start-apply: 0
     sell-prices:
       1:
-        economy-plugin: Vault
+        shared-price: vault-sell
         amount: '3.9'
+        placeholder: '{amount}$'
+        start-apply: 0
+  copper_block:
+    shared-use-times: minerals-copper-ingot
+    buy-times-increment: 9
+    sell-times-increment: 9
+    price-mode: CLASSIC_ALL
+    product-mode: CLASSIC_ALL
+    products:
+      1:
+        material: COPPER_BLOCK
+        amount: 1
+    buy-prices:
+      1:
+        shared-price: vault
+        amount: '58.5'
+        placeholder: '{amount}$'
+        start-apply: 0
+    sell-prices:
+      1:
+        shared-price: vault-sell
+        amount: '35.1'
         placeholder: '{amount}$'
         start-apply: 0

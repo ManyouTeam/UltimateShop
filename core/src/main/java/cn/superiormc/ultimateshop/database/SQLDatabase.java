@@ -102,6 +102,7 @@ public class SQLDatabase extends AbstractDatabase {
 
             stmt.execute(dialect.createUseTimesTable());
             stmt.execute(dialect.createFavouriteTable());
+            stmt.execute(dialect.createCustomPlaceholderTable());
 
             if (!UltimateShop.freeVersion) {
                 stmt.execute(dialect.createRandomPlaceholderTable());
@@ -112,7 +113,6 @@ public class SQLDatabase extends AbstractDatabase {
                         "lastResetTime",
                         dialect.addRandomPlaceholderLastResetTimeColumn()
                 );
-                stmt.execute(dialect.createCustomPlaceholderTable());
                 stmt.execute(dialect.createTransactionLogTable());
                 for (String indexSql : dialect.createTransactionLogIndexes()) {
                     stmt.execute(indexSql);
@@ -154,10 +154,10 @@ public class SQLDatabase extends AbstractDatabase {
 
             loadUseTimes(conn, cache, playerUUID);
             loadFavourites(conn, cache, playerUUID);
+            loadCustomPlaceholders(conn, cache, playerUUID);
 
             if (!UltimateShop.freeVersion) {
                 loadPlaceholders(conn, cache, playerUUID);
-                loadCustomPlaceholders(conn, cache, playerUUID);
             }
 
             cache.ready();
@@ -320,9 +320,9 @@ public class SQLDatabase extends AbstractDatabase {
             try {
                 saveUseTimes(connection, snapshot);
                 saveFavourites(connection, snapshot);
+                saveCustomPlaceholders(connection, snapshot);
                 if (!UltimateShop.freeVersion) {
                     savePlaceholders(connection, snapshot);
-                    saveCustomPlaceholders(connection, snapshot);
                 }
                 connection.commit();
             } catch (SQLException exception) {

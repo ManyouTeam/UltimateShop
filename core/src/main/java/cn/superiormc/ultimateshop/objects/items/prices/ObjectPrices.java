@@ -3,18 +3,34 @@ package cn.superiormc.ultimateshop.objects.items.prices;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.ErrorManager;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
-import cn.superiormc.ultimateshop.objects.items.*;
+import cn.superiormc.ultimateshop.objects.items.AbstractSingleThing;
+import cn.superiormc.ultimateshop.objects.items.AbstractThings;
+import cn.superiormc.ultimateshop.objects.items.GiveResult;
+import cn.superiormc.ultimateshop.objects.items.ItemStorage;
+import cn.superiormc.ultimateshop.objects.items.TakeResult;
+import cn.superiormc.ultimateshop.objects.items.ThingMode;
 import cn.superiormc.ultimateshop.objects.items.subobjects.ObjectDisplayPlaceholder;
 import cn.superiormc.ultimateshop.utils.TextUtil;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.TreeSet;
 
 public class ObjectPrices extends AbstractThings {
 
     public Collection<ObjectSinglePrice> singlePrices = new TreeSet<>();
+
+    private final Set<String> sharedPriceIds = new HashSet<>();
 
     private PriceMode priceMode;
 
@@ -36,7 +52,22 @@ public class ObjectPrices extends AbstractThings {
                 ErrorManager.errorManager.sendErrorMessage("§cError: Can not get prices section in your shop config!!");
                 singlePrices.add(new ObjectSinglePrice());
             } else {
-                ObjectSinglePrice singlePrice = new ObjectSinglePrice(s, this);
+                ConfigurationSection price = section.getConfigurationSection(s);
+                if (price.contains("shared-price")) {
+                    String templateId = price.getString("shared-price");
+                    sharedPriceIds.add(templateId);
+                    ObjectSharedPrice template = ConfigManager.configManager.getSharedPrice(templateId);
+                    if (template == null) {
+                        ErrorManager.errorManager.sendErrorMessage("§cError: Unknown shared price "
+                                + templateId + " in " + item.getShop() + "/"
+                                + item.getProduct() + "/" + price.getCurrentPath());
+                        singlePrices.clear();
+                        empty = true;
+                        return;
+                    }
+                    price = template.resolve(price);
+                }
+                ObjectSinglePrice singlePrice = new ObjectSinglePrice(s, this, price);
                 singlePrices.add(singlePrice);
                 if (!singlePrice.isStatic()) {
                     allIsStatic = false;
@@ -80,6 +111,14 @@ public class ObjectPrices extends AbstractThings {
         }
     }
 
+    private int useTimesAtOffset(int times, int offset) {
+        if (item == null) {
+            return times + offset;
+        }
+        int increment = priceMode == PriceMode.BUY ? item.getBuyTimesIncrement() : item.getSellTimesIncrement();
+        return (int) Math.min(Integer.MAX_VALUE, times + (long) offset * increment);
+    }
+
     // 满足条件和apply的
     public Map<ObjectSinglePrice, PriceType> getPriceType(Player player, int times, int amount) {
         Map<ObjectSinglePrice, PriceType> applyThings = new TreeMap<>();
@@ -102,14 +141,15 @@ public class ObjectPrices extends AbstractThings {
                 // 已经决定好价格的次数
                 Set<Integer> confirmedAmount = new HashSet<>();
                 for (int i = 0 ; i < amount ; i ++) {
+                    int nowTimes = useTimesAtOffset(times, i);
                     for (ObjectSinglePrice tempVal1 : singlePrices) {
                         if (!tempVal1.getApplyCondition(player)) {
                             continue;
                         }
-                        if (tempVal1.isAlwaysApply() || tempVal1.getApplyCostMap().containsKey(times + i)
+                        if (tempVal1.isAlwaysApply() || tempVal1.getApplyCostMap().containsKey(nowTimes)
                                 || (tempVal1.getApplyCostMap().isEmpty() &&
-                                times + i >= tempVal1.getStartApply() &&
-                                times + i <= tempVal1.getEndApply())) {
+                                nowTimes >= tempVal1.getStartApply() &&
+                                nowTimes <= tempVal1.getEndApply())) {
                             if (!confirmedAmount.contains(i)) {
                                 applyThings.put(tempVal1, PriceType.FIRST);
                                 confirmedAmount.add(i);
@@ -142,7 +182,7 @@ public class ObjectPrices extends AbstractThings {
                 for (ObjectSinglePrice tempVal1 : priceMap.keySet()) {
                     if (priceMap.get(tempVal1) == PriceType.FIRST) {
                         cost = tempVal3.get(tempVal1);
-                        resultObject.addResultMapElement(tempVal1, player, times, amount, cost);
+                        resultObject.addResultMapElement(tempVal1, cost);
                     }
                 }
                 return resultObject;
@@ -150,7 +190,7 @@ public class ObjectPrices extends AbstractThings {
             case CLASSIC_ALL:
                 for (ObjectSinglePrice tempVal2 : getAmount(player, times, amount).keySet()) {
                     cost = tempVal3.get(tempVal2);
-                    resultObject.addResultMapElement(tempVal2, player, times, amount, cost);
+                    resultObject.addResultMapElement(tempVal2, cost);
                 }
                 return resultObject;
             default:
@@ -232,19 +272,18 @@ public class ObjectPrices extends AbstractThings {
             case ALL:
             case ANY:
                 for (int i = 0 ; i < multi ; i ++) {
+                    int nowTimes = useTimesAtOffset(times, i);
                     for (ObjectSinglePrice tempVal3 : meetConditionSingle) {
-                            //getAllPrices(player, times + i, 1).keySet()) {
-                        int nowTimes = times + i;
                         if (tempVal3.isAlwaysApply() || tempVal3.getApplyCostMap().containsKey(nowTimes) ||
                                 (tempVal3.getApplyCostMap().isEmpty() &&
                                         nowTimes >= tempVal3.getStartApply() &&
                                         nowTimes <= tempVal3.getEndApply())) {
                             if (priceMaps.containsKey(tempVal3)) {
                                 priceMaps.put(tempVal3,
-                                        priceMaps.get(tempVal3).add(tempVal3.getAmount(player, times + i, i)));
+                                        priceMaps.get(tempVal3).add(tempVal3.getAmount(player, nowTimes, i)));
                             }
                             else {
-                                priceMaps.put(tempVal3, tempVal3.getAmount(player, times + i, i));
+                                priceMaps.put(tempVal3, tempVal3.getAmount(player, nowTimes, i));
                             }
                         }
                     }
@@ -269,6 +308,18 @@ public class ObjectPrices extends AbstractThings {
 
     public PriceMode getPriceMode() {
         return priceMode;
+    }
+
+    public boolean usesSharedPrice(String id) {
+        if (id == null || id.trim().isEmpty()) {
+            return !sharedPriceIds.isEmpty();
+        }
+        for (String target : id.split(",")) {
+            if (sharedPriceIds.contains(target.trim())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public static List<String> getDisplayName(Player player,

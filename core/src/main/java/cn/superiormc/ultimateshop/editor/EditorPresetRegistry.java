@@ -577,6 +577,8 @@ public class EditorPresetRegistry {
                 field("buy-times-reset-value", Material.SLIME_BALL, EditorPresetFieldType.STRING),
                 field("buy-times-max-value", Material.BARRIER, EditorPresetFieldType.STRING),
                 choice("shared-use-times", Material.CHAINMAIL_HELMET, EditorScope.SHARED_USE_TIMES.listIds().toArray(String[]::new)),
+                field("buy-times-increment", Material.GOLD_INGOT, EditorPresetFieldType.INTEGER),
+                field("sell-times-increment", Material.IRON_INGOT, EditorPresetFieldType.INTEGER),
                 choice("sell-times-reset-mode", Material.REPEATER, RESET_MODES),
                 EditorPresetField.resetTime("sell-times-reset-time", "Sell Reset Time",
                         "Reset time value editor that adapts to the selected sell reset mode.", Material.REPEATER),
@@ -678,9 +680,8 @@ public class EditorPresetRegistry {
         fields.add(field("min-amount", Material.REDSTONE, EditorPresetFieldType.DOUBLE));
         fields.add(field("max-amount", Material.REDSTONE, EditorPresetFieldType.DOUBLE));
         if (priceThing) {
-            ConfigurationSection prices = ConfigManager.configManager.getSection("prices");
-            fields.add(choice("custom-type", Material.GOLD_INGOT,
-                    prices == null ? new String[0] : prices.getKeys(false).toArray(String[]::new)));
+            fields.add(choice("shared-price", Material.GOLD_INGOT,
+                    ConfigManager.configManager.getSharedPriceIds().toArray(String[]::new)));
             fields.add(field("start-apply", Material.CLOCK, EditorPresetFieldType.INTEGER));
             fields.add(field("end-apply", Material.CLOCK, EditorPresetFieldType.INTEGER));
             fields.add(field("apply", Material.CLOCK, EditorPresetFieldType.INTEGER_LIST));
@@ -733,6 +734,10 @@ public class EditorPresetRegistry {
                 result.add(field("offset-y", Material.FIREWORK_STAR, EditorPresetFieldType.DOUBLE));
                 result.add(field("offset-z", Material.FIREWORK_STAR, EditorPresetFieldType.DOUBLE));
                 result.add(field("speed", Material.FIREWORK_STAR, EditorPresetFieldType.DOUBLE));
+            }
+            case "add_custom_placeholder" -> {
+                result.add(field("placeholder", Material.PAPER, EditorPresetFieldType.STRING));
+                result.add(field("amount", Material.SLIME_BALL, EditorPresetFieldType.STRING));
             }
             case "console_command", "op_command", "player_command" ->
                     result.add(field("command", Material.COMMAND_BLOCK, EditorPresetFieldType.STRING));

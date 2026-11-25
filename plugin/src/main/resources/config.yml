@@ -77,6 +77,7 @@ sell:
       # Support value: DecentHolograms, CMI, FancyHolograms
       plugin: 'DecentHolograms'
   max-amount: -1
+  max-search-attempts: 5
   # Premium version only.
   shulker-box-sell: true
   # Premium version only
@@ -535,17 +536,6 @@ database:
 # Premium version only.
 bungeecord-sync:
   enabled: false
-
-prices:
-  example:
-    economy-plugin: Vault
-    amount: 200
-    placeholder: '{amount} Coins'
-  mmoitems-example:
-    hook-plugin: MMOItems
-    hook-item: AXE;;TEST_AXE
-    amount: 1
-    placeholder: '{amount} Mythic Axe'
 
 conditions:
   products-key: 'products-conditions'

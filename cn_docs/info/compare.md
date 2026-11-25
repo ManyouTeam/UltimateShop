@@ -11,7 +11,7 @@
 | **物品名称本地化**：为未设置自定义名称的物品显示本地化名称，详见[物品名称本地化](../features/localized-item-name-premium.md)。 | ❌ | ✅ | ❌ |
 | **随机占位符**：支持内置随机占位符，详见[随机占位符](../placeholders/random-placeholder-premium.md)。 | ❌ | ✅ | ❌ |
 | **条件占位符**：支持内置条件占位符，详见[条件占位符](../placeholders/conditional-placeholder-premium.md)。 | ❌ | ✅ | ❌ |
-| **自定义占位符（测试版）**：支持自定义数值或文本，既可按玩家独立保存，也可全服共享。可用命令设置值或增加数值，再通过占位符展示。详见[自定义占位符](../placeholders/custom-placeholder-premium.md)。 | ❌ | ✅ | |
+| **自定义占位符（测试版）**：支持自定义数值或文本，既可按玩家独立保存，也可全服共享。免费版最多 5 个，付费版无数量限制。可用命令设置值或增加数值，再通过占位符展示。详见[自定义占位符](../placeholders/custom-placeholder-premium.md)。 | ✅ 最多 5 个 | ✅ 无限制 | |
 | **动态价格状态**：比较当前价格与基础价格，并在商品信息描述中显示状态，详见[动态价格状态](../dynamic-prices/dynamic-price-status-premium.md)。 | ❌ | ✅ | ❓部分插件可能支持，但本插件的动态价格还支持多种数学公式与占位符。 |
 | **出售倍率**：按条件提供出售加成或税费。`MAX` 选取符合条件的最高倍率，`STACK` 则将符合条件的倍率相乘。详见[出售倍率](../shops/sell-multiplier-premium.md)。 | ❌ | ✅ | |
 | **价格修正器（实验性）**：根据实际出售的物品调整出售奖励，支持耐久度、描述或 NBT 中的数值、MythicChanger 匹配规则。为商品设置 `price-modifier: true` 启用。部分修正器类型需要额外插件。详见[价格修正器](../shops/price-modifier.md)。 | ✅ | ✅ | |

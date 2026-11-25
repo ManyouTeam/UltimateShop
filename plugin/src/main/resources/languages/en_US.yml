@@ -129,6 +129,16 @@ favourite-added: "&#98FB98[UltimateShop] &fAdded {item} into favourite menu {men
 favourite-removed: "&#98FB98[UltimateShop] &fRemoved {item} from favourite menu {menu}."
 
 override-lang:
+  price-coins: '&6{amount} Coins'
+  shared-prices:
+    vault-sell:
+      limit-5h: '&cThis sale exceeds your 5-hour income limit of 2000 Coins. Remaining: {math_max(0, 2000 - {custom_sell_5h})} Coins. Resets: {custom-times_sell_5h}.'
+      limit-daily: '&cThis sale exceeds your daily income limit of 10000 Coins. Remaining: {math_max(0, 10000 - {custom_sell_daily})} Coins. Resets: {custom-times_sell_daily}.'
+      limit-weekly: '&cThis sale exceeds your weekly income limit of 50000 Coins. Remaining: {math_max(0, 50000 - {custom_sell_weekly})} Coins. Resets: {custom-times_sell_weekly}.'
+  auto-save:
+    message: |-
+      &#98FB98[UltimateShop] &fAuto saving data...
+      &#98FB98[UltimateShop] &fIf this causes a server TPS drop, consider disabling auto-save in config.yml.
   item-sell-title: 'Sell Items'
   item-sell-confirm-name: '&aConfirm Sale'
   item-sell-confirm-price: '&7Price: &f{price}'
@@ -399,6 +409,9 @@ override-lang:
       - '@b(@z[rich])&eSell: {sell-price}'
       - '@b@z[rich]&eSell: {sell-price} &8(Tax:&c -10%&8)'
       - '@b@z[vip]&6VIP Bonus:&a +10%'
+      - '@r[vault-sell]&75h sell quota used: &e{custom_sell_5h}/2000'
+      - '@r[vault-sell]&7Daily sell quota used: &e{custom_sell_daily}/10000'
+      - '@r[vault-sell]&7Weekly sell quota used: &e{custom_sell_weekly}/50000'
       - '@c&#FF7777Player Buy Stock: {buy-times-player}/{buy-limit-player}'
       - '@d&#FF7777Server Buy Stock: {buy-times-server}/{buy-limit-server}'
       - '@e&#FF7777Player Sell Limit: {sell-times-player}/{sell-limit-player}'
@@ -1481,9 +1494,9 @@ editor:
         take:
           name: 'Take'
           desc: 'If disabled, only check ownership instead of actually taking it.'
-        custom-type:
-          name: 'Custom price'
-          desc: 'Choose a price preset from the global configuration.'
+        shared-price:
+          name: 'Shared price'
+          desc: 'Choose a template from the shared_prices folder.'
         hook-item-type:
           name: 'Hooked item category'
           desc: 'Enter the item''s category if the item plugin requires one.'

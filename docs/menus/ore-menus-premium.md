@@ -1,10 +1,10 @@
-# 🪨 Ore UI — Premium
+﻿# 🪨Ore UI - Premium
 
-Ore draws product cards and navigation controls through the Paper Dialog route and a generated resource pack. It supports Common and Shop menus on supported Paper 1.21.9+ servers. Graphical layout and styles are shared with ArcMenu.
+Ore renders graphical product cards and navigation controls for Java players using Paper's Dialog transport and a generated client resource pack. Supported for Common and Shop menus on **Paper 1.21.9+**, sharing graphical layouts and styles with ArcMenu.
 
 ## Enable Ore
 
-In `config.yml`:
+Configure global dialog and Ore settings in `config.yml`:
 
 ```yaml
 menu:
@@ -48,41 +48,47 @@ buttons:
         order: 0
 ```
 
-Create the target shop, reload, generate the pack below, and load it on the Java client before opening `/shop menu categories`. This uses the selected style's `sidebar` area. Global forced presentation selection can override the switches.
+Make sure the `farming` shop already exists. Run `/shop reload`, generate and load the resource pack below, and then run `/shop menu categories` (the button uses the chosen style's `sidebar` area; global `menu.force-ui` overrides switches).
 
-## Generate the resource pack
+<a id="generate-the-resource-pack"></a>
 
-1. Run `/shop reload` after editing YAML so the menu definitions are loaded.
-2. Run `/shop dialogpack` to build the enabled Ore menus. Permission: `ultimateshop.dialogpack`.
-3. Use the generated output under `plugins/UltimateShop/pack/` in the resource pack distributed to players.
-4. Have clients load the updated pack before opening the changed screens.
+## Generate the Resource Pack
 
-`/shop dialogpack <format>` supplies an explicit pack format; accepted command values are `69` through `10000`. Global `menu.dialog.ore.pack-format: 0` selects the built-in version format. Rebuild and redistribute after changing graphical layout, theme, templates or icons. Reloading YAML alone does not distribute new client assets.
+1. Run `/shop reload` after editing YAML so the plugin loads the latest menu definitions.
+2. Run `/shop dialogpack` (requires `ultimateshop.dialogpack`) to build assets for Ore-enabled menus.
+3. Merge the generated files in `plugins/UltimateShop/pack/` into the resource pack distributed to players.
+4. Load the updated resource pack on the client before reopening modified screens.
 
-Pack generation includes Common/Shop menus using Ore, including a valid forced Ore selection. Search/Favourite are native Dialog fallbacks and do not generate Ore assets.
+Use `/shop dialogpack <format>` to specify a pack format (`69`–`10000`); global `menu.dialog.ore.pack-format: 0` uses the built-in format for your server version.
 
-## Layout and appearance
+{% hint style="warning" %}
+Whenever you change graphical layouts, themes, templates, or icons, you **must rerun `/shop dialogpack` and redistribute the pack**—reloading YAML alone does not push new assets to clients.
+{% endhint %}
+
+Pack generation covers Ore-enabled Common and Shop menus (including forced Ore); Search and Favourite fall back to native Dialog and generate no Ore assets.
+
+## Layout & Appearance Keys
 
 | Key | Purpose |
 | --- | --- |
-| `dialog.enabled`, `dialog.layout: ore` | Select the route in normal selection |
-| `dialog.content` | Header content, then local root `content` |
+| `dialog.enabled`, `dialog.layout: ore` | Selects Ore under normal selection |
+| `dialog.content` | Header content (falls back to root `content`) |
 | `ui.style` | Shared graphical preset |
-| `ui.layout.canvas/header/areas/pagination` | Canvas, areas, text and pagination |
-| `ui.products.placement` | Default product placement |
-| `ui.products.card` | Card icon/padding and Ore body lore limits |
-| `ui.products.price/actions` | Product price text and operation selection |
-| Entry `ui.placement`, `ui.appearance` | Individual button/product placement and button/card appearance |
+| `ui.layout.canvas/header/areas/pagination` | Canvas, headers, named areas, and pagination |
+| `ui.products.placement` | Default product card area and placement |
+| `ui.products.card` | Card icon size, padding, and Ore body line limits |
+| `ui.products.price` / `actions` | Compact price line and card action buttons |
+| Entry `ui.placement`, `ui.appearance` | Per-button/product placement and `button` / `card` look |
 | `ui.theme` | Shared colors |
-| `ui.renderers.ore.templates` | Resource-pack texture templates |
-| Global `menu.dialog.ore.show-item-icon.*` | Item icon and quantity display |
-| Global `menu.dialog.ore.pack-format` | Pack metadata format |
+| `ui.renderers.ore.templates` | Resource pack card texture templates |
+| Global `menu.dialog.ore.show-item-icon.*` | Item icon and stack-count display |
+| Global `menu.dialog.ore.pack-format` | Pack metadata `pack_format` |
 
-Root Inventory layout identifies entries but does not provide graphical coordinates. Ordinary controls need explicit placements. Product cards use `ui.products.placement` unless individually overridden. See [Graphical UI Layout](../menus-getting-started/ui-layout.md) for geometry and capacity rules.
+Root Inventory `layout` only identifies entries—it does not set graphical coordinates. Common buttons need explicit `ui.placement`, while products default to `ui.products.placement`. See [Graphical UI Layout](../menus-getting-started/ui-layout.md).
 
-## Custom template textures
+## Custom Template Textures
 
-Put PNG sources in `plugins/UltimateShop/textures/`, for example `textures/shop/card.png`, and configure:
+Place PNG source files under `plugins/UltimateShop/textures/` (for example `textures/shop/card.png`) and reference them:
 
 ```yaml
 ui:
@@ -96,12 +102,12 @@ ui:
           selected-border: '#65D98B'
 ```
 
-Texture paths are relative to `textures/`; use neither absolute paths nor `..`. Quote RGB colors. Shared layout, card and theme values can supply generated template geometry/base colors. Regenerate the pack after edits.
+Paths are relative to `textures/` (no absolute paths or `..`), and hex colors must be quoted. Rebuild and redistribute the resource pack after editing textures.
 
-## Text and supported menu flows
+## Text Rendering & Menu-Type Support
 
-Ore uses native text rendering. ArcMenu font scale settings do not imply identical Ore output. `ui.products.card.lore-lines` limits product body lore; `description-lines` limits category descriptions. Full applicable lore can remain in hover information.
+Ore uses native text rendering, so ArcMenu font scaling will not produce identical results in Ore. `ui.products.card.lore-lines` and `description-lines` cap visible lines on the card face while keeping full text in hover tooltips.
 
-Search/Favourite use native `multi-action` when Ore is selected. Buy More uses native quantity input or Inventory. Item Sell, Sell All and the in-game editor keep physical Inventory screens.
+When Ore is selected: Search and Favourite use native `multi-action`; Buy More uses native quantity input or Inventory; Item Sell, Sell All, and the In-Game Editor stay physical Inventory.
 
 [Native Dialog](dialog-menus-premium.md) · [ArcMenu](arcmenu-menus-premium.md) · [UI Modes](ui-overview.md)

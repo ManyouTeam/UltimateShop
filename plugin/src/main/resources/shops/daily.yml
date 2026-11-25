@@ -29,9 +29,9 @@ items:
         amount: 1
     sell-prices:
       1:
-        economy-plugin: Vault
+        shared-price: vault-sell
         amount: 1
-        placeholder: '&6{amount} Coins'
+        placeholder: '{lang:price-coins}'
         start-apply: 0
   iron_ingot:
     products:
@@ -40,9 +40,9 @@ items:
         amount: 1
     sell-prices:
       1:
-        economy-plugin: Vault
+        shared-price: vault-sell
         amount: 3
-        placeholder: '&6{amount} Coins'
+        placeholder: '{lang:price-coins}'
         start-apply: 0
   gold_ingot:
     products:
@@ -51,9 +51,9 @@ items:
         amount: 1
     sell-prices:
       1:
-        economy-plugin: Vault
+        shared-price: vault-sell
         amount: 1.6
-        placeholder: '&6{amount} Coins'
+        placeholder: '{lang:price-coins}'
         start-apply: 0
   copper_ingot:
     products:
@@ -62,9 +62,9 @@ items:
         amount: 1
     sell-prices:
       1:
-        economy-plugin: Vault
+        shared-price: vault-sell
         amount: 2
-        placeholder: '&6{amount} Coins'
+        placeholder: '{lang:price-coins}'
         start-apply: 0
   diamond:
     products:
@@ -73,9 +73,9 @@ items:
         amount: 1
     sell-prices:
       1:
-        economy-plugin: Vault
+        shared-price: vault-sell
         amount: 0.8
-        placeholder: '&6{amount} Coins'
+        placeholder: '{lang:price-coins}'
         start-apply: 0
   lapis_lazuli:
     products:
@@ -87,14 +87,14 @@ items:
         amount: 1
     sell-prices:
       1:
-        economy-plugin: Vault
+        shared-price: vault-sell
         amount: 1.2
-        placeholder: '&6{amount} Coins'
+        placeholder: '{lang:price-coins}'
         start-apply: 0
       2:
-        economy-plugin: Vault
+        shared-price: vault-sell
         amount: 3.3
-        placeholder: '&6{amount} Coins'
+        placeholder: '{lang:price-coins}'
         start-apply: 0
   emerald:
     products:
@@ -103,7 +103,7 @@ items:
         amount: 1
     sell-prices:
       1:
-        economy-plugin: Vault
+        shared-price: vault-sell
         amount: 5
-        placeholder: '&6{amount} Coins'
+        placeholder: '{lang:price-coins}'
         start-apply: 0

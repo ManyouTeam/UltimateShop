@@ -2,7 +2,6 @@ package cn.superiormc.ultimateshop.objects.items.subobjects;
 
 import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.objects.caches.ObjectCache;
-import cn.superiormc.ultimateshop.managers.CacheManager;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.ErrorManager;
 import cn.superiormc.ultimateshop.objects.caches.ObjectRandomPlaceholderCache;
@@ -21,11 +20,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
-public class ObjectRandomPlaceholder {
-
-    private final String id;
-
-    private final ConfigurationSection section;
+public class ObjectRandomPlaceholder extends AbstractCustomPlaceholder {
 
     private final List<RandomElement> elements = new ArrayList<>();
 
@@ -33,12 +28,8 @@ public class ObjectRandomPlaceholder {
 
     private final int elementAmount;
 
-    private final boolean perPlayer;
-
     public ObjectRandomPlaceholder(String id, ConfigurationSection section) {
-        this.id = id;
-        this.section = section;
-        this.perPlayer = section.getBoolean("per-player-element", false);
+        super(id, section, section.getBoolean("per-player-element", false));
         this.elementAmount = section.getInt("element-amount", 1);
         if (section.isList("elements")) {
             // 简单模式
@@ -66,10 +57,6 @@ public class ObjectRandomPlaceholder {
 
     public Collection<ObjectRandomPlaceholder> getNotSameAs() {
         return notSameAs;
-    }
-
-    public String getID() {
-        return id;
     }
 
     public List<String> getConfigElements() {
@@ -111,7 +98,7 @@ public class ObjectRandomPlaceholder {
             available.remove(chosen);
         }
 
-        boolean sortByOriginal = section.getBoolean("element-sort", true);
+        boolean sortByOriginal = getConfig().getBoolean("element-sort", true);
         if (sortByOriginal) {
             Set<RandomElement> chosenSet = new HashSet<>(chosenList); // O(1) 查找
             for (RandomElement elem : elements) {
@@ -141,36 +128,12 @@ public class ObjectRandomPlaceholder {
         return elements.get(0); // fallback
     }
 
-    public ConfigurationSection getConfig() {
-        return section;
-    }
-
-    public String getMode() {
-        String tempVal1 = section.getString("reset-mode");
-        if (tempVal1 == null) {
-            return "NEVER";
-        }
-        return tempVal1.toUpperCase();
-    }
-
     public List<String> getNowValue(ObjectCache cache) {
         ObjectRandomPlaceholderCache tempVal1 = cache.getRandomPlaceholderCache(this);
         if (tempVal1 == null) {
             return new ArrayList<>();
         }
         return tempVal1.getNowValue(false, false);
-    }
-
-    public boolean isPerPlayer() {
-        return perPlayer;
-    }
-
-    @Override
-    public boolean equals(Object object) {
-        if (object instanceof ObjectRandomPlaceholder) {
-            return ((ObjectRandomPlaceholder) object).getID().equals(getID());
-        }
-        return false;
     }
 
     public static String getNowValue(Player player, String id, int x) {
@@ -181,16 +144,11 @@ public class ObjectRandomPlaceholder {
         if (tempVal1 == null) {
             return "Error: Unknown Placeholder";
         }
-        ObjectCache cache;
-        if (tempVal1.perPlayer) {
-            if (player == null) {
-                ErrorManager.errorManager.sendErrorMessage("§cError: The random placeholder is per player and can not sync data with server cache.");
-                return "Error: Sync Error";
-            }
-            cache = CacheManager.cacheManager.getObjectCache(player);
-        } else {
-            cache = CacheManager.cacheManager.serverCache;
+        if (tempVal1.isPerPlayer() && player == null) {
+            ErrorManager.errorManager.sendErrorMessage("§cError: The random placeholder is per player and can not sync data with server cache.");
+            return "Error: Sync Error";
         }
+        ObjectCache cache = tempVal1.getCache(player);
         if (cache == null) {
             return "";
         }
@@ -213,16 +171,11 @@ public class ObjectRandomPlaceholder {
         if (tempVal1 == null) {
             return CommonUtil.getNowTime().withYear(2999);
         }
-        ObjectCache cache;
-        if (tempVal1.perPlayer) {
-            if (player == null) {
-                ErrorManager.errorManager.sendErrorMessage("§cError: The random placeholder is per player and can not sync data with server cache.");
-                return CommonUtil.getNowTime().withYear(2999);
-            }
-            cache = CacheManager.cacheManager.getObjectCache(player);
-        } else {
-            cache = CacheManager.cacheManager.serverCache;
+        if (tempVal1.isPerPlayer() && player == null) {
+            ErrorManager.errorManager.sendErrorMessage("§cError: The random placeholder is per player and can not sync data with server cache.");
+            return CommonUtil.getNowTime().withYear(2999);
         }
+        ObjectCache cache = tempVal1.getCache(player);
         if (cache == null) {
             return CommonUtil.getNowTime().withYear(2999);
         }
@@ -245,16 +198,11 @@ public class ObjectRandomPlaceholder {
         if (placeholder == null) {
             return null;
         }
-        ObjectCache cache;
-        if (placeholder.perPlayer) {
-            if (player == null) {
-                ErrorManager.errorManager.sendErrorMessage("§cError: The random placeholder is per player and can not sync data with server cache.");
-                return null;
-            }
-            cache = CacheManager.cacheManager.getObjectCache(player);
-        } else {
-            cache = CacheManager.cacheManager.serverCache;
+        if (placeholder.isPerPlayer() && player == null) {
+            ErrorManager.errorManager.sendErrorMessage("§cError: The random placeholder is per player and can not sync data with server cache.");
+            return null;
         }
+        ObjectCache cache = placeholder.getCache(player);
         if (cache == null) {
             return null;
         }

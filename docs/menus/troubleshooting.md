@@ -1,4 +1,4 @@
-# 🩺 Troubleshooting
+﻿# 🩺Troubleshooting
 
 Work from the symptom, not by changing unrelated keys. File paths below are relative to `plugins/UltimateShop/`.
 

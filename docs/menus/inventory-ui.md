@@ -1,10 +1,10 @@
-# 📦 Inventory UI
+﻿# 📦Inventory UI
 
-Inventory displays chest-style slots on Java and Bedrock. It reads the menu's root `size`, `layout` and buttons. Graphical `ui.layout` and `ui.placement` do not change Inventory positions.
+Inventory UI displays standard chest-style slots on both Java and Bedrock, reading root `size`, `layout`, and `buttons` (graphical `ui.layout` and `ui.placement` do not affect Inventory slots).
 
-## Select Inventory
+## Select Inventory UI
 
-For a single menu, disable alternative presentations at menu root:
+For a **single menu**, disable other presentations at the root:
 
 ```yaml
 dialog:
@@ -15,7 +15,7 @@ arcmenu:
   enabled: false
 ```
 
-For all menus, use `config.yml`:
+For **all menus**, force Inventory globally in `config.yml`:
 
 ```yaml
 menu:
@@ -25,11 +25,11 @@ menu:
     style: ''
 ```
 
-The global force setting takes priority over local switches. Disable it to restore normal selection. Inventory is also the standard fallback when a requested presentation cannot be used.
+Global `force-ui` overrides per-menu switches and restores normal selection when disabled. Inventory is also the standard fallback whenever a requested presentation is unavailable.
 
-## Configure rows and entries
+## Configure Rows and Entries
 
-Save as `menus/common_menus/example.yml`:
+Save as `menus/common_menus/example.yml`, reload, and run `/shop menu example`:
 
 ```yaml
 title: '&8Example'
@@ -47,13 +47,15 @@ buttons:
         type: close
 ```
 
-With Inventory selected, reload and open `/shop menu example`. Each row resolves to nine slots. Supported sizes are `9`, `18`, `27`, `36`, `45` and `54`. Undefined IDs leave empty slots; `0` can be defined as a filler. Multi-character IDs use backticks. See [Layout & Buttons](layout-and-buttons.md).
+Each row has 9 slots (`size` must be `9`, `18`, `27`, `36`, `45`, or `54`). Undefined IDs stay empty, `'0'` can be defined as a filler button, and multi-character IDs use backticks; see [Layout & Buttons](layout-and-buttons.md).
 
-## Clicks, visibility and refresh
+<a id="clicks-visibility-and-refresh"></a>
 
-Ordinary buttons run `actions` after their click conditions pass. Shop products use configured product click operations. `menu-visibility.inventory: false` hides an entry only from Inventory; Premium display conditions can additionally select entries per player with dynamic layout.
+## Clicks, Visibility, and Refresh
 
-Global refresh options in `config.yml`:
+Common buttons run `actions` after click `conditions` pass, while shop products use configured product click actions. Use `menu-visibility.inventory: false` to hide decorative entries only in Inventory, or use Premium `dynamic-layout` and `display-conditions` for per-player slots.
+
+Global refresh and title-update options in `config.yml`:
 
 ```yaml
 menu:
@@ -67,10 +69,12 @@ menu:
     resend-items-pack: false
 ```
 
-`circle-update` refreshes every second; `click-update` refreshes after a click. Enable periodic refresh when changing placeholders need it. Title updating is Premium and requires PacketEvents. Inventory click/reopen cooldowns are configured with `menu.cooldown.click` and `menu.cooldown.reopen`, in ticks; bundled values are `-1`.
+* `circle-update` refreshes every second; `click-update` refreshes after clicks (enable periodic refresh only when placeholders change over time).
+* `title-update` is a Premium feature requiring **PacketEvents**.
+* Inventory click and reopen cooldowns use `menu.cooldown.click` and `menu.cooldown.reopen` in ticks (`-1` disables).
 
-## Physical inventory screens
+## Screens That Always Use Inventory
 
-[Item Sell](item-sell-menus.md) accepts real items and requires sale confirmation. [Sell All](sell-all-menu.md) sells deposits on close. Both remain Inventory interfaces regardless of global presentation selection. [Buy More](buy-more-menus.md) has its own amount controls and product previews.
+[Item Sell](item-sell-menus.md) accepts physical items and waits for confirmation, while [Sell All](sell-all-menu.md) sells deposited items on close—both always use Inventory regardless of global UI settings. [Buy More](buy-more-menus.md) uses its own quantity controls and item previews.
 
 [UI Modes](ui-overview.md) · [Display Item Add Lore](display-item-add-lore.md)

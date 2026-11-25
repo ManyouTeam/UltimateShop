@@ -92,6 +92,17 @@ public class MathUtil {
         }
         if (ConfigManager.configManager.getBoolean("math.enable-function")) {
             ExpressionEnv env = new ExpressionEnv();
+            env.addFunction("piecewise", values -> {
+                if (values.length % 2 == 0) {
+                    return Double.NaN;
+                }
+                for (int i = 0; i < values.length - 1; i += 2) {
+                    if (values[i] != 0) {
+                        return values[i + 1];
+                    }
+                }
+                return values[values.length - 1];
+            });
             env.addFunction("sum", d -> {
                 double s = 0;
                 for (double v : d) {

@@ -2,6 +2,7 @@ package cn.superiormc.ultimateshop.commands;
 
 import cn.superiormc.ultimateshop.managers.CacheManager;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
+import cn.superiormc.ultimateshop.managers.ErrorManager;
 import cn.superiormc.ultimateshop.managers.LanguageManager;
 import cn.superiormc.ultimateshop.objects.caches.ObjectCache;
 import cn.superiormc.ultimateshop.objects.items.subobjects.ObjectCustomPlaceholder;
@@ -19,7 +20,6 @@ public class SubSetCustomPlaceholder extends AbstractCommand {
         this.id = "setcustomplaceholder";
         this.requiredPermission =  "ultimateshop." + id;
         this.onlyInGame = false;
-        this.premiumOnly = true;
         this.requiredArgLength = new Integer[]{3, 4};
     }
 
@@ -64,7 +64,13 @@ public class SubSetCustomPlaceholder extends AbstractCommand {
         if (tempVal1 == null) {
             return;
         }
-        tempVal1.setCustomPlaceholderCache(placeholder, value);
+        try {
+            tempVal1.setCustomPlaceholderCache(placeholder, value);
+        } catch (RuntimeException exception) {
+            ErrorManager.errorManager.sendErrorMessage("§cError: Could not update custom placeholder "
+                    + placeholder.getID() + ": " + exception.getMessage());
+            return;
+        }
         LanguageManager.languageManager.sendStringText(player,
                 "set-custom-placeholder",
                 "placeholder",

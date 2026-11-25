@@ -116,7 +116,7 @@ UltimateShop **不支持**通过命令一次性修改所有玩家数据。如果
 
 需要权限：`ultimateshop.generateitemformat`。
 
-## /shop getplaceholdervalue \<text> <mark style="color:red;">**（仅付费版）**</mark>
+## /shop getplaceholdervalue \<text>
 
 解析输入文本，获取其中占位符的值。
 
@@ -188,6 +188,6 @@ UltimateShop **不支持**通过命令一次性修改所有玩家数据。如果
 
 需要权限：`ultimateshop.editor`。
 
-## 自定义占位符命令 <mark style="color:red;">**（仅付费版）**</mark>
+## 自定义占位符命令
 
 自定义占位符功能的命令列表见[此页面](../placeholders/custom-placeholder-premium.md)。

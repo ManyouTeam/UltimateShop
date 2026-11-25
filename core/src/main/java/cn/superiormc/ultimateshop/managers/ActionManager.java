@@ -1,5 +1,7 @@
 package cn.superiormc.ultimateshop.managers;
 
+import cn.superiormc.ultimateshop.UltimateShop;
+import cn.superiormc.ultimateshop.objects.ObjectThingRun;
 import cn.superiormc.ultimateshop.objects.actions.AbstractRunAction;
 import cn.superiormc.ultimateshop.objects.ObjectThingRun;
 import cn.superiormc.ultimateshop.objects.actions.*;
@@ -54,6 +56,7 @@ public class ActionManager extends AbstractManager {
         registerNewAction("toggle_favourite", new ActionToggleFavourite());
         registerNewAction("add_favourite", new ActionAddFavourite());
         registerNewAction("remove_favourite", new ActionRemoveFavourite());
+        registerNewAction("add_custom_placeholder", new ActionAddCustomPlaceholder());
     }
 
     public void registerNewAction(String actionID,

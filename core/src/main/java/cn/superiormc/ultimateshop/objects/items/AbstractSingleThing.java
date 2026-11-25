@@ -46,21 +46,15 @@ public abstract class AbstractSingleThing implements Comparable<AbstractSingleTh
     public AbstractThings things;
 
     public AbstractSingleThing() {
-        initType(null);
-        this.empty = true;
-        this.displayPlaceholder = new ObjectDisplayPlaceholder(this);
+        this(null, null, null);
     }
 
-    public AbstractSingleThing(String id, AbstractThings things) {
+    public AbstractSingleThing(String id, AbstractThings things, ConfigurationSection section) {
         this.id = id;
-        this.singleSection = things.section.getConfigurationSection(id);
-        if (singleSection != null && singleSection.contains("custom-type")) {
-            initType(ConfigManager.configManager.config.getConfigurationSection("prices." +
-                    singleSection.getString("custom-type")));
-        } else {
-            initType(singleSection);
-        }
-        this.empty = false;
+        this.things = things;
+        this.singleSection = section;
+        this.empty = things == null;
+        initType(section);
         this.displayPlaceholder = new ObjectDisplayPlaceholder(this);
     }
 

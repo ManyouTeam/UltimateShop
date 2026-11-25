@@ -1,10 +1,10 @@
-# 🔀 Conditional Display — Premium
+﻿# 🔀Conditional Display - Premium
 
-Use `display-conditions` to decide whether a button or product can appear. Enable `dynamic-layout: true` when layout selection depends on the player. Click and trade conditions continue to validate the action separately.
+Use `display-conditions` to control whether a button or product appears, and enable `dynamic-layout: true` when slot selection depends on the player (remember that `display-conditions` only controls visibility—click and trade conditions still validate actions separately).
 
-## Choose between two entries
+## Choose Between Two Entries
 
-This complete Common menu displays a VIP button to permitted players and a regular button to others:
+This complete Common menu shows a VIP button to players with `shop.vip` and a regular button to everyone else:
 
 ```yaml
 title: '&8Choose a shop'
@@ -41,36 +41,40 @@ buttons:
         shop: normal
 ```
 
-Save in `menus/common_menus/`, create the target shops, then reload. The token `` `A||B` `` occupies one slot. `A` is selected when its visibility and display conditions pass; otherwise `B` is checked. An unconditional first candidate prevents later alternatives from being used. No eligible candidate leaves an empty slot.
+Save in `menus/common_menus/`, create the target shops, and reload. `` `A||B` `` occupies one slot: `A` is chosen if visible and its `display-conditions` pass, otherwise `B` is checked (if the first candidate has no conditions, later fallbacks are never reached; if none qualify, the slot stays empty).
 
-Global forced presentation selection still applies to this example. Ore/ArcMenu entries additionally need appropriate graphical placements.
+Global `menu.force-ui` still applies, and Ore/ArcMenu entries still need appropriate `ui.placement`.
 
-## Dynamic layout rules
+## Dynamic Layout Rules
 
-- Alternatives use `||` inside one backtick-delimited layout token.
-- Candidate IDs are case-sensitive; surrounding spaces are trimmed.
-- Each candidate must exist and be allowed in the current presentation.
-- Shop layouts can select product IDs and ordinary buttons by the same rules.
-- With dynamic layout enabled, PlaceholderAPI can resolve layout tokens per player.
+* Separate fallback IDs with `||` inside a single backtick token.
+* Candidate IDs are case-sensitive and trimmed of surrounding spaces.
+* Candidates must exist and be visible in the active presentation (`menu-visibility`).
+* Shop layouts follow the same rules for product IDs and common buttons.
+* With `dynamic-layout: true`, PlaceholderAPI placeholders inside layout tokens also resolve per player.
 
-A static layout is cached and cannot reliably select player-dependent alternatives. `menu-visibility` is evaluated separately and does not require dynamic layout.
+{% hint style="info" %}
+Static layouts (`dynamic-layout: false`) are cached and cannot reliably pick per-player fallbacks, whereas `menu-visibility` evaluates independently without needing `dynamic-layout`.
+{% endhint %}
 
-## Choose the condition scope
+## Choose the Right Condition Scope
 
-| Setting | Controls |
+| Setting | What It Controls |
 | --- | --- |
-| Menu-root `conditions` | Opening the entire menu |
+| Root menu `conditions` | Opening the entire menu |
 | Button `conditions` / `fail-actions` | Click eligibility and failure response |
-| Button/product `display-conditions` | Whether the entry appears |
-| Product buy/sell conditions | Actual trade eligibility |
-| `menu-visibility` | Which presentations can show the entry |
-| Conditional display-item variants | Which item appearance is selected |
-| Add-lore condition symbols | Which generated lore lines appear |
+| Button / product `display-conditions` | Whether the entry is shown |
+| Product `buy-conditions` / `sell-conditions` | Actual trade eligibility |
+| `menu-visibility` | Which presentations may show the entry |
+| Conditional display-item variants | Which item appearance is used |
+| Add-lore condition symbols | Which auto-generated lore lines appear |
 
-Hiding a button does not replace trade permissions or purchase validation. Use [Condition Format](../format/condition-format.md) for condition syntax, [Display Item Format](../format/display-item-format.md) for appearance variants, and [Add Lore](display-item-add-lore.md) for conditional text.
+Hiding a button does not replace permission or trade checks—always enforce conditions on the action or product as well. See [Condition Format](../format/condition-format.md), [Display Item Format](../format/display-item-format.md), and [Display Item Add Lore](display-item-add-lore.md).
 
-## Graphical alternatives
+## Graphical Alternatives
 
-Ore and ArcMenu still require placements for selected entries. Give replacement buttons compatible `ui.placement` values. Explicitly placed entries can also be collected outside root layout, so their own display conditions and visibility must express when they should appear.
+In Ore and ArcMenu, **every fallback candidate must have its own compatible `ui.placement`**—otherwise whichever one gets picked will not appear in the graphical UI.
+
+Also note that any entry with an explicit `ui.placement` may be collected for graphical display even if it is omitted from root `layout`, so make sure its `display-conditions` and `menu-visibility` clearly state when it should appear.
 
 [Layout & Buttons](layout-and-buttons.md) · [Graphical UI Layout](../menus-getting-started/ui-layout.md)

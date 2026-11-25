@@ -173,20 +173,21 @@ Shop file
 * sell-all：设置本商品能否使用一键全卖功能。**可选，默认 true（3.9.3 起）。**
 * price-modifier：为本商品启用全局 `sell.price-modifier` 规则。启用后不再直接显示出售价格，只能通过物品出售菜单卖出：点 `sell` 或 `sell-all` 会打开该菜单，购买、选择数量和其他自定义操作照常。即使 `sell-all` 为 false，这类商品仍可在物品出售菜单中卖出。详见[价格修改器](price-modifier.md)。**可选，默认 false。**
 * shared-use-times：请查看[本页](shared-product-data-premium.md)。
+* `buy-times-increment` 和 `sell-times-increment`：买入或卖出一笔时，次数增加多少。默认是 `1`，可填正整数。比如钻石和钻石块共用一组次数，钻石块填 `9`，卖 2 块就会占用 18 次钻石卖出额度。额度只剩 8 次时，还可以卖钻石，钻石块卖不出去。
 *   hide-message：是否隐藏玩家买入或卖出本商品后的提示消息。**可选，默认 false（4.2.11 起）。**
 
     <div data-gb-custom-block data-tag="hint" data-style="warning" class="hint hint-warning"><p>默认只隐藏成功买入/卖出的提示。至于达到上限、余额不足这类失败提示，有两种隐藏办法：</p><ul><li>同时在 <code>config.yml</code> 中把 <code>placeholder.click.enabled</code> 设为 <code>true</code>。失败原因会显示在展示物品描述里，但会额外消耗性能。</li><li>同时在 <code>config.yml</code> 中把 <code>force-display-fail-message</code> 设为 <code>true</code>。推荐这种方式。（4.2.11+）</li></ul></div>
 * buy-prices/sell-prices/products：请查看[本页](products-config-single-thing/)。
-* price-mode/product-mode：支持`ANY, ALL, CLASSIC_ANY, CLASSIC_ALL`。  请参阅[模式](products.md#mode)了解更多信息。 **必填。**
-* buy-actions：购买本商品后执行的动作，使用[动作格式](../format/action-format.md)。**可选。**&#x20;
+* price-mode/product-mode：支持`ANY, ALL, CLASSIC_ANY, CLASSIC_ALL`。 请参阅[模式](products.md#mode)了解更多信息。 **必填。**
+* buy-actions：购买本商品后执行的动作，使用[动作格式](../format/action-format.md)。**可选。**
 * sell-actions：卖出本商品后执行的动作，使用[动作格式](../format/action-format.md)。**可选。**
-* fail-actions：买入或卖出失败时执行的动作，使用[动作格式](../format/action-format.md)。**可选。**&#x20;
+* fail-actions：买入或卖出失败时执行的动作，使用[动作格式](../format/action-format.md)。**可选。**
 * buy-conditions：购买本商品需要满足的条件，使用[条件格式](../format/condition-format.md)。**可选。**
 * sell-conditions：卖出本商品需要满足的条件，使用[条件格式](../format/condition-format.md)。**可选。**
 * buy-limits：设置购买/出售次数上限。**可选，不设置则不限次数。**
   * buy-limits.global：全局上限，所有玩家共用。**可选。**
   * buy-limits.default：不满足下面任何条件的玩家使用这个上限。**设置了 buy-limits 时必填。**
-* buy-limits.\<条件 ID>：满足该条件的玩家使用对应的上限。条件写法见[条件格式](../format/condition-format.md)。例如：
+* buy-limits.<条件 ID>：满足该条件的玩家使用对应的上限。条件写法见[条件格式](../format/condition-format.md)。例如：
 
 ```yaml
 buy-limits:
@@ -224,7 +225,7 @@ buy-limits-conditions:
 * buy-times-reset-time-format
 * buy-times-reset-value
 * buy-times-max-value
-* sell-times-reset-mode&#x20;
+* sell-times-reset-mode
 * sell-times-reset-time
 * sell-times-reset-time-format
 * sell-times-reset-value
@@ -409,4 +410,4 @@ buy-prices:
 
 如果条目依赖分步处理——比如动态价格、`start-apply`/`end-apply`，或每条目各自的复杂条件——请用 `ALL` 或 `ANY`。只有配置完全符合「立即生效」的简单模型时，才用 `CLASSIC_` 系列。
 
-<table><thead><tr><th width="118">模式</th><th width="179">ANY</th><th>ALL</th><th>CLASSIC_ANY</th><th>CLASSIC_ALL</th></tr></thead><tbody><tr><td>发放商品</td><td>随机发放符合条件的商品。</td><td>发放全部商品。</td><td>同 ANY。</td><td>同 ALL。</td></tr><tr><td>扣除商品/价格</td><td>取第一条「玩家满足条件且数量足够」的商品/价格。</td><td>玩家必须备齐所有符合条件的商品/价格才能出售。</td><td>同 ANY。</td><td>同 ALL。</td></tr><tr><td>发放价格（即出售）</td><td>取第一条满足条件要求的价格。</td><td>发放全部价格。</td><td>同 ANY。</td><td>同 ALL。</td></tr><tr><td>价格支持</td><td>支持动态价格 &#x26; <code>apply</code> 选项。</td><td>同 ALL。</td><td>每次价格都必须相同。</td><td>同 CLASSIC_ALL。</td></tr><tr><td>products 的 <code>amount</code> 使用动态值时能否全卖</td><td><strong>不能</strong><br>数量是动态算出来的，插件无法得知最多能卖多少次。</td><td><strong>不能</strong><br>数量是动态算出来的，插件无法得知最多能卖多少次。</td><td>能</td><td>能</td></tr><tr><td>服务器性能</td><td>买卖请求多时开销可能偏高。</td><td>同 ALL。</td><td>低，和别的商店插件一样。</td><td>同 CLASSIC_ANY。</td></tr></tbody></table>
+<table><thead><tr><th width="118">模式</th><th width="179">ANY</th><th>ALL</th><th>CLASSIC_ANY</th><th>CLASSIC_ALL</th></tr></thead><tbody><tr><td>发放商品</td><td>随机发放符合条件的商品。</td><td>发放全部商品。</td><td>同 ANY。</td><td>同 ALL。</td></tr><tr><td>扣除商品/价格</td><td>取第一条「玩家满足条件且数量足够」的商品/价格。</td><td>玩家必须备齐所有符合条件的商品/价格才能出售。</td><td>同 ANY。</td><td>同 ALL。</td></tr><tr><td>发放价格（即出售）</td><td>取第一条满足条件要求的价格。</td><td>发放全部价格。</td><td>同 ANY。</td><td>同 ALL。</td></tr><tr><td>价格支持</td><td>支持动态价格 &#x26; <code>apply</code> 选项。</td><td>同 ALL。</td><td>每次价格都必须相同。</td><td>同 CLASSIC_ALL。</td></tr><tr><td>products 的 <code>amount</code> 使用动态值时能否全卖</td><td>能，按候选份数累计物品需求，在库存副本上试算。</td><td>能，按候选份数累计物品需求，在库存副本上试算。</td><td>能</td><td>能</td></tr><tr><td>服务器性能</td><td>买卖请求多时开销可能偏高。</td><td>同 ALL。</td><td>低，和别的商店插件一样。</td><td>同 CLASSIC_ANY。</td></tr></tbody></table>

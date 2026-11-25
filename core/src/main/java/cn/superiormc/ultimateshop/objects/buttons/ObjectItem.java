@@ -82,6 +82,10 @@ public class ObjectItem extends AbstractButton {
 
     private final int defaultSellAmount;
 
+    private final int buyTimesIncrement;
+
+    private final int sellTimesIncrement;
+
     public final boolean empty;
 
     private final boolean enableSellAll;
@@ -99,6 +103,8 @@ public class ObjectItem extends AbstractButton {
             1, originalConfig.getCurrentPath() + ".default-buy-amount");
         this.defaultSellAmount = parseDefaultTradeAmount(itemConfig.getString("default-sell-amount"),
             1, originalConfig.getCurrentPath() + ".default-sell-amount");
+        this.buyTimesIncrement = readTradeTimesIncrement("buy-times-increment");
+        this.sellTimesIncrement = readTradeTimesIncrement("sell-times-increment");
         this.enableSellAll = itemConfig.getBoolean("sell-all", true);
         this.priceModifierEnabled = itemConfig.getBoolean("price-modifier", false);
         initSharedUseTimes();
@@ -352,6 +358,10 @@ public class ObjectItem extends AbstractButton {
         return getRawSellPrice();
     }
 
+    public boolean usesSharedPrice(String id) {
+        return getBuyPrice().usesSharedPrice(id) || getDisplaySellPrice().usesSharedPrice(id);
+    }
+
     public ObjectProducts getReward() {
         if (reward == null) {
             return new ObjectProducts();
@@ -369,6 +379,32 @@ public class ObjectItem extends AbstractButton {
 
     public ObjectAction getFailAction() {
         return failAction;
+    }
+
+    private int readTradeTimesIncrement(String key) {
+        String configured = itemConfig.getString(key);
+        if (configured == null) {
+            return 1;
+        }
+        try {
+            int increment = Integer.parseInt(configured);
+            if (increment > 0) {
+                return increment;
+            }
+        } catch (NumberFormatException ignored) {
+            // Invalid values are reported below.
+        }
+        ErrorManager.errorManager.sendErrorMessage("§cError: " + itemConfig.getSection().getCurrentPath()
+                + "." + key + " must be a positive integer.");
+        return 1;
+    }
+
+    public int getBuyTimesIncrement() {
+        return buyTimesIncrement;
+    }
+
+    public int getSellTimesIncrement() {
+        return sellTimesIncrement;
     }
 
     public int getPlayerBuyLimit(Player player) {

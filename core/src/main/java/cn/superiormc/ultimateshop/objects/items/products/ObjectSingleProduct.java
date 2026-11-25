@@ -32,9 +32,8 @@ public class ObjectSingleProduct extends AbstractSingleThing {
     }
 
     public ObjectSingleProduct(String id, ObjectProducts products) {
-        super(id, products);
+        super(id, products, products.section.getConfigurationSection(id));
         this.item = products.getItem();
-        this.things = products;
         this.isStatic = singleSection.getString("amount", "1").matches("-?\\d+(\\.\\d+)?");
         Pattern pattern = Pattern.compile("-?\\d+(\\.\\d+)?");
         Matcher matcher = pattern.matcher(singleSection.getString("amount", "1"));
@@ -146,7 +145,11 @@ public class ObjectSingleProduct extends AbstractSingleThing {
     protected String replacePlaceholder(int baseAmount, int offsetAmount, boolean buyOrSell, boolean placeholderBuyOrSell) {
         // 如果是buy
         if ((buyOrSell && placeholderBuyOrSell) || (!buyOrSell && !placeholderBuyOrSell)) {
-            return String.valueOf(baseAmount + offsetAmount);
+            int increment = 1;
+            if (item != null) {
+                increment = buyOrSell ? item.getBuyTimesIncrement() : item.getSellTimesIncrement();
+            }
+            return String.valueOf(baseAmount + (long) offsetAmount * increment);
         }
         return String.valueOf(baseAmount);
     }

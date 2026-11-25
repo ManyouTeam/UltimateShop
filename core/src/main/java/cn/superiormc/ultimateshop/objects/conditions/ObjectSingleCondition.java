@@ -62,7 +62,7 @@ public class ObjectSingleCondition extends AbstractSingleRun {
             return true;
         }
         boolean result = ConditionManager.conditionManager.checkBoolean(this, thingRun);
-        if (!UltimateShop.freeVersion) {
+        if (!UltimateShop.freeVersion && ObjectCondition.shouldRunActions()) {
             if (result) {
                 meetActions.runAllActions(thingRun);
             } else {

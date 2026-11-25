@@ -10,8 +10,27 @@ import org.bukkit.configuration.MemoryConfiguration;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 
 public class ObjectCondition {
+
+    private static final ThreadLocal<Boolean> SUPPRESS_ACTIONS = new ThreadLocal<>();
+
+    public static <T> T withoutActions(Supplier<T> check) {
+        if (!shouldRunActions()) {
+            return check.get();
+        }
+        SUPPRESS_ACTIONS.set(true);
+        try {
+            return check.get();
+        } finally {
+            SUPPRESS_ACTIONS.remove();
+        }
+    }
+
+    public static boolean shouldRunActions() {
+        return !Boolean.TRUE.equals(SUPPRESS_ACTIONS.get());
+    }
 
     private ConfigurationSection section;
 
@@ -72,9 +91,9 @@ public class ObjectCondition {
         if (thingRun.getPlayer() == null) {
             return false;
         }
-        for (ObjectSingleCondition singleCondition : conditions){
+        for (ObjectSingleCondition singleCondition : conditions) {
             if (!singleCondition.checkBoolean(thingRun)) {
-                if (!UltimateShop.freeVersion) {
+                if (!UltimateShop.freeVersion && shouldRunActions()) {
                     ObjectAction action = new ObjectAction(section.getConfigurationSection("not-meet-actions"));
                     action.runAllActions(thingRun);
                 }
@@ -88,12 +107,12 @@ public class ObjectCondition {
         if (thingRun.getPlayer() == null) {
             return false;
         }
-        for (ObjectSingleCondition singleCondition : conditions){
+        for (ObjectSingleCondition singleCondition : conditions) {
             if (singleCondition.checkBoolean(thingRun)) {
                 return true;
             }
         }
-        if (!UltimateShop.freeVersion) {
+        if (!UltimateShop.freeVersion && shouldRunActions()) {
             ObjectAction action = new ObjectAction(section.getConfigurationSection("not-meet-actions"));
             action.runAllActions(thingRun);
         }

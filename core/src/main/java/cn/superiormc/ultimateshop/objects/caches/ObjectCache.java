@@ -6,12 +6,16 @@ import cn.superiormc.ultimateshop.managers.DatabaseManager;
 import cn.superiormc.ultimateshop.managers.ErrorManager;
 import cn.superiormc.ultimateshop.database.PlayerDataSnapshot;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
+import cn.superiormc.ultimateshop.objects.items.subobjects.AbstractCustomPlaceholder;
 import cn.superiormc.ultimateshop.objects.items.subobjects.ObjectCustomPlaceholder;
 import cn.superiormc.ultimateshop.objects.items.subobjects.ObjectRandomPlaceholder;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
 import cn.superiormc.ultimateshop.utils.TextUtil;
 import org.bukkit.entity.Player;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -25,9 +29,7 @@ public class ObjectCache {
 
     private final Map<ObjectItem, ObjectUseTimesCache> useTimesCache = new ConcurrentHashMap<>();
 
-    private final Map<ObjectRandomPlaceholder, ObjectRandomPlaceholderCache> randomPlaceholderCache = new ConcurrentHashMap<>();
-
-    private final Map<ObjectCustomPlaceholder, String> customPlaceholderCache = new ConcurrentHashMap<>();
+    private final Map<AbstractCustomPlaceholder, ObjectPlaceholderCache<?>> placeholderStates = new ConcurrentHashMap<>();
 
     private final Map<String, List<FavouriteProductReference>> favouriteProductCache = new ConcurrentHashMap<>();
 
@@ -84,7 +86,7 @@ public class ObjectCache {
     public synchronized void cancelResetTasks() {
         closed = true;
         sharedUseTimesCache.values().forEach(ObjectUseTimesCache::cancelResetTime);
-        randomPlaceholderCache.values().forEach(ObjectRandomPlaceholderCache::cancelResetTask);
+        getRandomPlaceholderCache().values().forEach(ObjectRandomPlaceholderCache::cancelResetTask);
     }
 
     /*
@@ -205,13 +207,10 @@ public class ObjectCache {
         if (closed || placeholder == null || nowValue == null) {
             return;
         }
-        if (!checkPlaceholderScope(placeholder)) {
+        ObjectPlaceholderCache<?> state = getPlaceholderState(placeholder);
+        if (!(state instanceof ObjectRandomPlaceholderCache placeholderCache)) {
             return;
         }
-        ObjectRandomPlaceholderCache placeholderCache = randomPlaceholderCache.computeIfAbsent(
-                placeholder,
-                key -> new ObjectRandomPlaceholderCache(this, key)
-        );
         placeholderCache.loadState(
                 nowValue,
                 CommonUtil.stringToTime(refreshDoneTime),
@@ -238,46 +237,64 @@ public class ObjectCache {
     }
 
     public ObjectRandomPlaceholderCache getRandomPlaceholderCache(ObjectRandomPlaceholder placeholder) {
-        if (placeholder == null || !checkPlaceholderScope(placeholder)) {
+        ObjectPlaceholderCache<?> state = getPlaceholderState(placeholder);
+        if (!(state instanceof ObjectRandomPlaceholderCache randomState)) {
             return null;
         }
-        ObjectRandomPlaceholderCache placeholderCache = randomPlaceholderCache.computeIfAbsent(
-                placeholder,
-                key -> new ObjectRandomPlaceholderCache(this, key)
-        );
-        placeholderCache.initialize();
-        return placeholderCache;
-    }
-
-    private boolean checkPlaceholderScope(ObjectRandomPlaceholder placeholder) {
-        if (server && placeholder.isPerPlayer()) {
-            ErrorManager.errorManager.sendErrorMessage(
-                    "§cError: The random placeholder is per player and can not sync data with server cache.");
-            return false;
-        }
-        if (!server && !placeholder.isPerPlayer()) {
-            ErrorManager.errorManager.sendErrorMessage(
-                    "§cError: The random placeholder is globally and can not sync data with player cache.");
-            return false;
-        }
-        return true;
+        randomState.initialize();
+        return randomState;
     }
 
     public Map<ObjectRandomPlaceholder, ObjectRandomPlaceholderCache> getRandomPlaceholderCache() {
-        return Collections.unmodifiableMap(randomPlaceholderCache);
+        Map<ObjectRandomPlaceholder, ObjectRandomPlaceholderCache> result = new LinkedHashMap<>();
+        for (ObjectPlaceholderCache<?> state : placeholderStates.values()) {
+            if (state instanceof ObjectRandomPlaceholderCache randomState) {
+                result.put(randomState.getPlaceholder(), randomState);
+            }
+        }
+        return Collections.unmodifiableMap(result);
     }
 
-    /*
-    CUSTOM PLACEHOLDER
-     */
+    public Collection<ObjectPlaceholderCache<?>> getPlaceholderStates() {
+        return Collections.unmodifiableCollection(placeholderStates.values());
+    }
+
+    private ObjectPlaceholderCache<?> getPlaceholderState(AbstractCustomPlaceholder placeholder) {
+        if (placeholder == null) {
+            return null;
+        }
+        if (server == placeholder.isPerPlayer()) {
+            String scope = server ? "per-player" : "server-wide";
+            ErrorManager.errorManager.sendErrorMessage("§cError: Cannot use " + scope + " placeholder "
+                    + placeholder.getID() + " with the " + (server ? "server" : "player") + " cache.");
+            return null;
+        }
+        return placeholderStates.computeIfAbsent(placeholder, key -> {
+            if (key instanceof ObjectRandomPlaceholder random) {
+                return new ObjectRandomPlaceholderCache(this, random);
+            }
+            return new ObjectPlaceholderCache<>(this, key);
+        });
+    }
+
+    public String getCustomPlaceholderValue(ObjectCustomPlaceholder placeholder) {
+        ObjectPlaceholderCache<?> state = getPlaceholderState(placeholder);
+        return state == null ? placeholder.getDefaultValue() : placeholder.getCustomValue(state, CommonUtil.getNowTime());
+    }
+
+    public LocalDateTime getCustomPlaceholderResetTime(ObjectCustomPlaceholder placeholder) {
+        ObjectPlaceholderCache<?> state = getPlaceholderState(placeholder);
+        return state == null ? null : placeholder.getCustomResetTime(state, CommonUtil.getNowTime());
+    }
+
     public void setCustomPlaceholderCache(ObjectCustomPlaceholder placeholder, String nowValue) {
-        if (placeholder == null || nowValue == null) {
+        if (nowValue == null) {
             return;
         }
-        if (!checkCustomPlaceholderScope(placeholder)) {
-            return;
+        ObjectPlaceholderCache<?> state = getPlaceholderState(placeholder);
+        if (state != null) {
+            placeholder.setCustomValue(state, nowValue, CommonUtil.getNowTime());
         }
-        customPlaceholderCache.put(placeholder, placeholder.normalizeValue(nowValue));
     }
 
     public void setCustomPlaceholderCache(String id, String nowValue) {
@@ -285,25 +302,31 @@ public class ObjectCache {
             return;
         }
         ObjectCustomPlaceholder placeholder = ConfigManager.configManager.getCustomPlaceholder(id);
-        setCustomPlaceholderCache(placeholder, nowValue);
+        ObjectPlaceholderCache<?> state = getPlaceholderState(placeholder);
+        if (state != null) {
+            placeholder.loadCustomValue(state, nowValue);
+        }
+    }
+
+    public String addCustomPlaceholderValue(ObjectCustomPlaceholder placeholder, BigDecimal amount) {
+        if (canNotModify()) {
+            return null;
+        }
+        ObjectPlaceholderCache<?> state = getPlaceholderState(placeholder);
+        return state == null ? null : placeholder.addCustomValue(state, amount, CommonUtil.getNowTime());
     }
 
     public Map<ObjectCustomPlaceholder, String> getCustomPlaceholderCache() {
-        return Collections.unmodifiableMap(customPlaceholderCache);
-    }
-
-    private boolean checkCustomPlaceholderScope(ObjectCustomPlaceholder placeholder) {
-        if (server && placeholder.isPerPlayer()) {
-            ErrorManager.errorManager.sendErrorMessage(
-                    "§cError: The custom placeholder is per player and can not sync data with server cache.");
-            return false;
+        Map<ObjectCustomPlaceholder, String> result = new LinkedHashMap<>();
+        for (ObjectPlaceholderCache<?> state : placeholderStates.values()) {
+            if (state.getPlaceholder() instanceof ObjectCustomPlaceholder placeholder) {
+                String value = placeholder.snapshotCustomValue(state);
+                if (value != null) {
+                    result.put(placeholder, value);
+                }
+            }
         }
-        if (!server && !placeholder.isPerPlayer()) {
-            ErrorManager.errorManager.sendErrorMessage(
-                    "§cError: The custom placeholder is globally and can not sync data with player cache.");
-            return false;
-        }
-        return true;
+        return Collections.unmodifiableMap(result);
     }
 
     /*
@@ -451,7 +474,7 @@ public class ObjectCache {
 
     public void ready() {
         ready = true;
-        randomPlaceholderCache.values().forEach(
+        getRandomPlaceholderCache().values().forEach(
                 ObjectRandomPlaceholderCache::activateResetTask
         );
         if (player != null) {

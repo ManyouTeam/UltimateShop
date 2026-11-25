@@ -197,12 +197,15 @@ public class ObjectDisplayItemStack {
                     "sell-price",
                     ObjectPrices.getDisplayNameInLine(
                     player,
-                    1,
-                    item.getSellPrice()
-                    .give(player, tempVal9.getSellUseTimes(), 1)
-                    .getResultMapForSellMultiplierDisplay(player),
-                    item.getSellPrice().getMode(),
-                    false)));
+                    ObjectPrices.getDisplayName(
+                        player,
+                        1,
+                        item.getSellPrice()
+                            .give(player, tempVal9.getSellUseTimes(), 1)
+                            .getResultMapForSellMultiplierDisplay(player),
+                        item.getSellPrice().getMode(),
+                        false),
+                    item.getSellPrice().getMode())));
             }
         }
         if (tempVal4 != null && !tempVal4.isEmpty() && !tempVal4.equalsIgnoreCase("{lang}")) {

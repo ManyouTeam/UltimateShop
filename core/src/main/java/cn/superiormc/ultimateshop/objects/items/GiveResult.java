@@ -7,7 +7,10 @@ import cn.superiormc.ultimateshop.utils.MathUtil;
 import org.bukkit.entity.Player;
 
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 public class GiveResult {
 
@@ -28,11 +31,8 @@ public class GiveResult {
         this.multiplier = 1;
     }
 
-    public void addResultMapElement(AbstractSingleThing thing, Player player, int times, int multi, BigDecimal amount) {
+    public void addResultMapElement(AbstractSingleThing thing, BigDecimal amount) {
         resultMap.put(thing, amount);
-        if (!thing.getRequireCondition(player, times, multi, amount.doubleValue())) {
-            this.conditionBoolean = false;
-        }
         this.empty = false;
     }
 
@@ -92,13 +92,53 @@ public class GiveResult {
         return conditionBoolean;
     }
 
+    public boolean checkProductConditions(int times, int multi, Player player) {
+        boolean passed = true;
+        for (Map.Entry<AbstractSingleThing, BigDecimal> entry : resultMap.entrySet()) {
+            if (!entry.getKey().getRequireCondition(player, times, multi, entry.getValue().doubleValue())) {
+                passed = false;
+            }
+        }
+        this.conditionBoolean = passed;
+        return passed;
+    }
+
+    public boolean checkSellPriceConditions(int times, int multi, Player player) {
+        Map<String, BigDecimal> totals = new HashMap<>();
+        for (Map.Entry<AbstractSingleThing, BigDecimal> entry : resultMap.entrySet()) {
+            String group = getSharedPriceGroup(entry.getKey());
+            if (group != null) {
+                totals.merge(group, entry.getValue(), BigDecimal::add);
+            }
+        }
+        for (Map.Entry<AbstractSingleThing, BigDecimal> entry : resultMap.entrySet()) {
+            AbstractSingleThing thing = entry.getKey();
+            String group = getSharedPriceGroup(thing);
+            BigDecimal amount = group == null ? entry.getValue() : totals.get(group);
+            if (!thing.getRequireCondition(player, times, multi, amount.doubleValue())) {
+                this.conditionBoolean = false;
+                return false;
+            }
+        }
+        this.conditionBoolean = true;
+        return true;
+    }
+
+    private String getSharedPriceGroup(AbstractSingleThing thing) {
+        return thing.singleSection == null ? null : thing.singleSection.getString("shared-price");
+    }
+
     public boolean give(int times, int multi, Player player, double multiplier) {
         return give(times, multi, player, BigDecimal.valueOf(multiplier));
     }
 
     public boolean give(int times, int multi, Player player, BigDecimal multiplier) {
-        boolean resultBoolean = true;
         setMultiplier(multiplier);
+        return give(times, multi, player);
+    }
+
+    public boolean give(int times, int multi, Player player) {
+        boolean resultBoolean = true;
         Collection<GiveItemStack> giveItemStacks = new ArrayList<>();
         for (AbstractSingleThing singleThing: resultMap.keySet()) {
             GiveItemStack giveItemStack = singleThing.playerCanGive(player, resultMap.get(singleThing).doubleValue());

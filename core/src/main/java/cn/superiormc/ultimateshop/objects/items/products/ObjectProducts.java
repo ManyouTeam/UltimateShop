@@ -1,5 +1,6 @@
 package cn.superiormc.ultimateshop.objects.items.products;
 
+import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.managers.ErrorManager;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import cn.superiormc.ultimateshop.objects.items.AbstractSingleThing;
@@ -9,6 +10,7 @@ import cn.superiormc.ultimateshop.objects.items.ItemStorage;
 import cn.superiormc.ultimateshop.objects.items.MaxSellResult;
 import cn.superiormc.ultimateshop.objects.items.TakeResult;
 import cn.superiormc.ultimateshop.objects.items.ThingMode;
+import cn.superiormc.ultimateshop.objects.items.prices.ObjectPrices;
 import cn.superiormc.ultimateshop.utils.RandomUtil;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
@@ -83,7 +85,7 @@ public class ObjectProducts extends AbstractThings {
                 }
                 ObjectSingleProduct tempVal1 = RandomUtil.getRandomElement(tempVal6);
                 cost = getAmount(player, times, amount, true).get(tempVal1);
-                resultObject.addResultMapElement(tempVal1, player, times, amount, cost);
+                resultObject.addResultMapElement(tempVal1, cost);
                 return resultObject;
             case ALL:
             case CLASSIC_ALL:
@@ -92,7 +94,7 @@ public class ObjectProducts extends AbstractThings {
                         continue;
                     }
                     cost = getAmount(player, times, amount, true).get(tempVal2);
-                    resultObject.addResultMapElement(tempVal2, player, times, amount, cost);
+                    resultObject.addResultMapElement(tempVal2, cost);
                 }
                 return resultObject;
             default:
@@ -180,98 +182,18 @@ public class ObjectProducts extends AbstractThings {
         return productMaps;
     }
 
-    public MaxSellResult getMaxAbleSellAmount(Inventory inventory, Player player, int times, int maxLimit) {
-        return getMaxAbleSellAmount(ItemStorage.of(inventory), player, times, maxLimit);
+    public MaxSellResult getMaxSellAmount(Inventory inventory, Player player, int times, int maxLimit) {
+        return getMaxSellAmount(ItemStorage.of(inventory), player, times, maxLimit);
     }
 
-    public MaxSellResult getMaxAbleSellAmount(ItemStorage storage, Player player, int times, int maxLimit) {
-        int maxAmount = -1;
-        MaxSellResult sellResult = new MaxSellResult();
-        switch (mode) {
-            case UNKNOWN:
-                return MaxSellResult.empty;
-            case ANY:
-            case CLASSIC_ANY:
-                boolean breakThisTime = false;
-                boolean needTrue = true;
-                for (ObjectSingleProduct tempVal1 : singleProducts) {
-                    if (!tempVal1.getApplyCondition(player)) {
-                        continue;
-                    }
-                    if (!tempVal1.isStatic()) {
-                        ErrorManager.errorManager.sendErrorMessage("§cError: It seems that one of your product is using dynamic amounts, which results in an error in calculating the maximum sellable quantity for that product in the sell all, as the results of each sale are different and the plugin cannot predict the price for the next sale.");
-                    }
-                    BigDecimal cost = getAmount(player, times, 1, false).get(tempVal1);
-                    int tempVal2 = (int) (tempVal1.playerHasAmount(storage, player) / cost.doubleValue());
-                    if (tempVal2 > 0) {
-                        if (maxAmount < 0) {
-                            maxAmount = 0;
-                        }
-                        if (tempVal2 + maxAmount >= maxLimit) {
-                            tempVal2 = maxLimit - maxAmount;
-                            maxAmount = maxLimit;
-                            breakThisTime = true;
-                        } else {
-                            maxAmount = tempVal2 + maxAmount;
-                        }
-                        BigDecimal realCost = getAmount(player, times, tempVal2, false).get(tempVal1);
-                        if (tempVal1.playerHasEnough(storage, player, false, realCost.doubleValue())) {
-                            sellResult.getTakeResult().addResultMapElement(tempVal1, player, times, tempVal2, realCost);
-                        } else {
-                            needTrue = false;
-                        }
-                        if (breakThisTime) {
-                            break;
-                        }
-                    }
-                }
-                if (needTrue && maxAmount > 0) {
-                    sellResult.getTakeResult().setResultBoolean();
-                }
-                sellResult.setMaxAmount(maxAmount);
-                return sellResult;
-            case ALL:
-            case CLASSIC_ALL:
-                boolean needFalse = false;
-                for (ObjectSingleProduct tempVal1 : singleProducts) {
-                    if (!tempVal1.getApplyCondition(player)) {
-                        continue;
-                    }
-                    if (!tempVal1.isStatic()) {
-                        ErrorManager.errorManager.sendErrorMessage("§cError: It seems that one of your product is using dynamic amounts, which results in an error in calculating the maximum sellable quantity for that product in the sell all, as the results of each sale are different and the plugin cannot predict the price for the next sale.");
-                    }
-                    BigDecimal cost = getAmount(player, times, 1, false).get(tempVal1);
-                    int tempVal2 = (int) (tempVal1.playerHasAmount(storage, player) / cost.doubleValue());
-                    if (maxAmount == -1 || tempVal2 < maxAmount) {
-                        maxAmount = tempVal2;
-                    }
-                }
-                if (maxAmount >= maxLimit) {
-                    maxAmount = maxLimit;
-                }
-                if (maxAmount > 0) {
-                    for (ObjectSingleProduct tempVal1 : singleProducts) {
-                        if (!tempVal1.getApplyCondition(player)) {
-                            continue;
-                        }
-                        BigDecimal realCost = getAmount(player, times, maxAmount, false).get(tempVal1);
-                        sellResult.getTakeResult().addResultMapElement(tempVal1, player, times, maxAmount, realCost);
+    public MaxSellResult getMaxSellAmount(ItemStorage storage, Player player, int times, int limit) {
+        return new MaxSellCalculator(this, storage, player, times).calculate(limit, null, 0, null, false, 1);
+    }
 
-                        if (!tempVal1.playerHasEnough(storage, player, false, realCost.doubleValue())) {
-                            needFalse = true;
-                        }
-                    }
-
-                    if (!needFalse) {
-                        sellResult.getTakeResult().setResultBoolean();
-                    }
-                }
-                sellResult.setMaxAmount(maxAmount);
-                return sellResult;
-            default:
-                ErrorManager.errorManager.sendErrorMessage("§cError: Can not get price-mode section in your shop config!!");
-                return MaxSellResult.empty;
-        }
+    public MaxSellResult getMaxSellAmount(ItemStorage storage, Player player, int times, int serverTimes,
+                                          ObjectItem item, ObjectPrices price, boolean ignoreMultiplier, double multiplier) {
+        return new MaxSellCalculator(this, storage, player, times)
+                .calculate(Integer.MAX_VALUE, item, serverTimes, price, ignoreMultiplier, multiplier);
     }
 
     public ObjectSingleProduct getTargetProduct(Player player) {

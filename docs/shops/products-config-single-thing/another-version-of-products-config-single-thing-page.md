@@ -2,7 +2,7 @@
 hidden: true
 ---
 
-# Another version of 💰Products Config: Single Thing page
+# 💰Product Configuration: Single Entry (Alternative)
 
 Each single product or price in one product we called **single thing**. So, each product have those thing type:
 

@@ -48,6 +48,7 @@ public class InitManager extends AbstractManager {
         resourceOutputFolder("shops", false);
         resourceOutputFolder("menus", false);
         resourceOutputFolder("shared_use_times", false);
+        resourceOutputFolder("shared_prices", false);
         resourceOutputFolder("placeholders", false);
         resourceOutputFolder("sell_sticks", false);
         resourceOutputFolder("sell_chests", false);

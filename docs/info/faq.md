@@ -20,6 +20,21 @@ A: That menu already has a condition, which you can find in `menus/shop_menu_tem
 
 **A:** The person asking this question may never know a truth: before using the plugin, you should be familiar with the `config.yml` file. In `config.yml`, there is an option called `sell.max-amount`, and I want you to know its purpose by looking at its name.
 
+## Q: Selling reports that the 5-hour, daily, or weekly income limit is reached. How do I disable it?
+
+A: It is not a toggle in `config.yml`. The limits are the three `require-conditions` shipped in the example `shared_prices/vault-sell.yml` template, 2,000 / 10,000 / 50,000 by default.
+
+- Delete the whole `require-conditions` section to remove all limits.
+- Delete one entry to remove only that period.
+- Raise `value` to loosen a limit.
+- To exempt a single product, add `require-conditions: {}` to its price entry.
+
+The `give-actions` counters keep updating after the limits are removed, so the quota lines in the product lore keep growing. See [Example: Sell Income Limits](../features/sell-income-limits-example.md).
+
+## Q: How many custom placeholders can the free version create?
+
+A: Up to 5; the premium version has no limit. On the free version, the sixth and later files in `placeholders/custom_placeholders` are not loaded and the console reports an error on startup. See [Custom Placeholder](../placeholders/custom-placeholder-premium.md).
+
 ## Q: How to change the max amount limit of buy more menu?
 
 A: There is a option called `menu.buy-more.<buy more menu name>.max-amount` option in `config.yml` file, or `buy-more-menu.max-amount` option in your product configs if you are setting up a separate buy more menu for a certain product.

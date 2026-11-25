@@ -2,11 +2,11 @@ package cn.superiormc.ultimateshop.database;
 
 import cn.superiormc.ultimateshop.objects.caches.FavouriteProductReference;
 import cn.superiormc.ultimateshop.objects.caches.ObjectCache;
+import cn.superiormc.ultimateshop.objects.caches.ObjectPlaceholderCache;
 import cn.superiormc.ultimateshop.objects.caches.ObjectRandomPlaceholderCache;
 import cn.superiormc.ultimateshop.objects.caches.ObjectUseTimesCache;
 import cn.superiormc.ultimateshop.objects.caches.UseTimesStorageKey;
 import cn.superiormc.ultimateshop.objects.items.subobjects.ObjectCustomPlaceholder;
-import cn.superiormc.ultimateshop.objects.items.subobjects.ObjectRandomPlaceholder;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -52,18 +52,19 @@ public record PlayerDataSnapshot(
                 (menu, references) -> favourites.put(menu, new ArrayList<>(references)));
 
         List<RandomPlaceholderSnapshot> randomPlaceholders = new ArrayList<>();
-        for (Map.Entry<ObjectRandomPlaceholder, ObjectRandomPlaceholderCache> entry
-                : cache.getRandomPlaceholderCache().entrySet()) {
-            RandomPlaceholderSnapshot snapshot = entry.getValue().snapshot();
-            if (snapshot != null) {
-                randomPlaceholders.add(snapshot);
-            }
-        }
-
         Map<String, String> customPlaceholders = new LinkedHashMap<>();
-        for (Map.Entry<ObjectCustomPlaceholder, String> entry
-                : cache.getCustomPlaceholderCache().entrySet()) {
-            customPlaceholders.put(entry.getKey().getID(), entry.getValue());
+        for (ObjectPlaceholderCache<?> state : cache.getPlaceholderStates()) {
+            if (state instanceof ObjectRandomPlaceholderCache randomState) {
+                RandomPlaceholderSnapshot snapshot = randomState.snapshot();
+                if (snapshot != null) {
+                    randomPlaceholders.add(snapshot);
+                }
+            } else if (state.getPlaceholder() instanceof ObjectCustomPlaceholder placeholder) {
+                String value = placeholder.snapshotCustomValue(state);
+                if (value != null) {
+                    customPlaceholders.put(placeholder.getID(), value);
+                }
+            }
         }
 
         return new PlayerDataSnapshot(playerUUID, playerName, server, useTimes, favourites,

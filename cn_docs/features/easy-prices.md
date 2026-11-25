@@ -1,42 +1,16 @@
 # 💴简易价格
 
-{% hint style="danger" %}
-此功能的代码已长期未更新，可能存在问题。插件作者不计划继续修复或更新该功能，请自行承担使用风险。
-{% endhint %}
+在 `shared_prices/` 中为每个模板创建一个 YAML 文件。文件名是模板 ID。模板可以使用价格项支持的配置，包括 `apply-conditions`、`require-conditions`、`take-actions` 和 `give-actions`。
 
-在 `config.yml` 的 `prices` 下定义简易价格，例如：
+商品可以在买价或卖价中引用模板，并填写需要覆盖的字段。
 
 ```yaml
-prices:
-  example:
-    economy-plugin: Vault
-    placeholder: '200 Coins'
-  mmoitems-example:
-    hook-plugin: MMOItems
-    hook-item: AXE;;TEST_AXE
-    amount: 1
-    placeholder: '1 Mythic Axe'
+sell-prices:
+  1:
+    shared-price: vault
+    amount: 25
 ```
 
-这里定义了 `example` 和 `mmoitems-example` 两种简易价格。可在商品的 `buy-prices` 或 `sell-prices` 中通过 `type` 引用，例如：
+价格项填写的字段会覆盖模板中的对应字段，其余字段继续继承。例如，上面的写法引用内置的 `vault.yml` 模板，并将卖价设为 25。空的 `{}` 会保留模板设置。若要在某个价格项禁用继承的条件或动作，可将 `require-conditions` 或 `give-actions` 设为 `false`。
 
-```yaml
-products:
-  A:
-    give-item: true
-    price-mode: ALL
-    product-mode: ALL
-    products:
-      1:
-        material: APPLE
-        amount: 1
-    buy-prices:
-      1:
-        custom-type: example # <--- New Option!
-        amount: 20
-        start-apply: 0
-      2:
-        custom-type: mmoitems-example # <--- New Option!
-        placeholder: '{amount} axes'
-        start-apply: 0
-```
+要让多个商品共用 Vault 回收限额，请参见[示例:回收限额示例](sell-income-limits-example.md)。

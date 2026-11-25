@@ -1,12 +1,12 @@
-# ✨ ArcMenu UI — 付费版
+# ✨ArcMenu UI - 付费版
 
-ArcMenu 为 Java 玩家把通用、商店、搜索和收藏菜单呈现为可交互的图形界面。它与 Ore 共用样式、区域、位置和商品卡片设置，但使用自己的一套 ArcMenu 对接方式与客户端配置。
+ArcMenu UI 为 Java 玩家将通用、商店、搜索与收藏菜单渲染为可交互的图形界面。它与 Ore 共用同一套图形样式、命名区域、坐标定位与商品卡片配置，但在插件对接与客户端资源上使用 ArcMenu 自身的方案。
 
 ## 启用 ArcMenu
 
-安装一个兼容的 ArcMenu 插件，并完成它的客户端资源配置。本插件对接 ArcMenu 3.4.3 API，其中包含原生文本输入服务。
+先安装兼容的 ArcMenu 插件并完成其客户端资源配置（UltimateShop 对接 **ArcMenu 3.4.3 API**，含原生文本输入服务）。
 
-在 `config.yml` 中设置：
+在 `config.yml` 中开启全局设置：
 
 ```yaml
 menu:
@@ -16,7 +16,7 @@ menu:
     style: classic
 ```
 
-另存为 `menus/common_menus/categories.yml`：
+将以下通用菜单保存为 `menus/common_menus/categories.yml`：
 
 ```yaml
 title: '&8Categories'
@@ -42,26 +42,26 @@ buttons:
         order: 0
 ```
 
-创建一个名为 `farming` 的商店，重载配置后打开 `/shop menu categories`。所选样式负责提供画布和 `sidebar` 区域。在常规选择流程中，Java 会先尝试 ArcMenu，然后才轮到已启用的 Dialog/Ore 路线和物品栏；Bedrock 则走自己的呈现方式选择。全局强制选择见 [UI 模式](ui-overview.md)。
+使用前请确保已经创建了 `farming` 商店。保存配置并执行 `/shop reload` 后，运行 `/shop menu categories` 即可打开（按钮会显示在所选样式的 `sidebar` 区域中）。正常选择顺序下，Java 客户端会优先尝试 ArcMenu，再依次回退到 Dialog / Ore 与物品栏；全局强制规则见 [UI 模式](ui-overview.md)。
 
-## 样式与布局
+## 样式与布局预设
 
-菜单可以设置 `ui.style: classic` 或 `ui.style: bedrock`，也可以通过 `menu.ui.style` 指定全局默认样式。样式文件位于 `plugins/UltimateShop/ui/`，直接包含图形相关字段，可以复制出来作为自定义预设。插件在补建缺失的内置预设时，会保留已有文件。
+你可以通过全局 `menu.ui.style` 或菜单 `ui.style` 选择 `classic` 或 `bedrock` 预设，也可以复制 `plugins/UltimateShop/ui/` 下的文件来自定义样式：
 
-| 预设 | 外观与位置 |
+| 预设 | 视觉风格与布局特点 |
 | --- | --- |
-| `classic` | 左侧纵向导航，右侧商品网格 |
-| `bedrock` | 炭灰色面板、斜边控件、绿色的购买与悬停状态、浅色的出售控件、顶部五按钮导航，以及三列商品网格 |
+| `classic` | 左侧纵向导航栏 + 右侧商品网格 |
+| `bedrock` | 炭灰面板、斜边控件、绿色购买/悬停反馈、浅色出售控件、顶部 5 按钮横向导航栏 + 3 列商品网格 |
 
-`bedrock` 预设把名为 `sidebar` 的区域用于横向导航。这个名称只标识一个区域，并不代表固定的屏幕位置。两个预设都沿用现有的物品图标与字体。切换预设时，需要相应调整写死的行/列位置和自定义区域。
+注意：`bedrock` 预设把顶部横向导航区域也命名为 `sidebar`（区域名只是一个逻辑标识，不固定在屏幕左侧）。切换预设时，请同步核对写死的 `row`/`column` 或自定义区域位置。
 
-菜单内设置的字段会覆盖样式的常规默认值；强制样式则可通过 `menu.force-ui.style` 反过来覆盖这些本地字段，详见[配置与继承](menu-configuration.md)。几何参数与共享卡片配置键的说明见[图形 UI 布局](../menus-getting-started/ui-layout.md)。
+菜单自身的字段会覆盖样式默认值；若开启了 `menu.force-ui.style`，则会用强制样式覆盖本地默认值，详见[菜单配置与继承](menu-configuration.md)。几何规则与卡片参数见[图形 UI 布局](../menus-getting-started/ui-layout.md)。
 
-## 按钮在物品栏里有，ArcMenu 里没有
+## 为什么按钮在物品栏里有，ArcMenu 里却不显示？
 
-**普通按钮没有 `ui.placement` 时，ArcMenu 会跳过它。** 根级 `layout` 只决定按钮在物品栏里的槽位。商品可以继承 `ui.products.placement`，普通按钮需要各自设置位置。
+**普通按钮如果不配置 `ui.placement`，ArcMenu 会直接跳过它。** 根级 `layout` 只决定物品栏的格子位置；商品可以继承 `ui.products.placement`，但普通按钮必须各自显式指定图形位置。
 
-例如，旧版 `blocks` 和 `blocks2` 的箭头用 `shop_menu` 动作打开另一家商店。要在 ArcMenu 里继续显示这种按钮，可以在按钮原来的配置下加上：
+例如旧版商店中的翻页/跳转箭头，需要在原按钮配置下补充：
 
 ```yaml
 ui:
@@ -70,31 +70,27 @@ ui:
     order: 20
 ```
 
-如果按钮定义在商店文件的 `buttons` 下，商店菜单的 `layout` 里还要保留它的标记。
+如果该按钮写在商店文件的 `buttons` 下，商店菜单的 `layout` 中仍需保留它的标记。如果是同一家商店内的多页商品翻页，无需手写箭头按钮，直接使用 `ui.layout.pagination` 自带的图形分页控件即可（`previous-page-item` / `next-page-item` 仅用于物品栏）。
 
-如果只是想翻看同一家商店的商品，使用 ArcMenu 自带的分页即可。商品多到一页放不下时，`ui.layout.pagination` 控制图形翻页按钮的位置。商店菜单的 `previous-page-item` 和 `next-page-item` 用于物品栏。更多位置配置见[图形 UI 布局](../menus-getting-started/ui-layout.md)。
+## 商品操作与数量调整
 
-## 商品操作
+商品卡片会从 `ui.products.actions.primary` 中最多展示两个可用操作，并通过 `ui.products.actions.extra` 展示其余或指定的额外操作（前提是商品本身绑定了对应点击事件，且通过了价格、条件与仅买/仅卖过滤）。
 
-卡片会从 `ui.products.actions.primary` 中最多展示两个可用操作，并通过 `ui.products.actions.extra` 展示其余的或指定的额外操作。这些操作必须已存在于商品点击绑定中，并且仍会被价格、条件、数量权限以及自定义的仅购买/仅出售限制过滤。
+右键商品默认触发 `select-amount`（可通过 `ui.renderers.arcmenu.right-click-action` 修改），在 ArcMenu 中会直接打开图形化的**商品详情面板**，而不是物品栏批量购买界面。只要商品开启了批量购买且存在可用数量操作，玩家即可通过加/减按钮与鼠标滚轮调整数量（物品栏的 `amount-items` 与预览槽位不参与图形面板样式）。
 
-右键默认执行 `select-amount`。修改菜单的 `ui.renderers.arcmenu.right-click-action`，即可换成其他可用操作。`select-amount` 打开的是图形化的商品详情，而不是渲染一个批量购买文件。
+另外，展示物品图标右下角显示的堆叠数字来自物品本身的堆叠数量，与当前选中的交易份数相互独立。
 
-在玩家选定数量之前，默认的购买/出售数量各自独立生效。当批量购买与某个数量操作都可用时，加/减按钮和滚轮可以调整已选数量。物品栏的 `amount-items`、预览槽位和确认槽位不参与图形详情面板的样式定义。
+<a id="quantity-input"></a>
 
-物品图标上的堆叠数量大于 1 时，会在图标右下角显示这个数字。它表示所展示堆叠的数量，与已选中的交易单位数无关。
+## 文本输入数量
 
-## 数量输入
+当 ArcMenu 的文本输入服务可用时，玩家直接点击 `-` 与 `+` 之间的数字即可进入编辑模式（即使 ArcMenu 隐藏了原生铁砧界面，Focused 图形框内也会实时显示输入内容）。
 
-ArcMenu 的文本输入服务可用时，点击 `-` 与 `+` 之间的数量即可直接编辑。即使 ArcMenu 隐藏了原生铁砧界面，UltimateShop 也会在聚焦的图形字段里实时显示正在输入的内容。
-
-结束编辑（鼠标模式下按 Esc）后才会应用有效的整数。数值会被限制在 1 到所选批量购买上限之间；无效输入则保留原数量。结束输入只是选定了数量，玩家之后还要点击购买或出售才能完成交易。
-
-输入框的文字由 `ui.text.amount-input` 定义。来源商品仍需启用批量购买、配置好有效的数量菜单，并具备可用的 `select-amount` 操作。
+结束编辑（鼠标模式下按 `Esc`）后，有效整数会被限制在 `1` 到所选批量购买上限之间，无效输入则保留原数量。输入完成后玩家仍需点击购买或出售按钮才能成交。输入框提示文本由 `ui.text.amount-input` 定义（商品仍需启用批量购买、配置好有效数量菜单并具备 `select-amount` 操作）。
 
 ## ArcMenu 渲染器设置
 
-菜单内的渲染器设置写在 `ui.renderers.arcmenu` 下：
+菜单内的专属配置写在 `ui.renderers.arcmenu` 下：
 
 ```yaml
 ui:
@@ -117,12 +113,12 @@ ui:
 | 相对配置键 | 用途 |
 | --- | --- |
 | `right-click-action` | 商品右键触发的操作 |
-| `screen-scale` | 整体图形缩放比例 |
-| `animation.enabled/duration` | 打开动画；重新打开同一菜单时跳过 |
+| `screen-scale` | 整体界面缩放比例 |
+| `animation.enabled` / `duration` | 打开动画开关与时长（重新打开同一菜单时跳过） |
 | `more-menu.columns` | 额外操作弹窗的列数 |
-| `tooltip.enabled/width/font-size/padding` | 悬停提示框的外观 |
+| `tooltip.enabled` / `width` / `font-size` / `padding` | 悬停提示框的开关、宽度、字号与内边距 |
 
-刷新间隔始终读取**全局**值，即使其他设置都来自菜单：
+刷新间隔**始终读取全局 `config.yml` 配置**（单位为 tick，最小 `5`，也可由全局样式提供；单个菜单内的 `update-interval` 不生效）：
 
 ```yaml
 menu:
@@ -132,18 +128,18 @@ menu:
         update-interval: 20
 ```
 
-该间隔以游戏刻为单位，最小为 5，也可以由所选全局样式提供。单个菜单内的 `update-interval` 不会决定刷新计划。
+## 背景、装饰与文本提示
 
-## 背景、装饰与文本
+ArcMenu 从解析后的 `ui.theme` 读取配色：窗口背景与标题背景可独立开关，`theme.decorations` 控制边框、边角装饰与页眉分隔线，详见[主题与文本参考](../menus-getting-started/ui-layout.md#主题与文本)。
 
-ArcMenu 从解析后的 `ui.theme` 读取各项图形颜色。窗口背景和标题背景各有独立的启用开关。`theme.decorations` 支持边框、边角装饰和页眉点缀；斜边与控件专用颜色让样式可以自行定义外观，而不必依赖文件名。详见[主题参考](../menus-getting-started/ui-layout.md#theme-and-text)。
+悬停提示框会自动将描述排成左对齐文本块，内容过长时自动缩放适配；鼠标模式与触屏/Vision 模式也会分别按绘制表面与光标设置自动适配边界。
 
-提示框会把带格式的描述文字排成左对齐的文本块，内容过大时会自动缩小以适配。鼠标模式的布局适配会考虑当前绘制表面、光标灵敏度、玩家偏好、光标边距和垂直俯仰上限；触屏/Vision 模式则使用该表面的边界。
+## 各菜单类型的支持情况
 
-## 各菜单类型的行为
+* **搜索与收藏菜单**：使用 ArcMenu 图形布局与专用控件（最大结果数仍受根级结果槽位数量限制），收藏编辑提供排序与移除按钮。
+* **批量购买**：直接在商品详情面板内完成数量选择。
+* **物品出售 / 全部出售**：保留原版实体物品栏界面。
 
-搜索/收藏菜单使用 ArcMenu 布局和自己的控件，但根级结果槽位的容量仍然限制来源结果的数量。收藏编辑会提供排序和移除控件。物品出售/全部出售仍是实体物品栏。批量购买的数量选择始终在商品详情内完成。
+注意，ArcMenu 不使用 `/shop dialogpack`，该命令仅用于生成 Ore 资源包。
 
-ArcMenu 的控件不由 `/shop dialogpack` 生成；该命令构建的是 Ore 资源。
-
-[搜索](search-menus-premium.md) · [收藏](favourite-menus-premium.md) · [批量购买](buy-more-menus.md)
+[搜索菜单](search-menus-premium.md) · [收藏菜单](favourite-menus-premium.md) · [批量购买菜单](buy-more-menus.md)

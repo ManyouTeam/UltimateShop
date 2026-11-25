@@ -137,6 +137,14 @@ public class ObjectUseTimesCache {
         return UltimateShop.freeVersion ? 0 : sell.totalUseTimes;
     }
 
+    public synchronized void addBuyUseTimes(long increment) {
+        setUseTimes(Direction.BUY, addWithoutOverflow(buy.useTimes, increment), false, false);
+    }
+
+    public synchronized void addSellUseTimes(long increment) {
+        setUseTimes(Direction.SELL, addWithoutOverflow(sell.useTimes, increment), false, false);
+    }
+
     public void setBuyUseTimes(int value) {
         setBuyUseTimes(value, false, false);
     }

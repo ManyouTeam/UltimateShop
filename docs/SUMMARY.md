@@ -32,42 +32,42 @@
 
 ## 🔌Menus — Getting Started
 
-* [📚 Menu System](menus/README.md)
-* [⚙️ Menu Configuration & Inheritance](menus/menu-configuration.md)
-* [🧱 Layout & Buttons](menus/layout-and-buttons.md)
-* [📐 Graphical UI Layout - Premium](menus-getting-started/ui-layout.md)
+* [📚Menu System](menus/README.md)
+* [⚙️Menu Configuration & Inheritance](menus/menu-configuration.md)
+* [🧱Layout & Buttons](menus/layout-and-buttons.md)
+* [📐Graphical UI Layout - Premium](menus-getting-started/ui-layout.md)
 
 ## 🧭Menu Types
 
-* [🔲 Common Menus](menus/general-menus.md)
-* [🛍️ Shop Menus](menus/shop-menus.md)
-* [🔽 Buy More Menus](menus/buy-more-menus.md)
-* [🔍 Search Menus - Premium](menus/search-menus-premium.md)
-* [❤️ Favourite Menus - Premium](menus/favourite-menus-premium.md)
-* [💰 Item Sell Menus](menus/item-sell-menus.md)
-* [🛒 Sell All Menu](menus/sell-all-menu.md)
+* [🔲Common Menus](menus/general-menus.md)
+* [🛍️Shop Menus](menus/shop-menus.md)
+* [🔽Buy More Menus](menus/buy-more-menus.md)
+* [🔍Search Menus - Premium](menus/search-menus-premium.md)
+* [❤️Favourite Menus - Premium](menus/favourite-menus-premium.md)
+* [💰Item Sell Menus](menus/item-sell-menus.md)
+* [🛒Sell All Menu](menus/sell-all-menu.md)
 
 ## 🖥️Menu UI Modes
 
-* [🎨 UI Modes](menus/ui-overview.md)
-* [📦 Inventory UI](menus/inventory-ui.md)
-* [🛏️ Bedrock Form UI - Premium](menus/bedrock-menus-premium.md)
-* [💬 Native Dialog UI - Premium](menus/dialog-menus-premium.md)
-* [🪨 Ore UI - Premium](menus/ore-menus-premium.md)
-* [✨ ArcMenu UI - Premium](menus/arcmenu-menus-premium.md)
+* [🎨UI Modes](menus/ui-overview.md)
+* [📦Inventory UI](menus/inventory-ui.md)
+* [🛏️Bedrock Form UI - Premium](menus/bedrock-menus-premium.md)
+* [💬Native Dialog UI - Premium](menus/dialog-menus-premium.md)
+* [🪨Ore UI - Premium](menus/ore-menus-premium.md)
+* [✨ArcMenu UI - Premium](menus/arcmenu-menus-premium.md)
 
 ## 🧩Advanced Menu Configuration
 
-* [🔀 Conditional Display - Premium](menus/conditional-display-premium.md)
-* [🥉 Display Item Add Lore](menus/display-item-add-lore.md)
-* [🔄 Menu Configuration Compatibility](menus/migration-guide.md)
+* [🔀Conditional Display - Premium](menus/conditional-display-premium.md)
+* [🥉Display Item Add Lore](menus/display-item-add-lore.md)
+* [🔄Menu Configuration Compatibility](menus/migration-guide.md)
 
 ## 🛍️Shops
 
 * [📂Shops](shops/shops.md)
 * [🛒Products](shops/products.md)
-* [💰Products Config: Single Thing](shops/products-config-single-thing/README.md)
-  * [Another version of 💰Products Config: Single Thing page](shops/products-config-single-thing/another-version-of-products-config-single-thing-page.md)
+* [💰Product Configuration: Single Entry](shops/products-config-single-thing/README.md)
+  * [💰Product Configuration: Single Entry (Alternative)](shops/products-config-single-thing/another-version-of-products-config-single-thing-page.md)
 * [♻️Product Config: Buy/Sell Times Reset](shops/product-config-buy-sell-times-reset.md)
 * [🔗Shared Product Data - Premium](shops/shared-product-data-premium.md)
 * [💰Sell Multiplier - Premium](shops/sell-multiplier-premium.md)
@@ -82,7 +82,7 @@
 * [🔧Built-in Placeholders](placeholders/built-in-placeholders.md)
 * [🎲Random Placeholder - Premium](placeholders/random-placeholder-premium.md)
 * [⛓️Conditional Placeholder - Premium](placeholders/conditional-placeholder-premium.md)
-* [🗯️Custom Placeholder - Premium](placeholders/custom-placeholder-premium.md)
+* [🗯️Custom Placeholder](placeholders/custom-placeholder-premium.md)
 * [🔖Example: Discount](placeholders/example-discount.md)
 
 ## 💰Dynamic Prices
@@ -95,6 +95,7 @@
 * [🌏Advanced Language Managment](features/advanced-language-managment.md)
 * [🎨Color Code](features/color-code.md)
 * [💴Easy Prices](features/easy-prices.md)
+* [🧪Example: Sell Income Limits](features/sell-income-limits-example.md)
 * [🪄Sell Stick - Premium](features/sell-stick-premium.md)
 * [🎁Sell Chest - Premium](features/sell-chest-premium.md)
 * [💾Saved Item (Item Manager)](features/saved-item-item-manager.md)

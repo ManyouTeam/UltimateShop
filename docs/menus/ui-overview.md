@@ -1,22 +1,22 @@
-# 🎨 UI Modes
+﻿# 🎨UI Modes
 
-A presentation displays a menu using Inventory slots, native controls or graphical cards. Menu type determines which presentations are supported. Changing the presentation retains product prices, conditions and saved data.
+Menus can be presented as Inventory slots, native Form/Dialog controls, or graphical cards. A menu's **type** determines which presentations it supports; switching presentations changes only the UI, never product prices, conditions, or saved data.
 
-## Available presentations
+## Available Presentations
 
-| Presentation | Client and requirements | Layout settings |
+| Presentation | Client & Requirements | Layout Setup |
 | --- | --- | --- |
-| [Inventory](inventory-ui.md) | Java or Bedrock; standard menu interface | Root `size`, `layout` and `buttons` |
-| [Bedrock Form — Premium](bedrock-menus-premium.md) | Bedrock with a supported Geyser/Floodgate setup | `bedrock.*`; entries become a list |
-| [Native Dialog — Premium](dialog-menus-premium.md) | Java on supported Paper 1.21.9+ | `dialog.layout: multi-action` or `item-action-list` |
-| [Ore — Premium](ore-menus-premium.md) | Supported Paper Dialog runtime and generated client pack | `dialog.layout: ore`, plus graphical `ui` |
-| [ArcMenu — Premium](arcmenu-menus-premium.md) | Java with a compatible ArcMenu installation and client setup | `arcmenu.enabled`, plus graphical `ui` |
+| [Inventory](inventory-ui.md) | Java & Bedrock, standard chest screen | Root `size`, `layout`, `buttons` |
+| [Bedrock Form - Premium](bedrock-menus-premium.md) | Bedrock with supported Geyser / Floodgate | `bedrock.*`; entries become a list |
+| [Native Dialog - Premium](dialog-menus-premium.md) | Java on supported Paper 1.21.9+ | `dialog.layout: multi-action` or `item-action-list` |
+| [Ore - Premium](ore-menus-premium.md) | Supported Paper Dialog runtime + generated resource pack | `dialog.layout: ore` + graphical `ui` |
+| [ArcMenu - Premium](arcmenu-menus-premium.md) | Java with compatible ArcMenu plugin & client setup | `arcmenu.enabled` + graphical `ui` |
 
-The native `multi-action` and `item-action-list` layouts do not require Ore's generated resource pack. ArcMenu follows its own integration's client requirements.
+Native `multi-action` and `item-action-list` do not require an Ore resource pack. ArcMenu client requirements follow its own integration.
 
-## Normal presentation selection
+## Normal Selection Order
 
-Global switches in `config.yml` enable the available routes:
+Global switches in `config.yml`:
 
 ```yaml
 menu:
@@ -28,7 +28,7 @@ menu:
     enabled: false
 ```
 
-Individual menu files can narrow those choices:
+Individual menu files can restrict further:
 
 ```yaml
 dialog:
@@ -40,25 +40,33 @@ arcmenu:
   enabled: false
 ```
 
-For Java players, the opening order is **ArcMenu → Dialog/Ore → Inventory**. When ArcMenu cannot open, an enabled and supported Dialog route may still be used. The menu's `dialog.layout` selects the native layout or Ore.
+* **Java players**: tried in order **ArcMenu → Dialog / Ore → Inventory**. If ArcMenu is unavailable, it falls back to enabled and supported Dialog or Inventory; `dialog.layout` chooses native layout vs. Ore.
+* **Bedrock players**: checked separately for Bedrock Form. To keep both clients on Inventory, use `force-ui` below.
 
-Bedrock Form is checked separately for detected Bedrock players. To guarantee Inventory for both clients, use the forced Inventory setting below. Menu `dialog.enabled` and `bedrock.enabled` default to `true`; `arcmenu.enabled` defaults to `false`. Global enablement alone does not guarantee a compatible runtime or menu type.
+By default, a menu's `dialog.enabled` and `bedrock.enabled` are `true`, while `arcmenu.enabled` is `false`. Enabling a global switch alone does not guarantee runtime or menu-type compatibility.
 
-## Supported menu types
+<a id="supported-menu-types"></a>
 
-| Menu type | Inventory | Bedrock Form | Native Dialog | Ore | ArcMenu |
+## Supported Menu Types
+
+| Menu Type | Inventory | Bedrock Form | Native Dialog | Ore | ArcMenu |
 | --- | --- | --- | --- | --- | --- |
 | Common / Shop | Yes | Yes | Yes | Yes | Yes |
-| Search / Favourite | Yes | Yes | Yes | Native multi-action fallback | Yes |
-| Buy More | Dedicated slot controls | Source shop's quantity Form | Native quantity input | No separate graphical screen | Source screen's product details |
+| Search / Favourite | Yes | Yes | Yes | Falls back to native `multi-action` | Yes |
+| Buy More | Slot controls | Source shop quantity form | Native quantity input | No separate graphical UI | Source screen product details |
 | Item Sell / Sell All | Yes | No | No | No | No |
-| In-game editor | Yes | No | No | No | No |
+| In-Game Editor | Yes | No | No | No | No |
 
-Search/Favourite with `dialog.layout: ore` use native `multi-action` and do not generate Ore assets. Buy More's Inventory layout is not rendered as a Form or graphical canvas. Item Sell/Sell All always provide physical Inventory slots, including when launched from another presentation.
+Notes:
+* Search and Favourite menus with `dialog.layout: ore` fall back to native `multi-action` and generate no Ore assets.
+* Buy More's Inventory layout is not converted into Form or graphical canvases.
+* Item Sell and Sell All always open a physical Inventory screen, even when triggered from another presentation.
 
-## Force one presentation
+<a id="force-one-presentation"></a>
 
-Use `config.yml` to choose a presentation across menus:
+## Force One Presentation
+
+Force a presentation globally in `config.yml`:
 
 ```yaml
 menu:
@@ -68,39 +76,39 @@ menu:
     style: ''
 ```
 
-This overrides global and menu-local presentation enable switches. It preserves platform, edition, integration and menu-type requirements.
+This overrides global and per-menu switches while still respecting platform, version, integration, and menu-type requirements:
 
 | Forced `type` | Java | Bedrock |
 | --- | --- | --- |
 | `inventory` | Inventory | Inventory |
-| `arcmenu` | ArcMenu when available; otherwise Inventory | Inventory |
-| `dialog` | Native Dialog when available | Inventory |
-| `item-action-list` | Native item-action-list when supported | Inventory |
-| `ore` | Ore for Common/Shop; native multi-action for Search/Favourite | Inventory |
-| `form` | Inventory | Form when available |
+| `arcmenu` | ArcMenu when available, else Inventory | Inventory |
+| `dialog` | Native Dialog when available (Ore also becomes `multi-action`) | Inventory |
+| `item-action-list` | Native `item-action-list` when supported | Inventory |
+| `ore` | Ore for Common/Shop; native `multi-action` for Search/Favourite | Inventory |
+| `form` | Inventory | Bedrock Form when available |
 
-Unsupported routes retain their supported fallback. Item Sell/Sell All remain Inventory. Buy More may use native quantity input for a forced Dialog route; ArcMenu quantity controls remain part of product details. Forcing `dialog` replaces an Ore layout with `multi-action`; an existing native item-action-list selection remains native.
+Unsupported types still fall back (for example, Item Sell and Sell All stay Inventory; forcing `dialog` leaves existing `item-action-list` menus as `item-action-list`).
 
-Set `style` to a style ID such as `bedrock` to force graphical defaults too, or leave it empty to retain normal style selection. See [Configuration & Inheritance](menu-configuration.md#force-a-presentation-and-style). An invalid `type` reports a configuration error and restores normal selection. Reload after changing the setting.
+Set `style` to a style ID like `bedrock` to force graphical defaults too, or leave `''` to keep per-menu style selection; see [Menu Configuration & Inheritance](menu-configuration.md#force-a-presentation-and-style). Invalid `type` values log a config error and fall back to normal selection.
 
-## Configure layout, content and visibility
+## Configure Layout, Content, and Visibility
 
-| Change | Key |
+| What to Change | Where |
 | --- | --- |
-| Inventory positions | Root `size`, `layout` |
+| Inventory slot positions | Root `size`, `layout` |
 | Native Dialog controls | `dialog.*` |
-| Bedrock Form text and behavior | `bedrock.*` |
+| Bedrock Form text & behaviour | `bedrock.*` |
 | Graphical style | Global `menu.ui.style` or menu `ui.style` |
-| Ore/ArcMenu coordinates | `ui.layout`, entry `ui.placement` |
+| Ore / ArcMenu coordinates | `ui.layout` and entry `ui.placement` |
 | Product card defaults | `ui.products.*` |
-| Hide one entry in a presentation | Entry `menu-visibility.<presentation>` |
+| Hide an entry in one presentation | Entry `menu-visibility.<presentation>` |
 
-Root `content` is the shared description fallback; `dialog.content`, `bedrock.content` and `arcmenu.content` override it for their route. The graphical `ui` section controls drawing and placement. It does not select a presentation with `ui.mode`.
+Root `content` is the shared fallback description, overridden by `dialog.content`, `bedrock.content`, or `arcmenu.content`. Graphical `ui` controls drawing and layout only—there is no `ui.mode` selector.
 
-## Text width for ArcMenu and Dialog
+## Text Width in ArcMenu and Dialog
 
-UltimateShop now calculates text widths using the rules in `plugins/UltimateShop/glyph-widths.yml`. If you use a language outside the primary supported languages, the default widths may cause text to be clipped, wrap unexpectedly, or appear misaligned in parts of ArcMenu (`arcmenu`) or Dialog (`dialog`), including the Ore layout.
+UltimateShop calculates text width using `plugins/UltimateShop/glyph-widths.yml`. If your server uses non-English characters, default widths may cause truncation, unexpected wrapping, or misalignment in ArcMenu or Dialog (including Ore).
 
-To adjust the measurement, edit `shared.width` in `glyph-widths.yml`. Set widths in pixels for individual Unicode code points such as `U+0041` or inclusive ranges such as `U+0041-U+005A`. Later entries in the same section override earlier ones. Ore can override shared widths under `ore.width`. Run `/shop reload` after saving, then reopen the affected menu to check the result.
+Configure pixel widths in `glyph-widths.yml` under `shared.width` for single code points (e.g. `U+0041`) or inclusive ranges (e.g. `U+0041-U+005A`); later rules override earlier ones, and `ore.width` overrides `shared.width` for Ore. Run `/shop reload` and reopen the menu to verify.
 
 [Menu System](README.md) · [Layout & Buttons](layout-and-buttons.md) · [Graphical UI Layout](../menus-getting-started/ui-layout.md)

@@ -1,10 +1,10 @@
-# 🔲 Common Menus
+﻿# 🔲Common Menus
 
-Common menus display configured buttons for navigation and custom actions. Save them in `menus/common_menus/` and open them with `/shop menu <id>` or an `open_menu` action.
+Common menus display custom buttons for main hubs, category navigation, or info screens. Save them in `menus/common_menus/` and open them with `/shop menu <id>` or the `open_menu` action.
 
-## Create a navigation menu
+## Create a Navigation Menu
 
-Save as `menus/common_menus/main.yml`:
+Save this as `menus/common_menus/main.yml`:
 
 ```yaml
 title: '&8Main Menu'
@@ -35,29 +35,37 @@ buttons:
         type: close
 ```
 
-Create the `farming` shop, run `/shop reload`, then `/shop menu main`. The example selects Inventory in normal selection; global `menu.force-ui` can override the switches.
+Make sure the `farming` shop already exists (otherwise clicking the button will have no shop to open). Save the file, run `/shop reload`, and then run `/shop menu main` to open it.
 
-Use `type: shop_menu` with `shop` to open a shop. Use `type: open_menu` with `menu` for another Common, Search, Favourite or Item Sell menu. A Common menu does not automatically populate shop products.
+Because `dialog`, `bedrock`, and `arcmenu` are all set to `false` in this example, it opens as a standard chest Inventory screen (unless global `menu.force-ui` is enabled in `config.yml`).
 
-## Common menu keys
+{% hint style="info" %}
+**Opening a shop vs. opening another menu**:
+* To open a **shop** (for buying/selling products), use `type: shop_menu` with `shop: <shop-id>`.
+* To open **another Common, Search, Favourite, or Item Sell menu**, use `type: open_menu` with `menu: <menu-id>`.
+
+Common menus only show the buttons you define under `buttons`—they never pull in shop products automatically.
+{% endhint %}
+
+## Common Menu Keys
 
 | Key | Purpose |
 | --- | --- |
 | `title` | Screen title |
-| `content` | Shared description fallback |
-| `size`, `layout` | Inventory size and entry IDs |
-| `buttons` | Ordinary display items, actions and conditions |
-| `conditions` | Conditions for opening the menu |
-| `open-actions`, `close-actions` | Actions for menu lifecycle events |
-| `dynamic-layout` | Per-player layout evaluation — Premium |
-| `dialog`, `bedrock`, `arcmenu` | Presentation switches and supported native options |
-| `ui` | Ore/ArcMenu style, layout and drawing settings |
+| `content` | Screen description (fallback for presentation-specific `content`) |
+| `size`, `layout` | Inventory size and slot layout |
+| `buttons` | Button display items, actions, and conditions |
+| `conditions` | Conditions checked before opening the menu |
+| `open-actions`, `close-actions` | Actions run on menu open and close |
+| `dynamic-layout` | Per-player layout resolution (Premium) |
+| `dialog`, `bedrock`, `arcmenu` | Presentation switches and native options |
+| `ui` | Ore / ArcMenu style, layout, and rendering settings |
 
-Button click conditions belong in `buttons.<id>.conditions`; button display conditions belong in `buttons.<id>.display-conditions`. Root `conditions` applies to the whole menu. See [Layout & Buttons](layout-and-buttons.md).
+Keep the three condition scopes distinct: `buttons.<id>.conditions` checks clicks, `buttons.<id>.display-conditions` controls visibility, and root `conditions` controls opening the screen. See [Layout & Buttons](layout-and-buttons.md).
 
-## Use another presentation — Premium
+## Use Other Presentations - Premium
 
-To use native Dialog, replace the example's Dialog switch with:
+To use native Dialog instead, replace the `dialog` block in the example with:
 
 ```yaml
 dialog:
@@ -68,13 +76,13 @@ dialog:
   columns: 2
 ```
 
-Also enable global `menu.dialog.enabled`. For Ore, select `dialog.layout: ore`, configure graphical placements and distribute its generated pack. For ArcMenu, enable the global/menu ArcMenu switches and configure graphical placements with a compatible integration. Bedrock Form uses the global/menu Bedrock switches.
+Also enable global `menu.dialog.enabled` in `config.yml`. For Ore, set `dialog.layout: ore` and configure graphical placement and the resource pack; for ArcMenu, install a compatible integration and enable global/menu `arcmenu.enabled`; for Bedrock Form, enable global/menu `bedrock.enabled`.
 
-[UI Modes](ui-overview.md) explains priority, forced selection and supported clients. [Graphical UI Layout](../menus-getting-started/ui-layout.md) explains styles and areas.
+See [UI Modes](ui-overview.md) for selection order, forced UIs, and platform support, and [Graphical UI Layout](../menus-getting-started/ui-layout.md) for areas and coordinates.
 
-## Custom command — Premium
+## Custom Commands - Premium
 
-Add this at menu root to register a command for the menu:
+Add `custom-command` at the menu root to register a command for that menu (avoid colliding with existing commands):
 
 ```yaml
 custom-command:
@@ -82,20 +90,18 @@ custom-command:
   description: Open the category menu
 ```
 
-The command opens this menu for the player. Choose a name that does not conflict with an existing command.
-
 <a id="all-buttons-update"></a>
 <a id="title-update-premium"></a>
 <a id="title-update-premium-require-paper"></a>
 
-## Inventory refresh and title updates
+## Inventory Refresh & Title Updates
 
-Global `menu.menu-update.circle-update` refreshes item displays every second; `click-update` refreshes after clicks. Premium title updates use `menu.title-update.enabled/circle-update/click-update` and require PacketEvents. Full settings are listed in [Inventory UI](inventory-ui.md#clicks-visibility-and-refresh).
+In `config.yml`, `menu.menu-update.circle-update` refreshes item displays every second and `click-update` refreshes after clicks. Premium also supports dynamic title updates (`menu.title-update.enabled` / `circle-update` / `click-update`, requiring PacketEvents). See [Inventory UI](inventory-ui.md#clicks-visibility-and-refresh).
 
-## Typed files in the Common folder
+## Declaring Special Menu Types in `common_menus`
 
-The dedicated Search, Favourite and Item Sell folders classify their files automatically. Existing Common-folder files can declare root `menu-type: search`, `favourite` (alias `favorite`) or `item-sell` (alias `item_sell`). Search/Favourite IDs can also be classified by their global legacy menu lists.
+Although Search, Favourite, and Item Sell menus should live in their dedicated folders (auto-detected by folder), legacy files in `menus/common_menus/` can declare `menu-type: search`, `favourite` (alias `favorite`), or `item-sell` (alias `item_sell`) at the root (or be listed in the legacy global Search/Favourite lists).
 
-Prefer dedicated folders for new typed menus. Their specialized controls and presentation support follow their declared type, even when stored in `common_menus`.
+Regardless of folder, available controls and UI support follow the resolved menu type.
 
-[Shop Menus](shop-menus.md) · [Configuration & Inheritance](menu-configuration.md)
+[Shop Menus](shop-menus.md) · [Menu Configuration & Inheritance](menu-configuration.md)

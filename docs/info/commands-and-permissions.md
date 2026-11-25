@@ -116,7 +116,7 @@ Generate the item held in your main hand into `plugins/UltimateShop/generated-it
 
 Require `ultimateshop.generateitemformat` permission.
 
-## /shop getplaceholdervalue \<text> <mark style="color:red;">**(Premium version only)**</mark>
+## /shop getplaceholdervalue \<text>
 
 Parse input text to get placeholder value in it.
 
@@ -188,6 +188,6 @@ Use `/shop editor <scope> <id>` to open a file directly. Scopes are `shop`, `men
 
 Require `ultimateshop.editor` permission.
 
-## Custom Placeholder Commands <mark style="color:red;">**(Premium version only)**</mark>
+## Custom Placeholder Commands
 
 For command list of custom placeholder feature, please view [this page](../placeholders/custom-placeholder-premium.md).

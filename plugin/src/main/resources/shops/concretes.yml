@@ -16,13 +16,13 @@ items:
         amount: 1
     buy-prices:
       1:
-        economy-plugin: Vault
+        shared-price: vault
         amount: '5.5'
         placeholder: '{amount}$'
         start-apply: 0
     sell-prices:
       1:
-        economy-plugin: Vault
+        shared-price: vault-sell
         amount: '3.3'
         placeholder: '{amount}$'
         start-apply: 0
@@ -35,13 +35,13 @@ items:
         amount: 1
     buy-prices:
       1:
-        economy-plugin: Vault
+        shared-price: vault
         amount: '5.5'
         placeholder: '{amount}$'
         start-apply: 0
     sell-prices:
       1:
-        economy-plugin: Vault
+        shared-price: vault-sell
         amount: '3.3'
         placeholder: '{amount}$'
         start-apply: 0
@@ -54,13 +54,13 @@ items:
         amount: 1
     buy-prices:
       1:
-        economy-plugin: Vault
+        shared-price: vault
         amount: '5.5'
         placeholder: '{amount}$'
         start-apply: 0
     sell-prices:
       1:
-        economy-plugin: Vault
+        shared-price: vault-sell
         amount: '3.3'
         placeholder: '{amount}$'
         start-apply: 0
@@ -73,13 +73,13 @@ items:
         amount: 1
     buy-prices:
       1:
-        economy-plugin: Vault
+        shared-price: vault
         amount: '5.5'
         placeholder: '{amount}$'
         start-apply: 0
     sell-prices:
       1:
-        economy-plugin: Vault
+        shared-price: vault-sell
         amount: '3.3'
         placeholder: '{amount}$'
         start-apply: 0
@@ -92,13 +92,13 @@ items:
         amount: 1
     buy-prices:
       1:
-        economy-plugin: Vault
+        shared-price: vault
         amount: '5.5'
         placeholder: '{amount}$'
         start-apply: 0
     sell-prices:
       1:
-        economy-plugin: Vault
+        shared-price: vault-sell
         amount: '3.3'
         placeholder: '{amount}$'
         start-apply: 0
@@ -111,13 +111,13 @@ items:
         amount: 1
     buy-prices:
       1:
-        economy-plugin: Vault
+        shared-price: vault
         amount: '5.5'
         placeholder: '{amount}$'
         start-apply: 0
     sell-prices:
       1:
-        economy-plugin: Vault
+        shared-price: vault-sell
         amount: '3.3'
         placeholder: '{amount}$'
         start-apply: 0
@@ -130,13 +130,13 @@ items:
         amount: 1
     buy-prices:
       1:
-        economy-plugin: Vault
+        shared-price: vault
         amount: '5.5'
         placeholder: '{amount}$'
         start-apply: 0
     sell-prices:
       1:
-        economy-plugin: Vault
+        shared-price: vault-sell
         amount: '3.3'
         placeholder: '{amount}$'
         start-apply: 0
@@ -149,13 +149,13 @@ items:
         amount: 1
     buy-prices:
       1:
-        economy-plugin: Vault
+        shared-price: vault
         amount: '5.5'
         placeholder: '{amount}$'
         start-apply: 0
     sell-prices:
       1:
-        economy-plugin: Vault
+        shared-price: vault-sell
         amount: '3.3'
         placeholder: '{amount}$'
         start-apply: 0
@@ -168,13 +168,13 @@ items:
         amount: 1
     buy-prices:
       1:
-        economy-plugin: Vault
+        shared-price: vault
         amount: '5.5'
         placeholder: '{amount}$'
         start-apply: 0
     sell-prices:
       1:
-        economy-plugin: Vault
+        shared-price: vault-sell
         amount: '3.3'
         placeholder: '{amount}$'
         start-apply: 0
@@ -187,13 +187,13 @@ items:
         amount: 1
     buy-prices:
       1:
-        economy-plugin: Vault
+        shared-price: vault
         amount: '5.5'
         placeholder: '{amount}$'
         start-apply: 0
     sell-prices:
       1:
-        economy-plugin: Vault
+        shared-price: vault-sell
         amount: '3.3'
         placeholder: '{amount}$'
         start-apply: 0
@@ -206,13 +206,13 @@ items:
         amount: 1
     buy-prices:
       1:
-        economy-plugin: Vault
+        shared-price: vault
         amount: '5.5'
         placeholder: '{amount}$'
         start-apply: 0
     sell-prices:
       1:
-        economy-plugin: Vault
+        shared-price: vault-sell
         amount: '3.3'
         placeholder: '{amount}$'
         start-apply: 0
@@ -225,13 +225,13 @@ items:
         amount: 1
     buy-prices:
       1:
-        economy-plugin: Vault
+        shared-price: vault
         amount: '5.5'
         placeholder: '{amount}$'
         start-apply: 0
     sell-prices:
       1:
-        economy-plugin: Vault
+        shared-price: vault-sell
         amount: '3.3'
         placeholder: '{amount}$'
         start-apply: 0
@@ -244,13 +244,13 @@ items:
         amount: 1
     buy-prices:
       1:
-        economy-plugin: Vault
+        shared-price: vault
         amount: '5.5'
         placeholder: '{amount}$'
         start-apply: 0
     sell-prices:
       1:
-        economy-plugin: Vault
+        shared-price: vault-sell
         amount: '3.3'
         placeholder: '{amount}$'
         start-apply: 0
@@ -263,13 +263,13 @@ items:
         amount: 1
     buy-prices:
       1:
-        economy-plugin: Vault
+        shared-price: vault
         amount: '5.5'
         placeholder: '{amount}$'
         start-apply: 0
     sell-prices:
       1:
-        economy-plugin: Vault
+        shared-price: vault-sell
         amount: '3.3'
         placeholder: '{amount}$'
         start-apply: 0
@@ -282,13 +282,13 @@ items:
         amount: 1
     buy-prices:
       1:
-        economy-plugin: Vault
+        shared-price: vault
         amount: '5.5'
         placeholder: '{amount}$'
         start-apply: 0
     sell-prices:
       1:
-        economy-plugin: Vault
+        shared-price: vault-sell
         amount: '3.3'
         placeholder: '{amount}$'
         start-apply: 0
@@ -301,13 +301,13 @@ items:
         amount: 1
     buy-prices:
       1:
-        economy-plugin: Vault
+        shared-price: vault
         amount: '5.5'
         placeholder: '{amount}$'
         start-apply: 0
     sell-prices:
       1:
-        economy-plugin: Vault
+        shared-price: vault-sell
         amount: '3.3'
         placeholder: '{amount}$'
         start-apply: 0

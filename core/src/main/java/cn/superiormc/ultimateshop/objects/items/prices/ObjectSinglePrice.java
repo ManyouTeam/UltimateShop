@@ -9,8 +9,6 @@ import cn.superiormc.ultimateshop.objects.caches.ObjectCache;
 import cn.superiormc.ultimateshop.objects.caches.ObjectUseTimesCache;
 import cn.superiormc.ultimateshop.objects.items.AbstractSingleThing;
 import cn.superiormc.ultimateshop.objects.items.GiveItemStack;
-import cn.superiormc.ultimateshop.objects.items.ItemStorage;
-import cn.superiormc.ultimateshop.objects.items.ThingType;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
 import cn.superiormc.ultimateshop.utils.ItemUtil;
 import cn.superiormc.ultimateshop.utils.MathUtil;
@@ -34,8 +32,6 @@ public class ObjectSinglePrice extends AbstractSingleThing {
 
     private Map<Integer, BigDecimal> applyCostMap = new HashMap<>();
 
-    private boolean customPrice;
-
     private ObjectItem item;
 
     private PriceMode priceMode;
@@ -52,16 +48,11 @@ public class ObjectSinglePrice extends AbstractSingleThing {
         super();
     }
 
-    public ObjectSinglePrice(String id, ObjectPrices prices) {
-        super(id, prices);
+    public ObjectSinglePrice(String id, ObjectPrices prices, ConfigurationSection section) {
+        super(id, prices, section);
         this.item = prices.getItem();
         this.priceMode = prices.getPriceMode();
-        this.things = prices;
         this.amountOption = singleSection.getString("amount", "1");
-        String tempVal1 = ConfigManager.configManager.getString("prices." + singleSection.getString("custom-type") + ".amount", "1");
-        if (singleSection.getString("custom-type") != null && tempVal1 != null) {
-            this.amountOption = tempVal1;
-        }
         this.isStatic = amountOption.matches("-?\\d+(\\.\\d+)?");
         if (!amountOption.contains("{conditional_") &&
                 ConfigManager.configManager.getBooleanOrDefault("placeholder.auto-settings.add-discount-in-all-price-amount.enabled",
@@ -87,15 +78,10 @@ public class ObjectSinglePrice extends AbstractSingleThing {
         if (matcher.find()) {
             this.baseAmount = new BigDecimal(matcher.group());
         }
-        initCustomMode();
         initApplyCostMap();
         initApplyCondition();
         initRequireCondition();
         initAction();
-    }
-
-    private void initCustomMode() {
-        customPrice = !singleSection.getString("custom-type", "none").equals("none");
     }
 
     private void initApplyCostMap() {
@@ -118,25 +104,6 @@ public class ObjectSinglePrice extends AbstractSingleThing {
             applyCostMap.put(apply.get(i), BigDecimal.valueOf(cost.get(i)));
         }
         this.applyCostMap = applyCostMap;
-    }
-
-    @Override
-    public boolean playerHasEnough(ItemStorage storage,
-                                   Player player,
-                                   boolean take,
-                                   double cost) {
-        if (singleSection == null) {
-            return false;
-        }
-        if (customPrice) {
-            return super.playerHasEnough(storage,
-                    ConfigManager.configManager.config.
-                            getConfigurationSection("prices." + singleSection.getString("custom-type")),
-                    player,
-                    take,
-                    cost);
-        }
-        return super.playerHasEnough(storage, singleSection, player, take, cost);
     }
 
     public boolean isStatic() {
@@ -238,15 +205,9 @@ public class ObjectSinglePrice extends AbstractSingleThing {
         if (singleSection == null) {
             return ConfigManager.configManager.getStringWithLang(player, "placeholder.price.unknown");
         }
-        String tempVal1 = singleSection.getString("placeholder",
+        String tempVal2 = singleSection.getString("placeholder",
                 ConfigManager.configManager.getStringWithLang(player, "placeholder.price.unknown"));
-        String tempVal2;
-        if (customPrice) {
-            tempVal2 = ConfigManager.configManager.getStringWithLang(player, "prices." +
-                    singleSection.getString("custom-type") + ".placeholder", tempVal1);
-        } else {
-            tempVal2 = singleSection.getString("placeholder", tempVal1);
-        }
+        tempVal2 = CommonUtil.parseLang(player, tempVal2);
         if (!alwaysStatic && !tempVal2.contains("{status}") && !isStatic && baseAmount != null && !UltimateShop.freeVersion &&
                 ConfigManager.configManager.getBoolean("placeholder.auto-settings.add-status-in-dynamic-price-placeholder.enabled")) {
             tempVal2 = tempVal2 + " " + StaticPlaceholder.getCompareValue(player, baseAmount.multiply(new BigDecimal(multi)), amount);
@@ -269,13 +230,6 @@ public class ObjectSinglePrice extends AbstractSingleThing {
 
     private String resolveDisplayPlaceholder(Player player) {
         ConfigurationSection section = singleSection;
-        if (customPrice) {
-            ConfigurationSection customSection = ConfigManager.configManager.config.getConfigurationSection("prices." +
-                    singleSection.getString("custom-type"));
-            if (customSection != null) {
-                section = customSection;
-            }
-        }
         switch (type) {
             case VANILLA_ITEM, HOOK_ITEM:
                 GiveItemStack itemThing = getItemThing(section, player, 1, true);
@@ -317,14 +271,14 @@ public class ObjectSinglePrice extends AbstractSingleThing {
         return applyCostMap;
     }
 
-    public boolean getCustomPrice() {
-        return customPrice;
-    }
-
     private String replacePlaceholder(int baseAmount, int offsetAmount, boolean buyOrSell) {
         // 如果是buy
         if ((buyOrSell && priceMode == PriceMode.BUY) || (!buyOrSell && priceMode == PriceMode.SELL)) {
-            return String.valueOf(baseAmount + offsetAmount);
+            int increment = 1;
+            if (item != null) {
+                increment = buyOrSell ? item.getBuyTimesIncrement() : item.getSellTimesIncrement();
+            }
+            return String.valueOf(baseAmount + (long) offsetAmount * increment);
         }
         return String.valueOf(baseAmount);
     }

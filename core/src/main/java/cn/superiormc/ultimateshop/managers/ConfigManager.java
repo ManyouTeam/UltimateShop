@@ -1,5 +1,6 @@
 package cn.superiormc.ultimateshop.managers;
 
+import cn.superiormc.mythicchanger.MythicChanger;
 import cn.superiormc.ultimateshop.UltimateShop;
 import cn.superiormc.ultimateshop.gui.arc.ArcMenuGUI;
 import cn.superiormc.ultimateshop.objects.ObjectSellStick;
@@ -8,6 +9,7 @@ import cn.superiormc.ultimateshop.objects.ObjectShop;
 import cn.superiormc.ultimateshop.objects.buttons.AbstractButton;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectCopyItem;
 import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
+import cn.superiormc.ultimateshop.objects.items.prices.ObjectSharedPrice;
 import cn.superiormc.ultimateshop.objects.items.subobjects.ObjectConditionalPlaceholder;
 import cn.superiormc.ultimateshop.objects.items.subobjects.ObjectCustomPlaceholder;
 import cn.superiormc.ultimateshop.objects.items.subobjects.ObjectRandomPlaceholder;
@@ -68,6 +70,8 @@ public class ConfigManager extends AbstractManager {
 
     public Map<String, ObjectConditionalPlaceholder> conditionalPlaceholders = new HashMap<>();
 
+    public Map<String, ObjectSharedPrice> sharedPrices = new TreeMap<>();
+
     public Map<String, ObjectSharedUseTimes> sharedUseTimesMap = new HashMap<>();
 
     public Map<String, ObjectSellStick> sellStickMap = new HashMap<>();
@@ -87,12 +91,13 @@ public class ConfigManager extends AbstractManager {
         if (!UltimateShop.freeVersion) {
             initSharedUseTimesConfigs();
         }
+        initSharedPrices();
+        initCustomPlaceholder();
         initShopConfigs();
         loadShopConfigs();
         initMenuConfigs();
         if (!UltimateShop.freeVersion) {
             initRandomPlaceholder();
-            initCustomPlaceholder();
             initConditionalPlaceholder();
             initSellStickConfigs();
             if (!UltimateShop.isFolia && ConfigManager.configManager.getBoolean("sell.sell-chest.enabled")) {
@@ -103,15 +108,9 @@ public class ConfigManager extends AbstractManager {
     }
 
     private void initGlyphRules() {
-        glyphRules.clear();
         File file = new File(UltimateShop.instance.getDataFolder(), "glyph-widths.yml");
-        try {
-            YamlConfiguration rules = new YamlConfiguration();
-            rules.load(file);
-            glyphRules.putAll(compileGlyphRules(rules));
-        } catch (IOException | InvalidConfigurationException | IllegalArgumentException exception) {
-            ErrorManager.errorManager.sendErrorMessage("§cError: Cannot load " + "glyph-widths.yml" + ": " + exception.getMessage());
-        }
+        YamlConfiguration rules = YamlConfiguration.loadConfiguration(file);
+        glyphRules.putAll(compileGlyphRules(rules));
     }
 
     private void initUIStyles() {
@@ -188,6 +187,22 @@ public class ConfigManager extends AbstractManager {
                 String substring = fileName.substring(0, fileName.length() - 4);
                 sharedUseTimesMap.put(substring, new ObjectSharedUseTimes(substring, YamlConfiguration.loadConfiguration(file)));
                 TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fLoaded shared use times setting: " + fileName + "!");
+            }
+        }
+    }
+
+    private void initSharedPrices() {
+        File directory = new File(UltimateShop.instance.getDataFolder(), "shared_prices");
+        if (!directory.exists() && !directory.mkdirs()) {
+            ErrorManager.errorManager.sendErrorMessage("§cError: Could not create directory: " + directory);
+            return;
+        }
+        for (File file : CommonUtil.getYamlFiles(directory)) {
+            String fileName = file.getName();
+            if (fileName.endsWith(".yml")) {
+                String id = file.getName().substring(0, fileName.length() - 4);
+                sharedPrices.put(id, new ObjectSharedPrice(id, YamlConfiguration.loadConfiguration(file)));
+                TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fLoaded shared price setting: " + fileName + "!");
             }
         }
     }
@@ -338,7 +353,13 @@ public class ConfigManager extends AbstractManager {
             String fileName = file.getName();
             if (fileName.endsWith(".yml")) {
                 String substring = fileName.substring(0, fileName.length() - 4);
+                if (UltimateShop.freeVersion && customPlaceholders.size() >= 5) {
+                    ErrorManager.errorManager.sendErrorMessage("§cError: Free version can only create up to " +
+                            "5 custom placeholders, if you want to more, please consider purchase the premium version.");
+                    break;
+                }
                 customPlaceholders.put(substring, new ObjectCustomPlaceholder(substring, YamlConfiguration.loadConfiguration(file)));
+                TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fLoaded custom placeholder: " + fileName + "!");
             }
         }
     }
@@ -813,7 +834,7 @@ public class ConfigManager extends AbstractManager {
         rules.put(0, Double.NaN);
         applyGlyphRules(rules, config, path, precision);
         if (requireFullCoverage && rules.headMap(Character.MAX_CODE_POINT, true).containsValue(Double.NaN)) {
-            throw new IllegalArgumentException(path + " must cover U+0000-U+10FFFF");
+            ErrorManager.errorManager.sendErrorMessage("§cError: glyph-widths.yml " + path + " must cover U+0000-U+10FFFF");
         }
         return rules;
     }
@@ -822,23 +843,30 @@ public class ConfigManager extends AbstractManager {
         ConfigurationSection section = config.getConfigurationSection(path);
         if (section == null) {
             if (config.contains(path)) {
-                throw new IllegalArgumentException(path + " must be a mapping of Unicode ranges to pixel widths");
+                ErrorManager.errorManager.sendErrorMessage("§cError: glyph-widths.yml " + path
+                        + " must be a mapping of Unicode ranges to pixel widths");
             }
             return;
         }
         for (Map.Entry<String, Object> rule : section.getValues(false).entrySet()) {
             Matcher matcher = GLYPH_RANGE.matcher(rule.getKey());
             if (!matcher.matches()) {
-                throw new IllegalArgumentException(path + " has an invalid Unicode range: " + rule.getKey());
+                ErrorManager.errorManager.sendErrorMessage("§cError: glyph-widths.yml " + path
+                        + " has an invalid Unicode range: " + rule.getKey());
+                continue;
             }
             int first = Integer.parseInt(matcher.group(1), 16);
             int last = matcher.group(2) == null ? first : Integer.parseInt(matcher.group(2), 16);
             if (last > Character.MAX_CODE_POINT || first > last) {
-                throw new IllegalArgumentException(path + " has an invalid Unicode range: " + rule.getKey());
+                ErrorManager.errorManager.sendErrorMessage("§cError: glyph-widths.yml " + path
+                        + " has an invalid Unicode range: " + rule.getKey());
+                continue;
             }
             double value = rule.getValue() instanceof Number number ? number.doubleValue() : Double.NaN;
             if (!Double.isFinite(value) || value < 0 || value > 1999 || value * precision != Math.rint(value * precision)) {
-                throw new IllegalArgumentException(path + " has an invalid pixel width for " + rule.getKey());
+                ErrorManager.errorManager.sendErrorMessage("§cError: glyph-widths.yml " + path
+                        + " has an invalid pixel width for " + rule.getKey());
+                continue;
             }
             // Preserve the previous width immediately after the replaced range.
             double nextValue = rules.floorEntry(last + 1).getValue();
@@ -846,6 +874,14 @@ public class ConfigManager extends AbstractManager {
             rules.put(first, value);
             rules.put(last + 1, nextValue);
         }
+    }
+
+    public Collection<String> getSharedPriceIds() {
+        return List.copyOf(sharedPrices.keySet());
+    }
+
+    public ObjectSharedPrice getSharedPrice(String id) {
+        return id == null ? null : sharedPrices.get(id);
     }
 
 }

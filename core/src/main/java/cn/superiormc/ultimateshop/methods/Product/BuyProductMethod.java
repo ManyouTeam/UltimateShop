@@ -106,8 +106,9 @@ public class BuyProductMethod {
         } else {
             return ProductTradeStatus.ERROR;
         }
+        long useTimesIncrement = (long) multi * item.getBuyTimesIncrement();
         if (item.getPlayerBuyLimit(player) != -1 &&
-                playerUseTimes + multi > item.getPlayerBuyLimit(player)) {
+                playerUseTimes + useTimesIncrement > item.getPlayerBuyLimit(player)) {
             if (shouldSendMessage) {
                 LanguageManager.languageManager.sendStringText(player,
                         "limit-reached-buy-player",
@@ -133,7 +134,7 @@ public class BuyProductMethod {
             return ProductTradeStatus.ERROR;
         }
         if (item.getServerBuyLimit(player) != -1 &&
-                serverUseTimes + multi > item.getServerBuyLimit(player)) {
+                serverUseTimes + useTimesIncrement > item.getServerBuyLimit(player)) {
             if (shouldSendMessage) {
                 LanguageManager.languageManager.sendStringText(player,
                         "limit-reached-buy-server",
@@ -155,6 +156,7 @@ public class BuyProductMethod {
         // API
         if (!notCost) {
             giveResult = item.getReward().give(player, playerUseTimes, multi);
+            giveResult.checkProductConditions(playerUseTimes, multi, player);
             ItemPreTransactionEvent event = new ItemPreTransactionEvent(true, player, multi, item, giveResult, takeResult);
             Bukkit.getServer().getPluginManager().callEvent(event);
             if (event.isCancelled()) {
@@ -214,19 +216,19 @@ public class BuyProductMethod {
         int calculateAmount = multi * item.getDisplayItemObject().getAmountPlaceholder(player);
         // 执行动作
         item.getBuyAction().runAllActions(new ObjectThingRun(player, playerUseTimes, multi, calculateAmount));
-        // limit+1
+        // Record weighted use times.
         if (ConfigManager.configManager.getBoolean("debug")) {
-            int newValue = tempVal9.getBuyUseTimes() + multi;
+            long newValue = Math.min(Integer.MAX_VALUE, tempVal9.getBuyUseTimes() + useTimesIncrement);
             TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §aSet player limit value to " + newValue + "!");
         }
-        tempVal9.setBuyUseTimes(tempVal9.getBuyUseTimes() + multi);
+        tempVal9.addBuyUseTimes(useTimesIncrement);
         tempVal9.setLastBuyTime(CommonUtil.getNowTime());
         tempVal9.setCooldownBuyTime();
         if (ConfigManager.configManager.getBoolean("debug")) {
-            int newValue = tempVal8.getBuyUseTimes() + multi;
+            long newValue = Math.min(Integer.MAX_VALUE, tempVal8.getBuyUseTimes() + useTimesIncrement);
             TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §aSet server limit value to " + newValue + "!");
         }
-        tempVal8.setBuyUseTimes(tempVal8.getBuyUseTimes() + multi);
+        tempVal8.addBuyUseTimes(useTimesIncrement);
         tempVal8.setLastBuyTime(CommonUtil.getNowTime());
         tempVal8.setCooldownBuyTime();
         if (!item.getHideMessage() && !giveResult.empty && !takeResult.empty) {

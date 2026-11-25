@@ -1,39 +1,14 @@
-# 💰Products Config: Single Thing
+# 💰Product Configuration: Single Entry
 
-This page explains the `products`, `buy-prices`, and `sell-prices` sections in a way that matches how the plugin actually works in code.
+This page explains `products`, `buy-prices`, and `sell-prices` based on how the plugin actually processes them.
 
-If you only remember one idea, remember this:
+## What Is a Single Entry?
 
-* A **single thing** is one entry under `products`, `buy-prices`, or `sell-prices`.
-* A product can have many single things.
-* The plugin decides which single things are usable, calculates their amount, checks requirements, and then gives/takes them.
+Each numbered or named entry (`1:`, `2:`, etc.) inside `products`, `buy-prices`, or `sell-prices` is a **single entry**. A product can have as many single entries as you need.
 
-## What Is a Single Thing?
-
-Inside one shop item, these three sections are all made of single things:
-
-#### `products`
-
-What the player receives when buying, and what the player must provide when selling. Optional.
-
-If `products` does not exist:
-
-* buying can still run `buy-actions`
-* selling can still run `sell-actions`
-* but the player will not receive any product on buy
-* and will not need to provide any product on sell
-
-This is useful for command shops.
-
-#### `buy-prices`
-
-What the player must pay to buy. Optional, but if it does not exist, the product cannot be bought.
-
-#### `sell-prices`
-
-What the player receives after selling. Optional, but if it does not exist, the product cannot be sold.
-
-Example:
+* **`products`**: Optional. What the player receives on buy and must hand over on sell. If omitted, `buy-actions` and `sell-actions` still run, but no items are given or taken (useful for command shops).
+* **`buy-prices`**: Optional. What the player pays to buy; without it, the product cannot be bought.
+* **`sell-prices`**: Optional. What the player receives on sell; without it, the product cannot be sold.
 
 ```yaml
 items:
@@ -55,34 +30,31 @@ items:
         placeholder: '{amount}$'
 ```
 
-In this example:
+Here `products.1`, `products.2`, `buy-prices.1`, and `sell-prices.1` are each a single entry.
 
-* `products.1` is a single thing
-* `products.2` is a single thing
-* `buy-prices.1` is a single thing
-* `sell-prices.1` is a single thing
+## How the Plugin Processes Entries
 
-## How the Plugin Uses Single Things?
+During a buy or sell, the plugin handles each section in this order:
 
-When a player buys or sells, the plugin does not just read the section from top to bottom. It follows this logic:
+1. Read all entries under `products`, `buy-prices`, or `sell-prices`.
+2. Filter them with each entry's `apply-conditions` (legacy name: `conditions`).
+3. Select active entries according to the section mode (`ANY`, `ALL`, `CLASSIC_ANY`, `CLASSIC_ALL`).
+4. Calculate each selected entry's `amount`.
+5. Check whether the player has enough items or currency.
+6. Check each selected entry's `require-conditions`.
+7. Give or take the items/currency and run the entry's `give-actions` / `take-actions`.
 
-1. It reads all single things in `products`, `buy-prices`, or `sell-prices`.
-2. It filters them by `apply-conditions` or legacy `conditions`.
-3. It uses the section mode (`ANY`, `ALL`, `CLASSIC_ANY`, `CLASSIC_ALL`) to decide which single things are selected.
-4. It calculates the real amount of each selected single thing.
-5. It checks whether the player has enough of that thing.
-6. It checks `require-conditions`.
-7. It runs `give-actions` / `take-actions` and gives or takes the thing itself.
+{% hint style="info" %}
+`apply-conditions` runs **before selection** to decide whether an entry participates; `require-conditions` runs **after selection and amount calculation** to decide whether the trade is allowed to succeed.
+{% endhint %}
 
-This is why `apply-conditions` and `require-conditions` are not the same thing.
+## Entry Types
 
-## Single Thing Types
-
-The plugin determines the type of a single thing from the options you put inside it.
+The plugin detects the entry type automatically from the keys you configure.
 
 ### Vanilla Item
 
-Use normal [ItemFormat](https://ultimateshop.superiormc.cn/format/itemformat-tm) to tell us what Minecraft item you want to sell in shop or you want to player pay. **(Buy/Sell/Products)**
+Uses [ItemFormat™](../../format/itemformat-tm/) for standard Minecraft items. Works in `products`, `buy-prices`, and `sell-prices`.
 
 ```yaml
 products:
@@ -93,14 +65,9 @@ products:
     amount: 16
 ```
 
-Use this when:
+### Hooked Item
 
-* the thing is a normal Minecraft item
-* you want the plugin to compare, give, or take an actual item
-
-### Hook Item
-
-Use [Supported Plugins](https://ultimateshop.superiormc.cn/info/compatibility)'s item to tell us what custom item you want to sell in shop or you want to player pay. This type still use [ItemFormat](https://ultimateshop.superiormc.cn/format/itemformat-tm). **(Buy/Sell/Products)**
+Uses custom items from [compatible plugins](../../info/compatibility.md) via [ItemFormat™](../../format/itemformat-tm/). Works in `products`, `buy-prices`, and `sell-prices`.
 
 ```yaml
 products:
@@ -109,14 +76,9 @@ products:
     hook-item: 'AXE;;MAGIC_AXE'
 ```
 
-Use this when:
-
-* the thing is provided by another item plugin
-* you still want UltimateShop to treat it like an item
-
 ### Match Item
 
-Use custom item matching rules from [Custom Item Match Method](https://ultimateshop.superiormc.cn/features/custom-item-match-method) to tell us which items you want to match. **(Buy/Products)**
+Uses [Custom Item Match Method](../../features/custom-item-match-method.md) to match items by lore, NBT, name, or custom rules when no fixed item ID exists. Works in `buy-prices` and `products`.
 
 ```yaml
 products:
@@ -127,14 +89,9 @@ products:
     amount: 64
 ```
 
-Use this when:
+### Vanilla / Hooked Economy
 
-* there is no exact item ID to compare
-* you want to match by lore, NBT, name, or other custom rules
-
-### Vanilla Economy / Hook Economy
-
-Use an economy balance instead of an item. Following [EconomyFormat](https://ultimateshop.superiormc.cn/format/economyformat-tm).
+Operates directly on currency balances using [EconomyFormat™](../../format/economyformat-tm/). Works in `products`, `buy-prices`, and `sell-prices`.
 
 ```yaml
 buy-prices:
@@ -144,13 +101,9 @@ buy-prices:
     placeholder: '{amount}$'
 ```
 
-Use this when:
-
-* the player should pay or receive money, points, exp, levels, etc.
-
 ### Custom <mark style="color:red;">- Premium</mark>
 
-Use `match-placeholder` when the thing is not a normal item or supported economy.
+Reads a player placeholder via `match-placeholder` to check the current balance, and uses `take-actions` / `give-actions` to modify it—ideal for unsupported currencies or custom stats.
 
 ```yaml
 buy-prices:
@@ -165,114 +118,82 @@ buy-prices:
         command: 'health take {player} {amount}'
 ```
 
-Use this when:
-
-* you want to compare any custom numeric value
-* the plugin does not natively support that currency or system
-
-Important:
-
-* the placeholder is used to read how much the player currently has
-* `take-actions` / `give-actions` are what actually modify that value
-
 ### Free / Empty
 
-If a single thing does not define item data, economy data, `match-item`, or `match-placeholder`, it is treated as free.
+An entry with no item, economy, `match-item`, or `match-placeholder` is treated as free. Useful for command shops, permission shops, or action-only rewards.
 
-This is useful for:
+## Entry Options
 
-* command shops
-* permission shops
-* action-only rewards
+### `amount`
 
-## Options for Single Things
-
-These options are the most important ones users actually work with.
-
-#### `amount`
-
-The base amount of the single thing.
-
-This can be:
-
-* a fixed number
-* a PlaceholderAPI value. For available built-in placeholders, please view [this page](https://ultimateshop.superiormc.cn/shops/products#dynamic-value).&#x20;
-* a math expression. For math calculate format, please view [this page](https://ultimateshop.superiormc.cn/format/math-calculate-format).
-* a dynamic formula
-
-Example:
+The base quantity for the entry. Supports fixed numbers, PlaceholderAPI placeholders, [Built-in Placeholders](../../placeholders/built-in-placeholders.md), and [Math Calculate Format](../../format/math-calculate-format.md) formulas.
 
 ```yaml
 amount: '55 + ({buy-times-server} - {sell-times-server}) * 0.1'
 ```
 
-#### `apply-conditions`
+### `max-sell-amount`
 
-Whether this single thing should participate in the transaction.
+Optional, placed on an individual `products` or `sell-prices` entry to specify the maximum number of trades **Sell All** can perform for that entry.
 
-#### `require-conditions`
+{% hint style="info" %}
+With dynamic prices or dynamic amounts, omitting `max-sell-amount` forces the plugin to brute-force trade by trade to find the Sell All cap. Providing a formula lets the plugin compute the cap directly and greatly improves performance. See [Dynamic Price](../../dynamic-prices/dynamic-price.md) for concrete formulas.
+{% endhint %}
 
-Whether the transaction is allowed to use this single thing after selection.
+**Combining multiple entries:**
+* In `ALL` mode, the plugin takes the minimum across all configured formulas.
+* In `ANY` mode, limits are summed only when every participating entry defines a formula.
 
-#### `give-actions`
+To cap Sell All by remaining Vault income limits, see [Sell Income Limits — How Sell All works out how many times to sell](../../features/sell-income-limits-example.md#how-sell-all-works-out-how-many-times-to-sell).
 
-Actions that run when this single thing is given to the player.
+**Placeholders available in the formula:**
 
-Typical uses:
+| Placeholder | Where | Meaning |
+| --- | --- | --- |
+| `{stock}` | `products` only | How many of this item the player currently has (or balance for economy entries) |
+| `{sell-unit-income}` | `sell-prices` in `CLASSIC_ANY` / `CLASSIC_ALL` only | Actual payout per trade including sell multiplier; entries sharing the same Shared Price template are summed |
+| `{require-conditions.<key>.value}` | `products` and `sell-prices` | The numeric `value` of that `require-conditions` entry |
+| `{buy-times-player}`, `{buy-times-server}`, `{buy-times-increment}`, `{sell-times-player}`, `{sell-times-server}`, `{sell-times-increment}` | `products` and `sell-prices` (any mode) | Trade counters before this sale begins, plus the increment per trade |
+| `{custom_...}`, `%...%` | All entries | Built-in placeholders and PlaceholderAPI variables; see [Built-in Placeholders](../../placeholders/built-in-placeholders.md) |
 
-* command shop rewards
-* permission rewards
-* custom currency rewards
+**Notes:**
 
-#### `take-actions`
+* **Do not use `{amount}` here**—the formula is solving for the trade count, so no count exists yet. Read caps via `{require-conditions.<key>.value}` instead.
+* `{buy-times-increment}` and `{sell-times-increment}` reflect the product's increment setting (counts consumed per trade). Use them only when converting remaining counter headroom into trade count, e.g. `max-sell-amount: '({require-conditions.1.value} - {buy-times-server}) / {buy-times-increment}'`.
+* `{stock}` is replaced only on `products`; on `sell-prices` it stays literal and the formula is ignored.
+* `{sell-unit-income}` exists only on `sell-prices` and is skipped in `ANY` / `ALL` dynamic-price modes (because per-trade payouts vary); use trade counters in those modes as shown in [Dynamic Price](../../dynamic-prices/dynamic-price.md).
+* All counters hold their values **before** this sale begins (so a first-time seller has `{sell-times-player} = 0`).
+* Results are floored to an integer, clamped at `0`, and never exceed stock, `sell-limits`, or `sell.max-amount`.
+* Invalid formulas (typo, divide-by-zero, `math.enabled` off) are silently ignored without failing the sale; functions like `min()`, `max()`, and `ceil()` require `math.enable-function`.
+* When `price-modifier: true` is enabled on a product, `sell-prices` formulas are ignored.
 
-Actions that run when this single thing is taken from the player.
+**Example (stock limit on `products`, daily income cap on `sell-prices`):**
 
-Typical uses:
+```yaml
+products:
+  1:
+    material: EMERALD
+    amount: 4
+    max-sell-amount: '{stock} / 4'
 
-* taking a custom currency
-* running a command cost
-* syncing with another plugin
+sell-prices:
+  1:
+    economy-plugin: Vault
+    amount: 20
+    placeholder: '{amount}$'
+    max-sell-amount: '({require-conditions.1.value} - {custom_sell_daily}) / {sell-unit-income}'
+    require-conditions:
+      1:
+        type: placeholder
+        placeholder: '{custom_sell_daily} + {amount}'
+        rule: '<='
+        value: '10000'
+```
 
-#### `give-item`
+### `apply-conditions` and `require-conditions`
 
-Only useful for product-like item rewards.
-
-If set to `false`, the plugin will not give the actual item, but `give-actions` can still run.
-
-This is how most command shops work.
-
-#### `take`
-
-If set to `false`, the single thing is still checked as a requirement, but it is not actually removed.
-
-This is useful when you want:
-
-* a required item
-* but not an item that gets consumed
-
-### The Difference Between `apply-conditions` and `require-conditions`
-
-This is the most important part of the whole system.
-
-#### `apply-conditions`
-
-`apply-conditions` decides whether this single thing should be included in the transaction at all.
-
-If the condition is not met:
-
-* the single thing is ignored
-* it is not selected
-* it does not affect price/product calculation
-
-This is useful for:
-
-* VIP-only price tiers
-* seasonal products
-* different rewards for different players
-* different prices based on permissions or placeholders
-
-Example:
+* **`apply-conditions`**: Decides whether the entry enters the candidate pool. If it fails, the entry is ignored (great for VIP pricing tiers or conditional rewards).
+* **`require-conditions`**: Checked after the entry is selected and its amount is calculated. If it fails, the trade is blocked (great for permission checks or income limits).
 
 ```yaml
 products:
@@ -286,31 +207,7 @@ products:
       1:
         type: permission
         permission: group.vip
-```
 
-Result:
-
-* normal players use `products.1`
-* VIP players can also use `products.2`
-
-#### `require-conditions`
-
-`require-conditions` does not decide whether the single thing is selected. It decides whether the transaction is allowed to continue after that single thing has already been chosen and its amount has already been calculated.
-
-If the condition is not met:
-
-* the transaction is blocked
-* the product/price was selected, but it cannot be used
-
-This is useful for:
-
-* requiring a permission before paying or receiving a specific thing
-* blocking a reward unless a player meets an extra rule
-* stopping a transaction when a calculated amount should only work in some cases
-
-Example:
-
-```yaml
 buy-prices:
   1:
     economy-plugin: Vault
@@ -322,63 +219,22 @@ buy-prices:
         permission: shop.buy.special
 ```
 
-Result:
+Regular players receive `products.1`, while VIPs also receive `products.2`. Meanwhile `buy-prices.1` is always selected, but players without `shop.buy.special` are blocked at checkout.
 
-* this price can still be selected
-* but the purchase fails if the player does not have `shop.buy.special`
+### `give-actions` and `take-actions`
 
-### Different from single thing's `give-actions` / `take-actions` and item's `buy-actions` / `sell-actions`
+* **`give-actions`**: Executed when this entry is given to the player (command rewards, permissions, custom currency payouts).
+* **`take-actions`**: Executed when this entry is taken from the player (custom currency deductions, cost commands).
 
-These two action levels look similar, but they are not meant for the same job.
+### `give-item` and `take`
 
-#### Single thing `give-actions` / `take-actions`
+* **`give-item`**: For item-like entries. Set to `false` to skip giving the physical item while still running `give-actions` (standard for command shops).
+* **`take`**: Set to `false` to require the player to hold the item without consuming it.
 
-These actions belong to one specific single thing.
+## Entry Actions vs. Item Actions
 
-They only run when:
-
-* that exact single thing is selected
-* and that exact single thing is really being given or taken
-
-This means they are best for:
-
-* one special reward branch
-* one special price branch
-* one custom currency branch
-* one command that should only run for one single thing
-
-#### Item `buy-actions` / `sell-actions`
-
-These actions belong to the whole shop item.
-
-They run when:
-
-* the whole buy transaction succeeds, or
-* the whole sell transaction succeeds
-
-They are not tied to one specific single thing branch.
-
-This means they are best for:
-
-* global success messages
-* logging
-* sounds
-* commands that should always run after a successful buy or sell
-* effects that belong to the whole product, not one price or reward branch
-
-#### The most important difference: `{amount}`
-
-For single thing actions:
-
-* `{amount}` means the final amount of that specific single thing
-
-For item actions:
-
-* `{amount}` means the product-level transaction amount passed by the buy/sell flow
-* in common setups, this is the total displayed amount for the transaction
-* if `display-item.calculate-amount` is disabled, it is usually just the buy/sell quantity
-
-Example:
+* **Entry actions (`give-actions` / `take-actions`)**: Run only when **that specific entry** is selected and given/taken. Here `{amount}` is **that entry's final amount**.
+* **Item actions (`buy-actions` / `sell-actions`)**: Run whenever the **whole buy or sell trade succeeds**, regardless of which branch was chosen. Here `{amount}` is the **product-level trade amount** (typically the GUI quantity; or the trade count if `display-item.calculate-amount` is off).
 
 ```yaml
 products:
@@ -396,65 +252,13 @@ buy-actions:
     message: 'Item action amount = {amount}'
 ```
 
-If the player buys this item 5 times:
+Rule of thumb: branch-specific logic belongs in entry actions; trade-wide notifications, sounds, or logs belong in item actions.
 
-* the single thing `give-actions` receives the real product amount for that branch
-* the item-level `buy-actions` receives the transaction amount prepared by the item buy flow
+## Price-Only Options
 
-In many normal setups, both values may look similar. But they are still coming from different layers, and they should be used for different purposes.
-
-#### Practical rule
-
-Use single thing actions when the logic belongs to one selected price or reward.
-
-Use item actions when the logic should always run after a successful buy or sell, no matter which single thing branch was used.
-
-### Price-Only Options
-
-These options mainly matter in `buy-prices` and `sell-prices`.
-
-#### `placeholder`
-
-The display name used in price placeholders like `{price}`.
-
-```yaml
-placeholder: '{amount}$'
-```
-
-For prices, this should usually always be set.
-
-Supported placeholders:
-
-* {amount}
-* {status} - Display the dynamic price status.
-* {display} - If the price is vanilla item or hook item, this placeholder can display it's name. Will cost extra server performance.
-* All PlaceholderAPI placeholders.
-
-#### `start-apply`, `end-apply`, `apply`
-
-These control when a price applies.
-
-They are mainly meaningful in non-classic price modes:
-
-* `ANY`
-* `ALL`
-
-Use them when you want:
-
-* early purchases to be cheap
-* later purchases to be expensive
-* specific purchase counts to use a specific price
-
-#### `min-amount` and `max-amount`
-
-These clamp the final dynamic amount.
-
-Use them when:
-
-* your price formula can become too small
-* your price formula can become too large
-
-Example:
+* **`placeholder`**: Display text for `{buy-price}` / `{sell-price}` placeholders (e.g. `placeholder: '{amount}$'`). Supports `{amount}`, `{status}` (dynamic price status), `{display}` (item name; adds performance cost), and PlaceholderAPI.
+* **`start-apply` / `end-apply` / `apply`**: Controls the trade-count window in which the price applies (effective in `ANY` / `ALL` modes).
+* **`min-amount` and `max-amount`**: Clamps dynamic formula results.
 
 ```yaml
 buy-prices:
@@ -466,24 +270,18 @@ buy-prices:
     placeholder: '{amount}$'
 ```
 
-## About Modes: `ANY`, `ALL`, `CLASSIC_ANY`, `CLASSIC_ALL`
+## Modes: `ANY`, `ALL`, `CLASSIC_ANY`, `CLASSIC_ALL`
 
-You do not need to understand every detail to use them, but this mental model helps:
+* **`CLASSIC_ALL`**: Uses all applicable entries as a fixed bundle (recommended default for standard shops).
+* **`CLASSIC_ANY`**: Picks one applicable entry as a fixed choice.
+* **`ALL`**: Uses all applicable entries and recalculates dynamic formulas / `start-apply` windows per trade in a batch.
+* **`ANY`**: Picks one applicable entry with dynamic windows that shift as counts change.
 
-* `ANY`: one applicable single thing is used each time, and dynamic apply ranges can matter per quantity
-* `ALL`: all applicable single things are used each time
-* `CLASSIC_ANY`: one applicable single thing is used, but treated more like a fixed bundle
-* `CLASSIC_ALL`: all applicable single things are used as a fixed bundle
-
-Practical advice:
-
-* use `CLASSIC_ALL` for simple fixed-price shops
-* use `CLASSIC_ANY` for "pick one valid reward/price" setups
-* use `ANY` / `ALL` only when you need apply ranges or more advanced dynamic behavior
+Start with `CLASSIC_ALL`, use `CLASSIC_ANY` for "pick one of several", and switch to `ALL` / `ANY` only when using dynamic formulas or apply windows.
 
 ## Shared Condition Keys
 
-The plugin also supports shared apply-condition sections through `config.yml`:
+You can define shared `apply-conditions` section keys in `config.yml` (`require-conditions` still stays inside each entry):
 
 ```yaml
 conditions:
@@ -492,8 +290,6 @@ conditions:
   sell-prices-key: 'sell-prices-conditions'
   display-item-key: 'display-item-conditions'
 ```
-
-That lets you write:
 
 ```yaml
 products:
@@ -517,14 +313,9 @@ products-conditions:
       value: 'B'
 ```
 
-Important:
+## Common Patterns
 
-* these shared keys are for apply conditions
-* `require-conditions` is still configured inside the single thing itself
-
-## Two Very Common Patterns
-
-### Pattern A: Normal item shop
+### Pattern A: Normal Item Shop
 
 ```yaml
 A:
@@ -546,14 +337,9 @@ A:
       placeholder: '{amount}$'
 ```
 
-This is the simplest setup:
+### Pattern B: Command Shop
 
-* buying gives apples
-* buying costs money
-* selling takes apples
-* selling gives money
-
-### Pattern B: Command shop
+You can omit `products` and use `buy-actions` (with a manual `display-item`), or define a dummy product with `give-item: false` and `give-actions`. The second approach lets you attach `apply-conditions` for per-group rewards:
 
 ```yaml
   A:
@@ -569,14 +355,16 @@ This is the simplest setup:
         economy-plugin: Vault
         amount: 150
         placeholder: '{amount}⛂'
-    buy-actions: # In product config
+    buy-actions:
       1:
         type: console_command
-        command: "crate give {player} magic" # Put command here.
+        command: "crate give {player} magic"
       2:
-        multi-once: true # If you want to use {amount} placeholder in your give item command, make sure add this line to make sure this action only execute once when purchase multi quantity.
+        # Add multi-once: true when using {amount} in a command for bulk purchases
+        multi-once: true
         type: console_command
-        command: "crate give {player} magic {amount}" 
+        command: "crate give {player} magic {amount}"
+
   B:
     price-mode: CLASSIC_ALL
     product-mode: CLASSIC_ALL
@@ -586,52 +374,24 @@ This is the simplest setup:
         material: PAPER
         custom-model-data: 500
         amount: 1
-        give-item: false # You need add this to make sure the "fake" product will not give to player
-        give-actions: # In single things config
-          1:
-            type: console_command
-            command: "crate give {player} magic"
-          2:
-            multi-once: true # If you want to use {amount} placeholder in your give item command, make sure add this line to make sure this action only execute once when purchase multi quantity.
-            type: console_command
-            command: "crate give {player} magic {amount}" 
-    buy-prices:
-      1:
-        economy-plugin: Vault
-        amount: 150
-        placeholder: '{amount}⛂'
-```
-
-In the above two examples, the final execution effect is identical. But can you think of it? If combined with the `conditions` option, using the **give actions** method can enable different players to execute different conditions!
-
-```yaml
-  B:
-    price-mode: CLASSIC_ALL
-    product-mode: CLASSIC_ALL
-    products:
-      1:
-        name: 'Magic Crate Key'
-        material: PAPER
-        custom-model-data: 500
-        amount: 1
-        give-item: false # You need add this to make sure the "fake" product will not give to player
-        give-actions: # In single things config
+        give-item: false
+        give-actions:
           1:
             multi-once: true
             type: console_command
             command: "crate give {player} magic {amount}"
       2:
-        name: 'Magic Crate Key (VIP plus 1 for free)'
+        name: 'Magic Crate Key (VIP bonus)'
         material: PAPER
         custom-model-data: 500
         amount: 1
-        give-item: false # You need add this to make sure the "fake" product will not give to player
-        give-actions: # In single things config
+        give-item: false
+        give-actions:
           1:
             multi-once: true
             type: console_command
             command: "crate give {player} magic {amount}"
-        conditions:
+        apply-conditions:
           1:
             type: permission
             permission: group.vip
@@ -642,50 +402,13 @@ In the above two examples, the final execution effect is identical. But can you 
         placeholder: '{amount}⛂'
 ```
 
-Why this works:
+## Auto Display Price in Item Lore
 
-* the product exists so the plugin has something to process
-* `give-item: false` stops the fake item from being given
-* `give-actions` gives the real reward by command
+To show shop buy/sell prices directly on items in players' inventories using **MythicChanger** (requires `packetevents`):
 
-### When Should I Put Logic on the Item, and When on the Single Thing?
-
-Use single thing logic when the rule belongs to one specific price or reward.
-
-Good examples:
-
-* one VIP reward among several rewards
-* one seasonal price among several prices
-* one command reward that should only run in one branch
-
-Use item-level logic like `buy-actions`, `sell-actions`, `buy-conditions`, `sell-conditions` when the rule should apply to the whole product no matter which single thing was selected.
-
-### Best Practices
-
-* Start with `CLASSIC_ALL` unless you really need advanced behavior.
-* Use `apply-conditions` to choose a branch.
-* Use `require-conditions` to block a transaction.
-* Use `give-item: false` for command shops.
-* Use `take: false` when something should be required but not consumed.
-* Keep prices and rewards small and explicit before adding dynamic formulas.
-* If you use dynamic values, add `min-amount` and `max-amount` to avoid extreme results.
-
-### A Simple Rule of Thumb
-
-If you are unsure which option to use:
-
-* "Should this branch be ignored?" -> use `apply-conditions`
-* "Should the transaction fail?" -> use `require-conditions`
-* "Should the plugin give/take a real item?" -> use `give-item` or `take`
-* "Should a command run when this single thing is used?" -> use `give-actions` / `take-actions`
-
-That mental model is enough to build most shops correctly.
-
-## Auto Display Price at Item Lore
-
-* Download and install MythicChanger [here](https://www.spigotmc.org/resources/mythicchanger-auto-match-change-drag-change-gui-change-in-1-plugin-1-14-1-21-8.98523/). (This plugin requires packetevents)
-* Create a new file called `shop-display.yml` in `plugins/MythicChanger/rules` folder.
-* Copy those content in this file and restart the server.
+1. Install [MythicChanger](https://www.spigotmc.org/resources/mythicchanger-auto-match-change-drag-change-gui-change-in-1-plugin-1-14-1-21-8.98523/).
+2. Create `plugins/MythicChanger/rules/shop-display.yml`.
+3. Paste the config below and restart the server:
 
 ```yaml
 weight: 15

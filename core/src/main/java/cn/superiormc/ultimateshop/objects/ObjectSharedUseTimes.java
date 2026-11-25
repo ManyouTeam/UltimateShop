@@ -15,7 +15,7 @@ public class ObjectSharedUseTimes {
         this.sharedConfig = section;
     }
 
-    public String getId() {
+    public String getID() {
         return id;
     }
 

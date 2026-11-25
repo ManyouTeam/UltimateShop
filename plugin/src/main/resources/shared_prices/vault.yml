@@ -1,0 +1,3 @@
+economy-plugin: Vault
+amount: 200
+placeholder: '{amount} Coins'

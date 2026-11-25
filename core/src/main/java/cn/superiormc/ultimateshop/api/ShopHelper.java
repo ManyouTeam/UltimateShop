@@ -359,6 +359,22 @@ public class ShopHelper {
                 .doubleValue();
     }
 
+    public static BigDecimal getFinalSellMultiplier(Player player,
+                                                    ObjectItem item,
+                                                    ItemStorage storage,
+                                                    int times,
+                                                    int amount,
+                                                    BigDecimal basePrice,
+                                                    boolean ignoreSellMultiplier,
+                                                    double multiplier) {
+        BigDecimal finalMultiplier = BigDecimal.valueOf(multiplier);
+        if (ignoreSellMultiplier) {
+            return finalMultiplier;
+        }
+        return finalMultiplier.multiply(getSellMultiplierDecimal(
+                player, item, storage, times, amount, basePrice));
+    }
+
     public static BigDecimal getSellMultiplierDecimal(Player player,
                                                       ObjectItem item,
                                                       ItemStorage storage,
@@ -384,16 +400,18 @@ public class ShopHelper {
                 continue;
             }
 
+            int sliceUseTimes = (int) Math.min(Integer.MAX_VALUE,
+                    playerUseTimes + (long) processed * item.getSellTimesIncrement());
             ItemStorage stackStorage = ItemStorage.of(new ItemStack[]{itemStack});
-            MaxSellResult stackResult = item.getReward().getMaxAbleSellAmount(
-                    stackStorage, player, playerUseTimes + processed, remaining);
+            MaxSellResult stackResult = item.getReward().getMaxSellAmount(
+                    stackStorage, player, sliceUseTimes, remaining);
             int stackTradeAmount = Math.min(remaining, stackResult.getMaxAmount());
             if (stackTradeAmount <= 0) {
                 continue;
             }
 
             GiveResult stackPrice = item.getRawSellPrice().give(
-                    player, playerUseTimes + processed, stackTradeAmount);
+                    player, sliceUseTimes, stackTradeAmount);
             BigDecimal stackBasePrice = sumPrices(stackPrice.getResultMap()).max(BigDecimal.ZERO);
             slices.add(new SellModifierSlice(itemStack, stackTradeAmount, stackBasePrice));
             processed += stackTradeAmount;
@@ -401,8 +419,10 @@ public class ShopHelper {
         }
 
         if (remaining > 0) {
+            int remainingUseTimes = (int) Math.min(Integer.MAX_VALUE,
+                    playerUseTimes + (long) processed * item.getSellTimesIncrement());
             GiveResult remainingPrice = item.getRawSellPrice().give(
-                    player, playerUseTimes + processed, remaining);
+                    player, remainingUseTimes, remaining);
             slices.add(new SellModifierSlice(null, remaining,
                     sumPrices(remainingPrice.getResultMap()).max(BigDecimal.ZERO)));
         }

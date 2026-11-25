@@ -1,0 +1,69 @@
+# Unicode code points or inclusive ranges. Later entries override earlier entries in the same section.
+# Widths and shared bold additions are whole pixels. Ore bold additions may use quarter pixels.
+# Shared rules are used by the common text utilities. Ore width rules take priority in Ore menus.
+# Shared widths and both bold sections must cover the full Unicode range. Ore widths can override individual ranges.
+# Reload UltimateShop after editing this file.
+shared:
+  width:
+    'U+0000-U+00FF': 6
+    'U+0100-U+10FFFF': 9
+    'U+000A': 0 # Newline
+    'U+0020': 4 # Space
+    'U+0021': 2 # !
+    'U+0027': 2 # Apostrophe
+    'U+002C': 2 # ,
+    'U+002E': 2 # .
+    'U+003A-U+003B': 2 # : ;
+    'U+0069': 2 # i
+    'U+007C': 2 # |
+    'U+0060': 3 # Grave accent
+    'U+006C': 3 # l
+    'U+0022': 4 # Double quote
+    'U+0028-U+002A': 4 # ( ) *
+    'U+0049': 4 # I
+    'U+005B': 4 # [
+    'U+005D': 4 # ]
+    'U+0074': 4 # t
+    'U+007B': 4 # {
+    'U+007D': 4 # }
+    'U+003C': 5 # <
+    'U+003E': 5 # >
+    'U+0066': 5 # f
+    'U+006B': 5 # k
+    'U+0040': 7 # @
+    'U+007E': 7 # ~
+  bold-extra:
+    'U+0000-U+10FFFF': 1
+    'U+0020': 0
+
+ore:
+  width:
+    # Thai widths from the default Minecraft 26.3 Unihex font.
+    'U+0E01-U+0E3A': 4
+    'U+0E3F-U+0E5A': 4
+    'U+0E02': 3
+    'U+0E07': 3
+    'U+0E0A': 3
+    'U+0E10': 3
+    'U+0E18': 3
+    'U+0E1A-U+0E1B': 3
+    'U+0E23': 3
+    'U+0E27': 3
+    'U+0E2F-U+0E30': 3
+    'U+0E32': 3
+    'U+0E39': 3
+    'U+0E41': 3
+    'U+0E45': 3
+    'U+0E49': 3
+    'U+0E4C': 3
+    'U+0E4E': 3
+    'U+0E38': 2
+    'U+0E3A': 2
+    'U+0E40': 2
+    'U+0E4B': 2
+    'U+0E4D': 2
+    'U+0E48': 1
+    'U+0E5B': 8
+  bold-extra:
+    'U+0000-U+00FF': 1
+    'U+0100-U+10FFFF': 0.5

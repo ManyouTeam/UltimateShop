@@ -1,0 +1,19 @@
+# Shared buy and sell counters for gold_ingot and gold_block.
+# Daily limits count base units. The item entry sets how many units a trade uses.
+buy-limits:
+  default: 64
+  global: 640
+
+sell-limits:
+  default: 64
+  global: 640
+
+buy-times-reset-mode: 'TIMED'
+buy-times-reset-time: '00:00:00'
+buy-times-reset-time-format: 'yyyy-MM-dd HH:mm:ss'
+buy-times-reset-value: 0
+
+sell-times-reset-mode: 'TIMED'
+sell-times-reset-time: '00:00:00'
+sell-times-reset-time-format: 'yyyy-MM-dd HH:mm:ss'
+sell-times-reset-value: 0

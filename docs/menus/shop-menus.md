@@ -1,10 +1,10 @@
-# 🛍️ Shop Menus
+﻿# 🛍️Shop Menus
 
-A shop file holds products, prices and trade rules. Its menu template holds layout, navigation buttons and presentation settings. Multiple shops can share one template.
+Shop menus separate data from layout: shop files hold products, prices, and trade rules, while menu templates hold layout, navigation buttons, and presentation settings. Multiple shops can share one template.
 
-## Create a shop and template
+## Create a Shop and Template
 
-Save this template as `menus/shop_menu_templates/farming.yml`:
+Save the template as `menus/shop_menu_templates/farming.yml`:
 
 ```yaml
 title: '{shop-name}'
@@ -47,13 +47,15 @@ items:
         amount: 5
 ```
 
-With Vault and a compatible economy installed, run `/shop reload`, then `/shop menu farming`. In normal Inventory selection, marker `A` displays shop product `items.A`, and `X` displays the template's Close button. Global `menu.force-ui` can override the local presentation switches.
+With Vault and an economy plugin installed, run `/shop reload` and `/shop menu farming`. In Inventory UI, slot `A` shows shop product `items.A` and `X` shows the template's Close button (an enabled global `menu.force-ui` overrides presentation switches).
 
-`settings.menu: farming` selects the template ID; `/shop menu farming` opens the **shop** ID. These IDs can differ. Shop templates are used by shops rather than opened as standalone Common menus.
+{% hint style="info" %}
+`settings.menu: farming` selects the **template ID**, while `/shop menu farming` opens the **shop ID**—they do not have to match. Shop templates are used by shops and cannot be opened standalone as Common menus.
+{% endhint %}
 
-## Override one shop's template
+## Override a Template for One Shop
 
-In the shop file:
+Use `settings.menu-settings` in the shop file to override title, presentation, or graphical style on top of a shared template:
 
 ```yaml
 settings:
@@ -71,17 +73,17 @@ settings:
       style: bedrock
 ```
 
-Overrides merge recursively into the template; lists such as `layout` replace the full list. Global graphical defaults fill missing `ui` fields afterward. `settings.menu-settings` is also usable without a template when it supplies the complete screen definition. See [Configuration & Inheritance](menu-configuration.md).
+Overrides merge recursively onto the template (lists such as `layout` are replaced whole), and global graphical defaults fill any missing `ui` fields. Shops that do not share a template can omit `settings.menu` and define their full screen inside `settings.menu-settings`. See [Menu Configuration & Inheritance](menu-configuration.md).
 
-## Add products and navigation
+## Add Products and Navigation
 
-Add products under shop `items`, then reference their IDs in the template's Inventory layout. Ordinary navigation buttons can live in template `buttons` or shop `buttons`. Keep IDs distinct across these sources.
+Define products under `items` in the shop and reference their IDs in the template `layout`. Navigation buttons can live in template `buttons` (shared) or shop `buttons` (shop-specific); avoid duplicate IDs across sources.
 
-Product clicks use `menu.click-event` and product overrides. Ordinary buttons use their action lists. Product pricing and rewards follow [Products](../shops/products.md); graphical layout does not change trading rules.
+Product clicks use `menu.click-event` and per-product overrides, while common buttons run their `actions`. Graphical layout changes appearance and coordinates only—it never alters [Products](../shops/products.md) pricing or trade logic.
 
-## Reuse a layout across shops
+## Fill Product Slots Across Shops with `shop-items`
 
-Use `shop-items` in the shop menu template to mark product slots. The four `P` slots below show the first four products under the shop's `items` section, from left to right. Spare slots stay empty if the shop has fewer products.
+In a shop menu template, `shop-items` marks which layout characters act as generic product slots. For example, the four `P` slots below fill left-to-right with the first four products in the shop's `items` section (unused slots stay empty):
 
 ```yaml
 size: 9
@@ -90,13 +92,13 @@ layout:
   - '0PPPP000X'
 ```
 
-To place numbered positions independently, use several markers such as `shop-items: ['A', 'B', 'C']`. In the layout, `A` shows the first product, `B` the second and `C` the third. Product order follows the order in the shop file.
+To bind fixed positions to the 1st, 2nd, and 3rd products, use `shop-items: ['A', 'B', 'C']`.
 
-Use regular button and product IDs in other slots. For example, `X` can be a close button. Products still follow their display conditions and visibility settings. To override the template for one shop, set `settings.menu-settings.shop-items`. The in-game editor lists this setting as **Product slot markers**.
+Other slots can still hold common buttons (like `X`) or explicit product IDs, and product display conditions and visibility still apply. Individual shops can override `shop-items` via `settings.menu-settings.shop-items` (called **Shop Item Symbols** in the in-game editor).
 
-## Add page buttons to an inventory shop
+## Add Page Buttons to an Inventory Shop
 
-Repeat a single `shop-items` marker to make product slots. Use the layout markers as the button keys, just as with `amount-items`. For example, use `previous-page-item.l` and `next-page-item.r`. The layout below fits seven products per page.
+When using a repeated `shop-items` symbol, add `previous-page-item.<char>` and `next-page-item.<char>` keyed by their layout characters. Each page holds as many products as there are matching product slots in `layout`:
 
 ```yaml
 size: 18
@@ -110,7 +112,7 @@ previous-page-item:
     hide-on-first-page: true
     display-item:
       material: ARROW
-      name: '&ePrevious page'
+      name: '&ePrevious Page'
     hidden-item:
       material: GRAY_STAINED_GLASS_PANE
       name: ' '
@@ -120,17 +122,23 @@ next-page-item:
     hide-on-last-page: true
     display-item:
       material: ARROW
-      name: '&eNext page'
+      name: '&eNext Page'
 ```
 
-The previous button hides on the first page and the next button hides on the final page by default. Use `hidden-item` to fill the slot, or leave it unset for an empty slot. Set the relevant hide option to `false` to keep the arrow visible at the boundary. Normal menu buttons stay in place as products change. Both page buttons are editable in the in-game editor.
+By default, Previous hides on page 1 and Next hides on the last page (showing `hidden-item` if configured, or air). Set `hide-on-first-page` / `hide-on-last-page` to `false` to keep the arrows visible (clicking at the boundary stays on the same page). Pagination swaps product slots only and leaves common buttons in place; both buttons can also be edited in the in-game editor.
 
-## Present the same shop in different interfaces — Premium
+## Present the Same Shop Across UIs - Premium
 
-- Inventory uses root `size` and `layout`.
-- Form and native Dialog turn selected entries into lists or actions.
-- Ore and ArcMenu use the selected style's `ui.layout`, `ui.products.placement`, and individual button `ui.placement`.
+The same shop can be shown in multiple client UIs, each reading its own layout settings:
 
-In a graphical shop, non-dynamic product collection can include products absent from root layout, using the default product placement. Dynamic layouts retain their selected products unless additional products have explicit graphical placement. Navigation controls always need their own placement. Use `menu-visibility` and display conditions to control eligibility.
+* **Inventory**: uses the root `size` and `layout` slots.
+* **Bedrock Form & Native Dialog**: turns the active products and buttons into a list or action controls.
+* **Ore & ArcMenu (Graphical Shops)**: uses the chosen style's `ui.layout`, places product cards in `ui.products.placement`, and places common buttons in their own `ui.placement`.
 
-[UI Modes](ui-overview.md) · [Graphical UI Layout](../menus-getting-started/ui-layout.md) · [Buy More](buy-more-menus.md)
+In **Ore / ArcMenu graphical shops**, which products appear depends on whether `dynamic-layout` is enabled:
+
+* **With `dynamic-layout` off (default)**: any eligible product in the shop's `items` section appears in the graphical product area automatically—even if you did not put its ID in the chest `layout`.
+* **With `dynamic-layout: true`**: only products picked by the `layout` rules appear (unless another product explicitly sets its own `ui.placement`).
+* **Common buttons (Back, Close, navigation, etc.)**: never appear automatically in graphical UIs—you must always give them their own `ui.placement`. Every entry still respects `menu-visibility` and `display-conditions`.
+
+[UI Modes](ui-overview.md) · [Graphical UI Layout](../menus-getting-started/ui-layout.md) · [Buy More Menus](buy-more-menus.md)

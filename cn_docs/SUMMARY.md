@@ -82,7 +82,7 @@
 * [🔧内置占位符](placeholders/built-in-placeholders.md)
 * [🎲随机占位符 - 付费版](placeholders/random-placeholder-premium.md)
 * [⛓️条件占位符 - 付费版](placeholders/conditional-placeholder-premium.md)
-* [🗯️自定义占位符 - 付费版](placeholders/custom-placeholder-premium.md)
+* [🗯️自定义占位符](placeholders/custom-placeholder-premium.md)
 * [🔖示例：折扣](placeholders/example-discount.md)
 
 ## 💰动态价格
@@ -95,6 +95,7 @@
 * [🌏高级语言管理](features/advanced-language-managment.md)
 * [🎨颜色代码](features/color-code.md)
 * [💴简易价格](features/easy-prices.md)
+* [🧪示例:回收限额示例](features/sell-income-limits-example.md)
 * [🪄出售棒 - 付费版](features/sell-stick-premium.md)
 * [🎁出售箱 - 付费版](features/sell-chest-premium.md)
 * [💾保存物品（物品管理器）](features/saved-item-item-manager.md)

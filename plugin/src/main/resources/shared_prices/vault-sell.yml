@@ -1,0 +1,58 @@
+economy-plugin: Vault
+amount: 1
+placeholder: '{amount} Coins'
+max-sell-amount: >-
+  min(
+    ({require-conditions.1.value} - {custom_sell_5h}) / {sell-unit-income},
+    ({require-conditions.2.value} - {custom_sell_daily}) / {sell-unit-income},
+    ({require-conditions.3.value} - {custom_sell_weekly}) / {sell-unit-income}
+  )
+
+require-conditions:
+  1:
+    type: placeholder
+    placeholder: '{custom_sell_5h} + {amount}'
+    rule: '<='
+    value: '2000'
+    not-meet-actions:
+      1:
+        type: message
+        multi-once: true
+        message: '&#98FB98[UltimateShop] {lang:shared-prices.vault-sell.limit-5h}'
+  2:
+    type: placeholder
+    placeholder: '{custom_sell_daily} + {amount}'
+    rule: '<='
+    value: '10000'
+    not-meet-actions:
+      1:
+        type: message
+        multi-once: true
+        message: '&#98FB98[UltimateShop] {lang:shared-prices.vault-sell.limit-daily}'
+  3:
+    type: placeholder
+    placeholder: '{custom_sell_weekly} + {amount}'
+    rule: '<='
+    value: '50000'
+    not-meet-actions:
+      1:
+        type: message
+        multi-once: true
+        message: '&#98FB98[UltimateShop] {lang:shared-prices.vault-sell.limit-weekly}'
+
+give-actions:
+  1:
+    type: add_custom_placeholder
+    multi-once: true
+    placeholder: sell_5h
+    amount: '{amount}'
+  2:
+    type: add_custom_placeholder
+    multi-once: true
+    placeholder: sell_daily
+    amount: '{amount}'
+  3:
+    type: add_custom_placeholder
+    multi-once: true
+    placeholder: sell_weekly
+    amount: '{amount}'

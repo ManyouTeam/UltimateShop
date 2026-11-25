@@ -20,6 +20,21 @@
 
 答：使用插件前应先熟悉 `config.yml`。其中的 `sell.max-amount` 用于限制出售数量，请检查该选项。
 
+## 问：回收时提示超过 5 小时 / 每日 / 每周收入上限，怎么关掉？
+
+答：它不是 `config.yml` 里的开关，而是示例模板 `shared_prices/vault-sell.yml` 自带的三条 `require-conditions`，默认 2,000 / 10,000 / 50,000。
+
+- 删除整个 `require-conditions` 段：完全取消限制。
+- 只删其中一条：只取消对应周期。
+- 把 `value` 改大：只放宽额度。
+- 只想放过某个商品：在该商品的价格项里写 `require-conditions: {}`。
+
+取消后 `give-actions` 仍会继续累计，商品描述里的已用额度也照常增长。详见[示例:回收限额示例](../features/sell-income-limits-example.md)。
+
+## 问：免费版能创建几个自定义占位符？
+
+答：最多 5 个，付费版没有限制。免费版放进 `placeholders/custom_placeholders` 的第 6 个及之后的配置文件不会被加载，启动时控制台会有报错。详见[自定义占位符](../placeholders/custom-placeholder-premium.md)。
+
 ## 问：如何修改批量购买菜单的数量上限？
 
 答：使用 `config.yml` 中的 `menu.buy-more.<buy more menu name>.max-amount`。如果为某件商品单独配置了批量购买菜单，则使用商品配置中的 `buy-more-menu.max-amount`。

@@ -327,9 +327,9 @@ override-lang:
         buttons:
           search: 'Szukaj'
       price-extra-line:
-        default: '&6Kupno: {buy-price} &6| Sprzedaż: {sell-price}'
-        only-buy: '&6Kupno: {buy-price}'
-        only-sell: '&6Sprzedaż: {sell-price}'
+        default: '&6Kup: {buy-price} &6| Sprzedaj: {sell-price}'
+        only-buy: '&6Kup: {buy-price}'
+        only-sell: '&6Sprzedaj: {sell-price}'
       favourite-edit:
         title: 'Edytuj ulubiony produkt: {item-name}'
         content: '&7Wybierz sposób edycji wpisu ulubionych nr {index}.'

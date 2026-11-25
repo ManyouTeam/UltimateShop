@@ -19,7 +19,7 @@ Many people seem to be confused about one thing: what you open through the `/sho
 
 * `shops`: The location for storing shop configuration files.&#x20;
 * `placeholders/random_placeholders`: The loaction for storing random placeholder configuration files.
-* `placeholders/custom_placeholders`: The location for storing custom placeholder configuration files.
+* `placeholders/custom_placeholders`: The location for storing custom placeholder configuration files. The free version loads up to 5.
 * `placeholders/conditional_placeholders`: The location for storing conditional placeholder configuration files.
 * `sell_sticks`: The location for storing sell stick configuration files.
 * `config.yml` file: The location for main common settings for plugins.
@@ -110,6 +110,7 @@ sell:
       # Support value: DecentHolograms, CMI, FancyHolograms
       plugin: 'DecentHolograms'
   max-amount: -1
+  max-search-attempts: 5
   # Premium version only.
   shulker-box-sell: true
   # Premium version only

@@ -2,11 +2,11 @@ package cn.superiormc.ultimateshop.commands;
 
 import cn.superiormc.ultimateshop.managers.CacheManager;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
+import cn.superiormc.ultimateshop.managers.ErrorManager;
 import cn.superiormc.ultimateshop.managers.LanguageManager;
 import cn.superiormc.ultimateshop.objects.caches.ObjectCache;
 import cn.superiormc.ultimateshop.objects.items.subobjects.ObjectCustomPlaceholder;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
-import cn.superiormc.ultimateshop.utils.MathUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -20,8 +20,7 @@ public class SubAddCustomPlaceholder extends AbstractCommand {
         this.id = "addcustomplaceholder";
         this.requiredPermission =  "ultimateshop." + id;
         this.onlyInGame = false;
-        this.premiumOnly = true;
-        this.requiredArgLength = new Integer[]{3};
+        this.requiredArgLength = new Integer[]{3, 4};
     }
 
     @Override
@@ -45,14 +44,6 @@ public class SubAddCustomPlaceholder extends AbstractCommand {
             LanguageManager.languageManager.sendStringText(player, "error.custom-placeholder-invalid-number", "value", value);
             return;
         }
-        String nowValue = CacheManager.cacheManager.serverCache.getCustomPlaceholderCache().get(placeholder);
-        if (nowValue == null) {
-            nowValue = placeholder.getDefaultValue();
-            if (!CommonUtil.isNumberValue(nowValue)) {
-                nowValue = "0";
-            }
-        }
-        value = MathUtil.toDisplayString(new BigDecimal(nowValue).add(new BigDecimal(value)));
         ObjectCache tempVal1;
         if (!placeholder.isPerPlayer()) {
             tempVal1 = CacheManager.cacheManager.serverCache;
@@ -73,7 +64,16 @@ public class SubAddCustomPlaceholder extends AbstractCommand {
         if (tempVal1 == null) {
             return;
         }
-        tempVal1.setCustomPlaceholderCache(placeholder, value);
+        try {
+            value = tempVal1.addCustomPlaceholderValue(placeholder, new BigDecimal(value));
+            if (value == null) {
+                return;
+            }
+        } catch (RuntimeException exception) {
+            ErrorManager.errorManager.sendErrorMessage("\u00a7cError: Could not update custom placeholder "
+                    + placeholder.getID() + ": " + exception.getMessage());
+            return;
+        }
         LanguageManager.languageManager.sendStringText(player,
                 "set-custom-placeholder",
                 "placeholder",

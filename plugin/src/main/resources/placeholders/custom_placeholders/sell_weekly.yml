@@ -1,0 +1,5 @@
+type: number
+default-value: '0'
+per-player-value: true
+reset-mode: CUSTOM
+reset-time: '{cron_"0 0 0 ? * MON"}'

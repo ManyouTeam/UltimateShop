@@ -1,10 +1,10 @@
-# 🧱 Layout & Buttons
+﻿# 🧱Layout & Buttons
 
-Root `layout` assigns entry IDs to Inventory slots. Ordinary entries are defined under `buttons`; a Shop menu can also resolve products and buttons from its shop file. Ore and ArcMenu use separate [graphical placements](../menus-getting-started/ui-layout.md).
+Root `layout` maps entry IDs to Inventory slots: common buttons are defined under `buttons`, while shop menus can also reference shop products and shop buttons. Ore and ArcMenu use separate [graphical placement settings](../menus-getting-started/ui-layout.md).
 
-## A complete button menu
+## Complete Button Menu Example
 
-Save as `menus/common_menus/categories.yml`:
+Save this as `menus/common_menus/categories.yml`:
 
 ```yaml
 title: '&8Categories'
@@ -30,18 +30,16 @@ buttons:
         type: close
 ```
 
-Create the `farming` shop, reload with `/shop reload`, then open `/shop menu categories`. With Inventory selected, `A` occupies slot 12 and `X` occupies slot 14, counting slots from zero.
+Create the `farming` shop, run `/shop reload`, and open `/shop menu categories`. In Inventory UI, slots are zero-indexed, placing `A` in slot 12 and `X` in slot 14.
 
 ## Slot IDs
 
-Each character is one slot. Read left to right, then top to bottom. Use nine slots per row and match `size` to the total: `9`, `18`, `27`, `36`, `45` or `54`.
+`layout` is read left-to-right, top-to-bottom. Each row has 9 slots, and `size` must match the total slot count (`9`, `18`, `27`, `36`, `45`, or `54`).
 
-- IDs are case-sensitive: `A` and `a` differ.
-- Repeating an ID repeats the same entry in multiple slots.
-- An undefined ID leaves an empty slot.
-- `0` is an ordinary ID. Defining `buttons.'0'` fills every matching slot.
-
-For example, this fragment fills nine slots:
+* **Case-sensitive**: `A` and `a` are distinct IDs.
+* **Repeatable**: repeating an ID places the same entry in multiple slots.
+* **Empty slots**: undefined IDs stay empty.
+* **`0` is a normal ID**: defining `buttons.'0'` fills every `0` slot (commonly used for filler glass panes).
 
 ```yaml
 layout:
@@ -58,11 +56,13 @@ buttons:
       arcmenu: false
 ```
 
-Quote numeric-looking IDs in YAML. Decorative Inventory fillers can be hidden from list and graphical presentations as above.
+{% hint style="tip" %}
+Quote numeric YAML keys such as `'0'`. The snippet above also shows how to keep filler panes in Inventory while hiding them in Form, Dialog, and graphical UIs.
+{% endhint %}
 
-## Longer IDs
+## Multi-Character IDs
 
-Enclose a multi-character ID in backticks inside `layout`. Each enclosed token occupies **one** slot:
+Wrap multi-character IDs in backticks (`` ` ``) inside `layout`. Each backtick token occupies **one** slot:
 
 ```yaml
 layout:
@@ -78,36 +78,36 @@ buttons:
       name: '&eSell food'
 ```
 
-The nine slots are `0`, `food_buy`, `food_sell`, followed by six `0` slots. The backticks are layout delimiters and are not part of the button keys. Add actions to these display-only example entries to make them interactive.
+This row defines 9 slots: `0`, `food_buy`, `food_sell`, and six `0` slots. Backticks are layout delimiters only—do not include them in `buttons` keys.
 
-## Entry sources in Shop menus
+## Shop Menu Entry Sources
 
-A template's layout can reference:
+A shop menu template's `layout` can reference three sources:
 
 | Source | Location |
 | --- | --- |
-| Product | Shop `items.<id>` |
-| Shop-specific ordinary button | Shop `buttons.<id>` |
-| Reusable ordinary button | Template `buttons.<id>` |
+| Products | Shop `items.<id>` |
+| Shop-specific common buttons | Shop `buttons.<id>` |
+| Reusable common buttons | Template `buttons.<id>` |
 
-Use distinct IDs for each source. If IDs collide, copied shop entries are checked first where available, followed by shop buttons, shop products and template buttons. The first eligible entry wins.
+Use distinct IDs across sources. If an ID collides, the plugin picks the first eligible match in this priority order: **copied shop entries → shop `buttons` → shop `items` → template `buttons`**.
 
-Ordinary buttons run their `actions`. Product entries use product trade operations and click bindings such as `buy`, `sell` and `select-amount`. Defining a navigation button with the same display material as a product does not turn it into a trade entry.
+Common buttons run their own `actions`, whereas products use shop trade logic and click bindings (`buy`, `sell`, `select-amount`, etc.). A navigation button never becomes a tradable product just by sharing a material.
 
-## Button actions and conditions
+## Button Actions & Conditions
 
-| Button key | Purpose |
+| Key | Purpose |
 | --- | --- |
-| `display-item` | Item appearance; see [Display Item Format](../format/display-item-format.md) |
-| `actions` | Actions when click conditions pass |
-| `conditions` | Conditions checked when clicking |
-| `fail-actions` | Actions when click conditions fail |
-| `display-conditions` | Eligibility to appear — Premium |
-| `menu-visibility` | Visibility by presentation |
-| `dialog.layout`, `dialog.show-sprite` | Native Dialog entry appearance |
-| `ui` | Ore/ArcMenu appearance and placement |
+| `display-item` | Button appearance; see [Display Item Format](../format/display-item-format.md) |
+| `actions` | Actions run when click `conditions` pass |
+| `conditions` | Conditions checked on click |
+| `fail-actions` | Actions run when click `conditions` fail |
+| `display-conditions` | Controls whether the button is shown (Premium) |
+| `menu-visibility` | Per-presentation visibility |
+| `dialog.layout`, `dialog.show-sprite` | Native Dialog appearance for this entry |
+| `ui` | Ore / ArcMenu appearance and placement |
 
-This fragment creates a visible button that checks permission on click:
+The example below keeps the button visible but checks permission on click:
 
 ```yaml
 buttons:
@@ -129,11 +129,11 @@ buttons:
         message: '&cYou do not have permission!'
 ```
 
-The `vip` shop must exist. `conditions` does not hide the button; use `display-conditions` when it should disappear. Menu-root `conditions` controls opening the entire screen. Product buy/sell conditions still validate the transaction separately.
+`conditions` blocks clicks without hiding the button; use `display-conditions` to hide entries. Root menu `conditions` control opening the whole screen, while product buy/sell conditions validate trades separately.
 
-## Visibility by presentation
+## Per-Presentation Visibility
 
-Place this at button or product root:
+Add `menu-visibility` at a button or product root:
 
 ```yaml
 menu-visibility:
@@ -145,13 +145,13 @@ menu-visibility:
   arcmenu: true
 ```
 
-Unspecified values default to visible. `ore` and `item-action-list` fall back to `menu-visibility.dialog` when not explicitly set. For example, `dialog: false` hides all three unless an individual mode is explicitly enabled.
+Unspecified keys default to `true`. If `ore` or `item-action-list` is omitted, it falls back to `menu-visibility.dialog` (so `dialog: false` hides all three unless overridden).
 
-Visibility filters an existing entry; it does not create a slot, graphical placement or click action. It can be used independently of `dynamic-layout`.
+`menu-visibility` only filters existing entries—it never creates slots, graphical placements, or click bindings, and works independently of `dynamic-layout`.
 
-## Player-dependent layouts — Premium
+## Per-Player Dynamic Layout - Premium
 
-Enable `dynamic-layout: true` to evaluate layout placeholders and display conditions for each player. A backtick token can contain ordered alternatives separated by `||`:
+When `dynamic-layout: true` is enabled, layout placeholders and `display-conditions` are evaluated per player. Use `||` inside a backtick token to list fallback candidates in priority order:
 
 ```yaml
 dynamic-layout: true
@@ -159,18 +159,18 @@ layout:
   - '000`A||B`00000'
 ```
 
-This row has nine slots. The runtime checks `A`, then `B`, selecting the first existing entry allowed in the presentation whose display conditions pass. If neither qualifies, the slot is empty. Put fallback entries last. See [Conditional Display](conditional-display-premium.md) for a complete example.
+This row still has 9 slots. At runtime, the plugin checks `A` then `B`, picking the first entry that exists, is visible in the current presentation, and passes `display-conditions` (or leaves the slot empty if none pass). Put your fallback entry last; see [Conditional Display](conditional-display-premium.md).
 
-## Entry placement by presentation
+## Entry Placement Across Presentations
 
-| Presentation | Placement |
+| Presentation | Placement Source |
 | --- | --- |
-| Inventory | Root layout slot |
-| Form | Entry list; empty Inventory spacing is omitted |
-| Native Dialog | Action/list entries sourced from the root layout |
-| Ore / ArcMenu | Named graphical areas and entry placements |
+| Inventory | Root `layout` slots |
+| Bedrock Form | Ordered list of entries (empty Inventory spacers ignored) |
+| Native Dialog | Action/list entries read in root `layout` order |
+| Ore / ArcMenu | Named graphical areas and `ui.placement` |
 
-An ordinary graphical button needs an explicit placement:
+Common graphical buttons must set `ui.placement` explicitly (and will appear in graphical UIs even if omitted from root `layout`):
 
 ```yaml
 buttons:
@@ -189,6 +189,6 @@ buttons:
         order: 0
 ```
 
-This uses the selected style's `sidebar` area. An explicitly placed ordinary button can appear graphically even when absent from root `layout`. Products can inherit `ui.products.placement`; product `ui.placement` overrides that default. No graphical Back/Close/category controls are generated from empty areas.
+Products inherit `ui.products.placement` and merge their own `ui.placement` overrides. Empty areas never auto-generate Back, Close, or category buttons.
 
 [Common Menus](general-menus.md) · [Shop Menus](shop-menus.md) · [Graphical UI Layout](../menus-getting-started/ui-layout.md)

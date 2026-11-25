@@ -22,6 +22,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -111,6 +112,61 @@ public class CommonUtil {
             return 69;
         }
         return 97;
+    }
+
+    public static LocalDateTime getTimedResetTime(String time, LocalDateTime now) {
+        LocalDate nowTime = now.toLocalDate();
+        LocalDateTime refreshResult = null;
+        String[] tempVal3 = time.split(";;");
+        for (String tempVal4 : tempVal3) {
+            LocalDateTime thisResult;
+            String[] tempVal2 = tempVal4.split(":");
+            if (tempVal2.length < 3) {
+                ErrorManager.errorManager.sendErrorMessage("§cError: Your reset time " + tempVal4 + " is invalid.");
+                return now;
+            }
+            int month = 0;
+            int day = 0;
+            if (tempVal2.length == 5) {
+                month = Integer.parseInt(tempVal2[0]);
+            }
+            if (tempVal2.length >= 4) {
+                day = Integer.parseInt(tempVal2[tempVal2.length - 4]);
+            }
+            thisResult = nowTime.atTime(Integer.parseInt(tempVal2[tempVal2.length - 3]),
+                    Integer.parseInt(tempVal2[tempVal2.length - 2]),
+                    Integer.parseInt(tempVal2[tempVal2.length - 1]));
+            thisResult = thisResult.plusDays(day).plusMonths(month);
+            if (!thisResult.isAfter(now)) {
+                thisResult = thisResult.plusDays(1L);
+            }
+            if (refreshResult == null || thisResult.isBefore(refreshResult)) {
+                refreshResult = thisResult;
+            }
+        }
+        return refreshResult;
+    }
+
+    public static LocalDateTime getTimerResetTime(String time, LocalDateTime now) {
+        LocalDateTime refreshResult = now;
+        String[] tempVal2 = time.split(":");
+        if (tempVal2.length < 3) {
+            ErrorManager.errorManager.sendErrorMessage("§cError: Your reset time " + time + " is invalid.");
+            return now;
+        }
+        int month = 0;
+        int day = 0;
+        if (tempVal2.length == 5) {
+            month = Integer.parseInt(tempVal2[0]);
+        }
+        if (tempVal2.length >= 4) {
+            day = Integer.parseInt(tempVal2[tempVal2.length - 4]);
+        }
+        refreshResult = refreshResult.plusMonths(month).plusDays(day)
+                .plusHours(Integer.parseInt(tempVal2[tempVal2.length - 3]))
+                .plusMinutes(Integer.parseInt(tempVal2[tempVal2.length - 2]))
+                .plusSeconds(Integer.parseInt(tempVal2[tempVal2.length - 1]));
+        return refreshResult;
     }
 
     public static LocalDateTime getNowTime() {

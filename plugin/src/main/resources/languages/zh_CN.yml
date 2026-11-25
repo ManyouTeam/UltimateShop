@@ -101,7 +101,7 @@ success-buy: '&#98FB98[UltimateShop] &f成功购买 {item}&f x{amount}，&f花�
 success-sell: '&#98FB98[UltimateShop] &f成功以倍率 &cx{multiplier} &f出售 {item}&f x{amount}，&f获得 {price}&f!'
 menu-condition-not-meet: '&#98FB98[UltimateShop] &c你目前不能打开该菜单!'
 buy-condition-not-meet: '&#98FB98[UltimateShop] &c你目前不能购买该商品!'
-sell-condition-not-meet: '&#98FB98[UltimateShop]  &c你目前不能回收该商品!'
+sell-condition-not-meet: '&#98FB98[UltimateShop] &c你目前不能回收该商品!'
 limit-reached-buy-player: '&#98FB98[UltimateShop] &c您无法再购买物品 {item}&c，您今天购买此物品 {times}
   次，其每日库存为 {limit}，下次刷新时间为 {refresh}.'
 limit-reached-sell-player: '&#98FB98[UltimateShop] &c您无法再出售物品 {item}&c，您今天出售此物品 {times}
@@ -124,6 +124,17 @@ favourite-added: "&#98FB98[UltimateShop] &f已将 {item} 加入收藏菜单 {men
 favourite-removed: "&#98FB98[UltimateShop] &f已从收藏菜单 {menu} 移除 {item}。"
 
 override-lang:
+  price-coins: '&6{amount} 金币'
+  shared-prices:
+    vault-sell:
+      limit-5h: '&c本次回收超过了 5 小时收入上限 2000 金币。剩余额度：{math_max(0, 2000 - {custom_sell_5h})} 金币。重置时间：{custom-times_sell_5h}。'
+      limit-daily: '&c本次回收超过了每日收入上限 10000 金币。剩余额度：{math_max(0, 10000 - {custom_sell_daily})} 金币。重置时间：{custom-times_sell_daily}。'
+      limit-weekly: '&c本次回收超过了每周收入上限 50000 金币。剩余额度：{math_max(0, 50000 - {custom_sell_weekly})} 金币。重置时间：{custom-times_sell_weekly}。'
+  auto-save:
+    message: |-
+      
+      &#98FB98[UltimateShop] &f正在自动保存数据...
+      &#98FB98[UltimateShop] &f如果自动保存导致服务器 TPS 下降，可以在 config.yml 中关闭自动保存。
   item-sell-title: '出售物品'
   item-sell-confirm-name: '&a确认出售'
   item-sell-confirm-price: '&7预计价格: &f{price}'
@@ -394,6 +405,9 @@ override-lang:
       - '@b(@z[rich])&e卖价: {sell-price}'
       - '@b@z[rich]&e卖价: {sell-price} &8（税：&c-10%&8)'
       - '@b@z[vip]&6VIP额外增益：&a+10%'
+      - '@r[vault-sell]&75h回收已用: &e{custom_sell_5h}/2000'
+      - '@r[vault-sell]&7每日回收已用: &e{custom_sell_daily}/10000'
+      - '@r[vault-sell]&7每周回收已用: &e{custom_sell_weekly}/50000'
       - '@c&#FF7777玩家购买余量: {buy-times-player}/{buy-limit-player}'
       - '@d&#FF7777全服购买余量: {buy-times-server}/{buy-limit-server}'
       - '@e&#FF7777玩家出售限量: {sell-times-player}/{sell-limit-player}'
@@ -1475,9 +1489,9 @@ editor:
         take:
           name: '真正扣除'
           desc: '关闭后只检查是否拥有，而不真正扣除。'
-        custom-type:
-          name: '自定义价格'
-          desc: '使用全局配置中指定的价格方案。'
+        shared-price:
+          name: '共享价格'
+          desc: '选择 shared_prices 目录中的价格模板。'
         hook-item-type:
           name: '物品插件的分类'
           desc: '在物品插件需要分类时，填写该物品的分类。'

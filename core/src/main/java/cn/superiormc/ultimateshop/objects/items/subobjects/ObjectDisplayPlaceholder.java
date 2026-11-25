@@ -1,9 +1,7 @@
 package cn.superiormc.ultimateshop.objects.items.subobjects;
 
-import cn.superiormc.ultimateshop.managers.ConfigManager;
 import cn.superiormc.ultimateshop.objects.items.AbstractSingleThing;
 import cn.superiormc.ultimateshop.objects.items.ThingType;
-import cn.superiormc.ultimateshop.objects.items.prices.ObjectSinglePrice;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -22,10 +20,6 @@ public class ObjectDisplayPlaceholder implements Comparable<ObjectDisplayPlaceho
     public ObjectDisplayPlaceholder(AbstractSingleThing thing) {
         this.thing = thing;
         this.singleSection = thing.singleSection;
-        if (thing instanceof ObjectSinglePrice && ((ObjectSinglePrice) thing).getCustomPrice()) {
-            this.singleSection = ConfigManager.configManager.config.
-                    getConfigurationSection("prices." + singleSection.getString("custom-type"));
-        }
     }
 
     public String getDisplayName(Player player, int multi, BigDecimal amount, boolean alwaysStatic) {

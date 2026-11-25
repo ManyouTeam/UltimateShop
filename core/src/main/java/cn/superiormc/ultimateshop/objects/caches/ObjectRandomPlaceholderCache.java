@@ -7,34 +7,20 @@ import cn.superiormc.ultimateshop.managers.ErrorManager;
 import cn.superiormc.ultimateshop.objects.items.subobjects.ObjectRandomPlaceholder;
 import cn.superiormc.ultimateshop.utils.CommandUtil;
 import cn.superiormc.ultimateshop.utils.CommonUtil;
-import cn.superiormc.ultimateshop.utils.TextUtil;
 
 import java.time.DateTimeException;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ObjectRandomPlaceholderCache {
+public class ObjectRandomPlaceholderCache extends ObjectPlaceholderCache<ObjectRandomPlaceholder> {
 
     private static final int NEVER_REFRESH_YEAR = 2999;
 
-    private List<String> nowValue = null;
-
-    private LocalDateTime refreshDoneTime = null;
-
-    private LocalDateTime lastResetTime = null;
-
     private boolean initialized;
 
-    private final ObjectRandomPlaceholder placeholder;
-
-    private final ObjectCache cache;
-
-    public ObjectRandomPlaceholderCache(ObjectCache cache,
-                                        ObjectRandomPlaceholder placeholder) {
-        this.cache = cache;
-        this.placeholder = placeholder;
+    public ObjectRandomPlaceholderCache(ObjectCache cache, ObjectRandomPlaceholder placeholder) {
+        super(cache, placeholder);
     }
 
     public synchronized void initialize() {
@@ -52,9 +38,7 @@ public class ObjectRandomPlaceholderCache {
             return;
         }
         cancelResetTask();
-        this.nowValue = new ArrayList<>(value);
-        this.refreshDoneTime = refreshTime;
-        this.lastResetTime = loadedLastResetTime;
+        restoreState(value, refreshTime, loadedLastResetTime);
         migrateLegacyCustomState();
         this.initialized = true;
         activateResetTask();
@@ -64,20 +48,12 @@ public class ObjectRandomPlaceholderCache {
         loadState(value, refreshTime, null);
     }
 
-    public ObjectRandomPlaceholder getPlaceholder() {
-        return placeholder;
-    }
-
     public synchronized LocalDateTime getRefreshDoneTime() {
         if ("CUSTOM".equals(placeholder.getMode())
-                || refreshDoneTime != null && !refreshDoneTime.isAfter(CommonUtil.getNowTime())) {
+                || isExpired(CommonUtil.getNowTime())) {
             setRefreshTime();
         }
         return refreshDoneTime;
-    }
-
-    public synchronized LocalDateTime getLastResetTime() {
-        return lastResetTime;
     }
 
     public synchronized void removeRefreshDoneTime() {
@@ -113,7 +89,7 @@ public class ObjectRandomPlaceholderCache {
         if (needRefresh) {
             setRefreshTime(disable);
         }
-        return nowValue == null ? null : new ArrayList<>(nowValue);
+        return hasValue() ? new ArrayList<>(getStoredValues()) : null;
     }
 
     public synchronized void setRefreshTime() {
@@ -126,9 +102,9 @@ public class ObjectRandomPlaceholderCache {
             return;
         }
         String mode = placeholder.getMode();
-        String time = TextUtil.withPAPI(placeholder.getConfig().getString("reset-time"), null);
-        if (mode == null || time.isEmpty()) {
-            if (nowValue == null) {
+        String time = placeholder.resolveConfiguredResetTime();
+        if (time.isEmpty()) {
+            if (!hasValue()) {
                 setPlaceholder(notUseBungee);
             }
             return;
@@ -141,11 +117,11 @@ public class ObjectRandomPlaceholderCache {
         LocalDateTime now = CommonUtil.getNowTime();
         LocalDateTime customRefreshTime = null;
         if (mode.equals("CUSTOM")) {
-            customRefreshTime = getCustomRefreshTime(time);
+            customRefreshTime = getCustomRefreshTime(time, now);
             if (customRefreshTime == null) {
                 refreshDoneTime = neverRefresh();
                 cancelResetTask();
-                if (nowValue == null) {
+                if (!hasValue()) {
                     setPlaceholder(notUseBungee);
                 }
                 return;
@@ -153,13 +129,13 @@ public class ObjectRandomPlaceholderCache {
             if (lastResetTime != null && !lastResetTime.isBefore(customRefreshTime)) {
                 refreshDoneTime = neverRefresh();
                 cancelResetTask();
-                if (nowValue == null) {
+                if (!hasValue()) {
                     setPlaceholder(notUseBungee);
                 }
                 return;
             }
             if (customRefreshTime.isAfter(now)
-                    && nowValue != null
+                    && hasValue()
                     && refreshDoneTime != null
                     && (isNeverRefresh(refreshDoneTime) || refreshDoneTime.isAfter(now))
                     && !customRefreshTime.equals(refreshDoneTime)) {
@@ -169,25 +145,23 @@ public class ObjectRandomPlaceholderCache {
                 return;
             }
         }
-        boolean hadValue = nowValue != null;
-        boolean needRefresh = nowValue == null || refreshDoneTime == null
-                || !refreshDoneTime.isAfter(now)
+        boolean hadValue = hasValue();
+        boolean needRefresh = !hasValue() || refreshDoneTime == null
+                || isExpired(now)
                 || mode.equals("CUSTOM") && !customRefreshTime.isAfter(now);
         for (ObjectRandomPlaceholder tempVal1 : placeholder.getNotSameAs()) {
             if (tempVal1.equals(getPlaceholder())) {
                 continue;
             }
-            if (tempVal1.getNowValue(cache).equals(nowValue)) {
+            if (tempVal1.getNowValue(cache).equals(getStoredValues())) {
                 needRefresh = true;
             }
         }
         if (needRefresh) {
             switch (mode) {
                 case "TIMED":
-                    refreshDoneTime = getTimedRefreshTime(time);
-                    break;
                 case "TIMER":
-                    refreshDoneTime = getTimerRefreshTime(time);
+                    refreshDoneTime = placeholder.calculateResetTime(time, now);
                     break;
                 case "CUSTOM":
                     refreshDoneTime = customRefreshTime;
@@ -236,19 +210,11 @@ public class ObjectRandomPlaceholderCache {
                 || "RANDOM_PLACEHOLDER".equals(mode);
     }
 
-    private LocalDateTime getCustomRefreshTime(String time) {
+    private LocalDateTime getCustomRefreshTime(String time, LocalDateTime now) {
         try {
-            return CommonUtil.stringToTime(
-                    time,
-                    placeholder.getConfig().getString(
-                            "time-format",
-                            "yyyy-MM-dd HH:mm:ss"
-                    )
-            );
+            return placeholder.calculateResetTime(time, now);
         } catch (DateTimeException exception) {
-            ErrorManager.errorManager.sendErrorMessage(
-                    "§cError: Your reset time " + time + " is invalid."
-            );
+            ErrorManager.errorManager.sendErrorMessage("§cError: Your reset time " + time + " is invalid.");
             return null;
         }
     }
@@ -278,81 +244,26 @@ public class ObjectRandomPlaceholderCache {
         if (element == null || cache.canNotModify()) {
             return;
         }
-        nowValue = new ArrayList<>(element);
+        storeValues(element);
         if (!notUseBungee && BungeeCordManager.bungeeCordManager != null) {
             BungeeCordManager.bungeeCordManager.sendRandomPlaceholderToOtherServer(
                     placeholder.getID(),
-                    CommonUtil.translateStringList(nowValue),
+                    CommonUtil.translateStringList(getStoredValues()),
                     CommonUtil.timeToString(refreshDoneTime),
                     CommonUtil.timeToString(lastResetTime));
         }
     }
 
     public synchronized RandomPlaceholderSnapshot snapshot() {
-        if (nowValue == null || "ONCE".equals(placeholder.getMode())) {
+        if (!hasValue() || "ONCE".equals(placeholder.getMode())) {
             return null;
         }
         return new RandomPlaceholderSnapshot(
                 placeholder.getID(),
-                CommonUtil.translateStringList(nowValue),
+                CommonUtil.translateStringList(getStoredValues()),
                 CommonUtil.timeToString(refreshDoneTime),
                 CommonUtil.timeToString(lastResetTime)
         );
-    }
-
-    private LocalDateTime getTimedRefreshTime(String time) {
-        LocalDate nowTime = LocalDate.now();
-        LocalDateTime refreshResult = null;
-        String[] tempVal3 = time.split(";;");
-        for (String tempVal4 : tempVal3) {
-            LocalDateTime thisResult;
-            String[] tempVal2 = tempVal4.split(":");
-            if (tempVal2.length < 3) {
-                ErrorManager.errorManager.sendErrorMessage("§cError: Your reset time " + tempVal4 + " is invalid.");
-                return CommonUtil.getNowTime();
-            }
-            int month = 0;
-            int day = 0;
-            if (tempVal2.length == 5) {
-                month = Integer.parseInt(tempVal2[0]);
-            }
-            if (tempVal2.length >= 4) {
-                day = Integer.parseInt(tempVal2[tempVal2.length - 4]);
-            }
-            thisResult = nowTime.atTime(Integer.parseInt(tempVal2[tempVal2.length - 3]),
-                    Integer.parseInt(tempVal2[tempVal2.length - 2]),
-                    Integer.parseInt(tempVal2[tempVal2.length - 1]));
-            thisResult= thisResult.plusDays(day).plusMonths(month);
-            if (CommonUtil.getNowTime().isAfter(thisResult)) {
-                thisResult = thisResult.plusDays(1L);
-            }
-            if (refreshResult == null || thisResult.isBefore(refreshResult)) {
-                refreshResult = thisResult;
-            }
-        }
-        return refreshResult;
-    }
-
-    private LocalDateTime getTimerRefreshTime(String time) {
-        LocalDateTime refreshResult = CommonUtil.getNowTime();
-        String[] tempVal2 = time.split(":");
-        if (tempVal2.length < 3) {
-            ErrorManager.errorManager.sendErrorMessage("§cError: Your reset time " + time + " is invalid.");
-            return CommonUtil.getNowTime();
-        }
-        int month = 0;
-        int day = 0;
-        if (tempVal2.length == 5) {
-            month = Integer.parseInt(tempVal2[0]);
-        }
-        if (tempVal2.length >= 4) {
-            day = Integer.parseInt(tempVal2[tempVal2.length - 4]);
-        }
-        refreshResult = refreshResult.plusMonths(month).plusDays(day)
-                .plusHours(Integer.parseInt(tempVal2[tempVal2.length - 3]))
-                .plusMinutes(Integer.parseInt(tempVal2[tempVal2.length - 2]))
-                .plusSeconds(Integer.parseInt(tempVal2[tempVal2.length - 1]));
-        return refreshResult;
     }
 
 }

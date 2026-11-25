@@ -1,59 +1,59 @@
-# 🔄 Menu Configuration Compatibility
+﻿# 🔄Menu Configuration Compatibility
 
-Use the current file structure and keys below when updating menu configurations. Presentation selection and graphical drawing have separate settings; older graphical selectors are not automatically interpreted as native controls.
+Use the current directory structure and keys below when upgrading or organizing menu configs. Presentation selection and graphical drawing are configured separately—older graphical selectors are not interpreted as native control settings.
 
-## Configuration locations
+## Current File Locations
 
-| Configuration | Current location |
+| Configuration | Current Location |
 | --- | --- |
 | Common menus | `menus/common_menus/` |
-| Shop templates | `menus/shop_menu_templates/` |
-| Quantity menus | `menus/buy_more_menus/` |
-| Search / Favourite / Item Sell | Their dedicated subfolders under `menus/` |
+| Shop menu templates | `menus/shop_menu_templates/` |
+| Buy More menus | `menus/buy_more_menus/` |
+| Search / Favourite / Item Sell | Dedicated subfolders under `menus/` |
 | Shared graphical styles | `ui/<style>.yml` |
-| Global settings | `config.yml` → `menu` |
-| Shop-specific overrides | Shop `settings.menu-settings` |
+| Global defaults | `config.yml` → `menu` |
+| Per-shop overrides | Shop `settings.menu-settings` |
 
-Legacy top-level specialized menu folders and old Common-menu locations are moved into the organized menu folders at startup. Keep a backup before upgrades and retain unique IDs. Current dedicated folders classify specialized menus automatically; existing Common-folder files can use `menu-type`.
+Legacy root-level special folders and common menu locations migrate on startup (back up before upgrading and keep IDs unique). Dedicated subfolders auto-detect menu types, while legacy files in `common_menus` can declare `menu-type`.
 
-## Native presentation keys
+## Native Presentation Keys
 
-| Purpose | Current key |
+| Purpose | Current Key |
 | --- | --- |
 | Allow Dialog | Global `menu.dialog.enabled` and menu `dialog.enabled` |
-| Choose native Dialog/Ore | Menu `dialog.layout: multi-action`, `item-action-list` or `ore` |
-| Dialog description and dimensions | Menu `dialog.content`, `dialog.button-width`, `dialog.columns` |
-| Dialog label sprite | Entry `dialog.show-sprite`; global `menu.dialog.auto-add-sprite.*` |
-| Ore icon/pack behavior | Global `menu.dialog.ore.show-item-icon.*`, `menu.dialog.ore.pack-format` |
-| Allow Form | Global `menu.bedrock.enabled` and menu `bedrock.enabled` |
-| Form text and behavior | Menu `bedrock.*`, global `menu.bedrock.*` |
-| Form entry icon/text/hiding | Active `display-item.bedrock.icon/extra-line/hide` |
-| Direct Form product operation | Product `bedrock.click-event` |
+| Choose native Dialog / Ore | Menu `dialog.layout: multi-action`, `item-action-list`, or `ore` |
+| Dialog text & sizing | Menu `dialog.content`, `dialog.button-width`, `dialog.columns` |
+| Dialog sprite icon | Entry `dialog.show-sprite`, global `menu.dialog.auto-add-sprite.*` |
+| Ore icon / pack behaviour | Global `menu.dialog.ore.show-item-icon.*`, `menu.dialog.ore.pack-format` |
+| Allow Bedrock Form | Global `menu.bedrock.enabled` and menu `bedrock.enabled` |
+| Form text & behaviour | Menu `bedrock.*`, global `menu.bedrock.*` |
+| Form entry icon / extra line / hide | `display-item.bedrock.icon` / `extra-line` / `hide` |
+| Form direct product action | Product `bedrock.click-event` |
 | Allow ArcMenu | Global `menu.arcmenu.enabled` and menu `arcmenu.enabled` |
-| Force presentation/style | Global `menu.force-ui.enabled/type/style` |
-| Entry visibility | Entry `menu-visibility.inventory/form/dialog/item-action-list/ore/arcmenu` |
+| Force presentation / style | Global `menu.force-ui.enabled` / `type` / `style` |
+| Per-presentation visibility | Entry `menu-visibility.inventory/form/dialog/item-action-list/ore/arcmenu` |
 
-`ui.mode`, `ui.visible-in`, `ui.show-sprite`, `ui.renderers.form` and `ui.renderers.dialog` do not select or configure native presentations. Move intended settings to their supported paths above.
+`ui.mode`, `ui.visible-in`, `ui.show-sprite`, `ui.renderers.form`, and `ui.renderers.dialog` do not select or configure native presentations—migrate them to the supported keys above.
 
-## Graphical keys
+## Graphical UI Keys
 
-| Purpose | Current key |
+| Purpose | Current Key |
 | --- | --- |
-| Select a shared style | Global `menu.ui.style` or menu `ui.style` |
-| Canvas, headers, areas and pagination | `ui.layout.*` |
-| Product placement defaults | `ui.products.placement` |
-| Card appearance, compact prices and operations | `ui.products.card/price/actions` |
-| Individual entry placement | Entry `ui.placement` |
-| Button/card appearance and font | Entry `ui.appearance/font-size/text-align` |
-| Colors and graphical labels | `ui.theme`, `ui.text` |
+| Select shared style | Global `menu.ui.style` or menu `ui.style` |
+| Canvas, headers, areas & pagination | `ui.layout.*` |
+| Default product placement | `ui.products.placement` |
+| Card appearance, compact price & actions | `ui.products.card` / `price` / `actions` |
+| Per-entry placement | Entry `ui.placement` |
+| Button/card appearance & text align | Entry `ui.appearance` / `font-size` / `text-align` |
+| Colors & graphical labels | `ui.theme`, `ui.text` |
 | Ore texture templates | `ui.renderers.ore.templates` |
-| ArcMenu interaction/rendering | `ui.renderers.arcmenu` |
+| ArcMenu interaction & rendering | `ui.renderers.arcmenu` |
 
-Style files contain these fields directly, without a `ui` wrapper. Existing inline `menu.ui` defaults remain supported. Move reusable graphical definitions into a style when appropriate and select it by ID.
+Style files in `ui/` hold these fields directly at the root (no outer `ui:` key). Move reusable graphical definitions into shared styles and reference them by ID.
 
-## Example: select Ore with a shared style
+## Example: Select Ore with a Shared Style
 
-This fragment belongs at menu root:
+Place this at the menu root:
 
 ```yaml
 dialog:
@@ -70,8 +70,8 @@ ui:
       area: content
 ```
 
-Enable global Dialog, give ordinary graphical buttons explicit placements, reload, then generate/distribute the Ore pack. Inventory slot coordinates are not converted into graphical positions. No category sidebar or Back button is inferred from old actions.
+Enable global `menu.dialog.enabled`, add explicit `ui.placement` to common graphical buttons, reload, and run `/shop dialogpack` to build and distribute the resource pack (Inventory slots never auto-convert into graphical coordinates or infer sidebar/back buttons).
 
-Search/Favourite use native Dialog when Ore is selected. Buy More does not use graphical styles. Item Sell and Sell All remain physical inventories. Check [supported menu types](ui-overview.md#supported-menu-types) before adding presentation fields to those files.
+Under Ore, Search and Favourite fall back to native Dialog, Buy More uses no graphical style, and Item Sell / Sell All stay physical Inventory; see [Supported Menu Types](ui-overview.md#supported-menu-types).
 
-[Configuration & Inheritance](menu-configuration.md) · [Graphical UI Layout](../menus-getting-started/ui-layout.md)
+[Menu Configuration & Inheritance](menu-configuration.md) · [Graphical UI Layout](../menus-getting-started/ui-layout.md)

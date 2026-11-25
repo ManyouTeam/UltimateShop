@@ -1,39 +1,25 @@
 package cn.superiormc.ultimateshop.objects.items.subobjects;
 
-import cn.superiormc.ultimateshop.UltimateShop;
-import cn.superiormc.ultimateshop.managers.CacheManager;
 import cn.superiormc.ultimateshop.managers.ConfigManager;
+import cn.superiormc.ultimateshop.managers.ErrorManager;
 import cn.superiormc.ultimateshop.objects.caches.ObjectCache;
-import cn.superiormc.ultimateshop.utils.TextUtil;
+import cn.superiormc.ultimateshop.objects.caches.ObjectPlaceholderCache;
+import cn.superiormc.ultimateshop.utils.CommonUtil;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Locale;
 
-public class ObjectCustomPlaceholder {
-
-    private final String id;
-
-    private final ConfigurationSection section;
+public class ObjectCustomPlaceholder extends AbstractCustomPlaceholder {
 
     private final String type;
 
-    private final boolean perPlayer;
-
     public ObjectCustomPlaceholder(String id, ConfigurationSection section) {
-        this.id = id;
-        this.section = section;
-        this.type = section.getString("type", "default").toLowerCase();
-        this.perPlayer = section.getBoolean("per-player-value", false);
-        TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fLoaded custom placeholder: " + id + ".yml!");
-    }
-
-    public String getID() {
-        return id;
-    }
-
-    public ConfigurationSection getConfig() {
-        return section;
+        super(id, section, section.getBoolean("per-player-value", false));
+        this.type = section.getString("type", "default").toLowerCase(Locale.ROOT);
     }
 
     public String getType() {
@@ -44,11 +30,8 @@ public class ObjectCustomPlaceholder {
         return type.equals("number");
     }
 
-    public boolean isPerPlayer() {
-        return perPlayer;
-    }
-
     public String getDefaultValue() {
+        ConfigurationSection section = getConfig();
         String value = section.getString("default-value", section.getString("default", ""));
         if (isNumber()) {
             return normalizeNumber(value);
@@ -74,43 +57,111 @@ public class ObjectCustomPlaceholder {
         }
     }
 
-    public static String getNowValue(Player player, String id) {
-        if (UltimateShop.freeVersion) {
-            return "ERROR: Free Version";
+    public boolean hasReset() {
+        return isNumber() && !"NEVER".equals(getMode());
+    }
+
+    public String getCustomValue(ObjectPlaceholderCache<?> state, LocalDateTime now) {
+        synchronized (state) {
+            List<String> values = state.getStoredValues();
+            LocalDateTime resetTime = state.getStoredResetTime();
+            if (!hasReset() || (resetTime != null && !state.isExpired(now))) {
+                return values == null ? getDefaultValue() : values.get(0);
+            }
+            getNextResetTime(now);
+            return values != null && resetTime == null ? values.get(0) : getDefaultValue();
         }
+    }
+
+    public LocalDateTime getCustomResetTime(ObjectPlaceholderCache<?> state, LocalDateTime now) {
+        synchronized (state) {
+            if (!hasReset()) {
+                return null;
+            }
+            LocalDateTime resetTime = state.getStoredResetTime();
+            if (resetTime != null && !state.isExpired(now)) {
+                return resetTime;
+            }
+            return "TIMER".equals(getMode()) ? null : getNextResetTime(now);
+        }
+    }
+
+    public String setCustomValue(ObjectPlaceholderCache<?> state, String value, LocalDateTime now) {
+        synchronized (state) {
+            LocalDateTime resetTime = state.getStoredResetTime();
+            if (hasReset() && (resetTime == null || state.isExpired(now))) {
+                resetTime = getNextResetTime(now);
+            }
+            String normalized = normalizeValue(value);
+            state.restoreState(List.of(normalized), resetTime, state.getLastResetTime());
+            return normalized;
+        }
+    }
+
+    public String addCustomValue(ObjectPlaceholderCache<?> state, BigDecimal amount, LocalDateTime now) {
+        synchronized (state) {
+            String current = getCustomValue(state, now);
+            if (amount.signum() == 0) {
+                return current;
+            }
+            return setCustomValue(state, new BigDecimal(current).add(amount).toPlainString(), now);
+        }
+    }
+
+    public void loadCustomValue(ObjectPlaceholderCache<?> state, String storedValue) {
+        int separator = isNumber() ? storedValue.indexOf('|') : -1;
+        if (separator < 0) {
+            state.restoreState(List.of(storedValue), null, null);
+        } else {
+            state.restoreState(List.of(storedValue.substring(0, separator)),
+                    LocalDateTime.parse(storedValue.substring(separator + 1)), null);
+        }
+    }
+
+    public String snapshotCustomValue(ObjectPlaceholderCache<?> state) {
+        synchronized (state) {
+            List<String> values = state.getStoredValues();
+            if (values == null) {
+                return null;
+            }
+            LocalDateTime resetTime = state.getStoredResetTime();
+            if (!hasReset() || resetTime == null) {
+                return values.get(0);
+            }
+            return values.get(0) + "|" + resetTime;
+        }
+    }
+
+    public static String getNowValue(Player player, String id) {
         ObjectCustomPlaceholder placeholder = ConfigManager.configManager.getCustomPlaceholder(id);
         if (placeholder == null) {
             return "Error: Unknown Placeholder";
         }
-        if (placeholder.isPerPlayer() && player == null) {
+        ObjectCache cache = placeholder.getCache(player);
+        if (cache == null) {
             return placeholder.getDefaultValue();
         }
-        ObjectCache cache;
-        if (placeholder.isPerPlayer()) {
-            cache = CacheManager.cacheManager.getObjectCache(player);
-            if (cache == null) {
-                return placeholder.getDefaultValue();
+        return cache.getCustomPlaceholderValue(placeholder);
+    }
+
+    public static String getResetTime(Player player, String id) {
+        ObjectCustomPlaceholder placeholder = ConfigManager.configManager.getCustomPlaceholder(id);
+        if (placeholder == null || !placeholder.hasReset()) {
+            return ConfigManager.configManager.getStringWithLang(player, "placeholder.refresh.never");
+        }
+        ObjectCache cache = placeholder.getCache(player);
+        try {
+            LocalDateTime reset = cache == null ? null : cache.getCustomPlaceholderResetTime(placeholder);
+            if (reset == null) {
+                return ConfigManager.configManager.getStringWithLang(player, "placeholder.refresh.never");
             }
-        } else {
-            cache = CacheManager.cacheManager.serverCache;
+            return CommonUtil.timeToString(reset,
+                    ConfigManager.configManager.getStringWithLang(player, "placeholder.refresh.format"));
+        } catch (RuntimeException exception) {
+            ErrorManager.errorManager.sendErrorMessage("\u00a7cError: Invalid reset time for custom placeholder " + id
+                    + ": " + exception.getMessage());
+            return ConfigManager.configManager.getStringWithLang(player, "placeholder.refresh.never");
         }
-        String value = cache.getCustomPlaceholderCache().get(placeholder);
-        if (value == null) {
-            return placeholder.getDefaultValue();
-        }
-        return value;
     }
 
-    @Override
-    public boolean equals(Object object) {
-        if (object instanceof ObjectCustomPlaceholder) {
-            return ((ObjectCustomPlaceholder) object).getID().equals(getID());
-        }
-        return false;
-    }
-
-    @Override
-    public int hashCode() {
-        return id.hashCode();
-    }
 }

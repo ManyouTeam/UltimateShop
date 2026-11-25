@@ -19,7 +19,7 @@
 
 * `shops`：商店配置目录。&#x20;
 * `placeholders/random_placeholders`：随机占位符配置目录。
-* `placeholders/custom_placeholders`：自定义占位符配置目录。
+* `placeholders/custom_placeholders`：自定义占位符配置目录，免费版最多加载 5 个。
 * `placeholders/conditional_placeholders`：条件占位符配置目录。
 * `sell_sticks`：出售棒配置目录。
 * `config.yml`：插件的全局常用设置。
@@ -110,6 +110,7 @@ sell:
       # Support value: DecentHolograms, CMI, FancyHolograms
       plugin: 'DecentHolograms'
   max-amount: -1
+  max-search-attempts: 5
   # Premium version only.
   shulker-box-sell: true
   # Premium version only

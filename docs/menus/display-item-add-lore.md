@@ -1,12 +1,12 @@
-# 🥉 Display Item Add Lore
+﻿# 🥉Display Item Add Lore
 
-Generated lore adds prices, limits and operation instructions to a product display. Original `display-item.lore` remains separate. Inventory, product information and graphical tooltips can show the generated text, with conditions selecting lines for each presentation.
+Auto-generated lore (`add-lore`) appends prices, limits, and click hints below a product's own `display-item.lore`. Inventory menus, native product info, and graphical tooltips can display these lines and filter them per presentation or product state.
 
-Compact prices are configured separately: Form uses `bedrock.price-extra-line`; graphical cards use `ui.products.price`.
+Compact prices are configured separately: Bedrock Form lists use `bedrock.price-extra-line` and graphical card faces use `ui.products.price`.
 
-## Global and per-product lore
+## Global vs. Per-Product Lore
 
-Global defaults belong in `config.yml`:
+Global defaults live in `config.yml`:
 
 ```yaml
 display-item:
@@ -19,7 +19,7 @@ display-item:
     - '@t[arcmenu-hover]&7Choose an operation on the card'
 ```
 
-The bundled list `['{lang}']` loads the corresponding language lore format. A product-root `add-lore` replaces that format:
+Built-in `['{lang}']` loads the active language's lines; a product's root `add-lore` replaces them for that product:
 
 ```yaml
 items:
@@ -33,33 +33,34 @@ items:
       - '@b&aSell: {sell-price}'
 ```
 
-This fragment extends an existing product. Set `display-item.modify-lore: false` to suppress generated additions for that display variant. Buy More confirmation buttons have a separate control-root `modify-lore` switch, default `true`.
+Set `display-item.modify-lore: false` to disable auto-lore on a specific display variant. Buy More confirm buttons use their own `modify-lore` toggle at the control root (default `true`).
 
-## Conditional symbols
+## Condition Symbols
 
-Put condition symbols before a line's text for readability. All conditions on that line must pass; condition syntax is removed from the displayed result. Lines without conditions always appear.
+Place condition symbols at the start of a line for readability. Every condition on a line must pass for that line to appear (the symbols are stripped on render; lines without symbols always show).
 
-| Symbol | Show when |
+| Symbol | Shown When |
 | --- | --- |
-| `@a` | Buy prices exist |
-| `@b` | Display sell prices exist |
+| `@a` | Buy price exists |
+| `@b` | Display sell price exists |
 | `@c` / `@d` | Player / server buy limit is configured |
 | `@e` / `@f` | Player / server sell limit is configured |
-| `@g` / `@h` | Positive player buy / sell limit has been reached |
-| `@i` / `@j` | Positive server buy / sell limit has been reached |
-| `@k` | Product enables Buy More |
-| `@l` | Product allows favourites |
-| `@m` | Display sell prices exist and sell-all is enabled |
-| `@n` | The current operation supports a direction with a price |
-| `@o` | The opening menu is Favourite |
-| `@p` / `@q` | Inside / outside Buy More lore context |
-| `@u` / `@v` | The current operation supports buying / selling |
-| `@w` | A specific click-action context is supplied |
+| `@g` / `@h` | Non-zero player buy / sell limit is reached |
+| `@i` / `@j` | Non-zero server buy / sell limit is reached |
+| `@k` | Buy More is enabled for this product |
+| `@l` | Favouriting is allowed for this product |
+| `@m` | Display sell price exists and Sell All is enabled |
+| `@n` | Active action supports at least one priced direction |
+| `@o` | Opened inside a Favourite menu |
+| `@p` / `@q` | Inside / outside a Buy More lore context |
+| `@r[shared-price-id]` | Product price uses the specified Shared Price template (empty matches any; comma-separated for multiple) |
+| `@u` / `@v` | Active action supports buying / selling |
+| `@w` | Explicit click-action context is provided |
 | `@x` / `@y` | Player is / is not detected as Bedrock |
-| `@t[presentation]` | Active presentation matches a listed name |
-| `@z[multiplier-id]` | The named sell multiplier is active |
+| `@t[presentation]` | Active presentation matches any listed name |
+| `@z[multiplier-id]` | Specified sell multiplier is active |
 
-Use lower-case symbols. Parentheses negate a condition, for example `(@a)` or `(@z[vip])`. Combine symbols for AND logic:
+Symbols are lowercase. Wrap in parentheses to negate (e.g. `(@a)` or `(@z[vip])`), and chain multiple symbols for logical AND:
 
 ```yaml
 add-lore:
@@ -68,58 +69,60 @@ add-lore:
   - '(@a)&7This product cannot be purchased'
 ```
 
-A condition affects only its own line. Include conditions on separator/blank lines too when they should disappear with a section.
+Conditions apply per line—if a divider or blank line should hide with a section, give it the same condition.
 
-## Presentation conditions
+<a id="presentation-conditions"></a>
 
-| `@t[...]` value | Rendering context |
+## Presentation Conditions (`@t[...]`)
+
+| `@t[...]` Value | Render Context |
 | --- | --- |
-| `inventory` | Chest-menu lore |
-| `form` | Bedrock product information |
-| `dialog` | Native Dialog information |
-| `item-action-list` | Native item-action-list when that context is supplied |
-| `ore` | Ore card body/details context |
+| `inventory` | Chest menu lore |
+| `form` | Bedrock product info |
+| `dialog` | Native Dialog info |
+| `item-action-list` | Native item-action list (when provided) |
+| `ore` | Ore card body / details |
 | `ore-hover` | Ore hover tooltip |
-| `arcmenu` | ArcMenu body/details context |
+| `arcmenu` | ArcMenu body / details |
 | `arcmenu-hover` | ArcMenu hover tooltip |
 
-List multiple targets with commas, for example `@t[inventory,ore]`. Matching ignores case and surrounding spaces. A missing presentation does not satisfy a positive presentation condition. `dialog` does not automatically include Ore or every Dialog-derived context.
+Separate multiple targets with commas (e.g. `@t[inventory,ore]`; matching is case-insensitive and trimmed, and `dialog` does not automatically include `ore` or other dialog-based contexts).
 
-Use `@t[inventory]` for Inventory mouse/key instructions. `@y` matches Java players in ArcMenu and Ore too. These conditions filter generated lore, rather than the item's original static lore.
+* Guard Inventory click hints with `@t[inventory]`; `@y` also matches Java players in ArcMenu and Ore.
+* These conditions filter auto-generated `add-lore` lines only, never static `display-item.lore`.
+* Ore body lore is capped by `ui.products.card.lore-lines`, while hover tooltips still show all eligible lines; ArcMenu card faces use `ui.products.price` for compact pricing.
 
-Ore body lore is limited by `ui.products.card.lore-lines`; full applicable lore remains available to tooltips. ArcMenu compact card price text uses `ui.products.price` instead of displaying every generated line in the card body.
-
-## Product placeholders
+## Product Placeholders
 
 | Placeholder | Meaning |
 | --- | --- |
-| `{buy-price}`, `{sell-price}` | Price for the corresponding operation's quantity |
-| `{buy-amount}`, `{sell-amount}` | Independent buy/sell trade quantities |
-| `{amount}` | Display amount, affected by `display-item.calculate-amount` |
+| `{buy-price}`, `{sell-price}` | Prices calculated for each direction's trade count |
+| `{buy-amount}`, `{sell-amount}` | Independent buy / sell trade counts |
+| `{amount}` | Display amount (affected by `display-item.calculate-amount`) |
 | `{item-name}` | Product display name |
-| `{buy-click}`, `{sell-click}` | Generated operation availability/click text |
+| `{buy-click}`, `{sell-click}` | Generated action availability / click hints |
 | `{buy-limit-player}`, `{sell-limit-player}` | Player limits |
 | `{buy-limit-server}`, `{sell-limit-server}` | Server limits |
-| `{buy-times-player}`, `{sell-times-player}` | Player counters for the current period |
-| `{buy-times-server}`, `{sell-times-server}` | Server counters for the current period |
-| `{buy-total-player}`, `{sell-total-player}` | Player lifetime totals |
-| `{buy-total-server}`, `{sell-total-server}` | Server lifetime totals |
-| `{buy-refresh-player}`, `{sell-refresh-player}` | Player reset-time display |
-| `{buy-refresh-server}`, `{sell-refresh-server}` | Server reset-time display |
-| `{buy-next-player}`, `{sell-next-player}` | Next player reset |
-| `{buy-next-server}`, `{sell-next-server}` | Next server reset |
+| `{buy-times-player}`, `{sell-times-player}` | Player current-period counts |
+| `{buy-times-server}`, `{sell-times-server}` | Server current-period counts |
+| `{buy-total-player}`, `{sell-total-player}` | Player cumulative totals |
+| `{buy-total-server}`, `{sell-total-server}` | Server cumulative totals |
+| `{buy-refresh-player}`, `{sell-refresh-player}` | Player reset time display |
+| `{buy-refresh-server}`, `{sell-refresh-server}` | Server reset time display |
+| `{buy-next-player}`, `{sell-next-player}` | Player next reset time |
+| `{buy-next-server}`, `{sell-next-server}` | Server next reset time |
 | `{last-buy-player}`, `{last-sell-player}` | Player last trade time |
 | `{last-buy-server}`, `{last-sell-server}` | Server last trade time |
-| `{last-reset-buy-player}`, `{last-reset-sell-player}` | Player last reset |
-| `{last-reset-buy-server}`, `{last-reset-sell-server}` | Server last reset |
+| `{last-reset-buy-player}`, `{last-reset-sell-player}` | Player last reset time |
+| `{last-reset-buy-server}`, `{last-reset-sell-server}` | Server last reset time |
 
-Default buy/sell amounts are independent until quantity selection supplies a common count. An explicit display-item stack amount is separate from trade quantity. See [Default Trade Amounts](../shops/products.md#default-trade-amounts).
+Before selecting a quantity, default buy and sell amounts stay independent; once chosen, both use the selected count (explicit display-item stack sizes stay separate; see [Default Trade Amounts](../shops/products.md#default-trade-amounts)).
 
-`{buy-click}` and `{sell-click}` use global `placeholder.click`. With `placeholder.click.enabled: true`, the plugin previews operation availability and selects condition/limit/funds text from that section. The actual transaction still runs its own validation.
+`{buy-click}` and `{sell-click}` read global `placeholder.click`. When `placeholder.click.enabled: true`, they preview action availability and pick condition, limit, or balance hints (trades still validate independently).
 
-## Multi-line prices
+## Multi-Line Prices
 
-Use `;;` price separators in `config.yml` to split formatted price components into lore lines:
+Set `;;` price splitters in `config.yml` to break formatted multi-part prices onto separate lines:
 
 ```yaml
 placeholder:
@@ -135,17 +138,17 @@ display-item:
     - '@b&7  {sell-price}'
 ```
 
-Keep the corresponding buy/sell condition on every relevant heading and price line.
+Keep `@a` / `@b` on both the header line and the price line.
 
-## Related display defaults
+## Related Display Defaults
 
-| Global `display-item` key | Purpose |
+| Global `display-item` Key | Purpose |
 | --- | --- |
-| `auto-set-first-product` | Use the first applicable product reward when no explicit display item is supplied |
-| `calculate-amount` | Include reward amount when calculating displayed `{amount}` |
-| `auto-translate-item-name` | Automatic vanilla display-name translation on supported Paper 1.17.1+ |
-| `auto-use-sprite-item-name` | Java sprite item names on compatible Paper runtimes |
+| `auto-set-first-product` | Uses the first eligible product reward when no display item is defined |
+| `calculate-amount` | Scales `{amount}` by product reward amount |
+| `auto-translate-item-name` | Auto-translates vanilla display names on Paper 1.17.1+ |
+| `auto-use-sprite-item-name` | Uses Java sprite item names on compatible Paper servers |
 
-Explicit custom names take precedence. See [Localized Item Name](../features/localized-item-name-premium.md) for the shared name/resource system.
+Explicit custom names always take priority. See [Localized Item Name](../features/localized-item-name-premium.md).
 
 [Shop Menus](shop-menus.md) · [Bedrock Form](bedrock-menus-premium.md) · [Graphical UI Layout](../menus-getting-started/ui-layout.md)

@@ -143,7 +143,7 @@ items:
       1:
         economy-plugin: Vault
         amount: 2
-        placeholder: '&6{amount} Coins'
+        placeholder: '{lang:price-coins}'
         conditions:
           1:
             type: placeholder
@@ -153,7 +153,7 @@ items:
       2:
         economy-plugin: Vault
         amount: 1.8
-        placeholder: '&6{amount} Coins'
+        placeholder: '{lang:price-coins}'
         conditions:
           1:
             type: placeholder
@@ -163,7 +163,7 @@ items:
       3:
         economy-plugin: Vault
         amount: 3.2
-        placeholder: '&6{amount} Coins'
+        placeholder: '{lang:price-coins}'
         conditions:
           1:
             type: placeholder
@@ -173,7 +173,7 @@ items:
       4:
         economy-plugin: Vault
         amount: 8.8
-        placeholder: '&6{amount} Coins'
+        placeholder: '{lang:price-coins}'
         conditions:
           1:
             type: placeholder

@@ -5,7 +5,6 @@ import cn.superiormc.ultimateshop.objects.buttons.ObjectItem;
 import cn.superiormc.ultimateshop.objects.caches.ObjectUseTimesCache;
 import cn.superiormc.ultimateshop.objects.menus.ObjectItemSellMenu;
 import cn.superiormc.ultimateshop.objects.items.prices.PriceMode;
-import cn.superiormc.ultimateshop.utils.MathUtil;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -96,45 +95,47 @@ public class ItemSellQuote {
         }
         playerTimes.refreshTimes();
         serverTimes.refreshTimes();
-        int playerUseTimes = playerTimes.getSellUseTimes() + (context == null ? 0 : context.getPending(playerTimes));
-        int serverUseTimes = serverTimes.getSellUseTimes() + (context == null ? 0 : context.getPending(serverTimes));
+        int playerUseTimes = context == null ? playerTimes.getSellUseTimes() : context.getUseTimes(playerTimes);
+        int serverUseTimes = context == null ? serverTimes.getSellUseTimes() : context.getUseTimes(serverTimes);
 
+        int increment = item.getSellTimesIncrement();
         int maxAmount = menuRemainingAmount;
         if (item.getPlayerSellLimit(player) >= 0) {
-            maxAmount = Math.min(maxAmount, item.getPlayerSellLimit(player) - playerUseTimes);
+            maxAmount = (int) Math.min(maxAmount, Math.max(0L, (long) item.getPlayerSellLimit(player) - playerUseTimes) / increment);
         }
         if (item.getServerSellLimit(player) >= 0) {
-            maxAmount = Math.min(maxAmount, item.getServerSellLimit(player) - serverUseTimes);
+            maxAmount = (int) Math.min(maxAmount, Math.max(0L, (long) item.getServerSellLimit(player) - serverUseTimes) / increment);
         }
         if (maxAmount <= 0) {
             return null;
         }
 
-        MaxSellResult maxSellResult = item.getReward().getMaxAbleSellAmount(storage, player, playerUseTimes, maxAmount);
+        MaxSellResult maxSellResult = item.getReward().getMaxSellAmount(storage, player, playerUseTimes, maxAmount);
         int tradeAmount = maxSellResult.getMaxAmount();
         if (tradeAmount <= 0 || !item.getSellCondition(player, tradeAmount)) {
             return null;
         }
 
         GiveResult giveResult = item.getRawSellPrice().give(player, playerUseTimes, tradeAmount);
-        if (giveResult == null || giveResult.empty || !giveResult.getConditionBoolean()) {
+        if (giveResult == null || giveResult.empty) {
             return null;
         }
         Map<AbstractSingleThing, BigDecimal> originalPrices = new LinkedHashMap<>(giveResult.getResultMap());
         BigDecimal basePrice = originalPrices.values().stream().reduce(BigDecimal.ZERO, BigDecimal::add);
         BigDecimal finalMultiplier = ShopHelper.getSellMultiplier(
                 player, item, itemStack, basePrice, tradeAmount);
-        Map<AbstractSingleThing, BigDecimal> finalPrices = new LinkedHashMap<>();
-        for (Map.Entry<AbstractSingleThing, BigDecimal> entry : originalPrices.entrySet()) {
-            finalPrices.put(entry.getKey(), MathUtil.applyConfiguredScale(
-                    entry.getValue().multiply(finalMultiplier)));
+        giveResult.setMultiplier(finalMultiplier);
+        if (!giveResult.checkSellPriceConditions(playerUseTimes, tradeAmount, player)) {
+            return null;
         }
+        Map<AbstractSingleThing, BigDecimal> finalPrices = giveResult.getResultMap();
         int itemAmount = tradeAmount * item.getDisplayItemObject().getAmountPlaceholder(player);
         if (context != null) {
             context.consume(tradeAmount);
-            context.addPending(playerTimes, tradeAmount);
+            long usedTimes = (long) tradeAmount * increment;
+            context.addPending(playerTimes, usedTimes);
             if (serverTimes != playerTimes) {
-                context.addPending(serverTimes, tradeAmount);
+                context.addPending(serverTimes, usedTimes);
             }
         }
         return new ItemSellQuote(item, tradeAmount, itemAmount, finalMultiplier,
@@ -147,7 +148,7 @@ public class ItemSellQuote {
 
     public static final class QuoteContext {
 
-        private final Map<ObjectUseTimesCache, Integer> pendingUseTimes = new IdentityHashMap<>();
+        private final Map<ObjectUseTimesCache, Long> pendingUseTimes = new IdentityHashMap<>();
 
         private int remainingAmount;
 
@@ -167,12 +168,13 @@ public class ItemSellQuote {
             remainingAmount = Math.max(0, remainingAmount - Math.max(0, amount));
         }
 
-        private int getPending(ObjectUseTimesCache cache) {
-            return pendingUseTimes.getOrDefault(cache, 0);
+        private int getUseTimes(ObjectUseTimesCache cache) {
+            return (int) Math.min(Integer.MAX_VALUE, cache.getSellUseTimes() + pendingUseTimes.getOrDefault(cache, 0L));
         }
 
-        private void addPending(ObjectUseTimesCache cache, int amount) {
-            pendingUseTimes.merge(cache, amount, Integer::sum);
+        private void addPending(ObjectUseTimesCache cache, long amount) {
+            pendingUseTimes.merge(cache, amount, (previous, next) ->
+                    Math.min(2L * Integer.MAX_VALUE + 1, previous + next));
         }
     }
 
